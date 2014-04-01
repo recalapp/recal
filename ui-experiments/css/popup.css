@@ -1,0 +1,22 @@
+.popup-container {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    width: 25%;
+    height: 300px;
+}
+.panel-clipped {
+    overflow: hidden;
+}
+.panel-body-scroll {
+    overflow: scroll;
+}
+.panel-heading-handle {
+    cursor: move;
+}
+.popup-ctrl {
+    float: right;
+}
+.hide{
+    visibility: hidden;
+}
