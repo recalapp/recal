@@ -1,0 +1,34 @@
+.navbar-basic {
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    background-color: white;
+}
+.nav-link > h2 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.container-nopad {
+    padding: 0;
+    padding-top: 10px;
+}
+
+body {
+    background-color: white;
+    padding-top: 90px;
+}
+
+.slide {
+    left: -100;
+    -webkit-transition: left .15s linear;
+    transition: left .15s linear;
+}
+.slide.in {
+    left: 0;
+}
+
+.event-selected{
+    background-color: #428be8 !important;
+}
+.fc-event {
+    cursor: pointer;
+}
