@@ -99,6 +99,11 @@ function PopUp_giveFocus(popUp)
     $(popUp).css("z-index", "200");
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default")
 }
+function PopUp_giveFocusToID(id)
+{
+    popUp = $(".popup").find("#"+id).parent();
+    PopUp_giveFocus(popUp);
+}
 
 function PopUp_map(apply)
 {

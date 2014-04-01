@@ -27,7 +27,7 @@ function selectAgenda(agendaAnchor)
     if ($(panel).hasClass("panel-primary"))
     {
         id = panel.id;
-        PopUp_giveFocus($(".popup").find("#"+id).parent());
+        PopUp_giveFocusToID(id);
         return;
     }
 

@@ -88,7 +88,7 @@ function Cal_init() {
         eventClick: function(calEvent, jsEvent, view) {
             if (calEvent.highlighted == true)
             {
-                PopUp_giveFocus($(".popup").find("#"+calEvent.id).parent());
+                PopUp_giveFocusToID(calEvent.id);
                 return;
             }
 
