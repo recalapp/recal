@@ -1,0 +1,80 @@
+DjangoUser (internal)
+     userID (PK)
+     Cookies
+     Sessions
+     CreationDate
+UserProfile
+     netid (PK) --- this is what CAS sends us
+     userID (FK to DjangoUser)
+     name
+     last seen time/last activity time
+UsersInSections
+     user_id (FK to DjangoUser)
+     section_id (FK to Section)
+     add_date (timestamp)
+Section
+     sectionID (autoincrementing PK)
+     courseID (FK to Course)
+Course
+     courseID (autoincrementing PK)
+     semesterID (FK to Semester)
+     description
+     professors
+Semester
+     ID (autoincrementing PK)
+     StartDate
+     EndDate
+     DisplayName (this is the name that users see)
+Event
+     event ID (autoincrementing PK)
+     section ID (FK to Section)
+     group ID (FK to groups) --- for recurring events
+     currentApprovedRevision (FK to Revision)
+EventGroups
+     group ID (autoincrementing PK)
+EventTypes
+     TypeID (autoincrementing PK)
+     TypeName
+Revisions
+     Revision ID (autoincrementing PK)
+     Event ID (FK to Event)
+     User ID (FK to DjangoUser)
+     RevisionDate (timestamp)
+     TypeID (FK to EventTypes)
+     Title
+     Description
+     Date & Time
+     Location (optional)
+     IsApproved (boolean, set to True by default for now)
+EventVisibility (this is per student; don't create an entry here until someone clicks hide)
+     eventID (FK to event)
+     userID (FK to DjangoUser)
+     IsHidden (default: false)
+     IsComplete (only for assignments -- this is to mark that you completed an assignment and don't want to see it anymore on your agenda)
+SiteSettings
+     CurrentSemester (FK to Semester)
+     (Other things later like gamification point award values, hellbanning options, etc.)
+
+
+
+
+Intertable relationships:
+     DjangoUser-UserProfile 1:1
+     DjangoUser-UsersInSections 1:many (i.e. a user is in many sections)
+     UsersInSections-Section many:1 (i.e. a section has many users)
+     Course-Section many:1 (i.e. a course has many sections)
+     Course-Semester many:1 (many courses in a semester)
+     Event-Group many:1
+     EventVisibility-Event:  many:1
+     Event-Revision 1:many
+     EventVisibility-DjangoUser  many:1
+     SiteSettings-Semester 1:1
+     
+     
+
+Later:
+Caching
+phone.txt import to get names quickly
+Rep points
+
+     
