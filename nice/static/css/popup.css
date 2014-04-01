@@ -9,7 +9,7 @@
     overflow: hidden;
 }
 .panel-body-scroll {
-    overflow: scroll;
+    overflow: auto;
 }
 .panel-heading-handle {
     cursor: move; /* fallback if grab cursor is unsupported */

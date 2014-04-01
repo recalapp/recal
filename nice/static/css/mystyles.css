@@ -32,3 +32,9 @@ body {
 .fc-event {
     cursor: pointer;
 }
+
+#content_bounds {
+    position: fixed;
+    z-index: -999;
+    visibility: hidden;
+}

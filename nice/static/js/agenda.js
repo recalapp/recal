@@ -18,6 +18,7 @@ function init() {
     PopUp_addCloseListener(function(id) {
          $(".panel#"+id).removeClass("pinned").removeClass("panel-primary").addClass("panel-default");
     });
+    PopUp_init();
 } 
 
 function selectAgenda(agendaAnchor)

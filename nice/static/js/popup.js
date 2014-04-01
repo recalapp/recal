@@ -2,6 +2,17 @@
 var PopUp_closeListeners = [];
 var PopUp_freedSpace = [];
 var PopUp_space = 0;
+var POPUP_INIT = false;
+
+function PopUp_init()
+{
+    if (POPUP_INIT)
+        return;
+    POPUP_INIT = true;
+    topPos = parseInt($(".navbar").css("height")) + parseInt($(".navbar").css("margin-top"));
+    height = window.innerHeight - topPos + 300;
+    $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
+}
 
 function PopUp_getMainPopUp(firstDrag)
 {
@@ -35,7 +46,7 @@ function PopUp_insertPopUp(firstDrag, isMain)
 {
     $("body").append('<div id="popup-main123" class="popup-container popup"><div class="panel panel-default panel-clipped"><div class="panel-heading panel-heading-handle"><h3 class="panel-title"><span class="popup-title">title</span><a href="" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl hide"><span class="glyphicon glyphicon-remove"></span></a></h3></div><div class="panel-body panel-body-scroll"><p>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p><p>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p><p>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p></div></div></div>');
     var popUp = $("#popup-main123");
-    popUp.draggable({handle:'.panel > .panel-heading', containment:".tab-content", scroll: false}).find(".panel").resizable({
+    popUp.draggable({handle:'.panel > .panel-heading', containment:"#content_bounds", scroll: false}).find(".panel").resizable({
         stop: function(e, ui){
             $(this).parent().css("height", $(this).css("height"));
             $(this).parent().css("width", $(this).css("width")); 
