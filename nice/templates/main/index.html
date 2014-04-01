@@ -3,8 +3,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Sample Title</title>
-        <!--<link rel="stylesheet" href="http://flip.hr/css/bootstrap.min.css">-->
+        <title>SEC - Socially Engineered Calendar</title>
         <link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
         <link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}"> 
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
@@ -27,121 +26,13 @@
 
         <div class="tab-content">
             <div class="tab-pane fade left in active container" id="agenda">
-                <div class="row">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <a href="" onclick="selectAgenda(this); return false;">
-                            <div id="1" class="panel panel-default agenda-item">
-                                <div class="panel-body">
-                                    <h4>Item 1</h4>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <a href="" onclick="selectAgenda(this); return false;">
-                            <div id="5" class="panel panel-default agenda-item">
-                                <div class="panel-body">
-                                    <h4>Item 5</h4>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <a href="" onclick="selectAgenda(this); return false;">
-                            <div id="6" class="panel panel-default agenda-item">
-                                <div class="panel-body">
-                                    <h4>Item 6</h4>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <a href="" onclick="selectAgenda(this); return false;">
-                            <div id="7" class="panel panel-default agenda-item">
-                                <div class="panel-body">
-                                    <h4>Item 7</h4>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <a href="" onclick="selectAgenda(this); return false;">
-                            <div id="8" class="panel panel-default agenda-item">
-                                <div class="panel-body">
-                                    <h4>Item 8</h4>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <a href="" onclick="selectAgenda(this); return false;">
-                            <div id="9" class="panel panel-default agenda-item">
-                                <div class="panel-body">
-                                    <h4>Item 9</h4>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <a href="" onclick="selectAgenda(this); return false;">
-                            <div id="10" class="panel panel-default agenda-item">
-                                <div class="panel-body">
-                                    <h4>Item 10</h4>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <a href="" onclick="selectAgenda(this); return false;">
-                            <div id="11" class="panel panel-default agenda-item">
-                                <div class="panel-body">
-                                    <h4>Item 11</h4>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <a href="" onclick="selectAgenda(this); return false;">
-                            <div id="12" class="panel panel-default agenda-item">
-                                <div class="panel-body">
-                                    <h4>Item 12</h4>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
+                {% include 'main/agenda.html' %}
             </div>
-            <!-- Calendar -->
+                
             <div class="tab-pane fade right container" id="calendar">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div id="calendarui"></div>
-                    </div>
-                </div>
-
+                {% include 'main/calendar.html' %}
             </div>
         </div>
-        
-        
-
-
-        <!-- individual views -->
         <!--<div id="popup-main" class="popup-container popup">
             <div class="panel panel-default panel-clipped">
                 <div class="panel-heading panel-heading-handle">
