@@ -9,21 +9,29 @@ function PopUp_init()
     if (POPUP_INIT)
         return;
     POPUP_INIT = true;
+
+    // setting bounds
     topPos = parseInt($(".navbar").css("height")) + parseInt($(".navbar").css("margin-top"));
     height = window.innerHeight - topPos + 300;
     $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
+
+    // saving/loading
+    PopUp_load();
+    $(window).bind("beforeunload", function() {
+        PopUp_save();
+    });
 }
 
-function PopUp_getMainPopUp(firstDrag)
+function PopUp_getMainPopUp()
 {
     var main = $("#popup-main");
     if (main.length > 0)
     {
         main = $("#popup-main")[0];
-        main.firstDrag = firstDrag;
+        //main.firstDrag = firstDrag;
     }
     else
-        main = PopUp_insertPopUp(firstDrag, true);
+        main = PopUp_insertPopUp(true);
     return main;
 }
 
@@ -42,7 +50,12 @@ function PopUp_setTitle(popUp, title)
     popUp.querySelector(".popup-title").innerHTML = title;
 }
 
-function PopUp_insertPopUp(firstDrag, isMain)
+function PopUp_setFirstDrag(popUp, firstDrag)
+{
+    popUp.firstDrag = firstDrag;
+}
+
+function PopUp_insertPopUp(isMain)
 {
     $("body").append('<div id="popup-main123" class="popup-container popup"><div class="panel panel-default panel-clipped"><div class="panel-heading panel-heading-handle"><h3 class="panel-title"><span class="popup-title">title</span><a href="" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl hide"><span class="glyphicon glyphicon-remove"></span></a></h3></div><div class="panel-body panel-body-scroll"><p>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p><p>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p><p>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p></div></div></div>');
     var popUp = $("#popup-main123");
@@ -55,7 +68,6 @@ function PopUp_insertPopUp(firstDrag, isMain)
     });
     popUp = popUp[0];
     $(popUp).css("height", $(popUp).find(".panel").css("height"));
-    popUp.firstDrag = firstDrag;
     popUp.id = "popup-main";
     if (isMain)
     {
@@ -146,4 +158,43 @@ function _PopUp_setBodyHeight(popUp)
     headHeight = $(popUp).find(".panel-heading").css("height");
     height = $(popUp).css("height");
     $(popUp).find(".panel-body").css("height", (parseInt(height) - parseInt(headHeight)) + "px");
+}
+function PopUp_save()
+{
+    var pos = [];
+    PopUp_map(function(popUp, isMain) {
+        var posDict = {};
+        var rect = []; // x, y, w, h
+        posDict.id = PopUp_getID(popUp);
+        rect.push($(popUp).css("left"));
+        rect.push($(popUp).css("top"));
+        rect.push($(popUp).css("width"));
+        rect.push($(popUp).css("height"));
+        posDict.frame = rect;
+        posDict.isMain = isMain;
+        posDict.hasFocus = PopUp_hasFocus(popUp);
+        pos.push(posDict);
+    });
+    var data = JSON.stringify(pos);
+    $.cookie("popup_pos", data);
+}
+function PopUp_load()
+{
+    var pos = JSON.parse($.cookie("popup_pos"));
+    $(pos).each(function(index) {
+        popUp = PopUp_insertPopUp(this.isMain);
+        $(popUp).css("left", this.frame[0]);
+        $(popUp).css("top", this.frame[1]);
+        $(popUp).css("width", this.frame[2]);
+        $(popUp).css("height", this.frame[3]);
+        _PopUp_setBodyHeight(popUp);
+        PopUp_setID(popUp, this.id);
+        PopUp_setTitle(popUp, "Item "+this.id);
+        if (this.hasFocus)
+            PopUp_giveFocus(popUp);
+    });
+}
+function PopUp_hasFocus(popUp)
+{
+    return $(popUp).find(".panel").hasClass("panel-primary");
 }

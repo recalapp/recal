@@ -8,20 +8,30 @@ function Agenda_init() {
         if (this.id == "agenda")
         {
             $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function (e){
-                $(".agenda-item").removeClass("pinned").removeClass("panel-primary").addClass("panel-default");
-                PopUp_map(function(popUp, isMain){
-                    panel = $(".agenda-item#"+PopUp_getID(popUp))[0];
-                    $(panel).addClass("panel-primary").removeClass("panel-default");
-                    if (!isMain)
-                        $(panel).addClass("pinned");
-                });
+                Agenda_loadFromPopUp();
             });
         }
     });
     PopUp_addCloseListener(function(id) {
          $(".panel#"+id).removeClass("pinned").removeClass("panel-primary").addClass("panel-default");
     });
+    Agenda_loadFromPopUp();
 } 
+
+function Agenda_loadFromPopUp()
+{
+    $(".agenda-item").removeClass("pinned").removeClass("panel-primary").addClass("panel-default");
+    PopUp_map(function(popUp, isMain){
+        panel = $(".agenda-item#"+PopUp_getID(popUp))[0];
+        $(panel).addClass("panel-primary").removeClass("panel-default");
+        if (!isMain)
+            $(panel).addClass("pinned");
+        else
+            PopUp_setFirstDrag(popUp, function() {
+                $(panel).addClass("pinned");
+            });
+    });
+}
 
 function selectAgenda(agendaAnchor)
 {
@@ -37,7 +47,7 @@ function selectAgenda(agendaAnchor)
     if (SHIFT_PRESSED)
     {
         $(panel).removeClass("panel-default").addClass("panel-primary");
-        popUp = PopUp_insertPopUp(null, false);
+        popUp = PopUp_insertPopUp(false);
         PopUp_setID(popUp, panel.id);
         PopUp_setTitle(popUp, title);
         PopUp_giveFocus(popUp);
@@ -49,7 +59,8 @@ function selectAgenda(agendaAnchor)
 
     $(panel).removeClass("panel-default").addClass("panel-primary");
 
-    var popUp = PopUp_getMainPopUp(function(){
+    var popUp = PopUp_getMainPopUp();
+    PopUp_setFirstDrag(popUp, function() {
         $(panel).addClass("pinned");
     });
     PopUp_setID(popUp, panel.id);
