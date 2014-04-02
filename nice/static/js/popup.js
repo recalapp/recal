@@ -180,6 +180,8 @@ function PopUp_save()
 }
 function PopUp_load()
 {
+    if ($.cookie("popup_pos") == null)
+        return;
     var pos = JSON.parse($.cookie("popup_pos"));
     $(pos).each(function(index) {
         popUp = PopUp_insertPopUp(this.isMain);
