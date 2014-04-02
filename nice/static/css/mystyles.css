@@ -38,3 +38,7 @@ body {
     z-index: -999;
     visibility: hidden;
 }
+
+.user_label {
+    text-align: right;
+}
