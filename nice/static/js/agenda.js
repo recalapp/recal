@@ -1,6 +1,9 @@
-$( init );
+AGENDA_INIT = false;
 
-function init() {
+function Agenda_init() {
+    if (AGENDA_INIT)
+        return;
+    AGENDA_INIT = true;
     $(".tab-pane").each(function(index){
         if (this.id == "agenda")
         {
@@ -18,7 +21,6 @@ function init() {
     PopUp_addCloseListener(function(id) {
          $(".panel#"+id).removeClass("pinned").removeClass("panel-primary").addClass("panel-default");
     });
-    PopUp_init();
 } 
 
 function selectAgenda(agendaAnchor)

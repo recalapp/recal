@@ -1,7 +1,7 @@
 CAL_INIT = false;
 
 $(document).ready(function() {
-    Cal_init();
+    //Cal_init();
 });
 
 function Cal_init() {
