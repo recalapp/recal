@@ -57,7 +57,7 @@ function PopUp_setFirstDrag(popUp, firstDrag)
 
 function PopUp_insertPopUp(isMain)
 {
-    $("body").append('<div id="popup-main123" class="popup-container popup"><div class="panel panel-default panel-clipped"><div class="panel-heading panel-heading-handle"><h3 class="panel-title"><span class="popup-title">title</span><a href="" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl hide"><span class="glyphicon glyphicon-remove"></span></a></h3></div><div class="panel-body panel-body-scroll"><p>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p><p>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p><p>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p></div></div></div>');
+    $("body").append('<div id="popup-main123" class="popup-container popup"><div class="panel panel-default panel-clipped"><div class="panel-heading panel-heading-handle"><h3 class="panel-title"><span class="popup-title">title</span><a href="#" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl hide"><span class="glyphicon glyphicon-remove"></span></a></h3></div><div class="panel-body panel-body-scroll"><h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 11, 2014 at 11:00AM</h4><input id="popup-date-form" type="text" class="form-control hide"></input><h4 id="popup-loc">CS Building</h4><p id="popup-type">Assignment</p><p id="popup-desc">The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.<br>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p></div></div></div>');
     var popUp = $("#popup-main123");
     popUp.draggable({handle:'.panel > .panel-heading', containment:"#content_bounds", scroll: false}).find(".panel").resizable({
         stop: function(e, ui){
@@ -108,7 +108,7 @@ function PopUp_insertPopUp(isMain)
 
 function PopUp_showClose(popUp)
 {
-    $(popUp).find(".hide").removeClass("hide");
+    $(popUp).find(".popup-ctrl").removeClass("hide");
 }
 
 function PopUp_close(popUp)
@@ -180,6 +180,7 @@ function PopUp_save()
 }
 function PopUp_load()
 {
+    return;
     if ($.cookie("popup_pos") == null)
         return;
     var pos = JSON.parse($.cookie("popup_pos"));
