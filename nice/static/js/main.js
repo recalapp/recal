@@ -22,7 +22,7 @@ function Nav_load()
     var index = $.cookie("nav_page");
     if (index == null)
         return;
-    $("#maintab #"+id).tab("show");
+    $("#maintab #"+NAV_ID[index]).tab("show");
     //$("#maintab li").removeClass("active");
     //$("#maintab #"+NAV_ID[index]).parent().addClass("active");
     //$(".tab-pane").removeClass("in");
