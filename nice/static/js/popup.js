@@ -230,6 +230,7 @@ function PopUp_clickedElement(element)
         $(form).find("input").bind("blur", function(){
             PopUp_clickedSaveElement(form);
         });
+
     }
 }
 
