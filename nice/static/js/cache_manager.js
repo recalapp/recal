@@ -11,7 +11,7 @@ function CacheMan_init()
 
 function _CacheMan()
 {
-    this = {cached: {}};
+    this.cached = {};
     return this;
 }
 
