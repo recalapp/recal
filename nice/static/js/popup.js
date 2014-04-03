@@ -29,7 +29,7 @@ function PopUp_init()
 
 function PopUp_insertPopUp(isMain)
 {
-    popUpHTML = Cache_load("popup-template");
+    popUpHTML = CacheMan_load("popup-template");
     $("body").append(popUpHTML);
     //$("body").load("popup-template", function() {
     //});

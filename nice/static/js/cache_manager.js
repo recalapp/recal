@@ -1,18 +1,18 @@
 var cacheManager = null;
 var CACHE_INIT = false;
 
-function Cache_init()
+function CacheMan_init()
 {
     if (CACHE_INIT)
         return;
     CACHE_INIT = true;
-    cacheManager = _CacheMan_new();
+    cacheManager = new _CacheMan();
 }
 
-function _CacheMan_new()
+function _CacheMan()
 {
-    ret = {cached: {}};
-    return ret;
+    this = {cached: {}};
+    return this;
 }
 
 function CacheMan_load(url)
