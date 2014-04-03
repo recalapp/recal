@@ -1,5 +1,5 @@
 venv
-dev.py
+settings/dev.py
 *.pyc
 staticfiles
 *.swp

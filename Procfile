@@ -1,1 +1,1 @@
-web: gunicorn nice.wsgi
+web: gunicorn nice.wsgi:application
