@@ -42,6 +42,11 @@ body {
 .user_label {
     text-align: right;
 }
+/* dangerous, modifying a built-in style */
 .form-control {
     resize: none;
+}
+/* dangerous */
+.fc-content {
+    background-color: white;
 }
