@@ -84,6 +84,10 @@ function PopUp_insertPopUp(isMain)
     maxHeight = window.innerHeight - $(".navbar").height() - 100;
     $(popUp).css("max-height", maxHeight+"px");
     _PopUp_setBodyHeight(popUp);
+
+    $(popUp).find(".withdatepicker").datepicker().on("changedate", function(ev){
+        
+    });
     return popUp;
 }
 
@@ -286,7 +290,8 @@ function PopUp_clickedElement(element)
             PopUp_clickedSaveElement(form);
         });
     }
-    
+    $(form).find("input").datepicker('show');
+
 }
 function PopUp_clickedSaveElement(form)
 {
