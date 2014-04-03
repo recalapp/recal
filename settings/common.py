@@ -61,17 +61,20 @@ ROOT_URLCONF = 'nice.urls'
 WSGI_APPLICATION = 'nice.wsgi.application'
 
 ########## DATABASE CONFIGURATION
+
+DATABASES['default'] =  dj_database_url.config()
+
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.',
+#        'NAME': '',
+#        'USER': '',
+#        'PASSWORD': '',
+#        'HOST': '',
+#        'PORT': '',
+#    }
+#}
 ########## END DATABASE CONFIGURATION
 
 # Internationalization
@@ -96,7 +99,7 @@ USE_TZ = True
 #DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
