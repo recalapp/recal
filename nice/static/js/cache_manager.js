@@ -6,10 +6,10 @@ function Cache_init()
     if (CACHE_INIT)
         return;
     CACHE_INIT = true;
-    cacheManager = cacheManager();
+    cacheManager = Cache_new();
 }
 
-function cacheManager()
+function Cache_new()
 {
     return this;
 }
