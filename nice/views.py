@@ -10,6 +10,8 @@ def index(request):
 
 def popup(request):
     return render(request, 'main/popup.html', None);
+def agenda(request):
+    return render(request, 'main/agenda.html', None);
 	
 def testview(request):
     return HttpResponse("Hello")

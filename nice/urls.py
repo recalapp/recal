@@ -12,7 +12,8 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name="index"),
-    url(r'popup-template', views.popup, name="popup"),
+    url(r'^popup-template$', views.popup, name="popup"),
+    url(r'^agenda-template$', views.agenda, name="agenda"),
     url(r'^testview', views.testview, name="testview"),
 )
 
