@@ -1,8 +1,16 @@
 // POPUP module
 var PopUp_closeListeners = [];
+var PopUp_editListeners = [];
 var PopUp_freedSpace = [];
 var PopUp_space = 0;
 var POPUP_INIT = false;
+var POPUP_EDITDICT = {
+    "popup-loc": "location",
+    "popup-title": "title",
+    "popup-date": "date",
+    "popup-type": "type",
+    "popup-desc": "description"
+}
 
 
 function PopUp_init()
@@ -254,7 +262,7 @@ function _PopUp_Form_addOnBlurListener(form, listener)
 }
 
 /***************************************************
- * Click Events
+ * Click Event Listeners
  **************************************************/
 
 function PopUp_clickedElement(element)
@@ -289,17 +297,42 @@ function PopUp_clickedSaveElement(form)
     _PopUp_hideFormForElement(form);
     var text_id = _PopUp_Form_getElementIDForForm(form);
     $(popUp).find("#"+text_id).html(nl2br(_PopUp_Form_getValue(form)));
+    PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form)); 
 }
 function PopUp_clickedClose(popUpAnchor)
 {
     popUp = popUpAnchor;
     while (!$(popUp).hasClass("popup"))
         popUp = $(popUp).parent()[0];
-    $(PopUp_closeListeners).each(function(index) {
-        this(PopUp_getID(popUp));
-    });
+    PopUp_callCloseListeners(PopUp_getID(popUp));
     PopUp_close(popUp);
 }
+
+/***************************************************
+ * Event Listeners from clients
+ **************************************************/
+
+function PopUp_addCloseListener(listener)
+{
+    PopUp_closeListeners.push(listener);
+}
+function PopUp_addEditListener(listener)
+{
+    PopUp_editListeners.push(listener);
+}
+function PopUp_callCloseListeners(id)
+{
+    $(PopUp_closeListeners).each(function(index) {
+        this(id);
+    });
+}
+function PopUp_callEditListeners(id, field, value)
+{
+    $(PopUp_editListeners).each(function(index) {
+        this(id, field, value);
+    });
+}
+
 /***************************************************
  * Miscellaneous
  **************************************************/
@@ -319,9 +352,5 @@ function PopUp_map(apply)
     $("#popup-main").each(function(index) {
         apply(this, true);
     });
-}
-function PopUp_addCloseListener(listener)
-{
-    PopUp_closeListeners.push(listener);
 }
 
