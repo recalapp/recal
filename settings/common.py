@@ -63,6 +63,9 @@ WSGI_APPLICATION = 'nice.wsgi.application'
 
 ########## DATABASE CONFIGURATION
 
+DATABASES = {
+}
+
 DATABASES['default'] =  dj_database_url.config()
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
