@@ -12,7 +12,7 @@ TEMPLATE_DEBUG = DEBUG
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'test_db',
         'USER': 'newice_admin',
         'PASSWORD': '',
