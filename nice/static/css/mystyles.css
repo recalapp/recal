@@ -42,3 +42,6 @@ body {
 .user_label {
     text-align: right;
 }
+.form-control {
+    resize: none;
+}

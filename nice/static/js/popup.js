@@ -18,7 +18,7 @@ function PopUp_init()
 
     // saving/loading
     PopUp_load();
-    $(window).bind("beforeunload", function() {
+    $(window).on("beforeunload", function() {
         PopUp_save();
     });
 }
@@ -247,9 +247,9 @@ function _PopUp_Form_getFormIDForElement(element)
 function _PopUp_Form_addOnBlurListener(form, listener)
 {
     if ($(form).find("input").length > 0)
-        $(form).find("input").bind("blur", listener);
+        $(form).find("input").on("blur", listener);
     else if ($(form).find("textarea").length > 0)
-        $(form).find("textarea").bind("blur", listener);
+        $(form).find("textarea").on("blur", listener);
 }
 
 /***************************************************
@@ -259,18 +259,25 @@ function _PopUp_Form_addOnBlurListener(form, listener)
 function PopUp_clickedElement(element)
 {
     var popUp = _PopUp_getPopUp(element);
-    // make the corresponding form visible and hide the element
-    _PopUp_showFormForElement(element);
     var form_id = _PopUp_Form_getFormIDForElement(element);
     var form = $(popUp).find("#"+form_id)[0];
+    // make the corresponding form visible and hide the element
+    if ($(form).find("textarea").length > 0)
+    {
+        height = parseInt($(element).css("height")) + 20;
+        $(form).find("textarea").css("height", height + "px");
+    }
+    _PopUp_showFormForElement(element);
     _PopUp_Form_setValue(form, element.innerHTML);
     _PopUp_Form_giveFocus(form);
-    if (!$(form).hasClass("input-group"))
+    if (!$(form).hasClass("input-group") && form.notFirstSelected != true)
     {
+        form.notFirstSelected = true;
         _PopUp_Form_addOnBlurListener(form, function(){
             PopUp_clickedSaveElement(form);
         });
     }
+    
 }
 function PopUp_clickedSaveElement(form)
 {
