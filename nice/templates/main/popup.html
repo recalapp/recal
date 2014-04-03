@@ -1,11 +1,14 @@
 <div id="popup-main123" class="popup-container popup">
     <div class="panel panel-default panel-clipped">
         <div class="panel-heading panel-heading-handle">
-            <h3 class="panel-title">
-                <span class="popup-title">title</span>
+            <h3 class="panel-title" >
+                <span class="popup-title" id="popup-title" onclick="PopUp_clickedElement(this)">title</span>
+                <div class="hide" id="popup-title-form">
+                    <input type="text" class="form-control">
+                </div>
                 <a href="#" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl hide">
                     <span class="glyphicon glyphicon-remove"></span>
-                </a>
+                </a> 
             </h3>
         </div>
         <div class="panel-body panel-body-scroll">
