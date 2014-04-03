@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-
+from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
@@ -15,3 +15,9 @@ urlpatterns = patterns('',
     url(r'popup-template', views.popup, name="popup"),
     url(r'^testview', views.testview, name="testview"),
 )
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )
