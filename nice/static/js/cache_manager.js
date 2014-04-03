@@ -11,18 +11,26 @@ function Cache_init()
 
 function Cache_new()
 {
+    this.cached = {};
     return this;
 }
 
 function Cache_load(url)
 {
-    result = $.ajax("popup-template", {
+    if (cacheManager.cached[url] == null)
+        _Cache_cacheURL(url);
+    return cacheManager.cached[url];
+}
+
+function _Cache_cacheURL(url)
+{
+    $.ajax("popup-template", {
         async: false,
         dataType: "html",
         success: function(data)
         {
-            cacheManager.ret = data;
+            cacheManager.cached[url] = data;
         }
     });
-    return cacheManager.ret;
+
 }
