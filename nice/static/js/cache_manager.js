@@ -6,13 +6,13 @@ function Cache_init()
     if (CACHE_INIT)
         return;
     CACHE_INIT = true;
-    cacheManager = new _CacheMan_new();
+    cacheManager = _CacheMan_new();
 }
 
 function _CacheMan_new()
 {
-    this = {cached: {}};
-    return this;
+    ret = {cached: {}};
+    return ret;
 }
 
 function CacheMan_load(url)
