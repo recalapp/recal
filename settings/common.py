@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
+import dj_database_url
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
