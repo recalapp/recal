@@ -4,6 +4,7 @@ var TAB_ID = ["agenda", "calendar"];
 
 function init()
 {
+    Cache_init();
     Nav_load();
     PopUp_init();
     Agenda_init();
