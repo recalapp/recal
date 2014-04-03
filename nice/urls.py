@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'test', views.index, name="index"),
+    url(r'^$', views.index, name="index"),
     url(r'popup-template', views.popup, name="popup"),
     url(r'^testview', views.testview, name="testview"),
 )
