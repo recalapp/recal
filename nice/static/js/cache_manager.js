@@ -18,7 +18,11 @@ function Cache_load(url)
 {
     result = $.ajax("popup-template", {
         async: false,
-        dataType: "html"
+        dataType: "html",
+        success: function(data)
+        {
+            cacheManager.ret = data;
+        }
     });
-    return result;
+    return cacheManager.ret;
 }
