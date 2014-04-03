@@ -7,6 +7,9 @@ from nice.models import *
 
 def index(request):
     return render(request, 'main/index.html', None)
+
+def popup(request):
+    return render(request, 'main/popup.html', None);
 	
 def testview(request):
-	return HttpResponse("Hello")
+    return HttpResponse("Hello")
