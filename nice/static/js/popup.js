@@ -29,7 +29,7 @@ function PopUp_init()
 
 function PopUp_insertPopUp(isMain)
 {
-    $("body").append('<div id="popup-main123" class="popup-container popup"><div class="panel panel-default panel-clipped"><div class="panel-heading panel-heading-handle"><h3 class="panel-title"><span class="popup-title">title</span><a href="#" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl hide"><span class="glyphicon glyphicon-remove"></span></a></h3></div><div class="panel-body panel-body-scroll"><h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 11, 2014 at 11:00AM</h4><div class="input-group hide" id="popup-date-form"><input type="text" class="form-control"><span class="input-group-btn"><button class="btn btn-success" type="button" onclick="PopUp_clickedSaveElement($(this).parent().parent()[0])"><span class="glyphicon glyphicon-ok"></span></button><button class="btn btn-danger" type="button" onclick="PopUp_clickedCancelElement($(this).parent().parent()[0])"><span class="glyphicon glyphicon-remove" ></span></button></span></div><h4 id="popup-loc" onclick="PopUp_clickedElement(this)">CS Building</h4><div class=" hide" id="popup-loc-form"><input type="text" class="form-control"></div><p id="popup-type">Assignment</p><p id="popup-desc">The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever. <br>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p></div></div></div>');
+    $("body").append('<div id="popup-main123" class="popup-container popup"><div class="panel panel-default panel-clipped"><div class="panel-heading panel-heading-handle"><h3 class="panel-title"><span class="popup-title">title</span><a href="#" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl hide"><span class="glyphicon glyphicon-remove"></span></a></h3></div><div class="panel-body panel-body-scroll"><h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 11, 2014 at 11:00AM</h4><div class="input-group hide" id="popup-date-form"><input type="text" class="form-control"></div><h4 id="popup-loc" onclick="PopUp_clickedElement(this)">CS Building</h4><div class="hide" id="popup-loc-form"><input type="text" class="form-control"></div><p id="popup-type" onclick="PopUp_clickedElement(this)">Assignment</p><div class="hide" id="popup-type-form"><input type="text" class="form-control"></div><p id="popup-desc" onclick="PopUp_clickedElement(this)">The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever. <br>The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p><div class="hide" id="popup-desc-form"><textarea type="text" class="form-control"></textarea></div></div></div></div>    ');
     var popUp = $("#popup-main123");
     popUp.draggable({handle:'.panel > .panel-heading', containment:"#content_bounds", scroll: false}).find(".panel").resizable({
         stop: function(e, ui){
@@ -214,15 +214,27 @@ function _PopUp_hideFormForElement(form)
 }
 function _PopUp_Form_getValue(form)
 {
-    return $(form).find("input")[0].value;
+    if ($(form).find("input").length > 0)
+        return $(form).find("input").val();
+    else if ($(form).find("textarea").length > 0)
+        return $(form).find("textarea").val();
 }
 function _PopUp_Form_setValue(form, newValue)
 {
-    $(form).find("input")[0].value = newValue;
+    if ($(form).find("input").length > 0)
+        $(form).find("input").val(newValue);
+    else if ($(form).find("textarea").length > 0)
+    {
+        var sanitized = br2nl(newValue);
+        $(form).find("textarea").val(sanitized);
+    }
 }
 function _PopUp_Form_giveFocus(form)
 {
-    $(form).find("input")[0].focus();
+    if ($(form).find("input").length > 0)
+        $(form).find("input")[0].focus();
+    else if ($(form).find("textarea").length > 0)
+        $(form).find("textarea")[0].focus();
 }
 function _PopUp_Form_getElementIDForForm(form)
 {
@@ -231,6 +243,13 @@ function _PopUp_Form_getElementIDForForm(form)
 function _PopUp_Form_getFormIDForElement(element)
 {
     return element.id + "-form";
+}
+function _PopUp_Form_addOnBlurListener(form, listener)
+{
+    if ($(form).find("input").length > 0)
+        $(form).find("input").bind("blur", listener);
+    else if ($(form).find("textarea").length > 0)
+        $(form).find("textarea").bind("blur", listener);
 }
 
 /***************************************************
@@ -248,20 +267,20 @@ function PopUp_clickedElement(element)
     _PopUp_Form_giveFocus(form);
     if (!$(form).hasClass("input-group"))
     {
-        $(form).find("input").bind("blur", function(){
+        _PopUp_Form_addOnBlurListener(form, function(){
             PopUp_clickedSaveElement(form);
         });
     }
 }
 function PopUp_clickedSaveElement(form)
 {
-    if (!/\S/.test($(form).find("input")[0].value))
+    if (!/\S/.test(_PopUp_Form_getValue(form)))
         return;
     var popUp = _PopUp_getPopUp(form);
     // hide the form and unhide the text
     _PopUp_hideFormForElement(form);
     var text_id = _PopUp_Form_getElementIDForForm(form);
-    $(popUp).find("#"+text_id)[0].innerHTML = _PopUp_Form_getValue(form);
+    $(popUp).find("#"+text_id).html(nl2br(_PopUp_Form_getValue(form)));
 }
 function PopUp_clickedClose(popUpAnchor)
 {
@@ -297,3 +316,4 @@ function PopUp_addCloseListener(listener)
 {
     PopUp_closeListeners.push(listener);
 }
+

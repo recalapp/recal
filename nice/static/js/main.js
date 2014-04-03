@@ -28,3 +28,12 @@ function Nav_load()
     //$(".tab-pane").removeClass("in");
     //$("#"+TAB_ID[index]).addClass("in");
 }
+
+function br2nl(text)
+{
+    return text.replace(/(\n|\r)/g, "").replace("<br>", "\n");
+}
+function nl2br(text)
+{
+    return text.replace(/(\n|\r)/g, "<br>");
+}

@@ -12,23 +12,22 @@
             <h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 11, 2014 at 11:00AM</h4>
             <div class="input-group hide" id="popup-date-form">
                 <input type="text" class="form-control">
-                <span class="input-group-btn">
-                    <button class="btn btn-success" type="button" onclick="PopUp_clickedSaveElement($(this).parent().parent()[0])"><span class="glyphicon glyphicon-ok"></span></button>
-                    <button class="btn btn-danger" type="button" onclick="PopUp_clickedCancelElement($(this).parent().parent()[0])"><span class="glyphicon glyphicon-remove" ></span></button>
-                </span>
             </div>
-
-            
             <h4 id="popup-loc" onclick="PopUp_clickedElement(this)">CS Building</h4>
             <div class="hide" id="popup-loc-form">
                 <input type="text" class="form-control">
             </div>
-
-            <p id="popup-type">Assignment</p>
+            <p id="popup-type" onclick="PopUp_clickedElement(this)">Assignment</p>
+            <div class="hide" id="popup-type-form">
+                <input type="text" class="form-control">
+            </div>
             
-            <p id="popup-desc">The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.
+            <p id="popup-desc" onclick="PopUp_clickedElement(this)">The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.
             <br>
             The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p> 
+            <div class="hide" id="popup-desc-form">
+                <textarea class="form-control"></textarea>
+            </div>
         </div>
     </div>
 </div>
