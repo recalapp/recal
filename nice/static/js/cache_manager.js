@@ -11,8 +11,8 @@ function Cache_init()
 
 function Cache_new()
 {
-    this.cached = {};
-    return this;
+    ret = {cached: {}};
+    return ret;
 }
 
 function Cache_load(url)
