@@ -85,9 +85,7 @@ function PopUp_insertPopUp(isMain)
     $(popUp).css("max-height", maxHeight+"px");
     _PopUp_setBodyHeight(popUp);
 
-    $(popUp).find(".withdatepicker").datepicker().on("changedate", function(ev){
-        
-    });
+    //$(popUp).find(".withdatepicker").data("datetimepicker");
     return popUp;
 }
 
@@ -290,7 +288,12 @@ function PopUp_clickedElement(element)
             PopUp_clickedSaveElement(form);
         });
     }
-    $(form).find("input").datepicker('show');
+    //$(form).find("input").data("datetimepicker");
+    $(form).find("input").datetimepicker({
+        language: 'en',
+        pick12HourFormat: true
+    });
+    $(form).find("input").datetimepicker('show');
 
 }
 function PopUp_clickedSaveElement(form)
