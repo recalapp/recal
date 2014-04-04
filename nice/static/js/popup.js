@@ -87,10 +87,10 @@ function PopUp_insertPopUp(isMain)
     _PopUp_setBodyHeight(popUp);
 
     $(popUp).find(".withdatepicker").datetimepicker({
-        format: "dd/mm/yyyy",
+        format: "MM dd, yyyy",
         autoclose: true,
-        pickerPosition:"bottom-left",
-        minView: 2
+        minView: 2,
+        maxView: 3
     });
     return popUp;
 }
