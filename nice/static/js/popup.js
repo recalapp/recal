@@ -87,7 +87,10 @@ function PopUp_insertPopUp(isMain)
     _PopUp_setBodyHeight(popUp);
 
     $(popUp).find(".withdatepicker").datetimepicker({
-        pickTime: false,
+        format: "dd/mm/yyyy",
+        autoclose: true,
+        pickerPosition:"bottom-left",
+        minView: 2
     });
     return popUp;
 }
@@ -260,7 +263,9 @@ function _PopUp_Form_getFormIDForElement(element)
 }
 function _PopUp_Form_addOnBlurListener(form, listener)
 {
-    if ($(form).find("input").length > 0)
+    if ($(form).find(".withdatepicker").length > 0)
+        $(form).find(".withdatepicker").datetimepicker().on("hide", listener);
+    else if ($(form).find("input").length > 0)
         $(form).find("input").on("blur", listener);
     else if ($(form).find("textarea").length > 0)
         $(form).find("textarea").on("blur", listener);
