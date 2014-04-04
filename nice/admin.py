@@ -4,6 +4,10 @@ from django.contrib import admin
 from nice.models import *
 
 admin.site.register(Event)
+admin.site.register(Event_Group)
+admin.site.register(Event_Group_Revision)
+admin.site.register(Event_Revision)
+admin.site.register(UserProfile)
 
 # Define an inline admin descriptor for UserProfile model
 # which acts a bit like a singleton -- see https://docs.djangoproject.com/en/1.6/topics/auth/customizing/
