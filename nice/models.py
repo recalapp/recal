@@ -38,9 +38,11 @@ class Event_Group_Revision(models.Model):
 class Event(models.Model):
     # relationships
     group = models.ForeignKey(Event_Group)
-    #best_revision = models.ForeignKey(Event_Revision, rel_class=models.OneToOneRel)
+    best_revision = models.OneToOneField('Event_Revision')
     
 class Event_Revision(models.Model):
+	# constants
+		
     TYPE_ASSIGNMENT = "AS"
     TYPE_EXAM = "EX"
     TYPE_LAB = "LA"
@@ -69,7 +71,7 @@ class Event_Revision(models.Model):
     event_location = models.CharField(max_length=100)
     # TODO modified_user = 
     modified_time = models.DateTimeField()
-    approved = models.BooleanField(default=True) # TODO change default value
+    approved = models.BooleanField(default=True) # TODO: change default value
 
 	
 
@@ -80,3 +82,5 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
 	# put user profile fields here
     netid = models.CharField(max_length=30)
+    name = models.CharField(max_length=100)
+    lastActivityTime = models.DateTimeField() 	# last seen time
