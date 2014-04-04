@@ -28,6 +28,7 @@ function PopUp_init()
     PopUp_load();
     $(window).on("beforeunload", function() {
         PopUp_save();
+        //$(".withdatepicker").data("DateTimePicker").hide();
     });
 }
 
@@ -85,7 +86,9 @@ function PopUp_insertPopUp(isMain)
     $(popUp).css("max-height", maxHeight+"px");
     _PopUp_setBodyHeight(popUp);
 
-    //$(popUp).find(".withdatepicker").data("datetimepicker");
+    $(popUp).find(".withdatepicker").datetimepicker({
+        pickTime: false,
+    });
     return popUp;
 }
 
@@ -289,12 +292,7 @@ function PopUp_clickedElement(element)
         });
     }
     //$(form).find("input").data("datetimepicker");
-    $(form).find("input").datetimepicker({
-        language: 'en',
-        pick12HourFormat: true
-    });
-    $(form).find("input").datetimepicker('show');
-
+    //$(form).find("input").datetimepicker();
 }
 function PopUp_clickedSaveElement(form)
 {
