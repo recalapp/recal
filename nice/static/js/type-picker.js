@@ -23,18 +23,22 @@ function TP_clickedType(button)
     $(button).parent().find("button").not(this).addClass("btn-default").removeClass("btn-primary");
     $(button).addClass("btn-primary").removeClass("btn-default");
     if (TP_selectListener)
-        TP_selectListener($(button).parent()[0], TP_MAP_INVERSE[button.id]);
+        TP_selectListener($(button).parent()[0], toTitleCase(TP_MAP_INVERSE[button.id]));
 }
 function TP_select(tp, type)
 {
-    if (type.toLowerCase() in TP_MAP)
+    $(tp).find("button").addClass("btn-default").removeClass("btn-primary");
+    if (TP_validateType(type))
     {
         id = TP_MAP[type.toLowerCase()];
-        $(tp).find("button").not("#"+id).addClass("btn-default").removeClass("btn-primary");
         $(tp).find("#"+id).addClass("btn-primary").removeClass("btn-default");
     }
 }
 function TP_setSelectListener(listener)
 {
     TP_selectListener = listener;
+}
+function TP_validateType(type)
+{
+    return type.toLowerCase() in TP_MAP;
 }

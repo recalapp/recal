@@ -38,3 +38,11 @@ function nl2br(text)
 {
     return text.replace(/(\n|\r)/g, "<br>");
 }
+
+/**
+ * Code taken from Stackoverflow, http://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript/196991#196991
+ */
+function toTitleCase(str)
+{
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
