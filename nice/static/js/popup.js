@@ -87,10 +87,21 @@ function PopUp_insertPopUp(isMain)
     _PopUp_setBodyHeight(popUp);
 
     $(popUp).find(".withdatepicker").datetimepicker({
-        format: "MM dd, yyyy",
+        format: "M d, yyyy",
         autoclose: true,
         minView: 2,
         maxView: 3
+    });
+    $(popUp).find(".withtimepicker").datetimepicker({
+        format: "H:ii P",
+        formatViewType: "time",
+        autoclose: true,
+        minView: 0,
+        maxView: 1,
+        startView: 1,
+        linkField: "withdatepicker",
+        linkFormat: "yyyy-mm-dd",
+        showMeridian: true
     });
     return popUp;
 }
@@ -265,6 +276,8 @@ function _PopUp_Form_addOnBlurListener(form, listener)
 {
     if ($(form).find(".withdatepicker").length > 0)
         $(form).find(".withdatepicker").datetimepicker().on("hide", listener);
+    else if ($(form).find(".withtimepicker").length > 0)
+        $(form).find(".withtimepicker").datetimepicker().on("hide", listener);
     else if ($(form).find("input").length > 0)
         $(form).find("input").on("blur", listener);
     else if ($(form).find("textarea").length > 0)
