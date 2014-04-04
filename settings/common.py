@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'south',
+    'cas',
 	'nice'
 )
 
@@ -56,6 +57,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cas.middleware.CASMiddleware',
 )
 
 ROOT_URLCONF = 'nice.urls'
@@ -81,6 +83,19 @@ DATABASES['default'] =  dj_database_url.config()
 #    }
 #}
 ########## END DATABASE CONFIGURATION
+
+########## START AUTHENTICATION CONFIGURATION
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'cas.backends.CASBackend',
+)
+
+CAS_SERVER_URL = 'https://fed.princeton.edu/cas/'
+
+CAS_REDIRECT_URL = '/'
+
+########## END AUTHENTICATION CONFIGURATION
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/

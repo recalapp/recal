@@ -3,13 +3,11 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
+import nice, cas
 from nice import views
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'nice.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
+    url(r'^login/$', cas.views.login, name='cas_login'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name="index"),
     url(r'^popup-template$', views.popup, name="popup"),
