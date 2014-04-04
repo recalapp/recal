@@ -38,7 +38,7 @@ class Event_Group_Revision(models.Model):
 class Event(models.Model):
     # relationships
     group = models.ForeignKey(Event_Group)
-    best_revision = models.OneToOneField('Event_Revision')
+    #best_revision = models.OneToOneField('Event_Revision')
     
 class Event_Revision(models.Model):
 	# constants
