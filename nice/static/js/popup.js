@@ -98,10 +98,11 @@ function PopUp_insertPopUp(isMain)
         autoclose: true,
         minView: 0,
         maxView: 1,
-        startView: 1,
+        startView: 0,
         linkField: "withdatepicker",
         linkFormat: "yyyy-mm-dd",
-        showMeridian: true
+        showMeridian: true,
+        minuteStep: 10
     });
     var htmlcontent = CacheMan_load("type-picker")
     $(popUp).find(".withcustompicker").popover({
