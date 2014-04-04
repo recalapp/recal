@@ -13,9 +13,11 @@ def index(request):
     return render(request, 'main/index.html', None)
 
 def popup(request):
-    return render(request, 'main/popup.html', None);
+    return render(request, 'main/popup.html', None)
 def agenda(request):
-    return render(request, 'main/agenda.html', None);
+    return render(request, 'main/agenda.html', None)
+def typepicker(request):
+    return render(request, 'main/type-picker.html', None)
 	
 def testview(request):
     return HttpResponse("Hello")

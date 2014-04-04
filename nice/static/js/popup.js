@@ -103,6 +103,22 @@ function PopUp_insertPopUp(isMain)
         linkFormat: "yyyy-mm-dd",
         showMeridian: true
     });
+    var htmlcontent = CacheMan_load("type-picker")
+    $(popUp).find(".withcustompicker").popover({
+        placement: "bottom",
+        trigger: "focus",
+        html: true,
+        content: htmlcontent,
+        container: '.popup'
+    }).on("shown.bs.popover", function(){
+        var type = $(this).val();
+        var tp = $(".type-picker")[0];
+        TP_select(tp, type);
+        var inputField = this;
+        TP_setSelectListener(function(tp, selectedType){
+            $(inputField).val(selectedType);
+        });
+    });
     return popUp;
 }
 
@@ -278,6 +294,8 @@ function _PopUp_Form_addOnBlurListener(form, listener)
         $(form).find(".withdatepicker").datetimepicker().on("hide", listener);
     else if ($(form).find(".withtimepicker").length > 0)
         $(form).find(".withtimepicker").datetimepicker().on("hide", listener);
+    else if ($(form).find(".withcustompicker").length > 0)
+        $(form).find(".withcustompicker").on("hidden.bs.popover", listener); // must be hidden, not hide, otherwise timing doesn't work out
     else if ($(form).find("input").length > 0)
         $(form).find("input").on("blur", listener);
     else if ($(form).find("textarea").length > 0)

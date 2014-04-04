@@ -24,7 +24,7 @@ function CacheMan_load(url)
 
 function _CacheMan_cacheURL(url)
 {
-    $.ajax("popup-template", {
+    $.ajax(url, {
         async: false,
         dataType: "html",
         success: function(data){
