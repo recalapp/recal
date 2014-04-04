@@ -2,7 +2,7 @@
     <div class="panel panel-default panel-clipped">
         <div class="panel-heading panel-heading-handle">
             <h3 class="panel-title" >
-                <span class="popup-title" id="popup-title" onclick="PopUp_clickedElement(this)">title</span>
+                <span class="popup-title" id="popup-title" onclick="PopUp_clickedElement(this)">Insert Title Here</span>
                 <div class="hide" id="popup-title-form">
                     <input type="text" class="form-control">
                 </div>
@@ -12,13 +12,20 @@
             </h3>
         </div>
         <div class="panel-body panel-body-scroll">
-            <h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 1, 2014</h4>
-            <div class="hide" id="popup-date-form">
-                <input type="text" class="form-control withdatepicker">
-            </div>
-            <h4 id="popup-time" onclick="PopUp_clickedElement(this)">2:00 PM</h4>
-            <div class="hide" id="popup-time-form">
-                <input type="text" class="form-control withtimepicker" data-date-format="MM/DD/YYYY">
+            
+            <div class="row">
+                <div class="col-xs-6">
+                    <h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 1, 2014</h4>
+                    <div class="hide" id="popup-date-form">
+                        <input type="text" class="form-control withdatepicker">
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <h4 id="popup-time" onclick="PopUp_clickedElement(this)">2:00 PM</h4>
+                    <div class="hide" id="popup-time-form">
+                        <input type="text" class="form-control withtimepicker" data-date-format="MM/DD/YYYY">
+                    </div>
+                </div>
             </div>
             <h4 id="popup-loc" onclick="PopUp_clickedElement(this)">CS Building</h4>
             <div class="hide" id="popup-loc-form">
@@ -28,10 +35,8 @@
             <div class="hide" id="popup-type-form">
                 <input type="text" class="form-control withcustompicker">
             </div>
-            
-            <p id="popup-desc" onclick="PopUp_clickedElement(this)">The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.
-            <br>
-            The content of the selected agenda will go here. This popup by default will change according to which agenda is selected. However, if the user drags this popup, it will stay forever.</p> 
+            <p id="popup-desc" onclick="PopUp_clickedElement(this)">Add description here. <br> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.            
+            </p> 
             <div class="hide" id="popup-desc-form">
                 <textarea class="form-control"></textarea>
             </div>
