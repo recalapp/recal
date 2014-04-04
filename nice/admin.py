@@ -5,10 +5,12 @@ from nice.models import *
 
 admin.site.register(Event)
 
-from nice.models import UserProfile
-
 # Define an inline admin descriptor for UserProfile model
-# which acts a bit like a singleton
+# which acts a bit like a singleton -- see https://docs.djangoproject.com/en/1.6/topics/auth/customizing/
+
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
+
 class ProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
