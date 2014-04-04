@@ -70,7 +70,7 @@
 
 		this._attachEvents();
 
-		this.formatViewType = "datetime";
+		this.formatViewType = "datetime"; // DEFAULT = datetime
 		if ('formatViewType' in options) {
 			this.formatViewType = options.formatViewType;
 		} else if ('formatViewType' in this.element.data()) {
@@ -519,7 +519,7 @@
 				currentDate = (new UTCDate(this.date.getUTCFullYear(), this.date.getUTCMonth(), this.date.getUTCDate())).valueOf(),
 				today = new Date();
 			this.picker.find('.datetimepicker-days thead th:eq(1)')
-				.text(dates[this.language].months[month] + ' ' + year);
+				.text(dates[this.language].months[month] + ' ' + year); // NOTE this changes the header for month view
 			if (this.formatViewType == "time") {
 				var hourConverted = hours % 12 ? hours % 12 : 12;
 				var hoursDisplay = (hourConverted < 10 ? '0' : '') + hourConverted;
