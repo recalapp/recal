@@ -15,7 +15,7 @@ class Section(models.Model):
 class Event_Group(models.Model):
     # relationships
     section = models.ForeignKey(Section)
-    best_revision = models.OneToOneField('Event_Group_Revision')
+    #best_revision = models.OneToOneField('Event_Group_Revision')
     
 class Event_Group_Revision(models.Model):
 	# relationships
