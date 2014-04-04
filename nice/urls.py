@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^popup-template$', views.popup, name="popup"),
     url(r'^agenda-template$', views.agenda, name="agenda"),
     url(r'^testview', views.testview, name="testview"),
+    url(r'^type-picker$', views.typepicker, name="type-picker")
 )
 
 if settings.DEBUG:

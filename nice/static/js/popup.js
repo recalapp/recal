@@ -103,6 +103,26 @@ function PopUp_insertPopUp(isMain)
         linkFormat: "yyyy-mm-dd",
         showMeridian: true
     });
+    var htmlcontent = CacheMan_load("type-picker")
+    $(popUp).find(".withcustompicker").popover({
+        placement: "left",
+        trigger: "focus",
+        html: true,
+        content: htmlcontent,
+        container: 'body'
+    })
+    var input = $(popUp).find(".withcustompicker")[0];
+    $(input).on("shown.bs.popover", function(){
+        var tp = $("#type-picker123")[0];
+        tp.id = "";
+        this.tp = tp;
+        var type = $(this).val();
+        TP_select(this.tp, type);
+        var inputField = this;
+        TP_setSelectListener(function(tp, selectedType){
+            $(inputField).val(selectedType);
+        });
+    });
     return popUp;
 }
 
@@ -278,6 +298,8 @@ function _PopUp_Form_addOnBlurListener(form, listener)
         $(form).find(".withdatepicker").datetimepicker().on("hide", listener);
     else if ($(form).find(".withtimepicker").length > 0)
         $(form).find(".withtimepicker").datetimepicker().on("hide", listener);
+    else if ($(form).find(".withcustompicker").length > 0)
+        $(form).find(".withcustompicker").on("hidden.bs.popover", listener); // must be hidden, not hide, otherwise timing doesn't work out
     else if ($(form).find("input").length > 0)
         $(form).find("input").on("blur", listener);
     else if ($(form).find("textarea").length > 0)
@@ -308,6 +330,13 @@ function PopUp_clickedElement(element)
         _PopUp_Form_addOnBlurListener(form, function(){
             PopUp_clickedSaveElement(form);
         });
+        if ($(form).find("input").hasClass("withcustompicker"))
+        {
+            $(form).find("input").on("change keyup paste", function(){
+                var tp = $(form).find("input")[0].tp;
+                TP_select(tp, $(form).find("input").val());
+            });
+        }
     }
     //$(form).find("input").data("datetimepicker");
     //$(form).find("input").datetimepicker();
@@ -315,7 +344,15 @@ function PopUp_clickedElement(element)
 function PopUp_clickedSaveElement(form)
 {
     if (!/\S/.test(_PopUp_Form_getValue(form)))
+    {
+        _PopUp_Form_giveFocus(form);
         return;
+    }
+    if ($(form).find("input").hasClass("withcustompicker") && !TP_validateType(_PopUp_Form_getValue(form)))
+    {
+        _PopUp_Form_giveFocus(form);
+        return;
+    }
     var popUp = _PopUp_getPopUp(form);
     // hide the form and unhide the text
     _PopUp_hideFormForElement(form);
