@@ -18,15 +18,23 @@ class Event_Group(models.Model):
     best_revision = models.OneToOneField('Event_Group_Revision')
     
 class Event_Group_Revision(models.Model):
-    # relationships
-    event_group = models.ForeignKey(Event_Group)
+	# relationships
+	event_group = models.ForeignKey(Event_Group)
 
-    # fields
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    recurrence_days = models.
-    # TODO add recurrence field
-    
+	# main fields
+	start_date = models.DateTimeField()
+	end_date = models.DateTimeField()
+
+	# recurrence fields
+	'''
+	* How recurrence fields work, for our prototype:
+	* Days of the week are 0-6, with 0 = sunday and 6 = saturday
+	* Field recurrenceDays is a list of integers: the digits of the days when the event reoccurs. This list is JSON serialized to be stored in the database.
+	* Field reccurenceInterval = 1 or 2, i.e. repeat every week or repeat every other week
+	'''
+	recurrence_days = models.CharField(max_length=300, default=None, blank=True, null=True) # default value is None; blank=True means that you can pass in None; null=True tells Postgres to accept null values.
+	recurrence_interval = models.IntegerField(default=None, blank=True, null=True)
+
 class Event(models.Model):
     # relationships
     group = models.ForeignKey(Event_Group)
@@ -62,3 +70,13 @@ class Event_Revision(models.Model):
     # TODO modified_user = 
     modified_time = models.DateTimeField()
     approved = models.BooleanField(default=True) # TODO change default value
+
+	
+
+# Extend django.contrib.auth User table with custom user profile information.
+
+from django.contrib.auth.models import User
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+	# put user profile fields here
+    netid = models.CharField(max_length=30)
