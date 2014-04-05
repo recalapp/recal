@@ -14,7 +14,7 @@
 
 body {
     
-    background-color: #f5faff;
+    /*background-color: #f5faff;*/
     padding-top: 90px;
 }
 
@@ -51,6 +51,6 @@ body {
 .fc-content {
     background-color: white;
 }
-.nav > .active > a {
+/*.nav > .active > a {
     background-color: #f5faff !important;
-}
+}*/
