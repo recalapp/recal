@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
 from nice.models import *
+from nice.queries import *
 
 # Views go here.
 
