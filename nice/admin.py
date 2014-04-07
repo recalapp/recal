@@ -12,6 +12,7 @@ admin.site.register(Course)
 admin.site.register(Section)
 admin.site.register(Event_Visibility)
 admin.site.register(User_Section_Table)
+admin.site.register(Semester)
 
 # Define an inline admin descriptor for UserProfile model
 # which acts a bit like a singleton -- see https://docs.djangoproject.com/en/1.6/topics/auth/customizing/
