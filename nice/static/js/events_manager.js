@@ -102,3 +102,20 @@ function EventsMan_pushToServer()
     var newSyncedTime = new Date().getTime(); // only set this if successful
     // TODO set addedcount to 0
 }
+
+/***************************************************
+ * Event Listeners
+ **************************************************/
+
+function EventsMan_clickAddEvent()
+{
+    var popUp = PopUp_getMainPopUp();
+    if (PopUp_getID(popUp))
+        PopUp_callCloseListeners(PopUp_getID(popUp));
+
+    // set new ID
+    eventsManager.addedCount++;
+    PopUp_setID(popUp, eventsManager.addedCount * -1);
+    // request server for new id
+    PopUp_giveFocus(popUp);
+}
