@@ -4,8 +4,13 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django.utils import timezone
 
 from nice.models import *
+from nice import queries
+from datetime import datetime
+
+import json
 
 # Views go here.
 
@@ -23,6 +28,8 @@ def index(request):
         return redirect('edit_profile')
     return render(request, 'main/index.html', None)
     
+
+# loading templates
 
 def popup(request):
     return render(request, 'main/popup.html', None)
@@ -72,3 +79,11 @@ def user_profile_filled_out(user):
         profile = User_Profile.objects.create(user=user, lastActivityTime=get_current_utc())
         return False # just created, but not filled out yet
         
+# for AJAX
+def events_json(request, netid, start_date=None, end_date=None):
+    if start_date:
+        start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
+    if end_date:
+        end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
+    events = queries.get_events(netid, start_date, end_date)
+    return HttpResponse(json.dumps(events), mimetype='application/javascript')
