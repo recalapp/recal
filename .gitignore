@@ -4,3 +4,4 @@ nice/static/bower_components/bootstrap/node_modules/*
 *.pyc
 staticfiles
 *.swp
+nice/migrations/*
