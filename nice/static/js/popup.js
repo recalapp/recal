@@ -56,7 +56,8 @@ function PopUp_insertPopUp(isMain)
         popUp.ondrag = function(){
             popUp.id = "";
             PopUp_showClose(popUp);
-            this.firstDrag();
+            if (this.firstDrag)
+                this.firstDrag();
             this.ondrag = null;
         };
     }
@@ -142,7 +143,6 @@ function PopUp_getMainPopUp()
     if (main.length > 0)
     {
         main = $("#popup-main")[0];
-        //main.firstDrag = firstDrag;
     }
     else
         main = PopUp_insertPopUp(true);
@@ -366,7 +366,8 @@ function PopUp_clickedClose(popUpAnchor)
     popUp = popUpAnchor;
     while (!$(popUp).hasClass("popup"))
         popUp = $(popUp).parent()[0];
-    PopUp_callCloseListeners(PopUp_getID(popUp));
+    if (PopUp_getID(popUp))
+        PopUp_callCloseListeners(PopUp_getID(popUp));
     PopUp_close(popUp);
 }
 

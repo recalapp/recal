@@ -40,7 +40,7 @@ body {
     visibility: hidden;
 }
 
-.user_label {
+.nav_controls {
     text-align: right;
 }
 /* dangerous, modifying a built-in style */
@@ -51,6 +51,7 @@ body {
 .fc-content {
     background-color: white;
 }
-/*.nav > .active > a {
-    background-color: #f5faff !important;
-}*/
+.user_label>h2{
+    margin-top:0;
+    margin-bottom:10px;
+}
