@@ -140,16 +140,23 @@ class Event_Revision(models.Model):
 # Extend django.contrib.auth User table with custom user profile information.
 
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 class User_Profile(models.Model): #EDIT renamed from UserProfile for consistency
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='profile', unique=False)
 	# put user profile fields here
-    netid = models.CharField(max_length=30)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, null=True, blank=True)
     lastActivityTime = models.DateTimeField() 	# last seen time
-    events = models.ManyToManyField(Event, through='Event_Visibility') #TODO this assumes that the relationship exist for all events
-    sections = models.ManyToManyField(Section, through=User_Section_Table)
+    events = models.ManyToManyField(Event, through='Event_Visibility', blank=True,null=True) #TODO this assumes that the relationship exist for all events
+    sections = models.ManyToManyField(Section, through='User_Section_Table', blank=True,null=True)
     def __unicode__(self):
-        return self.netid
+        return "%s's profile" % self.user.username
+		
+# create user profile as soon as a user is added
+def make_blank_profile(sender, instance, created, **kwargs):  
+    # see http://stackoverflow.com/a/965883/130164
+    if created:  
+       profile, created = User_Profile.objects.get_or_create(user=instance,lastActivityTime=get_current_utc())  
+post_save.connect(make_blank_profile, sender=User)
 
 class Event_Visibility(models.Model):
     # relationships
@@ -165,3 +172,23 @@ class Event_Visibility(models.Model):
             verb = 'does not see'
         return unicode(self.user) + ' ' + verb + ' ' + unicode(self.event)
 
+
+### HELPER METHODS        
+        
+def get_current_utc():
+    import datetime
+    from django.utils.timezone import utc
+    return datetime.datetime.utcnow().replace(tzinfo=utc)
+    
+    
+def seed_db_with_data():
+    sem = Semester(...)
+    sem.save()
+    c1 = Course(...)
+    c1.save()
+    # TODO: set up a post-save handler for Course that auto-creates the AllStudents section.
+    c2 = Course(...)
+    c2.save()
+    extra_section = c2.sections.create(...)
+    
+    

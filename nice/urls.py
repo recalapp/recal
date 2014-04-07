@@ -8,12 +8,16 @@ from nice import views
 
 urlpatterns = patterns('',
     url(r'^login/$', cas.views.login, name='cas_login'),
+	url(r'^logout/$', cas.views.logout, name='cas_logout'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name="index"),
     url(r'^popup-template$', views.popup, name="popup"),
     url(r'^agenda-template$', views.agenda, name="agenda"),
-    url(r'^testview', views.testview, name="testview"),
-    url(r'^type-picker$', views.typepicker, name="type-picker")
+    url(r'^profile', views.edit_profile, name="edit_profile"),
+    url(r'^type-picker$', views.typepicker, name="type-picker"),
+    # a few debug tricks
+    url(r'^debug/su_login$', views.cas_bypass, name="cas_bypass"),
+    url(r'^debug/seed_data$', views.seed_data, name="seed_data"),
 )
 
 if settings.DEBUG:
