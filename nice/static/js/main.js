@@ -1,6 +1,8 @@
 $(init)
 var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
+pinnedIDs = new Set();
+mainID = null;
 
 function init()
 {
@@ -33,7 +35,7 @@ function Nav_load()
 
 function br2nl(text)
 {
-    return text.replace(/(\n|\r)/g, "").replace("<br>", "\n");
+    return text.replace(/(\n|\r)/g, "").replace(/<br>/g, "\n"); // g = replace all occurences
 }
 function nl2br(text)
 {
@@ -46,4 +48,22 @@ function nl2br(text)
 function toTitleCase(str)
 {
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
+// pinned and main
+function UI_pin(id)
+{
+    pinnedIDs.add(id);
+}
+function UI_isPinned(id)
+{
+    return id in pinnedIDs;
+}
+function UI_unpin(id)
+{
+    pinnedIDs.remove(id);
+}
+function UI_isMain(id)
+{
+    return mainID == id;
 }

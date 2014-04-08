@@ -203,7 +203,7 @@ function PopUp_setType(popUp, typeKey)
 function PopUp_setDate(popUp, unixTime)
 {
     var date = moment.unix(unixTime);
-    $(popUp).find('#popup-date').text(date.format("MMMM D, YYYY Z"));
+    $(popUp).find('#popup-date').text(date.format("MMMM D, YYYY"));
 }
 function PopUp_setStartTime(popUp, unixTime)
 {
