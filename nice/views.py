@@ -44,7 +44,8 @@ def typepicker(request):
 def edit_profile(request):
     user_profile_filled_out(request.user) # create profile if not already create
     profile = request.user.profile
-    return HttpResponse(str(profile)) # TODO: return name and sections you're enrolled in.
+    #return HttpResponse(str(profile)) # TODO: return name and sections you're enrolled in.
+    return render(request, 'main/edit-profile.html', {all_courses:, my_courses:})
 
 @require_POST
 def make_profile_changes(request):
