@@ -8,8 +8,9 @@ function Agenda_init() {
     if (AGENDA_INIT)
         return;
     AGENDA_INIT = true;
-
-
+    EventsMan_addUpdateListener(function(){
+        Agenda_reload();
+    });
 
 
     $(".tab-pane").each(function(index){
@@ -25,6 +26,14 @@ function Agenda_init() {
     });
     Agenda_loadFromPopUp();
 } 
+
+function Agenda_reload()
+{
+    var startDate = new Date();
+    var endDate = new Date();
+    endDate.setDate(startDate.getDate() + 30);
+    var eventIDs = EventsMan_getEventIDForRange(startDate.getTime() / 1000, endDate.getTime() / 1000);
+}
 
 function Agenda_loadFromPopUp()
 {

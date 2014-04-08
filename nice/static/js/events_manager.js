@@ -47,16 +47,16 @@ function EventsMan_getEventByID(id)
 
 function EventsMan_getEventIDForRange(start, end)
 {
-    var index = 0;
-    while (eventsManager.order[i].start < start)
+    var i = 0;
+    while (i < eventsManager.order.length && eventsManager.order[i].event_start < start)
         i++;
     var iStart = i;
-    while (eventsManager.order[i].start <= end)
+    while (i < eventsManager.order.length && eventsManager.order[i].event_start <= end)
         i++;
-    var iEnd = ++i; // slice method is exclusive on the right end
+    var iEnd = Math.min(++i, eventsManager.order.length); // slice method is exclusive on the right end
     var ret = eventsManager.order.slice(iStart, iEnd);
     for (var i = 0; i < ret.length; i++)
-        ret[i] = ret[i].id;
+        ret[i] = ret[i].event_id;
     return ret;
 }
 function EventsMan_updateEventForID(id, eventDict)
@@ -109,7 +109,8 @@ function EventsMan_pullFromServer()
     $.ajax('get/' + USER_NETID, {
         dataType: 'json',
         success: function(data){
-            var eventsArray = JSON.parse(data);
+            //var eventsArray = JSON.parse(data);
+            var eventsArray = data;
             eventsManager.events = {};
             eventsManager.order = [];
             for (var i = 0; i < eventsArray.length; i++)
@@ -118,6 +119,9 @@ function EventsMan_pullFromServer()
                 eventsManager.events[eventsDict.event_id] = eventsDict;
                 eventsManager.order.push({'event_start': eventsDict.event_start, 'event_id': eventsDict.event_id});
             }
+            eventsManager.order.sort(function(a,b){
+                return parseInt(a.event_start) - parseInt(b.event_start);
+            });
             eventsManager.addedCount = 0;
             eventsManager.lastSyncedTime = new Date().getTime();
             _EventsMan_callUpdateListeners();
