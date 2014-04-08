@@ -42,7 +42,7 @@ function _EventsMan_new()
 //}
 function EventsMan_getEventByID(id)
 {
-    return this.events[id];
+    return eventsManager.events[id];
 }
 
 function EventsMan_getEventIDForRange(start, end)

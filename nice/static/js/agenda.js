@@ -33,6 +33,15 @@ function Agenda_reload()
     var endDate = new Date();
     endDate.setDate(startDate.getDate() + 30);
     var eventIDs = EventsMan_getEventIDForRange(startDate.getTime() / 1000, endDate.getTime() / 1000);
+    var agendaContainer = $("#agenda")
+    agendaContainer[0].innerHTML = null;
+    $.each(eventIDs, function(index) {
+        agendaContainer.append(CacheMan_load("agenda-template"));
+        var agenda = agendaContainer.find("#agenda123")[0];
+        agenda.id = this;
+        var eventDict = EventsMan_getEventByID(this);
+        $(agenda).find(".panel-body").find('h4').text(eventDict.event_title);
+    });
 }
 
 function Agenda_loadFromPopUp()
