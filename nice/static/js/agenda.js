@@ -8,6 +8,10 @@ function Agenda_init() {
     if (AGENDA_INIT)
         return;
     AGENDA_INIT = true;
+
+
+
+
     $(".tab-pane").each(function(index){
         if (this.id == "agenda")
         {

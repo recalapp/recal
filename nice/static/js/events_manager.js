@@ -106,15 +106,17 @@ function EventsMan_pushToServer()
 }
 function EventsMan_pullFromServer()
 {
-    $.ajax(USER_NETID, {
-        //dataType: 'json',
+    $.ajax('get/' + USER_NETID, {
+        dataType: 'json',
         success: function(data){
             var eventsArray = JSON.parse(data);
             eventsManager.events = {};
+            eventsManager.order = [];
             for (var i = 0; i < eventsArray.length; i++)
             {
                 var eventsDict = eventsArray[i];
                 eventsManager.events[eventsDict.event_id] = eventsDict;
+                eventsManager.order.push({'event_start': eventsDict.event_start, 'event_id': eventsDict.event_id});
             }
             eventsManager.addedCount = 0;
             eventsManager.lastSyncedTime = new Date().getTime();

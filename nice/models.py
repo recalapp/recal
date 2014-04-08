@@ -127,7 +127,8 @@ class Event_Revision(models.Model):
     # fields
     event_title = models.CharField(max_length=100)
     event_type = models.CharField(max_length=2, choices=TYPE_CHOICES)
-    event_date = models.DateTimeField()
+    event_start = models.DateTimeField()
+    event_end = models.DateTimeField()
     event_description = models.TextField()
     event_location = models.CharField(max_length=100)
     modified_user = models.ForeignKey('User_Profile')
