@@ -24,7 +24,7 @@ def __construct_event_dict(event):
         'event_id': event.id,
         'event_group_id': event.group.id,
         'event_title': rev.event_title,
-        'event_type': rev.get_event_type_display(), 
+        'event_type': rev.event_type, # pretty = get_event_type_display()
         'event_start': rev.event_start.strftime('%s'),
         'event_end': rev.event_end.strftime('%s'),
         'event_description': rev.event_description,

@@ -42,3 +42,7 @@ function TP_validateType(type)
 {
     return type.toLowerCase() in TP_MAP;
 }
+function TP_keyToText(key)
+{
+    return TP_MAP_INVERSE[key];
+}

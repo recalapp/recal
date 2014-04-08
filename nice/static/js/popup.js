@@ -1,4 +1,5 @@
 // POPUP module
+// TODO br2nl on description form
 var PopUp_closeListeners = [];
 var PopUp_editListeners = [];
 var PopUp_onRestoreListeners = [];
@@ -164,6 +165,9 @@ function PopUp_setToEventID(popUp, id)
         return;
     }
     PopUp_setTitle(popUp, eventDict.event_title);
+    PopUp_setDescription(popUp, eventDict.event_description);
+    PopUp_setLocation(popUp, eventDict.event_location);
+    PopUp_setType(popUp, eventDict.event_type)
 }
 
 function PopUp_getID(popUp)
@@ -179,6 +183,19 @@ function PopUp_setID(popUp, id)
 function PopUp_setTitle(popUp, title)
 {
     popUp.querySelector(".popup-title").innerHTML = title;
+}
+function PopUp_setDescription(popUp, desc)
+{
+    $(popUp).find("#popup-desc").html(nl2br(desc));
+}
+function PopUp_setLocation(popUp, loc)
+{
+    $(popUp).find('#popup-loc').text(loc);
+}
+function PopUp_setType(popUp, typeKey)
+{
+    var type = toTitleCase(TP_keyToText(typeKey));
+    $(popUp).find('#popup-type').text(type);
 }
 
 function PopUp_setFirstDrag(popUp, firstDrag)
@@ -218,6 +235,7 @@ function PopUp_save()
 }
 function PopUp_load()
 {
+    return;
     if ($.cookie("popup_pos") == null)
         return;
     var pos = JSON.parse($.cookie("popup_pos"));

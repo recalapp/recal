@@ -1,4 +1,6 @@
 AGENDA_INIT = false;
+Agenda_pinnedIDs = new Set_new();
+
 
 /***************************************************
  * Initialization/State Restoration
@@ -25,7 +27,7 @@ function Agenda_init() {
         Agenda_unhighlight($(".panel#"+id));
     });
     PopUp_addOnRestoreListener(function(){
-        Agenda_loadFromPopUp();
+        //Agenda_loadFromPopUp();
     });
 } 
 
@@ -43,6 +45,10 @@ function Agenda_reload()
         agenda.id = this;
         var eventDict = EventsMan_getEventByID(this);
         $(agenda).find(".panel-body").find('h4').text(eventDict.event_title);
+
+        if (Agenda_isPinned(agenda.id))
+            Agenda_highlight(panel);
+        // must now highlight main panel
     });
 }
 
@@ -50,15 +56,16 @@ function Agenda_loadFromPopUp()
 {
     Agenda_unhighlight($(".agenda-item"));
     PopUp_map(function(popUp, isMain){
-        panel = $(".agenda-item#"+PopUp_getID(popUp))[0];
-        Agenda_highlight(panel);
+        //panel = $(".agenda-item#"+PopUp_getID(popUp))[0];
+        //Agenda_highlight(panel);
         if (!isMain)
-            Agenda_pin(panel);
+            Agenda_pin(PopUp_getID(popUp));
         else
             PopUp_setFirstDrag(popUp, function() {
-                Agenda_pin(panel);
+                Agenda_pin(PopUp_getID(popUp));
             });
     });
+    //Agenda_reload();
 }
 
 /***************************************************
@@ -84,16 +91,18 @@ function selectAgenda(agendaAnchor)
         //PopUp_setID(popUp, panel.id);
         //PopUp_setTitle(popUp, title);
         PopUp_giveFocus(popUp);
-        Agenda_pin(panel);
+        Agenda_pin(panel.id);
         return;
     }
     
-    Agenda_unhighlight($(".panel-primary").not(".pinned"));
+    Agenda_unhighlight($(".panel-primary").filter(function(){
+        return !Agenda_isPinned(this.id);
+    }));
     Agenda_highlight(panel);
 
     var popUp = PopUp_getMainPopUp();
     PopUp_setFirstDrag(popUp, function() {
-        Agenda_pin(panel);
+        Agenda_pin(panel.id);
     });
     PopUp_setToEventID(popUp, panel.id);
     //PopUp_setID(popUp, panel.id);
@@ -111,13 +120,24 @@ function Agenda_highlight(agenda)
 }
 function Agenda_unhighlight(agenda)
 {
-    $(agenda).addClass("panel-default").removeClass("panel-primary").removeClass("pinned");
+    $(agenda).addClass("panel-default").removeClass("panel-primary").each(function(index) {
+        Agenda_unpin(this.id);
+    });
 }
 function Agenda_isHighlighted(agenda)
 {
     return $(agenda).hasClass("panel-primary");
 }
-function Agenda_pin(agenda)
+function Agenda_pin(id)
 {
-    $(agenda).addClass("pinned");
+    Agenda_pinnedIDs.add(id);
+    //$(agenda).addClass("pinned");
+}
+function Agenda_isPinned(id)
+{
+    return id in Agenda_pinnedIDs;
+}
+function Agenda_unpin(id)
+{
+    Agenda_pinnedIDs.remove(id);
 }
