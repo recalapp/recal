@@ -1,4 +1,6 @@
 var eventsManager = null;
+var EventsMan_updateListeners = [];
+var USER_NETID = 'naphats';
 var EVENTS_INIT = false;
 
 function EventsMan_init()
@@ -7,7 +9,7 @@ function EventsMan_init()
         return;
     EVENTS_INIT = true;
     eventsManager = new _EventsMan_new();
-    // TODO should populate events manager
+    EventsMan_pullFromServer();
 }
 
 function _EventsMan_new()
@@ -28,15 +30,15 @@ function _EventsMan_new()
  **************************************************/
 
 //{
-//    id: "id",
-//    title: "title",
-//    type: "type",
-//    description: "description",
-//    start: "start unix time",
-//    end: "end unix time",
-//    loc: "location",
-//    recurring: // how??
-//    updatedTime: // from server
+//    'event_group_id': event.group.id,
+//    'event_title': rev.event_title,
+//    'event_type': rev.get_event_type_display(), 
+//    'event_date': rev.event_date.strftime('%s'),
+//    'event_description': rev.event_description,
+//    'event_location': rev.event_location,
+//    'section_id': event.group.section.id,
+//    'modified_user': rev.modified_user.netid,
+//    'modified_time': rev.modified_time.strftime('%s') 
 //}
 function EventsMan_getEventByID(id)
 {
@@ -101,6 +103,40 @@ function EventsMan_pushToServer()
     // TODO call update on server, then when done, reload the data
     var newSyncedTime = new Date().getTime(); // only set this if successful
     // TODO set addedcount to 0
+}
+function EventsMan_pullFromServer()
+{
+    $.ajax(USER_NETID, {
+        //dataType: 'json',
+        success: function(data){
+            var eventsArray = JSON.parse(data);
+            eventsManager.events = {};
+            for (var i = 0; i < eventsArray.length; i++)
+            {
+                var eventsDict = eventsArray[i];
+                eventsManager.events[eventsDict.event_id] = eventsDict;
+            }
+            eventsManager.addedCount = 0;
+            eventsManager.lastSyncedTime = new Date().getTime();
+            _EventsMan_callUpdateListeners();
+        }
+    });
+}
+
+
+/***************************************************
+ * Client Event Listeners
+ **************************************************/
+
+function _EventsMan_callUpdateListeners()
+{
+    $.each(EventsMan_updateListeners, function(index) {
+        this();
+    });
+}
+function EventsMan_addUpdateListener(listener)
+{
+    EventsMan_updateListeners.push(listener);
 }
 
 /***************************************************

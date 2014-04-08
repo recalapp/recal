@@ -21,12 +21,14 @@ def __construct_event_dict(event):
     assert rev != None;
     # TODO add recurrence info
     eventDict = {
+        'event_id': event.id,
         'event_group_id': event.group.id,
         'event_title': rev.event_title,
         'event_type': rev.get_event_type_display(), 
         'event_date': rev.event_date.strftime('%s'),
         'event_description': rev.event_description,
         'event_location': rev.event_location,
+        'section_id': event.group.section.id,
         'modified_user': rev.modified_user.netid,
         'modified_time': rev.modified_time.strftime('%s') # does this handle daylight savings?
     }
