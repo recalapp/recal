@@ -30,12 +30,23 @@ class ContactForm(forms.Form):
 class AnotherFormExample(forms.Form):
     first_name = forms.CharField()
     last_name = forms.CharField()
+    max_number = forms.ChoiceField(widget = forms.Select(), choices = ([('1','1'), ('2','2'),('3','3'), ]), initial='3', required = True,) 
     def __init__(self, *args, **kwargs):
         extra = kwargs.pop('extra')
         super(AnotherFormExample, self).__init__(*args, **kwargs) # run default initialization
         # process extra elements -- i.e. populate the checkboxes
-        self.fields['custom_%s' % 'sections'] = forms.ChoiceField(label='Which sections?', choices=list(extra), widget=forms.widgets.CheckboxInput())
+        l = [str(x) for x in list(extra)]
+        print 'extra: ', repr(l)
+        self.fields['custom_%s' % 'sections'] = forms.ChoiceField(label='Which sections?', choices=l, widget=forms.widgets.CheckboxInput())
+        self.fields['custom_%s' % 'sections_2'] = forms.MultipleChoiceField(label='Multiple',choices=([('1','1'), ('2','5'),('3','3'), ]), widget=forms.CheckboxSelectMultiple())
+
+        # the above is how to do it for the sections form; for courses form, just put a checkbox for each section_id, section_name in extra
     def extra_sections(self): # retrieve sections
         for name, value in self.cleaned_data.items():
             if name.startswith('custom_'):
                 yield (self.fields[name].label, value)
+                
+    def clean_custom_sections_2(self): # an example from http://stackoverflow.com/questions/147752/in-django-is-there-a-way-to-display-choices-as-checkboxes
+        if len(self.cleaned_data['custom-sections_2']) > 3:
+            raise forms.ValidationError('Select no more than 3.')
+        return self.cleaned_data['custom_sections_2']

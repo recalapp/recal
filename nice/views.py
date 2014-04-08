@@ -116,8 +116,11 @@ def contact_us(req):
     return render(req, "main/test-form-verbose.html", {'form':form}) # or main/test-form.html
 
 def form_test_two(request):
-    sections = range(1,6) # our "sections"
+    #sections = range(1,6) # our "sections"
+    sections = (('1', 'Option 1'),('2', 'Option 2'),('3', 'Option 3'),)
     form = AnotherFormExample(request.POST or None, extra=sections)
+    form.fields['max_number'].choices = [(1,1),(2,2),(3,3)]
+    form.fields['max_number'].initial = [3]
     if form.is_valid():
         # No validation errors.
         print 'succeeded form' 
