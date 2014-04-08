@@ -1,5 +1,5 @@
 AGENDA_INIT = false;
-Agenda_pinnedIDs = new Set_new();
+Agenda_pinnedIDs = new Set();
 
 
 /***************************************************

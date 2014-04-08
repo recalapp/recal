@@ -167,7 +167,10 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setTitle(popUp, eventDict.event_title);
     PopUp_setDescription(popUp, eventDict.event_description);
     PopUp_setLocation(popUp, eventDict.event_location);
-    PopUp_setType(popUp, eventDict.event_type)
+    PopUp_setType(popUp, eventDict.event_type);
+    PopUp_setDate(popUp, eventDict.event_start);
+    PopUp_setStartTime(popUp, eventDict.event_start);
+    PopUp_setEndTime(popUp, eventDict.event_end);
 }
 
 function PopUp_getID(popUp)
@@ -197,6 +200,22 @@ function PopUp_setType(popUp, typeKey)
     var type = toTitleCase(TP_keyToText(typeKey));
     $(popUp).find('#popup-type').text(type);
 }
+function PopUp_setDate(popUp, unixTime)
+{
+    var date = moment.unix(unixTime);
+    $(popUp).find('#popup-date').text(date.format("MMMM D, YYYY Z"));
+}
+function PopUp_setStartTime(popUp, unixTime)
+{
+    var time = moment.unix(unixTime);
+    $(popUp).find('#popup-time-start').text(time.format("H:mm A"));
+}
+function PopUp_setEndTime(popUp, unixTime)
+{
+    var time = moment.unix(unixTime);
+    $(popUp).find('#popup-time-end').text(time.format("H:mm A"));
+}
+
 
 function PopUp_setFirstDrag(popUp, firstDrag)
 {

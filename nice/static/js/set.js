@@ -1,10 +1,9 @@
-function Set_new()
+var Set = function()
 {
-    this.add = function(item) {
-        this[item] = true;
-    };
-    this.remove = function(item) {
-        delete this[item];
-    };
-    return this;
+}
+Set.prototype.add = function(item) {
+    this[item] = true;
+}
+Set.prototype.remove = function(item) {
+    delete this[item];
 }
