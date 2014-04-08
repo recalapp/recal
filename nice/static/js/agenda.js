@@ -1,5 +1,5 @@
 AGENDA_INIT = false;
-Agenda_pinnedIDs = new Set();
+//Agenda_pinnedIDs = new Set();
 
 
 /***************************************************
@@ -19,7 +19,8 @@ function Agenda_init() {
         if (this.id == "agenda")
         {
             $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function (e){
-                Agenda_loadFromPopUp();
+                //Agenda_loadFromPopUp();
+                //Agenda_reload();
             });
         }
     });
@@ -46,7 +47,9 @@ function Agenda_reload()
         var eventDict = EventsMan_getEventByID(this);
         $(agenda).find(".panel-body").find('h4').text(eventDict.event_title);
 
-        if (Agenda_isPinned(agenda.id))
+        if (UI_isPinned(agenda.id))
+            Agenda_highlight(panel);
+        if (UI_isMain(agenda.id))
             Agenda_highlight(panel);
         // must now highlight main panel
     });
@@ -58,12 +61,12 @@ function Agenda_loadFromPopUp()
     PopUp_map(function(popUp, isMain){
         //panel = $(".agenda-item#"+PopUp_getID(popUp))[0];
         //Agenda_highlight(panel);
-        if (!isMain)
-            Agenda_pin(PopUp_getID(popUp));
-        else
-            PopUp_setFirstDrag(popUp, function() {
-                Agenda_pin(PopUp_getID(popUp));
-            });
+        //if (!isMain)
+        //    Agenda_pin(PopUp_getID(popUp));
+        //else
+        //    PopUp_setFirstDrag(popUp, function() {
+        //        Agenda_pin(PopUp_getID(popUp));
+        //    });
     });
     //Agenda_reload();
 }
@@ -91,20 +94,21 @@ function selectAgenda(agendaAnchor)
         //PopUp_setID(popUp, panel.id);
         //PopUp_setTitle(popUp, title);
         PopUp_giveFocus(popUp);
-        Agenda_pin(panel.id);
+        UI_pin(panel.id);
         return;
     }
     
     Agenda_unhighlight($(".panel-primary").filter(function(){
-        return !Agenda_isPinned(this.id);
+        return !UI_isPinned(this.id);
     }));
     Agenda_highlight(panel);
 
     var popUp = PopUp_getMainPopUp();
     PopUp_setFirstDrag(popUp, function() {
-        Agenda_pin(panel.id);
+        UI_pin(panel.id);
     });
     PopUp_setToEventID(popUp, panel.id);
+    UI_setMain(panel.id);
     //PopUp_setID(popUp, panel.id);
     //PopUp_setTitle(popUp, title);
     PopUp_giveFocus(popUp);
@@ -121,23 +125,23 @@ function Agenda_highlight(agenda)
 function Agenda_unhighlight(agenda)
 {
     $(agenda).addClass("panel-default").removeClass("panel-primary").each(function(index) {
-        Agenda_unpin(this.id);
+        UI_unpin(this.id);
     });
 }
 function Agenda_isHighlighted(agenda)
 {
     return $(agenda).hasClass("panel-primary");
 }
-function Agenda_pin(id)
-{
-    Agenda_pinnedIDs.add(id);
-    //$(agenda).addClass("pinned");
-}
-function Agenda_isPinned(id)
-{
-    return id in Agenda_pinnedIDs;
-}
-function Agenda_unpin(id)
-{
-    Agenda_pinnedIDs.remove(id);
-}
+//function Agenda_pin(id)
+//{
+//    Agenda_pinnedIDs.add(id);
+//    //$(agenda).addClass("pinned");
+//}
+//function Agenda_isPinned(id)
+//{
+//    return id in Agenda_pinnedIDs;
+//}
+//function Agenda_unpin(id)
+//{
+//    Agenda_pinnedIDs.remove(id);
+//}

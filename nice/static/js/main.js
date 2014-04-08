@@ -67,3 +67,7 @@ function UI_isMain(id)
 {
     return mainID == id;
 }
+function UI_setMain(id)
+{
+    mainID = id;
+}
