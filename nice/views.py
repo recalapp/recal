@@ -43,10 +43,39 @@ def typepicker(request):
 @login_required
 @require_GET
 def edit_profile(request):
+    '''
+    Change which courses you are enrolled in.
+    TODO: add options to change your name and which sections you're in.
+    '''
     user_profile_filled_out(request.user) # create profile if not already create
     profile = request.user.profile
-    return HttpResponse(str(profile)) # TODO: return name and sections you're enrolled in.
-    #return render(request, 'main/edit-profile.html', {all_courses:, my_courses:})
+
+    # Compile list of options
+    enrolled = [s.course for s in profile.sections.all()]
+    not_enrolled = [c for c in Course.objects.all() if c not in enrolled]
+    all = [(c.id, str(c), True) for c in enrolled] # course ID, course title, and whether enrolled already
+    all.extend([(c.id, str(c), False) for c in not_enrolled])
+
+    form = EnrollCoursesForm(request.POST or None, extra=all)
+    if form.is_valid():
+        # No validation errors.
+        print 'Processing Choose Sections form.' 
+        chosen_courses = list(form.extra_courses())
+        for c in chosen_courses:
+            if c not in all: # This version is different from the previous states of the records (found in all)
+                the_course = course.get(pk=c[0])
+                if c[2] == True:
+                    # Enroll user in course, i.e. add to default "All Students" section(s)
+                    for default_section in new_course.sections.filter(isDefault=True):
+                        user_in_section = User_Section_Table(user = profile, section=default_section, add_date = get_current_utc())
+                        user_in_section.save()
+                else:
+                    # Remove user from class, i.e. remove from all sections matching this course ID
+                    User_Section_Table.objects.filter(section__course_id=the_course.id).filter(user=profile).delete()
+        # Done processing, redirect to dashboard.
+        return redirect("/")
+    
+    return render(request, "main/edit-profile.html", {'courses_form':form, 'netid': request.user.username})
 
 @require_POST
 def make_profile_changes(request):
@@ -126,5 +155,4 @@ def form_test_two(request):
         print 'succeeded form' 
         # use form.cleaned_data
         return redirect("/")
-    
-    return render(request, "main/test-form.html", {'form':form})
+        

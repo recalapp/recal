@@ -1,6 +1,22 @@
 from django import forms
 from django.forms.widgets import PasswordInput, Textarea
 
+class EnrollCoursesForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        extra = kwargs.pop('extra')
+        super(EnrollCoursesForm, self).__init__(*args, **kwargs) # run default initialization
+        # process extra elements -- i.e. populate the checkboxes
+        for (i, course, isEnrolled) in extra:
+            self.fields['custom_%s' % i] = forms.BooleanField(label=course, initial=isEnrolled, required=False)
+    def extra_courses(self): # retrieve courses
+        for name, value in self.cleaned_data.items():
+            prefix = 'custom_'
+            if name.startswith(prefix):
+                yield (int(name[len(prefix):]), self.fields[name].label, value) # course ID, course name, and whether the checkbox is checked
+    
+
+
+
 ''' Good reading about this:
 http://www.pythondiary.com/blog/Apr.11,2012/comparing-django-aspnet-mvc.html
 http://stackoverflow.com/questions/4381300/django-forms-list-of-checkboxes-list-of-radiobuttons

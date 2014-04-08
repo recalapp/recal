@@ -2,7 +2,7 @@ from nice.models import *
 from datetime import *
 def get_events(netid, start_date=None, end_date=None):
     try:
-        user = User_Profile.objects.get(netid=netid)
+        user = User.objects.get(username=netid).profile
     except Exception, e:
         return []
     filterDict = {
@@ -18,7 +18,7 @@ def get_events(netid, start_date=None, end_date=None):
     return [__construct_event_dict(event) for event in filtered if event.best_revision() != None]
 
 def modify_events(netid, events):
-    user = User_Profile.objects.get(netid=netid)
+    user = User.objects.get(username=netid).profile
     for eventDict in events:
         eventDate = timezone.make_aware(datetime.fromtimestamp(float(eventDict.event_date)), timezone.get_default_timezone())
         modifiedTime = timezone.make_aware(datetime.fromtimestamp(float(eventDict.modified_time)), timezone.get_default_timezone())
@@ -73,3 +73,5 @@ def __construct_event_dict(event):
         'modified_time': rev.modified_time.strftime('%s') # does this handle daylight savings?
     }
     return eventDict
+    
+    
