@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 
 # Create your models here.
 # To start using the database: python manage.py syncdb
@@ -37,9 +38,18 @@ class Section(models.Model):
 
     # fields
     name = models.CharField(max_length=100, default='all_students')
+    isDefault = models.BooleanField(default=False) # if true, then everyone in the course is automatically enrolled in this section
 
     def __unicode__(self):
         return self.course.dept + ' ' + self.course.number + ' - ' + self.name
+        
+        
+# create "All Students" section as soon as a course is created
+def make_default_table(sender, instance, created, **kwargs):  
+    # see http://stackoverflow.com/a/965883/130164
+    if created:  
+       profile, created = Section.objects.get_or_create(course=instance, name='All Students', isDefault=True)  
+post_save.connect(make_default_table, sender=Course)
 
 class User_Section_Table(models.Model):
     # relationships
@@ -140,7 +150,7 @@ class Event_Revision(models.Model):
 # Extend django.contrib.auth User table with custom user profile information.
 
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+
 class User_Profile(models.Model): #EDIT renamed from UserProfile for consistency
     user = models.OneToOneField(User, related_name='profile', unique=False)
 	# put user profile fields here
@@ -174,21 +184,33 @@ class Event_Visibility(models.Model):
 
 
 ### HELPER METHODS        
-        
+import datetime
+
 def get_current_utc():
-    import datetime
+    '''
+    Returns current time in UTC, perfect for database storage.
+    '''
     from django.utils.timezone import utc
     return datetime.datetime.utcnow().replace(tzinfo=utc)
     
     
 def seed_db_with_data():
-    sem = Semester(...)
+    '''
+    Inserts some test data: a semester, a course, and an extra section.
+    '''
+    sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1))
     sem.save()
-    c1 = Course(...)
+    c1 = Course(semester=sem, dept='COS', number='333', name='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
     c1.save()
-    # TODO: set up a post-save handler for Course that auto-creates the AllStudents section.
-    c2 = Course(...)
-    c2.save()
-    extra_section = c2.sections.create(...)
+    # Note that once we create a Course, the All Students section is created automatically and marked Default (i.e. all students in the course are automatically enrolled in this section). 
+    extra_section = Section(course=c1, name='Precept A')
+    extra_section.save()
+    
+def clear_all_data():
+    # TODO: add other tables
+    Section.objects.all().delete()
+    Course.objects.all().delete()
+    Semester.objects.all().delete()
+    
     
     

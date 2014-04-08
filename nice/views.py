@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.http import * # require_GET, etc.
 from django.utils import timezone
 
 from nice.models import *
@@ -66,6 +67,11 @@ def cas_bypass(request):
 def seed_data(request):
     seed_db_with_data()
     return HttpResponse("Data added.")
+    
+@staff_member_required 
+def delete_data(request):
+    clear_all_data()
+    return HttpResponse("Data removed.")
 	
 
 # for AJAX
