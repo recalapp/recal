@@ -106,13 +106,22 @@ def user_profile_filled_out(user):
 # test
 def contact_us(req):
     if req.method == 'POST':
-        form = ContactForm(req.POST)
-        if form.is_valid():
+        form = ContactForm(req.POST) # bind the form to the passed-in data dict
+        if form.is_valid(): # this runs all validation and cleaning methods
             # No validation errors.
-            print 'succeeded form'
-            pass
+            print 'succeeded form' # or read from form.cleaned_data
+            pass # should redirect somewhere upon success
     else:
-        form = ContactForm()
+        form = ContactForm() # no associated data, so don't validate
     return render(req, "main/test-form-verbose.html", {'form':form}) # or main/test-form.html
 
-        
+def form_test_two(request):
+    sections = range(1,6) # our "sections"
+    form = AnotherFormExample(request.POST or None, extra=sections)
+    if form.is_valid():
+        # No validation errors.
+        print 'succeeded form' 
+        # use form.cleaned_data
+        return redirect("/")
+    
+    return render(request, "main/test-form.html", {'form':form})
