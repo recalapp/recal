@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^debug/su_login$', views.cas_bypass, name="cas_bypass"),
     url(r'^debug/seed_data$', views.seed_data, name="seed_data"),
     url(r'^debug/delete_data$', views.delete_data, name="delete_data"),
+    url(r'^testform$', views.contact_us, name="test_form"),
 )
 
 if settings.DEBUG:

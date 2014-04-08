@@ -8,6 +8,7 @@ from django.views.decorators.http import * # require_GET, etc.
 from django.utils import timezone
 
 from nice.models import *
+from nice.forms import *
 from nice import queries
 from datetime import datetime
 
@@ -44,8 +45,8 @@ def typepicker(request):
 def edit_profile(request):
     user_profile_filled_out(request.user) # create profile if not already create
     profile = request.user.profile
-    #return HttpResponse(str(profile)) # TODO: return name and sections you're enrolled in.
-    return render(request, 'main/edit-profile.html', {all_courses:, my_courses:})
+    return HttpResponse(str(profile)) # TODO: return name and sections you're enrolled in.
+    #return render(request, 'main/edit-profile.html', {all_courses:, my_courses:})
 
 @require_POST
 def make_profile_changes(request):
@@ -96,4 +97,22 @@ def user_profile_filled_out(user):
     except User_Profile.DoesNotExist:
         profile = User_Profile.objects.create(user=user, lastActivityTime=get_current_utc())
         return False # just created, but not filled out yet
+        
+        
+        
+        
+        
+        
+# test
+def contact_us(req):
+    if req.method == 'POST':
+        form = ContactForm(req.POST)
+        if form.is_valid():
+            # No validation errors.
+            print 'succeeded form'
+            pass
+    else:
+        form = ContactForm()
+    return render(req, "main/test-form-verbose.html", {'form':form}) # or main/test-form.html
+
         
