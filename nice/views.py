@@ -67,6 +67,17 @@ def seed_data(request):
     seed_db_with_data()
     return HttpResponse("Data added.")
 	
+
+# for AJAX
+def events_json(request, netid, start_date=None, end_date=None):
+    if start_date:
+        start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
+    if end_date:
+        end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
+    events = queries.get_events(netid, start_date, end_date)
+    return HttpResponse(json.dumps(events), mimetype='application/javascript')
+
+    
 # Helper methods
 def user_profile_filled_out(user):
     '''
@@ -79,11 +90,3 @@ def user_profile_filled_out(user):
         profile = User_Profile.objects.create(user=user, lastActivityTime=get_current_utc())
         return False # just created, but not filled out yet
         
-# for AJAX
-def events_json(request, netid, start_date=None, end_date=None):
-    if start_date:
-        start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
-    if end_date:
-        end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
-    events = queries.get_events(netid, start_date, end_date)
-    return HttpResponse(json.dumps(events), mimetype='application/javascript')
