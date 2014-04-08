@@ -123,18 +123,12 @@ function Cal_init() {
         if (this.id == "calendar")
         {
             $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function(e) {
-                $($("#calendarui").fullCalendar("clientEvents")).each(function(index){
-                    Cal_unhighlightEvent(this, false);
-                });
-                PopUp_map(function(popUp, isMain){
-                    $($("#calendarui").fullCalendar("clientEvents", PopUp_getID(popUp))).each(function(index){
-                        Cal_highlightEvent(this, false);
-                        this.pinned = !isMain;
-                    });
-                });
-                Cal_render();
+                Cal_syncFromPopUp();
             });
         }
+    });
+    PopUp_addOnRestoreListener(function(){
+        Cal_syncFromPopUp();
     });
     PopUp_addCloseListener(function(id){
         $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){
@@ -142,6 +136,22 @@ function Cal_init() {
             Cal_unhighlightEvent(this, true);
         });
     });
+}
+
+function Cal_syncFromPopUp()
+{
+    if (!EventsMan_ready())
+        return;
+    $($("#calendarui").fullCalendar("clientEvents")).each(function(index){
+        Cal_unhighlightEvent(this, false);
+    });
+    PopUp_map(function(popUp, isMain){
+        $($("#calendarui").fullCalendar("clientEvents", PopUp_getID(popUp))).each(function(index){
+            Cal_highlightEvent(this, false);
+            this.pinned = !isMain;
+        });
+    });
+    Cal_render();
 }
 
 function Cal_render() {

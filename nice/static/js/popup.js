@@ -1,6 +1,7 @@
 // POPUP module
 var PopUp_closeListeners = [];
 var PopUp_editListeners = [];
+var PopUp_onRestoreListeners = [];
 var PopUp_freedSpace = [];
 var PopUp_space = 0;
 var POPUP_INIT = false;
@@ -25,7 +26,11 @@ function PopUp_init()
     $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
 
     // saving/loading
-    PopUp_load();
+    // TODO figure out this logic, it's wrong
+    // doesn't handle the case where reload happens
+    EventsMan_addOnReadyListener(function(){
+        PopUp_load();
+    });
     $(window).on("beforeunload", function() {
         PopUp_save();
         //$(".withdatepicker").data("DateTimePicker").hide();
@@ -149,6 +154,18 @@ function PopUp_getMainPopUp()
     return main;
 }
 
+function PopUp_setToEventID(popUp, id)
+{
+    PopUp_setID(popUp, id);
+    eventDict = EventsMan_getEventByID(id);
+    if (!eventDict)
+    {
+        console.log("errorneous event id");
+        return;
+    }
+    PopUp_setTitle(popUp, eventDict.event_title);
+}
+
 function PopUp_getID(popUp)
 {
     return $(popUp).find(".panel")[0].id;
@@ -211,11 +228,13 @@ function PopUp_load()
         $(popUp).css("width", this.frame[2]);
         $(popUp).css("height", this.frame[3]);
         _PopUp_setBodyHeight(popUp);
-        PopUp_setID(popUp, this.id);
-        PopUp_setTitle(popUp, "Item "+this.id);
+        PopUp_setToEventID(popUp, this.id);
+        //PopUp_setID(popUp, this.id);
+        //PopUp_setTitle(popUp, "Item "+this.id);
         if (this.hasFocus)
             PopUp_giveFocus(popUp);
     });
+    PopUp_callOnRestoreListeners();
 }
 
 /***************************************************
@@ -393,6 +412,16 @@ function PopUp_callEditListeners(id, field, value)
 {
     $(PopUp_editListeners).each(function(index) {
         this(id, field, value);
+    });
+}
+function PopUp_addOnRestoreListener(listener)
+{
+    PopUp_onRestoreListeners.push(listener);
+}
+function PopUp_callOnRestoreListeners(listener)
+{
+    $.each(PopUp_onRestoreListeners, function(index){
+        this();
     });
 }
 

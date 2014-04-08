@@ -1,7 +1,9 @@
 var eventsManager = null;
 var EventsMan_updateListeners = [];
+var EventsMan_onReadyListeners = [];
 var USER_NETID = 'naphats';
 var EVENTS_INIT = false;
+var EVENTS_READY = false;
 
 function EventsMan_init()
 {
@@ -9,7 +11,10 @@ function EventsMan_init()
         return;
     EVENTS_INIT = true;
     eventsManager = new _EventsMan_new();
-    EventsMan_pullFromServer();
+    EventsMan_pullFromServer(function() {
+        EVENTS_READY = true;
+        EventsMan_callOnReadyListeners();
+    });
 }
 
 function _EventsMan_new()
@@ -80,6 +85,11 @@ function EventsMan_deleteEvent(id)
     eventsManager.deletedIDs.push(id);
 }
 
+function EventsMan_ready()
+{
+    return EVENTS_READY;
+}
+
 /***************************************************
  * Server code
  * Logic: when downloading from server, set updatedTime
@@ -104,7 +114,7 @@ function EventsMan_pushToServer()
     var newSyncedTime = new Date().getTime(); // only set this if successful
     // TODO set addedcount to 0
 }
-function EventsMan_pullFromServer()
+function EventsMan_pullFromServer(complete)
 {
     $.ajax('get/' + USER_NETID, {
         dataType: 'json',
@@ -124,6 +134,8 @@ function EventsMan_pullFromServer()
             });
             eventsManager.addedCount = 0;
             eventsManager.lastSyncedTime = new Date().getTime();
+            if (complete != null)
+                complete();
             _EventsMan_callUpdateListeners();
         }
     });
@@ -143,6 +155,24 @@ function _EventsMan_callUpdateListeners()
 function EventsMan_addUpdateListener(listener)
 {
     EventsMan_updateListeners.push(listener);
+}
+
+// if already ready, calls right away
+function EventsMan_addOnReadyListener(listener)
+{
+    if (EVENTS_READY)
+    {
+        listener();
+        return;
+    }
+    EventsMan_onReadyListeners.push(listener);
+}
+function EventsMan_callOnReadyListeners()
+{
+    $.each(EventsMan_onReadyListeners, function(index){
+        this();
+    });
+    EventsMan_onReadyListeners = null;
 }
 
 /***************************************************

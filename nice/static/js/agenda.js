@@ -24,7 +24,9 @@ function Agenda_init() {
     PopUp_addCloseListener(function(id) {
         Agenda_unhighlight($(".panel#"+id));
     });
-    Agenda_loadFromPopUp();
+    PopUp_addOnRestoreListener(function(){
+        Agenda_loadFromPopUp();
+    });
 } 
 
 function Agenda_reload()
@@ -78,8 +80,9 @@ function selectAgenda(agendaAnchor)
     {
         Agenda_highlight(panel);
         popUp = PopUp_insertPopUp(false);
-        PopUp_setID(popUp, panel.id);
-        PopUp_setTitle(popUp, title);
+        PopUp_setToEventID(popUp, panel.id)
+        //PopUp_setID(popUp, panel.id);
+        //PopUp_setTitle(popUp, title);
         PopUp_giveFocus(popUp);
         Agenda_pin(panel);
         return;
@@ -92,8 +95,9 @@ function selectAgenda(agendaAnchor)
     PopUp_setFirstDrag(popUp, function() {
         Agenda_pin(panel);
     });
-    PopUp_setID(popUp, panel.id);
-    PopUp_setTitle(popUp, title);
+    PopUp_setToEventID(popUp, panel.id);
+    //PopUp_setID(popUp, panel.id);
+    //PopUp_setTitle(popUp, title);
     PopUp_giveFocus(popUp);
 }
 
