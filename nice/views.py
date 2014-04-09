@@ -41,12 +41,13 @@ def typepicker(request):
     return render(request, 'main/type-picker.html', None)
 
 @login_required
-@require_GET
 def edit_profile(request):
     '''
     Change which courses you are enrolled in.
     TODO: add options to change your name and which sections you're in.
     '''
+    #return HttpResponse(repr(Course.objects.all()[0]._meta.get_all_field_names()))
+    #return HttpResponse(str(Course.objects.all()[0].section_set))
     user_profile_filled_out(request.user) # create profile if not already create
     profile = request.user.profile
 
@@ -63,23 +64,21 @@ def edit_profile(request):
         chosen_courses = list(form.extra_courses())
         for c in chosen_courses:
             if c not in all: # This version is different from the previous states of the records (found in all)
-                the_course = course.get(pk=c[0])
+                print 'things are a-changing'
+                the_course = Course.objects.get(pk=c[0])
                 if c[2] == True:
                     # Enroll user in course, i.e. add to default "All Students" section(s)
-                    for default_section in new_course.sections.filter(isDefault=True):
+                    for default_section in the_course.sections.filter(isDefault=True):
                         user_in_section = User_Section_Table(user = profile, section=default_section, add_date = get_current_utc())
                         user_in_section.save()
                 else:
                     # Remove user from class, i.e. remove from all sections matching this course ID
                     User_Section_Table.objects.filter(section__course_id=the_course.id).filter(user=profile).delete()
         # Done processing, redirect to dashboard.
+        print 'Redirecting'
         return redirect("/")
     
     return render(request, "main/edit-profile.html", {'courses_form':form, 'netid': request.user.username})
-
-@require_POST
-def make_profile_changes(request):
-    pass
 	
 @require_GET
 def cas_bypass(request):
