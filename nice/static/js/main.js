@@ -9,11 +9,13 @@ function init()
     CacheMan_init();
     EventsMan_init();
     Nav_load();
+    UI_load();
     PopUp_init();
     Agenda_init();
     Cal_init();
     $(window).bind("beforeunload", function(){
         Nav_save();
+        UI_save();
     });
 }
 function Nav_save()
@@ -53,6 +55,8 @@ function toTitleCase(str)
 // pinned and main
 function UI_pin(id)
 {
+    if (UI_isMain(id))
+        UI_unsetMain();
     pinnedIDs.add(id);
 }
 function UI_isPinned(id)
@@ -70,4 +74,30 @@ function UI_isMain(id)
 function UI_setMain(id)
 {
     mainID = id;
+}
+function UI_unsetMain()
+{
+    mainID = null;
+}
+function UI_save()
+{
+    $.cookie('pinned_IDs', JSON.stringify(pinnedIDs));
+    if (mainID != null)
+        $.cookie('main_ID', mainID);
+}
+function UI_load()
+{
+    if ($.cookie('pinned_IDs') != null)
+    {
+        var savedPinnedIDs = JSON.parse($.cookie('pinned_IDs'));
+        $.each(savedPinnedIDs, function (key, value) {
+            UI_pin(key);
+        });
+        $.removeCookie('pinned_IDs');
+    }
+    if ($.cookie('main_ID') != null)
+    {
+        UI_setMain($.cookie('main_ID'));
+        $.removeCookie('main_ID')
+    }
 }

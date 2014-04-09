@@ -70,8 +70,6 @@ function Cal_init() {
             })
 
             PopUp_setToEventID(popUp, calEvent.id);
-            //PopUp_setID(popUp, calEvent.id);
-            //PopUp_setTitle(popUp, calEvent.title);
             PopUp_giveFocus(popUp);
         }
     });
@@ -80,62 +78,37 @@ function Cal_init() {
         if (this.id == "calendar")
         {
             $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function(e) {
+                Cal_render();
                 Cal_reload();
-                //Cal_syncFromPopUp();
             });
         }
-    });
-    PopUp_addOnRestoreListener(function(){
-        Cal_syncFromPopUp();
     });
     PopUp_addCloseListener(function(id){
         $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){
             UI_unpin(this.id)
-            //this.pinned = false;
             Cal_unhighlightEvent(this, true);
         });
     });
 }
 function Cal_reload()
 {
-    //return;
     var endDate = moment().add('months', 3).unix();
     var startDate = moment().subtract('months', 3).unix();
     var eventIDs = EventsMan_getEventIDForRange(startDate, endDate);
     Cal_eventSource.events = [];
     $.each(eventIDs, function(index){
         eventDict = EventsMan_getEventByID(this);
+        var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
         Cal_eventSource.events.push({
             id: eventDict.event_id,
             title: eventDict.event_title,
             start: eventDict.event_start,
-            end: eventDict.event_end
+            end: eventDict.event_end,
+            highlighted: shouldHighlight,
+            backgroundColor: shouldHighlight ? '#428be8' : '#74a2ca'
         });
     });
     $("#calendarui").fullCalendar("refetchEvents");
-    $($('#calendarui').fullCalendar('clientEvents')).each(function(index){
-        if (UI_isPinned(this.id) || UI_isMain(this.id))
-            Cal_highlightEvent(this, false)
-    });
-    Cal_render();
-
-}
-
-function Cal_syncFromPopUp()
-{
-    return;
-    if (!EventsMan_ready())
-        return;
-    $($("#calendarui").fullCalendar("clientEvents")).each(function(index){
-        Cal_unhighlightEvent(this, false);
-    });
-    PopUp_map(function(popUp, isMain){
-        $($("#calendarui").fullCalendar("clientEvents", PopUp_getID(popUp))).each(function(index){
-            Cal_highlightEvent(this, false);
-            this.pinned = !isMain;
-        });
-    });
-    Cal_render();
 }
 
 function Cal_render() {

@@ -1,8 +1,6 @@
 // POPUP module
-// TODO br2nl on description form
 var PopUp_closeListeners = [];
 var PopUp_editListeners = [];
-var PopUp_onRestoreListeners = [];
 var PopUp_freedSpace = [];
 var PopUp_space = 0;
 var POPUP_INIT = false;
@@ -26,15 +24,11 @@ function PopUp_init()
     height = window.innerHeight - topPos + 300;
     $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
 
-    // saving/loading
-    // TODO figure out this logic, it's wrong
-    // doesn't handle the case where reload happens
     EventsMan_addOnReadyListener(function(){
         PopUp_load();
     });
     $(window).on("beforeunload", function() {
         PopUp_save();
-        //$(".withdatepicker").data("DateTimePicker").hide();
     });
 }
 
@@ -64,6 +58,7 @@ function PopUp_insertPopUp(isMain)
             PopUp_showClose(popUp);
             if (this.firstDrag)
                 this.firstDrag();
+            UI_pin(PopUp_getID(popUp));
             this.ondrag = null;
         };
     }
@@ -219,6 +214,7 @@ function PopUp_setEndTime(popUp, unixTime)
 
 function PopUp_setFirstDrag(popUp, firstDrag)
 {
+    return;
     popUp.firstDrag = firstDrag;
 }
 
@@ -254,7 +250,6 @@ function PopUp_save()
 }
 function PopUp_load()
 {
-    return;
     if ($.cookie("popup_pos") == null)
         return;
     var pos = JSON.parse($.cookie("popup_pos"));
@@ -266,12 +261,9 @@ function PopUp_load()
         $(popUp).css("height", this.frame[3]);
         _PopUp_setBodyHeight(popUp);
         PopUp_setToEventID(popUp, this.id);
-        //PopUp_setID(popUp, this.id);
-        //PopUp_setTitle(popUp, "Item "+this.id);
         if (this.hasFocus)
             PopUp_giveFocus(popUp);
     });
-    PopUp_callOnRestoreListeners();
 }
 
 /***************************************************
@@ -451,16 +443,6 @@ function PopUp_callEditListeners(id, field, value)
         this(id, field, value);
     });
 }
-function PopUp_addOnRestoreListener(listener)
-{
-    PopUp_onRestoreListeners.push(listener);
-}
-function PopUp_callOnRestoreListeners(listener)
-{
-    $.each(PopUp_onRestoreListeners, function(index){
-        this();
-    });
-}
 
 /***************************************************
  * Miscellaneous
@@ -482,4 +464,3 @@ function PopUp_map(apply)
         apply(this, true);
     });
 }
-
