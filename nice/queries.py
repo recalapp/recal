@@ -1,3 +1,4 @@
+from django.utils.dateformat import format
 from nice.models import *
 from datetime import *
 def get_events(netid, start_date=None, end_date=None):
@@ -18,6 +19,7 @@ def get_events(netid, start_date=None, end_date=None):
     return [__construct_event_dict(event) for event in filtered if event.best_revision() != None]
 
 def modify_events(netid, events):
+    # TODO add a try statement
     user = User.objects.get(username=netid).profile
     for eventDict in events:
         eventDate = timezone.make_aware(datetime.fromtimestamp(float(eventDict.event_date)), timezone.get_default_timezone())
@@ -64,13 +66,14 @@ def __construct_event_dict(event):
         'event_id': event.id,
         'event_group_id': event.group.id,
         'event_title': rev.event_title,
-        'event_type': rev.event_type, # pretty: get_event_type_display()
-        'event_date': rev.event_date.strftime('%s'),
+        'event_type': rev.event_type, # pretty = get_event_type_display()
+        'event_start': format(rev.event_start, 'U'),
+        'event_end': format(rev.event_end, 'U'),
         'event_description': rev.event_description,
         'event_location': rev.event_location,
-        'section_id': event.event_group.section.id,
+        'section_id': event.group.section.id,
         'modified_user': rev.modified_user.netid,
-        'modified_time': rev.modified_time.strftime('%s') # does this handle daylight savings?
+        'modified_time': format(rev.modified_time, 'U') # does this handle daylight savings?
     }
     return eventDict
     

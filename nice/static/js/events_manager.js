@@ -1,5 +1,9 @@
 var eventsManager = null;
+var EventsMan_updateListeners = [];
+var EventsMan_onReadyListeners = [];
+var USER_NETID = 'naphats';
 var EVENTS_INIT = false;
+var EVENTS_READY = false;
 
 function EventsMan_init()
 {
@@ -7,7 +11,10 @@ function EventsMan_init()
         return;
     EVENTS_INIT = true;
     eventsManager = new _EventsMan_new();
-    // TODO should populate events manager
+    EventsMan_pullFromServer(function() {
+        EVENTS_READY = true;
+        EventsMan_callOnReadyListeners();
+    });
 }
 
 function _EventsMan_new()
@@ -28,33 +35,33 @@ function _EventsMan_new()
  **************************************************/
 
 //{
-//    id: "id",
-//    title: "title",
-//    type: "type",
-//    description: "description",
-//    start: "start unix time",
-//    end: "end unix time",
-//    loc: "location",
-//    recurring: // how??
-//    updatedTime: // from server
+//    'event_group_id': event.group.id,
+//    'event_title': rev.event_title,
+//    'event_type': rev.get_event_type_display(), 
+//    'event_date': rev.event_date.strftime('%s'),
+//    'event_description': rev.event_description,
+//    'event_location': rev.event_location,
+//    'section_id': event.group.section.id,
+//    'modified_user': rev.modified_user.netid,
+//    'modified_time': rev.modified_time.strftime('%s') 
 //}
 function EventsMan_getEventByID(id)
 {
-    return this.events[id];
+    return eventsManager.events[id];
 }
 
 function EventsMan_getEventIDForRange(start, end)
 {
-    var index = 0;
-    while (eventsManager.order[i].start < start)
+    var i = 0;
+    while (i < eventsManager.order.length && eventsManager.order[i].event_start < start)
         i++;
     var iStart = i;
-    while (eventsManager.order[i].start <= end)
+    while (i < eventsManager.order.length && eventsManager.order[i].event_start <= end)
         i++;
-    var iEnd = ++i; // slice method is exclusive on the right end
+    var iEnd = Math.min(++i, eventsManager.order.length); // slice method is exclusive on the right end
     var ret = eventsManager.order.slice(iStart, iEnd);
     for (var i = 0; i < ret.length; i++)
-        ret[i] = ret[i].id;
+        ret[i] = ret[i].event_id;
     return ret;
 }
 function EventsMan_updateEventForID(id, eventDict)
@@ -76,6 +83,11 @@ function EventsMan_deleteEvent(id)
 {
     delete eventsManager.events[id];
     eventsManager.deletedIDs.push(id);
+}
+
+function EventsMan_ready()
+{
+    return EVENTS_READY;
 }
 
 /***************************************************
@@ -102,6 +114,66 @@ function EventsMan_pushToServer()
     var newSyncedTime = new Date().getTime(); // only set this if successful
     // TODO set addedcount to 0
 }
+function EventsMan_pullFromServer(complete)
+{
+    $.ajax('get/' + USER_NETID, {
+        dataType: 'json',
+        success: function(data){
+            //var eventsArray = JSON.parse(data);
+            var eventsArray = data;
+            eventsManager.events = {};
+            eventsManager.order = [];
+            for (var i = 0; i < eventsArray.length; i++)
+            {
+                var eventsDict = eventsArray[i];
+                eventsManager.events[eventsDict.event_id] = eventsDict;
+                eventsManager.order.push({'event_start': eventsDict.event_start, 'event_id': eventsDict.event_id});
+            }
+            eventsManager.order.sort(function(a,b){
+                return parseInt(a.event_start) - parseInt(b.event_start);
+            });
+            eventsManager.addedCount = 0;
+            eventsManager.lastSyncedTime = new Date().getTime();
+            if (complete != null)
+                complete();
+            _EventsMan_callUpdateListeners();
+        }
+    });
+}
+
+
+/***************************************************
+ * Client Event Listeners
+ **************************************************/
+
+function _EventsMan_callUpdateListeners()
+{
+    $.each(EventsMan_updateListeners, function(index) {
+        this();
+    });
+}
+function EventsMan_addUpdateListener(listener)
+{
+    EventsMan_updateListeners.push(listener);
+}
+
+// if already ready, calls right away
+function EventsMan_addOnReadyListener(listener)
+{
+    if (EVENTS_READY)
+    {
+        listener();
+        return;
+    }
+    EventsMan_onReadyListeners.push(listener);
+}
+function EventsMan_callOnReadyListeners()
+{
+    $.each(EventsMan_onReadyListeners, function(index){
+        this();
+    });
+    EventsMan_onReadyListeners = null;
+}
 
 /***************************************************
  * Event Listeners
@@ -118,4 +190,10 @@ function EventsMan_clickAddEvent()
     PopUp_setID(popUp, eventsManager.addedCount * -1);
     // request server for new id
     PopUp_giveFocus(popUp);
+}
+
+function EventsMan_clickSync()
+{
+    var $syncButton = $('#sync-button').find('span');
+    $syncButton.addClass('icon-refresh-animate')
 }

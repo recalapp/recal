@@ -137,7 +137,8 @@ class Event_Revision(models.Model):
     # fields
     event_title = models.CharField(max_length=100)
     event_type = models.CharField(max_length=2, choices=TYPE_CHOICES)
-    event_date = models.DateTimeField()
+    event_start = models.DateTimeField()
+    event_end = models.DateTimeField()
     event_description = models.TextField()
     event_location = models.CharField(max_length=100)
     modified_user = models.ForeignKey('User_Profile')
@@ -156,6 +157,7 @@ class User_Profile(models.Model): #EDIT renamed from UserProfile for consistency
 	# put user profile fields here
     name = models.CharField(max_length=100, null=True, blank=True)
     lastActivityTime = models.DateTimeField() 	# last seen time
+    ui_prefs = models.TextField(blank=True, null=True)
     events = models.ManyToManyField(Event, through='Event_Visibility', blank=True,null=True) #TODO this assumes that the relationship exist for all events
     sections = models.ManyToManyField(Section, through='User_Section_Table', blank=True,null=True)
     def __unicode__(self):
