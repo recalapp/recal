@@ -169,7 +169,6 @@ def make_blank_profile(sender, instance, created, **kwargs):
     if created:  
        profile, created = User_Profile.objects.get_or_create(user=instance,lastActivityTime=get_current_utc())  
 post_save.connect(make_blank_profile, sender=User)
-
 class Event_Visibility(models.Model):
     # relationships
     event = models.ForeignKey(Event)
