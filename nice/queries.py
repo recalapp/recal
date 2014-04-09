@@ -19,6 +19,7 @@ def get_events(netid, start_date=None, end_date=None):
     return [__construct_event_dict(event) for event in filtered if event.best_revision() != None]
 
 def modify_events(netid, events):
+    # TODO add a try statement
     user = User.objects.get(username=netid).profile
     for eventDict in events:
         eventDate = timezone.make_aware(datetime.fromtimestamp(float(eventDict.event_date)), timezone.get_default_timezone())

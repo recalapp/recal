@@ -157,8 +157,6 @@ class User_Profile(models.Model): #EDIT renamed from UserProfile for consistency
 	# put user profile fields here
     name = models.CharField(max_length=100, null=True, blank=True)
     lastActivityTime = models.DateTimeField() 	# last seen time
-    events = models.ManyToManyField(Event, through='Event_Visibility') #TODO this assumes that the relationship exist for all events
-    sections = models.ManyToManyField(Section, through=User_Section_Table)
     ui_prefs = models.TextField(blank=True, null=True)
     events = models.ManyToManyField(Event, through='Event_Visibility', blank=True,null=True) #TODO this assumes that the relationship exist for all events
     sections = models.ManyToManyField(Section, through='User_Section_Table', blank=True,null=True)

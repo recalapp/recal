@@ -8,7 +8,7 @@ from nice import views
 
 urlpatterns = patterns('',
     url(r'^login/$', cas.views.login, name='cas_login'),
-	url(r'^logout/$', cas.views.logout, name='cas_logout'),
+    url(r'^logout/$', cas.views.logout, name='cas_logout'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name="index"),
     url(r'^get/(?P<netid>\S+)/(?P<start_date>\d+)/(?P<end_date>\d+)$', views.events_json, name='events-json'),
