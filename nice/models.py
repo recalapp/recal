@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 
 # Create your models here.
 # To start using the database: python manage.py syncdb
@@ -37,9 +38,18 @@ class Section(models.Model):
 
     # fields
     name = models.CharField(max_length=100, default='all_students')
+    isDefault = models.BooleanField(default=False) # if true, then everyone in the course is automatically enrolled in this section
 
     def __unicode__(self):
         return self.course.dept + ' ' + self.course.number + ' - ' + self.name
+        
+        
+# create "All Students" section as soon as a course is created
+def make_default_table(sender, instance, created, **kwargs):  
+    # see http://stackoverflow.com/a/965883/130164
+    if created:  
+       profile, created = Section.objects.get_or_create(course=instance, name='All Students', isDefault=True)  
+post_save.connect(make_default_table, sender=Course)
 
 class User_Section_Table(models.Model):
     # relationships
@@ -140,16 +150,23 @@ class Event_Revision(models.Model):
 # Extend django.contrib.auth User table with custom user profile information.
 
 from django.contrib.auth.models import User
+
 class User_Profile(models.Model): #EDIT renamed from UserProfile for consistency
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='profile', unique=False)
 	# put user profile fields here
-    netid = models.CharField(max_length=30)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, null=True, blank=True)
     lastActivityTime = models.DateTimeField() 	# last seen time
-    events = models.ManyToManyField(Event, through='Event_Visibility') #TODO this assumes that the relationship exist for all events
-    sections = models.ManyToManyField(Section, through=User_Section_Table)
+    events = models.ManyToManyField(Event, through='Event_Visibility', blank=True,null=True) #TODO this assumes that the relationship exist for all events
+    sections = models.ManyToManyField(Section, through='User_Section_Table', blank=True,null=True)
     def __unicode__(self):
-        return self.netid
+        return "%s's profile" % self.user.username
+		
+# create user profile as soon as a user is added
+def make_blank_profile(sender, instance, created, **kwargs):  
+    # see http://stackoverflow.com/a/965883/130164
+    if created:  
+       profile, created = User_Profile.objects.get_or_create(user=instance,lastActivityTime=get_current_utc())  
+post_save.connect(make_blank_profile, sender=User)
 
 class Event_Visibility(models.Model):
     # relationships
@@ -165,3 +182,35 @@ class Event_Visibility(models.Model):
             verb = 'does not see'
         return unicode(self.user) + ' ' + verb + ' ' + unicode(self.event)
 
+
+### HELPER METHODS        
+import datetime
+
+def get_current_utc():
+    '''
+    Returns current time in UTC, perfect for database storage.
+    '''
+    from django.utils.timezone import utc
+    return datetime.datetime.utcnow().replace(tzinfo=utc)
+    
+    
+def seed_db_with_data():
+    '''
+    Inserts some test data: a semester, a course, and an extra section.
+    '''
+    sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1))
+    sem.save()
+    c1 = Course(semester=sem, dept='COS', number='333', name='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
+    c1.save()
+    # Note that once we create a Course, the All Students section is created automatically and marked Default (i.e. all students in the course are automatically enrolled in this section). 
+    extra_section = Section(course=c1, name='Precept A')
+    extra_section.save()
+    
+def clear_all_data():
+    # TODO: add other tables
+    Section.objects.all().delete()
+    Course.objects.all().delete()
+    Semester.objects.all().delete()
+    
+    
+    
