@@ -173,6 +173,7 @@ post_save.connect(make_blank_profile, sender=User)
 class Event_Visibility(models.Model):
     # relationships
     event = models.ForeignKey(Event)
+    test = models.CharField(max_length=1, null=True)
     user = models.ForeignKey(User_Profile) #TODO should this be User instead?
 
     # fields
