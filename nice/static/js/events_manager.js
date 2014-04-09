@@ -191,3 +191,9 @@ function EventsMan_clickAddEvent()
     // request server for new id
     PopUp_giveFocus(popUp);
 }
+
+function EventsMan_clickSync()
+{
+    var $syncButton = $('#sync-button').find('span');
+    $syncButton.addClass('icon-refresh-animate')
+}

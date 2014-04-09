@@ -78,8 +78,11 @@ function Cal_init() {
         if (this.id == "calendar")
         {
             $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function(e) {
-                Cal_render();
-                Cal_reload();
+                if ($(this).hasClass('in'))
+                {
+                    Cal_render();
+                    Cal_reload();
+                }
             });
         }
     });

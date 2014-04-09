@@ -18,8 +18,8 @@ function Agenda_init() {
         if (this.id == "agenda")
         {
             $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function (e){
-                //Agenda_loadFromPopUp();
-                Agenda_reload();
+                if ($(this).hasClass('in'))
+                    Agenda_reload();
             });
         }
     });
@@ -86,8 +86,6 @@ function selectAgenda(agendaAnchor)
     });
     PopUp_setToEventID(popUp, panel.id);
     UI_setMain(panel.id);
-    //PopUp_setID(popUp, panel.id);
-    //PopUp_setTitle(popUp, title);
     PopUp_giveFocus(popUp);
 }
 
