@@ -20,7 +20,7 @@ function Agenda_init() {
         {
             $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function (e){
                 //Agenda_loadFromPopUp();
-                //Agenda_reload();
+                Agenda_reload();
             });
         }
     });
@@ -48,10 +48,9 @@ function Agenda_reload()
         $(agenda).find(".panel-body").find('h4').text(eventDict.event_title);
 
         if (UI_isPinned(agenda.id))
-            Agenda_highlight(panel);
+            Agenda_highlight(agenda);
         if (UI_isMain(agenda.id))
-            Agenda_highlight(panel);
-        // must now highlight main panel
+            Agenda_highlight(agenda);
     });
 }
 

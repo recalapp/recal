@@ -49,12 +49,9 @@ function Cal_init() {
             if (SHIFT_PRESSED)
             {
                 Cal_highlightEvent(calEvent, true);
-                UI_pin(calEvant.id);
-                //calEvent.pinned = true;
-                var popUp = PopUp_insertPopUp(null, false);
+                UI_pin(calEvent.id);
+                var popUp = PopUp_insertPopUp(false);
                 PopUp_setToEventID(popUp, calEvent.id);
-                //PopUp_setID(popUp, calEvent.id);
-                //PopUp_setTitle(popUp, calEvent.title);
                 PopUp_giveFocus(popUp);
                 return;
             }
@@ -65,10 +62,9 @@ function Cal_init() {
                 Cal_unhighlightEvent(this, false);
             });
             Cal_highlightEvent(calEvent, true);
+            UI_setMain(calEvent.id);
 
-            var popUp = PopUp_getMainPopUp(function() {
-                                //calEvent.pinned = true;
-            });
+            var popUp = PopUp_getMainPopUp();
             PopUp_setFirstDrag(popUp, function() {
                 UI_pin(calEvent.id);
             })
