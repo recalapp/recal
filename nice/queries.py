@@ -32,6 +32,6 @@ def __construct_event_dict(event):
         'event_location': rev.event_location,
         'section_id': event.group.section.id,
         'modified_user': rev.modified_user.netid,
-        'modified_time': rev.modified_time.strftime('%s') # does this handle daylight savings?
+        'modified_time': format(rev.modified_time, 'U') # does this handle daylight savings?
     }
     return eventDict
