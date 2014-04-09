@@ -361,6 +361,7 @@ function _PopUp_Form_addOnBlurListener(form, listener)
 
 function PopUp_clickedElement(element)
 {
+    return;
     var popUp = _PopUp_getPopUp(element);
     var form_id = _PopUp_Form_getFormIDForElement(element);
     var form = $(popUp).find("#"+form_id)[0];
