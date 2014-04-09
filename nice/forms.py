@@ -3,7 +3,7 @@ from django.forms.widgets import PasswordInput, Textarea
 
 class EnrollCoursesForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        extra = kwargs.pop('extra')
+        extra = kwargs.pop('extra') # see http://jacobian.org/writing/dynamic-form-generation/
         super(EnrollCoursesForm, self).__init__(*args, **kwargs) # run default initialization
         # process extra elements -- i.e. populate the checkboxes
         for (i, course, isEnrolled) in extra:
@@ -22,9 +22,11 @@ http://www.pythondiary.com/blog/Apr.11,2012/comparing-django-aspnet-mvc.html
 http://stackoverflow.com/questions/4381300/django-forms-list-of-checkboxes-list-of-radiobuttons
 https://docs.djangoproject.com/en/dev/ref/forms/widgets/
 http://stackoverflow.com/questions/6142025/dynamically-add-field-to-a-form
-http://jacobian.org/writing/dynamic-form-generation/ -- this is the most helpful.
+ -- this is the most helpful.
 http://www.b-list.org/weblog/2008/nov/09/dynamic-forms/
 '''
+
+# Below are old, unused example forms.
 
 class ContactForm(forms.Form):
     first_name = forms.CharField()
