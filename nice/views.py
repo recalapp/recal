@@ -78,18 +78,14 @@ def edit_profile(request):
     
     return render(request, "main/edit-profile.html", {'courses_form':form, 'netid': request.user.username})
 	
-@require_GET
-def cas_bypass(request):
+@staff_member_required # this is why this works
+def login_admin(request):
     '''
     For debugging purposes, log in as superuser. Run this after creating a superuser through manage.py.
+    This just presents the admin login screen rather than CAS.
+    Don't forget to visit /logout to logout before using this.
     '''
-    from django.contrib.auth import authenticate, login, logout
-    logout(request) # log out of current user
-    user = authenticate(username='su', password='su_password') # log in with superuser account
-    if user is not None:
-        login(request, user)
-        return HttpResponse("logged in as superuser, now you can go to /admin")
-    return HttpResponse("user not found -- did you give the right superuser credentials?")
+    return redirect('/admin/') # send to admin panel once the staff member has logged in
     
 @staff_member_required 
 def seed_data(request):
