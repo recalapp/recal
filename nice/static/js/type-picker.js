@@ -46,3 +46,7 @@ function TP_keyToText(key)
 {
     return TP_MAP_INVERSE[key];
 }
+function TP_textToKey(text)
+{
+    return TP_MAP[text.toLowerCase()];
+}

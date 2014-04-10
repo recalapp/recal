@@ -16,7 +16,25 @@ function EventsMan_init()
         EventsMan_callOnReadyListeners();
     });
     PopUp_addEditListener(function(id, field, value) {
-        eventsManager.events[id][field] = value;
+        if (field == 'event_type')
+            eventsManager.events[id][field] = TP_textToKey(value);
+        else if (field == 'event_date')
+        {
+            var eventDict = eventsManager.events[id];
+            var startDate = moment.unix(eventDict.event_start);
+            var endDate = moment.unix(eventDict.event_end);
+            var newDate = moment(value);
+            startDate.year(newDate.year());
+            startDate.month(newDate.month());
+            startDate.date(newDate.date());
+            endDate.year(newDate.year());
+            endDate.month(newDate.month());
+            endDate.date(newDate.date());
+            eventDict.event_start = startDate.unix();
+            eventDict.event_end = endDate.unix();
+        }
+        else
+            eventsManager.events[id][field] = value;
     });
 }
 
