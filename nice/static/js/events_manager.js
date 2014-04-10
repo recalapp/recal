@@ -32,6 +32,28 @@ function EventsMan_init()
             endDate.date(newDate.date());
             eventDict.event_start = startDate.unix();
             eventDict.event_end = endDate.unix();
+            $.each(eventsManager.order, function(index) {
+                if (this.event_id == eventDict.event_id)
+                {
+                    this.event_start = eventDict.event_start;
+                }
+            });
+        }
+        else if (field == 'event_start' || field == 'event_end')
+        {
+            value = 'April 25, 2014 ' + value; // gives a dummy date to satisfy moment.js
+            var eventDict = eventsManager.events[id];
+            var oldTime = moment.unix(eventDict[field]);
+            var newTime = moment(value);
+            oldTime.hour(newTime.hour());
+            oldTime.minute(newTime.minute());
+            eventDict[field] = oldTime.unix();
+            $.each(eventsManager.order, function(index) {
+                if (this.event_id == eventDict.event_id)
+                {
+                    this.event_start = eventDict.event_start;
+                }
+            });
         }
         else
             eventsManager.events[id][field] = value;

@@ -8,8 +8,8 @@ var POPUP_EDITDICT = {
     "popup-loc": "event_location",
     "popup-title": "event_title",
     "popup-date": "event_date",
-    'popup-time-start': 'event_time_start',
-    'popup-time-end': 'event_time_end',
+    'popup-time-start': 'event_start',
+    'popup-time-end': 'event_end',
     "popup-type": "event_type",
     "popup-desc": "event_description"
 }
@@ -205,12 +205,12 @@ function PopUp_setDate(popUp, unixTime)
 function PopUp_setStartTime(popUp, unixTime)
 {
     var time = moment.unix(unixTime);
-    $(popUp).find('#popup-time-start').text(time.format("H:mm A"));
+    $(popUp).find('#popup-time-start').text(time.format("h:mm A"));
 }
 function PopUp_setEndTime(popUp, unixTime)
 {
     var time = moment.unix(unixTime);
-    $(popUp).find('#popup-time-end').text(time.format("H:mm A"));
+    $(popUp).find('#popup-time-end').text(time.format("h:mm A"));
 }
 
 
