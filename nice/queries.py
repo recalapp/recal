@@ -1,25 +1,30 @@
 from django.utils.dateformat import format
 from nice.models import *
 from datetime import *
-def get_events(netid, start_date=None, end_date=None):
+def get_events(netid, **kwargs):
     try:
         user = User.objects.get(username=netid).profile
     except Exception, e:
         return []
-    filterDict = {
-        'event_visibility__is_hidden': False,
-        'event_visibility__is_complete': False,
-    }
+    #filterDict = {
+    #    'event_visibility__is_hidden': False,
+    #    'event_visibility__is_complete': False,
+    #}
     #filtered = user.events.filter(**filterDict)
-    allSections = user.sections.all();
+    last_updated = kwargs.pop('last_updated', None)
+    start_date = kwargs.pop('start_date', None)
+    end_date = kwargs.pop('end_date', None)
+    all_sections = user.sections.all()
     filtered = []
-    for section in allSections:
+    for section in all_sections:
         filtered += Event.objects.filter(group__section=section); 
     filtered = [event for event in filtered if event.best_revision() != None]
     if start_date:
-        filtered = [event for event in filtered if event.best_revision().event_date >= start_date]
+        filtered = [event for event in filtered if event.best_revision().event_start >= start_date]
     if end_date:
-        filtered = [event for event in filtered if event.best_revision().event_date <= end_date]
+        filtered = [event for event in filtered if event.best_revision().event_start <= end_date]
+    if last_updated:
+        filtered = [event for event in filtered if event.best_revision().modified_time > last_updated]
     return [__construct_event_dict(event) for event in filtered if event.best_revision() != None]
 
 def modify_events(netid, events):

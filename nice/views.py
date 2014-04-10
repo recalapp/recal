@@ -99,12 +99,14 @@ def delete_data(request):
 	
 
 # for AJAX
-def events_json(request, netid, start_date=None, end_date=None):
+def events_json(request, netid, start_date=None, end_date=None, last_updated=None):
     if start_date:
         start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
     if end_date:
         end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
-    events = queries.get_events(netid, start_date, end_date)
+    if last_updated:
+        last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
+    events = queries.get_events(netid, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), mimetype='application/javascript')
 
     
