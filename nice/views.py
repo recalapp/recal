@@ -110,9 +110,7 @@ def events_json(request, netid, start_date=None, end_date=None, last_updated=Non
     return HttpResponse(json.dumps(events), mimetype='application/javascript')
 
 def modify_events(request, netid):
-    print 'here'
-    #events = request.POST['events']
-    events = []
+    events = json.loads(request.POST['events'])
     ret = queries.modify_events(netid, events)
     return HttpResponse(json.dumps(ret), mimetype='application/javascript')
     
