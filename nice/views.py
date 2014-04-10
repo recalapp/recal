@@ -109,6 +109,12 @@ def events_json(request, netid, start_date=None, end_date=None, last_updated=Non
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), mimetype='application/javascript')
 
+def modify_events(request, netid):
+    print 'here'
+    #events = request.POST['events']
+    events = []
+    ret = queries.modify_events(netid, events)
+    return HttpResponse(json.dumps(ret), mimetype='application/javascript')
     
 # Helper methods
 def user_profile_filled_out(user):

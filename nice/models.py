@@ -166,8 +166,13 @@ class User_Profile(models.Model): #EDIT renamed from UserProfile for consistency
 # create user profile as soon as a user is added
 def make_blank_profile(sender, instance, created, **kwargs):  
     # see http://stackoverflow.com/a/965883/130164
-    if created:  
-       profile, created = User_Profile.objects.get_or_create(user=instance,lastActivityTime=get_current_utc())  
+    # use a try because the first user (super user) is created before other tables are created
+    try:
+        if created:  
+            profile, created = User_Profile.objects.get_or_create(user=instance,lastActivityTime=get_current_utc()) 
+    except Exception, e:
+        pass
+     
 post_save.connect(make_blank_profile, sender=User)
 class Event_Visibility(models.Model):
     # relationships

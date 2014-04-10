@@ -30,42 +30,46 @@ def get_events(netid, **kwargs):
 def modify_events(netid, events):
     # TODO add a try statement
     user = User.objects.get(username=netid).profile
-    for eventDict in events:
-        eventDate = timezone.make_aware(datetime.fromtimestamp(float(eventDict.event_date)), timezone.get_default_timezone())
-        modifiedTime = timezone.make_aware(datetime.fromtimestamp(float(eventDict.modified_time)), timezone.get_default_timezone())
+    changed_ids = {}
+    for event_dict in events:
+        event_date = timezone.make_aware(datetime.fromtimestamp(float(event_dict.event_date)), timezone.get_default_timezone())
+        modified_time = timezone.make_aware(datetime.fromtimestamp(float(event_dict.modified_time)), timezone.get_default_timezone())
         try:
-            event = Event.objects.get(id=eventDict.event_id)
+            event = Event.objects.get(id=event_dict.event_id)
+            # TODO new event group rev?
         except:
             # create a new event group to hold the event
-            section = Section.objects.get(id=eventDict.section_id)
-            eventGroup = Event_Group(section=section)
-            eventGroupRev = Event_Group_Revision(
-                event_group = eventGroup,
-                start_date = eventDate.date(),
-                end_date = eventDate.date(),
+            section = Section.objects.get(id=event_dict.section_id)
+            event_group = Event_Group(section=section)
+            event_group_rev = Event_Group_Revision(
+                event_group = event_group,
+                start_date = event_date.date(),
+                end_date = event_date.date(),
                 modified_user = user,
-                modified_time = modifiedTime
+                modified_time = modified_time
             )
             # save the event group
-            eventGroup.save()
-            eventGroupRev.save()
+            event_group.save()
+            event_group_rev.save()
             # create the actual event
-            event = Event(eventGroup)
+            event = Event(group=event_group)
+            changed_ids[event_dict.event_id] = event.id
 
         # create a new revision
         eventRev = Event_Revision(
             event = event,
-            event_title = eventDict.event_title,
-            event_type = eventDict.event_type,
-            event_date = eventDate,
-            event_description = eventDict.event_description,
-            event_location = eventDict.event_location,
+            event_title = event_dict.event_title,
+            event_type = event_dict.event_type,
+            event_date = event_date,
+            event_description = event_dict.event_description,
+            event_location = event_dict.event_location,
             modified_user = user,
-            modified_time = modifiedTime
+            modified_time = modified_time
         )
         # save
         event.save()
         eventRev.save()
+    return changed_ids
 
 def __construct_event_dict(event):
     rev = event.best_revision()
