@@ -10,7 +10,11 @@ def get_events(netid, start_date=None, end_date=None):
         'event_visibility__is_hidden': False,
         'event_visibility__is_complete': False,
     }
-    filtered = user.events.filter(**filterDict)
+    #filtered = user.events.filter(**filterDict)
+    allSections = user.sections.all();
+    filtered = []
+    for section in allSections:
+        filtered += Event.objects.filter(group__section=section); 
     filtered = [event for event in filtered if event.best_revision() != None]
     if start_date:
         filtered = [event for event in filtered if event.best_revision().event_date >= start_date]
@@ -72,7 +76,7 @@ def __construct_event_dict(event):
         'event_description': rev.event_description,
         'event_location': rev.event_location,
         'section_id': event.group.section.id,
-        'modified_user': rev.modified_user.netid,
+        'modified_user': rev.modified_user.user.username,
         'modified_time': format(rev.modified_time, 'U') # does this handle daylight savings?
     }
     return eventDict
