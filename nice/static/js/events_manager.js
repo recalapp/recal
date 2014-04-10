@@ -15,6 +15,9 @@ function EventsMan_init()
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
     });
+    PopUp_addEditListener(function(id, field, value) {
+        eventsManager.events[id][field] = value;
+    });
 }
 
 function _EventsMan_new()

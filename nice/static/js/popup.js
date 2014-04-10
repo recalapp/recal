@@ -5,11 +5,13 @@ var PopUp_freedSpace = [];
 var PopUp_space = 0;
 var POPUP_INIT = false;
 var POPUP_EDITDICT = {
-    "popup-loc": "location",
-    "popup-title": "title",
-    "popup-date": "date",
-    "popup-type": "type",
-    "popup-desc": "description"
+    "popup-loc": "event_location",
+    "popup-title": "event_title",
+    "popup-date": "event_date",
+    'popup-time-start': 'event_time_start',
+    'popup-time-end': 'event_time_end',
+    "popup-type": "event_type",
+    "popup-desc": "event_description"
 }
 
 
