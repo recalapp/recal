@@ -57,6 +57,7 @@ function EventsMan_init()
         }
         else
             eventsManager.events[id][field] = value;
+        eventsManager.events[id].modified_time = moment().unix()
     });
 
     $(window).on('beforeunload', function() {
@@ -111,12 +112,6 @@ function EventsMan_getEventIDForRange(start, end)
         ret[i] = ret[i].event_id;
     return ret;
 }
-function EventsMan_updateEventForID(id, eventDict)
-{
-    // TODO should verify eventDict
-    eventsManager.events[id] = eventDict;
-    eventDict.updatedTime = new Date().getTime();
-}
 function EventsMan_addEventForID(eventDict)
 {
     // TODO should verify eventDict
@@ -153,17 +148,23 @@ function EventsMan_ready()
 
 function EventsMan_pushToServer()
 {
-    var updated = $(eventsManager.events).filter(function (){
-        return this.updatedTime > eventsManager.lastSyncedTime;
+    var updated = [];
+    $.each(eventsManager.events, function(id, eventDict){
+        if (eventDict.modified_time > eventsManager.lastSyncedTime)
+            updated.push(eventDict);
     });
     var deleted = eventsManager.deletedIDs;
     // TODO call update on server, then when done, reload the data
     $.ajax('put/' + USER_NETID, {
         dataType: 'json',
         type: 'POST',
-        data: updated,
+        data: {
+            events: JSON.stringify(updated),
+        },
         success: function(data){
+            data;
         }
+
     });
     var newSyncedTime = new Date().getTime(); // only set this if successful
     // TODO set addedcount to 0
@@ -190,7 +191,7 @@ function EventsMan_pullFromServer(complete)
                 return parseInt(a.event_start) - parseInt(b.event_start);
             });
             eventsManager.addedCount = 0;
-            eventsManager.lastSyncedTime = new Date().getTime();
+            eventsManager.lastSyncedTime = moment().unix();
             if (complete != null)
                 complete();
             _EventsMan_callUpdateListeners();
@@ -251,6 +252,7 @@ function EventsMan_clickAddEvent()
 
 function EventsMan_clickSync()
 {
-    var $syncButton = $('#sync-button').find('span');
-    $syncButton.addClass('icon-refresh-animate')
+    EventsMan_pushToServer();
+    //var $syncButton = $('#sync-button').find('span');
+    //$syncButton.addClass('icon-refresh-animate')
 }

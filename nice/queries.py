@@ -1,4 +1,6 @@
 from django.utils.dateformat import format
+from django.utils import timezone
+
 from nice.models import *
 from datetime import *
 def get_events(netid, **kwargs):
@@ -32,19 +34,23 @@ def modify_events(netid, events):
     user = User.objects.get(username=netid).profile
     changed_ids = {}
     for event_dict in events:
-        event_date = timezone.make_aware(datetime.fromtimestamp(float(event_dict.event_date)), timezone.get_default_timezone())
-        modified_time = timezone.make_aware(datetime.fromtimestamp(float(event_dict.modified_time)), timezone.get_default_timezone())
+        print float(event_dict['event_start'])
+        event_start = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_start'])), timezone.get_default_timezone())
+        event_end = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_end'])), timezone.get_default_timezone())
+
+        modified_time = timezone.make_aware(datetime.fromtimestamp(float(event_dict['modified_time'])), timezone.get_default_timezone())
+        print 'a'
         try:
-            event = Event.objects.get(id=event_dict.event_id)
+            event = Event.objects.get(id=event_dict['event_id'])
             # TODO new event group rev?
         except:
             # create a new event group to hold the event
-            section = Section.objects.get(id=event_dict.section_id)
+            section = Section.objects.get(id=event_dict['section_id'])
             event_group = Event_Group(section=section)
             event_group_rev = Event_Group_Revision(
                 event_group = event_group,
-                start_date = event_date.date(),
-                end_date = event_date.date(),
+                start_date = event_start.date(),
+                end_date = event_start.date(),
                 modified_user = user,
                 modified_time = modified_time
             )
@@ -53,22 +59,25 @@ def modify_events(netid, events):
             event_group_rev.save()
             # create the actual event
             event = Event(group=event_group)
-            changed_ids[event_dict.event_id] = event.id
-
+            changed_ids[event_dict['event_id']] = event.id
+        print 'c'
         # create a new revision
         eventRev = Event_Revision(
             event = event,
-            event_title = event_dict.event_title,
-            event_type = event_dict.event_type,
-            event_date = event_date,
-            event_description = event_dict.event_description,
-            event_location = event_dict.event_location,
+            event_title = event_dict['event_title'],
+            event_type = event_dict['event_type'],
+            event_start = event_start,
+            event_end = event_end,
+            event_description = event_dict['event_description'],
+            event_location = event_dict['event_location'],
             modified_user = user,
             modified_time = modified_time
         )
         # save
-        event.save()
+        print 'd'
         eventRev.save()
+        event.save()
+    print 'e'
     return changed_ids
 
 def __construct_event_dict(event):
