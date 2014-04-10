@@ -58,6 +58,10 @@ function EventsMan_init()
         else
             eventsManager.events[id][field] = value;
     });
+
+    $(window).on('beforeunload', function() {
+        EventsMan_pushToServer();
+    });
 }
 
 function _EventsMan_new()
@@ -149,11 +153,18 @@ function EventsMan_ready()
 
 function EventsMan_pushToServer()
 {
-    updated = $(eventsManager.events).filter(function (){
+    var updated = $(eventsManager.events).filter(function (){
         return this.updatedTime > eventsManager.lastSyncedTime;
     });
-    deleted = eventsManager.deletedIDs;
+    var deleted = eventsManager.deletedIDs;
     // TODO call update on server, then when done, reload the data
+    $.ajax('put/' + USER_NETID, {
+        dataType: 'json',
+        type: 'POST',
+        data: updated,
+        success: function(data){
+        }
+    });
     var newSyncedTime = new Date().getTime(); // only set this if successful
     // TODO set addedcount to 0
 }
