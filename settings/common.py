@@ -102,7 +102,7 @@ CAS_REDIRECT_URL = '/'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'EST'
+TIME_ZONE = 'America/New_York' # changed from 'EST'
 
 USE_I18N = True
 
