@@ -21,7 +21,7 @@ function _EventsMan_new()
 {
     this.events = {};
     this.order = []; // {start: "start", id: "id"}, keep sorted
-    this.lastSyncedTime = null; // will be set when populating
+    this.lastSyncedTime = 0; // will be set when populating
     this.addedCount = 0;
     this.deletedIDs = [];
     return this;
@@ -116,19 +116,22 @@ function EventsMan_pushToServer()
 }
 function EventsMan_pullFromServer(complete)
 {
-    $.ajax('get/' + USER_NETID, {
+    $.ajax('get/' + USER_NETID + '/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
         success: function(data){
             //var eventsArray = JSON.parse(data);
             var eventsArray = data;
-            eventsManager.events = {};
-            eventsManager.order = [];
             for (var i = 0; i < eventsArray.length; i++)
             {
                 var eventsDict = eventsArray[i];
                 eventsManager.events[eventsDict.event_id] = eventsDict;
+
                 eventsManager.order.push({'event_start': eventsDict.event_start, 'event_id': eventsDict.event_id});
             }
+            eventsManager.order = [];
+            $.each(eventsManager.events, function(key, eventDict){
+                eventsManager.order.push({'event_start': eventDict.event_start, 'event_id': key}); 
+            });
             eventsManager.order.sort(function(a,b){
                 return parseInt(a.event_start) - parseInt(b.event_start);
             });
