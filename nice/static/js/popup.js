@@ -199,17 +199,17 @@ function PopUp_setType(popUp, typeKey)
 }
 function PopUp_setDate(popUp, unixTime)
 {
-    var date = moment.unix(unixTime);
+    var date = moment.unix(unixTime).tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-date').text(date.format("MMMM D, YYYY"));
 }
 function PopUp_setStartTime(popUp, unixTime)
 {
-    var time = moment.unix(unixTime);
+    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-start').text(time.format("h:mm A"));
 }
 function PopUp_setEndTime(popUp, unixTime)
 {
-    var time = moment.unix(unixTime);
+    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-end').text(time.format("h:mm A"));
 }
 

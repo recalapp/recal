@@ -39,6 +39,7 @@ function Cal_init() {
         eventBorderColor: "#428bca",
         allDayDefault: false,
         eventSources: [Cal_eventSource],
+        ignoreTimezone: false,
         eventClick: function(calEvent, jsEvent, view) {
             if (calEvent.highlighted == true)
             {
@@ -105,8 +106,8 @@ function Cal_reload()
         Cal_eventSource.events.push({
             id: eventDict.event_id,
             title: eventDict.event_title,
-            start: eventDict.event_start,
-            end: eventDict.event_end,
+            start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
+            end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
             highlighted: shouldHighlight,
             backgroundColor: shouldHighlight ? '#428be8' : '#74a2ca'
         });
