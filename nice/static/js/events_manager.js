@@ -121,15 +121,35 @@ function EventsMan_getEventIDForRange(start, end)
         ret[i] = ret[i].event_id;
     return ret;
 }
-function EventsMan_addEventForID(eventDict)
+
+function EventsMan_addEvent()
 {
-    // TODO should verify eventDict
-    eventsManager.events[-1 * ++this.addedCount] = eventDict;
-    // TODO contact the server for new id asynchronously, set the ID
-    // when get reply
-    eventDict.updatedTime = moment().unix();
-    // TODO handle new events, maybe set ID = -1?
+    var id = String(-1 * ++eventsManager.addedCount);
+    var curDate = moment();
+
+    var eventDict = {
+        event_id: id,
+        event_group_id: id, // TODO safe?
+        event_title: 'New event',
+        event_type: 'AS',
+        event_start: curDate.unix(),
+        event_end: curDate.minute(curDate.minute() + 50).unix(),
+        event_description: 'Event description',
+        event_location: 'Event location',
+        section_id: id, // TODO what is this? this is NOT safe
+        modified_user: USER_NETID,
+        modified_time: curDate.unix()
+    }
+    eventsManager.events[id] = eventDict;
+    eventsManager.order.push({event_id: id, event_start: eventDict.event_start});
+    eventsManager.order.sort(function(a,b){
+        return parseInt(a.event_start) - parseInt(b.event_start);
+    });
+
+    _EventsMan_callUpdateListeners();
+    return id;
 }
+
 function EventsMan_deleteEvent(id)
 {
     delete eventsManager.events[id];
@@ -157,6 +177,7 @@ function EventsMan_ready()
 
 function EventsMan_pushToServer()
 {
+    return;
     if (!eventsManager.isIdle)
         return;
     eventsManager.isIdle = false;
@@ -270,8 +291,9 @@ function EventsMan_clickAddEvent()
         PopUp_callCloseListeners(PopUp_getID(popUp));
 
     // set new ID
-    eventsManager.addedCount++;
-    PopUp_setID(popUp, eventsManager.addedCount * -1);
+    var id = EventsMan_addEvent();
+    PopUp_setID(popUp, id);
+    PopUp_setToEventID(popUp, id);
     // request server for new id
     PopUp_giveFocus(popUp);
 }

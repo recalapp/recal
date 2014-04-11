@@ -30,10 +30,10 @@ function Agenda_init() {
 
 function Agenda_reload()
 {
-    var startDate = new Date();
-    var endDate = new Date();
-    endDate.setDate(startDate.getDate() + 30);
-    var eventIDs = EventsMan_getEventIDForRange(startDate.getTime() / 1000, endDate.getTime() / 1000);
+    var curDate = moment();
+    var startDate = moment().date(curDate.date() - 1);
+    var endDate = moment().date(curDate.date() + 30);
+    var eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
     var agendaContainer = $("#agenda")
     agendaContainer[0].innerHTML = null;
     $.each(eventIDs, function(index) {
@@ -71,7 +71,7 @@ function selectAgenda(agendaAnchor)
         popUp = PopUp_insertPopUp(false);
         PopUp_setToEventID(popUp, panel.id)
         PopUp_giveFocus(popUp);
-        UI_pin(panel.id);
+        //UI_pin(panel.id);
         return;
     }
     
@@ -81,11 +81,8 @@ function selectAgenda(agendaAnchor)
     Agenda_highlight(panel);
 
     var popUp = PopUp_getMainPopUp();
-    PopUp_setFirstDrag(popUp, function() {
-        UI_pin(panel.id);
-    });
     PopUp_setToEventID(popUp, panel.id);
-    UI_setMain(panel.id);
+    //UI_setMain(panel.id);
     PopUp_giveFocus(popUp);
 }
 
@@ -100,7 +97,7 @@ function Agenda_highlight(agenda)
 function Agenda_unhighlight(agenda)
 {
     $(agenda).addClass("panel-default").removeClass("panel-primary").each(function(index) {
-        UI_unpin(this.id);
+        //UI_unpin(this.id);
     });
 }
 function Agenda_isHighlighted(agenda)

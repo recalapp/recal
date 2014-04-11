@@ -62,6 +62,7 @@ function PopUp_insertPopUp(isMain)
             if (this.firstDrag)
                 this.firstDrag();
             UI_pin(PopUp_getID(popUp));
+            UI_unsetMain();
             this.ondrag = null;
         };
     }
@@ -134,6 +135,7 @@ function PopUp_insertPopUp(isMain)
 
 function PopUp_close(popUp)
 {
+    UI_unpin(PopUp_getID(popUp));
     $(popUp).remove();
 }
 
@@ -179,6 +181,14 @@ function PopUp_getID(popUp)
 function PopUp_setID(popUp, id)
 {
     $(popUp).find(".panel")[0].id = id;
+    if (popUp.id == 'popup-main')
+    {
+        UI_setMain(id)
+    }
+    else 
+    {
+        //UI_pin(id)
+    }
 }
 
 function PopUp_setTitle(popUp, title)

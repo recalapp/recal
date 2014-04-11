@@ -50,7 +50,7 @@ function Cal_init() {
             if (SHIFT_PRESSED)
             {
                 Cal_highlightEvent(calEvent, true);
-                UI_pin(calEvent.id);
+                //UI_pin(calEvent.id);
                 var popUp = PopUp_insertPopUp(false);
                 PopUp_setToEventID(popUp, calEvent.id);
                 PopUp_giveFocus(popUp);
@@ -63,12 +63,9 @@ function Cal_init() {
                 Cal_unhighlightEvent(this, false);
             });
             Cal_highlightEvent(calEvent, true);
-            UI_setMain(calEvent.id);
+            //UI_setMain(calEvent.id);
 
             var popUp = PopUp_getMainPopUp();
-            PopUp_setFirstDrag(popUp, function() {
-                UI_pin(calEvent.id);
-            })
 
             PopUp_setToEventID(popUp, calEvent.id);
             PopUp_giveFocus(popUp);
@@ -89,7 +86,7 @@ function Cal_init() {
     });
     PopUp_addCloseListener(function(id){
         $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){
-            UI_unpin(this.id)
+            //UI_unpin(this.id)
             Cal_unhighlightEvent(this, true);
         });
     });

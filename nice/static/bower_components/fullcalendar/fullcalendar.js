@@ -250,7 +250,7 @@ function Calendar(element, options, eventSources) {
 			initialRender();
 		}
 		else if (elementVisible()) {
-                    // mainly for the public API
+			// mainly for the public API
 			calcSize();
 			_renderView(inc);
 		}
