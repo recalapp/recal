@@ -8,11 +8,6 @@ def get_events(netid, **kwargs):
         user = User.objects.get(username=netid).profile
     except Exception, e:
         return []
-    #filterDict = {
-    #    'event_visibility__is_hidden': False,
-    #    'event_visibility__is_complete': False,
-    #}
-    #filtered = user.events.filter(**filterDict)
     last_updated = kwargs.pop('last_updated', None)
     start_date = kwargs.pop('start_date', None)
     end_date = kwargs.pop('end_date', None)
@@ -34,12 +29,10 @@ def modify_events(netid, events):
     user = User.objects.get(username=netid).profile
     changed_ids = {}
     for event_dict in events:
-        print float(event_dict['event_start'])
         event_start = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_start'])), timezone.get_default_timezone())
         event_end = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_end'])), timezone.get_default_timezone())
 
         modified_time = timezone.make_aware(datetime.fromtimestamp(float(event_dict['modified_time'])), timezone.get_default_timezone())
-        print 'a'
         try:
             event = Event.objects.get(id=event_dict['event_id'])
             # TODO new event group rev?
@@ -60,7 +53,6 @@ def modify_events(netid, events):
             # create the actual event
             event = Event(group=event_group)
             changed_ids[event_dict['event_id']] = event.id
-        print 'c'
         # create a new revision
         eventRev = Event_Revision(
             event = event,
@@ -74,10 +66,8 @@ def modify_events(netid, events):
             modified_time = modified_time
         )
         # save
-        print 'd'
         eventRev.save()
         event.save()
-    print 'e'
     return changed_ids
 
 def __construct_event_dict(event):
@@ -98,5 +88,3 @@ def __construct_event_dict(event):
         'modified_time': format(rev.modified_time, 'U') # does this handle daylight savings?
     }
     return eventDict
-    
-    
