@@ -117,6 +117,20 @@ def modify_events(request):
     events = json.loads(request.POST['events'])
     ret = queries.modify_events(netid, events)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
+
+def state_restoration(request):
+    netid = request.user.username
+    # TODO what to return when null?
+    state_restoration = queries.get_state_restoration(netid=netid)
+    if state_restoration:
+        return HttpResponse(state_restoration, content_type='application/javascript')
+    else:
+        return HttpResponse('')
+
+def save_state_restoration(request):
+    netid = request.user.username
+    state_restoration = request.POST['state_restoration']
+    return HttpResponse(str(int(queries.save_state_restoration(netid=netid, state_restoration=state_restoration))))
     
 # Helper methods
 def user_profile_filled_out(user):

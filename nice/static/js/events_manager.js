@@ -252,6 +252,7 @@ function EventsMan_clickAddEvent()
 function EventsMan_clickSync()
 {
     EventsMan_pushToServer();
+    SR_save();
     //var $syncButton = $('#sync-button').find('span');
     //$syncButton.addClass('icon-refresh-animate')
 }

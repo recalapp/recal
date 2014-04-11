@@ -1,8 +1,6 @@
 $(init)
 var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
-pinnedIDs = new Set();
-mainID = null;
 var csrftoken = $.cookie('csrftoken');
 
 function init()
@@ -54,26 +52,31 @@ function init()
             }
         }
     });
+    pinnedIDs = new Set();
+    mainID = null;
+    SR_init();
     CacheMan_init();
     EventsMan_init();
-    Nav_load();
-    UI_load();
     PopUp_init();
     Agenda_init();
     Cal_init();
-    $(window).bind("beforeunload", function(){
+    SR_addWillSaveListener(function (){
         Nav_save();
         UI_save();
+    });
+    SR_addDidLoadListener(function (){
+        Nav_load();
+        UI_load();
     });
 }
 function Nav_save()
 {
     var id = $("#maintab").find(".active").find("a")[0].id;
-    $.cookie("nav_page", NAV_ID.indexOf(id));
+    SR_put("nav_page", NAV_ID.indexOf(id));
 }
 function Nav_load()
 {
-    var index = $.cookie("nav_page");
+    var index = SR_get("nav_page");
     if (index == null)
         return;
     $("#maintab #"+NAV_ID[index]).tab("show");
@@ -129,24 +132,24 @@ function UI_unsetMain()
 }
 function UI_save()
 {
-    $.cookie('pinned_IDs', JSON.stringify(pinnedIDs));
-    if (mainID != null)
-        $.cookie('main_ID', mainID);
+    SR_put('pinned_IDs', JSON.stringify(pinnedIDs));
+    SR_put('main_ID', mainID);
 }
 function UI_load()
 {
-    if ($.cookie('pinned_IDs') != null)
+    if (SR_get('pinned_IDs') != null)
     {
-        var savedPinnedIDs = JSON.parse($.cookie('pinned_IDs'));
+        var savedPinnedIDs = JSON.parse(SR_get('pinned_IDs'));
         $.each(savedPinnedIDs, function (key, value) {
             UI_pin(key);
         });
-        $.removeCookie('pinned_IDs');
-    }
-    if ($.cookie('main_ID') != null)
+        //$.removeCookie('pinned_IDs');
+    } 
+    if (SR_get('main_ID') != null)
     {
-        UI_setMain($.cookie('main_ID'));
-        $.removeCookie('main_ID')
+        if (SR_get('main_ID') != 'null')
+            UI_setMain(SR_get('main_ID'));
+        //$.removeCookie('main_ID')
     }
 }
 
