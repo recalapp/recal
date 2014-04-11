@@ -30,8 +30,7 @@ def index(request):
         return redirect('edit_profile')
     return render_to_response('main/index.html', {
         'username': request.user.username,
-    }, context_instance=RequestContext(request));
-    
+    }, context_instance=RequestContext(request))
 
 # loading templates
 
@@ -41,6 +40,10 @@ def agenda(request):
     return render(request, 'main/agenda.html', None)
 def typepicker(request):
     return render(request, 'main/type-picker.html', None)
+def sectionpicker(request):
+    return render_to_response('main/section-picker.html', {
+        'all_sections': request.user.profile.sections.all(),
+    }, context_instance=RequestContext(request))
 
 @login_required
 def edit_profile(request):
@@ -131,6 +134,12 @@ def save_state_restoration(request):
     netid = request.user.username
     state_restoration = request.POST['state_restoration']
     return HttpResponse(str(int(queries.save_state_restoration(netid=netid, state_restoration=state_restoration))))
+
+def all_sections(request):
+    all_sections = {}
+    for section in request.user.profile.sections.all():
+        all_sections[section.id] = unicode(section)
+    return HttpResponse(json.dumps(all_sections), content_type='application/javascript')
     
 # Helper methods
 def user_profile_filled_out(user):

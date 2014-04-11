@@ -106,8 +106,11 @@ def __construct_event_dict(event):
         'event_end': format(rev.event_end, 'U'),
         'event_description': rev.event_description,
         'event_location': rev.event_location,
-        'section_id': event.group.section.id,
+        'section': {
+            'section_id': event.group.section.id,
+            'section_name': unicode(event.group.section)
+        },
         'modified_user': rev.modified_user.user.username,
-        'modified_time': format(rev.modified_time, 'U') # does this handle daylight savings?
+        'modified_time': format(rev.modified_time, 'U')
     }
     return eventDict

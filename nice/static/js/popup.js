@@ -111,14 +111,14 @@ function PopUp_insertPopUp(isMain)
         minuteStep: 10
     });
     var htmlcontent = CacheMan_load("type-picker")
-    $(popUp).find(".withcustompicker").popover({
+    $(popUp).find(".withtypepicker").popover({
         placement: "left",
         trigger: "focus",
         html: true,
         content: htmlcontent,
         container: 'body'
     })
-    var input = $(popUp).find(".withcustompicker")[0];
+    var input = $(popUp).find(".withtypepicker")[0];
     $(input).on("shown.bs.popover", function(){
         var tp = $("#type-picker123")[0];
         tp.id = "";
@@ -393,7 +393,7 @@ function PopUp_clickedElement(element)
         _PopUp_Form_addOnBlurListener(form, function(){
             PopUp_clickedSaveElement(form);
         });
-        if ($(form).find("input").hasClass("withcustompicker"))
+        if ($(form).find("input").hasClass("withtypepicker"))
         {
             $(form).find("input").on("change keyup paste", function(){
                 var tp = $(form).find("input")[0].tp;
@@ -411,7 +411,7 @@ function PopUp_clickedSaveElement(form)
         _PopUp_Form_giveFocus(form);
         return;
     }
-    if ($(form).find("input").hasClass("withcustompicker") && !TP_validateType(_PopUp_Form_getValue(form)))
+    if ($(form).find("input").hasClass("withtypepicker") && !TP_validateType(_PopUp_Form_getValue(form)))
     {
         _PopUp_Form_giveFocus(form);
         return;

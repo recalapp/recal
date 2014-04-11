@@ -146,7 +146,6 @@ function EventsMan_addEvent()
         return parseInt(a.event_start) - parseInt(b.event_start);
     });
 
-    _EventsMan_callUpdateListeners();
     return id;
 }
 
@@ -292,10 +291,11 @@ function EventsMan_clickAddEvent()
 
     // set new ID
     var id = EventsMan_addEvent();
-    PopUp_setID(popUp, id);
     PopUp_setToEventID(popUp, id);
+    
     // request server for new id
     PopUp_giveFocus(popUp);
+    _EventsMan_callUpdateListeners();
 }
 
 function EventsMan_clickSync()

@@ -1,0 +1,5 @@
+<div id="section-picker123" class="section-picker btn-group-vertical btn-group-sm">
+    {% for section in all_sections %}
+        <button id="{{ section.id }}" type="button" class="btn btn-default" onclick="SP_clickedSection(this)">{{ section }}</button>
+    {% endfor %}
+</div>
