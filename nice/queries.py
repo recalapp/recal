@@ -1,6 +1,8 @@
 from django.utils.dateformat import format
 from django.utils import timezone
 
+import json
+
 from nice.models import *
 from datetime import *
 def get_events(netid, **kwargs):
@@ -12,6 +14,11 @@ def get_events(netid, **kwargs):
     start_date = kwargs.pop('start_date', None)
     end_date = kwargs.pop('end_date', None)
     all_sections = user.sections.all()
+    hidden_events = user.hidden_events
+    if hidden_events:
+        hidden_events = json.loads(hidden_events)
+    else:
+        hidden_events = []
     filtered = []
     for section in all_sections:
         filtered += Event.objects.filter(group__section=section); 
@@ -22,7 +29,7 @@ def get_events(netid, **kwargs):
         filtered = [event for event in filtered if event.best_revision().event_start <= end_date]
     if last_updated:
         filtered = [event for event in filtered if event.best_revision().modified_time > last_updated]
-    return [__construct_event_dict(event) for event in filtered if event.best_revision() != None]
+    return [__construct_event_dict(event) for event in filtered if event.id not in hidden_events]
 
 def modify_events(netid, events):
     # TODO add a try statement
