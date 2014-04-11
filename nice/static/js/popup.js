@@ -29,9 +29,10 @@ function PopUp_init()
     EventsMan_addOnReadyListener(function(){
         PopUp_load();
     });
-    $(window).on("beforeunload", function() {
+
+    SR_addWillSaveListener(function (){
         PopUp_save();
-    });
+    })
 }
 
 /***************************************************
@@ -248,13 +249,13 @@ function PopUp_save()
         pos.push(posDict);
     });
     var data = JSON.stringify(pos);
-    $.cookie("popup_pos", data);
+    SR_put('popup', data);
 }
 function PopUp_load()
 {
-    if ($.cookie("popup_pos") == null)
+    if (SR_get('popup') == null)
         return;
-    var pos = JSON.parse($.cookie("popup_pos"));
+    var pos = JSON.parse(SR_get('popup'));
     $(pos).each(function(index) {
         popUp = PopUp_insertPopUp(this.isMain);
         $(popUp).css("left", this.frame[0]);

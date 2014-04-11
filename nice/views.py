@@ -101,7 +101,8 @@ def delete_data(request):
 	
 
 # for AJAX
-def events_json(request, netid, start_date=None, end_date=None, last_updated=None):
+def events_json(request, start_date=None, end_date=None, last_updated=None):
+    netid = request.user.username
     if start_date:
         start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
     if end_date:
@@ -111,10 +112,25 @@ def events_json(request, netid, start_date=None, end_date=None, last_updated=Non
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
 
-def modify_events(request, netid):
+def modify_events(request):
+    netid = request.user.username
     events = json.loads(request.POST['events'])
     ret = queries.modify_events(netid, events)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
+
+def state_restoration(request):
+    netid = request.user.username
+    # TODO what to return when null?
+    state_restoration = queries.get_state_restoration(netid=netid)
+    if state_restoration:
+        return HttpResponse(state_restoration, content_type='application/javascript')
+    else:
+        return HttpResponse('')
+
+def save_state_restoration(request):
+    netid = request.user.username
+    state_restoration = request.POST['state_restoration']
+    return HttpResponse(str(int(queries.save_state_restoration(netid=netid, state_restoration=state_restoration))))
     
 # Helper methods
 def user_profile_filled_out(user):

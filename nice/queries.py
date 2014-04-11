@@ -77,6 +77,22 @@ def modify_events(netid, events):
         event.save()
     return changed_ids
 
+def save_state_restoration(netid, state_restoration):
+    try:
+        user = User.objects.get(username=netid).profile
+        user.ui_state_restoration = state_restoration
+        user.save()
+        return True
+    except Exception, e:
+        return False
+    
+def get_state_restoration(netid):
+    try:
+        user = User.objects.get(username=netid).profile
+        return user.ui_state_restoration 
+    except Exception, e:
+        return None
+    
 def __construct_event_dict(event):
     rev = event.best_revision()
     assert rev != None;

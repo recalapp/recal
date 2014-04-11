@@ -154,7 +154,7 @@ function EventsMan_pushToServer()
     });
     var deleted = eventsManager.deletedIDs;
     // TODO call update on server, then when done, reload the data
-    $.ajax('put/' + USER_NETID, {
+    $.ajax('put', {
         dataType: 'json',
         type: 'POST',
         data: {
@@ -170,7 +170,7 @@ function EventsMan_pushToServer()
 }
 function EventsMan_pullFromServer(complete)
 {
-    $.ajax('get/' + USER_NETID + '/' + eventsManager.lastSyncedTime, {
+    $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
         success: function(data){
             //var eventsArray = JSON.parse(data);
@@ -252,6 +252,7 @@ function EventsMan_clickAddEvent()
 function EventsMan_clickSync()
 {
     EventsMan_pushToServer();
+    SR_save();
     //var $syncButton = $('#sync-button').find('span');
     //$syncButton.addClass('icon-refresh-animate')
 }
