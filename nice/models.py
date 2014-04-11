@@ -166,7 +166,8 @@ class User_Profile(models.Model): #EDIT renamed from UserProfile for consistency
 # create user profile as soon as a user is added
 def make_blank_profile(sender, instance, created, **kwargs):  
     # see http://stackoverflow.com/a/965883/130164
-    # use a try because the first user (super user) is created before other tables are created
+    # Use a try because the first user (super user) is created before other tables are created.
+    # That is, this fails during syncdb upon initial database setup, because it creates a superuser before User_Profile table is added (we add that by running migrations after).
     try:
         if created:  
             profile, created = User_Profile.objects.get_or_create(user=instance,lastActivityTime=get_current_utc()) 
