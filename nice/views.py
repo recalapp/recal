@@ -28,7 +28,9 @@ def index(request):
         return redirect('cas_login')
     if not user_profile_filled_out(request.user):
         return redirect('edit_profile')
-    return render(request, 'main/index.html', None)
+    return render_to_response('main/index.html', {
+        'username': request.user.username,
+    }, context_instance=RequestContext(request));
     
 
 # loading templates

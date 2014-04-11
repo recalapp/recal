@@ -1,7 +1,6 @@
 var eventsManager = null;
 var EventsMan_updateListeners = [];
 var EventsMan_onReadyListeners = [];
-var USER_NETID = 'naphats';
 var EVENTS_INIT = false;
 var EVENTS_READY = false;
 
