@@ -109,12 +109,12 @@ def events_json(request, netid, start_date=None, end_date=None, last_updated=Non
     if last_updated:
         last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
-    return HttpResponse(json.dumps(events), mimetype='application/javascript')
+    return HttpResponse(json.dumps(events), content_type='application/javascript')
 
 def modify_events(request, netid):
     events = json.loads(request.POST['events'])
     ret = queries.modify_events(netid, events)
-    return HttpResponse(json.dumps(ret), mimetype='application/javascript')
+    return HttpResponse(json.dumps(ret), content_type='application/javascript')
     
 # Helper methods
 def user_profile_filled_out(user):

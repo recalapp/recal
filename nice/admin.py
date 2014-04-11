@@ -9,7 +9,6 @@ admin.site.register(Event_Group_Revision)
 admin.site.register(Event_Revision)
 admin.site.register(Course)
 admin.site.register(Section)
-admin.site.register(Event_Visibility)
 admin.site.register(User_Section_Table)
 admin.site.register(Semester)
 

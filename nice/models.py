@@ -157,9 +157,9 @@ class User_Profile(models.Model): #EDIT renamed from UserProfile for consistency
 	# put user profile fields here
     name = models.CharField(max_length=100, null=True, blank=True)
     lastActivityTime = models.DateTimeField() 	# last seen time
-    #ui_prefs = models.TextField(blank=True, null=True)
-    events = models.ManyToManyField(Event, through='Event_Visibility', blank=True,null=True) #TODO this assumes that the relationship exist for all events
     sections = models.ManyToManyField(Section, through='User_Section_Table', blank=True,null=True)
+    ui_state_restoration = models.TextField(blank=True,null=True)
+    hidden_events = models.TextField(blank=True,null=True)
     def __unicode__(self):
         return "%s's profile" % self.user.username
 		
@@ -175,20 +175,6 @@ def make_blank_profile(sender, instance, created, **kwargs):
         pass
      
 post_save.connect(make_blank_profile, sender=User)
-class Event_Visibility(models.Model):
-    # relationships
-    event = models.ForeignKey(Event)
-    user = models.ForeignKey(User_Profile) #TODO should this be User instead?
-
-    # fields
-    is_hidden = models.BooleanField(default=False)
-    is_complete = models.BooleanField(default=False)
-    def __unicode__(self):
-        verb = 'sees'
-        if self.is_hidden or self.is_complete:
-            verb = 'does not see'
-        return unicode(self.user) + ' ' + verb + ' ' + unicode(self.event)
-
 
 ### HELPER METHODS        
 import datetime
