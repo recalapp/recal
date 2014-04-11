@@ -37,6 +37,9 @@ function EventsMan_init()
                     this.event_start = eventDict.event_start;
                 }
             });
+            eventsManager.order.sort(function(a,b){
+                return parseInt(a.event_start) - parseInt(b.event_start);
+            });
         }
         else if (field == 'event_start' || field == 'event_end')
         {
@@ -53,15 +56,21 @@ function EventsMan_init()
                     this.event_start = eventDict.event_start;
                 }
             });
+            eventsManager.order.sort(function(a,b){
+                return parseInt(a.event_start) - parseInt(b.event_start);
+            });
         }
         else
             eventsManager.events[id][field] = value;
         eventsManager.events[id].modified_time = moment().unix()
+        _EventsMan_callUpdateListeners()
     });
 
     $(window).on('beforeunload', function() {
         EventsMan_pushToServer();
     });
+
+    window.setInterval("EventsMan_pushToServer(); EventsMan_pullFromServer();", 60 * 1000);
 }
 
 function _EventsMan_new()
@@ -71,6 +80,7 @@ function _EventsMan_new()
     this.lastSyncedTime = 0; // will be set when populating
     this.addedCount = 0;
     this.deletedIDs = [];
+    this.isIdle = true;
     return this;
 }
 
@@ -117,7 +127,7 @@ function EventsMan_addEventForID(eventDict)
     eventsManager.events[-1 * ++this.addedCount] = eventDict;
     // TODO contact the server for new id asynchronously, set the ID
     // when get reply
-    eventDict.updatedTime = new Date().getTime();
+    eventDict.updatedTime = moment().unix();
     // TODO handle new events, maybe set ID = -1?
 }
 function EventsMan_deleteEvent(id)
@@ -147,29 +157,43 @@ function EventsMan_ready()
 
 function EventsMan_pushToServer()
 {
+    if (!eventsManager.isIdle)
+        return;
+    eventsManager.isIdle = false;
     var updated = [];
     $.each(eventsManager.events, function(id, eventDict){
         if (eventDict.modified_time > eventsManager.lastSyncedTime)
             updated.push(eventDict);
     });
-    var deleted = eventsManager.deletedIDs;
-    // TODO call update on server, then when done, reload the data
-    $.ajax('put', {
-        dataType: 'json',
-        type: 'POST',
-        data: {
-            events: JSON.stringify(updated),
-        },
-        success: function(data){
-            data;
-        }
+    if (updated.length > 0)
+    {
+        $.ajax('put', {
+            dataType: 'json',
+            type: 'POST',
+            data: {
+                events: JSON.stringify(updated),
+            },
+            success: function(data){
+                // TODO add code for changing ID for created events
 
-    });
-    var newSyncedTime = new Date().getTime(); // only set this if successful
-    // TODO set addedcount to 0
+                eventsManager.isIdle = true;
+                eventsManager.addedCount = 0;
+
+                EventsMan_pullFromServer();
+            }
+        });
+    } else {
+        eventsManager.isIdle = true;
+    }
+
+    // TODO add code for hiding events
+    var deleted = eventsManager.deletedIDs;
 }
 function EventsMan_pullFromServer(complete)
 {
+    if (!eventsManager.isIdle)
+        return;
+    eventsManager.isIdle = false;
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
         success: function(data){
@@ -191,6 +215,9 @@ function EventsMan_pullFromServer(complete)
             });
             eventsManager.addedCount = 0;
             eventsManager.lastSyncedTime = moment().unix();
+
+            eventsManager.isIdle = true;
+
             if (complete != null)
                 complete();
             _EventsMan_callUpdateListeners();
