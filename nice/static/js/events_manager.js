@@ -153,8 +153,19 @@ function EventsMan_addEvent()
 
 function EventsMan_deleteEvent(id)
 {
+    eventsManager.events[id] = null;
     delete eventsManager.events[id];
+    var dIndex = null;
+    $.each(eventsManager.order, function(index){
+        if (this.event_id == id)
+        {
+            dIndex = index;
+            return false;
+        }
+    });
+    eventsManager.order.splice(dIndex, 1);
     eventsManager.deletedIDs.push(id);
+    _EventsMan_callUpdateListeners();
 }
 
 function EventsMan_ready()
@@ -186,13 +197,15 @@ function EventsMan_pushToServer()
         if (eventDict.modified_time > eventsManager.lastSyncedTime)
             updated.push(eventDict);
     });
-    if (updated.length > 0)
+    var deleted = eventsManager.deletedIDs;
+    if (updated.length > 0 || deleted.length > 0)
     {
         $.ajax('put', {
             dataType: 'json',
             type: 'POST',
             data: {
                 events: JSON.stringify(updated),
+                hide: JSON.stringify(deleted)
             },
             success: function(data){
                 $.each(data, function(oldID, newID){
@@ -211,6 +224,7 @@ function EventsMan_pushToServer()
                 });
                 eventsManager.isIdle = true;
                 eventsManager.addedCount = 0;
+                eventsManager.deletedIDs = [];
 
                 EventsMan_pullFromServer();
             }
@@ -218,9 +232,6 @@ function EventsMan_pushToServer()
     } else {
         eventsManager.isIdle = true;
     }
-
-    // TODO add code for hiding events
-    var deleted = eventsManager.deletedIDs;
 }
 function EventsMan_pullFromServer(complete)
 {

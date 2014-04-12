@@ -82,6 +82,32 @@ def modify_events(netid, events):
         event.save()
     return changed_ids
 
+def hide_events(netid, event_IDs):
+    user = User.objects.get(username=netid).profile
+    hidden_events = user.hidden_events
+    if hidden_events:
+        hidden_events = json.loads(hidden_events)
+    else:
+        hidden_events = []
+    for event_id in event_IDs:
+        try:
+            event = Event.objects.get(id=event_id) # verify that id exists
+            hidden_events.append(event.id)
+        except Exception, e:
+            pass
+    user.hidden_events = json.dumps(hidden_events)
+    user.save()
+    
+def get_hidden_events(netid):
+    user = User.objects.get(username=netid).profile
+    hidden_events = user.hidden_events
+    if hidden_events:
+        hidden_events = json.loads(hidden_events)
+    else:
+        hidden_events = []
+    return hidden_events
+
+
 def save_state_restoration(netid, state_restoration):
     try:
         user = User.objects.get(username=netid).profile
