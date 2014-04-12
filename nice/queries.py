@@ -25,14 +25,14 @@ def get_events(netid, **kwargs):
     filtered = []
     for section in all_sections:
         filtered += Event.objects.filter(group__section=section); 
-    filtered = [event for event in filtered if event.best_revision() != None]
+    filtered = [event for event in filtered if event.best_revision(netid=netid) != None]
     if start_date:
-        filtered = [event for event in filtered if event.best_revision().event_start >= start_date]
+        filtered = [event for event in filtered if event.best_revision(netid=netid).event_start >= start_date]
     if end_date:
-        filtered = [event for event in filtered if event.best_revision().event_start <= end_date]
+        filtered = [event for event in filtered if event.best_revision(netid=netid).event_start <= end_date]
     if last_updated:
-        filtered = [event for event in filtered if event.best_revision().modified_time > last_updated]
-    return [__construct_event_dict(event) for event in filtered if event.id not in hidden_events]
+        filtered = [event for event in filtered if event.best_revision(netid=netid).modified_time > last_updated]
+    return [__construct_event_dict(event, netid=netid) for event in filtered if event.id not in hidden_events]
 
 def modify_events(netid, events):
     # TODO add a try statement
@@ -134,8 +134,8 @@ def get_state_restoration(netid):
     except Exception, e:
         return None
         
-def __construct_event_dict(event):
-    rev = event.best_revision()
+def __construct_event_dict(event, netid=None):
+    rev = event.best_revision(netid=netid)
     assert rev != None;
     # TODO add recurrence info
     eventDict = {

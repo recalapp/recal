@@ -106,10 +106,26 @@ class Event(models.Model):
         if self.best_revision():
             return 'event %d: %s' % (self.id, unicode(self.best_revision()))
         return 'event %d: no approved revisions' % (self.id)
-    def best_revision(self):
+    def best_revision(self, netid=None):
+        """
+        Returns the best event revision to show to a user.
+        
+        Returns: the latest approved revision or the user's own version -- whichever is newer.
+        
+        That is, if there's a new approved revision after a user's own version, they see the new approved one.
+        Or if they've changed the event since the last approved revision, even if their revision hasn't been approved yet for global viewing,
+        they still see their revision.
+        
+        Arguments: username (optional). If not specified, returns globally-seen last approved revision.
+        """
         if self.event_revision_set.all():
-            return self.event_revision_set.filter(approved=True).latest('modified_time')
-        return None
+            latest_approved = self.event_revision_set.filter(approved=True).latest('modified_time')
+            if netid:
+                latest_mine = self.event_revision_set.filter(modified_user__user__username=netid).latest('modified_time')
+                if latest_mine.modified_time > latest_approved.modified_time: 
+                    return latest_mine # their own revision is newest, so show that
+            return latest_approved # show the latest approved revision because the user's revisions don't exist or are older
+        return None # no revisions available
 
 class Event_Revision(models.Model):
     # constants
