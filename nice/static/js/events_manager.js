@@ -17,6 +17,8 @@ function EventsMan_init()
     PopUp_addEditListener(function(id, field, value) {
         if (field == 'event_type')
             eventsManager.events[id][field] = TP_textToKey(value);
+        else if (field == 'section_id')
+            eventsManager.events[id][field] = SP_textToKey(value);
         else if (field == 'event_date')
         {
             var eventDict = eventsManager.events[id];

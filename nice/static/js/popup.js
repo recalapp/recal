@@ -11,6 +11,7 @@ var POPUP_EDITDICT = {
     'popup-time-start': 'event_start',
     'popup-time-end': 'event_end',
     "popup-type": "event_type",
+    "popup-section": "section_id",
     "popup-desc": "event_description"
 }
 
@@ -112,7 +113,7 @@ function PopUp_insertPopUp(isMain)
     });
     var htmlcontent = CacheMan_load("type-picker")
     $(popUp).find(".withtypepicker").popover({
-        placement: "left",
+        placement: "left auto",
         trigger: "focus",
         html: true,
         content: htmlcontent,
@@ -128,6 +129,24 @@ function PopUp_insertPopUp(isMain)
         var inputField = this;
         TP_setSelectListener(function(tp, selectedType){
             $(inputField).val(selectedType);
+        });
+    });
+
+    $(popUp).find('.withsectionpicker').popover({
+        placement: 'left auto',
+        trigger: 'focus', 
+        html: true,
+        content: CacheMan_load('section-picker'),
+        container: 'body'
+    }).on('shown.bs.popover', function(){
+        var sp = $('#section-picker123')[0];
+        sp.id = '';
+        this.sp = sp;
+        var section = $(this).val();
+        SP_select(this.sp, section);
+        var inputField = this;
+        SP_setSelectListener(function(sp, selectedSection){
+            $(inputField).val(selectedSection);
         });
     });
     return popUp;
@@ -167,6 +186,7 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setTitle(popUp, eventDict.event_title);
     PopUp_setDescription(popUp, eventDict.event_description);
     PopUp_setLocation(popUp, eventDict.event_location);
+    PopUp_setSection(popUp, eventDict.section_id);
     PopUp_setType(popUp, eventDict.event_type);
     PopUp_setDate(popUp, eventDict.event_start);
     PopUp_setStartTime(popUp, eventDict.event_start);
@@ -202,6 +222,10 @@ function PopUp_setDescription(popUp, desc)
 function PopUp_setLocation(popUp, loc)
 {
     $(popUp).find('#popup-loc').text(loc);
+}
+function PopUp_setSection(popUp, sectionKey)
+{
+    $(popUp).find('#popup-section').text(SP_keyToText(sectionKey));
 }
 function PopUp_setType(popUp, typeKey)
 {
@@ -400,6 +424,13 @@ function PopUp_clickedElement(element)
                 TP_select(tp, $(form).find("input").val());
             });
         }
+        if ($(form).find('input').hasClass('withsectionpicker'))
+        {
+            $(form).find('input').on('change keyup paste', function(){
+                var sp = $(form).find('input')[0].sp;
+                SP_select(sp, $(form).find('input').val());
+            });
+        }
     }
     //$(form).find("input").data("datetimepicker");
     //$(form).find("input").datetimepicker();
@@ -412,6 +443,11 @@ function PopUp_clickedSaveElement(form)
         return;
     }
     if ($(form).find("input").hasClass("withtypepicker") && !TP_validateType(_PopUp_Form_getValue(form)))
+    {
+        _PopUp_Form_giveFocus(form);
+        return;
+    }
+    if ($(form).find('input').hasClass('withsectionpicker') && !SP_validateSection(_PopUp_Form_getValue(form)))
     {
         _PopUp_Form_giveFocus(form);
         return;
