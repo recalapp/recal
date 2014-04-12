@@ -37,10 +37,14 @@ function SR_load()
 function SR_save()
 {
     SR_callWillSaveListeners();
-    $.post('put/state-restoration', {
-        state_restoration: JSON.stringify(SR_manager),
-    }, function (data, textStatus, jqXHR) {
-    }, 'json');
+    $.ajax('put/state-restoration', {
+        dataType: 'json',
+        type: 'POST',
+        data: {
+            state_restoration: JSON.stringify(SR_manager),
+        }, 
+        async: false,
+    });
 }
 
 function SR_addWillSaveListener(listener)
