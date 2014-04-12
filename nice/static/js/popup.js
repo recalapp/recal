@@ -40,6 +40,11 @@ function PopUp_init()
                 PopUp_setID(popUp, newID);
         });
     });
+    EventsMan_addUpdateListener(function(){
+        PopUp_map(function(popUp, isMain){
+            PopUp_setToEventID(popUp, PopUp_getID(popUp));
+        });
+    });
 }
 
 /***************************************************
