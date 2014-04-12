@@ -34,6 +34,12 @@ function PopUp_init()
     SR_addWillSaveListener(function (){
         PopUp_save();
     })
+    EventsMan_addEventIDsChangeListener(function(oldID, newID){
+        PopUp_map(function(popUp, isMain){
+            if (PopUp_getID(popUp) == oldID)
+                PopUp_setID(popUp, newID);
+        });
+    });
 }
 
 /***************************************************
@@ -461,12 +467,19 @@ function PopUp_clickedSaveElement(form)
 }
 function PopUp_clickedClose(popUpAnchor)
 {
-    popUp = popUpAnchor;
+    var popUp = popUpAnchor;
     while (!$(popUp).hasClass("popup"))
         popUp = $(popUp).parent()[0];
     if (PopUp_getID(popUp))
         PopUp_callCloseListeners(PopUp_getID(popUp));
     PopUp_close(popUp);
+}
+function PopUp_clickedDelete(popUpAnchor)
+{
+    var popUp = _PopUp_getPopUp(popUpAnchor);
+    var event_id = PopUp_getID(popUp);
+    PopUp_close(popUp);
+    EventsMan_deleteEvent(event_id);
 }
 
 /***************************************************

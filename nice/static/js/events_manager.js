@@ -1,6 +1,7 @@
 var eventsManager = null;
 var EventsMan_updateListeners = [];
 var EventsMan_onReadyListeners = [];
+var EventsMan_eventIDsChangeListener = [];
 var EVENTS_INIT = false;
 var EVENTS_READY = false;
 
@@ -127,20 +128,19 @@ function EventsMan_getEventIDForRange(start, end)
 function EventsMan_addEvent()
 {
     var id = String(-1 * ++eventsManager.addedCount);
-    var curDate = moment();
 
     var eventDict = {
         event_id: id,
         event_group_id: id, // TODO safe? value won't be used.
         event_title: 'New event',
         event_type: 'AS',
-        event_start: curDate.unix(),
-        event_end: curDate.minute(curDate.minute() + 50).unix(),
+        event_start: moment().unix(),
+        event_end: moment().minute(moment().minute() + 50).unix(),
         event_description: 'Event description',
         event_location: 'Event location',
         section_id: SP_firstSectionKey(), 
         modified_user: USER_NETID,
-        modified_time: curDate.unix()
+        modified_time: moment().unix()
     }
     eventsManager.events[id] = eventDict;
     eventsManager.order.push({event_id: id, event_start: eventDict.event_start});
@@ -153,8 +153,19 @@ function EventsMan_addEvent()
 
 function EventsMan_deleteEvent(id)
 {
+    eventsManager.events[id] = null;
     delete eventsManager.events[id];
+    var dIndex = null;
+    $.each(eventsManager.order, function(index){
+        if (this.event_id == id)
+        {
+            dIndex = index;
+            return false;
+        }
+    });
+    eventsManager.order.splice(dIndex, 1);
     eventsManager.deletedIDs.push(id);
+    _EventsMan_callUpdateListeners();
 }
 
 function EventsMan_ready()
@@ -186,13 +197,15 @@ function EventsMan_pushToServer()
         if (eventDict.modified_time > eventsManager.lastSyncedTime)
             updated.push(eventDict);
     });
-    if (updated.length > 0)
+    var deleted = eventsManager.deletedIDs;
+    if (updated.length > 0 || deleted.length > 0)
     {
         $.ajax('put', {
             dataType: 'json',
             type: 'POST',
             data: {
                 events: JSON.stringify(updated),
+                hide: JSON.stringify(deleted)
             },
             success: function(data){
                 $.each(data, function(oldID, newID){
@@ -207,10 +220,11 @@ function EventsMan_pushToServer()
                             return false;
                         }
                     });
-                    // TODO should add code for calling event ID change listeners
+                    EventsMan_callEventIDsChangeListener(oldID, newID);
                 });
                 eventsManager.isIdle = true;
                 eventsManager.addedCount = 0;
+                eventsManager.deletedIDs = [];
 
                 EventsMan_pullFromServer();
             }
@@ -218,9 +232,6 @@ function EventsMan_pushToServer()
     } else {
         eventsManager.isIdle = true;
     }
-
-    // TODO add code for hiding events
-    var deleted = eventsManager.deletedIDs;
 }
 function EventsMan_pullFromServer(complete)
 {
@@ -290,6 +301,16 @@ function EventsMan_callOnReadyListeners()
         this();
     });
     EventsMan_onReadyListeners = null;
+}
+function EventsMan_addEventIDsChangeListener(listener)
+{
+    EventsMan_eventIDsChangeListener.push(listener);
+}
+function EventsMan_callEventIDsChangeListener(oldID, newID)
+{
+    $.each(EventsMan_eventIDsChangeListener, function(index){
+        this(oldID, newID);
+    });
 }
 
 /***************************************************

@@ -119,7 +119,10 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
 def modify_events(request):
     netid = request.user.username
     events = json.loads(request.POST['events'])
+    to_hide = json.loads(request.POST['hide'])
     ret = queries.modify_events(netid, events)
+    if to_hide:
+        queries.hide_events(netid, to_hide)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
 def state_restoration(request):
@@ -141,6 +144,17 @@ def all_sections(request):
     for section in request.user.profile.sections.all():
         all_sections[section.id] = unicode(section)
     return HttpResponse(json.dumps(all_sections), content_type='application/javascript')
+
+def hide_event(request):
+    event_IDs = request.POST['event_ids']
+    netid = request.user.username
+    queries.hide_events(netid, event_IDs)
+    return Htppresponse('')
+
+def hidden_events(request):
+    netid = request.user.username
+    hidden_events = queries.get_hidden_events(netid)
+    return HttpResponse(json.dumps(hidden_events), content_type='application/javascript')
     
 
 @require_POST
