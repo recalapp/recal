@@ -1,0 +1,13 @@
+#sidebar {
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: -30%;
+    background-color: white;
+    padding-top: 70px;
+    -webkit-transition: right .15s;
+}
+#sidebar.in{
+    right: 0;
+}
