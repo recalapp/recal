@@ -46,3 +46,12 @@ function SP_textToKey(text)
 {
     return SP_MAP_INVERSE[text.toLowerCase()];
 }
+function SP_firstSectionKey()
+{
+    var first;
+    $.each(SP_MAP, function(key, value){
+        first = key;
+        return false;
+    })
+    return first;
+}

@@ -72,7 +72,7 @@ function EventsMan_init()
         EventsMan_pushToServer();
     });
 
-    window.setInterval("EventsMan_pushToServer(); EventsMan_pullFromServer();", 60 * 1000);
+    window.setInterval("EventsMan_pushToServer(); EventsMan_pullFromServer();", 10 * 1000);
 }
 
 function _EventsMan_new()
@@ -131,14 +131,14 @@ function EventsMan_addEvent()
 
     var eventDict = {
         event_id: id,
-        event_group_id: id, // TODO safe?
+        event_group_id: id, // TODO safe? value won't be used.
         event_title: 'New event',
         event_type: 'AS',
         event_start: curDate.unix(),
         event_end: curDate.minute(curDate.minute() + 50).unix(),
         event_description: 'Event description',
         event_location: 'Event location',
-        section_id: id, // TODO what is this? this is NOT safe
+        section_id: SP_firstSectionKey(), 
         modified_user: USER_NETID,
         modified_time: curDate.unix()
     }
@@ -178,7 +178,6 @@ function EventsMan_ready()
 
 function EventsMan_pushToServer()
 {
-    return;
     if (!eventsManager.isIdle)
         return;
     eventsManager.isIdle = false;
@@ -196,8 +195,20 @@ function EventsMan_pushToServer()
                 events: JSON.stringify(updated),
             },
             success: function(data){
-                // TODO add code for changing ID for created events
-
+                $.each(data, function(oldID, newID){
+                    var eventDict = eventsManager.events[oldID];
+                    delete eventsManager.events[oldID];
+                    eventDict.event_id = newID;
+                    eventsManager.events[newID] = eventDict;
+                    $.each(eventsManager.order, function(index){
+                        if (this.event_id == oldID)
+                        {
+                            this.event_id = newID;
+                            return false;
+                        }
+                    });
+                    // TODO should add code for calling event ID change listeners
+                });
                 eventsManager.isIdle = true;
                 eventsManager.addedCount = 0;
 

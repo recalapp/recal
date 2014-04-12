@@ -49,8 +49,10 @@ def modify_events(netid, events):
             # TODO new event group rev?
         except:
             # create a new event group to hold the event
+            print 'a'
             section = Section.objects.get(id=event_dict['section_id'])
             event_group = Event_Group(section=section)
+            event_group.save()
             event_group_rev = Event_Group_Revision(
                 event_group = event_group,
                 start_date = event_start.date(),
@@ -59,10 +61,10 @@ def modify_events(netid, events):
                 modified_time = modified_time
             )
             # save the event group
-            event_group.save()
             event_group_rev.save()
             # create the actual event
             event = Event(group=event_group)
+            event.save()
             changed_ids[event_dict['event_id']] = event.id
         # create a new revision
         eventRev = Event_Revision(
