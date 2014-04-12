@@ -70,10 +70,10 @@ function EventsMan_init()
     });
 
     $(window).on('beforeunload', function() {
-        EventsMan_pushToServer();
+        EventsMan_pushToServer(false);
     });
 
-    window.setInterval("EventsMan_pushToServer(); EventsMan_pullFromServer();", 10 * 1000);
+    window.setInterval("EventsMan_pushToServer(true); EventsMan_pullFromServer();", 10 * 1000);
 }
 
 function _EventsMan_new()
@@ -187,7 +187,7 @@ function EventsMan_ready()
  * TODO decide if i need a sync button
  **************************************************/
 
-function EventsMan_pushToServer()
+function EventsMan_pushToServer(async)
 {
     if (!eventsManager.isIdle)
         return;
@@ -227,7 +227,8 @@ function EventsMan_pushToServer()
                 eventsManager.deletedIDs = [];
 
                 EventsMan_pullFromServer();
-            }
+            },
+            async: async,
         });
     } else {
         eventsManager.isIdle = true;
