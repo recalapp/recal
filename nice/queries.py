@@ -143,22 +143,22 @@ def __construct_event_dict(event, netid=None):
     return __construct_revision_dict(rev)
     
     
-def __construct_revision_dict(revision):
+def __construct_revision_dict(rev):
     """
     Serializes a specific revision into a dict that can be passed to the client for rendering.
     """
     
     # TODO(Naphat): add recurrence info
     return {
-        'event_id': event.id,
-        'event_group_id': event.group.id,
+        'event_id': rev.event.id,
+        'event_group_id': rev.event.group.id,
         'event_title': rev.event_title,
         'event_type': rev.event_type, # pretty = get_event_type_display()
         'event_start': format(rev.event_start, 'U'),
         'event_end': format(rev.event_end, 'U'),
         'event_description': rev.event_description,
         'event_location': rev.event_location,
-        'section_id': event.group.section.id,
+        'section_id': rev.event.group.section.id,
         'modified_user': rev.modified_user.user.username,
         'modified_time': format(rev.modified_time, 'U')
     }
@@ -167,11 +167,22 @@ def __parse_json_event_dict(jsdict):
     """
     Parses JSON event dict into Python dict with proper Python objects (e.g. datetimes when necessary).
     
-    TODO(Maxim): implement (see modifyevents)
-    
     """
-    pass
+    
+    # Parse JSON
+    import json
+    event_dict = json.loads(jsdict)[0]
+    
+    # Handle datetimes
+    
+    event_dict['event_start'] = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_start'])), timezone.get_default_timezone())
+    
+    event_dict['event_end'] = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_end'])), timezone.get_default_timezone())
 
+    event_dict['modified_time'] = timezone.make_aware(datetime.fromtimestamp(float(event_dict['modified_time'])), timezone.get_default_timezone())
+    
+    return event_dict
+    
     
 import difflib # https://docs.python.org/2/library/difflib.html
 import heapq
