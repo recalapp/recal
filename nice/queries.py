@@ -22,9 +22,7 @@ def get_events(netid, **kwargs):
         hidden_events = json.loads(hidden_events)
     else:
         hidden_events = []
-    filtered = []
-    for section in all_sections:
-        filtered += Event.objects.filter(group__section=section); 
+    filtered = Event.objects.filter(group__section__in = all_sections)
     filtered = [event for event in filtered if event.best_revision(netid=netid) != None]
     if start_date:
         filtered = [event for event in filtered if event.best_revision(netid=netid).event_start >= start_date]
