@@ -5,11 +5,11 @@
 
 {% block main_content %}
 <div class="container">
-<h2>Hello {{ netid }}!</h2>
-<h1>Sign up for at least one class, then <a href="{% url 'nice.views.index' %}">proceed to dashboard</a>.</h1> <!-- TODO -->
+<h1>Edit Your Profile, {{ formatted_name }}</h1>
+<h2>Sign up for at least one class, then <a href="{% url 'nice.views.index' %}">proceed to dashboard</a>.</h2>
 
 <div class="row">
-    <h2>Select Courses</h2>
+    <h3>Edit Profile and Select Courses</h3>
     <form method="POST" role="form">
         {{courses_form.as_p}}
         {% csrf_token %}

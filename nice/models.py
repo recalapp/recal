@@ -152,16 +152,30 @@ class Event_Revision(models.Model):
 
 from django.contrib.auth.models import User
 
-class User_Profile(models.Model): #EDIT renamed from UserProfile for consistency
+class User_Profile(models.Model):
     user = models.OneToOneField(User, related_name='profile', unique=False)
-	# put user profile fields here
+    
     name = models.CharField(max_length=100, null=True, blank=True)
     lastActivityTime = models.DateTimeField() 	# last seen time
     sections = models.ManyToManyField(Section, through='User_Section_Table', blank=True,null=True)
     ui_state_restoration = models.TextField(blank=True,null=True)
     hidden_events = models.TextField(blank=True,null=True)
+
     def __unicode__(self):
-        return "%s's profile" % self.user.username
+        """
+        Returns "[first_name] [last_name]" if both fields available, or "[first_name]" if only first name is given, or netid if neither names are filled in.
+        
+        Arguments: User object
+        """
+        
+        netid, first, last = self.user.username, self.user.first_name, self.user.last_name
+        # No need to escape in this method; templates will automatically escape strings we pass in.
+        if first and last:
+            return '%s %s' % (first, last)
+        elif first:
+            return first
+        else:
+            return netid
 		
 # create user profile as soon as a user is added
 def make_blank_profile(sender, instance, created, **kwargs):  

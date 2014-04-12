@@ -2,12 +2,23 @@ from django import forms
 from django.forms.widgets import PasswordInput, Textarea
 
 class EnrollCoursesForm(forms.Form):
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+    
     def __init__(self, *args, **kwargs):
-        extra = kwargs.pop('extra') # see http://jacobian.org/writing/dynamic-form-generation/
-        super(EnrollCoursesForm, self).__init__(*args, **kwargs) # run default initialization
-        # process extra elements -- i.e. populate the checkboxes
+        # See http://jacobian.org/writing/dynamic-form-generation/ for kwargs method description
+        extra, initial_first, initial_last = kwargs.pop('extra'), kwargs.pop('initial_first'), kwargs.pop('initial_last') 
+        
+        # Run default initialization, but don't pass in our extra params (that's why we popped above)
+        super(EnrollCoursesForm, self).__init__(*args, **kwargs) 
+        
+        # Process extra elements -- i.e. populate the checkboxes
         for (i, course, isEnrolled) in extra:
             self.fields['custom_%s' % i] = forms.BooleanField(label=course, initial=isEnrolled, required=False)
+        
+        # Fill in initial first and last names
+        self.fields['first_name'].initial = initial_first
+        self.fields['last_name'].initial = initial_last
     def extra_courses(self): # retrieve courses
         for name, value in self.cleaned_data.items():
             prefix = 'custom_'

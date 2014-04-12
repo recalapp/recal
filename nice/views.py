@@ -60,10 +60,9 @@ def edit_profile(request):
     all = [(c.id, str(c), True) for c in enrolled] # course ID, course title, and whether enrolled already
     all.extend([(c.id, str(c), False) for c in not_enrolled])
 
-    form = EnrollCoursesForm(request.POST or None, extra=all)
-    if form.is_valid():
-        # No validation errors.
-        print 'Processing Choose Sections form.' 
+    form = EnrollCoursesForm(request.POST or None, extra=all, initial_first = request.user.first_name, initial_last = request.user.last_name)
+    if form.is_valid(): # runs validation and confirms that there are no validation errors
+        # Process Choose Sections form.
         chosen_courses = list(form.extra_courses())
         for c in chosen_courses:
             if c not in all: # This version is different from the previous states of the records (found in all)
@@ -77,11 +76,17 @@ def edit_profile(request):
                 else:
                     # Remove user from class, i.e. remove from all sections matching this course ID
                     User_Section_Table.objects.filter(section__course_id=the_course.id).filter(user=profile).delete()
+        
+        # Process name fields.
+        request.user.first_name = form.cleaned_data['first_name']
+        request.user.last_name = form.cleaned_data['last_name']
+        request.user.save()
+        
         # Done processing, redirect to dashboard.
         print 'Redirecting from profile page.'
         return redirect("/")
     
-    return render(request, "main/edit-profile.html", {'courses_form':form, 'netid': request.user.username})
+    return render(request, "main/edit-profile.html", {'courses_form':form, 'formatted_name': str(profile)})
 	
 @staff_member_required # this is why this works
 def login_admin(request):
