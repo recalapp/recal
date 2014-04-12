@@ -15,7 +15,6 @@ var POPUP_EDITDICT = {
     "popup-desc": "event_description"
 }
 
-
 function PopUp_init()
 {
     if (POPUP_INIT)
