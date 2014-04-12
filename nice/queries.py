@@ -42,11 +42,17 @@ def modify_events(netid, events):
         modified_time = timezone.make_aware(datetime.fromtimestamp(float(event_dict['modified_time'])), timezone.get_default_timezone())
         try:
             event = Event.objects.get(id=event_dict['event_id'])
+            event_group = event.group;
+            section = Section.objects.get(id=event_dict['section_id'])
+            event_group.section = section;
+            event_group.save();
             # TODO new event group rev?
         except:
             # create a new event group to hold the event
+            print 'a'
             section = Section.objects.get(id=event_dict['section_id'])
             event_group = Event_Group(section=section)
+            event_group.save()
             event_group_rev = Event_Group_Revision(
                 event_group = event_group,
                 start_date = event_start.date(),
@@ -55,10 +61,10 @@ def modify_events(netid, events):
                 modified_time = modified_time
             )
             # save the event group
-            event_group.save()
             event_group_rev.save()
             # create the actual event
             event = Event(group=event_group)
+            event.save()
             changed_ids[event_dict['event_id']] = event.id
         # create a new revision
         eventRev = Event_Revision(
@@ -108,6 +114,6 @@ def __construct_event_dict(event):
         'event_location': rev.event_location,
         'section_id': event.group.section.id,
         'modified_user': rev.modified_user.user.username,
-        'modified_time': format(rev.modified_time, 'U') # does this handle daylight savings?
+        'modified_time': format(rev.modified_time, 'U')
     }
     return eventDict

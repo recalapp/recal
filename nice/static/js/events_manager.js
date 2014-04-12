@@ -17,6 +17,8 @@ function EventsMan_init()
     PopUp_addEditListener(function(id, field, value) {
         if (field == 'event_type')
             eventsManager.events[id][field] = TP_textToKey(value);
+        else if (field == 'section_id')
+            eventsManager.events[id][field] = SP_textToKey(value);
         else if (field == 'event_date')
         {
             var eventDict = eventsManager.events[id];
@@ -37,6 +39,9 @@ function EventsMan_init()
                     this.event_start = eventDict.event_start;
                 }
             });
+            eventsManager.order.sort(function(a,b){
+                return parseInt(a.event_start) - parseInt(b.event_start);
+            });
         }
         else if (field == 'event_start' || field == 'event_end')
         {
@@ -53,15 +58,21 @@ function EventsMan_init()
                     this.event_start = eventDict.event_start;
                 }
             });
+            eventsManager.order.sort(function(a,b){
+                return parseInt(a.event_start) - parseInt(b.event_start);
+            });
         }
         else
             eventsManager.events[id][field] = value;
         eventsManager.events[id].modified_time = moment().unix()
+        _EventsMan_callUpdateListeners()
     });
 
     $(window).on('beforeunload', function() {
         EventsMan_pushToServer();
     });
+
+    window.setInterval("EventsMan_pushToServer(); EventsMan_pullFromServer();", 10 * 1000);
 }
 
 function _EventsMan_new()
@@ -71,6 +82,7 @@ function _EventsMan_new()
     this.lastSyncedTime = 0; // will be set when populating
     this.addedCount = 0;
     this.deletedIDs = [];
+    this.isIdle = true;
     return this;
 }
 
@@ -111,15 +123,34 @@ function EventsMan_getEventIDForRange(start, end)
         ret[i] = ret[i].event_id;
     return ret;
 }
-function EventsMan_addEventForID(eventDict)
+
+function EventsMan_addEvent()
 {
-    // TODO should verify eventDict
-    eventsManager.events[-1 * ++this.addedCount] = eventDict;
-    // TODO contact the server for new id asynchronously, set the ID
-    // when get reply
-    eventDict.updatedTime = new Date().getTime();
-    // TODO handle new events, maybe set ID = -1?
+    var id = String(-1 * ++eventsManager.addedCount);
+    var curDate = moment();
+
+    var eventDict = {
+        event_id: id,
+        event_group_id: id, // TODO safe? value won't be used.
+        event_title: 'New event',
+        event_type: 'AS',
+        event_start: curDate.unix(),
+        event_end: curDate.minute(curDate.minute() + 50).unix(),
+        event_description: 'Event description',
+        event_location: 'Event location',
+        section_id: SP_firstSectionKey(), 
+        modified_user: USER_NETID,
+        modified_time: curDate.unix()
+    }
+    eventsManager.events[id] = eventDict;
+    eventsManager.order.push({event_id: id, event_start: eventDict.event_start});
+    eventsManager.order.sort(function(a,b){
+        return parseInt(a.event_start) - parseInt(b.event_start);
+    });
+
+    return id;
 }
+
 function EventsMan_deleteEvent(id)
 {
     delete eventsManager.events[id];
@@ -147,29 +178,55 @@ function EventsMan_ready()
 
 function EventsMan_pushToServer()
 {
+    if (!eventsManager.isIdle)
+        return;
+    eventsManager.isIdle = false;
     var updated = [];
     $.each(eventsManager.events, function(id, eventDict){
         if (eventDict.modified_time > eventsManager.lastSyncedTime)
             updated.push(eventDict);
     });
-    var deleted = eventsManager.deletedIDs;
-    // TODO call update on server, then when done, reload the data
-    $.ajax('put', {
-        dataType: 'json',
-        type: 'POST',
-        data: {
-            events: JSON.stringify(updated),
-        },
-        success: function(data){
-            data;
-        }
+    if (updated.length > 0)
+    {
+        $.ajax('put', {
+            dataType: 'json',
+            type: 'POST',
+            data: {
+                events: JSON.stringify(updated),
+            },
+            success: function(data){
+                $.each(data, function(oldID, newID){
+                    var eventDict = eventsManager.events[oldID];
+                    delete eventsManager.events[oldID];
+                    eventDict.event_id = newID;
+                    eventsManager.events[newID] = eventDict;
+                    $.each(eventsManager.order, function(index){
+                        if (this.event_id == oldID)
+                        {
+                            this.event_id = newID;
+                            return false;
+                        }
+                    });
+                    // TODO should add code for calling event ID change listeners
+                });
+                eventsManager.isIdle = true;
+                eventsManager.addedCount = 0;
 
-    });
-    var newSyncedTime = new Date().getTime(); // only set this if successful
-    // TODO set addedcount to 0
+                EventsMan_pullFromServer();
+            }
+        });
+    } else {
+        eventsManager.isIdle = true;
+    }
+
+    // TODO add code for hiding events
+    var deleted = eventsManager.deletedIDs;
 }
 function EventsMan_pullFromServer(complete)
 {
+    if (!eventsManager.isIdle)
+        return;
+    eventsManager.isIdle = false;
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
         success: function(data){
@@ -191,6 +248,9 @@ function EventsMan_pullFromServer(complete)
             });
             eventsManager.addedCount = 0;
             eventsManager.lastSyncedTime = moment().unix();
+
+            eventsManager.isIdle = true;
+
             if (complete != null)
                 complete();
             _EventsMan_callUpdateListeners();
@@ -243,10 +303,12 @@ function EventsMan_clickAddEvent()
         PopUp_callCloseListeners(PopUp_getID(popUp));
 
     // set new ID
-    eventsManager.addedCount++;
-    PopUp_setID(popUp, eventsManager.addedCount * -1);
+    var id = EventsMan_addEvent();
+    PopUp_setToEventID(popUp, id);
+    
     // request server for new id
     PopUp_giveFocus(popUp);
+    _EventsMan_callUpdateListeners();
 }
 
 function EventsMan_clickSync()

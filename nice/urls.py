@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     url(r'^agenda-template$', views.agenda, name="agenda"),
     url(r'^profile', views.edit_profile, name="edit_profile"),
     url(r'^type-picker$', views.typepicker, name="type-picker"),
+    url(r'^section-picker$', views.sectionpicker, name="section-picker"),
+    url(r'^all-sections$', views.all_sections, name='all-sections'),
     # a few debug tricks
     url(r'^debug/su_login$', views.login_admin, name="login_admin"),
     url(r'^debug/seed_data$', views.seed_data, name="seed_data"),

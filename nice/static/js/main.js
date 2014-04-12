@@ -60,6 +60,7 @@ function init()
     PopUp_init();
     Agenda_init();
     Cal_init();
+    SP_init();
     SR_addWillSaveListener(function (){
         Nav_save();
         UI_save();

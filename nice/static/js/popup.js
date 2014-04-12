@@ -11,6 +11,7 @@ var POPUP_EDITDICT = {
     'popup-time-start': 'event_start',
     'popup-time-end': 'event_end',
     "popup-type": "event_type",
+    "popup-section": "section_id",
     "popup-desc": "event_description"
 }
 
@@ -62,6 +63,7 @@ function PopUp_insertPopUp(isMain)
             if (this.firstDrag)
                 this.firstDrag();
             UI_pin(PopUp_getID(popUp));
+            UI_unsetMain();
             this.ondrag = null;
         };
     }
@@ -110,14 +112,14 @@ function PopUp_insertPopUp(isMain)
         minuteStep: 10
     });
     var htmlcontent = CacheMan_load("type-picker")
-    $(popUp).find(".withcustompicker").popover({
-        placement: "left",
+    $(popUp).find(".withtypepicker").popover({
+        placement: "left auto",
         trigger: "focus",
         html: true,
         content: htmlcontent,
         container: 'body'
     })
-    var input = $(popUp).find(".withcustompicker")[0];
+    var input = $(popUp).find(".withtypepicker")[0];
     $(input).on("shown.bs.popover", function(){
         var tp = $("#type-picker123")[0];
         tp.id = "";
@@ -129,11 +131,30 @@ function PopUp_insertPopUp(isMain)
             $(inputField).val(selectedType);
         });
     });
+
+    $(popUp).find('.withsectionpicker').popover({
+        placement: 'left auto',
+        trigger: 'focus', 
+        html: true,
+        content: CacheMan_load('section-picker'),
+        container: 'body'
+    }).on('shown.bs.popover', function(){
+        var sp = $('#section-picker123')[0];
+        sp.id = '';
+        this.sp = sp;
+        var section = $(this).val();
+        SP_select(this.sp, section);
+        var inputField = this;
+        SP_setSelectListener(function(sp, selectedSection){
+            $(inputField).val(selectedSection);
+        });
+    });
     return popUp;
 }
 
 function PopUp_close(popUp)
 {
+    UI_unpin(PopUp_getID(popUp));
     $(popUp).remove();
 }
 
@@ -165,6 +186,7 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setTitle(popUp, eventDict.event_title);
     PopUp_setDescription(popUp, eventDict.event_description);
     PopUp_setLocation(popUp, eventDict.event_location);
+    PopUp_setSection(popUp, eventDict.section_id);
     PopUp_setType(popUp, eventDict.event_type);
     PopUp_setDate(popUp, eventDict.event_start);
     PopUp_setStartTime(popUp, eventDict.event_start);
@@ -179,6 +201,14 @@ function PopUp_getID(popUp)
 function PopUp_setID(popUp, id)
 {
     $(popUp).find(".panel")[0].id = id;
+    if (popUp.id == 'popup-main')
+    {
+        UI_setMain(id)
+    }
+    else 
+    {
+        //UI_pin(id)
+    }
 }
 
 function PopUp_setTitle(popUp, title)
@@ -192,6 +222,10 @@ function PopUp_setDescription(popUp, desc)
 function PopUp_setLocation(popUp, loc)
 {
     $(popUp).find('#popup-loc').text(loc);
+}
+function PopUp_setSection(popUp, sectionKey)
+{
+    $(popUp).find('#popup-section').text(SP_keyToText(sectionKey));
 }
 function PopUp_setType(popUp, typeKey)
 {
@@ -383,11 +417,18 @@ function PopUp_clickedElement(element)
         _PopUp_Form_addOnBlurListener(form, function(){
             PopUp_clickedSaveElement(form);
         });
-        if ($(form).find("input").hasClass("withcustompicker"))
+        if ($(form).find("input").hasClass("withtypepicker"))
         {
             $(form).find("input").on("change keyup paste", function(){
                 var tp = $(form).find("input")[0].tp;
                 TP_select(tp, $(form).find("input").val());
+            });
+        }
+        if ($(form).find('input').hasClass('withsectionpicker'))
+        {
+            $(form).find('input').on('change keyup paste', function(){
+                var sp = $(form).find('input')[0].sp;
+                SP_select(sp, $(form).find('input').val());
             });
         }
     }
@@ -401,7 +442,12 @@ function PopUp_clickedSaveElement(form)
         _PopUp_Form_giveFocus(form);
         return;
     }
-    if ($(form).find("input").hasClass("withcustompicker") && !TP_validateType(_PopUp_Form_getValue(form)))
+    if ($(form).find("input").hasClass("withtypepicker") && !TP_validateType(_PopUp_Form_getValue(form)))
+    {
+        _PopUp_Form_giveFocus(form);
+        return;
+    }
+    if ($(form).find('input').hasClass('withsectionpicker') && !SP_validateSection(_PopUp_Form_getValue(form)))
     {
         _PopUp_Form_giveFocus(form);
         return;

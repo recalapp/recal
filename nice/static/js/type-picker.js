@@ -30,7 +30,7 @@ function TP_select(tp, type)
     $(tp).find("button").addClass("btn-default").removeClass("btn-primary");
     if (TP_validateType(type))
     {
-        id = TP_MAP[type.toLowerCase()];
+        var id = TP_MAP[type.toLowerCase()];
         $(tp).find("#"+id).addClass("btn-primary").removeClass("btn-default");
     }
 }

@@ -36,6 +36,7 @@ function SR_load()
 
 function SR_save()
 {
+    return;
     SR_callWillSaveListeners();
     $.post('put/state-restoration', {
         state_restoration: JSON.stringify(SR_manager),
