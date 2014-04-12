@@ -82,7 +82,6 @@ function Cal_init() {
     });
     PopUp_addCloseListener(function(id){
         $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){
-            //UI_unpin(this.id)
             Cal_unhighlightEvent(this, true);
         });
     });
