@@ -69,6 +69,15 @@ function init()
         Nav_load();
         UI_load();
     });
+    EventsMan_addEventIDsChangeListener(function(oldID, newID){
+        if (UI_isMain(oldID))
+            UI_setMain(newID);
+        else if (UI_isPinned(oldID))
+        {
+            UI_unpin(oldID);
+            UI_pin(newID);
+        }
+    });
 }
 function Nav_save()
 {

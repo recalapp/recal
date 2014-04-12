@@ -1,6 +1,7 @@
 var eventsManager = null;
 var EventsMan_updateListeners = [];
 var EventsMan_onReadyListeners = [];
+var EventsMan_eventIDsChangeListener = [];
 var EVENTS_INIT = false;
 var EVENTS_READY = false;
 
@@ -127,20 +128,19 @@ function EventsMan_getEventIDForRange(start, end)
 function EventsMan_addEvent()
 {
     var id = String(-1 * ++eventsManager.addedCount);
-    var curDate = moment();
 
     var eventDict = {
         event_id: id,
         event_group_id: id, // TODO safe? value won't be used.
         event_title: 'New event',
         event_type: 'AS',
-        event_start: curDate.unix(),
-        event_end: curDate.minute(curDate.minute() + 50).unix(),
+        event_start: moment().unix(),
+        event_end: moment().minute(moment().minute() + 50).unix(),
         event_description: 'Event description',
         event_location: 'Event location',
         section_id: SP_firstSectionKey(), 
         modified_user: USER_NETID,
-        modified_time: curDate.unix()
+        modified_time: moment().unix()
     }
     eventsManager.events[id] = eventDict;
     eventsManager.order.push({event_id: id, event_start: eventDict.event_start});
@@ -207,7 +207,7 @@ function EventsMan_pushToServer()
                             return false;
                         }
                     });
-                    // TODO should add code for calling event ID change listeners
+                    EventsMan_callEventIDsChangeListener(oldID, newID);
                 });
                 eventsManager.isIdle = true;
                 eventsManager.addedCount = 0;
@@ -290,6 +290,16 @@ function EventsMan_callOnReadyListeners()
         this();
     });
     EventsMan_onReadyListeners = null;
+}
+function EventsMan_addEventIDsChangeListener(listener)
+{
+    EventsMan_eventIDsChangeListener.push(listener);
+}
+function EventsMan_callEventIDsChangeListener(oldID, newID)
+{
+    $.each(EventsMan_eventIDsChangeListener, function(index){
+        this(oldID, newID);
+    });
 }
 
 /***************************************************

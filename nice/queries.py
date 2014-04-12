@@ -49,7 +49,6 @@ def modify_events(netid, events):
             # TODO new event group rev?
         except:
             # create a new event group to hold the event
-            print 'a'
             section = Section.objects.get(id=event_dict['section_id'])
             event_group = Event_Group(section=section)
             event_group.save()

@@ -34,6 +34,12 @@ function PopUp_init()
     SR_addWillSaveListener(function (){
         PopUp_save();
     })
+    EventsMan_addEventIDsChangeListener(function(oldID, newID){
+        PopUp_map(function(popUp, isMain){
+            if (PopUp_getID(popUp) == oldID)
+                PopUp_setID(popUp, newID);
+        });
+    });
 }
 
 /***************************************************
