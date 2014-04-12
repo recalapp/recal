@@ -54,13 +54,13 @@ function init()
     });
     pinnedIDs = new Set();
     mainID = null;
+    SP_init(); // give priority - not dependent on anything
     SR_init();
     CacheMan_init();
     EventsMan_init();
     PopUp_init();
     Agenda_init();
     Cal_init();
-    SP_init();
     SR_addWillSaveListener(function (){
         Nav_save();
         UI_save();

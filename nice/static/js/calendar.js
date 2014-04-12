@@ -3,10 +3,6 @@ Cal_eventSource = {
     events:[],
 }
 
-$(document).ready(function() {
-    //Cal_init();
-});
-
 //eventSources: [{
 //    events: [{
 //            id: "1",
@@ -93,23 +89,27 @@ function Cal_init() {
 }
 function Cal_reload()
 {
-    var endDate = moment().add('months', 3).unix();
-    var startDate = moment().subtract('months', 3).unix();
-    var eventIDs = EventsMan_getEventIDForRange(startDate, endDate);
-    Cal_eventSource.events = [];
-    $.each(eventIDs, function(index){
-        eventDict = EventsMan_getEventByID(this);
-        var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
-        Cal_eventSource.events.push({
-            id: eventDict.event_id,
-            title: eventDict.event_title,
-            start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
-            end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
-            highlighted: shouldHighlight,
-            backgroundColor: shouldHighlight ? '#428be8' : '#74a2ca'
+    try {
+        var endDate = moment().add('months', 3).unix();
+        var startDate = moment().subtract('months', 3).unix();
+        var eventIDs = EventsMan_getEventIDForRange(startDate, endDate);
+        Cal_eventSource.events = [];
+        $.each(eventIDs, function(index){
+            eventDict = EventsMan_getEventByID(this);
+            var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
+            Cal_eventSource.events.push({
+                id: eventDict.event_id,
+                title: eventDict.event_title,
+                start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
+                end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
+                highlighted: shouldHighlight,
+                backgroundColor: shouldHighlight ? '#428be8' : '#74a2ca'
+            });
         });
-    });
-    $("#calendarui").fullCalendar("refetchEvents");
+        $("#calendarui").fullCalendar("refetchEvents");
+    }
+    catch(err) {
+    }
 }
 
 function Cal_render() {

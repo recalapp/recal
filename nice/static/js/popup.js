@@ -438,6 +438,11 @@ function PopUp_clickedElement(element)
             });
         }
     }
+    var text_id = _PopUp_Form_getElementIDForForm(form);
+    if (text_id == 'popup-title')
+    {
+        $(popUp).find('.popup-ctrl').addClass('hidden');
+    }
     //$(form).find("input").data("datetimepicker");
     //$(form).find("input").datetimepicker();
 }
@@ -462,8 +467,16 @@ function PopUp_clickedSaveElement(form)
     // hide the form and unhide the text
     _PopUp_hideFormForElement(form);
     var text_id = _PopUp_Form_getElementIDForForm(form);
+    if (text_id == 'popup-title')
+    {
+        $(popUp).find('.popup-ctrl').removeClass('hidden');
+        if (UI_isMain(PopUp_getID(popUp)))
+            $(popUp).find('.poup-ctrl-right').addClass('hidden');
+    }
     $(popUp).find("#"+text_id).html(nl2br(_PopUp_Form_getValue(form)));
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form)); 
+
+   
 }
 function PopUp_clickedClose(popUpAnchor)
 {
