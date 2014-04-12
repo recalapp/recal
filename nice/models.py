@@ -11,12 +11,18 @@ from django.db.models.signals import post_save
 # use OneToOneField for one to one rel
 
 # TODO not implemented: best revisions
-# TODO add code for naming semesters
 
 class Semester(models.Model):
     # fields
     start_date = models.DateField() #TODO should this be datetime instead of date?
     end_date = models.DateField()
+    """ term_code = 1xxy, where xx is the year in which the school year ends,
+        and y is the semester code. y = 2 for the fall term, y = 4 for the spring
+        Example:
+        1144 = 1314Spring
+        1132 = 1213Fall
+        """
+    term_code = models.CharField(max_length=4, default='1144')
 
 class Course(models.Model):
     # relationships
@@ -221,7 +227,7 @@ def seed_db_with_data():
     '''
     Inserts some test data: a semester, a course, and an extra section.
     '''
-    sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1))
+    sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1), term_code='1144')
     sem.save()
     c1 = Course(semester=sem, dept='COS', number='333', name='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
     c1.save()
