@@ -28,9 +28,7 @@ def index(request):
         return redirect('cas_login')
     if not user_profile_filled_out(request.user):
         return redirect('edit_profile')
-    return render_to_response('main/index.html', {
-        'username': request.user.username,
-    }, context_instance=RequestContext(request))
+    return render(request, "main/index.html", {'username': request.user.username, 'formatted_name': str(request.user.profile)})
 
 # loading templates
 
@@ -41,9 +39,7 @@ def agenda(request):
 def typepicker(request):
     return render(request, 'main/type-picker.html', None)
 def sectionpicker(request):
-    return render_to_response('main/section-picker.html', {
-        'all_sections': request.user.profile.sections.all(),
-    }, context_instance=RequestContext(request))
+    return render(request, 'main/section-picker.html', { 'all_sections': request.user.profile.sections.all() })
 
 @login_required
 def edit_profile(request):
