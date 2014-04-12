@@ -28,7 +28,7 @@ def index(request):
         return redirect('cas_login')
     if not user_profile_filled_out(request.user):
         return redirect('edit_profile')
-    return render(request, "main/index.html", {'username': request.user.username, 'formatted_name': str(request.user.profile)})
+    return render(request, "main/index.html", {'username': request.user.username, 'formatted_name': unicode(request.user.profile)})
 
 # loading templates
 
@@ -82,7 +82,7 @@ def edit_profile(request):
         print 'Redirecting from profile page.'
         return redirect("/")
     
-    return render(request, "main/edit-profile.html", {'courses_form':form, 'formatted_name': str(profile)})
+    return render(request, "main/edit-profile.html", {'courses_form':form, 'formatted_name': unicode(profile)})
 	
 @staff_member_required # this is why this works
 def login_admin(request):
