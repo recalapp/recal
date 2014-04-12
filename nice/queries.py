@@ -98,6 +98,37 @@ def get_state_restoration(netid):
         return user.ui_state_restoration 
     except Exception, e:
         return None
+        
+        
+def add_hidden_event(user, event_id):
+    """
+    Adds event to user's hidden event list.
+    
+    Arguments: User object, event ID.
+    
+    Returns: True if succeeded, False if failed.
+    """
+    # verify that event exists
+    try:
+        event = Event.objects.get(pk=event_id)
+    except Exception, e:
+        return False # event doesn't exist
+    try:
+        # get current list of hidden events
+        # TODO(Maxim): find a way to handle locking of hidden_events to prevent race conditions
+        hidden_events = user.profile.hidden_events
+        if hidden_events:
+            hidden_events = json.loads(hidden_events)
+        else:
+            hidden_events = [] # create the list
+        
+        # add event ID
+        hidden_events.append(event_id)
+        user.profile.hidden_events = json.dumps(hidden_events)
+        user.profile.save()
+        return True
+    except Exception, e:
+        return False
     
 def __construct_event_dict(event):
     rev = event.best_revision()

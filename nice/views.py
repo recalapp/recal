@@ -141,6 +141,20 @@ def all_sections(request):
         all_sections[section.id] = unicode(section)
     return HttpResponse(json.dumps(all_sections), content_type='application/javascript')
     
+
+@require_POST
+def hide_event(request):
+    event_id = request.POST['event_id']
+    try:
+        event_id = int(event_id)
+    except Exception, e:
+        return HttpResponse(status=400) # bad request
+    user = request.user
+    success = queries.add_hidden_event(user, event_id)
+    status = 201 if success else 500 # 201 Created or 500 Internal Server Error
+    return HttpResponse(status=status)
+    
+    
 # Helper methods
 def user_profile_filled_out(user):
     '''
