@@ -5,6 +5,7 @@
 
 {% block main_content %}
 {% include 'main/nav.html' %}
+<div id="sidebar"></div>
 <div class="tab-content">
     <div class="tab-pane fade left active in container" id="agenda">
         {% include 'main/agenda-placeholder.html' %}
@@ -22,6 +23,7 @@
 <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
 <link rel="stylesheet" href="{% static 'css/popup.css' %}">
+<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
 <script src="{% static 'js/global.js' %}"></script>
 <script>
@@ -50,4 +52,5 @@ var USER_NETID = '{{ username }}';
 <script src="{% static 'js/events_manager.js' %}"></script>
 <script src="{% static 'js/type-picker.js' %}"></script>
 <script src="{% static 'js/section-picker.js' %}"></script>
+<script src="{% static 'js/sidebar.js' %}"></script>
 {% endblock %}

@@ -78,6 +78,8 @@ function init()
             UI_pin(newID);
         }
     });
+
+    SB_show();
 }
 function Nav_save()
 {
