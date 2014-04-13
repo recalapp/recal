@@ -391,6 +391,14 @@ function PopUp_hasFocus(popUp)
 {
     return $(popUp).find(".panel").hasClass("panel-primary");
 }
+function PopUp_updateSize(popUp)
+{
+    $(popUp).find('.panel').css({
+        width: $(popUp).css('width'),
+        height: $(popUp).css('height'),
+    });
+}
+
 
 /***************************************************
  * forms for editing
