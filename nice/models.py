@@ -212,15 +212,16 @@ def seed_db_with_data():
     '''
     Inserts some test data: a semester, a course, and an extra section.
     '''
-    sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1), term_code='1144')
-    sem.save()
-    c1 = Course(semester=sem, title='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
-    course_listing = Course_Listing(course=c1, dept='COS', number='333')
-    c1.save()
-    course_listing.save()
-    # Note that once we create a Course, the All Students section is created automatically and marked Default (i.e. all students in the course are automatically enrolled in this section). 
-    extra_section = Section(course=c1, name='Precept A')
-    extra_section.save()
+    # scrape.scrape_all()
+    # sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1), term_code='1144')
+    # sem.save()
+    # c1 = Course(semester=sem, title='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
+    # course_listing = Course_Listing(course=c1, dept='COS', number='333')
+    # c1.save()
+    # course_listing.save()
+    # # Note that once we create a Course, the All Students section is created automatically and marked Default (i.e. all students in the course are automatically enrolled in this section). 
+    # extra_section = Section(course=c1, name='Precept A')
+    # extra_section.save()
     
 def clear_all_data():
     # TODO: add other tables
