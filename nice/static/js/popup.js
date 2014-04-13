@@ -32,6 +32,13 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
             top: rect.top,
             left: rect.left,
         });
+        $(popUp).find(".panel").resizable({
+        stop: function(e, ui){
+            $(this).parent().css("height", $(this).css("height"));
+            $(this).parent().css("width", $(this).css("width")); 
+            _PopUp_setBodyHeight(this);
+        },
+    });
         SB_hide();
     }
 };
@@ -124,13 +131,7 @@ function PopUp_insertPopUp(isMain)
         beforeStart: function(ev, ui){
             firstDragStart();
         }, 
-    }).find(".panel").resizable({
-        stop: function(e, ui){
-            $(this).parent().css("height", $(this).css("height"));
-            $(this).parent().css("width", $(this).css("width")); 
-            _PopUp_setBodyHeight(this);
-        }
-    });
+    })
     popUp = popUp[0];
     //$(popUp).css("height", $(popUp).find(".panel").css("height"));
     popUp.id = "popup-main";
@@ -405,6 +406,7 @@ function PopUp_makeMain(popUp)
 {
     popUp.id = 'popup-main';
     UI_setMain(PopUp_getID(popUp));
+    $(popUp).find('.panel').resizable('destroy');
 }
 function PopUp_hasMain(popUp)
 {
