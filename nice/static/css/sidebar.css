@@ -1,12 +1,15 @@
 #sidebar {
     width: 30%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     top: 0;
     right: -30%;
     background-color: white;
-    padding-top: 70px;
-    -webkit-transition: right .15s;
+    padding-top: 100px;
+    padding-left: 10px;
+    padding-right: 10px;
+    -webkit-transition: right .2s ease-out;
+    transition: right .2s ease-out;
 }
 #sidebar.in{
     right: 0;

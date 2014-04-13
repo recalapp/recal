@@ -1,8 +1,12 @@
-.popup-container {
+.popup-container.old {
     position: fixed;
     top: 100px;
     left: 60%;
     width: 25%;
+    height: 300px;
+}
+.popup-container {
+    width: 100%;
     height: 300px;
 }
 .panel-clipped {

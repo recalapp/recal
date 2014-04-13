@@ -15,12 +15,23 @@ var POPUP_EDITDICT = {
     "popup-desc": "event_description"
 }
 
-
 function PopUp_init()
 {
     if (POPUP_INIT)
         return;
     POPUP_INIT = true;
+
+    var oldMouseStart = $.ui.draggable.prototype._mouseStart;
+    $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
+        this._trigger("beforeStart", event, this._uiHash());
+        oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
+    };
+    
+    $("#draggable").draggable({
+        beforeStart: function () {
+            console.log('beforeStart::');
+        }
+    });
 
     // setting bounds
     topPos = parseInt($(".navbar").css("height")) + parseInt($(".navbar").css("margin-top"));
@@ -54,9 +65,67 @@ function PopUp_init()
 function PopUp_insertPopUp(isMain)
 {
     var popUpHTML = CacheMan_load("popup-template");
-    $("body").append(popUpHTML);
+    SB_push(popUpHTML);
+    //$("body").append(popUpHTML);
     var popUp = $("#popup-main123");
-    popUp.draggable({handle:'.panel > .panel-heading', containment:"#content_bounds", scroll: false}).find(".panel").resizable({
+    //if (!isMain)
+    //{
+    //    var space;
+    //    if (PopUp_freedSpace.length == 0)
+    //        space = ++PopUp_space;
+    //    else
+    //        space = PopUp_freedSpace.sort(function(a,b){return b-a}).pop();
+    //    popUp.id = "";
+    //    PopUp_showClose(popUp);
+    //    leftPos = parseInt($(popUp).css("left"));
+    //    topPos = parseInt($(popUp).css("top"));
+    //    $(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
+    //    popUp.space = space;
+    //}
+    var firstDragStart = function(){
+        if (isMain)
+        {
+            popUp.id = "";
+            //PopUp_showClose(popUp);
+            UI_pin(PopUp_getID(popUp));
+            UI_unsetMain();
+            var rect = popUp.getBoundingClientRect();
+            $(popUp).css({
+                height: rect.height + 'px',
+                width: rect.width + 'px',
+            });
+            $(popUp).appendTo('body');
+            $(popUp).css({
+                position: 'absolute',
+                top: rect.top,
+                left: rect.left,
+            });
+
+            
+            SB_hide();
+            console.log('called');
+        }
+        else
+        {
+            PopUp_freedSpace.push(popUp.space);
+            delete popUp.space;
+        }
+    };
+   
+
+    popUp.draggable({
+        handle:'.panel > .panel-heading', 
+        containment:"#content_bounds", 
+        scroll: false, 
+        appendTo: 'body',
+        beforeStart: function(ev, ui){
+            if (firstDragStart)
+            {
+                firstDragStart();
+                firstDragStart = null;
+            }
+        }, 
+    }).find(".panel").resizable({
         stop: function(e, ui){
             $(this).parent().css("height", $(this).css("height"));
             $(this).parent().css("width", $(this).css("width")); 
@@ -66,46 +135,23 @@ function PopUp_insertPopUp(isMain)
     popUp = popUp[0];
     $(popUp).css("height", $(popUp).find(".panel").css("height"));
     popUp.id = "popup-main";
-    if (isMain)
-    {
-        popUp.ondrag = function(){
-            popUp.id = "";
-            PopUp_showClose(popUp);
-            if (this.firstDrag)
-                this.firstDrag();
-            UI_pin(PopUp_getID(popUp));
-            UI_unsetMain();
-            this.ondrag = null;
-        };
-    }
-    else
-    {
-        var space;
-        if (PopUp_freedSpace.length == 0)
-            space = ++PopUp_space;
-        else
-            space = PopUp_freedSpace.sort(function(a,b){return b-a}).pop();
-        popUp.id = "";
-        PopUp_showClose(popUp);
-        leftPos = parseInt($(popUp).css("left"));
-        topPos = parseInt($(popUp).css("top"));
-        $(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
-        popUp.space = space;
-        popUp.ondrag = function() {
-            PopUp_freedSpace.push(popUp.space);
-            delete popUp.space;
-            this.ondrag = null;
-        }
-    }
     popUp.onmousedown = function(){
         PopUp_giveFocus(this);
     };
     maxHeight = window.innerHeight - $(".navbar").height() - 100;
     $(popUp).css("max-height", maxHeight+"px");
     _PopUp_setBodyHeight(popUp);
+    setTimeout(function(){
+        PopUp_initialize(popUp);
+    }, 500) // doesn't block
+    var rect = popUp.getBoundingClientRect(); 
+    return popUp;
+}
 
+function PopUp_initialize(popUp)
+{
     $(popUp).find(".withdatepicker").datetimepicker({
-        format: "M d, yyyy",
+        format: "MM d, yyyy",
         autoclose: true,
         minView: 2,
         maxView: 3
@@ -160,12 +206,19 @@ function PopUp_insertPopUp(isMain)
             $(inputField).val(selectedSection);
         });
     });
-    return popUp;
 }
 
 function PopUp_close(popUp)
 {
-    UI_unpin(PopUp_getID(popUp));
+    if (UI_isMain(PopUp_getID(popUp)))
+    {
+        SB_hide();
+        UI_unsetMain();
+    }
+    else
+    {
+        UI_unpin(PopUp_getID(popUp));
+    }
     $(popUp).remove();
 }
 

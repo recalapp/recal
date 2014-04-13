@@ -1,5 +1,6 @@
 var SR_willSaveListeners = []
 var SR_didLoadListeners = []
+var SR_ON = false;
 var SR_manager = {}
 var SR_loaded = false;
 
@@ -26,6 +27,8 @@ function SR_put(module, stateRes)
 
 function SR_load()
 {
+    if (!SR_ON)
+        return;
     $.get('get/state-restoration', null, function (data, textStatus, jqXHR) {
         if (data != '')
             SR_manager = data;

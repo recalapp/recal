@@ -17,15 +17,27 @@ function EventsMan_init()
     });
     PopUp_addEditListener(function(id, field, value) {
         if (field == 'event_type')
-            eventsManager.events[id][field] = TP_textToKey(value);
+        {
+            value = TP_textToKey(value);
+            if (eventsManager.events[id][field] == value)
+                return;
+            eventsManager.events[id][field] = value;
+        }
         else if (field == 'section_id')
-            eventsManager.events[id][field] = SP_textToKey(value);
+        {
+            value = SP_textToKey(value);
+            if (eventsManager.events[id][field] == value)
+                return;
+            eventsManager.events[id][field] = value;
+        }
         else if (field == 'event_date')
         {
             var eventDict = eventsManager.events[id];
             var startDate = moment.unix(eventDict.event_start);
             var endDate = moment.unix(eventDict.event_end);
             var newDate = moment(value);
+            if (newDate.date() == startDate.date() && newDate.month() == startDate.month() && newDate.year() == startDate.year())
+                return;
             startDate.year(newDate.year());
             startDate.month(newDate.month());
             startDate.date(newDate.date());
@@ -50,6 +62,8 @@ function EventsMan_init()
             var eventDict = eventsManager.events[id];
             var oldTime = moment.unix(eventDict[field]);
             var newTime = moment(value);
+            if (oldTime.minute() == newTime.minute() && oldTime.hour() == newTime.hour())
+                return;
             oldTime.hour(newTime.hour());
             oldTime.minute(newTime.minute());
             eventDict[field] = oldTime.unix();
@@ -64,7 +78,11 @@ function EventsMan_init()
             });
         }
         else
+        {
+            if (eventsManager.events[id][field] == value)
+                return;
             eventsManager.events[id][field] = value;
+        }
         eventsManager.events[id].modified_time = moment().unix()
         _EventsMan_callUpdateListeners()
     });
