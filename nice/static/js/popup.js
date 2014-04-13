@@ -86,7 +86,7 @@ function PopUp_insertPopUp(isMain)
         if (isMain)
         {
             popUp.id = "";
-            PopUp_showClose(popUp);
+            //PopUp_showClose(popUp);
             UI_pin(PopUp_getID(popUp));
             UI_unsetMain();
             var rect = popUp.getBoundingClientRect();
@@ -210,7 +210,15 @@ function PopUp_initialize(popUp)
 
 function PopUp_close(popUp)
 {
-    UI_unpin(PopUp_getID(popUp));
+    if (UI_isMain(PopUp_getID(popUp)))
+    {
+        SB_hide();
+        UI_unsetMain();
+    }
+    else
+    {
+        UI_unpin(PopUp_getID(popUp));
+    }
     $(popUp).remove();
 }
 
