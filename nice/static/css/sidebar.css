@@ -14,3 +14,12 @@
 #sidebar.in{
     right: 0;
 }
+#sidebar-target{
+    width: 15%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    visibility: hidden;
+    z-index: -1;
+}

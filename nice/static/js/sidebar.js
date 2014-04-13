@@ -1,3 +1,29 @@
+function SB_init()
+{
+    $('#sidebar').droppable({
+        drop: function(ev, ui) {
+            var popUp = ui.draggable[0];
+            
+            $(popUp).detach().appendTo('#sidebar').css({
+                position: 'relative',
+                width: '100%',
+                height: '300px',
+                left: 'auto',
+                top: 'auto',
+            });
+            PopUp_updateSize(popUp);
+            PopUp_makeMain(popUp);
+        },
+    });
+    $('#sidebar-target').droppable({
+        over: function(ev, ui){
+            SB_show();
+        },
+        out: function(ev, ui){
+            SB_hide();
+        }
+    });
+}
 
 function SB_show()
 {

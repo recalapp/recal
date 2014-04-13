@@ -55,6 +55,7 @@ function init()
     pinnedIDs = new Set();
     mainID = null;
     SP_init(); // give priority - not dependent on anything
+    SB_init();
     SR_init();
     CacheMan_init();
     EventsMan_init();
