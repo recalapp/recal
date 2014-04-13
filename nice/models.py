@@ -54,7 +54,7 @@ class Section(models.Model):
     isDefault = models.BooleanField(default=False) # if true, then everyone in the course is automatically enrolled in this section
 
     def __unicode__(self):
-        return self.course.dept + ' ' + self.course.number + ' - ' + self.name
+        return unicode(self.course) + ' - ' + self.name
         
         
 # create "All Students" section as soon as a course is created

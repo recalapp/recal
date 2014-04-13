@@ -70,36 +70,56 @@ function PopUp_insertPopUp(isMain)
     //    $(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
     //    popUp.space = space;
     //}
+    var firstDragStart = function(){
+        if (isMain)
+        {
+            popUp.id = "";
+            PopUp_showClose(popUp);
+            UI_pin(PopUp_getID(popUp));
+            UI_unsetMain();
+            var rect = popUp.getBoundingClientRect();
+            $(popUp).css({
+                height: rect.height + 'px',
+                width: rect.width + 'px',
+            });
+            
+            SB_hide();
+        }
+        else
+        {
+            PopUp_freedSpace.push(popUp.space);
+            delete popUp.space;
+        }
+    };
+    var firstDragEnd = function(){
+        if (isMain)
+        {
+            var rect = popUp.getBoundingClientRect();
+            $(popUp).appendTo('body');
+            $(popUp).css({
+                position: 'absolute',
+                top: rect.top,
+                left: rect.left,
+            });
+        }
+    }
+
     popUp.draggable({
         handle:'.panel > .panel-heading', 
         containment:"#content_bounds", 
         scroll: false, 
-        start: function(){
-            if (isMain)
+        start: function(ev, ui){
+            if (firstDragStart)
             {
-                popUp.id = "";
-                PopUp_showClose(popUp);
-                if (popUp.firstDrag)
-                    popUp.firstDrag();
-                UI_pin(PopUp_getID(popUp));
-                UI_unsetMain();
-                this.ondrag = null;
-                var rect = popUp.getBoundingClientRect();
-                $(popUp).detach().appendTo('body').css({
-                    position: 'fixed',
-                    height: rect.height + 'px',
-                    width: rect.width + 'px',
-                    left: rect.left + 'px',
-                    top: rect.top + 'px'
-                });
-
-                //SB_hide();
+                firstDragStart();
+                firstDragStart = null;
             }
-            else
+        },
+        stop: function(){
+            if (firstDragEnd)
             {
-                PopUp_freedSpace.push(popUp.space);
-                delete popUp.space;
-                this.ondrag = null;
+                firstDragEnd();
+                firstDragEnd = null;
             }
         }
     }).find(".panel").resizable({
@@ -121,6 +141,7 @@ function PopUp_insertPopUp(isMain)
     setTimeout(function(){
         PopUp_initialize(popUp);
     }, 500) // doesn't block
+    var rect = popUp.getBoundingClientRect(); 
     return popUp;
 }
 
