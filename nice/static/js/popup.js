@@ -406,6 +406,10 @@ function PopUp_makeMain(popUp)
     popUp.id = 'popup-main';
     UI_setMain(PopUp_getID(popUp));
 }
+function PopUp_hasMain(popUp)
+{
+    return $("#popup-main").length > 0;
+}
 
 /***************************************************
  * forms for editing

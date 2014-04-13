@@ -2,8 +2,13 @@ function SB_init()
 {
     $('#sidebar').droppable({
         drop: function(ev, ui) {
+            if (PopUp_hasMain())
+            {
+                var main = PopUp_getMainPopUp();
+                PopUp_callCloseListeners(PopUp_getID(main));
+                $(main).remove();
+            }
             var popUp = ui.draggable[0];
-            
             $(popUp).detach().appendTo('#sidebar').css({
                 position: 'relative',
                 width: '100%',
