@@ -10,6 +10,7 @@ Procedure:
 
 from nice.models import *
 from lxml import etree
+from django.core.management.base import BaseCommand, CommandError
 import string
 import sys
 import urllib2
@@ -24,6 +25,11 @@ DEP_PREFIX = TERM_PREFIX + "&subject="
 PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
 
 CURRENT_SEMESTER = ''
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        scrape_all()
+        self.stdout.write('scraped successfully')
 
 def get_current_semester():
     global CURRENT_SEMESTER
