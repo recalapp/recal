@@ -21,6 +21,18 @@ function PopUp_init()
         return;
     POPUP_INIT = true;
 
+    var oldMouseStart = $.ui.draggable.prototype._mouseStart;
+    $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
+        this._trigger("beforeStart", event, this._uiHash());
+        oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
+    };
+    
+    $("#draggable").draggable({
+        beforeStart: function () {
+            console.log('beforeStart::');
+        }
+    });
+
     // setting bounds
     topPos = parseInt($(".navbar").css("height")) + parseInt($(".navbar").css("margin-top"));
     height = window.innerHeight - topPos + 300;
@@ -82,8 +94,16 @@ function PopUp_insertPopUp(isMain)
                 height: rect.height + 'px',
                 width: rect.width + 'px',
             });
+            $(popUp).appendTo('body');
+            $(popUp).css({
+                position: 'absolute',
+                top: rect.top,
+                left: rect.left,
+            });
+
             
             SB_hide();
+            console.log('called');
         }
         else
         {
@@ -91,37 +111,20 @@ function PopUp_insertPopUp(isMain)
             delete popUp.space;
         }
     };
-    var firstDragEnd = function(){
-        if (isMain)
-        {
-            var rect = popUp.getBoundingClientRect();
-            $(popUp).appendTo('body');
-            $(popUp).css({
-                position: 'absolute',
-                top: rect.top,
-                left: rect.left,
-            });
-        }
-    }
+   
 
     popUp.draggable({
         handle:'.panel > .panel-heading', 
         containment:"#content_bounds", 
         scroll: false, 
-        start: function(ev, ui){
+        appendTo: 'body',
+        beforeStart: function(ev, ui){
             if (firstDragStart)
             {
                 firstDragStart();
                 firstDragStart = null;
             }
-        },
-        stop: function(){
-            if (firstDragEnd)
-            {
-                firstDragEnd();
-                firstDragEnd = null;
-            }
-        }
+        }, 
     }).find(".panel").resizable({
         stop: function(e, ui){
             $(this).parent().css("height", $(this).css("height"));
