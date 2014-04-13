@@ -29,15 +29,22 @@ class Course(models.Model):
     semester = models.ForeignKey(Semester)
 
     # fields
-    dept = models.CharField(max_length=3)
-    number = models.CharField(max_length=3)
-    name = models.CharField(max_length=100)
+    title = models.TextField()
     description = models.TextField()
-    professor = models.CharField(max_length=100)
+    professor = models.CharField(max_length=100, null=True, blank=True)
 
     def __unicode__(self):
-        return self.dept + ' ' + self.number + ': ' + self.name
-    
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all()]) + ' ' + ': ' + self.title
+
+class Course_Listing(models.Model):
+    course = models.ForeignKey(Course)
+    """ even though the max_length should be 3~4, there are extreme cases """
+    dept = models.CharField(max_length=10)
+    number = models.CharField(max_length=10)
+
+    def __unicode__(self):
+        return self.dept + ' ' + self.number
+
 class Section(models.Model):
     # relationships
     course = models.ForeignKey(Course)
@@ -227,13 +234,16 @@ def seed_db_with_data():
     '''
     Inserts some test data: a semester, a course, and an extra section.
     '''
-    sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1), term_code='1144')
-    sem.save()
-    c1 = Course(semester=sem, dept='COS', number='333', name='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
-    c1.save()
-    # Note that once we create a Course, the All Students section is created automatically and marked Default (i.e. all students in the course are automatically enrolled in this section). 
-    extra_section = Section(course=c1, name='Precept A')
-    extra_section.save()
+    # scrape.scrape_all()
+    # sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1), term_code='1144')
+    # sem.save()
+    # c1 = Course(semester=sem, title='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
+    # course_listing = Course_Listing(course=c1, dept='COS', number='333')
+    # c1.save()
+    # course_listing.save()
+    # # Note that once we create a Course, the All Students section is created automatically and marked Default (i.e. all students in the course are automatically enrolled in this section). 
+    # extra_section = Section(course=c1, name='Precept A')
+    # extra_section.save()
     
 def clear_all_data():
     # TODO: add other tables

@@ -8,6 +8,7 @@ from django.views.decorators.http import * # require_GET, etc.
 from django.utils import timezone
 
 from nice.models import *
+from nice import scrape
 from nice.forms import *
 from nice import queries
 from datetime import datetime
@@ -95,7 +96,7 @@ def login_admin(request):
     
 @staff_member_required 
 def seed_data(request):
-    seed_db_with_data()
+    scrape.scrape_all()
     return HttpResponse("Data added.")
     
 @staff_member_required 
