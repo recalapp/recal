@@ -11,27 +11,40 @@ from django.db.models.signals import post_save
 # use OneToOneField for one to one rel
 
 # TODO not implemented: best revisions
-# TODO add code for naming semesters
 
 class Semester(models.Model):
     # fields
     start_date = models.DateField() #TODO should this be datetime instead of date?
     end_date = models.DateField()
+    """ term_code = 1xxy, where xx is the year in which the school year ends,
+        and y is the semester code. y = 2 for the fall term, y = 4 for the spring
+        Example:
+        1144 = 1314Spring
+        1132 = 1213Fall
+        """
+    term_code = models.CharField(max_length=4, default='1144')
 
 class Course(models.Model):
     # relationships
     semester = models.ForeignKey(Semester)
 
     # fields
-    dept = models.CharField(max_length=3)
-    number = models.CharField(max_length=3)
-    name = models.CharField(max_length=100)
+    title = models.TextField()
     description = models.TextField()
-    professor = models.CharField(max_length=100)
+    professor = models.CharField(max_length=100, null=True, blank=True)
 
     def __unicode__(self):
-        return self.dept + ' ' + self.number + ': ' + self.name
-    
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all()]) + ' ' + ': ' + self.title
+
+class Course_Listing(models.Model):
+    course = models.ForeignKey(Course)
+    """ even though the max_length should be 3~4, there are extreme cases """
+    dept = models.CharField(max_length=10)
+    number = models.CharField(max_length=10)
+
+    def __unicode__(self):
+        return self.dept + ' ' + self.number
+
 class Section(models.Model):
     # relationships
     course = models.ForeignKey(Course)
@@ -106,10 +119,26 @@ class Event(models.Model):
         if self.best_revision():
             return 'event %d: %s' % (self.id, unicode(self.best_revision()))
         return 'event %d: no approved revisions' % (self.id)
-    def best_revision(self):
+    def best_revision(self, netid=None):
+        """
+        Returns the best event revision to show to a user.
+        
+        Returns: the latest approved revision or the user's own version -- whichever is newer.
+        
+        That is, if there's a new approved revision after a user's own version, they see the new approved one.
+        Or if they've changed the event since the last approved revision, even if their revision hasn't been approved yet for global viewing,
+        they still see their revision.
+        
+        Arguments: username (optional). If not specified, returns globally-seen last approved revision.
+        """
         if self.event_revision_set.all():
-            return self.event_revision_set.filter(approved=True).latest('modified_time')
-        return None
+            latest_approved = self.event_revision_set.filter(approved=True).latest('modified_time')
+            if netid:
+                latest_mine = self.event_revision_set.filter(modified_user__user__username=netid).latest('modified_time')
+                if latest_mine.modified_time > latest_approved.modified_time: 
+                    return latest_mine # their own revision is newest, so show that
+            return latest_approved # show the latest approved revision because the user's revisions don't exist or are older
+        return None # no revisions available
 
 class Event_Revision(models.Model):
     # constants
@@ -205,13 +234,16 @@ def seed_db_with_data():
     '''
     Inserts some test data: a semester, a course, and an extra section.
     '''
-    sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1))
-    sem.save()
-    c1 = Course(semester=sem, dept='COS', number='333', name='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
-    c1.save()
-    # Note that once we create a Course, the All Students section is created automatically and marked Default (i.e. all students in the course are automatically enrolled in this section). 
-    extra_section = Section(course=c1, name='Precept A')
-    extra_section.save()
+    # scrape.scrape_all()
+    # sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1), term_code='1144')
+    # sem.save()
+    # c1 = Course(semester=sem, title='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
+    # course_listing = Course_Listing(course=c1, dept='COS', number='333')
+    # c1.save()
+    # course_listing.save()
+    # # Note that once we create a Course, the All Students section is created automatically and marked Default (i.e. all students in the course are automatically enrolled in this section). 
+    # extra_section = Section(course=c1, name='Precept A')
+    # extra_section.save()
     
 def clear_all_data():
     # TODO: add other tables
