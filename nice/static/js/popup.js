@@ -28,7 +28,7 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
         });
         $(popUp).appendTo('body');
         $(popUp).css({
-            position: 'absolute',
+            position: 'fixed',
             top: rect.top,
             left: rect.left,
         });
@@ -49,12 +49,6 @@ function PopUp_init()
         oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
     };
     
-    $("#draggable").draggable({
-        beforeStart: function () {
-            console.log('beforeStart::');
-        }
-    });
-
     // setting bounds
     topPos = parseInt($(".navbar").css("height")) + parseInt($(".navbar").css("margin-top"));
     height = window.innerHeight - topPos + 300;
@@ -113,6 +107,7 @@ function PopUp_insertPopUp(isMain)
         beforeStart: function(ev, ui){
             firstDragStart();
         }, 
+        zIndex: 2000,
     })
     popUp = popUp[0];
     //$(popUp).css("height", $(popUp).find(".panel").css("height"));
@@ -143,7 +138,7 @@ function PopUp_insertPopUp(isMain)
     _PopUp_setBodyHeight(popUp);
     setTimeout(function(){
         PopUp_initialize(popUp);
-    }, 500) // doesn't block
+    }, 300) // doesn't block
     var rect = popUp.getBoundingClientRect(); 
     return popUp;
 }

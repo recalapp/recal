@@ -7,15 +7,24 @@
                  <li class=""><a id="calendartab" class="nav-link" href="#calendar" data-toggle="tab"><h2>Calendar</h2></a></li>
              </ul> 
          </div>
-         <div class="col-sm-5 nav_controls">
+         <div class="col-sm-5 nav_controls"> 
+            <h5 style="display: inline-block">
+                <a href="#" onclick="EventsMan_clickAddEvent();return false;" title="Add Event">
+                    <span class="glyphicon glyphicon-plus "></span>
+                </a>
+                <a href="{% url 'nice.views.edit_profile' %}" title="Edit Profile">
+                    <span class="glyphicon glyphicon-user"></span>
+                </a>
+            </h5>
+            <h2 style="display: inline-block">
+            {{formatted_name}}
+            </h2>
+
+            <!-- 
             <div class="row user_label">
                 <h2>{{formatted_name}}</h2>
             </div>
-            <div class="row">
-                
-                <a id="sync-button" class="" href="#" onclick="EventsMan_clickSync();return false;" title="Refresh">
-                    <span class="glyphicon glyphicon-refresh"></span>
-                </a>
+            <div class="row"> 
                 <a href="#" onclick="EventsMan_clickAddEvent();return false;" title="Add Event">
                     <span class="glyphicon glyphicon-plus "></span>
                 </a>
@@ -23,6 +32,7 @@
                     <span class="glyphicon glyphicon-user"></span>
                 </a>
             </div>
+            -->
         </div>
      </div>
  </div>

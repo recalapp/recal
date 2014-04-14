@@ -134,9 +134,9 @@ function EventsMan_getEventIDForRange(start, end)
     while (i < eventsManager.order.length && eventsManager.order[i].event_start < start)
         i++;
     var iStart = i;
-    while (i < eventsManager.order.length && eventsManager.order[i].event_start <= end)
+    while (i < eventsManager.order.length && eventsManager.order[i].event_start < end)
         i++;
-    var iEnd = Math.min(++i, eventsManager.order.length); // slice method is exclusive on the right end
+    var iEnd = Math.min(i, eventsManager.order.length); // slice method is exclusive on the right end
     var ret = eventsManager.order.slice(iStart, iEnd);
     for (var i = 0; i < ret.length; i++)
         ret[i] = ret[i].event_id;

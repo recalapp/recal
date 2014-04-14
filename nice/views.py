@@ -37,6 +37,8 @@ def popup(request):
     return render(request, 'main/popup.html', None)
 def agenda(request):
     return render(request, 'main/agenda.html', None)
+def agenda_header(request):
+    return render(request, 'main/agenda-header.html', None)
 def typepicker(request):
     return render(request, 'main/type-picker.html', None)
 def sectionpicker(request):
