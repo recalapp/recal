@@ -395,6 +395,7 @@ function PopUp_updateSize(popUp)
         width: $(popUp).css('width'),
         height: $(popUp).css('height'),
     });
+    _PopUp_setBodyHeight(popUp);
 }
 function PopUp_isMain(popUp)
 {

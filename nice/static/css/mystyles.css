@@ -1,7 +1,7 @@
 .navbar-basic {
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
-    background-color: rgba(254, 254, 254, 0.85);
+    background-color: rgba(245, 245, 245, 0.65);
 }
 .nav-link > h2 {
     margin-top: 5px;
@@ -17,10 +17,10 @@ body {
     /*background-color: #f5faff;*/
     padding-top: 90px;
     background-size: 20px;
-    background: -webkit-repeating-linear-gradient(10deg, white, white 100px, rgba(253, 253, 253, 0.8) 100px, rgba(253, 253, 253, 0.8) 200px);/* For Safari 5.1 to 6.0 */
-    background: -o-repeating-linear-gradient(10deg, white, white 100px, rgba(253, 253, 253, 0.8) 100px, rgba(253, 253, 253, 0.8) 200px); /* For Opera 11.1 to 12.0 */
-    background: -moz-repeating-linear-gradient(10deg, white, white 100px, rgba(253, 253, 253, 0.8) 100px, rgba(253, 253, 253, 0.8) 200px); /* For Firefox 3.6 to 15 */
-    background: repeating-linear-gradient(10deg, white, white 100px, rgba(253, 253, 253, 0.8) 100px, rgba(253, 253, 253, 0.8) 200px); /* Standard syntax */
+    background: -webkit-repeating-linear-gradient(10deg, white, white 100px, rgba(250, 250, 250, 0.8) 100px, rgba(250, 250, 250, 0.8) 200px);/* For Safari 5.1 to 6.0 */
+    background: -o-repeating-linear-gradient(10deg, white, white 100px, rgba(250, 250, 250, 0.8) 100px, rgba(250, 250, 250, 0.8) 200px); /* For Opera 11.1 to 12.0 */
+    background: -moz-repeating-linear-gradient(10deg, white, white 100px, rgba(250, 250, 250, 0.8) 100px, rgba(250, 250, 250, 0.8) 200px); /* For Firefox 3.6 to 15 */
+    background: repeating-linear-gradient(10deg, white, white 100px, rgba(250, 250, 250, 0.8) 100px, rgba(250, 250, 250, 0.8) 200px); /* Standard syntax */
     background-attachment: fixed;
 }
 .slide {

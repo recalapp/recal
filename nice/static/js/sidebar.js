@@ -28,7 +28,7 @@ function SB_init()
         out: function(ev, ui){
             if (SB_isEmpty())
                 SB_hide();
-        }
+        },
     });
 }
 function SB_isEmpty()
