@@ -1,6 +1,6 @@
 var SR_willSaveListeners = []
 var SR_didLoadListeners = []
-var SR_ON = false;
+var SR_ON = true;
 var SR_manager = {}
 var SR_loaded = false;
 
