@@ -1,7 +1,7 @@
 .navbar-basic {
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
-    background-color: white;
+    background-color: rgba(252, 252, 252, 0.85);
 }
 .nav-link > h2 {
     margin-top: 5px;
@@ -16,8 +16,11 @@ body {
     
     /*background-color: #f5faff;*/
     padding-top: 90px;
+    background: -webkit-linear-gradient(left, white, #f2f2f2); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, white, #f2f2f2); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, white, #f2f2f2); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(left, white, #f2f2f2); /* Standard syntax */
 }
-
 .slide {
     left: -100;
     -webkit-transition: left .15s linear;

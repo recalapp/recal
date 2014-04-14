@@ -19,6 +19,7 @@ function SB_init()
             PopUp_updateSize(popUp);
             PopUp_makeMain(popUp);
         },
+        hoverClass: 'hover-active'
     });
     $('#sidebar-target').droppable({
         over: function(ev, ui){
