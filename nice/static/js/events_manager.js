@@ -247,6 +247,9 @@ function EventsMan_pushToServer(async)
                 EventsMan_pullFromServer();
             },
             async: async,
+            error: function(data){
+                eventsManager.isIdle = true;
+            },
         });
     } else {
         eventsManager.isIdle = true;
@@ -284,7 +287,10 @@ function EventsMan_pullFromServer(complete)
             if (complete != null)
                 complete();
             _EventsMan_callUpdateListeners();
-        }
+        },
+        error: function(data){
+            eventsManager.isIdle = true;
+        },
     });
 }
 
