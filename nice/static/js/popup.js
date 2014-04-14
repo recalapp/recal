@@ -32,13 +32,7 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
             top: rect.top,
             left: rect.left,
         });
-        $(popUp).find(".panel").resizable({
-        stop: function(e, ui){
-            $(this).parent().css("height", $(this).css("height"));
-            $(this).parent().css("width", $(this).css("width")); 
-            _PopUp_setBodyHeight(this);
-        },
-    });
+        PopUp_makeResizable(popUp);
         SB_hide();
     }
 };
@@ -93,23 +87,11 @@ function PopUp_init()
 function PopUp_insertPopUp(isMain)
 {
     var popUpHTML = CacheMan_load("popup-template");
-    SB_push(popUpHTML);
-    //$("body").append(popUpHTML);
+    if (isMain)
+        SB_push(popUpHTML);
+    else
+        $("body").append(popUpHTML);
     var popUp = $("#popup-main123");
-    //if (!isMain)
-    //{
-    //    var space;
-    //    if (PopUp_freedSpace.length == 0)
-    //        space = ++PopUp_space;
-    //    else
-    //        space = PopUp_freedSpace.sort(function(a,b){return b-a}).pop();
-    //    popUp.id = "";
-    //    PopUp_showClose(popUp);
-    //    leftPos = parseInt($(popUp).css("left"));
-    //    topPos = parseInt($(popUp).css("top"));
-    //    $(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
-    //    popUp.space = space;
-    //}
     var firstDragStart = function(){
         POPUP_MAIN_FIRSTDRAG(popUp);
         //if (isMain)
@@ -135,6 +117,24 @@ function PopUp_insertPopUp(isMain)
     popUp = popUp[0];
     //$(popUp).css("height", $(popUp).find(".panel").css("height"));
     popUp.id = "popup-main";
+    if (!isMain)
+    {
+        //var space;
+        //if (PopUp_freedSpace.length == 0)
+        //    space = ++PopUp_space;
+        //else
+        //    space = PopUp_freedSpace.sort(function(a,b){return b-a}).pop();
+        popUp.id = "";
+        PopUp_makeResizable(popUp);
+        $(popUp).css({
+            position: 'fixed',
+        });
+        //PopUp_showClose(popUp);
+        //leftPos = parseInt($(popUp).css("left"));
+        //topPos = parseInt($(popUp).css("top"));
+        //$(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
+        //popUp.space = space;
+    }
     popUp.onmousedown = function(){
         PopUp_giveFocus(this);
     };
@@ -356,11 +356,14 @@ function PopUp_load()
     var pos = JSON.parse(SR_get('popup'));
     $(pos).each(function(index) {
         popUp = PopUp_insertPopUp(this.isMain);
-        $(popUp).css("left", this.frame[0]);
-        $(popUp).css("top", this.frame[1]);
-        $(popUp).css("width", this.frame[2]);
-        $(popUp).css("height", this.frame[3]);
-        _PopUp_setBodyHeight(popUp);
+        if (!this.isMain)
+        {
+            $(popUp).css("left", this.frame[0]);
+            $(popUp).css("top", this.frame[1]);
+            $(popUp).css("width", this.frame[2]);
+            $(popUp).css("height", this.frame[3]);
+            _PopUp_setBodyHeight(popUp);
+        }
         PopUp_setToEventID(popUp, this.id);
         if (this.hasFocus)
             PopUp_giveFocus(popUp);
@@ -405,12 +408,25 @@ function PopUp_isMain(popUp)
 function PopUp_makeMain(popUp)
 {
     popUp.id = 'popup-main';
-    UI_setMain(PopUp_getID(popUp));
+    var id = PopUp_getID(popUp);
+    if (UI_isPinned(id))
+        UI_unpin(id);
+    UI_setMain(id);
     $(popUp).find('.panel').resizable('destroy');
 }
 function PopUp_hasMain(popUp)
 {
     return $("#popup-main").length > 0;
+}
+function PopUp_makeResizable(popUp)
+{
+    $(popUp).find(".panel").resizable({
+        stop: function(e, ui){
+            $(this).parent().css("height", $(this).css("height"));
+            $(this).parent().css("width", $(this).css("width")); 
+            _PopUp_setBodyHeight(this);
+        },
+    });
 }
 
 /***************************************************

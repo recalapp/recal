@@ -25,11 +25,15 @@ function SB_init()
             SB_show();
         },
         out: function(ev, ui){
-            SB_hide();
+            if (SB_isEmpty())
+                SB_hide();
         }
     });
 }
-
+function SB_isEmpty()
+{
+    return $('#sidebar').find('.popup').length == 0;
+}
 function SB_show()
 {
     $('#sidebar').addClass('in');
