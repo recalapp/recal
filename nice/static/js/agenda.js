@@ -30,12 +30,53 @@ function Agenda_init() {
 
 function Agenda_reload()
 {
-    var curDate = moment();
-    var startDate = moment().date(curDate.date() - 1);
-    var endDate = moment().date(curDate.date() + 30);
-    var eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
     var agendaContainer = $("#agenda")
     agendaContainer[0].innerHTML = null;
+    // yesterday 0:00:00 AM to before midnight
+    var curDate = moment();
+    var startDate = moment().date(curDate.date() - 1).hour(0).minute(0).second(0);
+    var endDate = moment().date(curDate.date()).hour(0).minute(0).second(0);
+    var eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    if (eventIDs.length > 0)
+    {
+        Agenda_insertHeader('Yesterday');
+        Agenda_loadEvents(eventIDs);
+    }
+
+    // today to midnight
+    startDate = endDate;
+    endDate = moment().date(curDate.date() + 1).hour(0).minute(0).second(0);
+    eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    if (eventIDs.length > 0)
+    {
+        Agenda_insertHeader('Today');
+        Agenda_loadEvents(eventIDs);
+    }
+
+    // this week
+    startDate = endDate;
+    endDate = moment().date(curDate.date() + 7).hour(0).minute(0).second(0);
+    eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    if (eventIDs.length > 0)
+    {
+        Agenda_insertHeader('This Week');
+        Agenda_loadEvents(eventIDs);
+    }
+
+    // this month
+    startDate = endDate;
+    endDate = moment().date(curDate.date() + 30).hour(0).minute(0).second(0);
+    eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    if (eventIDs.length > 0)
+    {
+        Agenda_insertHeader('This month');
+        Agenda_loadEvents(eventIDs);
+    }
+}
+function Agenda_loadEvents(eventIDs)
+{
+    var agendaContainer = $("#agenda");
+
     $.each(eventIDs, function(index) {
         agendaContainer.append(CacheMan_load("agenda-template"));
         var agenda = agendaContainer.find("#agenda123")[0];
@@ -48,6 +89,14 @@ function Agenda_reload()
         if (UI_isMain(agenda.id))
             Agenda_highlight(agenda);
     });
+}
+function Agenda_insertHeader(text)
+{
+    var agendaContainer = $("#agenda");
+    agendaContainer.append(CacheMan_load('agenda-header'));
+    var header = $('#agenda-header123')[0];
+    header.id = '';
+    $(header).find('#agenda-header-text').text(text);
 }
 
 /***************************************************
