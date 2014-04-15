@@ -236,7 +236,11 @@ function PopUp_getMainPopUp()
 function PopUp_setToEventID(popUp, id)
 {
     PopUp_setID(popUp, id);
-    eventDict = EventsMan_getEventByID(id);
+    var eventDict;
+    if (EventsMan_hasUncommitted(id))
+        eventDict = EventsMan_getUncommitted(id);
+    else
+        eventDict = EventsMan_getEventByID(id);
     if (!eventDict)
     {
         console.log("errorneous event id");
@@ -424,6 +428,11 @@ function PopUp_makeResizable(popUp)
         },
     });
 }
+function PopUp_markAsUnsaved(popUp)
+{
+    $(popUp).find('#save_button').removeClass('hide');
+    $(popUp).find('#undo_button').removeClass('hide');
+}
 
 /***************************************************
  * forms for editing
@@ -564,10 +573,14 @@ function PopUp_clickedSaveElement(form)
         if (UI_isMain(PopUp_getID(popUp)))
             $(popUp).find('.poup-ctrl-right').addClass('hidden');
     }
-    $(popUp).find("#"+text_id).html(nl2br(_PopUp_Form_getValue(form)));
-    PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form)); 
 
-   
+    //actual saving
+    var text = $(popUp).find("#"+text_id)[0];
+    if ($(text).html() == nl2br(_PopUp_Form_getValue(form)))
+        return; // no saving needed
+    $(text).html(nl2br(_PopUp_Form_getValue(form)));
+    PopUp_markAsUnsaved(popUp);
+    PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
 }
 function PopUp_clickedClose(popUpAnchor)
 {
@@ -584,6 +597,22 @@ function PopUp_clickedDelete(popUpAnchor)
     var event_id = PopUp_getID(popUp);
     PopUp_close(popUp);
     EventsMan_deleteEvent(event_id);
+}
+function PopUp_clickedSavePopUp(anchor)
+{
+    var popUp = _PopUp_getPopUp(anchor);
+    var id = PopUp_getID(popUp);
+    $(popUp).find('#save_button').addClass('hide');
+    $(popUp).find('#undo_button').addClass('hide');
+    EventsMan_commitChanges(id)
+}
+function PopUp_clickedUndo(anchor)
+{
+    var popUp = _PopUp_getPopUp(anchor);
+    var id = PopUp_getID(popUp);
+    $(popUp).find('#save_button').addClass('hide');
+    $(popUp).find('#undo_button').addClass('hide');
+    EventsMan_cancelChanges(id);
 }
 
 /***************************************************
