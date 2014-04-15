@@ -86,6 +86,34 @@ def edit_profile(request):
     
     return render(request, "main/edit-profile.html", {'courses_form':form, 'formatted_name': unicode(profile)})
     
+
+@login_required
+def edit_profile_autocomplete(request):
+    '''
+    Change which courses you are enrolled in, and edit your name.
+    This is an autocomplete for course selection demo.
+    '''
+    return render(request, "main/edit-profile-autocomplete.html", {'formatted_name': unicode(request.user.profile)})
+    
+@login_required
+def get_classes(request):
+    if True: #request.is_ajax():
+        q = request.GET.get('term', '')
+        courses = Course.objects.filter(title__icontains = q )[:20]
+        results = []
+        for c in courses:
+            course_json = {}
+            course_json['id'] = c.id
+            course_json['value'] = c.id
+            course_json['label'] = c.title
+            course_json['desc'] = c.description
+            results.append(course_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
     
 @login_required
 def edit_sections(request):
