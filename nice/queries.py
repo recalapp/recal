@@ -37,30 +37,55 @@ def modify_events(netid, events):
     user = User.objects.get(username=netid).profile
     changed_ids = {}
     for event_dict in events:
-        # TODO(Maxim): make below use the parse_dict function
-        event_start = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_start'])), timezone.get_default_timezone())
-        event_end = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_end'])), timezone.get_default_timezone())
-
-        modified_time = timezone.make_aware(datetime.fromtimestamp(float(event_dict['modified_time'])), timezone.get_default_timezone())
+        event_dict = parse_json_event_dict(event_dict) # handles datetimes and such
+        new_modified_time = get_current_utc() # don't trust client's timestamps
         try:
-            event = Event.objects.get(id=event_dict['event_id'])
+            event = Event.objects.get(id=event_dict['event_id']) # event already exists
             event_group = event.group;
             section = Section.objects.get(id=event_dict['section_id'])
             event_group.section = section;
             event_group.save();
+            
+            ## Decide whether we need a new event group revision.
+            last_rev = event_group.best_revision() # get last event_group revision
+            
+            # Compare last event_group revision to new start_date, end_date, recurrence fields
+            event_groups_match = True # use boolean rather than a huge if statement
+            if last_rev.start_date != event_dict['event_start'].date():
+                event_groups_match = False 
+            elif last_rev.end_date != event_dict['event_start'].date():
+                event_groups_match = False 
+            elif 'recurring' in event_dict and event_dict['recurring'] is True:
+                if (last_rev.recurrence_days != event_dict['recurrence_days']):
+                    event_groups_match = False
+                if (last_rev.recurrence_interval != event_dict['recurrence_interval']):
+                    event_groups_match = False
+            elif 'recurring' in event_dict and event_dict['recurring'] is False:
+                if last_rev.recurrence_days is not None:
+                    event_groups_match = False
+                if last_rev.recurrence_interval is not None:
+                    event_groups_match = False
+            # Event groups don't match, so make new event group revision
+            
+            
             # TODO new event group rev?
         except:
+            # event lookup failed -- i.e. event doesn't exist yet
             # create a new event group to hold the event
             section = Section.objects.get(id=event_dict['section_id'])
             event_group = Event_Group(section=section)
             event_group.save()
             event_group_rev = Event_Group_Revision(
                 event_group = event_group,
-                start_date = event_start.date(),
-                end_date = event_start.date(),
+                start_date = event_dict['event_start'].date(),
+                end_date = event_dict['event_start'].date(),
                 modified_user = user,
-                modified_time = modified_time
-            )
+                modified_time = new_modified_time
+            (
+            if 'recurring' in event_dict and event_dict['recurring'] is True:
+                event_group_rev.recurrence_days = json.dumps(event_dict['recurrence_days'])
+                event_group_rev.recurrence_interval = event_dict['recurrence_interval']
+            
             # save the event group
             event_group_rev.save()
             # create the actual event
@@ -68,20 +93,23 @@ def modify_events(netid, events):
             event.save()
             changed_ids[event_dict['event_id']] = event.id
         # create a new revision
-        eventRev = Event_Revision(
-            event = event,
-            event_title = event_dict['event_title'],
-            event_type = event_dict['event_type'],
-            event_start = event_start,
-            event_end = event_end,
-            event_description = event_dict['event_description'],
-            event_location = event_dict['event_location'],
-            modified_user = user,
-            modified_time = modified_time
-        )
+        def make_new_rev(e):
+            return Event_Revision(
+                event = e,
+                event_title = event_dict['event_title'],
+                event_type = event_dict['event_type'],
+                event_start = event_dict['event_start'],
+                event_end = event_dict['event_end'],
+                event_description = event_dict['event_description'],
+                event_location = event_dict['event_location'],
+                modified_user = user,
+                modified_time = new_modified_time
+            )
+        eventRev = make_new_rev(event)
         # save
         eventRev.save()
         event.save()
+        # make further events by calling Event(group=event_group) and make_new_rev()
     return changed_ids
 
 def hide_events(netid, event_IDs):
@@ -170,18 +198,25 @@ def parse_json_event_dict(jsdict):
     """
     
     # Parse JSON
-    import json
     event_dict = json.loads(jsdict)
     if type(event_dict) == list:
         event_dict = event_dict[0]
     
     # Handle datetimes
+    def make_time_aware(timestamp):
+        return timezone.make_aware(datetime.fromtimestamp(float(timestamp)), timezone.get_default_timezone())
+    event_dict['event_start'] = make_time_aware(event_dict['event_start'])
+    event_dict['event_end'] = make_time_aware(event_dict['event_end'])
+    event_dict['modified_time'] = make_time_aware(event_dict['modified_time'])
     
-    event_dict['event_start'] = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_start'])), timezone.get_default_timezone())
-    
-    event_dict['event_end'] = timezone.make_aware(datetime.fromtimestamp(float(event_dict['event_end'])), timezone.get_default_timezone())
-
-    event_dict['modified_time'] = timezone.make_aware(datetime.fromtimestamp(float(event_dict['modified_time'])), timezone.get_default_timezone())
+    # Clean up recurrence info
+    event_dict['recurring'] = False
+    if 'recurrence_days' in event_dict and 'recurrence_interval' in event_dict:
+        event_dict['recurring'] = True
+        event_dict['recurrence_interval'] = int(event_dict['recurrence_interval'])
+        if not 0 < event_dict['recurrence_interval'] < 12: # range for repetition interval
+            raise Exception("Recurrence invalid")
+        event_dict['recurrence_days'] = [int(i) for i in event_dict['recurrence_days']]
     
     return event_dict
     

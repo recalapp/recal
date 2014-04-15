@@ -83,6 +83,7 @@ class Event_Group(models.Model):
         return 'Event group %d: no approved revision' % (self.id) +  ' in ' + unicode(self.section)
 
     def best_revision(self):
+        # TODO(Maxim): show different revisions for different users?
         if self.event_group_revision_set.all():
             return self.event_group_revision_set.filter(approved=True).latest('modified_time')
         return None;
