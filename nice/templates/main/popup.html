@@ -1,4 +1,7 @@
 <div id="popup-main123" class="popup-container popup">
+    <a href="#" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl">
+        <span class="glyphicon glyphicon-remove"></span>
+    </a> 
     <div class="panel panel-default panel-clipped">
         <div class="panel-heading panel-heading-handle">
             <h3 class="panel-title" >
@@ -14,10 +17,12 @@
                 </a>
                 <a href="#" onclick="PopUp_clickedUndo(this); return false;" id="undo_button" class="popup-ctrl hide">
                     <span class="glyphicon glyphicon-floppy-remove"></span>
-                </a>
+                </a> 
+                <!--
                 <a href="#" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl popup-ctrl-right">
                     <span class="glyphicon glyphicon-remove"></span>
                 </a> 
+                -->
             </h3>
         </div>
         <div class="panel-body panel-body-scroll">

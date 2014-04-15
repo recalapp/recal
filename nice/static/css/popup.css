@@ -12,6 +12,14 @@
     top: 100px;
     left: 50%;
 }
+.popup-container > .popup-ctrl{
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px;
+    color: white;
+    z-index: 1000;
+}
 #sidebar > .popup-container {
     position: relative;
     width: 100%;
