@@ -21,14 +21,18 @@ function EventsMan_init()
             value = TP_textToKey(value);
             if (eventsManager.events[id][field] == value)
                 return;
-            eventsManager.events[id][field] = value;
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
+            eventsManager.uncommitted[id][field] = value;
         }
         else if (field == 'section_id')
         {
             value = SP_textToKey(value);
             if (eventsManager.events[id][field] == value)
                 return;
-            eventsManager.events[id][field] = value;
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
+            eventsManager.uncommitted[id][field] = value;
         }
         else if (field == 'event_date')
         {
@@ -38,23 +42,25 @@ function EventsMan_init()
             var newDate = moment(value);
             if (newDate.date() == startDate.date() && newDate.month() == startDate.month() && newDate.year() == startDate.year())
                 return;
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
             startDate.year(newDate.year());
             startDate.month(newDate.month());
             startDate.date(newDate.date());
             endDate.year(newDate.year());
             endDate.month(newDate.month());
             endDate.date(newDate.date());
-            eventDict.event_start = startDate.unix();
-            eventDict.event_end = endDate.unix();
-            $.each(eventsManager.order, function(index) {
-                if (this.event_id == eventDict.event_id)
-                {
-                    this.event_start = eventDict.event_start;
-                }
-            });
-            eventsManager.order.sort(function(a,b){
-                return parseInt(a.event_start) - parseInt(b.event_start);
-            });
+            eventsManager.uncommitted[id].event_start = startDate.unix();
+            eventsManager.uncommitted[id].event_end = endDate.unix();
+            //$.each(eventsManager.order, function(index) {
+            //    if (this.event_id == eventDict.event_id)
+            //    {
+            //        this.event_start = eventDict.event_start;
+            //    }
+            //});
+            //eventsManager.order.sort(function(a,b){
+            //    return parseInt(a.event_start) - parseInt(b.event_start);
+            //});
         }
         else if (field == 'event_start' || field == 'event_end')
         {
@@ -64,26 +70,32 @@ function EventsMan_init()
             var newTime = moment(value);
             if (oldTime.minute() == newTime.minute() && oldTime.hour() == newTime.hour())
                 return;
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
             oldTime.hour(newTime.hour());
             oldTime.minute(newTime.minute());
-            eventDict[field] = oldTime.unix();
-            $.each(eventsManager.order, function(index) {
-                if (this.event_id == eventDict.event_id)
-                {
-                    this.event_start = eventDict.event_start;
-                }
-            });
-            eventsManager.order.sort(function(a,b){
-                return parseInt(a.event_start) - parseInt(b.event_start);
-            });
+            eventsManager.uncommitted[id][field] = oldTime.unix();
+            //$.each(eventsManager.order, function(index) {
+            //    if (this.event_id == eventDict.event_id)
+            //    {
+            //        this.event_start = eventDict.event_start;
+            //    }
+            //});
+            //eventsManager.order.sort(function(a,b){
+            //    return parseInt(a.event_start) - parseInt(b.event_start);
+            //});
         }
         else
         {
             if (eventsManager.events[id][field] == value)
                 return;
-            eventsManager.events[id][field] = value;
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
+            eventsManager.uncommitted[id][field] = value;
         }
-        eventsManager.events[id].modified_time = moment().unix()
+        eventsManager.uncommitted[id].modified_time = moment().unix()
+        // uncomment to remove save button behavior
+        // eventsManager.updatedIDs.add(id)
         _EventsMan_callUpdateListeners()
     });
 
@@ -101,6 +113,8 @@ function _EventsMan_new()
     this.lastSyncedTime = 0; // will be set when populating
     this.addedCount = 0;
     this.deletedIDs = [];
+    this.updatedIDs = new Set(); // if it is in updatedIDs, it'll be pushed on the next connection
+    this.uncommitted = {}; // copies of events dict with uncommitted changes, once saved, the event dict is copied to eventsManager.events, and its ID is added to updatedIDs
     this.isIdle = true;
     return this;
 }
@@ -141,6 +155,15 @@ function EventsMan_getEventIDForRange(start, end)
     for (var i = 0; i < ret.length; i++)
         ret[i] = ret[i].event_id;
     return ret;
+}
+
+function EventsMan_hasUncommitted(id)
+{
+    return id in eventsManager.uncommitted;
+}
+function EventsMan_getUncommitted(id)
+{
+    return eventsManager.uncommitted[id];
 }
 
 function EventsMan_addEvent()
@@ -190,6 +213,18 @@ function EventsMan_ready()
 {
     return EVENTS_READY;
 }
+function EventsMan_commitChanges(id)
+{
+    eventsManager.events[id] = eventsManager.uncommitted[id];
+    delete eventsManager.uncommitted[id];
+    eventsManager.updatedIDs.add(id);
+    _EventsMan_callUpdateListeners();
+}
+function EventsMan_cancelChanges(id)
+{
+    delete eventsManager.uncommitted[id];
+    _EventsMan_callUpdateListeners();
+}
 
 /***************************************************
  * Server code
@@ -212,7 +247,8 @@ function EventsMan_pushToServer(async)
     eventsManager.isIdle = false;
     var updated = [];
     $.each(eventsManager.events, function(id, eventDict){
-        if (eventDict.modified_time > eventsManager.lastSyncedTime)
+        //if (eventDict.modified_time > eventsManager.lastSyncedTime)
+        if (eventDict.event_id in eventsManager.updatedIDs)
             updated.push(eventDict);
     });
     var deleted = eventsManager.deletedIDs;
@@ -243,6 +279,7 @@ function EventsMan_pushToServer(async)
                 eventsManager.isIdle = true;
                 eventsManager.addedCount = 0;
                 eventsManager.deletedIDs = [];
+                eventsManager.updatedIDs = new Set();
 
                 EventsMan_pullFromServer();
             },
@@ -267,10 +304,8 @@ function EventsMan_pullFromServer(complete)
             var eventsArray = data;
             for (var i = 0; i < eventsArray.length; i++)
             {
-                var eventsDict = eventsArray[i];
+                var eventsDict = eventsArray[i]; 
                 eventsManager.events[eventsDict.event_id] = eventsDict;
-
-                eventsManager.order.push({'event_start': eventsDict.event_start, 'event_id': eventsDict.event_id});
             }
             eventsManager.order = [];
             $.each(eventsManager.events, function(key, eventDict){
@@ -363,4 +398,14 @@ function EventsMan_clickSync()
     SR_save();
     //var $syncButton = $('#sync-button').find('span');
     //$syncButton.addClass('icon-refresh-animate')
+}
+
+/***************************************************
+ * Miscellaneous
+ **************************************************/
+
+function EventsMan_cloneEventDict(eventDict)
+{
+    var newDict = JSON.parse(JSON.stringify(eventDict)) // hack for cloning
+    return newDict;
 }
