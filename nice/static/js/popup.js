@@ -69,7 +69,10 @@ function PopUp_init()
     });
     EventsMan_addUpdateListener(function(){
         PopUp_map(function(popUp, isMain){
-            PopUp_setToEventID(popUp, PopUp_getID(popUp));
+            if (EventsMan_hasEvent(PopUp_getID(popUp)))
+                PopUp_setToEventID(popUp, PopUp_getID(popUp));
+            else
+                PopUp_close(popUp);
         });
     });
 }
