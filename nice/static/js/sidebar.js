@@ -10,7 +10,7 @@ function SB_init()
             }
             var popUp = ui.draggable[0];
             $(popUp).detach().appendTo('#sidebar').css({
-                position: 'relative',
+                //position: 'relative',
                 width: '100%',
                 height: '300px',
                 left: 'auto',

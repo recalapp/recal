@@ -38,7 +38,6 @@ def logout(request):
     return redirect('cas_logout')
 
 # loading templates
-
 def popup(request):
     return render(request, 'main/popup.html', None)
 def agenda(request):
