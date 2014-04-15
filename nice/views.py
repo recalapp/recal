@@ -47,8 +47,8 @@ def sectionpicker(request):
 @login_required
 def edit_profile(request):
     '''
-    Change which courses you are enrolled in.
-    TODO: add options to change your name and which sections you're in.
+    Change which courses you are enrolled in, and edit your name.
+    TODO: add autocomplete for course selection.
     '''
     user_profile_filled_out(request.user) # create profile if not already create
     profile = request.user.profile
@@ -61,11 +61,11 @@ def edit_profile(request):
 
     form = EnrollCoursesForm(request.POST or None, extra=all, initial_first = request.user.first_name, initial_last = request.user.last_name)
     if form.is_valid(): # runs validation and confirms that there are no validation errors
-        # Process Choose Sections form.
+        # Process Register Courses form.
         chosen_courses = list(form.extra_courses())
         for c in chosen_courses:
             if c not in all: # This version is different from the previous states of the records (found in all)
-                print 'Course enrollment change.'
+                # Course enrollment change.
                 the_course = Course.objects.get(pk=c[0])
                 if c[2] == True:
                     # Enroll user in course, i.e. add to default "All Students" section(s)
@@ -81,11 +81,56 @@ def edit_profile(request):
         request.user.last_name = form.cleaned_data['last_name']
         request.user.save()
         
-        # Done processing, redirect to dashboard.
-        print 'Redirecting from profile page.'
-        return redirect("/")
+        # Done processing, redirect to edit-sections form.
+        return redirect('nice.views.edit_sections')
     
     return render(request, "main/edit-profile.html", {'courses_form':form, 'formatted_name': unicode(profile)})
+    
+    
+@login_required
+def edit_sections(request):
+    '''
+    For the courses you're enrolled in, choose sections (precepts, labs, etc.) to join.
+    '''
+    # If no profile created yet, or no sections chosen, then redirect to choose courses page.
+    if not user_profile_filled_out(request.user):
+        return redirect('nice.views.edit_profile')
+    profile = request.user.profile
+
+    # Compile list of options
+    my_current_sections = profile.sections.all()
+    enrolled_classes = set([s.course for s in my_current_sections]) # convert to set to remove duplicates
+    
+    class_list = []
+    
+    for c in enrolled_classes: # for each class the user is enrolled in
+        all_sections = c.section_set.exclude(isDefault=True) # all sections other than the default All Students section
+        seclist = [(s.id, str(s), True) for s in all_sections if s in my_current_sections] # section ID, course title, section name, and whether enrolled already
+        seclist.extend([(s.id, str(s), False) for s in all_sections if s not in my_current_sections])
+        class_obj = (c.id, str(c), seclist) # class ID, class title, sections list
+        class_list.append(class_obj)
+    
+    form = ChooseSectionsForm(request.POST or None, extra=class_list)
+    if form.is_valid(): # runs validation and confirms that there are no validation errors
+        # Process Choose Sections form.
+        chosen_sections = list(form.extra_sections())
+        for s_id, c_id, enrolled in chosen_sections:
+            s = Section.objects.get(pk=s_id)
+            if not s:
+                continue
+            if enrolled and s not in my_current_sections: # This section has been changed to enrolled status
+                # Enrolling in new section.
+                user_in_section = User_Section_Table(user = profile, section=s, add_date = get_current_utc())
+                user_in_section.save()
+            elif not enrolled and s in my_current_sections and not s.isDefault: # This section has been changed to not-enrolled status (and isn't a default section, i.e. enrollment isn't mandatory)
+                # Unenrolling in a section
+                User_Section_Table.objects.get(section_id=s_id, user=profile).delete()
+        
+        # Done processing, redirect to dashboard.
+        return redirect("/")
+    
+    return render(request, "main/edit-sections.html", {'sections_form':form, 'formatted_name': unicode(profile)})
+    
 	
 @staff_member_required # this is why this works
 def login_admin(request):

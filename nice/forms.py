@@ -1,7 +1,12 @@
 from django import forms
 from django.forms.widgets import PasswordInput, Textarea
+import re
 
 class EnrollCoursesForm(forms.Form):
+    """
+    Lets user enroll in courses and edit their name. They must enroll in at least one class to see their dashboard.
+    
+    """
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
     
@@ -24,6 +29,34 @@ class EnrollCoursesForm(forms.Form):
             prefix = 'custom_'
             if name.startswith(prefix):
                 yield (int(name[len(prefix):]), self.fields[name].label, value) # course ID, course name, and whether the checkbox is checked
+    
+class ChooseSectionsForm(forms.Form):
+    """
+    Lets user choose sections they're in among their classes. 
+    
+    """
+    
+    def __init__(self, *args, **kwargs):
+        # See http://jacobian.org/writing/dynamic-form-generation/ for kwargs method description
+        extra = kwargs.pop('extra')
+        
+        # Run default initialization, but don't pass in our extra params (that's why we popped above)
+        super(ChooseSectionsForm, self).__init__(*args, **kwargs) 
+        
+        # Process extra elements -- i.e. populate the checkboxes
+        for (i, course, secList) in extra:
+            for (j, section, isEnrolled) in secList:
+                self.fields['custom_%s_%s' % (i,j)] = forms.BooleanField(label=section, initial=isEnrolled, required=False)
+        
+    def extra_sections(self): # retrieve sections
+        for name, value in self.cleaned_data.items():
+            prefix = 'custom_'
+            if name.startswith(prefix):
+                c_s_ids = name[len(prefix):] # this removes the "custom_" prefix
+                m = re.match(r'(\d)_(\d)', c_s_ids)
+                if m: # if matched successfully
+                    c_id, s_id = m.groups()
+                    yield (int(s_id), int(c_id), value) # section ID, course ID, and whether the checkbox is checked
     
 
 

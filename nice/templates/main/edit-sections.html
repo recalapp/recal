@@ -1,18 +1,18 @@
 {% extends 'main/base.html' %}
 {% load staticfiles %}
 
-{% block title %}Edit Profile{% endblock %}
+{% block title %}Edit Sections{% endblock %}
 
 {% block main_content %}
 <div class="container">
-<h1>Edit Your Profile, {{ formatted_name }}</h1>
-<h2>Sign up for at least one class below.</h2>
-<h3>Then <a href="{% url 'nice.views.edit_sections' %}">choose sections</a> or <a href="{% url 'nice.views.index' %}">proceed to dashboard</a>.</h2>
+<h1>Choose Sections, {{ formatted_name }}</h1>
+<h2>Customize your classes, or <a href="{% url 'nice.views.edit_profile' %}">return to course signup</a>.</h2>
+<h3>Then <a href="{% url 'nice.views.index' %}">proceed to dashboard</a>.</h3>
 
 <div class="row">
-    <h3>Edit Profile and Select Courses</h3>
+    <h3>Select Sections</h3>
     <form method="POST" role="form">
-        {{courses_form.as_p}}
+        {{sections_form.as_p}}
         {% csrf_token %}
         <button type="submit" class="btn btn-default">Update</button>
     </form>
