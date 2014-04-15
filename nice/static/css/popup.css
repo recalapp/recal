@@ -20,6 +20,9 @@
     color: white;
     z-index: 1000;
 }
+.panel-title {
+    max-width: 90%;
+}
 #sidebar > .popup-container {
     position: relative;
     width: 100%;
