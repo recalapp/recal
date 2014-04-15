@@ -28,7 +28,7 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
         });
         $(popUp).appendTo('body');
         $(popUp).css({
-            position: 'fixed',
+            //position: 'fixed',
             top: rect.top,
             left: rect.left,
         });
@@ -91,6 +91,8 @@ function PopUp_insertPopUp(isMain)
     var popUp = $("#popup-main123");
     var firstDragStart = function(){
         POPUP_MAIN_FIRSTDRAG(popUp);
+        if (popUp.space)
+            PopUp_freedSpace.push(popUp.space);
         //if (isMain)
         //{
         //            }
@@ -117,21 +119,22 @@ function PopUp_insertPopUp(isMain)
     popUp.id = "popup-main";
     if (!isMain)
     {
-        //var space;
-        //if (PopUp_freedSpace.length == 0)
-        //    space = ++PopUp_space;
-        //else
-        //    space = PopUp_freedSpace.sort(function(a,b){return b-a}).pop();
+        var space;
+        if (PopUp_freedSpace.length == 0)
+            space = ++PopUp_space;
+        else
+            space = PopUp_freedSpace.sort(function(a,b){return b-a}).pop();
         popUp.id = "";
         PopUp_makeResizable(popUp);
-        $(popUp).css({
-            position: 'fixed',
-        });
+        //$(popUp).css({
+        //    position: 'fixed',
+        //});
+        
         //PopUp_showClose(popUp);
-        //leftPos = parseInt($(popUp).css("left"));
-        //topPos = parseInt($(popUp).css("top"));
-        //$(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
-        //popUp.space = space;
+        leftPos = parseInt($(popUp).css("left"));
+        topPos = parseInt($(popUp).css("top"));
+        $(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
+        popUp.space = space;
     }
     popUp.onmousedown = function(){
         PopUp_giveFocus(this);
@@ -273,7 +276,7 @@ function PopUp_setID(popUp, id)
     }
     else 
     {
-        //UI_pin(id)
+        UI_pin(id)
     }
 }
 
