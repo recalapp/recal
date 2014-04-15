@@ -31,6 +31,12 @@ def index(request):
         return redirect('edit_profile')
     return render(request, "main/index.html", {'username': request.user.username, 'formatted_name': unicode(request.user.profile)})
 
+def logout(request):
+    user = request.user.profile
+    user.ui_state_restoration = None;
+    user.save()
+    return redirect('cas_logout')
+
 # loading templates
 
 def popup(request):

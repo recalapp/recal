@@ -19,7 +19,7 @@ function EventsMan_init()
         if (field == 'event_type')
         {
             value = TP_textToKey(value);
-            if (eventsManager.events[id][field] == value)
+            if (id in eventsManager.events && eventsManager.events[id][field] == value)
                 return;
             if (!(id in eventsManager.uncommitted))
                 eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
@@ -28,7 +28,7 @@ function EventsMan_init()
         else if (field == 'section_id')
         {
             value = SP_textToKey(value);
-            if (eventsManager.events[id][field] == value)
+            if (id in eventsManager.events && eventsManager.events[id][field] == value)
                 return;
             if (!(id in eventsManager.uncommitted))
                 eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
@@ -40,7 +40,7 @@ function EventsMan_init()
             var startDate = moment.unix(eventDict.event_start);
             var endDate = moment.unix(eventDict.event_end);
             var newDate = moment(value);
-            if (newDate.date() == startDate.date() && newDate.month() == startDate.month() && newDate.year() == startDate.year())
+            if (id in eventsManager.events && newDate.date() == startDate.date() && newDate.month() == startDate.month() && newDate.year() == startDate.year())
                 return;
             if (!(id in eventsManager.uncommitted))
                 eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
@@ -68,7 +68,7 @@ function EventsMan_init()
             var eventDict = eventsManager.events[id];
             var oldTime = moment.unix(eventDict[field]);
             var newTime = moment(value);
-            if (oldTime.minute() == newTime.minute() && oldTime.hour() == newTime.hour())
+            if (id in eventsManager.events && oldTime.minute() == newTime.minute() && oldTime.hour() == newTime.hour())
                 return;
             if (!(id in eventsManager.uncommitted))
                 eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
@@ -87,7 +87,7 @@ function EventsMan_init()
         }
         else
         {
-            if (eventsManager.events[id][field] == value)
+            if (id in eventsManager.events && eventsManager.events[id][field] == value)
                 return;
             if (!(id in eventsManager.uncommitted))
                 eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
@@ -118,6 +118,16 @@ function _EventsMan_new()
     this.isIdle = true;
     return this;
 }
+function EventsMan_constructOrderArray()
+{
+    eventsManager.order = [];
+    $.each(eventsManager.events, function(key, eventDict){
+        eventsManager.order.push({'event_start': eventDict.event_start, 'event_id': key}); 
+    });
+    eventsManager.order.sort(function(a,b){
+        return parseInt(a.event_start) - parseInt(b.event_start);
+    });
+}
 
 /**************************************************
  * Client methods
@@ -140,6 +150,10 @@ function _EventsMan_new()
 function EventsMan_getEventByID(id)
 {
     return eventsManager.events[id];
+}
+function EventsMan_hasEvent(id)
+{
+    return (id in eventsManager.events) || (id in eventsManager.uncommitted);
 }
 
 function EventsMan_getEventIDForRange(start, end)
@@ -183,11 +197,11 @@ function EventsMan_addEvent()
         modified_user: USER_NETID,
         modified_time: moment().unix()
     }
-    eventsManager.events[id] = eventDict;
-    eventsManager.order.push({event_id: id, event_start: eventDict.event_start});
-    eventsManager.order.sort(function(a,b){
-        return parseInt(a.event_start) - parseInt(b.event_start);
-    });
+    eventsManager.uncommitted[id] = eventDict;
+    //eventsManager.order.push({event_id: id, event_start: eventDict.event_start});
+    //eventsManager.order.sort(function(a,b){
+    //    return parseInt(a.event_start) - parseInt(b.event_start);
+    //});
 
     return id;
 }
@@ -218,6 +232,7 @@ function EventsMan_commitChanges(id)
     eventsManager.events[id] = eventsManager.uncommitted[id];
     delete eventsManager.uncommitted[id];
     eventsManager.updatedIDs.add(id);
+    EventsMan_constructOrderArray();
     _EventsMan_callUpdateListeners();
 }
 function EventsMan_cancelChanges(id)
@@ -307,13 +322,7 @@ function EventsMan_pullFromServer(complete)
                 var eventsDict = eventsArray[i]; 
                 eventsManager.events[eventsDict.event_id] = eventsDict;
             }
-            eventsManager.order = [];
-            $.each(eventsManager.events, function(key, eventDict){
-                eventsManager.order.push({'event_start': eventDict.event_start, 'event_id': key}); 
-            });
-            eventsManager.order.sort(function(a,b){
-                return parseInt(a.event_start) - parseInt(b.event_start);
-            });
+            EventsMan_constructOrderArray();
             eventsManager.addedCount = 0;
             eventsManager.lastSyncedTime = moment().unix();
 
@@ -386,6 +395,7 @@ function EventsMan_clickAddEvent()
     // set new ID
     var id = EventsMan_addEvent();
     PopUp_setToEventID(popUp, id);
+    PopUp_markAsUnsaved(popUp);
     
     // request server for new id
     PopUp_giveFocus(popUp);
