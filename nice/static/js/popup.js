@@ -244,7 +244,10 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setID(popUp, id);
     var eventDict;
     if (EventsMan_hasUncommitted(id))
+    {
         eventDict = EventsMan_getUncommitted(id);
+        PopUp_markAsUnsaved(popUp);
+    }
     else
         eventDict = EventsMan_getEventByID(id);
     if (!eventDict)
