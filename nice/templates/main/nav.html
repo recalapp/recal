@@ -3,8 +3,8 @@
      <div class="row">    
          <div class="col-xs-5 col-xs-offset-1">
              <ul id="maintab" class="nav nav-tabs nav-justified">
-                 <li class="active"><a id="agendatab" class="nav-link" href="#agenda" data-toggle="tab"><h2>Agenda</h2></a></li>
-                 <li class=""><a id="calendartab" class="nav-link" href="#calendar" data-toggle="tab"><h2>Calendar</h2></a></li>
+                 <li class="active"><a id="agendatab" class="nav-link" href="#agenda" data-toggle="tab"><h3>Agenda</h3></a></li>
+                 <li class=""><a id="calendartab" class="nav-link" href="#calendar" data-toggle="tab"><h3>Calendar</h3></a></li>
              </ul> 
          </div>
          <div class="col-sm-5 nav_controls"> 
@@ -14,6 +14,9 @@
                 </a>
                 <a href="{% url 'nice.views.edit_profile' %}" title="Edit Profile">
                     <span class="glyphicon glyphicon-user"></span>
+                </a>
+                <a href="#" title="Log Out" onclick="clickLogOut(); return false;">
+                    <span class="glyphicon glyphicon-log-out"></span>
                 </a>
             </h4>
             <h2 style="display: inline-block">

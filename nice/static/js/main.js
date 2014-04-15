@@ -181,3 +181,8 @@ function sameOrigin(url) {
         // or any other URL that isn't scheme relative or absolute i.e relative.
         !(/^(\/\/|http:|https:).*/.test(url));
 }
+
+function clickLogOut()
+{
+    window.location = '/logout';
+}
