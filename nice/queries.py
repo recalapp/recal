@@ -30,7 +30,7 @@ def get_events(netid, **kwargs):
         filtered = [event for event in filtered if event.best_revision(netid=netid).event_start <= end_date]
     if last_updated:
         filtered = [event for event in filtered if event.best_revision(netid=netid).modified_time > last_updated]
-    return [__construct_event_dict(event, netid=netid) for event in filtered if event.id not in hidden_events]
+    return [construct_event_dict(event, netid=netid) for event in filtered if event.id not in hidden_events]
 
 def modify_events(netid, events):
     # TODO add a try statement
@@ -133,7 +133,7 @@ def get_state_restoration(netid):
     except Exception, e:
         return None
         
-def __construct_event_dict(event, netid=None):
+def construct_event_dict(event, netid=None):
     """
     Selects the best revision, then converts it into a dict for client-side rendering.
     """
@@ -163,7 +163,7 @@ def __construct_revision_dict(rev):
         'modified_time': format(rev.modified_time, 'U')
     }
     
-def __parse_json_event_dict(jsdict):
+def parse_json_event_dict(jsdict):
     """
     Parses JSON event dict into Python dict with proper Python objects (e.g. datetimes when necessary).
     
@@ -171,7 +171,9 @@ def __parse_json_event_dict(jsdict):
     
     # Parse JSON
     import json
-    event_dict = json.loads(jsdict)[0]
+    event_dict = json.loads(jsdict)
+    if type(event_dict) == list:
+        event_dict = event_dict[0]
     
     # Handle datetimes
     
@@ -231,7 +233,7 @@ def get_similar_events(event_dict):
     """
     When adding a new event, this fetches similar events that may be the one the user is trying to add now.
     
-    Accepts: event_dict (dict as defined in __construct_event_dict
+    Accepts: event_dict (dict as defined in construct_event_dict
     
     TODO(Maxim): make a similar function that creates event_dict from an existing revision and then uses this function to compare and merge revisions.
     
@@ -240,6 +242,8 @@ def get_similar_events(event_dict):
     - must match: section_id, event_type
     - must be similar (use a distance function): event_title, event_description, event_location -- on the lowercase version of string
     - must be within X minutes: event_start, event_end
+    
+    TODO(Maxim): enforce that returned stuff has different event ID; AND DEBUG
     
     """
     

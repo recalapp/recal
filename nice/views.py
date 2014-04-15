@@ -166,6 +166,15 @@ def hidden_events(request):
     hidden_events = queries.get_hidden_events(netid)
     return HttpResponse(json.dumps(hidden_events), content_type='application/javascript')
     
+@require_POST
+def similar_events(request):
+    netid = request.user.username
+    json_dict = request.POST['event_dict']
+    ed = queries.parse_json_event_dict(json_dict)
+    results = queries.get_similar_events(ed) # these are revisions
+    event_dicts = [queries.construct_event_dict(r.event) for r in results]
+    return HttpResponse(json.dumps(event_dicts), content_type='application/javascript')
+    
 
 # Helper methods
 def user_profile_filled_out(user):
