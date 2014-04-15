@@ -150,7 +150,7 @@ function EventsMan_addEvent()
     var eventDict = {
         event_id: id,
         event_group_id: id, // TODO safe? value won't be used.
-        event_title: 'New event',
+        event_title: 'Event Name',
         event_type: 'AS',
         event_start: moment().unix(),
         event_end: moment().minute(moment().minute() + 50).unix(),
