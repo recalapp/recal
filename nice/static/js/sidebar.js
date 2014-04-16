@@ -58,10 +58,10 @@ function SB_isShown()
 function SB_push(content)
 {
     content = $(content).addClass('sb-left-content')[0];
-    $('#sidebar').append(content);
+    $('#sb-left-container').append(content);
     if (!SB_isShown())
         SB_show();
-    setTimeout("$('#sidebar').find('.sb-left-content').addClass('in')", 10);
+    setTimeout("$('#sb-left-container').find('.sb-left-content').addClass('in')", 10);
 }
 function SB_pop(content)
 {

@@ -23,7 +23,7 @@
 .panel-title {
     max-width: 90%;
 }
-#sidebar > .popup-container {
+#sb-left-container > .popup-container {
     position: relative;
     width: 100%;
     height: 300px;
