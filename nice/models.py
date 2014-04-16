@@ -34,7 +34,7 @@ class Course(models.Model):
     professor = models.CharField(max_length=100, null=True, blank=True)
 
     def __unicode__(self):
-        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all()]) + ' ' + ': ' + self.title
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all()]) #+ ' ' + ': ' + self.title
 
 class Course_Listing(models.Model):
     course = models.ForeignKey(Course)
