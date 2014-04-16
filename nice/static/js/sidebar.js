@@ -9,13 +9,14 @@ function SB_init()
                 $(main).remove();
             }
             var popUp = ui.draggable[0];
-            $(popUp).detach().appendTo('#sidebar').css({
+            $(popUp).detach().appendTo('#sb-left-container').css({
                 //position: 'relative',
                 width: '100%',
                 height: '300px',
                 left: 'auto',
                 top: 'auto',
             });
+            $(popUp).addClass('sb-left-content');
             PopUp_updateSize(popUp);
             PopUp_makeMain(popUp);
         },
