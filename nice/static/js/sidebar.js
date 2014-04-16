@@ -57,11 +57,11 @@ function SB_isShown()
 }
 function SB_push(content)
 {
-    content = $(content).addClass('sb-left')[0];
+    content = $(content).addClass('sb-left-content')[0];
     $('#sidebar').append(content);
     if (!SB_isShown())
         SB_show();
-    setTimeout("$('#sidebar').find('.sb-left').addClass('in')", 10);
+    setTimeout("$('#sidebar').find('.sb-left-content').addClass('in')", 10);
 }
 function SB_pop(content)
 {

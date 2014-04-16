@@ -393,7 +393,9 @@ function PopUp_giveFocus(popUp)
 {
     $(".popup").not(popUp).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary");
     $(popUp).css("z-index", "200");
-    $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default")
+    $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default");
+    if (UI_isMain(PopUp_getID(popUp)))
+        SB_show();
 }
 function PopUp_giveFocusToID(id)
 {

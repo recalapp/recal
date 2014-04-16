@@ -34,20 +34,29 @@
     z-index: -1;
 }
 
+#sidebar > #sb-full-content{
+    background-color: red;
+    width: 0;
+    height: 100%;
+    float: right;
+    z-index: 0;
+}
+
 #sidebar > * {
     margin-bottom: 15px;
 }
-#sidebar > .sb-left {
+#sidebar > .sb-left-content {
     opacity: 0;
     -webkit-transition: opacity 0.1s ease-out;
     transition: opacity 0.1s ease-out;
+    z-index: 10000 !important;
 }
-#sidebar > .sb-left.in {
+#sidebar > .sb-left-content.in {
     opacity: 1;
 }
-#sidebar.full > .sb-left {
+#sidebar.full > .sb-left-content {
     left: 0;
-    max-width: 350px;
+    max-width: 330px;
 }
 #sb-handle{
     position: absolute;
