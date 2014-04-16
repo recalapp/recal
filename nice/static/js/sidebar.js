@@ -33,7 +33,7 @@ function SB_init()
 }
 function SB_isEmpty()
 {
-    return $('#sidebar').find('.popup').length == 0;
+    return $('#sidebar').children().length == 0;
 }
 function SB_show()
 {
@@ -42,6 +42,11 @@ function SB_show()
 function SB_hide()
 {
     $('#sidebar').removeClass('in');
+}
+function SB_hideIfEmpty()
+{
+    if (SB_isEmpty())
+        SB_hide();
 }
 function SB_isShown()
 {

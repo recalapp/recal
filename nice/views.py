@@ -48,6 +48,8 @@ def typepicker(request):
     return render(request, 'main/type-picker.html', None)
 def sectionpicker(request):
     return render(request, 'main/section-picker.html', { 'all_sections': request.user.profile.sections.all() })
+def notifications(request):
+    return render(request, 'main/notifications.html', None)
 
 @login_required
 def edit_profile(request):
