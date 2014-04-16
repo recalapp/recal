@@ -252,5 +252,6 @@ def clear_all_data():
     Course.objects.all().delete()
     Semester.objects.all().delete()
     
-    
+def cur_semester():
+    pass # TODO
     

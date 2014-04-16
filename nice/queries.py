@@ -49,9 +49,12 @@ def modify_events(netid, events):
             modified_user = user,
             modified_time = new_modified_time
         )
+        if 'event_end' in event_dict:
+            new_event_group_rev.end_date = event_dict['event_end'].date()
         if 'recurring' in event_dict and event_dict['recurring'] is True:
             new_event_group_rev.recurrence_days = json.dumps(event_dict['recurrence_days'])
             new_event_group_rev.recurrence_interval = event_dict['recurrence_interval']
+            new_event_group_rev.end_date = min(new_event_group_rev.end_date, cur_semester().end_date)
             
         # Decide whether to edit existing event, or make new event.
         try:
