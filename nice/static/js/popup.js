@@ -213,12 +213,13 @@ function PopUp_close(popUp)
     if (UI_isMain(PopUp_getID(popUp)))
     {
         UI_unsetMain();
+        SB_pop(popUp);
     }
     else
     {
         UI_unpin(PopUp_getID(popUp));
+        $(popUp).remove();
     }
-    $(popUp).remove();
     SB_hideIfEmpty();
 }
 

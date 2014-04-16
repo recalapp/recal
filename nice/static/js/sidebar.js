@@ -33,7 +33,7 @@ function SB_init()
 }
 function SB_isEmpty()
 {
-    return $('#sidebar').children().length == 0;
+    return $('#sidebar').find('.in').length == 0;
 }
 function SB_show()
 {
@@ -54,7 +54,15 @@ function SB_isShown()
 }
 function SB_push(content)
 {
+    content = $(content).addClass('sb-left')[0];
     $('#sidebar').append(content);
     if (!SB_isShown())
         SB_show();
+    setTimeout("$('#sidebar').find('.sb-left').addClass('in')", 10);
+}
+function SB_pop(content)
+{
+    $(content).removeClass('in').on('transitionend', function(){
+        $(content).remove();
+    });
 }

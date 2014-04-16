@@ -94,6 +94,17 @@ function EventsMan_init()
             eventsManager.uncommitted[id][field] = value;
         }
         eventsManager.uncommitted[id].modified_time = moment().unix()
+        // should first check that this is a new event.
+        
+        // display notifications if similar events exist.
+        $.post('get/similar-events', {
+            event_dict: eventsManager.uncommitted[id], 
+        }, function (data){
+            if (true || data.length > 0)
+            {
+            }
+        }, 'json')
+        NO_showSimilarEvents();
         // uncomment to remove save button behavior
         // eventsManager.updatedIDs.add(id)
         _EventsMan_callUpdateListeners()

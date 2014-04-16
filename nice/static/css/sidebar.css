@@ -29,3 +29,15 @@
     visibility: hidden;
     z-index: -1;
 }
+
+#sidebar > * {
+    margin-bottom: 15px;
+}
+#sidebar > .sb-left {
+    opacity: 0;
+    -webkit-transition: opacity 0.2s ease-out;
+    transition: opacity 0.2s ease-out;
+}
+#sidebar > .sb-left.in {
+    opacity: 1;
+}
