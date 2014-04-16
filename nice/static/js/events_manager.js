@@ -208,18 +208,30 @@ function EventsMan_addEvent()
 
 function EventsMan_deleteEvent(id)
 {
-    eventsManager.events[id] = null;
-    delete eventsManager.events[id];
-    var dIndex = null;
-    $.each(eventsManager.order, function(index){
-        if (this.event_id == id)
-        {
-            dIndex = index;
-            return false;
-        }
-    });
-    eventsManager.order.splice(dIndex, 1);
-    eventsManager.deletedIDs.push(id);
+    if (id in eventsManager.events)
+    {
+        eventsManager.events[id] = null;
+        delete eventsManager.events[id];
+        var dIndex = null;
+        $.each(eventsManager.order, function(index){
+            if (this.event_id == id)
+            {
+                dIndex = index;
+                return false;
+            }
+        });
+        eventsManager.order.splice(dIndex, 1);
+        eventsManager.deletedIDs.push(id);
+    }
+    if (id in eventsManager.uncommitted)
+    {
+        eventsManager.uncommitted[id] = null;
+        delete eventsManager.uncommitted[id];
+    }
+    if (id in eventsManager.updatedIDs)
+    {
+        eventsManager.updatedIDs.remove(id);
+    }
     _EventsMan_callUpdateListeners();
 }
 
