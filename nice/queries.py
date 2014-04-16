@@ -33,12 +33,27 @@ def get_events(netid, **kwargs):
     return [construct_event_dict(event, netid=netid) for event in filtered if event.id not in hidden_events]
 
 def modify_events(netid, events):
-    # TODO add a try statement
-    user = User.objects.get(username=netid).profile
+    try:
+        user = User.objects.get(username=netid).profile
+    except:
+        raise Exception("Invalid user")
     changed_ids = {}
     for event_dict in events:
         event_dict = parse_json_event_dict(event_dict) # handles datetimes and such
         new_modified_time = get_current_utc() # don't trust client's timestamps
+        
+        # Make new event group revision now, so we can do comparisons before deciding whether to use it
+        new_event_group_rev = Event_Group_Revision(
+            start_date = event_dict['event_start'].date(),
+            end_date = event_dict['event_start'].date(),
+            modified_user = user,
+            modified_time = new_modified_time
+        )
+        if 'recurring' in event_dict and event_dict['recurring'] is True:
+            new_event_group_rev.recurrence_days = json.dumps(event_dict['recurrence_days'])
+            new_event_group_rev.recurrence_interval = event_dict['recurrence_interval']
+            
+        # Decide whether to edit existing event, or make new event.
         try:
             event = Event.objects.get(id=event_dict['event_id']) # event already exists
             event_group = event.group;
@@ -51,48 +66,42 @@ def modify_events(netid, events):
             
             # Compare last event_group revision to new start_date, end_date, recurrence fields
             event_groups_match = True # use boolean rather than a huge if statement
-            if last_rev.start_date != event_dict['event_start'].date():
-                event_groups_match = False 
-            elif last_rev.end_date != event_dict['event_start'].date():
+            if last_rev.start_date != new_event_group_rev.start_date or last_rev.end_date != new_event_group_rev.end_date:
                 event_groups_match = False 
             elif 'recurring' in event_dict and event_dict['recurring'] is True:
-                if (last_rev.recurrence_days != event_dict['recurrence_days']):
+                if (last_rev.recurrence_days != new_event_group_rev.recurrence_days):
                     event_groups_match = False
-                if (last_rev.recurrence_interval != event_dict['recurrence_interval']):
+                if (last_rev.recurrence_interval != new_event_group_rev.recurrence_interval):
                     event_groups_match = False
             elif 'recurring' in event_dict and event_dict['recurring'] is False:
                 if last_rev.recurrence_days is not None:
                     event_groups_match = False
                 if last_rev.recurrence_interval is not None:
                     event_groups_match = False
-            # Event groups don't match, so make new event group revision
             
+            # If we concluded that event groups don't match, save new event group revision
+            if not event_groups_match:
+                new_event_group.event_group = event_group
+                new_event_group_rev.save()
             
-            # TODO new event group rev?
         except:
             # event lookup failed -- i.e. event doesn't exist yet
             # create a new event group to hold the event
             section = Section.objects.get(id=event_dict['section_id'])
             event_group = Event_Group(section=section)
-            event_group.save()
-            event_group_rev = Event_Group_Revision(
-                event_group = event_group,
-                start_date = event_dict['event_start'].date(),
-                end_date = event_dict['event_start'].date(),
-                modified_user = user,
-                modified_time = new_modified_time
-            (
-            if 'recurring' in event_dict and event_dict['recurring'] is True:
-                event_group_rev.recurrence_days = json.dumps(event_dict['recurrence_days'])
-                event_group_rev.recurrence_interval = event_dict['recurrence_interval']
             
             # save the event group
-            event_group_rev.save()
+            event_group.save()
+            new_event_group_rev.event_group = event_group
+            new_event_group_rev.save()
+            
             # create the actual event
             event = Event(group=event_group)
             event.save()
             changed_ids[event_dict['event_id']] = event.id
-        # create a new revision
+        
+        
+        # Now that we have a new or existing event selected, create a new revision.
         def make_new_rev(e):
             return Event_Revision(
                 event = e,
@@ -106,9 +115,11 @@ def modify_events(netid, events):
                 modified_time = new_modified_time
             )
         eventRev = make_new_rev(event)
-        # save
+        # Save
         eventRev.save()
         event.save()
+        
+        
         # make further events by calling Event(group=event_group) and make_new_rev()
     return changed_ids
 
