@@ -119,6 +119,29 @@ def modify_events(netid, events):
         eventRev.save()
         event.save()
         
+        ## Handle recurring events
+        
+        # Is this a new event group? If so, then we need to make a bunch of new events with this same event revision.
+        # If not new event group:
+            # has recurrence pattern changed?
+                # no previous recurrence pattern -- have to make a bunch of new events with this same event revision
+                # recurrence pattern has changed -- need to find the previous events and move them
+            # if recurrence pattern hasn't changed:
+                # which fields have changed since previous revision? (compare to the best-revision this user sees, not the global last approved)
+                # look at recurring event edit settings
+                    # if change only this event:
+                        # stop
+                    # if change all future events:
+                        # select all future events in this event group (other than this event)
+                    # if change all events: (TODO: should we be able to edit previous events? I think not)
+                        # select all events in this event group (other than this event) 
+                # for each selected event:
+                    # take their last revision (as seen by this user)
+                    # edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
+                    # NOTE that each revision will have to be approved separately....
+                    
+    
+        
         
         # make further events by calling Event(group=event_group) and make_new_rev()
     return changed_ids
