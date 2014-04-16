@@ -5,7 +5,20 @@
 
 {% block main_content %}
 {% include 'main/nav.html' %}
-<div id="sidebar"></div>
+<div id="sidebar" class="container-fluid">
+    <div id="sb-handle">
+        <a href="#" onclick="SB_toggle()">
+            <span class="glyphicon glyphicon-chevron-left">
+            </span>
+        </a>
+    </div> 
+    <div class="row">
+        <div id="sb-left-container" class="col-xs-4">
+        </div>
+        <div id="sb-full-container" class="col-xs-8">
+        </div>
+    </div>
+</div>
 <div id="sidebar-target"></div>
 <div class="tab-content">
     <div class="tab-pane fade left active in container" id="agenda">
@@ -54,4 +67,5 @@ var USER_NETID = '{{ username }}';
 <script src="{% static 'js/type-picker.js' %}"></script>
 <script src="{% static 'js/section-picker.js' %}"></script>
 <script src="{% static 'js/sidebar.js' %}"></script>
+<script src="{% static 'js/notifications.js' %}"></script>
 {% endblock %}

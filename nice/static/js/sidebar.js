@@ -33,15 +33,23 @@ function SB_init()
 }
 function SB_isEmpty()
 {
-    return $('#sidebar').find('.popup').length == 0;
+    return $('#sidebar').find('.in').length == 0;
 }
 function SB_show()
 {
     $('#sidebar').addClass('in');
+    $('#sb-handle').find('.glyphicon').addClass('glyphicon-chevron-right').removeClass('glyphicon-chevron-left');
 }
 function SB_hide()
 {
-    $('#sidebar').removeClass('in');
+    $('#sidebar').removeClass('in').removeClass('full');
+    $('#sb-handle').find('.glyphicon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-left');
+
+}
+function SB_hideIfEmpty()
+{
+    if (SB_isEmpty())
+        SB_hide();
 }
 function SB_isShown()
 {
@@ -49,7 +57,26 @@ function SB_isShown()
 }
 function SB_push(content)
 {
-    $('#sidebar').append(content);
+    content = $(content).addClass('sb-left-content')[0];
+    $('#sb-left-container').append(content);
     if (!SB_isShown())
+        SB_show();
+    setTimeout("$('#sb-left-container').find('.sb-left-content').addClass('in')", 10);
+}
+function SB_pop(content)
+{
+    $(content).removeClass('in').on('transitionend', function(){
+        $(content).remove();
+    });
+}
+function SB_fill()
+{
+    $('#sidebar').addClass('full');
+}
+function SB_toggle()
+{
+    if (SB_isShown())
+        SB_hide();
+    else
         SB_show();
 }

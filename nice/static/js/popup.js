@@ -145,7 +145,6 @@ function PopUp_insertPopUp(isMain)
     setTimeout(function(){
         PopUp_initialize(popUp);
     }, 300) // doesn't block
-    var rect = popUp.getBoundingClientRect(); 
     return popUp;
 }
 
@@ -213,14 +212,15 @@ function PopUp_close(popUp)
 {
     if (UI_isMain(PopUp_getID(popUp)))
     {
-        SB_hide();
         UI_unsetMain();
+        SB_pop(popUp);
     }
     else
     {
         UI_unpin(PopUp_getID(popUp));
+        $(popUp).remove();
     }
-    $(popUp).remove();
+    SB_hideIfEmpty();
 }
 
 /***************************************************
@@ -272,6 +272,7 @@ function PopUp_getID(popUp)
 
 function PopUp_setID(popUp, id)
 {
+    var oldId = $(popUp).find(".panel")[0].id;
     $(popUp).find(".panel")[0].id = id;
     if (popUp.id == 'popup-main')
     {
@@ -279,6 +280,7 @@ function PopUp_setID(popUp, id)
     }
     else 
     {
+        UI_unpin(oldId);
         UI_pin(id)
     }
 }
@@ -391,7 +393,9 @@ function PopUp_giveFocus(popUp)
 {
     $(".popup").not(popUp).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary");
     $(popUp).css("z-index", "200");
-    $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default")
+    $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default");
+    if (UI_isMain(PopUp_getID(popUp)))
+        SB_show();
 }
 function PopUp_giveFocusToID(id)
 {
@@ -587,7 +591,8 @@ function PopUp_clickedSaveElement(form)
     var text = $(popUp).find("#"+text_id)[0];
     if ($(text).html() == nl2br(_PopUp_Form_getValue(form)))
         return; // no saving needed
-    $(text).html(nl2br(_PopUp_Form_getValue(form)));
+    var safe = _PopUp_Form_getValue(form).escapeHTML();
+    $(text).html(nl2br(safe));
     PopUp_markAsUnsaved(popUp);
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
 }

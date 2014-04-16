@@ -94,6 +94,17 @@ function EventsMan_init()
             eventsManager.uncommitted[id][field] = value;
         }
         eventsManager.uncommitted[id].modified_time = moment().unix()
+        // should first check that this is a new event.
+        
+        // display notifications if similar events exist.
+        $.post('get/similar-events', {
+            event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
+        }, function (data){
+            if (data.length > 0)
+            {
+                NO_showSimilarEvents();
+            }
+        }, 'json')
         // uncomment to remove save button behavior
         // eventsManager.updatedIDs.add(id)
         _EventsMan_callUpdateListeners()
@@ -208,18 +219,30 @@ function EventsMan_addEvent()
 
 function EventsMan_deleteEvent(id)
 {
-    eventsManager.events[id] = null;
-    delete eventsManager.events[id];
-    var dIndex = null;
-    $.each(eventsManager.order, function(index){
-        if (this.event_id == id)
-        {
-            dIndex = index;
-            return false;
-        }
-    });
-    eventsManager.order.splice(dIndex, 1);
-    eventsManager.deletedIDs.push(id);
+    if (id in eventsManager.events)
+    {
+        eventsManager.events[id] = null;
+        delete eventsManager.events[id];
+        var dIndex = null;
+        $.each(eventsManager.order, function(index){
+            if (this.event_id == id)
+            {
+                dIndex = index;
+                return false;
+            }
+        });
+        eventsManager.order.splice(dIndex, 1);
+        eventsManager.deletedIDs.push(id);
+    }
+    if (id in eventsManager.uncommitted)
+    {
+        eventsManager.uncommitted[id] = null;
+        delete eventsManager.uncommitted[id];
+    }
+    if (id in eventsManager.updatedIDs)
+    {
+        eventsManager.updatedIDs.remove(id);
+    }
     _EventsMan_callUpdateListeners();
 }
 
