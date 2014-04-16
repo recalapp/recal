@@ -19,7 +19,7 @@ function NO_showSimilarEvents()
     var noti = $('#noti-123')[0];
     noti.id = '';
     $(noti).addClass('alert-warning');
-    $(noti).find('#noti-content').html('<a href="#" class="alert-link">A similar event</a> already exists.');
+    $(noti).find('#noti-content').html('<a href="#" class="alert-link" onclick="SB_fill(); return false;">A similar event</a> already exists.');
     $(noti).find('button').on('click', function(){
         SB_pop(noti);
         //$(noti).remove();

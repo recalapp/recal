@@ -5,7 +5,15 @@
 
 {% block main_content %}
 {% include 'main/nav.html' %}
-<div id="sidebar"></div>
+<div id="sidebar">
+    
+    <div id="sb-handle">
+        <a href="#" onclick="SB_toggle()">
+            <span class="glyphicon glyphicon-chevron-left">
+            </span>
+        </a>
+    </div>
+</div>
 <div id="sidebar-target"></div>
 <div class="tab-content">
     <div class="tab-pane fade left active in container" id="agenda">

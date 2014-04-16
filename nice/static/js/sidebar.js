@@ -38,10 +38,13 @@ function SB_isEmpty()
 function SB_show()
 {
     $('#sidebar').addClass('in');
+    $('#sb-handle').find('.glyphicon').addClass('glyphicon-chevron-right').removeClass('glyphicon-chevron-left');
 }
 function SB_hide()
 {
-    $('#sidebar').removeClass('in');
+    $('#sidebar').removeClass('in').removeClass('full');
+    $('#sb-handle').find('.glyphicon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-left');
+
 }
 function SB_hideIfEmpty()
 {
@@ -65,4 +68,15 @@ function SB_pop(content)
     $(content).removeClass('in').on('transitionend', function(){
         $(content).remove();
     });
+}
+function SB_fill()
+{
+    $('#sidebar').addClass('full');
+}
+function SB_toggle()
+{
+    if (SB_isShown())
+        SB_hide();
+    else
+        SB_show();
 }
