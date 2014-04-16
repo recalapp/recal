@@ -98,7 +98,7 @@ function EventsMan_init()
         
         // display notifications if similar events exist.
         $.post('get/similar-events', {
-            event_dict: eventsManager.uncommitted[id], 
+            event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
         }, function (data){
             if (true || data.length > 0)
             {
