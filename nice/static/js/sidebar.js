@@ -17,6 +17,7 @@ function SB_init()
                 top: 'auto',
             });
             $(popUp).addClass('sb-left-content');
+            $(popUp).addClass('in');
             PopUp_updateSize(popUp);
             PopUp_makeMain(popUp);
         },

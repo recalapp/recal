@@ -64,3 +64,6 @@
     border-bottom: solid 1px rgba(0, 0, 0, 0.1); 
     font-size: 20px;
 }
+#sb-handle:hover{
+    background-color: rgb(240, 240, 240);
+}
