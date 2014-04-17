@@ -1,3 +1,6 @@
+var SB_willCloseListeners = [];
+
+
 function SB_init()
 {
     $('#sidebar').droppable({
@@ -44,6 +47,7 @@ function SB_show()
 }
 function SB_hide()
 {
+    SB_callWillCloseListeners();
     $('#sidebar').removeClass('in').removeClass('full');
     $('#sb-handle').find('.glyphicon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-left');
 
@@ -87,4 +91,14 @@ function SB_toggle()
         SB_hide();
     else
         SB_show();
+}
+function SB_addWillCloseListener(listener)
+{
+    SB_willCloseListeners.push(listener);
+}
+function SB_callWillCloseListeners()
+{
+    $.each(SB_willCloseListeners, function(index){
+        this();
+    });
 }

@@ -103,7 +103,7 @@ function EventsMan_init()
             if (data.length > 0)
             {
                 NO_showSimilarEvents();
-                EP_initWithEvents(events);
+                EP_initWithEvents(data);
             }
         }, 'json')
         // uncomment to remove save button behavior

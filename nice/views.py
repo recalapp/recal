@@ -52,6 +52,8 @@ def notifications(request):
     return render(request, 'main/notifications.html', None)
 def event_picker(request):
     return render(request, 'main/event-picker.html', None)
+def event_picker_item(request):
+    return render(request, 'main/event-picker-item.html', None)
 
 @login_required
 def edit_profile(request):
