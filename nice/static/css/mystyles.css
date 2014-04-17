@@ -87,3 +87,6 @@ body.grad{
             transform: scale( 1 ) rotate( 360deg ); 
         }
 }
+a {
+    cursor: pointer;
+}

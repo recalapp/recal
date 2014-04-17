@@ -70,6 +70,12 @@ function SB_pop(content)
         $(content).remove();
     });
 }
+function SB_setMainContent(content)
+{
+    content = $(content).addClass('sb-full-content')[0];
+    $('#sb-full-container').append(content);
+    setTimeout("$('#sb-full-container').find('.sb-full-content').addClass('in')", 10);
+}
 function SB_fill()
 {
     $('#sidebar').addClass('full');

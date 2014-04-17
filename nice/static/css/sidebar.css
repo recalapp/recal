@@ -40,13 +40,15 @@
 #sb-left-container > * {
     margin-bottom: 15px;
 }
-#sb-left-container > .sb-left-content {
+#sb-full-container > .sb-full-content, #sb-left-container > .sb-left-content {
     opacity: 0;
     -webkit-transition: opacity 0.1s ease-out;
     transition: opacity 0.1s ease-out;
 }
-#sb-left-container > .sb-left-content.in {
+#sb-full-container > .sb-full-content.in, #sb-left-container > .sb-left-content.in {
     opacity: 1;
+}
+#sb-full-container {
 }
 #sb-handle{
     position: absolute;

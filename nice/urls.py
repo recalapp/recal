@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^sections', views.edit_sections, name="edit_sections"),
     url(r'^type-picker$', views.typepicker, name="type-picker"),
     url(r'^section-picker$', views.sectionpicker, name="section-picker"),
+    url(r'^event-picker$', views.event_picker, name="event-picker"),
     url(r'^all-sections$', views.all_sections, name='all-sections'),
     url(r'^hidden_events$', views.hidden_events, name='hidden-events'), # NOTE: will be used later when we want to give the users a toggle
     # a few debug tricks

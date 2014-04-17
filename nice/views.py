@@ -50,6 +50,8 @@ def sectionpicker(request):
     return render(request, 'main/section-picker.html', { 'all_sections': request.user.profile.sections.all() })
 def notifications(request):
     return render(request, 'main/notifications.html', None)
+def event_picker(request):
+    return render(request, 'main/event-picker.html', None)
 
 @login_required
 def edit_profile(request):
