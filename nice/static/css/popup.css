@@ -49,3 +49,6 @@
 .hide{
     visibility: hidden; 
 }
+.unsaved{
+    background-color: #fffb99;
+}

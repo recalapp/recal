@@ -247,13 +247,42 @@ function PopUp_setToEventID(popUp, id)
 {
     PopUp_setID(popUp, id);
     var eventDict;
+    $(popUp).find('.unsaved').removeClass('unsaved');
     if (EventsMan_hasUncommitted(id))
     {
         eventDict = EventsMan_getUncommitted(id);
         PopUp_markAsUnsaved(popUp);
+        // TODO find out what is the unsaved changes
+        var savedEventDict = EventsMan_getEventByID(id);
+        if (savedEventDict)
+        {
+            if (savedEventDict.event_title != eventDict.event_title)
+                $(popUp).find('#popup-title').addClass('unsaved');
+            if (savedEventDict.event_location != eventDict.event_location)
+                $(popUp).find('#popup-loc').addClass('unsaved');
+            if (savedEventDict.event_description != eventDict.event_description)
+                $(popUp).find('#popup-desc').addClass('unsaved');
+            if (savedEventDict.event_type != eventDict.event_type)
+                $(popUp).find('#popup-type').addClass('unsaved');
+            if (savedEventDict.section_id != eventDict.section_id)
+                $(popUp).find('#popup-section').addClass('unsaved');
+            var start = moment.unix(eventDict.event_start);
+            var savedStart = moment.unix(savedEventDict.event_start);
+            if (start.year() != savedStart.year() || start.month() != savedStart.month() || start.date() != savedStart.date())
+                $(popUp).find('#popup-date').addClass('unsaved');
+            if (start.hour() != savedStart.hour() || start.minute() != savedStart.minute())
+                $(popUp).find('#popup-time-start').addClass('unsaved');
+            var end = moment.unix(eventDict.event_end);
+            var savedEnd = moment.unix(savedEventDict.event_end);
+            if (end.hour() != savedEnd.hour() || end.minute() != savedEnd.minute())
+                $(popUp).find('#popup-time-end').addClass('unsaved');
+        }
     }
     else
+    {
         eventDict = EventsMan_getEventByID(id);
+        PopUp_markAsSaved(popUp);
+    }
     if (!eventDict)
     {
         console.log("errorneous event id");
@@ -623,6 +652,7 @@ function PopUp_clickedSaveElement(form)
     var safe = _PopUp_Form_getValue(form).escapeHTML();
     $(text).html(nl2br(safe));
     PopUp_markAsUnsaved(popUp);
+    $(text).addClass('unsaved');
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
 }
 function PopUp_clickedClose(popUpAnchor)
@@ -630,7 +660,7 @@ function PopUp_clickedClose(popUpAnchor)
     var popUp = popUpAnchor;
     while (!$(popUp).hasClass("popup"))
         popUp = $(popUp).parent()[0];
-    if (PopUp_isEditing())
+    if (PopUp_isEditing(popUp))
         return;
     if (PopUp_getID(popUp))
         PopUp_callCloseListeners(PopUp_getID(popUp));
@@ -639,7 +669,7 @@ function PopUp_clickedClose(popUpAnchor)
 function PopUp_clickedDelete(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
-    if (PopUp_isEditing())
+    if (PopUp_isEditing(popUp))
         return;
     var event_id = PopUp_getID(popUp);
     PopUp_close(popUp);
@@ -648,23 +678,25 @@ function PopUp_clickedDelete(popUpAnchor)
 function PopUp_clickedSavePopUp(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
-    if (PopUp_isEditing())
+    if (PopUp_isEditing(popUp))
         return;
     var id = PopUp_getID(popUp);
     PopUp_markAsSaved(popUp);
     //$(popUp).find('#save_button').addClass('hide');
     //$(popUp).find('#undo_button').addClass('hide');
-    EventsMan_commitChanges(id)
+    EventsMan_commitChanges(id);
+    $(popUp).find('.unsaved').removeClass('unsaved');
 }
 function PopUp_clickedUndo(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
-    if (PopUp_isEditing())
+    if (PopUp_isEditing(popUp))
         return;
     var id = PopUp_getID(popUp);
     $(popUp).find('#save_button').addClass('hide');
     $(popUp).find('#undo_button').addClass('hide');
     EventsMan_cancelChanges(id);
+    $(popUp).find('.unsaved').removeClass('unsaved');
 }
 
 /***************************************************

@@ -36,22 +36,24 @@ function EventsMan_init()
         }
         else if (field == 'event_date')
         {
-            var eventDict = eventsManager.events[id];
+            
+            
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
+            var eventDict = eventsManager.uncommitted[id];
             var startDate = moment.unix(eventDict.event_start);
             var endDate = moment.unix(eventDict.event_end);
             var newDate = moment(value);
             if (id in eventsManager.events && newDate.date() == startDate.date() && newDate.month() == startDate.month() && newDate.year() == startDate.year())
                 return;
-            if (!(id in eventsManager.uncommitted))
-                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
             startDate.year(newDate.year());
             startDate.month(newDate.month());
             startDate.date(newDate.date());
             endDate.year(newDate.year());
             endDate.month(newDate.month());
             endDate.date(newDate.date());
-            eventsManager.uncommitted[id].event_start = startDate.unix();
-            eventsManager.uncommitted[id].event_end = endDate.unix();
+            eventDict.event_start = startDate.unix();
+            eventDict.event_end = endDate.unix();
             //$.each(eventsManager.order, function(index) {
             //    if (this.event_id == eventDict.event_id)
             //    {
@@ -64,17 +66,17 @@ function EventsMan_init()
         }
         else if (field == 'event_start' || field == 'event_end')
         {
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
             value = 'April 25, 2014 ' + value; // gives a dummy date to satisfy moment.js
-            var eventDict = eventsManager.events[id];
+            var eventDict = eventsManager.uncommitted[id];
             var oldTime = moment.unix(eventDict[field]);
             var newTime = moment(value);
             if (id in eventsManager.events && oldTime.minute() == newTime.minute() && oldTime.hour() == newTime.hour())
-                return;
-            if (!(id in eventsManager.uncommitted))
-                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+                return; // TODO this creates a new revision even if no changes were made
             oldTime.hour(newTime.hour());
             oldTime.minute(newTime.minute());
-            eventsManager.uncommitted[id][field] = oldTime.unix();
+            eventDict[field] = oldTime.unix();
             //$.each(eventsManager.order, function(index) {
             //    if (this.event_id == eventDict.event_id)
             //    {
