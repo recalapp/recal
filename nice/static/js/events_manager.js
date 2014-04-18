@@ -100,10 +100,7 @@ function EventsMan_init()
         $.post('get/similar-events', {
             event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
         }, function (data){
-            if (data.length > 0)
-            {
-                NO_showSimilarEvents(id, data);
-            }
+            NO_showSimilarEvents(id, data);
         }, 'json')
         // uncomment to remove save button behavior
         // eventsManager.updatedIDs.add(id)
