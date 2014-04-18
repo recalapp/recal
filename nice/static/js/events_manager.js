@@ -100,10 +100,7 @@ function EventsMan_init()
         $.post('get/similar-events', {
             event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
         }, function (data){
-            if (data.length > 0)
-            {
-                NO_showSimilarEvents();
-            }
+            NO_showSimilarEvents(id, data);
         }, 'json')
         // uncomment to remove save button behavior
         // eventsManager.updatedIDs.add(id)
@@ -261,6 +258,16 @@ function EventsMan_commitChanges(id)
 function EventsMan_cancelChanges(id)
 {
     delete eventsManager.uncommitted[id];
+    _EventsMan_callUpdateListeners();
+}
+// replaces only in the uncommitted array - ok because we're only
+// doing this for new events
+function EventsMan_replaceUncommittedEventIDWithEvent(id, eventDict)
+{
+    eventsManager.uncommitted[id] = null;
+    delete eventsManager.uncommitted[id];
+    eventsManager.uncommitted[eventDict.event_id] = eventDict;
+    EventsMan_callEventIDsChangeListener(id, eventDict.event_id);
     _EventsMan_callUpdateListeners();
 }
 
