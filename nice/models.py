@@ -245,6 +245,15 @@ def seed_db_with_data():
     # extra_section = Section(course=c1, name='Precept A')
     # extra_section.save()
     
+    
+def get_community_user():
+    """
+    Returns the User object of the Community User, who is created during migration from the fixtures/initial_data.json file. 
+    
+    The Community User is meant to own imported/scraped events.
+    """
+    return User.objects.get(pk=0)
+    
 def clear_all_data():
     # TODO: add other tables
     Section.objects.all().delete()
