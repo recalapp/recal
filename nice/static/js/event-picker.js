@@ -3,6 +3,7 @@ function EP_initWithEvents(oldEventID, events)
 {
     EP_similarEvents = events;
     SB_setMainContent(CacheMan_load('event-picker'));
+    $('#event-picker').data('count', events.length);
     $.each(events, function(index){
         var $pickerItem = $(CacheMan_load('event-picker-item')).appendTo('#event-picker > .carousel-inner');
         if (index == 0)
@@ -33,4 +34,25 @@ function EP_initWithEvents(oldEventID, events)
             SB_pop(this);
         });
     });
+    EP_updateButtons();
+    $('#event-picker').on('slid.bs.carousel', function(ev){
+        EP_updateButtons();
+    });
+}
+function EP_updateButtons()
+{
+    var $ep = $('#event-picker');
+    var activeIndex = $ep.find('.item.active').index();
+    // enable all buttons first
+    $ep.find('.ep-control').removeClass('disabled-btn');
+    if (activeIndex == 0)
+    {
+        // disable left button
+        $ep.find('.left.ep-control').addClass('disabled-btn');
+    }
+    if (activeIndex == $ep.data('count') - 1)
+    {
+        // disable right button
+        $ep.find('.right.ep-control').addClass('disabled-btn');
+    }
 }

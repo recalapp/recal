@@ -111,3 +111,9 @@ a {
 .white-link-btn:hover{
     text-decoration: None;
 }
+
+.disabled-btn {
+    color: rgb(200, 200, 200) !important;
+    background-color: rgb(180, 180, 180) !important;
+    cursor: default;
+}
