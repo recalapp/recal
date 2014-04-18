@@ -60,6 +60,7 @@ function init()
     CacheMan_init();
     EventsMan_init();
     PopUp_init();
+    NO_init();
     Agenda_init();
     Cal_init();
     SR_addWillSaveListener(function (){

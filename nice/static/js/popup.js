@@ -238,6 +238,10 @@ function PopUp_getMainPopUp()
         main = PopUp_insertPopUp(true);
     return main;
 }
+function PopUp_getPopUpByID(id)
+{
+    return $(".popup").find("#"+id).parent()[0];
+}
 
 function PopUp_setToEventID(popUp, id)
 {
@@ -446,6 +450,11 @@ function PopUp_markAsUnsaved(popUp)
     $(popUp).find('#save_button').removeClass('hide');
     $(popUp).find('#undo_button').removeClass('hide');
 }
+function PopUp_markAsSaved(popUp)
+{
+    $(popUp).find('#save_button').addClass('hide');
+    $(popUp).find('#undo_button').addClass('hide');
+}
 
 /***************************************************
  * forms for editing
@@ -519,6 +528,9 @@ function PopUp_clickedElement(element)
 {
     //return;
     var popUp = _PopUp_getPopUp(element);
+    if ($(popUp).data('is_editing'))
+        return;
+    $(popUp).data('is_editing', true);
     var form_id = _PopUp_Form_getFormIDForElement(element);
     var form = $(popUp).find("#"+form_id)[0];
     // make the corresponding form visible and hide the element
@@ -577,6 +589,7 @@ function PopUp_clickedSaveElement(form)
         return;
     }
     var popUp = _PopUp_getPopUp(form);
+    $(popUp).data('is_editing', false);
     // hide the form and unhide the text
     _PopUp_hideFormForElement(form);
     var text_id = _PopUp_Form_getElementIDForForm(form);
@@ -601,6 +614,8 @@ function PopUp_clickedClose(popUpAnchor)
     var popUp = popUpAnchor;
     while (!$(popUp).hasClass("popup"))
         popUp = $(popUp).parent()[0];
+    if ($(popUp).data('is_editing'))
+        return;
     if (PopUp_getID(popUp))
         PopUp_callCloseListeners(PopUp_getID(popUp));
     PopUp_close(popUp);
@@ -608,6 +623,8 @@ function PopUp_clickedClose(popUpAnchor)
 function PopUp_clickedDelete(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
+    if ($(popUp).data('is_editing'))
+        return;
     var event_id = PopUp_getID(popUp);
     PopUp_close(popUp);
     EventsMan_deleteEvent(event_id);
@@ -615,14 +632,19 @@ function PopUp_clickedDelete(popUpAnchor)
 function PopUp_clickedSavePopUp(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
+    if ($(popUp).data('is_editing'))
+        return;
     var id = PopUp_getID(popUp);
-    $(popUp).find('#save_button').addClass('hide');
-    $(popUp).find('#undo_button').addClass('hide');
+    PopUp_markAsSaved(popUp);
+    //$(popUp).find('#save_button').addClass('hide');
+    //$(popUp).find('#undo_button').addClass('hide');
     EventsMan_commitChanges(id)
 }
 function PopUp_clickedUndo(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
+    if ($(popUp).data('is_editing'))
+        return;
     var id = PopUp_getID(popUp);
     $(popUp).find('#save_button').addClass('hide');
     $(popUp).find('#undo_button').addClass('hide');

@@ -15,7 +15,7 @@ function SB_init()
             $(popUp).detach().appendTo('#sb-left-container').css({
                 //position: 'relative',
                 width: '100%',
-                height: '300px',
+                height: '350px',
                 left: 'auto',
                 top: 'auto',
             });
@@ -73,6 +73,7 @@ function SB_pop(content)
 {
     $(content).removeClass('in').on('transitionend', function(){
         $(content).remove();
+        //SB_hideIfEmpty();
     });
 }
 function SB_setMainContent(content)
