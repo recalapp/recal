@@ -70,6 +70,10 @@ function NO_showSimilarEvents(event_id, similarEvents)
         SB_hideIfEmpty();
     });
 }
+function NO_hasSimilarEvents(id)
+{
+    return $('#' + event_id + '.alert').length > 0
+}
 
 function NO_closeAllNotificationsForEventID(event_id)
 {

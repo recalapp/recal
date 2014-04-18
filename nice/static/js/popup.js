@@ -206,6 +206,33 @@ function PopUp_initialize(popUp)
             $(inputField).val(selectedSection);
         });
     });
+    $(popUp).find('#close_button').popover({
+        title: 'Save changes?',
+        //container: 'body',
+        placement: 'bottom auto',
+        html: true,
+        content: '<a id="yes_button" class="white-link-btn prompt-btn yes">Yes</a><a id="no_button" class="white-link-btn prompt-btn no">No</a>',
+        trigger: 'manual'
+    });
+    $(popUp).find('#close_button').on('shown.bs.popover', function(ev){
+        $('#no_button').on('click', function(ev){
+            ev.preventDefault();
+            $(popUp).find('#close_button').popover('toggle');
+            PopUp_clickedUndo(popUp);
+            PopUp_clickedClose(popUp);
+        });
+        $('#yes_button').on('click', function(ev){
+            ev.preventDefault();
+            $(popUp).find('#close_button').popover('toggle');
+            PopUp_clickedSavePopUp(popUp);
+            PopUp_clickedClose(popUp);
+        }); 
+        //$(window).on('click', function(ev){
+        //    var popover = $('.popover')[0];
+        //    if (!$(popover).is(':hover'))
+        //        $(popUp).find('#close_button').popover('toggle');
+        //});
+    });
 }
 
 function PopUp_close(popUp)
@@ -652,7 +679,6 @@ function PopUp_clickedSaveElement(form)
     var safe = _PopUp_Form_getValue(form).escapeHTML();
     $(text).html(nl2br(safe));
     PopUp_markAsUnsaved(popUp);
-    $(text).addClass('unsaved');
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
 }
 function PopUp_clickedClose(popUpAnchor)
@@ -662,6 +688,13 @@ function PopUp_clickedClose(popUpAnchor)
         popUp = $(popUp).parent()[0];
     if (PopUp_isEditing(popUp))
         return;
+    // check if there are unsaved changes
+    if (EventsMan_hasUncommitted(PopUp_getID(popUp)))
+    {
+        $(popUpAnchor).popover('toggle');
+        return;
+    }
+
     if (PopUp_getID(popUp))
         PopUp_callCloseListeners(PopUp_getID(popUp));
     PopUp_close(popUp);
