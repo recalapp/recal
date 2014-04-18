@@ -1,5 +1,5 @@
 var EP_similarEvents;
-function EP_initWithEvents(events)
+function EP_initWithEvents(oldEventID, events)
 {
     EP_similarEvents = events;
     SB_setMainContent(CacheMan_load('event-picker'));
@@ -17,6 +17,16 @@ function EP_initWithEvents(events)
         PopUp_setStartTime(popUp, this.event_start);
         PopUp_setEndTime(popUp, this.event_end);
         _PopUp_setBodyHeight(popUp);
+
+        var eventDict = this;
+        // set up event listener for choosing
+        $pickerItem.find('#choose-btn').on('click', function(ev){
+            ev.preventDefault();
+            EventsMan_replaceUncommittedEventIDWithEvent(oldEventID, eventDict);
+            PopUp_markIDAsNotEditing(eventDict.event_id);
+            SB_pop($('#event-picker')[0]);
+            SB_unfill();
+        });
     });
     SB_addWillCloseListener(function(){
         $('#event-picker').each(function(index){

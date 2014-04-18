@@ -38,23 +38,4 @@
 .ep-center-btn:hover, .ep-control:hover{
     background-color: rgb(240, 240, 240);
 }
-.ep-center-btn{
-    width: auto;
-    margin: auto;
-    position: relative;
-    left: auto;
-    top: auto;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font-size: 20px;
-    background-color: white;
-    border: solid 1px rgba(0, 0, 0, 0.1); 
 
-    text-shadow: None;
-    
-}
-.ep-center-btn:hover{
-    text-decoration: None;
-}

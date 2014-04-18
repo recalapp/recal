@@ -31,9 +31,18 @@ function NO_showSimilarEvents(event_id, similarEvents)
         SB_fill(); 
         SB_pop(noti);
         var popUp = PopUp_getPopUpByID(event_id)
-        $(popUp).data('is_editing', true);
+        PopUp_markAsEditing(popUp);
+        //$(popUp).data('is_editing', true);
         $(popUp).draggable('disable');
-        EP_initWithEvents(similarEvents);
+        var called = false; // TODO bad for memory
+        SB_addWillCloseListener(function(){
+            if (called)
+                return;
+            called = true;
+            PopUp_markAsNotEditing(popUp);
+            $(popUp).draggable('enable');
+        });
+        EP_initWithEvents(event_id, similarEvents);
         //return false;
     });
     $(noti).find('button').on('click', function(){

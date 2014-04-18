@@ -455,6 +455,22 @@ function PopUp_markAsSaved(popUp)
     $(popUp).find('#save_button').addClass('hide');
     $(popUp).find('#undo_button').addClass('hide');
 }
+function PopUp_markIDAsNotEditing(id)
+{
+    PopUp_markAsNotEditing(PopUp_getPopUpByID(id));
+}
+function PopUp_markAsNotEditing(popUp)
+{
+    $(popUp).data('is_editing', false);
+}
+function PopUp_markAsEditing(popUp)
+{
+    $(popUp).data('is_editing', true);
+}
+function PopUp_isEditing(popUp)
+{
+    return $(popUp).data('is_editing');
+}
 
 /***************************************************
  * forms for editing
@@ -528,9 +544,9 @@ function PopUp_clickedElement(element)
 {
     //return;
     var popUp = _PopUp_getPopUp(element);
-    if ($(popUp).data('is_editing'))
+    if (PopUp_isEditing(popUp))
         return;
-    $(popUp).data('is_editing', true);
+    PopUp_markAsEditing(popUp);
     var form_id = _PopUp_Form_getFormIDForElement(element);
     var form = $(popUp).find("#"+form_id)[0];
     // make the corresponding form visible and hide the element
@@ -589,7 +605,7 @@ function PopUp_clickedSaveElement(form)
         return;
     }
     var popUp = _PopUp_getPopUp(form);
-    $(popUp).data('is_editing', false);
+    PopUp_markAsNotEditing(popUp);
     // hide the form and unhide the text
     _PopUp_hideFormForElement(form);
     var text_id = _PopUp_Form_getElementIDForForm(form);
@@ -614,7 +630,7 @@ function PopUp_clickedClose(popUpAnchor)
     var popUp = popUpAnchor;
     while (!$(popUp).hasClass("popup"))
         popUp = $(popUp).parent()[0];
-    if ($(popUp).data('is_editing'))
+    if (PopUp_isEditing())
         return;
     if (PopUp_getID(popUp))
         PopUp_callCloseListeners(PopUp_getID(popUp));
@@ -623,7 +639,7 @@ function PopUp_clickedClose(popUpAnchor)
 function PopUp_clickedDelete(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
-    if ($(popUp).data('is_editing'))
+    if (PopUp_isEditing())
         return;
     var event_id = PopUp_getID(popUp);
     PopUp_close(popUp);
@@ -632,7 +648,7 @@ function PopUp_clickedDelete(popUpAnchor)
 function PopUp_clickedSavePopUp(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
-    if ($(popUp).data('is_editing'))
+    if (PopUp_isEditing())
         return;
     var id = PopUp_getID(popUp);
     PopUp_markAsSaved(popUp);
@@ -643,7 +659,7 @@ function PopUp_clickedSavePopUp(anchor)
 function PopUp_clickedUndo(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
-    if ($(popUp).data('is_editing'))
+    if (PopUp_isEditing())
         return;
     var id = PopUp_getID(popUp);
     $(popUp).find('#save_button').addClass('hide');

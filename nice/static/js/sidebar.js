@@ -48,7 +48,8 @@ function SB_show()
 function SB_hide()
 {
     SB_callWillCloseListeners();
-    $('#sidebar').removeClass('in').removeClass('full');
+    SB_unfill();
+    $('#sidebar').removeClass('in');
     $('#sb-handle').find('.glyphicon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-left');
 
 }
@@ -85,6 +86,12 @@ function SB_setMainContent(content)
 function SB_fill()
 {
     $('#sidebar').addClass('full');
+    disableAllInteractions();
+}
+function SB_unfill()
+{
+    $('#sidebar').removeClass('full');
+    enableAllInteractions();
 }
 function SB_toggle()
 {
