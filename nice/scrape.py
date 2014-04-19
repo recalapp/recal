@@ -24,6 +24,8 @@ DEP_PREFIX = TERM_PREFIX + "&subject="
 PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
 
 CURRENT_SEMESTER = ''
+community_user = get_community_user()
+
 course_count = 0
 section_count = 0
 
@@ -147,6 +149,7 @@ def create_or_update_sections(course, course_object):
             section_type = section_type[0:3].upper()
         )
         if created:
+            # create new events here
             section_count += 1
 
 def remove_namespace(doc, namespace):

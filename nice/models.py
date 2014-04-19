@@ -69,15 +69,15 @@ class Course_Listing(models.Model):
         ordering = ['dept', 'number']
 
 class Section(models.Model):
-    SECTION_TYPE_ALL = "ALL"
-    SECTION_TYPE_LAB = "LAB"
-    SECTION_TYPE_LECTURE = "LEC"
-    SECTION_TYPE_PRECEPT = "PRE"
-    SECTION_TYPE_CHOICES = (
-        (SECTION_TYPE_ALL, "all students"),
-        (SECTION_TYPE_LAB, "lab"),
-        (SECTION_TYPE_LECTURE, "lecture"),
-        (SECTION_TYPE_PRECEPT, "precept"),
+    TYPE_ALL = "ALL"
+    TYPE_LAB = "LAB"
+    TYPE_LECTURE = "LEC"
+    TYPE_PRECEPT = "PRE"
+    TYPE_CHOICES = (
+        (TYPE_ALL, "all students"),
+        (TYPE_LAB, "lab"),
+        (TYPE_LECTURE, "lecture"),
+        (TYPE_PRECEPT, "precept"),
     )
 
     # relationships
@@ -86,7 +86,7 @@ class Section(models.Model):
     # fields
     name = models.CharField(max_length=100, default='all_students')
     isDefault = models.BooleanField(default=False) # if true, then everyone in the course is automatically enrolled in this section
-    section_type = models.CharField(max_length=3, choices=SECTION_TYPE_CHOICES)
+    section_type = models.CharField(max_length=3, choices=TYPE_CHOICES)
 
     def __unicode__(self):
         return unicode(self.course) + ' - ' + self.name
@@ -182,21 +182,21 @@ class Event(models.Model):
 class Event_Revision(models.Model):
     # constants
 		
-    EVENT_TYPE_ASSIGNMENT = "AS"
-    EVENT_TYPE_EXAM = "EX"
-    EVENT_TYPE_LAB = "LA"
-    EVENT_TYPE_LECTURE = "LE"
-    EVENT_TYPE_OFFICE_HOURS = "OH"
-    EVENT_TYPE_PRECEPT = "PR"
-    EVENT_TYPE_REVIEW_SESSION = "RS"
-    EVENT_TYPE_CHOICES = (
-        (EVENT_TYPE_ASSIGNMENT, "assignment"),
-        (EVENT_TYPE_EXAM, "exam"),
-        (EVENT_TYPE_LAB, "lab"),
-        (EVENT_TYPE_LECTURE, "lecture"),
-        (EVENT_TYPE_OFFICE_HOURS, "office hours"),
-        (EVENT_TYPE_PRECEPT, "precept"),
-        (EVENT_TYPE_REVIEW_SESSION, "review session")
+    TYPE_ASSIGNMENT = "AS"
+    TYPE_EXAM = "EX"
+    TYPE_LAB = "LA"
+    TYPE_LECTURE = "LE"
+    TYPE_OFFICE_HOURS = "OH"
+    TYPE_PRECEPT = "PR"
+    TYPE_REVIEW_SESSION = "RS"
+    TYPE_CHOICES = (
+        (TYPE_ASSIGNMENT, "assignment"),
+        (TYPE_EXAM, "exam"),
+        (TYPE_LAB, "lab"),
+        (TYPE_LECTURE, "lecture"),
+        (TYPE_OFFICE_HOURS, "office hours"),
+        (TYPE_PRECEPT, "precept"),
+        (TYPE_REVIEW_SESSION, "review session")
     )
 
     # relationships
@@ -204,7 +204,7 @@ class Event_Revision(models.Model):
 
     # fields
     event_title = models.CharField(max_length=100)
-    event_type = models.CharField(max_length=2, choices=EVENT_TYPE_CHOICES)
+    event_type = models.CharField(max_length=2, choices=TYPE_CHOICES)
     event_start = models.DateTimeField()
     event_end = models.DateTimeField()
     event_description = models.TextField()
