@@ -226,12 +226,24 @@ function PopUp_initialize(popUp)
             $(popUp).find('#close_button').popover('toggle');
             PopUp_clickedSavePopUp(popUp);
             PopUp_clickedClose(popUp);
-        }); 
-        //$(window).on('click', function(ev){
-        //    var popover = $('.popover')[0];
-        //    if (!$(popover).is(':hover'))
-        //        $(popUp).find('#close_button').popover('toggle');
-        //});
+        });  
+    });
+    $(popUp).find('#save_button').popover({
+        title: 'There seems to be a similar event already on the calendar',
+        placement: 'bottom',
+        html: true,
+        content: '<a id="show_similar_events_button" class="white-link-btn prompt-btn yes">Show events</a><a id="save_anyways_button" class="white-link-btn prompt-btn no">Save anyways</a>',
+        trigger: 'manual'
+    }).on('shown.bs.popover', function(ev){
+        $('#show_similar_events_button').on('click', function(ev){
+            NO_showSimilarEvents(PopUp_getID(popUp));
+            $(popUp).find('#save_button').popover('toggle');
+        });
+        $('#save_anyways_button').on('click', function(ev){
+            NO_removeSimilarEventsNotification(PopUp_getID(popUp));
+            PopUp_clickedSavePopUp(popUp);
+            $(popUp).find('#save_button').popover('toggle');
+        });
     });
 }
 
@@ -714,9 +726,12 @@ function PopUp_clickedSavePopUp(anchor)
     if (PopUp_isEditing(popUp))
         return;
     var id = PopUp_getID(popUp);
+    if (NO_hasSimilarEvents(id))
+    {
+        $(anchor).popover('toggle');
+        return;
+    }
     PopUp_markAsSaved(popUp);
-    //$(popUp).find('#save_button').addClass('hide');
-    //$(popUp).find('#undo_button').addClass('hide');
     EventsMan_commitChanges(id);
     $(popUp).find('.unsaved').removeClass('unsaved');
 }

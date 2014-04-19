@@ -18,7 +18,7 @@ function NO_addRecentlyUpdated(text)
     });
 }
 
-function NO_showSimilarEvents(event_id, similarEvents)
+function NO_showSimilarEventsNotification(event_id, similarEvents)
 {
     if ($('#' + event_id + '.alert').length > 0)
     {
@@ -47,21 +47,7 @@ function NO_showSimilarEvents(event_id, similarEvents)
     $(noti).data('events', similarEvents);
     $(noti).find('#noti-content').on('click', function(ev){
         ev.preventDefault();
-        SB_fill(); 
-        SB_pop(noti);
-        var popUp = PopUp_getPopUpByID(event_id)
-        PopUp_markAsEditing(popUp);
-        //$(popUp).data('is_editing', true);
-        $(popUp).draggable('disable');
-        var called = false; // TODO bad for memory
-        SB_addWillCloseListener(function(){
-            if (called)
-                return;
-            called = true;
-            PopUp_markAsNotEditing(popUp);
-            $(popUp).draggable('enable');
-        });
-        EP_initWithEvents(event_id, $(noti).data('events'));
+        NO_showSimilarEvents(event_id);
         //return false;
     });
     $(noti).find('button').on('click', function(){
@@ -70,9 +56,33 @@ function NO_showSimilarEvents(event_id, similarEvents)
         SB_hideIfEmpty();
     });
 }
-function NO_hasSimilarEvents(id)
+function NO_removeSimilarEventsNotification(event_id)
 {
-    return $('#' + event_id + '.alert').length > 0
+    SB_pop($('#' + event_id + '.alert.in')[0]);
+    SB_hideIfEmpty();
+}
+function NO_showSimilarEvents(event_id)
+{
+    var noti = $('#' + event_id + '.alert')[0];
+    SB_fill(); 
+    SB_pop(noti);
+    var popUp = PopUp_getPopUpByID(event_id)
+    PopUp_markAsEditing(popUp);
+    //$(popUp).data('is_editing', true);
+    $(popUp).draggable('disable');
+    var called = false; // TODO bad for memory
+    SB_addWillCloseListener(function(){
+        if (called)
+            return;
+        called = true;
+        PopUp_markAsNotEditing(popUp);
+        $(popUp).draggable('enable');
+    });
+    EP_initWithEvents(event_id, $(noti).data('events'));
+}
+function NO_hasSimilarEvents(event_id)
+{
+    return $('#' + event_id + '.alert.in').length > 0;
 }
 
 function NO_closeAllNotificationsForEventID(event_id)
