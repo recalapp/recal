@@ -49,3 +49,24 @@
 .hide{
     visibility: hidden; 
 }
+.unsaved{
+    background-color: #fffb99;
+}
+.popover{
+    z-index: 10000;
+}
+.prompt-btn{
+    display: block;
+    margin: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.prompt-btn.yes{
+}
+.prompt-btn.no{
+    color: red;
+}
+.prompt-btn.no:hover{
+    color: #cb1c03;
+}
+
