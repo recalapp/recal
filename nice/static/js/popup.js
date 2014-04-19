@@ -279,7 +279,7 @@ function PopUp_getMainPopUp()
 }
 function PopUp_getPopUpByID(id)
 {
-    return $(".popup").find("#"+id).parent()[0];
+    return $(".popup-event").find("#"+id).parent()[0];
 }
 
 function PopUp_setToEventID(popUp, id)
@@ -463,7 +463,7 @@ function PopUp_showClose(popUp)
 
 function PopUp_giveFocus(popUp)
 {
-    $(".popup").not(popUp).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary");
+    $(".popup-event").not(popUp).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary");
     $(popUp).css("z-index", "200");
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default");
     if (UI_isMain(PopUp_getID(popUp)))
@@ -471,7 +471,7 @@ function PopUp_giveFocus(popUp)
 }
 function PopUp_giveFocusToID(id)
 {
-    popUp = $(".popup").find("#"+id).parent();
+    popUp = $(".popup-event").find("#"+id).parent();
     PopUp_giveFocus(popUp);
 }
 function PopUp_hasFocus(popUp)
@@ -538,6 +538,11 @@ function PopUp_markAsEditing(popUp)
 function PopUp_isEditing(popUp)
 {
     return $(popUp).data('is_editing');
+}
+function PopUp_makeIDDraggable(id)
+{
+    var popUp = PopUp_getPopUpByID(id);
+    $(popUp).draggable('enable');
 }
 
 /***************************************************
@@ -785,7 +790,7 @@ function _PopUp_getPopUp(child)
 }
 function PopUp_map(apply)
 {
-    $(".popup").not("#popup-main").each(function(index) {
+    $(".popup-event").not("#popup-main").each(function(index) {
         apply(this, false);
     });
     $("#popup-main").each(function(index) {

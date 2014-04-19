@@ -119,3 +119,11 @@ a {
     background-color: rgb(180, 180, 180) !important;
     cursor: default;
 }
+
+.agenda-item.panel{
+    border-radius: 0;
+    border: 1px solid rgba(100, 100, 100, 0.1); /* NOTE remove to get border selection effect */
+}
+.agenda-item.panel-primary{
+    background-color: #e8f1f9;
+}

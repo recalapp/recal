@@ -25,6 +25,7 @@ function EP_initWithEvents(oldEventID, events)
             ev.preventDefault();
             EventsMan_replaceUncommittedEventIDWithEvent(oldEventID, eventDict);
             PopUp_markIDAsNotEditing(eventDict.event_id);
+            PopUp_makeIDDraggable(eventDict.event_id);
             SB_pop($('#event-picker')[0]);
             SB_unfill();
         });
