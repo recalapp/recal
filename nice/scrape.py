@@ -25,7 +25,6 @@ PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
 
 CURRENT_SEMESTER = ''
 
-
 def get_current_semester():
     global CURRENT_SEMESTER
     if not CURRENT_SEMESTER:
@@ -63,6 +62,7 @@ def scrape_all():
     for department in departments:
         scrape(department)
 
+# goes through the listings for this department
 def scrape(department):
     parser = etree.XMLParser(ns_clean=True)
     link = DEP_PREFIX + department
@@ -79,19 +79,33 @@ def scrape(department):
                         parse_course(course, subject)
 
 ## Parse it for courses, sections, and lecture times (as recurring events)
+## If the course with this ID exists in the database, we update the course
+## Otherwise, create new course with the information
 def parse_course(course, subject):
     """ create a course with the basic information. """
+
     title = course.find('title').text
     description = course.find('detail').find('description').text
     if not description:
         description = ''
-
     sub = subject.find('code').text
     catalog = course.find('catalog_number').text
     course_listings = [(sub, catalog)]
     if course.find('crosslistings') is not None:
         for cross_listing in course.find('crosslistings'):
             course_listings.append((cross_listing.find('subject').text, cross_listing.find('catalog_number').text))
+
+    # if we have a course with this sub and catalog, get it 
+    try:
+        existing_course = Course.objects.get(
+            registrar_id=get_current_semester()
+        )
+
+        if existing_course:
+            pass
+    except:
+        pass
+
 
     new_course = Course(
         semester=get_current_semester(), 
