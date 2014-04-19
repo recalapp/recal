@@ -139,6 +139,8 @@ def parse_course(course, subject):
             )
         new_listing.save()
         
+    # add sections
+    
     #print " ".join([str(listing) for listing in course_listings])
     #print title.encode('utf-8'), description.encode('utf-8')
     #print

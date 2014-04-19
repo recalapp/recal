@@ -45,12 +45,12 @@ class Course(models.Model):
     registrar_id = models.CharField(max_length=20)
 
     def course_listings(self):
-        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all()]) #+ ' ' + ': ' + self.title
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')]) #+ ' ' + ': ' + self.title
 
     course_listings.admin_order_field = 'course_listings'
 
     def __unicode__(self):
-        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all()]) #+ ' ' + ': ' + self.title
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')]) #+ ' ' + ': ' + self.title
 
 class Course_Listing(models.Model):
     course = models.ForeignKey(Course)
@@ -81,6 +81,8 @@ def make_default_table(sender, instance, created, **kwargs):
     # see http://stackoverflow.com/a/965883/130164
     if created:  
        profile, created = Section.objects.get_or_create(course=instance, name='All Students', isDefault=True)  
+
+# this call creates the "All Students" section
 post_save.connect(make_default_table, sender=Course)
 
 class User_Section_Table(models.Model):
@@ -278,5 +280,4 @@ def clear_all_data():
     Section.objects.all().delete()
     Course.objects.all().delete()
     Semester.objects.all().delete()
-    
     
