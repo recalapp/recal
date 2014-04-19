@@ -38,6 +38,11 @@ class CourseAdmin(admin.ModelAdmin):
     ordering = ('-title',)
     search_fields = ['title']
 
+class SectionAdmin(admin.ModelAdmin):
+    model = Section
+    list_display = ('__unicode__', 'course')
+    list_filter  = ('course', )
+
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
@@ -45,3 +50,5 @@ admin.site.unregister(Course)
 admin.site.register(Course, CourseAdmin)
 admin.site.unregister(Semester)
 admin.site.register(Semester, SemesterAdmin)
+admin.site.unregister(Section)
+admin.site.register(Section, SectionAdmin)
