@@ -24,13 +24,16 @@ DEP_PREFIX = TERM_PREFIX + "&subject="
 PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
 
 CURRENT_SEMESTER = ''
+community_user = get_community_user()
 
+course_count = 0
+section_count = 0
 
 def get_current_semester():
     global CURRENT_SEMESTER
     if not CURRENT_SEMESTER:
         try:
-            CURRENT_SEMESTER = Semester.object.get(term_code=str(TERM_CODE))
+            CURRENT_SEMESTER = Semester.objects.get(term_code=str(TERM_CODE))
         except:
             parser = etree.XMLParser(ns_clean=True)
             termxml = urllib2.urlopen(TERM_PREFIX)
@@ -58,11 +61,17 @@ def get_department_list(seed_page):
 
 # for each department, scrape all course listings from the webfeed
 def scrape_all():
+    global course_count
+    global section_count
     seed_page = urllib2.urlopen(COURSE_OFFERINGS)
     departments = get_department_list(seed_page)
     for department in departments:
         scrape(department)
+    
+    print str(course_count) + " new courses"
+    print str(section_count) + " new sections"
 
+# goes through the listings for this department
 def scrape(department):
     parser = etree.XMLParser(ns_clean=True)
     link = DEP_PREFIX + department
@@ -79,13 +88,39 @@ def scrape(department):
                         parse_course(course, subject)
 
 ## Parse it for courses, sections, and lecture times (as recurring events)
+## If the course with this ID exists in the database, we update the course
+## Otherwise, create new course with the information
 def parse_course(course, subject):
     """ create a course with the basic information. """
+
+    global course_count
     title = course.find('title').text
     description = course.find('detail').find('description').text
     if not description:
         description = ''
+        
+    guid = course.find('guid').text
 
+    # if we have a course with this registrar_id, get it 
+    course_object, created = Course.objects.get_or_create(
+        registrar_id = guid,
+    )
+
+    if created:
+        course_object.semester = get_current_semester()
+        course_object.title = title
+        course_object.description = description
+        course_object.professor = ''
+        course_object.save()
+        course_count += 1 # for debugging
+
+    # handle course listings
+    create_or_update_listings(course, subject, course_object)
+
+    # add sections
+    create_or_update_sections(course, course_object)
+
+def create_or_update_listings(course, subject, course_object):
     sub = subject.find('code').text
     catalog = course.find('catalog_number').text
     course_listings = [(sub, catalog)]
@@ -93,25 +128,29 @@ def parse_course(course, subject):
         for cross_listing in course.find('crosslistings'):
             course_listings.append((cross_listing.find('subject').text, cross_listing.find('catalog_number').text))
 
-    new_course = Course(
-        semester=get_current_semester(), 
-        title=title, 
-        description=description,
-        professor=''
-    )
-
-    new_course.save()
+    # create course_listings
     for course_listing in course_listings:
-        new_listing = Course_Listing(
-            course=new_course,
+        new_listing, created = Course_Listing.objects.get_or_create(
+            course=course_object,
             dept=course_listing[0],
             number=course_listing[1]
         )
-        new_listing.save()
         
-    #print " ".join([str(listing) for listing in course_listings])
-    #print title.encode('utf-8'), description.encode('utf-8')
-    #print
+def create_or_update_sections(course, course_object):
+    global section_count
+    # add sections
+    classes = course.find('classes')
+    for section in classes:
+        section_name = section.find('section').text
+        section_type = section.find('type_name').text
+        section, created = Section.objects.get_or_create(
+            course = course_object,
+            name = section_name,
+            section_type = section_type[0:3].upper()
+        )
+        if created:
+            # create new events here
+            section_count += 1
 
 def remove_namespace(doc, namespace):
     """Hack to remove namespace in the document in place."""
@@ -122,5 +161,3 @@ def remove_namespace(doc, namespace):
             elem.tag = elem.tag[nsl:]
 
 # scrape_all()
-
-###########################################################################################
