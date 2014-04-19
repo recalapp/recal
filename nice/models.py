@@ -24,6 +24,16 @@ class Semester(models.Model):
         """
     term_code = models.CharField(max_length=4, default='1144')
 
+    def __unicode__(self):
+        end_year = int(self.term_code[1:3])
+        start_year = end_year - 1
+        if self.term_code[3] is '2':
+            sem = 'Fall'
+        else:
+            sem = 'Spring'
+        return str(start_year) + str(end_year) + sem
+
+
 class Course(models.Model):
     # relationships
     semester = models.ForeignKey(Semester)
@@ -33,6 +43,11 @@ class Course(models.Model):
     description = models.TextField()
     professor = models.CharField(max_length=100, null=True, blank=True)
     registrar_id = models.CharField(max_length=20)
+
+    def course_listings(self):
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all()]) #+ ' ' + ': ' + self.title
+
+    course_listings.admin_order_field = 'course_listings'
 
     def __unicode__(self):
         return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all()]) #+ ' ' + ': ' + self.title
@@ -45,6 +60,9 @@ class Course_Listing(models.Model):
 
     def __unicode__(self):
         return self.dept + ' ' + self.number
+
+    class Meta:
+        ordering = ['dept', 'number']
 
 class Section(models.Model):
     # relationships
@@ -260,6 +278,5 @@ def clear_all_data():
     Section.objects.all().delete()
     Course.objects.all().delete()
     Semester.objects.all().delete()
-    
     
     

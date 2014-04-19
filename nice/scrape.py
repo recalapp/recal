@@ -88,6 +88,33 @@ def parse_course(course, subject):
     description = course.find('detail').find('description').text
     if not description:
         description = ''
+        
+    guid = course.find('guid').text
+
+    # if we have a course with this sub and catalog, get it 
+    try:
+        curr_course = Course.objects.get(
+            registrar_id = guid
+        )
+
+        curr_course.semester = get_current_semester()
+        curr_course.title = title
+        curr_course.description = description
+        curr_course.professor = ''
+        # registrar_id = guid
+        existing_course.save()
+    # otherwise, create a new one
+    except:
+        curr_course = Course(
+            semester=get_current_semester(), 
+            title=title, 
+            description=description,
+            professor='',
+            registrar_id = guid
+        )
+        curr_course.save()
+
+    # handle course listings
     sub = subject.find('code').text
     catalog = course.find('catalog_number').text
     course_listings = [(sub, catalog)]
@@ -95,32 +122,21 @@ def parse_course(course, subject):
         for cross_listing in course.find('crosslistings'):
             course_listings.append((cross_listing.find('subject').text, cross_listing.find('catalog_number').text))
 
-    # if we have a course with this sub and catalog, get it 
-    try:
-        existing_course = Course.objects.get(
-            registrar_id=get_current_semester()
-        )
-
-        if existing_course:
-            pass
-    except:
-        pass
-
-
-    new_course = Course(
-        semester=get_current_semester(), 
-        title=title, 
-        description=description,
-        professor=''
-    )
-
-    new_course.save()
     for course_listing in course_listings:
-        new_listing = Course_Listing(
-            course=new_course,
-            dept=course_listing[0],
-            number=course_listing[1]
-        )
+        try:
+            new_listing = Course_Listing.objects.get(
+                course = curr_course
+            ).get(
+                dept = course_listing[0]
+            ).get(
+                number=course_listing[1]
+            )
+        except:
+            new_listing = Course_Listing(
+                course=curr_course,
+                dept=course_listing[0],
+                number=course_listing[1]
+            )
         new_listing.save()
         
     #print " ".join([str(listing) for listing in course_listings])

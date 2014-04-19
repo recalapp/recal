@@ -27,6 +27,21 @@ class ProfileInline(admin.StackedInline):
 class UserAdmin(UserAdmin):
     inlines = (ProfileInline, )
 
+class SemesterAdmin(admin.ModelAdmin):
+    model = Semester
+    list_display = ('term_code', 'start_date', 'end_date', )
+
+class CourseAdmin(admin.ModelAdmin):
+    model = Course
+    list_display = ('__unicode__', 'title', 'course_listings', )
+    list_filter  = ('semester', )
+    ordering = ('-title',)
+    search_fields = ['title']
+
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.unregister(Course)
+admin.site.register(Course, CourseAdmin)
+admin.site.unregister(Semester)
+admin.site.register(Semester, SemesterAdmin)
