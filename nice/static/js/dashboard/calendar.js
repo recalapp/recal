@@ -12,7 +12,7 @@
 function Cal_init() {
     if (CAL_INIT)
         return;
-    height = window.innerHeight - $(".navbar").height() - 50;
+    var height = window.innerHeight - $(".navbar").height() - 50;
 
     EventsMan_addUpdateListener(function(){
         Cal_reload();
