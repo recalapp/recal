@@ -60,6 +60,7 @@ function init()
     CacheMan_init();
     EventsMan_init();
     PopUp_init();
+    NO_init();
     Agenda_init();
     Cal_init();
     SR_addWillSaveListener(function (){
@@ -180,4 +181,23 @@ function sameOrigin(url) {
         (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
         // or any other URL that isn't scheme relative or absolute i.e relative.
         !(/^(\/\/|http:|https:).*/.test(url));
+}
+
+function disableAllInteractions()
+{
+    var disabler = $('<div id="disabler"></div>');
+    $(disabler).prependTo('.tab-content').css({
+        height: '100%',
+        width: '100%',
+        opacity: 0,
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        'z-index': 900,
+        cursor: 'not-allowed'
+    });
+}
+function enableAllInteractions()
+{
+    $('#disabler').remove();
 }

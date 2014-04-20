@@ -6,8 +6,8 @@
     right: -80%;
     background-color: white;
     padding-top: 100px;
-    -webkit-transition: right .2s ease-out;
-    transition: right .2s ease-out;
+    -webkit-transition: right .4s ease-out;
+    transition: right .4s ease-out;
     background-color: rgba(255, 255, 255, 0.8);
     z-index: 999;
     border-left: solid 1px rgba(0, 0, 0, 0.1); 
@@ -16,7 +16,7 @@
 #sidebar.hover-active{
 }
 #sidebar.in{
-    right: -53.33%;
+    right: -53.3333333%; /* 80% * 2/3; only 1/3 is shown */
 }
 #sidebar.full.in{
     right: 0;
@@ -40,13 +40,15 @@
 #sb-left-container > * {
     margin-bottom: 15px;
 }
-#sb-left-container > .sb-left-content {
+#sb-full-container > .sb-full-content, #sb-left-container > .sb-left-content {
     opacity: 0;
     -webkit-transition: opacity 0.1s ease-out;
     transition: opacity 0.1s ease-out;
 }
-#sb-left-container > .sb-left-content.in {
+#sb-full-container > .sb-full-content.in, #sb-left-container > .sb-left-content.in {
     opacity: 1;
+}
+#sb-full-container {
 }
 #sb-handle{
     position: absolute;
@@ -61,4 +63,7 @@
     border-top: solid 1px rgba(0, 0, 0, 0.1); 
     border-bottom: solid 1px rgba(0, 0, 0, 0.1); 
     font-size: 20px;
+}
+#sb-handle:hover{
+    background-color: rgb(240, 240, 240);
 }

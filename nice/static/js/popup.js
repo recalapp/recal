@@ -206,6 +206,45 @@ function PopUp_initialize(popUp)
             $(inputField).val(selectedSection);
         });
     });
+    $(popUp).find('#close_button').popover({
+        title: 'Save changes?',
+        //container: 'body',
+        placement: 'bottom auto',
+        html: true,
+        content: '<a id="yes_button" class="white-link-btn prompt-btn yes">Yes</a><a id="no_button" class="white-link-btn prompt-btn no">No</a>',
+        trigger: 'manual'
+    });
+    $(popUp).find('#close_button').on('shown.bs.popover', function(ev){
+        $('#no_button').on('click', function(ev){
+            ev.preventDefault();
+            $(popUp).find('#close_button').popover('toggle');
+            PopUp_clickedUndo(popUp);
+            PopUp_clickedClose(popUp);
+        });
+        $('#yes_button').on('click', function(ev){
+            ev.preventDefault();
+            $(popUp).find('#close_button').popover('toggle');
+            PopUp_clickedSavePopUp(popUp);
+            PopUp_clickedClose(popUp);
+        });  
+    });
+    $(popUp).find('#save_button').popover({
+        title: 'There seems to be a similar event already on the calendar',
+        placement: 'bottom',
+        html: true,
+        content: '<a id="show_similar_events_button" class="white-link-btn prompt-btn yes">Show events</a><a id="save_anyways_button" class="white-link-btn prompt-btn no">Save anyways</a>',
+        trigger: 'manual'
+    }).on('shown.bs.popover', function(ev){
+        $('#show_similar_events_button').on('click', function(ev){
+            NO_showSimilarEvents(PopUp_getID(popUp));
+            $(popUp).find('#save_button').popover('toggle');
+        });
+        $('#save_anyways_button').on('click', function(ev){
+            NO_removeSimilarEventsNotification(PopUp_getID(popUp));
+            PopUp_clickedSavePopUp(popUp);
+            $(popUp).find('#save_button').popover('toggle');
+        });
+    });
 }
 
 function PopUp_close(popUp)
@@ -238,18 +277,51 @@ function PopUp_getMainPopUp()
         main = PopUp_insertPopUp(true);
     return main;
 }
+function PopUp_getPopUpByID(id)
+{
+    return $(".popup-event").find("#"+id).parent()[0];
+}
 
 function PopUp_setToEventID(popUp, id)
 {
     PopUp_setID(popUp, id);
     var eventDict;
+    $(popUp).find('.unsaved').removeClass('unsaved');
     if (EventsMan_hasUncommitted(id))
     {
         eventDict = EventsMan_getUncommitted(id);
         PopUp_markAsUnsaved(popUp);
+        // TODO find out what is the unsaved changes
+        var savedEventDict = EventsMan_getEventByID(id);
+        if (savedEventDict)
+        {
+            if (savedEventDict.event_title != eventDict.event_title)
+                $(popUp).find('#popup-title').addClass('unsaved');
+            if (savedEventDict.event_location != eventDict.event_location)
+                $(popUp).find('#popup-loc').addClass('unsaved');
+            if (savedEventDict.event_description != eventDict.event_description)
+                $(popUp).find('#popup-desc').addClass('unsaved');
+            if (savedEventDict.event_type != eventDict.event_type)
+                $(popUp).find('#popup-type').addClass('unsaved');
+            if (savedEventDict.section_id != eventDict.section_id)
+                $(popUp).find('#popup-section').addClass('unsaved');
+            var start = moment.unix(eventDict.event_start);
+            var savedStart = moment.unix(savedEventDict.event_start);
+            if (start.year() != savedStart.year() || start.month() != savedStart.month() || start.date() != savedStart.date())
+                $(popUp).find('#popup-date').addClass('unsaved');
+            if (start.hour() != savedStart.hour() || start.minute() != savedStart.minute())
+                $(popUp).find('#popup-time-start').addClass('unsaved');
+            var end = moment.unix(eventDict.event_end);
+            var savedEnd = moment.unix(savedEventDict.event_end);
+            if (end.hour() != savedEnd.hour() || end.minute() != savedEnd.minute())
+                $(popUp).find('#popup-time-end').addClass('unsaved');
+        }
     }
     else
+    {
         eventDict = EventsMan_getEventByID(id);
+        PopUp_markAsSaved(popUp);
+    }
     if (!eventDict)
     {
         console.log("errorneous event id");
@@ -391,7 +463,7 @@ function PopUp_showClose(popUp)
 
 function PopUp_giveFocus(popUp)
 {
-    $(".popup").not(popUp).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary");
+    $(".popup-event").not(popUp).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary");
     $(popUp).css("z-index", "200");
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default");
     if (UI_isMain(PopUp_getID(popUp)))
@@ -399,7 +471,7 @@ function PopUp_giveFocus(popUp)
 }
 function PopUp_giveFocusToID(id)
 {
-    popUp = $(".popup").find("#"+id).parent();
+    popUp = $(".popup-event").find("#"+id).parent();
     PopUp_giveFocus(popUp);
 }
 function PopUp_hasFocus(popUp)
@@ -445,6 +517,32 @@ function PopUp_markAsUnsaved(popUp)
 {
     $(popUp).find('#save_button').removeClass('hide');
     $(popUp).find('#undo_button').removeClass('hide');
+}
+function PopUp_markAsSaved(popUp)
+{
+    $(popUp).find('#save_button').addClass('hide');
+    $(popUp).find('#undo_button').addClass('hide');
+}
+function PopUp_markIDAsNotEditing(id)
+{
+    PopUp_markAsNotEditing(PopUp_getPopUpByID(id));
+}
+function PopUp_markAsNotEditing(popUp)
+{
+    $(popUp).data('is_editing', false);
+}
+function PopUp_markAsEditing(popUp)
+{
+    $(popUp).data('is_editing', true);
+}
+function PopUp_isEditing(popUp)
+{
+    return $(popUp).data('is_editing');
+}
+function PopUp_makeIDDraggable(id)
+{
+    var popUp = PopUp_getPopUpByID(id);
+    $(popUp).draggable('enable');
 }
 
 /***************************************************
@@ -519,6 +617,9 @@ function PopUp_clickedElement(element)
 {
     //return;
     var popUp = _PopUp_getPopUp(element);
+    if (PopUp_isEditing(popUp))
+        return;
+    PopUp_markAsEditing(popUp);
     var form_id = _PopUp_Form_getFormIDForElement(element);
     var form = $(popUp).find("#"+form_id)[0];
     // make the corresponding form visible and hide the element
@@ -577,6 +678,7 @@ function PopUp_clickedSaveElement(form)
         return;
     }
     var popUp = _PopUp_getPopUp(form);
+    PopUp_markAsNotEditing(popUp);
     // hide the form and unhide the text
     _PopUp_hideFormForElement(form);
     var text_id = _PopUp_Form_getElementIDForForm(form);
@@ -601,6 +703,15 @@ function PopUp_clickedClose(popUpAnchor)
     var popUp = popUpAnchor;
     while (!$(popUp).hasClass("popup"))
         popUp = $(popUp).parent()[0];
+    if (PopUp_isEditing(popUp))
+        return;
+    // check if there are unsaved changes
+    if (EventsMan_hasUncommitted(PopUp_getID(popUp)))
+    {
+        $(popUpAnchor).popover('toggle');
+        return;
+    }
+
     if (PopUp_getID(popUp))
         PopUp_callCloseListeners(PopUp_getID(popUp));
     PopUp_close(popUp);
@@ -608,6 +719,8 @@ function PopUp_clickedClose(popUpAnchor)
 function PopUp_clickedDelete(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
+    if (PopUp_isEditing(popUp))
+        return;
     var event_id = PopUp_getID(popUp);
     PopUp_close(popUp);
     EventsMan_deleteEvent(event_id);
@@ -615,18 +728,28 @@ function PopUp_clickedDelete(popUpAnchor)
 function PopUp_clickedSavePopUp(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
+    if (PopUp_isEditing(popUp))
+        return;
     var id = PopUp_getID(popUp);
-    $(popUp).find('#save_button').addClass('hide');
-    $(popUp).find('#undo_button').addClass('hide');
-    EventsMan_commitChanges(id)
+    if (NO_hasSimilarEvents(id))
+    {
+        $(anchor).popover('toggle');
+        return;
+    }
+    PopUp_markAsSaved(popUp);
+    EventsMan_commitChanges(id);
+    $(popUp).find('.unsaved').removeClass('unsaved');
 }
 function PopUp_clickedUndo(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
+    if (PopUp_isEditing(popUp))
+        return;
     var id = PopUp_getID(popUp);
     $(popUp).find('#save_button').addClass('hide');
     $(popUp).find('#undo_button').addClass('hide');
     EventsMan_cancelChanges(id);
+    $(popUp).find('.unsaved').removeClass('unsaved');
 }
 
 /***************************************************
@@ -667,7 +790,7 @@ function _PopUp_getPopUp(child)
 }
 function PopUp_map(apply)
 {
-    $(".popup").not("#popup-main").each(function(index) {
+    $(".popup-event").not("#popup-main").each(function(index) {
         apply(this, false);
     });
     $("#popup-main").each(function(index) {
