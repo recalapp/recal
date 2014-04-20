@@ -215,7 +215,34 @@ class Event_Revision(models.Model):
     approved = models.BooleanField(default=True) # TODO: change default value	
     
     def __unicode__(self):
-        return self.event_title
+        return self.event_title # TODO: improve the way that revisions appear in admin panel by changing this.
+
+    # Compare to another revision. (Based on https://djangosnippets.org/snippets/2281/)
+    def compare(self, obj):
+        excluded_keys = ['modified_user', 'modified_time', 'approved', 'event_start', 'event_end']
+        return self._compare(self, obj, excluded_keys)
+
+    def _compare(self, obj1, obj2, excluded_keys):
+        d1, d2 = obj1.__dict__, obj2.__dict__
+        old, new = {}, {}
+        for k,v in d1.items():
+            if k in excluded_keys:
+                continue
+            try:
+                if v != d2[k]:
+                    old.update({k: v})
+                    new.update({k: d2[k]})
+            except KeyError:
+                old.update({k: v})
+        
+        return old, new  
+
+    def apply_changes(self, new_values):
+        """Accepts the new dict from compare()'s output, and then applies changes to this object. Don't forget to save!
+
+        """
+        for attr, value in new_values.iteritems(): # http://stackoverflow.com/a/7535133/130164
+            setattr(self, attr, value)
 
 # Extend django.contrib.auth User table with custom user profile information.
 

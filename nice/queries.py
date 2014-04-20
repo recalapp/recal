@@ -60,11 +60,14 @@ def modify_events(netid, events):
 
         # Decide whether to edit existing event, or make new event.
         try:
-            event = Event.objects.get(id=event_dict['event_id']) # event already exists
+            event = Event.objects.get(id=event_dict['event_id'])
+            # If we made it here, then event already exists.
             event_group = event.group;
             section = Section.objects.get(id=event_dict['section_id'])
             event_group.section = section;
             event_group.save();
+
+            previous_best_revision = event.best_revision(netid=netid)
             
             ## Decide whether we need a new event group revision.
             last_rev = event_group.best_revision() # get last event_group revision
@@ -91,7 +94,7 @@ def modify_events(netid, events):
             
             # If we concluded that event groups don't match, save new event group revision
             if not event_groups_match:
-                new_event_group.event_group = event_group
+                new_event_group_rev.event_group = event_group
                 new_event_group_rev.save()
             
         except:
@@ -119,7 +122,7 @@ def modify_events(netid, events):
                 event_title = event_dict['event_title'],
                 event_type = event_dict['event_type'],
                 event_start = event_dict['event_start'],
-                event_end = event_dict['event_end'],
+                event_end = event_dict['event_end'], # TODO: how do we differentiate between recurring series end date, and one event's end date?
                 event_description = event_dict['event_description'],
                 event_location = event_dict['event_location'],
                 modified_user = user,
@@ -132,34 +135,61 @@ def modify_events(netid, events):
         
         ## Handle recurring events
         
+        event_dates = get_recurrence_dates(start_date+datetime.timedelta(days=1), end_date, event_dict['recurrence_days'], event_dict['recurrence_interval']) # events in this group starting with next day
+        def create_new_events(dates):
+            for d in dates:
+                new_event = Event(group=event_group)
+                new_rev = make_new_rev(e)
+                new_rev.event_start = d
+                new_rev.event_end = d
+                new_rev.save()
+                new_event.save()
+                # Note that we don't need to add to changed_ids; the next server poll will grab the new events
+                # TODO(Naphat): can you confirm this behavior of changed_ids?
+
         if isNewEvent:
             # This is a new event group.
             # Per recurrence pattern, make more events with copies of this event revision.
-            # TODO: make further events by calling Event(group=event_group) and make_new_rev()
-            
+            create_new_events(event_dates)
+        else:
+            # This is not a new event group.
+            if recurrence_has_changed:
+                # Recurrence pattern has changed.
 
-            # Note that we don't need to add to changed_ids; the next server poll will grab the new events
-        else: #If not new event group:
-            if recurrence_has_changed: # recurrence pattern has changed
-                # no previous recurrence pattern -- have to make a bunch of new events with this same event revision
-                
-                # recurrence pattern has changed -- need to find the previous events and move them
-            else: # recurrence pattern hasn't changed
-                # which fields have changed since previous revision? (compare to the best-revision this user sees, not the global last approved)
-                # look at recurring event edit settings
-                    # if change only this event:
-                        # stop
-                    # if change all future events:
-                        # select all future events in this event group (other than this event)
-                    # if change all events: (TODO: should we be able to edit previous events? I think not)
-                        # select all events in this event group (other than this event) 
-                # for each selected event:
-                    # take their last revision (as seen by this user)
-                    # edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
-                    # NOTE that each revision will have to be approved separately....
+                if last_rev.recurrence_days is None: # no previous recurrence pattern
+                    # Make all new events with this same event revision
+                    create_new_events(event_dates)
+                else:
+                    # Previous recurrence pattern has changed -- need to find the previous-created events and move them
+                    # By default, only edit the ones after this event
                     
-    
-        
+                    # find and remove old events
+                    old_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
+                    changed_ids.extend([oe.pk for oe in old_events]) # tell UI to refetch these events (i.e. to clear them out)
+                    old_events.delete()
+
+                    # recreate events at their new times
+                    create_new_events(event_dates)
+
+            else:
+                # Recurrence pattern hasn't changed.
+
+                # Which fields have changed since previous revision? Compare to the best-revision this user sees (stored in previous_best_revision) -- not to the global last-approved revision.
+                old, new = previous_best_revision.compare(new_rev)
+
+                # By default, recurring event edit settings is to change all future events
+                # Select all future events in this event group (other than this event)
+                all_future_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
+                for future_event in all_future_events: # Edit each future event
+                    # Take its last revision, as seen by this user
+                    this_event_last_rev = future_event.best_revision()
+                    # Edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
+                    this_event_last_rev.apply_changes(new)
+                    # Save as new unapproved revision.
+                    this_event_last_rev.approved = False
+                    this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
+                    # Tell UI to refetch this event.
+                    changed_ids.append(future_event.pk) 
         
     return changed_ids
 
