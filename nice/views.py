@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import * # require_GET, etc.
 from django.utils import timezone
+from django.db.models import Q
 
 from nice.models import *
 from nice import scrape
@@ -105,21 +106,28 @@ def edit_profile_autocomplete(request):
 @login_required
 def get_classes(request):
     if True: #request.is_ajax():
-        q = request.GET.get('term', '')
-        courses = Course.objects.filter(title__icontains = q )[:20]
+        q = request.GET.get('term', '').lower() # autocomplete query
+        print 'query:', q
+
+        # pull out queries like 'COS 333' or 'cos333'
+        r_class_num = r'([A-Za-z]{3})\s*(\d{3,4})' # 3-letter dept string, then zero or some number of spaces, then 3-4 digits for the course number
+        class_num = re.search(r_class_num, q)
+        if class_num:
+            dept, num = class_num.groups()
+            q = q.replace(dept, '').replace(num, '') # remove them from the rest of the search query
+            print 'filtering w:', q,dept,num
+            courses = Course.objects.filter(Q(title__icontains = q) & (Q(course_listing__dept__iexact = dept) & Q(course_listing__number__iexact = num)))[:20] # top 20 rows
+        else:
+            print 'filtering wo:', q
+            courses = Course.objects.filter(Q(title__icontains = q))[:20] # top 20 rows
         results = []
         for c in courses:
-            course_json = {}
-            course_json['id'] = c.id
-            course_json['value'] = c.id
-            course_json['label'] = c.title
-            course_json['desc'] = c.description
-            results.append(course_json)
-        data = json.dumps(results)
+            results.append({'id': c.id, 'value': c.id, 'label': c.title, 'desc': c.description}) # the format jQuery UI autocomplete likes
+        data = json.dumps(results) 
+        status = 200 # OK
     else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
+        status = 500 # Internal Server Error
+    return HttpResponse(data, 'application/json', status=status)
 
     
 @login_required
