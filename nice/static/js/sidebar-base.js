@@ -1,6 +1,4 @@
 var SB_willCloseListeners = [];
-
-
 function SB_init()
 {
     $('#sidebar').droppable({

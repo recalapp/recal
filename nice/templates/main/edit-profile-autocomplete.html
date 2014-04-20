@@ -5,28 +5,25 @@
 
 {% block main_content %}
 <div class="container">
-<h1>Edit Your Profile, {{ formatted_name }}</h1>
-<h2>Sign up for at least one class below.</h2>
-<h3>Then <a href="{% url 'nice.views.edit_sections' %}">choose sections</a> or <a href="{% url 'nice.views.index' %}">proceed to dashboard</a>.</h2>
-
-  
-<div class="ui-widget"><div id="class-label">Select a class (start typing):</div>
-<input id="class">
-<input type="hidden" id="class-id">
-<p id="class-description"></p></div>
- 
-
-<div class="row">
-    <h3>Edit Profile and Select Coursessss</h3>
-<!-- TODO BRING FORM BACK -->
-</div>
-
+    <div class="row">
+        <div class="col-xs-7">
+            <div id="calendarui"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-8 col-xs-offset-2">
+            <input id="class" class="form-control" placeholder="e.g. 'COS', 'PHY 105', 'LA', 'Introduction to Metaphysics'">
+            <input type="hidden" id="class-id">
+            <p id="class-description"></p>
+        </div>
+    </div>
 </div> <!-- /#container -->
 {% endblock %}
 
 {% block link_or_script_blocking %}
 <link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}"> 
 <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
 
 
 <style>
@@ -49,9 +46,9 @@
   /* IE 6 doesn't support max-height
    * we use height instead, but this forces the menu to always be this tall
    */
-  * html .ui-autocomplete {
+  /** html .ui-autocomplete {
     height: 100px;
-  }
+  }*/
   
   </style>
 
@@ -61,51 +58,7 @@
 <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'bower_components/jqueryui/ui/minified/jquery-ui.min.js' %}"></script>
-
-<script>
-
-$(function() {
-    var cache = {};
-    $( "#class" ).autocomplete({
-      minLength: 3,
-      source: function( request, response ) {
-        var term = request.term;
-        if ( term in cache ) {
-          response( cache[ term ] );
-          return;
-        }
- 
-        $.getJSON( "/api/classlist", request, function( data, status, xhr ) {
-          cache[ term ] = data;
-          response( data );
-          /* data should be like 
-          [{
-        value: "jquery",
-        label: "jQuery",
-        desc: "the write less, do more, JavaScript library"
-      },] */
-        });
-      },
-      focus: function( event, ui ) {
-        $( "#class" ).val( ui.item.label );
-        return false;
-      },
-      select: function( event, ui ) {
-        // TODO: add class checkbox
-        $( "#class" ).val( ui.item.label );
-        $( "#class-id" ).val( ui.item.value );
-        $( "#class-description" ).html( ui.item.desc );
-        return false;
-    }}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-      return $( "<li>" )
-        .append( "<a>" + item.label + "<br>" + item.desc + "</a>" )
-        .appendTo( ul );
-    };
-  });
-  
-  
-</script>
-
-
-
+<script src="{% static 'js/profile/main.js' %}"></script>
+<script src="{% static 'js/profile_auto.js' %}"></script>
+<script src="{% static 'js/calendar.js' %}"></script>
 {% endblock %}
