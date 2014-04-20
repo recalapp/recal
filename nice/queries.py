@@ -56,6 +56,8 @@ def modify_events(netid, events):
             new_event_group_rev.recurrence_interval = event_dict['recurrence_interval']
             new_event_group_rev.end_date = min(new_event_group_rev.end_date, cur_semester().end_date)
             
+        isNewEvent = False
+
         # Decide whether to edit existing event, or make new event.
         try:
             event = Event.objects.get(id=event_dict['event_id']) # event already exists
@@ -69,18 +71,23 @@ def modify_events(netid, events):
             
             # Compare last event_group revision to new start_date, end_date, recurrence fields
             event_groups_match = True # use boolean rather than a huge if statement
+            recurrence_has_changed = False # used in recurring events handling further down
             if last_rev.start_date != new_event_group_rev.start_date or last_rev.end_date != new_event_group_rev.end_date:
                 event_groups_match = False 
             elif 'recurring' in event_dict and event_dict['recurring'] is True:
                 if (last_rev.recurrence_days != new_event_group_rev.recurrence_days):
                     event_groups_match = False
+                    recurrence_has_changed = True
                 if (last_rev.recurrence_interval != new_event_group_rev.recurrence_interval):
                     event_groups_match = False
+                    recurrence_has_changed = True
             elif 'recurring' in event_dict and event_dict['recurring'] is False:
                 if last_rev.recurrence_days is not None:
                     event_groups_match = False
+                    recurrence_has_changed = True
                 if last_rev.recurrence_interval is not None:
                     event_groups_match = False
+                    recurrence_has_changed = True
             
             # If we concluded that event groups don't match, save new event group revision
             if not event_groups_match:
@@ -89,6 +96,7 @@ def modify_events(netid, events):
             
         except:
             # event lookup failed -- i.e. event doesn't exist yet
+            isNewEvent = True
             # create a new event group to hold the event
             section = Section.objects.get(id=event_dict['section_id'])
             event_group = Event_Group(section=section)
@@ -124,12 +132,19 @@ def modify_events(netid, events):
         
         ## Handle recurring events
         
-        # Is this a new event group? If so, then we need to make a bunch of new events with this same event revision.
-        # If not new event group:
-            # has recurrence pattern changed?
+        if isNewEvent:
+            # This is a new event group.
+            # Per recurrence pattern, make more events with copies of this event revision.
+            # TODO: make further events by calling Event(group=event_group) and make_new_rev()
+            
+
+            # Note that we don't need to add to changed_ids; the next server poll will grab the new events
+        else: #If not new event group:
+            if recurrence_has_changed: # recurrence pattern has changed
                 # no previous recurrence pattern -- have to make a bunch of new events with this same event revision
+                
                 # recurrence pattern has changed -- need to find the previous events and move them
-            # if recurrence pattern hasn't changed:
+            else: # recurrence pattern hasn't changed
                 # which fields have changed since previous revision? (compare to the best-revision this user sees, not the global last approved)
                 # look at recurring event edit settings
                     # if change only this event:
@@ -146,7 +161,6 @@ def modify_events(netid, events):
     
         
         
-        # make further events by calling Event(group=event_group) and make_new_rev()
     return changed_ids
 
 def hide_events(netid, event_IDs):

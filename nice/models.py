@@ -307,3 +307,27 @@ def get_cur_semester():
         return Semester.objects.get(term_code = settings.CURR_TERM)
     except: # CURR_TERM is invalid or not specified
         return Semester.objects.order_by('-term_code')[0] # order by descending term code to get the latest semester.
+
+
+def get_recurrence_dates(start_date, end_date, recurrence_pattern, reccurence_interval):
+    first_start = start_date.add_days(-1 * start_date.weekday()) # get date of day 0 (Monday) of week that includes start_date 
+    last_end = last_end.add_days(-1 * last_end.weekday()).add_days(6) # = get date of day 6 (Sunday) of week that includes end_date
+    event_dates = []
+    while first_start <= end_date:
+        for day_of_week in recurrence_pattern:
+            new_date = first_start.add_days(day_of_week)
+            if new_date <= end_date:
+                event_dates.append(new_date)
+        first_start = first_start.add_days(7*recurrence_interval) # move to next week (or if every other week, jump 2 weeks)
+    return event_dates
+    """
+    while first_start <= last_end: # loop, where you add 7*recurrence_interval days to first_start, while that sum is < last_end
+        if first_start == last_end: # have reached end, and need to account for an edge case
+            # edge case: where first_start and last_end are both mondays and the event happens on mondays, for example
+            # don't forget to create an event on that last monday! but not on later days that week
+            if last_end fulfills recurrence_pattern:
+                event_dates.append(last_end)
+            break
+    """
+    
+        
