@@ -274,6 +274,7 @@ def seed_db_with_data():
     '''
     Inserts some test data: a semester, a course, and an extra section.
     '''
+    # TODO(Maxim): prune stale code
     # scrape.scrape_all()
     # sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1), term_code='1144')
     # sem.save()
@@ -300,5 +301,9 @@ def clear_all_data():
     Course.objects.all().delete()
     Semester.objects.all().delete()
     
-def cur_semester():
-    pass # TODO
+def get_cur_semester():
+    import nice.settings
+    try:
+        return Semester.objects.get(term_code = settings.CURR_TERM)
+    except: # CURR_TERM is invalid or not specified
+        return Semester.objects.order_by('-term_code')[0] # order by descending term code to get the latest semester.
