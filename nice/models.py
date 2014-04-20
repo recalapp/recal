@@ -309,25 +309,27 @@ def get_cur_semester():
         return Semester.objects.order_by('-term_code')[0] # order by descending term code to get the latest semester.
 
 
-def get_recurrence_dates(start_date, end_date, recurrence_pattern, reccurence_interval):
-    first_start = start_date.add_days(-1 * start_date.weekday()) # get date of day 0 (Monday) of week that includes start_date 
-    last_end = last_end.add_days(-1 * last_end.weekday()).add_days(6) # = get date of day 6 (Sunday) of week that includes end_date
+def get_recurrence_dates(start_date, end_date, recurrence_pattern, r_int):
+    """
+    Computes dates when this event recurrs in this interval.
+
+    This doesn't change time of day, just adds days per recurrence_pattern and recurrence_interval.
+    Arguments:
+        * recurrence_pattern : a list of integer that correspond to day of the week. 0 is Monday, 6 is Sunday (per datetime convention in Python)
+        * reccurence_interval : how many weeks apart the events are. That is, this answer the question: do the events recurr every week, every other week, or once every three weeks?
+    """
+    from datetime import timedelta
+    print 't', r_int
+    week_start = start_date - timedelta(days=start_date.weekday()) # get date of day 0 (Monday) of week that includes start_date 
     event_dates = []
-    while first_start <= end_date:
+    while week_start <= end_date:
         for day_of_week in recurrence_pattern:
-            new_date = first_start.add_days(day_of_week)
-            if new_date <= end_date:
+            new_date = week_start + timedelta(days=day_of_week)
+            if start_date <= new_date <= end_date:
                 event_dates.append(new_date)
-        first_start = first_start.add_days(7*recurrence_interval) # move to next week (or if every other week, jump 2 weeks)
+        
+        week_start = week_start + timedelta(days=(r_int*7)) # move to next week to consider (or jump multiple weeks)
+    
     return event_dates
-    """
-    while first_start <= last_end: # loop, where you add 7*recurrence_interval days to first_start, while that sum is < last_end
-        if first_start == last_end: # have reached end, and need to account for an edge case
-            # edge case: where first_start and last_end are both mondays and the event happens on mondays, for example
-            # don't forget to create an event on that last monday! but not on later days that week
-            if last_end fulfills recurrence_pattern:
-                event_dates.append(last_end)
-            break
-    """
     
         
