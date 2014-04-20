@@ -4,14 +4,27 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block main_content %}
+{% include 'main/sidebar.html' %}
 <div class="container">
     <div class="row">
-        <div class="col-xs-7">
+        <div class="col-xs-6">
+            <h2>Preview:</h2>
             <div id="calendarui"></div>
         </div>
+        <div class="col-xs-3" >
+            <h2>Enrolled:</h2>
+            <div class="row" id="course-list">
+                {% include 'main/course.html' %}
+                {% include 'main/course.html' %}
+                {% include 'main/course.html' %}
+                {% include 'main/course.html' %}
+                {% include 'main/course.html' %}
+            </div>
+        </div>
     </div>
+    <br>
     <div class="row">
-        <div class="col-xs-8 col-xs-offset-2">
+        <div class="col-xs-7 col-xs-offset-1">
             <input id="class" class="form-control" placeholder="e.g. 'COS', 'PHY 105', 'LA', 'Introduction to Metaphysics'">
             <input type="hidden" id="class-id">
             <p id="class-description"></p>
@@ -22,8 +35,11 @@
 
 {% block link_or_script_blocking %}
 <link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}"> 
+<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
+<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
 
 
 <style>
@@ -58,7 +74,12 @@
 <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'bower_components/jqueryui/ui/minified/jquery-ui.min.js' %}"></script>
+<script src="{% static 'bower_components/fullcalendar/fullcalendar.min.js' %}"></script>
+<script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
+<script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
+<script src="{% static 'js/profile/profile_auto.js' %}"></script>
+<script src="{% static 'js/calendar-base.js' %}"></script>
+<script src="{% static 'js/profile/calendar.js' %}"></script>
+<script src="{% static 'js/sidebar-base.js' %}"></script>
 <script src="{% static 'js/profile/main.js' %}"></script>
-<script src="{% static 'js/profile_auto.js' %}"></script>
-<script src="{% static 'js/calendar.js' %}"></script>
 {% endblock %}

@@ -15,5 +15,7 @@ Cal_options = {
     allDayDefault: false,
     eventSources: [Cal_eventSource],
     ignoreTimezone: false,
+    allDaySlot: false,
+    slotEventOverlap: true,
 };
 function Cal_init(){};
