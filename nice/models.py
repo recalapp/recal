@@ -21,7 +21,7 @@ class Semester(models.Model):
         Example:
         1144 = 1314Spring
         1132 = 1213Fall
-        """
+    """
     term_code = models.CharField(max_length=4, default='1144')
 
     def __unicode__(self):
@@ -58,7 +58,7 @@ class Course(models.Model):
 
 class Course_Listing(models.Model):
     course = models.ForeignKey(Course)
-    """ even though the max_length should be 3~4, there are extreme cases """
+    # Even though the max_length should be 3~4, there are extreme cases.
     dept = models.CharField(max_length=10)
     number = models.CharField(max_length=10)
 
