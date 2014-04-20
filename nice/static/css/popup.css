@@ -8,7 +8,7 @@
 .popup-container{
     position: fixed;
     width: 300px;
-    height: 300px;
+    height: 350px;
     top: 100px;
     left: 50%;
 }
@@ -23,10 +23,10 @@
 .panel-title {
     max-width: 90%;
 }
-#sidebar > .popup-container {
+#sb-left-container > .popup-container {
     position: relative;
     width: 100%;
-    height: 300px;
+    height: 350px;
     max-height: 50%;
     left: auto;
     top: auto;
@@ -48,4 +48,33 @@
 }
 .hide{
     visibility: hidden; 
+}
+.unsaved{
+    background-color: #fffb99;
+}
+.popover{
+    z-index: 10000;
+}
+.prompt-btn{
+    display: block;
+    margin: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.prompt-btn.yes{
+}
+.prompt-btn.no{
+    color: red;
+}
+.prompt-btn.no:hover{
+    color: #cb1c03;
+}
+
+.popup > .panel{
+    border: 1px solid rgba(100, 100, 100, 0.15); 
+    border-radius: 0px;
+    box-shadow: 0px 3px 10px #ddd;
+}
+.popup > .panel > .panel-heading{
+    border-radius: 0px;
 }

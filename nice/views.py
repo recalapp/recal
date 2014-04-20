@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import * # require_GET, etc.
 from django.utils import timezone
+from django.db.models import Q
 
 from nice.models import *
 from nice import scrape
@@ -48,6 +49,12 @@ def typepicker(request):
     return render(request, 'main/type-picker.html', None)
 def sectionpicker(request):
     return render(request, 'main/section-picker.html', { 'all_sections': request.user.profile.sections.all() })
+def notifications(request):
+    return render(request, 'main/notifications.html', None)
+def event_picker(request):
+    return render(request, 'main/event-picker.html', None)
+def event_picker_item(request):
+    return render(request, 'main/event-picker-item.html', None)
 
 @login_required
 def edit_profile(request):
@@ -102,22 +109,55 @@ def edit_profile_autocomplete(request):
     
 @login_required
 def get_classes(request):
-    if True: #request.is_ajax():
-        q = request.GET.get('term', '')
-        courses = Course.objects.filter(title__icontains = q )[:20]
+    """
+    Returns list of classes for an autocomplete query.
+
+    Designed to handle many query forms, including these examples:
+    * COS
+    * COS 33 (matches all 33*)
+    * COS advanced
+    * COS 333
+    * COS333advanced
+    * programming TECHNIQUES (case doesn't matter)
+    * COS ELE
+    """
+    if request.is_ajax():
+        q = request.GET.get('term', '').lower() # autocomplete query
+        print 'query:', q
+        filtered = Course.objects
+
+        # First, search input string for any two, three, or four digit numbers. Use results to filter by course number.
+        class_num = re.search(r'(\d{2,4})', q)
+        if class_num:
+            num = class_num.group()
+            filtered = filtered.filter(Q(course_listing__number__contains = num)) # filter by this course number
+            q = q.replace(num, ' ') # remove from remaining query (replace with space so that "COS333advanced" becomes "COS advanced", not"COSadvanced")
+        
+
+        # Then, if any remaining parts are three letter string and are in depts list, filter by them.
+        parts = q.split() # split string by spaces
+        all_depts = [x.lower() for x in list(Course_Listing.objects.values_list('dept', flat=True).distinct())]
+        for p in parts:
+            if p in all_depts:
+                filtered = filtered.filter(Q(course_listing__dept__iexact = p)) # filter by this department
+                q = q.replace(p, '') # remove from remaining query
+
+
+
+        # Filter title by everything that wasn't used. I.e. when we used the dept name remove it from original string, and same for matched course numbe
+        q = q.strip() # remove spaces that class_num replacing might have added
+        if len(q) > 0:
+            filtered = filtered.filter(Q(title__icontains=q))
+
+        courses = filtered[:20] # top 20 results
         results = []
         for c in courses:
-            course_json = {}
-            course_json['id'] = c.id
-            course_json['value'] = c.id
-            course_json['label'] = c.title
-            course_json['desc'] = c.description
-            results.append(course_json)
-        data = json.dumps(results)
+            results.append({'id': c.id, 'value': c.id, 'label': c.title, 'desc': c.description}) # the format jQuery UI autocomplete likes
+        data = json.dumps(results) 
+        status = 200 # OK
     else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
+        status = 400 # Bad Request (need to use AJAX)
+    return HttpResponse(data, 'application/json', status=status)
 
     
 @login_required

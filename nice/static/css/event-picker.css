@@ -1,0 +1,41 @@
+.event-picker{
+}
+.event-picker > tr {
+    vertical-align: top;
+}
+.event-picker-item{
+    height: 500px;
+}
+.popup-ep {
+    width: 330px;
+    height: 350px;
+    display: block;
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: auto;
+}
+.ep-control{
+    position: absolute;
+    top: 40%;
+    width: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    background-color: white;
+    border: solid 1px rgba(0, 0, 0, 0.1); 
+}
+.ep-control.left{
+    text-align: left;
+    padding-left: 10px;
+    left: 0;
+}
+.ep-control.right{
+    text-align: right;
+    padding-right: 10px;
+    right: 0;
+}
+.ep-center-btn:hover, .ep-control:hover{
+    background-color: rgb(240, 240, 240);
+}
+
