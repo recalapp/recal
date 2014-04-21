@@ -12,10 +12,14 @@ CourseManager.prototype.isIdle = true;
 CourseManager.prototype.queue = [];
 
 var courseManager = null;
+var CourseMan_updateListeners = [];
 
 function CourseMan_init()
 {
     courseManager = new CourseManager();
+    CourseMan_pullEnrolledCourseIDs(function(){
+        CourseMan_cacheEnrolledCourses();
+    });
 }
 
 /**************************************************
@@ -31,11 +35,14 @@ function CourseMan_init()
  *  course_name:
  *  course_description:
  *  course_professor:
+ *  course_listings:
  * }
  */
 function CourseMan_getCourseByID(id)
 {
-    return courseManager[id];
+    if (!(id in courseManager.allCourses))
+        CourseMan_pullCourseByID(id, false);
+    return courseManager.allCourses[id];
 }
 
 function CourseMan_getEnrolledCourses()
@@ -43,7 +50,7 @@ function CourseMan_getEnrolledCourses()
     return courseManager.enrolledCourses();
 }
 
-function CourseMan_getSectionIDsForCourseID(courseID)
+function CourseMan_getEnrolledSectionIDs(courseID)
 {
     return courseManager.courseSectionsMap[courseID];
 }
@@ -82,6 +89,7 @@ function CourseMan_pullEnrolledCourseIDs(complete)
             if (complete)
                 complete();
             CourseMan_handleQueue();
+            CourseMan_callUpdateListeners();
         },
         error: function(data){
             courseManager.isIdle = true;
@@ -98,12 +106,14 @@ function CourseMan_pullCourseByID(courseID, async)
         dataType: 'json',
         async: async,
         success: function(data){
-            for (var section_id in data.sections)
+            for (var i in data.sections)
             {
-                courseManager.allSections[section_id] = data.sections[section_id];
+                var section = data.sections[i];
+                courseManager.allSections[section.section_id] = section;
             }
             delete data.sections;
             courseManager.allCourses[data.course_id] = data;
+            CourseMan_callUpdateListeners();
         }
     });
 }
@@ -124,4 +134,20 @@ function CourseMan_handleQueue()
         var queued = courseManager.queue.shift();
         queued.call(queued.arg1);
     }
+}
+
+/***************************************************
+ * Client event listeners
+ **************************************************/
+
+function CourseMan_addUpdateListener(listener)
+{
+    CourseMan_updateListeners.push(listener);
+}
+
+function CourseMan_callUpdateListeners()
+{
+    $.each(CourseMan_updateListeners, function(index){
+        this();
+    });
 }

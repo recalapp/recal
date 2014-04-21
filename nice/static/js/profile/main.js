@@ -49,8 +49,10 @@ function init()
             }
         }
     });
-    Cal_init();
+    CacheMan_init();
     CourseMan_init();
+    Cal_init();
+    CL_init();
 }
 function enableAllInteractions()
 {
