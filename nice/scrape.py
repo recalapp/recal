@@ -26,8 +26,11 @@ PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
 CURRENT_SEMESTER = ''
 community_user = get_community_user()
 
+DAYS = {'M': 1, 'T': 2, 'W': 3, 'Th': 4, 'F': 5}
+
 course_count = 0
 section_count = 0
+event_count = 0
 
 def get_current_semester():
     global CURRENT_SEMESTER
@@ -70,6 +73,7 @@ def scrape_all():
     
     print str(course_count) + " new courses"
     print str(section_count) + " new sections"
+    print str(event_count) + " new events"
 
 # goes through the listings for this department
 def scrape(department):
@@ -117,8 +121,7 @@ def parse_course(course, subject):
 
     # handle course listings
     create_or_update_listings(course, subject, course_object)
-
-    # add sections
+    # add sections and events
     create_or_update_sections(course, course_object)
 
 def create_or_update_listings(course, subject, course_object):
@@ -144,14 +147,55 @@ def create_or_update_sections(course, course_object):
     for section in classes:
         section_name = section.find('section').text
         section_type = section.find('type_name').text
-        section, created = Section.objects.get_or_create(
+        section_object, created = Section.objects.get_or_create(
             course = course_object,
             name = section_name,
             section_type = section_type[0:3].upper()
         )
         if created:
-            # create new events here
             section_count += 1
+
+        # add events
+        create_or_update_events(section, section_object)
+
+# TODO: fix this. Use Maxim's helper function to create new events
+def create_or_update_events(section, section_object):
+    global event_count
+    try:
+        schedule = section.find('schedule')
+        meetings = schedule.find('meetings')
+    except:
+        return
+
+    start_date = schedule.find('start_date').text
+    end_date = schedule.find('end_date').text
+    for meeting in meetings:
+        # create event_group
+        new_event_group = Event_Group(
+            section = section_object
+        )
+        new_event_group.save()
+
+        days = []
+        for day in section_object.find('days'):
+            days.append(DAYS[day])
+
+        # create event_group_revision
+        new_event_group_revision = Event_Group_Revision(
+            event_group = new_event_group,
+            start_date = start_date,
+            end_date = end_date,
+            modified_user = community_user,
+            modified_time = get_current_utc(),
+            approved = True,
+            recurrence_days = days,
+            recurrence_interval = 1
+        )
+        new_event_group_revision.save()
+        
+        # create event
+        new_event = Event(group = new_event_group)
+        new_event.save()
 
 def remove_namespace(doc, namespace):
     """Hack to remove namespace in the document in place."""
