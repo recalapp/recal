@@ -19,7 +19,7 @@ function CourseMan_init()
     courseManager = new CourseManager();
     CourseMan_pullEnrolledCourseIDs(function(){
         CourseMan_cacheEnrolledCourses();
-    });
+    }); 
 }
 
 /**************************************************

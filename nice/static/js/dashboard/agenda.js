@@ -105,11 +105,10 @@ function Agenda_insertHeader(text)
 
 function selectAgenda(agendaAnchor)
 {
-    var title = agendaAnchor.querySelector("h4").textContent;
     var panel = $(agendaAnchor).find(".panel")[0];
     if (Agenda_isHighlighted(panel))
     {
-        id = panel.id;
+        var id = panel.id;
         PopUp_giveFocusToID(id);
         return;
     }

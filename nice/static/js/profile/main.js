@@ -49,9 +49,11 @@ function init()
             }
         }
     });
+    SB_init();
     CacheMan_init();
     CourseMan_init();
     Cal_init();
+    PopUp_init();
     CL_init();
 }
 function enableAllInteractions()
