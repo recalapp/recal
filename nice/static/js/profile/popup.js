@@ -16,7 +16,11 @@ function PopUp_init()
     topPos = 0;
     height = window.innerHeight - topPos + 300;
     $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
-    
+    $(window).on('resize', function(ev){
+        topPos = 0;
+        height = window.innerHeight - topPos + 300;
+        $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
+    });
 }
 
 function PopUp_setToCourseID(popUp, courseID)
