@@ -237,6 +237,9 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
 
+def sections_json(request):
+    netid = request.user.username
+
 @login_required
 @require_POST
 def modify_events(request):

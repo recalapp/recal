@@ -269,7 +269,13 @@ def get_similar_events(event_dict):
     revisions = __close_matches(event_dict['event_location'].lower(), revisions, lambda r: r.event_location.lower())
     
     return revisions # return what survived
-    
-    
-    
+
+
+def get_sections(netid):
+    """
+    returns:
+    {
+        course_id:[section_id]
+    }
+    """
     
