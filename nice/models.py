@@ -219,7 +219,7 @@ class Event_Revision(models.Model):
 
     # Compare to another revision. (Based on https://djangosnippets.org/snippets/2281/)
     def compare(self, obj):
-        excluded_keys = ['modified_user', 'modified_time', 'approved', 'event_start', 'event_end']
+        excluded_keys = ['event', 'modified_user', 'modified_time', 'approved', 'event_start', 'event_end']
         return self._compare(self, obj, excluded_keys)
 
     def _compare(self, obj1, obj2, excluded_keys):
