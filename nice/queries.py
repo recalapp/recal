@@ -275,7 +275,50 @@ def get_sections(netid):
     """
     returns:
     {
-        course_id:[section_id]
+        course_id:[
+            section_id
+        ]
     }
     """
-    
+    user = User.objects.get(username=netid).profile
+    ret = {}
+    for section in user.sections.all():
+        sections_array = ret.setdefault(section.course.id, [])
+        sections_array.append(section.id)
+    return ret
+
+def get_course_by_id(course_id):
+    """
+    returns:
+    {
+        course_id:
+        course_title:
+        course_listings:
+        course_professor:
+        course_description:
+        sections: [
+            section_id:
+            section_name:
+        ]
+    }
+    """
+    try:
+        course = Course.objects.get(id=course_id)
+        return construct_course_dict(course)
+    except Exception, e:
+        return {}
+def construct_course_dict(course):
+    return {
+        'course_id': course.id,
+        'course_title': course.title,
+        'course_listings': course.course_listings(),
+        'course_professor': course.professor,
+        'course_description': course.description,
+        'sections': [construct_section_dict(section) for section in course.section_set.all() if section.name != 'All Students'],
+    }
+
+def construct_section_dict(section):
+    return {
+        'section_id': section.id,
+        'section_name': section.name,
+    }
