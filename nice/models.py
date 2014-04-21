@@ -346,7 +346,6 @@ def get_recurrence_dates(start_date, end_date, recurrence_pattern, r_int):
         * reccurence_interval : how many weeks apart the events are. That is, this answer the question: do the events recurr every week, every other week, or once every three weeks?
     """
     from datetime import timedelta
-    print 't', r_int
     week_start = start_date - timedelta(days=start_date.weekday()) # get date of day 0 (Monday) of week that includes start_date 
     event_dates = []
     while week_start <= end_date:

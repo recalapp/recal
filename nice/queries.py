@@ -52,7 +52,7 @@ def modify_events(netid, events):
         if 'event_end' in event_dict:
             new_event_group_rev.end_date = event_dict['event_end'].date()
         if 'recurring' in event_dict and event_dict['recurring'] is True:
-            new_event_group_rev.recurrence_days = json.dumps(event_dict['recurrence_days'])
+            new_event_group_rev.recurrence_days = event_dict['recurrence_days']
             new_event_group_rev.recurrence_interval = event_dict['recurrence_interval']
             new_event_group_rev.end_date = min(new_event_group_rev.end_date, cur_semester().end_date)
             
@@ -85,10 +85,10 @@ def modify_events(netid, events):
                     event_groups_match = False
                     recurrence_has_changed = True
             elif 'recurring' in event_dict and event_dict['recurring'] is False:
-                if last_rev.recurrence_days is not None:
+                if len(last_rev.recurrence_days) != 0: # defined as []
                     event_groups_match = False
                     recurrence_has_changed = True
-                if last_rev.recurrence_interval is not None:
+                if last_rev.recurrence_interval != 0: # defined as 0
                     event_groups_match = False
                     recurrence_has_changed = True
             
@@ -132,18 +132,20 @@ def modify_events(netid, events):
         # Save
         eventRev.save()
         event.save()
-        
+
         ## Handle recurring events
-        
-        event_dates = get_recurrence_dates(start_date+datetime.timedelta(days=1), end_date, event_dict['recurrence_days'], event_dict['recurrence_interval']) # events in this group starting with next day
+        if event_dict['recurring'] is True:
+            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1), event_dict['event_end'], event_dict['recurrence_days'], event_dict['recurrence_interval']) # events in this group starting with next day
+        else:
+            event_dates = [event_dict['event_start']]
         def create_new_events(dates):
             for d in dates:
                 new_event = Event(group=event_group)
-                new_rev = make_new_rev(e)
+                new_event.save() 
+                new_rev = make_new_rev(new_event)
                 new_rev.event_start = d
                 new_rev.event_end = d
-                new_rev.save()
-                new_event.save()
+                new_rev.save() # must have saved event first, so that revision points to an event ID
                 # Note that we don't need to add to changed_ids; the next server poll will grab the new events
                 # TODO(Naphat): can you confirm this behavior of changed_ids?
 
@@ -279,7 +281,7 @@ def parse_json_event_dict(jsdict):
     """
     
     # Parse JSON
-    event_dict = json.loads(jsdict)
+    event_dict = jsdict # json.loads(jsdict)
     if type(event_dict) == list:
         event_dict = event_dict[0]
     
@@ -298,6 +300,9 @@ def parse_json_event_dict(jsdict):
         if not 0 < event_dict['recurrence_interval'] < 12: # range for repetition interval
             raise Exception("Recurrence invalid")
         event_dict['recurrence_days'] = [int(i) for i in event_dict['recurrence_days']]
+    else:
+        event_dict['recurrence_days'] = []
+        event_dict['recurrence_interval'] = 0
     
     return event_dict
     
