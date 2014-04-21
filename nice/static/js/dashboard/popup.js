@@ -15,6 +15,11 @@ function PopUp_init()
     topPos = parseInt($(".navbar").css("height")) + parseInt($(".navbar").css("margin-top"));
     height = window.innerHeight - topPos + 300;
     $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
+    $(window).on('resize', function(ev){
+        topPos = parseInt($(".navbar").css("height")) + parseInt($(".navbar").css("margin-top"));
+        height = window.innerHeight - topPos + 300;
+        $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
+    });
 
     EventsMan_addOnReadyListener(function(){
         PopUp_load();

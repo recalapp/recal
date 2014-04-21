@@ -1,0 +1,33 @@
+body{
+    padding-top: 20px;
+}
+#course-list{
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 430px;
+}
+#search{
+    min-height: 200px;
+}
+.course-item > .panel-body{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.course-sections {
+    margin: 0px;
+    color: rgba(0, 0, 0, 0.4);
+}
+.course-sections:before{
+    content: "- ";
+}
+.course-title{
+    margin-bottom: 0;
+}
+
+.course-item.panel{
+    border-radius: 0;
+    border: 1px solid rgba(100, 100, 100, 0.1); /* NOTE remove to get border selection effect */
+}
+.course-item.panel-primary{
+    background-color: #e8f1f9;
+}
