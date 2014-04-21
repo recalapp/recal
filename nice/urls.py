@@ -4,7 +4,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 import nice, cas
-from nice import views
+from nice import view≡jedi=0, s≡ (prefix, *args) ≡jedi≡
 urlpatterns = patterns('',
     url(r'^login/$', cas.views.login, name='cas_login'),
     url(r'^logout/$', cas.views.logout, name='cas_logout'),
@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^get/(?P<last_updated>\d+)$', views.events_json, name='events-json'),
     url(r'^get/state-restoration$', views.state_restoration, name='state-restoration'),
     url(r'^get/similar-events$', views.similar_events, name='similar_event'),
+    url(r'^get/sections', views.sections_json, name='sections-json'),
     url(r'^get$', views.events_json, name='events-json'),
     url(r'^put/state-restoration$', views.save_state_restoration, name='save-state-restoration'),
     url(r'^put$', views.modify_events, name='modify_events'),
