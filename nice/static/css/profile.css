@@ -4,7 +4,10 @@ body{
 #course-list{
     overflow-x: hidden;
     overflow-y: auto;
-    height: 400px;
+    height: 430px;
+}
+#search{
+    min-height: 200px;
 }
 .course-item > .panel-body{
     padding-top: 5px;

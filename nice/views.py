@@ -41,6 +41,8 @@ def logout(request):
 # loading templates
 def popup(request):
     return render(request, 'main/popup.html', None)
+def popup_course(request):
+    return render(request, 'main/popup-course.html', None)
 def agenda(request):
     return render(request, 'main/agenda.html', None)
 def agenda_header(request):
