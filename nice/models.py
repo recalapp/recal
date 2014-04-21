@@ -70,11 +70,15 @@ class Course_Listing(models.Model):
 
 class Section(models.Model):
     TYPE_ALL = "ALL"
+    TYPE_CLA = "CLASS"
+    TYPE_DRI = "DRILL"
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
     TYPE_CHOICES = (
         (TYPE_ALL, "all students"),
+        (TYPE_CLA, "class"),
+        (TYPE_DRI, "drill"),
         (TYPE_LAB, "lab"),
         (TYPE_LECTURE, "lecture"),
         (TYPE_PRECEPT, "precept"),

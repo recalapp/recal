@@ -10,6 +10,7 @@ Procedure:
 
 from nice.models import *
 from lxml import etree
+import HTMLParser
 import string
 import sys
 import urllib2
@@ -28,9 +29,11 @@ community_user = get_community_user()
 
 DAYS = {'M': 1, 'T': 2, 'W': 3, 'Th': 4, 'F': 5}
 
+new_course_count = 0
 course_count = 0
+new_section_count = 0
 section_count = 0
-event_count = 0
+new_event_count = 0
 
 def get_current_semester():
     global CURRENT_SEMESTER
@@ -71,9 +74,11 @@ def scrape_all():
     for department in departments:
         scrape(department)
     
-    print str(course_count) + " new courses"
-    print str(section_count) + " new sections"
-    print str(event_count) + " new events"
+    print str(new_course_count) + " new courses"
+    print str(course_count) + " total courses"
+    print str(new_section_count) + " new sections"
+    print str(section_count) + " total sections"
+    print str(new_event_count) + " new events"
 
 # goes through the listings for this department
 def scrape(department):
@@ -97,11 +102,14 @@ def scrape(department):
 def parse_course(course, subject):
     """ create a course with the basic information. """
 
+    global new_course_count
     global course_count
-    title = course.find('title').text
+    h = HTMLParser.HTMLParser()
+    title = h.unescape(course.find('title').text)
     description = course.find('detail').find('description').text
     if not description:
         description = ''
+    description = h.unescape(description)
         
     guid = course.find('guid').text
 
@@ -111,18 +119,19 @@ def parse_course(course, subject):
         semester = get_current_semester(),
     )
 
+    course_object.title = title
+    course_object.description = description
+    course_object.professor = ''
+    course_object.save()
+
     if created:
-        course_object.semester = get_current_semester()
-        course_object.title = title
-        course_object.description = description
-        course_object.professor = ''
-        course_object.save()
-        course_count += 1 # for debugging
+        new_course_count += 1 # for debugging
+    course_count += 1
 
     # handle course listings
     create_or_update_listings(course, subject, course_object)
     # add sections and events
-    create_or_update_sections(course, course_object)
+    # create_or_update_sections(course, course_object)
 
 def create_or_update_listings(course, subject, course_object):
     sub = subject.find('code').text
@@ -141,6 +150,7 @@ def create_or_update_listings(course, subject, course_object):
         )
         
 def create_or_update_sections(course, course_object):
+    global new_section_count
     global section_count
     # add sections
     classes = course.find('classes')
@@ -153,18 +163,21 @@ def create_or_update_sections(course, course_object):
             section_type = section_type[0:3].upper()
         )
         if created:
-            section_count += 1
+            new_section_count += 1
+        section_count += 1
 
         # add events
         create_or_update_events(section, section_object)
 
 # TODO: fix this. Use Maxim's helper function to create new events
 def create_or_update_events(section, section_object):
-    global event_count
+    global new_event_count
     try:
         schedule = section.find('schedule')
         meetings = schedule.find('meetings')
+        print 'yay'
     except:
+        print 'oops'
         return
 
     start_date = schedule.find('start_date').text
@@ -177,8 +190,8 @@ def create_or_update_events(section, section_object):
         new_event_group.save()
 
         days = []
-        for day in section_object.find('days'):
-            days.append(DAYS[day])
+        for day in meeting.find('days'):
+            days.append(DAYS[day.text])
 
         # create event_group_revision
         new_event_group_revision = Event_Group_Revision(
@@ -196,6 +209,7 @@ def create_or_update_events(section, section_object):
         # create event
         new_event = Event(group = new_event_group)
         new_event.save()
+        new_event_count += 1
 
 def remove_namespace(doc, namespace):
     """Hack to remove namespace in the document in place."""
