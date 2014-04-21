@@ -14,11 +14,7 @@
         <div class="col-xs-3" >
             <h2>Enrolled:</h2>
             <div class="row" id="course-list">
-                {% include 'main/course.html' %}
-                {% include 'main/course.html' %}
-                {% include 'main/course.html' %}
-                {% include 'main/course.html' %}
-                {% include 'main/course.html' %}
+                <h4>Loading your courses...</h4>
             </div>
         </div>
     </div>
@@ -82,5 +78,7 @@
 <script src="{% static 'js/profile/calendar.js' %}"></script>
 <script src="{% static 'js/sidebar-base.js' %}"></script>
 <script src="{% static 'js/profile/course_manager.js' %}"></script>
+<script src="{% static 'js/profile/course_list.js' %}"></script>
+<script src="{% static 'js/cache_manager.js' %}"></script>
 <script src="{% static 'js/profile/main.js' %}"></script>
 {% endblock %}

@@ -314,7 +314,7 @@ def construct_course_dict(course):
         'course_listings': course.course_listings(),
         'course_professor': course.professor,
         'course_description': course.description,
-        'sections': [construct_section_dict(section) for section in course.section_set.all() if section.name != 'All Students'],
+        'sections': [construct_section_dict(section) for section in course.section_set.all()],
     }
 
 def construct_section_dict(section):
