@@ -104,6 +104,7 @@ def parse_course(course, subject):
     # if we have a course with this registrar_id, get it 
     course_object, created = Course.objects.get_or_create(
         registrar_id = guid,
+        semester = get_current_semester(),
     )
 
     if created:
