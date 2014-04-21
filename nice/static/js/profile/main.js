@@ -50,6 +50,7 @@ function init()
         }
     });
     Cal_init();
+    CourseMan_init();
 }
 function enableAllInteractions()
 {
