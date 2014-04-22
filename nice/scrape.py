@@ -9,6 +9,7 @@ Procedure:
 """
 
 from nice.models import *
+from nice.queries import *
 from lxml import etree
 import HTMLParser
 import string
@@ -16,6 +17,7 @@ import sys
 import urllib2
 from bs4 import BeautifulSoup
 import re
+from datetime import datetime
 
 TERM_CODE = 1144  # spring 2014
 COURSE_OFFERINGS = "http://registrar.princeton.edu/course-offerings/"
@@ -131,7 +133,7 @@ def parse_course(course, subject):
     # handle course listings
     create_or_update_listings(course, subject, course_object)
     # add sections and events
-    # create_or_update_sections(course, course_object)
+    create_or_update_sections(course, course_object)
 
 def create_or_update_listings(course, subject, course_object):
     sub = subject.find('code').text
@@ -169,46 +171,83 @@ def create_or_update_sections(course, course_object):
         # add events
         create_or_update_events(section, section_object)
 
-# TODO: fix this. Use Maxim's helper function to create new events
+# section is the class Node in the xml tree, 
+# section_object is a section django object
 def create_or_update_events(section, section_object):
     global new_event_count
+
+    # check if this section has a schedule attached to it
     try:
         schedule = section.find('schedule')
         meetings = schedule.find('meetings')
-        print 'yay'
     except:
-        print 'oops'
+        print 'no schedule or meetings for ' + str(section_object.course)
         return
 
-    start_date = schedule.find('start_date').text
-    end_date = schedule.find('end_date').text
-    for meeting in meetings:
-        # create event_group
-        new_event_group = Event_Group(
-            section = section_object
-        )
-        new_event_group.save()
+    # now we check if there is already an event for this section
+    # TODO: try to prevent creating duplicate events
 
+    section_type = section.find('type_name').text
+
+    # the dates are in the format:
+    # YYYY-MM-DD
+    str_start_date = schedule.find('start_date').text
+    str_end_date = schedule.find('end_date').text
+    end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
+
+    for meeting in meetings:
+        # the times are in the format:
+        # HH:MM AM/PM
+        str_end_time = meeting.find('end_time').text
+        str_end_date_time = str_start_date + str_end_time
+        end_date_time = datetime.strptime(str_end_date_time, '%Y-%m-%d%I:%M %p')
+
+        str_start_time = meeting.find('start_time').text
+        str_start_date_time = str_start_date + str_start_time
+        start_date_time = datetime.strptime(str_start_date_time, '%Y-%m-%d%I:%M %p')
+
+        try:
+            location = meeting.find('building').find('name').text + meeting.find('room').text
+        except:
+            location = ''
+
+        # create event_group
         days = []
         for day in meeting.find('days'):
             days.append(DAYS[day.text])
 
+        event_type = section_object.section_type[0:2]
+        type_is_valid = False
+        for choice in Event_Revision.TYPE_CHOICES:
+            if event_type == choice[0]:
+                type_is_valid = True
+                break
+
+        if not type_is_valid:
+            event_type = 'LE'
+
+        # we need start_date_time, end_time, end_date
+        # start_date_time is start_date and start_time
         # create event_group_revision
-        new_event_group_revision = Event_Group_Revision(
-            event_group = new_event_group,
-            start_date = start_date,
-            end_date = end_date,
-            modified_user = community_user,
-            modified_time = get_current_utc(),
-            approved = True,
-            recurrence_days = days,
-            recurrence_interval = 1
-        )
-        new_event_group_revision.save()
+        modify_events(community_user.username, [{
+            'event_start': start_date_time,
+            'event_end' : end_date_time,
+            'event_title': str(section_object.course),
+            'event_description': '',
+            # TODO: figure out how to pass the real type
+            'event_type': 'LE',
+            # -1 for new event
+            'event_id': -1,
+            'event_location': location,
+            'section_id': section_object.pk,
+            'recurring': True,
+            'recurrence_days' : days,
+            # we assume the class is weekly
+            'recurrence_interval': 1,
+            'recurrence_end': end_date,
+        }])
         
         # create event
-        new_event = Event(group = new_event_group)
-        new_event.save()
         new_event_count += 1
 
 def remove_namespace(doc, namespace):
