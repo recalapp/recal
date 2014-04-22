@@ -333,7 +333,7 @@ def clear_all_data():
     Semester.objects.all().delete()
     
 def get_cur_semester():
-    import nice.settings
+    import settings.common as settings
     try:
         return Semester.objects.get(term_code = settings.CURR_TERM)
     except: # CURR_TERM is invalid or not specified
