@@ -7,6 +7,7 @@ $(function() {
                 var ret = [];
                 $.each(data, function(index){
                     ret.push({
+                        id: this.course_id,
                         value: this.course_listings,
                         label: this.course_listings,
                         desc: this.course_title,
@@ -25,7 +26,10 @@ $(function() {
             //});
         },
         select: function( event, ui ) {
-            var courseID = ui.item;
+            var courseID = ui.item.id;
+            CourseMan_enrollInCourseID(courseID);
+            $('#class').val('');
+            CL_selectID(courseID);
             return false;
         }
     }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {

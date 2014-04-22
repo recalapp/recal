@@ -10,6 +10,7 @@ CourseManager.prototype.allCourses = {};
 CourseManager.prototype.allSections = {};
 CourseManager.prototype.isIdle = true;
 CourseManager.prototype.queue = [];
+CourseManager.prototype.modified = false;
 
 var courseManager = null;
 var CourseMan_updateListeners = [];
@@ -67,6 +68,23 @@ function CourseMan_getEnrolledSectionIDs(courseID)
 function CourseMan_getSectionByID(id)
 {
     return courseManager.allSections[id];
+}
+
+function CourseMan_courseEnrolled(courseID)
+{
+    return courseID in courseManager.enrolledCourses();
+}
+
+function CourseMan_enrollInCourseID(courseID)
+{
+    if (CourseMan_courseEnrolled(courseID))
+        return;
+    var course = CourseMan_getCourseByID(courseID);
+    // enroll in All Students
+    var allStudentsID = course.sections.ALL[0];
+    courseManager.courseSectionsMap[courseID] = [allStudentsID];
+    courseManager.modified = true;
+    CourseMan_callUpdateListeners();
 }
 
 /***************************************************
