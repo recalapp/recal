@@ -1,7 +1,3 @@
-CAL_INIT = false;
-Cal_eventSource = {
-    events:[],
-}
 
 //eventSources: [{
 //    events: [{
@@ -16,57 +12,44 @@ Cal_eventSource = {
 function Cal_init() {
     if (CAL_INIT)
         return;
-    height = window.innerHeight - $(".navbar").height() - 50;
+    var height = window.innerHeight - $(".navbar").height() - 50;
 
     EventsMan_addUpdateListener(function(){
         Cal_reload();
     });
 
-    $("#calendarui").fullCalendar({
-        "defaultView": "agendaWeek",
-        "slotMinutes": 30,
-        "firstHour": 8,
-        "minTime": 8,
-        "maxTime": 23,
-        "height": height,
-        eventDurationEditable: false,
-        eventStartEditable: false,
-        eventBackgroundColor: "#74a2ca",
-        eventBorderColor: "#428bca",
-        allDayDefault: false,
-        eventSources: [Cal_eventSource],
-        ignoreTimezone: false,
-        eventClick: function(calEvent, jsEvent, view) {
-            if (calEvent.highlighted == true)
-            {
-                PopUp_giveFocusToID(calEvent.id);
-                return;
-            }
+    Cal_options.height = height;
+    Cal_options.eventClick = function(calEvent, jsEvent, view) {
+        if (calEvent.highlighted == true)
+        {
+            PopUp_giveFocusToID(calEvent.id);
+            return;
+        }
 
-            if (SHIFT_PRESSED)
-            {
-                Cal_highlightEvent(calEvent, true);
-                //UI_pin(calEvent.id);
-                var popUp = PopUp_insertPopUp(false);
-                PopUp_setToEventID(popUp, calEvent.id);
-                PopUp_giveFocus(popUp);
-                return;
-            }
-
-            $($("#calendarui").fullCalendar("clientEvents", function(calEvent) {
-                return !UI_isPinned(calEvent.id)
-            })).each( function(index) {
-                Cal_unhighlightEvent(this, false);
-            });
+        if (SHIFT_PRESSED)
+        {
             Cal_highlightEvent(calEvent, true);
-            //UI_setMain(calEvent.id);
-
-            var popUp = PopUp_getMainPopUp();
-
+            //UI_pin(calEvent.id);
+            var popUp = PopUp_insertPopUp(false);
             PopUp_setToEventID(popUp, calEvent.id);
             PopUp_giveFocus(popUp);
+            return;
         }
-    });
+
+        $($("#calendarui").fullCalendar("clientEvents", function(calEvent) {
+            return !UI_isPinned(calEvent.id)
+        })).each( function(index) {
+            Cal_unhighlightEvent(this, false);
+        });
+        Cal_highlightEvent(calEvent, true);
+
+        var popUp = PopUp_getMainPopUp();
+
+        PopUp_setToEventID(popUp, calEvent.id);
+        PopUp_giveFocus(popUp);
+    }
+
+    $("#calendarui").fullCalendar(Cal_options);
     CAL_INIT = true;
     $(".tab-pane").each(function(index){
         if (this.id == "calendar")

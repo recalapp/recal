@@ -4,29 +4,40 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block main_content %}
+{% include 'main/sidebar.html' %}
 <div class="container">
-<h1>Edit Your Profile, {{ formatted_name }}</h1>
-<h2>Sign up for at least one class below.</h2>
-<h3>Then <a href="{% url 'nice.views.edit_sections' %}">choose sections</a> or <a href="{% url 'nice.views.index' %}">proceed to dashboard</a>.</h2>
-
-  
-<div class="ui-widget"><div id="class-label">Select a class (start typing):</div>
-<input id="class">
-<input type="hidden" id="class-id">
-<p id="class-description"></p></div>
- 
-
-<div class="row">
-    <h3>Edit Profile and Select Coursessss</h3>
-<!-- TODO BRING FORM BACK -->
-</div>
-
+    <div class="row">
+        <div class="col-xs-6">
+            <h2>Preview:</h2>
+            <div id="calendarui"></div>
+        </div>
+        <div class="col-xs-3" >
+            <h2>Enrolled:</h2>
+            <div class="row" id="course-list">
+                <h4>Loading your courses...</h4>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div id="search" class="row">
+        <div class="col-xs-7 col-xs-offset-1">
+            <input id="class" class="form-control" placeholder="e.g. 'COS', 'PHY 105', 'LA', 'Introduction to Metaphysics'">
+            <input type="hidden" id="class-id">
+            <p id="class-description"></p>
+        </div>
+    </div>
 </div> <!-- /#container -->
+<div id="content_bounds"></div>
 {% endblock %}
 
 {% block link_or_script_blocking %}
 <link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}"> 
+<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
+<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/popup.css' %}">
 
 
 <style>
@@ -49,9 +60,9 @@
   /* IE 6 doesn't support max-height
    * we use height instead, but this forces the menu to always be this tall
    */
-  * html .ui-autocomplete {
+  /** html .ui-autocomplete {
     height: 100px;
-  }
+  }*/
   
   </style>
 
@@ -61,51 +72,28 @@
 <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'bower_components/jqueryui/ui/minified/jquery-ui.min.js' %}"></script>
+<script src="{% static 'bower_components/fullcalendar/fullcalendar.min.js' %}"></script>
+<script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
+<script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
 
-<script>
+<script src="{% static 'js/set.js' %}"></script>
+<script src="{% static 'js/profile/keymap.js' %}"></script>
+<script src="{% static 'js/profile/profile_auto.js' %}"></script>
 
-$(function() {
-    var cache = {};
-    $( "#class" ).autocomplete({
-      minLength: 3,
-      source: function( request, response ) {
-        var term = request.term;
-        if ( term in cache ) {
-          response( cache[ term ] );
-          return;
-        }
- 
-        $.getJSON( "/api/classlist", request, function( data, status, xhr ) {
-          cache[ term ] = data;
-          response( data );
-          /* data should be like 
-          [{
-        value: "jquery",
-        label: "jQuery",
-        desc: "the write less, do more, JavaScript library"
-      },] */
-        });
-      },
-      focus: function( event, ui ) {
-        $( "#class" ).val( ui.item.label );
-        return false;
-      },
-      select: function( event, ui ) {
-        // TODO: add class checkbox
-        $( "#class" ).val( ui.item.label );
-        $( "#class-id" ).val( ui.item.value );
-        $( "#class-description" ).html( ui.item.desc );
-        return false;
-    }}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-      return $( "<li>" )
-        .append( "<a>" + item.label + "<br>" + item.desc + "</a>" )
-        .appendTo( ul );
-    };
-  });
-  
-  
-</script>
+<script src="{% static 'js/calendar-base.js' %}"></script>
+<script src="{% static 'js/profile/calendar.js' %}"></script>
 
+<script src="{% static 'js/sidebar-base.js' %}"></script>
 
+<script src="{% static 'js/profile/course_manager.js' %}"></script>
 
+<script src="{% static 'js/profile/course_list.js' %}"></script>
+
+<script src="{% static 'js/cache_manager.js' %}"></script>
+
+<script src="{% static 'js/popup-base.js' %}"></script>
+<script src="{% static 'js/profile/popup.js' %}"></script>
+
+<script src="{% static 'js/main-base.js' %}"></script>
+<script src="{% static 'js/profile/main.js' %}"></script>
 {% endblock %}

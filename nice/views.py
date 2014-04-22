@@ -41,6 +41,8 @@ def logout(request):
 # loading templates
 def popup(request):
     return render(request, 'main/popup.html', None)
+def popup_course(request):
+    return render(request, 'main/popup-course.html', None)
 def agenda(request):
     return render(request, 'main/agenda.html', None)
 def agenda_header(request):
@@ -55,6 +57,8 @@ def event_picker(request):
     return render(request, 'main/event-picker.html', None)
 def event_picker_item(request):
     return render(request, 'main/event-picker-item.html', None)
+def course(request):
+    return render(request, 'main/course.html', None);
 
 @login_required
 def edit_profile(request):
@@ -236,6 +240,15 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
         last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
+
+def sections_json(request):
+    netid = request.user.username
+    ret = queries.get_sections(netid)
+    return HttpResponse(json.dumps(ret), content_type='application/javascript')
+
+def course_json(request, course_id):
+    ret = queries.get_course_by_id(course_id)
+    return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
 @login_required
 @require_POST
