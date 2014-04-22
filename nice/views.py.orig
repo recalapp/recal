@@ -110,25 +110,6 @@ def edit_profile_autocomplete(request):
     This is an autocomplete for course selection demo.
     '''
     return render(request, "main/edit-profile-autocomplete.html", {'formatted_name': unicode(request.user.profile)})
-
-@login_required
-def enroll_sections(request):
-    user = request.user.profile
-    prev_enrollment = User_Section_Table.objects.filter(user=user)
-    prev_enrolled_sections = [enrollment.section for enrollment in prev_enrollment]
-    sections_data = json.loads(request.POST['sections'])
-    for course_id in sections_data:
-        for section_id in sections_data[course_id]:
-            section = Section.objects.get(id=section_id)
-            if section in prev_enrolled_sections:
-                prev_enrollment = [enrollment for enrollment in prev_enrollment if enrollment.section != section]
-            else:
-                enrollment = User_Section_Table(user=user, section=section, add_date=get_current_utc())
-                enrollment.save()
-    for enrollment in prev_enrollment:
-        enrollment.delete()
-    return HttpResponse('')
-
     
 @login_required
 def get_classes(request):
@@ -175,8 +156,12 @@ def get_classes(request):
         courses = filtered[:20] # top 20 results
         results = []
         for c in courses:
+<<<<<<< HEAD
             results.append(queries.construct_course_dict(c))
             #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
+=======
+            results.append({'id': c.pk, 'value': c.pk, 'label': c.title, 'desc': c.description}) # the format jQuery UI autocomplete likes
+>>>>>>> master
         data = json.dumps(results) 
         status = 200 # OK
     else:

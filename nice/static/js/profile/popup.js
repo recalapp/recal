@@ -23,6 +23,17 @@ function PopUp_init()
     });
 }
 
+function PopUp_initialize(popUp)
+{
+    $(popUp).find('#delete_button').on('click', function(ev){
+        ev.preventDefault();
+        var id = PopUp_getID(popUp)
+        PopUp_callCloseListeners(id)
+        PopUp_close(popUp)
+        CourseMan_unenrollCourseID(id);
+    });
+}
+
 function PopUp_setToCourseID(popUp, courseID)
 {
     PopUp_setID(popUp, courseID);

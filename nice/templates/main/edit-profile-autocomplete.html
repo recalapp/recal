@@ -52,10 +52,11 @@
   }
   
   .ui-autocomplete {
-    max-height: 100px;
+    max-height: 150px;
     overflow-y: auto;
     /* prevent horizontal scrollbar */
     overflow-x: hidden;
+    width: 58.333333333%;
   }
   /* IE 6 doesn't support max-height
    * we use height instead, but this forces the menu to always be this tall
@@ -75,6 +76,7 @@
 <script src="{% static 'bower_components/fullcalendar/fullcalendar.min.js' %}"></script>
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
 <script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
+<script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 
 <script src="{% static 'js/set.js' %}"></script>
 <script src="{% static 'js/profile/keymap.js' %}"></script>

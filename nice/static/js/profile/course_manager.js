@@ -10,6 +10,7 @@ CourseManager.prototype.allCourses = {};
 CourseManager.prototype.allSections = {};
 CourseManager.prototype.isIdle = true;
 CourseManager.prototype.queue = [];
+CourseManager.prototype.modified = false;
 
 var courseManager = null;
 var CourseMan_updateListeners = [];
@@ -20,6 +21,12 @@ function CourseMan_init()
     CourseMan_pullEnrolledCourseIDs(function(){
         CourseMan_cacheEnrolledCourses();
     }); 
+    setInterval(function(){
+        CourseMan_pushChanges(true);
+    }, 10 * 1000); 
+    $(window).on('beforeunload', function(){
+        CourseMan_pushChanges(false);
+    });
 }
 
 /**************************************************
@@ -36,6 +43,9 @@ function CourseMan_init()
  *  course_description:
  *  course_professor:
  *  course_listings:
+ *  sections: {
+ *      section_type: [section_id]
+ *  }
  * }
  */
 function CourseMan_getCourseByID(id)
@@ -64,6 +74,31 @@ function CourseMan_getEnrolledSectionIDs(courseID)
 function CourseMan_getSectionByID(id)
 {
     return courseManager.allSections[id];
+}
+
+function CourseMan_courseEnrolled(courseID)
+{
+    return courseID in courseManager.courseSectionsMap;
+}
+
+function CourseMan_enrollInCourseID(courseID)
+{
+    if (CourseMan_courseEnrolled(courseID))
+        return;
+    var course = CourseMan_getCourseByID(courseID);
+    // enroll in All Students
+    var allStudentsID = course.sections.ALL[0];
+    courseManager.courseSectionsMap[courseID] = [allStudentsID];
+    courseManager.modified = true;
+    CourseMan_callUpdateListeners();
+}
+function CourseMan_unenrollCourseID(courseID)
+{
+    if (!CourseMan_courseEnrolled(courseID))
+        return;
+    delete courseManager.courseSectionsMap[courseID];
+    courseManager.modified = true;
+    CourseMan_callUpdateListeners();
 }
 
 /***************************************************
@@ -106,14 +141,39 @@ function CourseMan_pullCourseByID(courseID, async)
         dataType: 'json',
         async: async,
         success: function(data){
-            for (var i in data.sections)
-            {
-                var section = data.sections[i];
-                courseManager.allSections[section.section_id] = section;
-            }
-            delete data.sections;
-            courseManager.allCourses[data.course_id] = data;
+            CourseMan_saveCourseDict(data);
             CourseMan_callUpdateListeners();
+        }
+    });
+}
+
+function CourseMan_pushChanges(async)
+{
+    if (!courseManager.modified)
+        return;
+    if (!courseManager.isIdle)
+    {
+        courseManager.queue.push({
+            call: CourseMan_pushChanges,
+            arg1: async,
+        });
+        return;
+    }
+    courseManager.isIdle = false;
+    $.ajax('/put/sections', {
+        async: async,
+        type: 'POST',
+        data: {
+            sections: JSON.stringify(courseManager.courseSectionsMap),
+        },
+        success: function(data){
+            courseManager.isIdle = true;
+            courseManager.modified = false;
+            CourseMan_handleQueue();
+        },
+        error: function(data){
+            courseManager.isIdle = true;
+            CourseMan_handleQueue();
         }
     });
 }
@@ -134,6 +194,32 @@ function CourseMan_handleQueue()
         var queued = courseManager.queue.shift();
         queued.call(queued.arg1);
     }
+}
+
+function CourseMan_pullAutoComplete(request, complete)
+{
+    $.getJSON('/api/classlist', request, function(data, status, xhr){
+        // process data
+        $.each(data, function(index){
+            CourseMan_saveCourseDict(this);
+        });
+        if (complete)
+            complete(data);
+    });
+}
+
+function CourseMan_saveCourseDict(courseDict)
+{
+    for (var type in courseDict.sections)
+    {
+        for (var i in courseDict.sections[type])
+        {
+            var section = courseDict.sections[type][i];
+            courseManager.allSections[section.section_id] = section;
+            courseDict.sections[type][i] = section.section_id;
+        }
+    }
+    courseManager.allCourses[courseDict.course_id] = courseDict;
 }
 
 /***************************************************

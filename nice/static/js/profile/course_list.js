@@ -28,6 +28,8 @@ function CL_reload()
             ev.preventDefault();
             CL_clickCourse(this);
         });
+        if (UI_isMain(this) || UI_isPinned(this))
+            CL_highlight($courseItem.find('.panel'));
     });
 }
 
@@ -54,6 +56,12 @@ function CL_clickCourse(anchor)
     var popUp = PopUp_getMainPopUp();
     PopUp_setToCourseID(popUp, coursePanel.id);
     PopUp_giveFocus(popUp);
+}
+
+function CL_selectID(courseID)
+{
+    var coursePanel = $('#'+courseID+'.panel.course-item').parent()[0];
+    CL_clickCourse(coursePanel);
 }
 
 /***************************************************
