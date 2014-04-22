@@ -70,11 +70,15 @@ class Course_Listing(models.Model):
 
 class Section(models.Model):
     TYPE_ALL = "ALL"
+    TYPE_CLA = "CLASS"
+    TYPE_DRI = "DRILL"
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
     TYPE_CHOICES = (
         (TYPE_ALL, "all students"),
+        (TYPE_CLA, "class"),
+        (TYPE_DRI, "drill"),
         (TYPE_LAB, "lab"),
         (TYPE_LECTURE, "lecture"),
         (TYPE_PRECEPT, "precept"),
@@ -98,7 +102,7 @@ class Section(models.Model):
 def make_default_table(sender, instance, created, **kwargs):  
     # see http://stackoverflow.com/a/965883/130164
     if created:  
-       profile, created = Section.objects.get_or_create(course=instance, name='All Students', isDefault=True)  
+       profile, created = Section.objects.get_or_create(course=instance, name='All Students', isDefault=True, section_type="ALL")  
 
 # this call creates the "All Students" section
 post_save.connect(make_default_table, sender=Course)
