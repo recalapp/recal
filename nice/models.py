@@ -70,11 +70,15 @@ class Course_Listing(models.Model):
 
 class Section(models.Model):
     TYPE_ALL = "ALL"
+    TYPE_CLA = "CLASS"
+    TYPE_DRI = "DRILL"
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
     TYPE_CHOICES = (
         (TYPE_ALL, "all students"),
+        (TYPE_CLA, "class"),
+        (TYPE_DRI, "drill"),
         (TYPE_LAB, "lab"),
         (TYPE_LECTURE, "lecture"),
         (TYPE_PRECEPT, "precept"),
@@ -98,7 +102,7 @@ class Section(models.Model):
 def make_default_table(sender, instance, created, **kwargs):  
     # see http://stackoverflow.com/a/965883/130164
     if created:  
-       profile, created = Section.objects.get_or_create(course=instance, name='All Students', isDefault=True)  
+       profile, created = Section.objects.get_or_create(course=instance, name='All Students', isDefault=True, section_type="ALL")  
 
 # this call creates the "All Students" section
 post_save.connect(make_default_table, sender=Course)
@@ -122,6 +126,7 @@ class Event_Group(models.Model):
         return 'Event group %d: no approved revision' % (self.id) +  ' in ' + unicode(self.section)
 
     def best_revision(self):
+        # TODO(Maxim): show different revisions for different users?
         if self.event_group_revision_set.all():
             return self.event_group_revision_set.filter(approved=True).latest('modified_time')
         return None;
@@ -132,7 +137,7 @@ class Event_Group_Revision(models.Model):
 
     # main fields
     start_date = models.DateField()
-    end_date = models.DateField()
+    end_date = models.DateField() # stores end date of recurring series
     modified_user = models.ForeignKey('User_Profile')
     modified_time = models.DateTimeField()
     approved = models.BooleanField(default=True) # TODO: change default value	
@@ -214,7 +219,34 @@ class Event_Revision(models.Model):
     approved = models.BooleanField(default=True) # TODO: change default value	
     
     def __unicode__(self):
-        return self.event_title
+        return self.event_title # TODO: improve the way that revisions appear in admin panel by changing this.
+
+    # Compare to another revision. (Based on https://djangosnippets.org/snippets/2281/)
+    def compare(self, obj):
+        excluded_keys = ['event', 'modified_user', 'modified_time', 'approved', 'event_start', 'event_end']
+        return self._compare(self, obj, excluded_keys)
+
+    def _compare(self, obj1, obj2, excluded_keys):
+        d1, d2 = obj1.__dict__, obj2.__dict__
+        old, new = {}, {}
+        for k,v in d1.items():
+            if k in excluded_keys:
+                continue
+            try:
+                if v != d2[k]:
+                    old.update({k: v})
+                    new.update({k: d2[k]})
+            except KeyError:
+                old.update({k: v})
+        
+        return old, new  
+
+    def apply_changes(self, new_values):
+        """Accepts the new dict from compare()'s output, and then applies changes to this object. Don't forget to save!
+
+        """
+        for attr, value in new_values.iteritems(): # http://stackoverflow.com/a/7535133/130164
+            setattr(self, attr, value)
 
 # Extend django.contrib.auth User table with custom user profile information.
 
@@ -273,6 +305,7 @@ def seed_db_with_data():
     '''
     Inserts some test data: a semester, a course, and an extra section.
     '''
+    # TODO(Maxim): prune stale code
     # scrape.scrape_all()
     # sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1), term_code='1144')
     # sem.save()
@@ -299,3 +332,36 @@ def clear_all_data():
     Course.objects.all().delete()
     Semester.objects.all().delete()
     
+def get_cur_semester():
+    import settings.common as settings
+    try:
+        return Semester.objects.get(term_code = settings.CURR_TERM)
+    except: # CURR_TERM is invalid or not specified
+        return Semester.objects.order_by('-term_code')[0] # order by descending term code to get the latest semester.
+
+
+def get_recurrence_dates(start_date, end_date, recurrence_end, recurrence_pattern, r_int):
+    """
+    Computes dates when this event recurrs in this interval.
+
+    This doesn't change time of day, just adds days per recurrence_pattern and recurrence_interval.
+    Arguments:
+        * start_date
+        * recurrence_pattern : a list of integer that correspond to day of the week. 0 is Monday, 6 is Sunday (per datetime convention in Python)
+        * reccurence_interval : how many weeks apart the events are. That is, this answer the question: do the events recurr every week, every other week, or once every three weeks?
+    """
+    from datetime import timedelta
+    week_start = start_date - timedelta(days=start_date.weekday()) # get date of day 0 (Monday) of week that includes start_date 
+    event_span = end_date - start_date
+    event_dates = []
+    while week_start.date() <= recurrence_end:
+        for day_of_week in recurrence_pattern:
+            new_date = week_start + timedelta(days=day_of_week)
+            if start_date.date() <= new_date.date() <= recurrence_end:
+                event_dates.append((new_date, new_date + event_span)) # start datetime and end datetime of this event
+        
+        week_start = week_start + timedelta(days=(r_int*7)) # move to next week to consider (or jump multiple weeks)
+    
+    return event_dates
+    
+        

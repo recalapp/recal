@@ -9,12 +9,15 @@ Procedure:
 """
 
 from nice.models import *
+from nice.queries import *
 from lxml import etree
+import HTMLParser
 import string
 import sys
 import urllib2
 from bs4 import BeautifulSoup
 import re
+from datetime import datetime
 
 TERM_CODE = 1144  # spring 2014
 COURSE_OFFERINGS = "http://registrar.princeton.edu/course-offerings/"
@@ -26,8 +29,13 @@ PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
 CURRENT_SEMESTER = ''
 community_user = get_community_user()
 
+DAYS = {'M': 1, 'T': 2, 'W': 3, 'Th': 4, 'F': 5}
+
+new_course_count = 0
 course_count = 0
+new_section_count = 0
 section_count = 0
+new_event_count = 0
 
 def get_current_semester():
     global CURRENT_SEMESTER
@@ -68,8 +76,11 @@ def scrape_all():
     for department in departments:
         scrape(department)
     
-    print str(course_count) + " new courses"
-    print str(section_count) + " new sections"
+    print str(new_course_count) + " new courses"
+    print str(course_count) + " total courses"
+    print str(new_section_count) + " new sections"
+    print str(section_count) + " total sections"
+    print str(new_event_count) + " new events"
 
 # goes through the listings for this department
 def scrape(department):
@@ -93,11 +104,14 @@ def scrape(department):
 def parse_course(course, subject):
     """ create a course with the basic information. """
 
+    global new_course_count
     global course_count
-    title = course.find('title').text
+    h = HTMLParser.HTMLParser()
+    title = h.unescape(course.find('title').text)
     description = course.find('detail').find('description').text
     if not description:
         description = ''
+    description = h.unescape(description)
         
     guid = course.find('guid').text
 
@@ -107,18 +121,18 @@ def parse_course(course, subject):
         semester = get_current_semester(),
     )
 
+    course_object.title = title
+    course_object.description = description
+    course_object.professor = ''
+    course_object.save()
+
     if created:
-        course_object.semester = get_current_semester()
-        course_object.title = title
-        course_object.description = description
-        course_object.professor = ''
-        course_object.save()
-        course_count += 1 # for debugging
+        new_course_count += 1 # for debugging
+    course_count += 1
 
     # handle course listings
     create_or_update_listings(course, subject, course_object)
-
-    # add sections
+    # add sections and events
     create_or_update_sections(course, course_object)
 
 def create_or_update_listings(course, subject, course_object):
@@ -138,20 +152,103 @@ def create_or_update_listings(course, subject, course_object):
         )
         
 def create_or_update_sections(course, course_object):
+    global new_section_count
     global section_count
     # add sections
     classes = course.find('classes')
     for section in classes:
         section_name = section.find('section').text
         section_type = section.find('type_name').text
-        section, created = Section.objects.get_or_create(
+        section_object, created = Section.objects.get_or_create(
             course = course_object,
             name = section_name,
             section_type = section_type[0:3].upper()
         )
         if created:
-            # create new events here
-            section_count += 1
+            new_section_count += 1
+        section_count += 1
+
+        # add events
+        create_or_update_events(section, section_object)
+
+# section is the class Node in the xml tree, 
+# section_object is a section django object
+def create_or_update_events(section, section_object):
+    global new_event_count
+
+    # check if this section has a schedule attached to it
+    try:
+        schedule = section.find('schedule')
+        meetings = schedule.find('meetings')
+    except:
+        print 'no schedule or meetings for ' + str(section_object.course)
+        return
+
+    # now we check if there is already an event for this section
+    # TODO: try to prevent creating duplicate events
+
+    section_type = section.find('type_name').text
+
+    # the dates are in the format:
+    # YYYY-MM-DD
+    str_start_date = schedule.find('start_date').text
+    str_end_date = schedule.find('end_date').text
+    end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
+
+    for meeting in meetings:
+        # the times are in the format:
+        # HH:MM AM/PM
+        str_end_time = meeting.find('end_time').text
+        str_end_date_time = str_start_date + str_end_time
+        end_date_time = datetime.strptime(str_end_date_time, '%Y-%m-%d%I:%M %p')
+
+        str_start_time = meeting.find('start_time').text
+        str_start_date_time = str_start_date + str_start_time
+        start_date_time = datetime.strptime(str_start_date_time, '%Y-%m-%d%I:%M %p')
+
+        try:
+            location = meeting.find('building').find('name').text + meeting.find('room').text
+        except:
+            location = ''
+
+        # create event_group
+        days = []
+        for day in meeting.find('days'):
+            days.append(DAYS[day.text])
+
+        event_type = section_object.section_type[0:2]
+        type_is_valid = False
+        for choice in Event_Revision.TYPE_CHOICES:
+            if event_type == choice[0]:
+                type_is_valid = True
+                break
+
+        if not type_is_valid:
+            event_type = 'LE'
+
+        # we need start_date_time, end_time, end_date
+        # start_date_time is start_date and start_time
+        # create event_group_revision
+        modify_events(community_user.username, [{
+            'event_start': start_date_time,
+            'event_end' : end_date_time,
+            'event_title': str(section_object.course),
+            'event_description': '',
+            # TODO: figure out how to pass the real type
+            'event_type': 'LE',
+            # -1 for new event
+            'event_id': -1,
+            'event_location': location,
+            'section_id': section_object.pk,
+            'recurring': True,
+            'recurrence_days' : days,
+            # we assume the class is weekly
+            'recurrence_interval': 1,
+            'recurrence_end': end_date,
+        }])
+        
+        # create event
+        new_event_count += 1
 
 def remove_namespace(doc, namespace):
     """Hack to remove namespace in the document in place."""
