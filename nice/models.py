@@ -350,10 +350,10 @@ def get_recurrence_dates(start_date, end_date, recurrence_end, recurrence_patter
     week_start = start_date - timedelta(days=start_date.weekday()) # get date of day 0 (Monday) of week that includes start_date 
     event_span = end_date - start_date
     event_dates = []
-    while week_start <= recurrence_end:
+    while week_start.date() <= recurrence_end:
         for day_of_week in recurrence_pattern:
             new_date = week_start + timedelta(days=day_of_week)
-            if start_date <= new_date <= recurrence_end:
+            if start_date.date() <= new_date.date() <= recurrence_end:
                 event_dates.append((new_date, new_date + event_span)) # start datetime and end datetime of this event
         
         week_start = week_start + timedelta(days=(r_int*7)) # move to next week to consider (or jump multiple weeks)
