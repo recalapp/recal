@@ -329,9 +329,9 @@ def parse_json_event_dict(jsdict):
         event_dict['recurrence_days'] = [int(i) for i in event_dict['recurrence_days']]
         event_dict['recurrence_end'] = make_time_aware(event_dict['recurrence_end'])
     else:
-        event_dict['recurrence_days'] = []
-        event_dict['recurrence_interval'] = 0
-        event_dict['recurrence_end'] = make_time_aware(datetime.datetime(datetime.MAXYEAR, 1, 1, 0, 0, 0)) # almost maximum datetime (we will default to semester end in the processing code)
+        event_dict['recurrence_days'] = None
+        event_dict['recurrence_interval'] = None
+        event_dict['recurrence_end'] = None
     return event_dict
     
 
