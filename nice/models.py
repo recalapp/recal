@@ -133,7 +133,7 @@ class Event_Group_Revision(models.Model):
 
     # main fields
     start_date = models.DateField()
-    end_date = models.DateField()
+    end_date = models.DateField() # stores end date of recurring series
     modified_user = models.ForeignKey('User_Profile')
     modified_time = models.DateTimeField()
     approved = models.BooleanField(default=True) # TODO: change default value	
