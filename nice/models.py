@@ -102,7 +102,7 @@ class Section(models.Model):
 def make_default_table(sender, instance, created, **kwargs):  
     # see http://stackoverflow.com/a/965883/130164
     if created:  
-       profile, created = Section.objects.get_or_create(course=instance, name='All Students', isDefault=True)  
+       profile, created = Section.objects.get_or_create(course=instance, name='All Students', isDefault=True, section_type="ALL")  
 
 # this call creates the "All Students" section
 post_save.connect(make_default_table, sender=Course)
