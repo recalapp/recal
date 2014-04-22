@@ -336,23 +336,25 @@ def get_cur_semester():
         return Semester.objects.order_by('-term_code')[0] # order by descending term code to get the latest semester.
 
 
-def get_recurrence_dates(start_date, end_date, recurrence_pattern, r_int):
+def get_recurrence_dates(start_date, end_date, recurrence_end, recurrence_pattern, r_int):
     """
     Computes dates when this event recurrs in this interval.
 
     This doesn't change time of day, just adds days per recurrence_pattern and recurrence_interval.
     Arguments:
+        * start_date
         * recurrence_pattern : a list of integer that correspond to day of the week. 0 is Monday, 6 is Sunday (per datetime convention in Python)
         * reccurence_interval : how many weeks apart the events are. That is, this answer the question: do the events recurr every week, every other week, or once every three weeks?
     """
     from datetime import timedelta
     week_start = start_date - timedelta(days=start_date.weekday()) # get date of day 0 (Monday) of week that includes start_date 
+    event_span = end_date - start_date
     event_dates = []
-    while week_start <= end_date:
+    while week_start <= recurrence_end:
         for day_of_week in recurrence_pattern:
             new_date = week_start + timedelta(days=day_of_week)
-            if start_date <= new_date <= end_date:
-                event_dates.append(new_date)
+            if start_date <= new_date <= recurrence_end:
+                event_dates.append((new_date, new_date + event_span)) # start datetime and end datetime of this event
         
         week_start = week_start + timedelta(days=(r_int*7)) # move to next week to consider (or jump multiple weeks)
     
