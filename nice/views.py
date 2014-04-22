@@ -156,7 +156,7 @@ def get_classes(request):
         courses = filtered[:20] # top 20 results
         results = []
         for c in courses:
-            results.append({'id': c.id, 'value': c.id, 'label': c.title, 'desc': c.description}) # the format jQuery UI autocomplete likes
+            results.append({'id': c.pk, 'value': c.pk, 'label': c.title, 'desc': c.description}) # the format jQuery UI autocomplete likes
         data = json.dumps(results) 
         status = 200 # OK
     else:
@@ -261,6 +261,7 @@ def modify_events(request):
             events = json.loads(request.POST['events'])
             ret = queries.modify_events(netid, events)
         except Exception, e:
+            print 'Modifying events error: ', e
             return HttpResponse(status=500) # 500 Internal Server Error
         
     if 'hide' in request.POST:

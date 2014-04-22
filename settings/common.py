@@ -28,11 +28,6 @@ SITE_NAME = basename(DJANGO_ROOT)
 path.append(DJANGO_ROOT)
 ########## END PATH CONFIGURATION
 
-########## GLOBAL VARIABLE CONFIGURATION
-TERM_CODE = 1144
-########## END GLOBAL VARIABLE CONFIGURATION
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -68,26 +63,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'nice.urls'
 
 WSGI_APPLICATION = 'nice.wsgi.application'
-
-########## DATABASE CONFIGURATION
-
-DATABASES = {
-}
-
-DATABASES['default'] =  dj_database_url.config()
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.',
-#        'NAME': '',
-#        'USER': '',
-#        'PASSWORD': '',
-#        'HOST': '',
-#        'PORT': '',
-#    }
-#}
-########## END DATABASE CONFIGURATION
 
 ########## START AUTHENTICATION CONFIGURATION
 
@@ -138,3 +113,6 @@ STATICFILES_DIRS = (
 )
 
 TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'nice', 'templates'))]
+
+########## GLOBAL VARIABLES
+CURR_TERM = 1144 # Use helper method nice.models.get_cur_semester() to get current Semester object.
