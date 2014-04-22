@@ -110,6 +110,25 @@ def edit_profile_autocomplete(request):
     This is an autocomplete for course selection demo.
     '''
     return render(request, "main/edit-profile-autocomplete.html", {'formatted_name': unicode(request.user.profile)})
+
+@login_required
+def enroll_sections(request):
+    user = request.user.profile
+    prev_enrollment = User_Section_Table.objects.filter(user=user)
+    prev_enrolled_sections = [enrollment.section for enrollment in prev_enrollment]
+    sections_data = json.loads(request.POST['sections'])
+    for course_id in sections_data:
+        for section_id in sections_data[course_id]:
+            section = Section.objects.get(id=section_id)
+            if section in prev_enrolled_sections:
+                prev_enrollment = [enrollment for enrollment in prev_enrollment if enrollment.section != section]
+            else:
+                enrollment = User_Section_Table(user=user, section=section, add_date=get_current_utc())
+                enrollment.save()
+    for enrollment in prev_enrollment:
+        enrollment.delete()
+    return HttpResponse('')
+
     
 @login_required
 def get_classes(request):

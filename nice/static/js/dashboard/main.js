@@ -1,7 +1,6 @@
 $(init)
 var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
-var csrftoken = $.cookie('csrftoken');
 
 function init()
 {

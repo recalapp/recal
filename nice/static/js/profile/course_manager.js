@@ -21,6 +21,12 @@ function CourseMan_init()
     CourseMan_pullEnrolledCourseIDs(function(){
         CourseMan_cacheEnrolledCourses();
     }); 
+    setInterval(function(){
+        CourseMan_pushChanges(true);
+    }, 10 * 1000); 
+    $(window).on('beforeunload', function(){
+        CourseMan_pushChanges(false);
+    });
 }
 
 /**************************************************
@@ -72,7 +78,7 @@ function CourseMan_getSectionByID(id)
 
 function CourseMan_courseEnrolled(courseID)
 {
-    return courseID in courseManager.enrolledCourses();
+    return courseID in courseManager.courseSectionsMap;
 }
 
 function CourseMan_enrollInCourseID(courseID)
@@ -83,6 +89,14 @@ function CourseMan_enrollInCourseID(courseID)
     // enroll in All Students
     var allStudentsID = course.sections.ALL[0];
     courseManager.courseSectionsMap[courseID] = [allStudentsID];
+    courseManager.modified = true;
+    CourseMan_callUpdateListeners();
+}
+function CourseMan_unenrollCourseID(courseID)
+{
+    if (!CourseMan_courseEnrolled(courseID))
+        return;
+    delete courseManager.courseSectionsMap[courseID];
     courseManager.modified = true;
     CourseMan_callUpdateListeners();
 }
@@ -129,6 +143,37 @@ function CourseMan_pullCourseByID(courseID, async)
         success: function(data){
             CourseMan_saveCourseDict(data);
             CourseMan_callUpdateListeners();
+        }
+    });
+}
+
+function CourseMan_pushChanges(async)
+{
+    if (!courseManager.modified)
+        return;
+    if (!courseManager.isIdle)
+    {
+        courseManager.queue.push({
+            call: CourseMan_pushChanges,
+            arg1: async,
+        });
+        return;
+    }
+    courseManager.isIdle = false;
+    $.ajax('/put/sections', {
+        async: async,
+        type: 'POST',
+        data: {
+            sections: JSON.stringify(courseManager.courseSectionsMap),
+        },
+        success: function(data){
+            courseManager.isIdle = true;
+            courseManager.modified = false;
+            CourseMan_handleQueue();
+        },
+        error: function(data){
+            courseManager.isIdle = true;
+            CourseMan_handleQueue();
         }
     });
 }
