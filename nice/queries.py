@@ -74,7 +74,7 @@ def modify_events(netid, events):
             # Set recurrence properties if they are available.
             new_event_group_rev.recurrence_days = json.dumps(event_dict['recurrence_days'])
             new_event_group_rev.recurrence_interval = event_dict['recurrence_interval']
-            new_event_group_rev.end_date = min(event_dict['recurrence_end'], get_cur_semester().end_date) # note that recurrence_end is already a datetime.date
+            new_event_group_rev.end_date = min(event_dict['recurrence_end'].date(), cur_semester().end_date)
         else:
             # If not, set them to their default values of None.
             new_event_group_rev.recurrence_days = None
@@ -156,9 +156,9 @@ def modify_events(netid, events):
 
         ## Handle recurring events
         if event_dict['recurring'] is True:
-            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1), event_dict['event_end']+timedelta(days=1), new_event_group_rev.end_date, event_dict['recurrence_days'], event_dict['recurrence_interval']) # events in this group starting with next day
+            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1), event_dict['end_date']+timedelta(days=1), new_event_group_rev.end_date, event_dict['recurrence_days'], event_dict['recurrence_interval']) # events in this group starting with next day
         else:
-            event_dates = [(event_dict['event_start'], event_dict['event_end'])]
+            event_dates = [(event_dict['event_start'], event_dict['event_end')]
         def create_new_events(dates):
             for d_start, d_end in dates:
                 new_event = Event(group=event_group)
@@ -266,9 +266,9 @@ def construct_event_dict(event, netid=None):
     """
     
     rev = event.best_revision(netid=netid)
-    group = event.group
+    group = event.event_group
     group_rev = group.best_revision()
-    assert rev != None and group != None and group_rev != None
+    assert rev != None, group != None, group_rev != None
     return __construct_revision_dict(rev, group, group_rev)
     
     
@@ -290,10 +290,11 @@ def __construct_revision_dict(rev, group, group_rev):
         'modified_user': rev.modified_user.user.username,
         'modified_time': format(rev.modified_time, 'U'),
     }
-    if group_rev.recurrence_interval is not None:
+    if group_rev.recurrence_end is not None:
         results['recurrence_days'] = group_rev.recurrence_days
         results['recurrence_interval'] = group_rev.recurrence_interval
-        results['recurrence_end'] = group_rev.end_date
+        results['recurrence_end'] = format(group_rev.recurrence_end, 'U')
+
     return results
     
 def parse_json_event_dict(jsdict):
@@ -303,41 +304,30 @@ def parse_json_event_dict(jsdict):
     """
     
     # Parse JSON if necessary
-    if type(jsdict) is str:
+    if type(event_dict) == string:
         event_dict = json.loads(jsdict)
-    elif type(jsdict) is list:
-        event_dict = jsdict[0]
+    elif type(event_dict) == list:
+        event_dict = event_dict[0]
     else:
         event_dict = jsdict
     
     
     # Handle datetimes
     def make_time_aware(timestamp):
-        if type(timestamp) in [date, time, datetime]:
-            return timezone.make_aware(timestamp, timezone.get_default_timezone())
         return timezone.make_aware(datetime.fromtimestamp(float(timestamp)), timezone.get_default_timezone())
     event_dict['event_start'] = make_time_aware(event_dict['event_start'])
-    if 'event_end' in event_dict:
-        event_dict['event_end'] = make_time_aware(event_dict['event_end'])
-    if 'modified_time' in event_dict:
-        event_dict['modified_time'] = make_time_aware(event_dict['modified_time'])
+    event_dict['event_end'] = make_time_aware(event_dict['event_end'])
+    event_dict['modified_time'] = make_time_aware(event_dict['modified_time'])
     
     # Clean up recurrence info
     event_dict['recurring'] = False
     if 'recurrence_days' in event_dict and 'recurrence_interval' in event_dict and 'recurrence_end' in event_dict:
         event_dict['recurring'] = True
-        
         event_dict['recurrence_interval'] = int(event_dict['recurrence_interval'])
         if not 0 < event_dict['recurrence_interval'] < 12: # range for repetition interval
             raise Exception("Recurrence invalid")
-        
         event_dict['recurrence_days'] = [int(i) for i in event_dict['recurrence_days']]
-        
-        default_recurrence_end = get_cur_semester().end_date # default value
-        if 'recurrence_end' in event_dict and event_dict['recurrence_end'] is not None: # this field is optional
-            default_recurrence_end = min(default_recurrence_end, make_time_aware(event_dict['recurrence_end']))
-        event_dict['recurrence_end'] = default_recurrence_end
-
+        event_dict['recurrence_end'] = make_time_aware(event_dict['recurrence_end'])
     else:
         event_dict['recurrence_days'] = None
         event_dict['recurrence_interval'] = None
@@ -429,56 +419,4 @@ def get_similar_events(event_dict):
     revisions = __close_matches(event_dict['event_location'].lower(), revisions, lambda r: r.event_location.lower())
     
     return revisions # return what survived
-
-
-def get_sections(netid):
-    """
-    returns:
-    {
-        course_id:[
-            section_id
-        ]
-    }
-    """
-    user = User.objects.get(username=netid).profile
-    ret = {}
-    for section in user.sections.all():
-        sections_array = ret.setdefault(section.course.id, [])
-        sections_array.append(section.id)
-    return ret
-
-def get_course_by_id(course_id):
-    """
-    returns:
-    {
-        course_id:
-        course_title:
-        course_listings:
-        course_professor:
-        course_description:
-        sections: [
-            section_id:
-            section_name:
-        ]
-    }
-    """
-    try:
-        course = Course.objects.get(id=course_id)
-        return construct_course_dict(course)
-    except Exception, e:
-        return {}
-def construct_course_dict(course):
-    return {
-        'course_id': course.id,
-        'course_title': course.title,
-        'course_listings': course.course_listings(),
-        'course_professor': course.professor,
-        'course_description': course.description,
-        'sections': [construct_section_dict(section) for section in course.section_set.all()],
-    }
-
-def construct_section_dict(section):
-    return {
-        'section_id': section.id,
-        'section_name': section.name,
-    }
+    
