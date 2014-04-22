@@ -109,16 +109,7 @@ function CourseMan_pullCourseByID(courseID, async)
         dataType: 'json',
         async: async,
         success: function(data){
-            for (var type in data.sections)
-            {
-                for (var i in data.sections[type])
-                {
-                    var section = data.sections[type][i];
-                    courseManager.allSections[section.section_id] = section;
-                    data.sections[type][i] = section.section_id;
-                }
-            }
-            courseManager.allCourses[data.course_id] = data;
+            CourseMan_saveCourseDict(data);
             CourseMan_callUpdateListeners();
         }
     });
@@ -140,6 +131,32 @@ function CourseMan_handleQueue()
         var queued = courseManager.queue.shift();
         queued.call(queued.arg1);
     }
+}
+
+function CourseMan_pullAutoComplete(request, complete)
+{
+    $.getJSON('/api/classlist', request, function(data, status, xhr){
+        // process data
+        $.each(data, function(index){
+            CourseMan_saveCourseDict(this);
+        });
+        if (complete)
+            complete(data);
+    });
+}
+
+function CourseMan_saveCourseDict(courseDict)
+{
+    for (var type in courseDict.sections)
+    {
+        for (var i in courseDict.sections[type])
+        {
+            var section = courseDict.sections[type][i];
+            courseManager.allSections[section.section_id] = section;
+            courseDict.sections[type][i] = section.section_id;
+        }
+    }
+    courseManager.allCourses[courseDict.course_id] = courseDict;
 }
 
 /***************************************************

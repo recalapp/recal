@@ -156,7 +156,8 @@ def get_classes(request):
         courses = filtered[:20] # top 20 results
         results = []
         for c in courses:
-            results.append({'id': c.id, 'value': c.id, 'label': c.title, 'desc': c.description}) # the format jQuery UI autocomplete likes
+            results.append(queries.construct_course_dict(c))
+            #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
         data = json.dumps(results) 
         status = 200 # OK
     else:
