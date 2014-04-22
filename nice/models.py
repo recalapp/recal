@@ -120,6 +120,8 @@ class User_Section_Table(models.Model):
 class Event_Group(models.Model):
     # relationships
     section = models.ForeignKey(Section)
+    registrar_id = models.CharField(max_length=10, null=True, blank=True)
+
     def __unicode__(self):
         if self.best_revision():
             return 'Event group: ' +  self.best_revision().__unicode__() + ' in ' + self.section.__unicode__()
