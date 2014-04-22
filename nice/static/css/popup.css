@@ -50,7 +50,7 @@
     visibility: hidden; 
 }
 .unsaved{
-    background-color: #fffb99;
+    background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
 }
 .popover{
     z-index: 10000;
@@ -70,11 +70,11 @@
     color: #cb1c03;
 }
 
-.popup > .panel{
+/*.popup > .panel{
     border: 1px solid rgba(100, 100, 100, 0.15); 
     border-radius: 0px;
     box-shadow: 0px 3px 10px #ddd;
 }
 .popup > .panel > .panel-heading{
     border-radius: 0px;
-}
+}*/
