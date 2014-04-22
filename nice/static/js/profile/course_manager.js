@@ -36,6 +36,9 @@ function CourseMan_init()
  *  course_description:
  *  course_professor:
  *  course_listings:
+ *  sections: {
+ *      section_type: [section_id]
+ *  }
  * }
  */
 function CourseMan_getCourseByID(id)
@@ -106,12 +109,15 @@ function CourseMan_pullCourseByID(courseID, async)
         dataType: 'json',
         async: async,
         success: function(data){
-            for (var i in data.sections)
+            for (var type in data.sections)
             {
-                var section = data.sections[i];
-                courseManager.allSections[section.section_id] = section;
+                for (var i in data.sections[type])
+                {
+                    var section = data.sections[type][i];
+                    courseManager.allSections[section.section_id] = section;
+                    data.sections[type][i] = section.section_id;
+                }
             }
-            delete data.sections;
             courseManager.allCourses[data.course_id] = data;
             CourseMan_callUpdateListeners();
         }

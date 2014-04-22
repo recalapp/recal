@@ -296,10 +296,12 @@ def get_course_by_id(course_id):
         course_listings:
         course_professor:
         course_description:
-        sections: [
-            section_id:
-            section_name:
-        ]
+        sections: {
+            section_type:[
+                section_id:
+                section_name:
+            ]
+        }
     }
     """
     try:
@@ -308,13 +310,17 @@ def get_course_by_id(course_id):
     except Exception, e:
         return {}
 def construct_course_dict(course):
+    sections_group = {}
+    for section in course.section_set.all():
+        sections_array = sections_group.setdefault(section.section_type, [])
+        sections_array.append(construct_section_dict(section))
     return {
         'course_id': course.id,
         'course_title': course.title,
         'course_listings': course.course_listings(),
         'course_professor': course.professor,
         'course_description': course.description,
-        'sections': [construct_section_dict(section) for section in course.section_set.all()],
+        'sections': sections_group,
     }
 
 def construct_section_dict(section):
