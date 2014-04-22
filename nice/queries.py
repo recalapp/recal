@@ -33,6 +33,24 @@ def get_events(netid, **kwargs):
     return [construct_event_dict(event, netid=netid) for event in filtered if event.id not in hidden_events]
 
 def modify_events(netid, events):
+    """ 
+    Handles event creation and modification.
+
+    Properties of event_dicts -- what to pass to modify_events if calling manually:
+        * event_start
+        * event_end (for the first event)
+        * event_title
+        * event_description
+        * event_id (default: None)
+        * event_type 
+        * section_id
+        * recurrence_days
+        * recurrence_interval   
+        * recurrence_end (end date for the recurring series)
+
+    For example, you can call this with: modify_events(get_community_user().username, [{...}])
+
+    """
     try:
         user = User.objects.get(username=netid).profile
     except:
@@ -54,7 +72,7 @@ def modify_events(netid, events):
         if 'recurring' in event_dict and event_dict['recurring'] is True:
             new_event_group_rev.recurrence_days = event_dict['recurrence_days']
             new_event_group_rev.recurrence_interval = event_dict['recurrence_interval']
-            new_event_group_rev.end_date = min(new_event_group_rev.end_date, cur_semester().end_date)
+            new_event_group_rev.end_date = min(event_dict['recurrence_end'], cur_semester().end_date)
             
         isNewEvent = False
 
@@ -122,7 +140,7 @@ def modify_events(netid, events):
                 event_title = event_dict['event_title'],
                 event_type = event_dict['event_type'],
                 event_start = event_dict['event_start'],
-                event_end = event_dict['event_end'], # TODO: how do we differentiate between recurring series end date, and one event's end date?
+                event_end = event_dict['event_end'],
                 event_description = event_dict['event_description'],
                 event_location = event_dict['event_location'],
                 modified_user = user,
@@ -135,7 +153,7 @@ def modify_events(netid, events):
 
         ## Handle recurring events
         if event_dict['recurring'] is True:
-            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1), event_dict['event_end'], event_dict['recurrence_days'], event_dict['recurrence_interval']) # events in this group starting with next day
+            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1), event_dict['end_date']+timedelta(days=1), new_event_group_rev.end_date, event_dict['recurrence_days'], event_dict['recurrence_interval']) # events in this group starting with next day
         else:
             event_dates = [event_dict['event_start']]
         def create_new_events(dates):
@@ -243,7 +261,7 @@ def get_state_restoration(netid):
         return user.ui_state_restoration 
     except Exception, e:
         return None
-        
+
 def construct_event_dict(event, netid=None):
     """
     Selects the best revision, then converts it into a dict for client-side rendering.
@@ -306,6 +324,7 @@ def parse_json_event_dict(jsdict):
     
     return event_dict
     
+
     
 import difflib # https://docs.python.org/2/library/difflib.html
 import heapq
