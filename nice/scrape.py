@@ -9,6 +9,7 @@ Procedure:
 """
 
 from nice.models import *
+from nice.queries import modify_events
 from lxml import etree
 import HTMLParser
 import string
@@ -16,6 +17,7 @@ import sys
 import urllib2
 from bs4 import BeautifulSoup
 import re
+from datetime import datetime
 
 TERM_CODE = 1144  # spring 2014
 COURSE_OFFERINGS = "http://registrar.princeton.edu/course-offerings/"
@@ -131,7 +133,7 @@ def parse_course(course, subject):
     # handle course listings
     create_or_update_listings(course, subject, course_object)
     # add sections and events
-    # create_or_update_sections(course, course_object)
+    create_or_update_sections(course, course_object)
 
 def create_or_update_listings(course, subject, course_object):
     sub = subject.find('code').text
@@ -169,7 +171,6 @@ def create_or_update_sections(course, course_object):
         # add events
         create_or_update_events(section, section_object)
 
-# TODO: fix this. Use Maxim's helper function to create new events
 def create_or_update_events(section, section_object):
     global new_event_count
 
@@ -180,27 +181,45 @@ def create_or_update_events(section, section_object):
         print 'no schedule or meetings for ' + str(section_object.course)
         return
 
-    start_date = schedule.find('start_date').text
-    end_date = schedule.find('end_date').text
     section_type = section.find('type_name').text
+
+    # the dates are in the format:
+    # YYYY-MM-DD
+    str_start_date = schedule.find('start_date').text
+    str_end_date = schedule.find('end_date').text
+    end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
+
     for meeting in meetings:
+        # the times are in the format:
+        # HH:MM AM/PM
+        str_end_time = meeting.find('end_time').text
+        end_time = datetime.strptime(str_end_time, "%I:%M %p")
+
+        str_start_time = meeting.find('start_time').text
+        str_start_date_and_time = str_start_date + str_start_time
+        start_date_and_time = datetime.strptime(str_start_date_and_time, '%Y-%m-%d%I:%M %p')
+
         location = meeting.find('building').find('name').text + meeting.find('room').text
         # create event_group
         days = []
         for day in meeting.find('days'):
             days.append(DAYS[day.text])
 
+        # we need start_date_and_time, end_time, end_date
+        # start_date_and_time is start_date and start_time
         # create event_group_revision
         modify_events(community_user.username, {
-            'event_start': start_date,
-            'event_end' : end_date,
+            'event_start': start_date_and_time,
+            'event_end' : end_time,
+            'event_title': str(section_object.course),
+            'event_description': '',
+            'event_type': section_type,
+            'event_location': location,
+            'section_id': section_object.pk,
             'recurrence_days' : days,
             # we assume the class is weekly
             'recurrence_interval': 1,
-            'event_location': location,
-            'event_title': str(section_object.course),
-            'event_type': section_type,
-            'event_description': ''
+            'recurrence_end': end_date,
         })
         
         # create event
