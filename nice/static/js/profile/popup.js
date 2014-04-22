@@ -46,6 +46,21 @@ function PopUp_setToCourseID(popUp, courseID)
     PopUp_setListing(popUp, courseDict.course_listings);
     PopUp_setTitle(popUp, courseDict.course_title);
     PopUp_setDescription(popUp, courseDict.course_description);
+    SC_removeAllFromContainer(popUp);
+    $.each(courseDict.sections, function(sectionType, sectionList){
+        if (sectionType == 'ALL')
+            return;
+        var choices = [];
+        $.each(sectionList, function(index){
+            var section = CourseMan_getSectionByID(this);
+            choices.push({
+                value: section.section_id,
+                pretty: section.section_name,
+            });
+        });
+        var segmented = SC_initWithChoices(sectionType, choices);
+        $(popUp).find('.panel-body').append(segmented);
+    });
 }
 function PopUp_setListing(popUp, listing)
 {
