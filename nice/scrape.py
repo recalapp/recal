@@ -9,7 +9,7 @@ Procedure:
 """
 
 from nice.models import *
-from nice.queries import modify_events
+from nice.queries import *
 from lxml import etree
 import HTMLParser
 import string
@@ -208,7 +208,7 @@ def create_or_update_events(section, section_object):
         # we need start_date_and_time, end_time, end_date
         # start_date_and_time is start_date and start_time
         # create event_group_revision
-        modify_events(community_user.username, {
+        modify_events(community_user.username, [{
             'event_start': start_date_and_time,
             'event_end' : end_time,
             'event_title': str(section_object.course),
@@ -220,7 +220,7 @@ def create_or_update_events(section, section_object):
             # we assume the class is weekly
             'recurrence_interval': 1,
             'recurrence_end': end_date,
-        })
+        }])
         
         # create event
         new_event_count += 1
