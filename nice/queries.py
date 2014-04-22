@@ -335,7 +335,7 @@ def parse_json_event_dict(jsdict):
         
         default_recurrence_end = get_cur_semester().end_date # default value
         if 'recurrence_end' in event_dict and event_dict['recurrence_end'] is not None: # this field is optional
-            default_recurrence_end = min(default_recurrence_end, make_time_aware(event_dict['recurrence_end']))
+            default_recurrence_end = min(default_recurrence_end, make_time_aware(event_dict['recurrence_end']).date())
         event_dict['recurrence_end'] = default_recurrence_end
 
     else:

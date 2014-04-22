@@ -214,8 +214,11 @@ def create_or_update_events(section, section_object):
             'event_title': str(section_object.course),
             'event_description': '',
             'event_type': section_type,
+            # -1 for new event
+            'event_id': -1,
             'event_location': location,
             'section_id': section_object.pk,
+            'recurring': True,
             'recurrence_days' : days,
             # we assume the class is weekly
             'recurrence_interval': 1,
