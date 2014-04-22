@@ -172,43 +172,38 @@ def create_or_update_sections(course, course_object):
 # TODO: fix this. Use Maxim's helper function to create new events
 def create_or_update_events(section, section_object):
     global new_event_count
+
     try:
         schedule = section.find('schedule')
         meetings = schedule.find('meetings')
-        print 'yay'
     except:
-        print 'oops'
+        print 'no schedule or meetings for ' + str(section_object.course)
         return
 
     start_date = schedule.find('start_date').text
     end_date = schedule.find('end_date').text
+    section_type = section.find('type_name').text
     for meeting in meetings:
+        location = meeting.find('building').find('name').text + meeting.find('room').text
         # create event_group
-        new_event_group = Event_Group(
-            section = section_object
-        )
-        new_event_group.save()
-
         days = []
         for day in meeting.find('days'):
             days.append(DAYS[day.text])
 
         # create event_group_revision
-        new_event_group_revision = Event_Group_Revision(
-            event_group = new_event_group,
-            start_date = start_date,
-            end_date = end_date,
-            modified_user = community_user,
-            modified_time = get_current_utc(),
-            approved = True,
-            recurrence_days = days,
-            recurrence_interval = 1
-        )
-        new_event_group_revision.save()
+        modify_events(community_user.username, {
+            'event_start': start_date,
+            'event_end' : end_date,
+            'recurrence_days' : days,
+            # we assume the class is weekly
+            'recurrence_interval': 1,
+            'event_location': location,
+            'event_title': str(section_object.course),
+            'event_type': section_type,
+            'event_description': ''
+        })
         
         # create event
-        new_event = Event(group = new_event_group)
-        new_event.save()
         new_event_count += 1
 
 def remove_namespace(doc, namespace):
