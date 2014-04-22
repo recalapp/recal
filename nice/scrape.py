@@ -171,15 +171,21 @@ def create_or_update_sections(course, course_object):
         # add events
         create_or_update_events(section, section_object)
 
+# section is the class Node in the xml tree, 
+# section_object is a section django object
 def create_or_update_events(section, section_object):
     global new_event_count
 
+    # check if this section has a schedule attached to it
     try:
         schedule = section.find('schedule')
         meetings = schedule.find('meetings')
     except:
         print 'no schedule or meetings for ' + str(section_object.course)
         return
+
+    # now we check if there is already an event for this section
+    # TODO: try to prevent creating duplicate events
 
     section_type = section.find('type_name').text
 
@@ -193,27 +199,43 @@ def create_or_update_events(section, section_object):
         # the times are in the format:
         # HH:MM AM/PM
         str_end_time = meeting.find('end_time').text
-        end_time = datetime.strptime(str_end_time, "%I:%M %p")
+        str_end_date_time = str_start_date + str_end_time
+        end_date_time = datetime.strptime(str_end_date_time, '%Y-%m-%d%I:%M %p')
 
         str_start_time = meeting.find('start_time').text
-        str_start_date_and_time = str_start_date + str_start_time
-        start_date_and_time = datetime.strptime(str_start_date_and_time, '%Y-%m-%d%I:%M %p')
+        str_start_date_time = str_start_date + str_start_time
+        start_date_time = datetime.strptime(str_start_date_time, '%Y-%m-%d%I:%M %p')
 
-        location = meeting.find('building').find('name').text + meeting.find('room').text
+        try:
+            location = meeting.find('building').find('name').text + meeting.find('room').text
+        except:
+            location = ''
+
         # create event_group
         days = []
         for day in meeting.find('days'):
             days.append(DAYS[day.text])
 
-        # we need start_date_and_time, end_time, end_date
-        # start_date_and_time is start_date and start_time
+        event_type = section_object.section_type[0:2]
+        type_is_valid = False
+        for choice in Event_Revision.TYPE_CHOICES:
+            if event_type == choice[0]:
+                type_is_valid = True
+                break
+
+        if not type_is_valid:
+            event_type = 'LE'
+
+        # we need start_date_time, end_time, end_date
+        # start_date_time is start_date and start_time
         # create event_group_revision
         modify_events(community_user.username, [{
-            'event_start': start_date_and_time,
-            'event_end' : end_time,
+            'event_start': start_date_time,
+            'event_end' : end_date_time,
             'event_title': str(section_object.course),
             'event_description': '',
-            'event_type': section_type,
+            # TODO: figure out how to pass the real type
+            'event_type': 'LE',
             # -1 for new event
             'event_id': -1,
             'event_location': location,
