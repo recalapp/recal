@@ -47,6 +47,7 @@ def modify_events(netid, events):
         * event_start
         * event_end (for the first event)
         * event_title
+        * event_group_registrar_id
         * event_description
         * event_location
         * event_id (default: None)
@@ -130,7 +131,13 @@ def modify_events(netid, events):
             isNewEvent = True
             # create a new event group to hold the event
             section = Section.objects.get(id=event_dict['section_id'])
+
+            ## pass it a registrar id as well
+            # TODO TODO TODO: Dyland: fix this
             event_group = Event_Group(section=section)
+        
+            if 'event_group_registrar_id' in event_dict:
+                event_group.registrar_id = event_dict['event_group_registrar_id']
             
             # save the event group
             event_group.save()
