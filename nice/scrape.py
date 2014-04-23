@@ -29,7 +29,7 @@ PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
 CURRENT_SEMESTER = ''
 community_user = get_community_user()
 
-DAYS = {'M': 1, 'T': 2, 'W': 3, 'Th': 4, 'F': 5}
+DAYS = {'M': 0, 'T': 1, 'W': 2, 'Th': 3, 'F': 4, 'Sa': 5, 'S':6}
 
 new_course_count = 0
 course_count = 0
