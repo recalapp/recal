@@ -310,13 +310,12 @@ def parse_json_event_dict(jsdict):
     """
     
     # Parse JSON if necessary
-    if type(jsdict) is str:
-        event_dict = json.loads(jsdict)
+    if type(jsdict) is dict:
+        event_dict = jsdict
     elif type(jsdict) is list:
         event_dict = jsdict[0]
-    else:
-        event_dict = jsdict
-    
+    else: # str or unicode
+        event_dict = json.loads(jsdict)
     
     # Handle datetimes
     def make_time_aware(timestamp):
