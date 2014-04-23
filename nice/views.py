@@ -260,6 +260,12 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
         last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
+def events_by_course_json(request, last_updated=0):
+    course_ids = json.loads(request.GET['courseIDs'])
+    last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
+    events = queries.get_events_by_course_ids(course_ids, last_updated=last_updated)
+    return HttpResponse(json.dumps(events), content_type='application/javascript')
+    
 
 def sections_json(request):
     netid = request.user.username

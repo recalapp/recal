@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import post_save
 
 # Create your models here.
@@ -176,11 +177,12 @@ class Event(models.Model):
         Arguments: username (optional). If not specified, returns globally-seen last approved revision.
         """
         if self.event_revision_set.all():
-            latest_approved = self.event_revision_set.filter(approved=True).latest('modified_time')
-            if netid:
-                latest_mine = self.event_revision_set.filter(modified_user__user__username=netid).latest('modified_time')
-                if latest_mine.modified_time > latest_approved.modified_time: 
-                    return latest_mine # their own revision is newest, so show that
+            latest_approved = self.event_revision_set.filter(Q(approved=True) | Q(modified_user__user__username=netid)).latest('modified_time')
+            #if netid:
+            #    latest_mine = self.event_revision_set.filter(modified_user__user__username=netid).latest('modified_time') #TODO this has a bug where if the filter eliminates everything, we are screwed
+            #    
+            #    if latest_mine.modified_time > latest_approved.modified_time: 
+            #        return latest_mine # their own revision is newest, so show that
             return latest_approved # show the latest approved revision because the user's revisions don't exist or are older
         return None # no revisions available
 

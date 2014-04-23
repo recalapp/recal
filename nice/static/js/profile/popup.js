@@ -47,6 +47,7 @@ function PopUp_setToCourseID(popUp, courseID)
     PopUp_setTitle(popUp, courseDict.course_title);
     PopUp_setDescription(popUp, courseDict.course_description);
     SC_removeAllFromContainer(popUp);
+    var enrolledSections = CourseMan_getEnrolledSectionIDs(courseID);
     $.each(courseDict.sections, function(sectionType, sectionList){
         if (sectionType == 'ALL')
             return;
@@ -56,10 +57,22 @@ function PopUp_setToCourseID(popUp, courseID)
             choices.push({
                 value: section.section_id,
                 pretty: section.section_name,
+                selected: $.inArray(section.section_id, enrolledSections) > -1,
             });
+        });
+        choices.sort(function(a, b){
+            a.pretty.localeCompare(b.pretty);
         });
         var segmented = SC_initWithChoices(sectionType, choices);
         $(popUp).find('.panel-body').append(segmented);
+        $(segmented).on('select', function(ev, choices){
+            $.each(choices, function(sectionID, enroll){
+                if (enroll)
+                    CourseMan_enrollSectionID(courseID, sectionID);
+                else
+                    CourseMan_unenrollSectionID(courseID, sectionID);
+            });
+        });
     });
 }
 function PopUp_setListing(popUp, listing)

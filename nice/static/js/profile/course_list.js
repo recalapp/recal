@@ -20,8 +20,11 @@ function CL_reload()
         var sectionNames = [];
         $.each(CourseMan_getEnrolledSectionIDs(this), function(index){
             var section = CourseMan_getSectionByID(this);
+            if (section.section_name == "All Students")
+                return;
             sectionNames.push(section.section_name);
         });
+        sectionNames.sort();
         $courseItem.find('.course-sections').text(sectionNames.join(', '));
         $courseItem.find('.panel')[0].id = this;
         $courseItem.find('a').on('click', function(ev){

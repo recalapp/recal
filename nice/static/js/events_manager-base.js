@@ -69,6 +69,14 @@ function EventsMan_getEventIDForRange(start, end)
         ret[i] = ret[i].event_id;
     return ret;
 }
+function EventsMan_getAllEventIDs()
+{
+    var ret = [];
+    $.each(eventsManager.events, function(eventID, eventDict){
+        ret.push(eventID);
+    });
+    return ret;
+}
 
 function EventsMan_hasUncommitted(id)
 {
