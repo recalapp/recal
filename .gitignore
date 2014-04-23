@@ -4,3 +4,5 @@ nice/static/bower_components/bootstrap/node_modules/*
 *.pyc
 staticfiles
 *.swp
+iOS/New Ice/New Ice.xcodeproj/xcuserdata/*
+iOS/New Ice/New Ice.xcodeproj/project.xcworkspace/*
