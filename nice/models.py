@@ -71,8 +71,8 @@ class Course_Listing(models.Model):
 
 class Section(models.Model):
     TYPE_ALL = "ALL"
-    TYPE_CLA = "CLASS"
-    TYPE_DRI = "DRILL"
+    TYPE_CLA = "CLA"
+    TYPE_DRI = "DRI"
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
