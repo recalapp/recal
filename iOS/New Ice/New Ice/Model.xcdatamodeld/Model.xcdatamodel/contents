@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Course" representedClassName="Course" parentEntity="ServerObject" syncable="YES">
+        <attribute name="courseListings" attributeType="String" syncable="YES"/>
+        <attribute name="desc" attributeType="String" syncable="YES"/>
+        <attribute name="professor" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="registrarID" attributeType="String" maxValueString="20" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
+        <relationship name="sections" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Section" inverseName="course" inverseEntity="Section" syncable="YES"/>
+        <relationship name="semester" maxCount="1" deletionRule="Nullify" destinationEntity="Semester" inverseName="courses" inverseEntity="Semester" syncable="YES"/>
+    </entity>
+    <entity name="Event" representedClassName="Event" syncable="YES">
+        <relationship name="eventGroup" maxCount="1" deletionRule="Nullify" destinationEntity="EventGroup" inverseName="events" inverseEntity="EventGroup" syncable="YES"/>
+        <relationship name="revisions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EventRevision" inverseName="event" inverseEntity="EventRevision" syncable="YES"/>
+    </entity>
+    <entity name="EventGroup" representedClassName="EventGroup" parentEntity="ServerObject" syncable="YES">
+        <relationship name="events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Event" inverseName="eventGroup" inverseEntity="Event" syncable="YES"/>
+        <relationship name="revisions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EventGroupRevision" inverseName="eventGroup" inverseEntity="EventGroupRevision" syncable="YES"/>
+        <relationship name="section" maxCount="1" deletionRule="Nullify" destinationEntity="Section" inverseName="eventGroups" inverseEntity="Section" syncable="YES"/>
+    </entity>
+    <entity name="EventGroupRevision" representedClassName="EventGroupRevision" syncable="YES">
+        <attribute name="approved" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="endDate" attributeType="Date" syncable="YES"/>
+        <attribute name="modifiedTime" attributeType="Date" syncable="YES"/>
+        <attribute name="recurrenceDays" optional="YES" attributeType="String" maxValueString="100" syncable="YES"/>
+        <attribute name="recurrenceInterval" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="startDate" attributeType="Date" syncable="YES"/>
+        <relationship name="eventGroup" maxCount="1" deletionRule="Nullify" destinationEntity="EventGroup" inverseName="revisions" inverseEntity="EventGroup" syncable="YES"/>
+        <relationship name="modifiedUser" maxCount="1" deletionRule="Nullify" destinationEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="EventRevision" representedClassName="EventRevision" syncable="YES">
+        <attribute name="approved" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="eventDescription" attributeType="String" syncable="YES"/>
+        <attribute name="eventEnd" attributeType="Date" syncable="YES"/>
+        <attribute name="eventLocation" attributeType="String" syncable="YES"/>
+        <attribute name="eventStart" attributeType="Date" syncable="YES"/>
+        <attribute name="eventTitle" attributeType="String" maxValueString="100" syncable="YES"/>
+        <attribute name="eventType" attributeType="String" maxValueString="2" syncable="YES">
+            <userInfo>
+                <entry key="AS" value="assignment"/>
+                <entry key="EX" value="exam"/>
+                <entry key="LA" value="lab"/>
+                <entry key="LE" value="lecture"/>
+                <entry key="OH" value="office hours"/>
+                <entry key="PR" value="precept"/>
+                <entry key="RS" value="review session"/>
+            </userInfo>
+        </attribute>
+        <attribute name="modifiedTime" attributeType="Date" syncable="YES"/>
+        <relationship name="event" maxCount="1" deletionRule="Nullify" destinationEntity="Event" inverseName="revisions" inverseEntity="Event" syncable="YES"/>
+        <relationship name="modifiedUser" maxCount="1" deletionRule="Nullify" destinationEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="Section" representedClassName="Section" parentEntity="ServerObject" syncable="YES">
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="sectionType" attributeType="String" maxValueString="10" syncable="YES">
+            <userInfo>
+                <entry key="ALL" value="all students"/>
+                <entry key="CLASS" value="class"/>
+                <entry key="DRILL" value="drill"/>
+                <entry key="LAB" value="lab"/>
+                <entry key="LEC" value="lecture"/>
+                <entry key="PRE" value="precept"/>
+            </userInfo>
+        </attribute>
+        <relationship name="course" maxCount="1" deletionRule="Nullify" destinationEntity="Course" inverseName="sections" inverseEntity="Course" syncable="YES"/>
+        <relationship name="enrollment" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserSectionTable" inverseName="section" inverseEntity="UserSectionTable" syncable="YES"/>
+        <relationship name="eventGroups" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EventGroup" inverseName="section" inverseEntity="EventGroup" syncable="YES"/>
+    </entity>
+    <entity name="Semester" representedClassName="Semester" parentEntity="ServerObject" syncable="YES">
+        <attribute name="endDate" attributeType="Date" syncable="YES"/>
+        <attribute name="startDate" attributeType="Date" syncable="YES"/>
+        <attribute name="termCode" attributeType="String" minValueString="4" maxValueString="4" syncable="YES"/>
+        <relationship name="courses" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Course" inverseName="semester" inverseEntity="Course" syncable="YES"/>
+    </entity>
+    <entity name="ServerObject" representedClassName="ServerObject" isAbstract="YES" syncable="YES">
+        <attribute name="serverID" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="User" representedClassName="User" syncable="YES">
+        <attribute name="lastActivityTime" attributeType="Date" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="netid" attributeType="String" syncable="YES"/>
+        <relationship name="enrollment" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserSectionTable" inverseName="user" inverseEntity="UserSectionTable" syncable="YES"/>
+    </entity>
+    <entity name="UserSectionTable" representedClassName="UserSectionTable" syncable="YES">
+        <attribute name="addDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="section" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Section" inverseName="enrollment" inverseEntity="Section" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="enrollment" inverseEntity="User" syncable="YES"/>
+    </entity>
+    <fetchRequest name="BestEventGroupRevision" entity="EventGroupRevision" predicateString="approved == 0 OR modifiedUser == $USER" fetchLimit="1"/>
+    <fetchRequest name="BestEventRevision" entity="EventRevision" predicateString="approved == 0 OR modifiedUser == $USER" fetchLimit="1"/>
+    <elements>
+        <element name="Semester" positionX="-5609" positionY="-3532" width="128" height="103"/>
+        <element name="Course" positionX="-5420" positionY="-3537" width="128" height="148"/>
+        <element name="ServerObject" positionX="-5364" positionY="-3852" width="128" height="58"/>
+        <element name="Section" positionX="-5213" positionY="-3546" width="128" height="118"/>
+        <element name="EventGroup" positionX="-5213" positionY="-3366" width="128" height="88"/>
+        <element name="EventGroupRevision" positionX="-5420" positionY="-3349" width="128" height="163"/>
+        <element name="Event" positionX="-5211" positionY="-3133" width="128" height="73"/>
+        <element name="EventRevision" positionX="-5231" positionY="-2943" width="128" height="193"/>
+        <element name="User" positionX="-5697" positionY="-3339" width="128" height="103"/>
+        <element name="UserSectionTable" positionX="-5456" positionY="-3058" width="128" height="88"/>
+    </elements>
+</model>
