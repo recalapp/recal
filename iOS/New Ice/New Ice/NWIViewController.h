@@ -10,4 +10,5 @@
 
 @interface NWIViewController : UIViewController
 
+- (IBAction)launch:(UIButton *)sender;
 @end

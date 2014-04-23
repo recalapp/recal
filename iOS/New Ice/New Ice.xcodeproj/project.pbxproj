@@ -33,7 +33,8 @@
 		81A01AA41907F6C7003CABBF /* EventGroupRevision.m in Sources */ = {isa = PBXBuildFile; fileRef = 81A01AA31907F6C7003CABBF /* EventGroupRevision.m */; };
 		81A01AA71907F6C8003CABBF /* EventRevision.m in Sources */ = {isa = PBXBuildFile; fileRef = 81A01AA61907F6C8003CABBF /* EventRevision.m */; };
 		81A01AAA1907F6C8003CABBF /* Semester.m in Sources */ = {isa = PBXBuildFile; fileRef = 81A01AA91907F6C8003CABBF /* Semester.m */; };
-		81A01AAD1907FA08003CABBF /* NWICASClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 81A01AAC1907FA08003CABBF /* NWICASClient.m */; };
+		81A01AB319082734003CABBF /* NWIAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = 81A01AB219082734003CABBF /* NWIAuthenticator.m */; };
+		81A01AB619082A7B003CABBF /* NWIAuthenticationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81A01AB519082A7B003CABBF /* NWIAuthenticationViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,8 +89,10 @@
 		81A01AA61907F6C8003CABBF /* EventRevision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventRevision.m; sourceTree = "<group>"; };
 		81A01AA81907F6C8003CABBF /* Semester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Semester.h; sourceTree = "<group>"; };
 		81A01AA91907F6C8003CABBF /* Semester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Semester.m; sourceTree = "<group>"; };
-		81A01AAB1907FA08003CABBF /* NWICASClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NWICASClient.h; sourceTree = "<group>"; };
-		81A01AAC1907FA08003CABBF /* NWICASClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NWICASClient.m; sourceTree = "<group>"; };
+		81A01AB119082734003CABBF /* NWIAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NWIAuthenticator.h; sourceTree = "<group>"; };
+		81A01AB219082734003CABBF /* NWIAuthenticator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NWIAuthenticator.m; sourceTree = "<group>"; };
+		81A01AB419082A7B003CABBF /* NWIAuthenticationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NWIAuthenticationViewController.h; sourceTree = "<group>"; };
+		81A01AB519082A7B003CABBF /* NWIAuthenticationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NWIAuthenticationViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,8 +154,6 @@
 			children = (
 				816C9D071907DCD4005D8243 /* NWIAppDelegate.h */,
 				816C9D081907DCD4005D8243 /* NWIAppDelegate.m */,
-				81A01AAB1907FA08003CABBF /* NWICASClient.h */,
-				81A01AAC1907FA08003CABBF /* NWICASClient.m */,
 				81A01A6E1907F65D003CABBF /* models */,
 				816C9D0A1907DCD4005D8243 /* Main_iPhone.storyboard */,
 				816C9D0D1907DCD4005D8243 /* Main_iPad.storyboard */,
@@ -160,6 +161,7 @@
 				816C9D111907DCD4005D8243 /* NWIViewController.m */,
 				816C9D131907DCD4005D8243 /* Images.xcassets */,
 				816C9CFF1907DCD4005D8243 /* Supporting Files */,
+				81A01AB719082A83003CABBF /* Authentication */,
 			);
 			path = "New Ice";
 			sourceTree = "<group>";
@@ -219,6 +221,17 @@
 				81A01A8E1907F6C7003CABBF /* Section.m */,
 			);
 			name = models;
+			sourceTree = "<group>";
+		};
+		81A01AB719082A83003CABBF /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				81A01AB119082734003CABBF /* NWIAuthenticator.h */,
+				81A01AB219082734003CABBF /* NWIAuthenticator.m */,
+				81A01AB419082A7B003CABBF /* NWIAuthenticationViewController.h */,
+				81A01AB519082A7B003CABBF /* NWIAuthenticationViewController.m */,
+			);
+			name = Authentication;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -328,8 +341,9 @@
 				81A01AA11907F6C7003CABBF /* Event.m in Sources */,
 				816C9D091907DCD4005D8243 /* NWIAppDelegate.m in Sources */,
 				81A01A981907F6C7003CABBF /* User.m in Sources */,
-				81A01AAD1907FA08003CABBF /* NWICASClient.m in Sources */,
+				81A01AB319082734003CABBF /* NWIAuthenticator.m in Sources */,
 				816C9D121907DCD4005D8243 /* NWIViewController.m in Sources */,
+				81A01AB619082A7B003CABBF /* NWIAuthenticationViewController.m in Sources */,
 				81A01A6D1907EC07003CABBF /* Model.xcdatamodeld in Sources */,
 				81A01A8F1907F6C7003CABBF /* Section.m in Sources */,
 				81A01A951907F6C7003CABBF /* EventGroup.m in Sources */,

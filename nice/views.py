@@ -30,7 +30,9 @@ def index(request):
         return redirect('cas_login')
     if not user_profile_filled_out(request.user):
         return redirect('edit_profile')
-    return render(request, "main/index.html", {'username': request.user.username, 'formatted_name': unicode(request.user.profile)})
+    response = render(request, "main/index.html", {'username': request.user.username, 'formatted_name': unicode(request.user.profile)});
+    response.set_cookie('netid', request.user.username)
+    return response
 
 def logout(request):
     user = request.user.profile

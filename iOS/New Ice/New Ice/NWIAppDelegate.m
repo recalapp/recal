@@ -7,12 +7,16 @@
 //
 
 #import "NWIAppDelegate.h"
+#import "NWIAuthenticator.h"
 
 @implementation NWIAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    [[NSNotificationCenter defaultCenter] addObserverForName:NOTIF_VIEW_VISIBLE object:nil queue:nil usingBlock:^(NSNotification *note) {
+        [self.authenticator showAuthenticationViewIfNeeded];
+    }];
     return YES;
 }
 							
@@ -41,6 +45,13 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (NWIAuthenticator *)authenticator
+{
+    if (!_authenticator)
+        _authenticator = [NWIAuthenticator new];
+    return _authenticator;
 }
 
 @end
