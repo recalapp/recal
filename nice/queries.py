@@ -31,6 +31,13 @@ def get_events(netid, **kwargs):
     if last_updated:
         filtered = [event for event in filtered if event.best_revision(netid=netid).modified_time > last_updated]
     return [construct_event_dict(event, netid=netid) for event in filtered if event.id not in hidden_events]
+def get_events_by_course_ids(course_ids, **kwargs):
+    courses = [Course.objects.get(id=course_id) for course_id in course_ids]
+    last_updated = kwargs.pop('last_updated', None)
+    filtered = Event.objects.filter(group__section__course__in=courses)
+    if last_updated:
+        filtered = [event for event in filtered if event.best_revision().modified_time > last_updated]
+    return [construct_event_dict(event) for event in filtered]
 
 def modify_events(netid, events):
     """ 
@@ -293,7 +300,7 @@ def __construct_revision_dict(rev, group, group_rev):
     if group_rev.recurrence_interval is not None:
         results['recurrence_days'] = group_rev.recurrence_days
         results['recurrence_interval'] = group_rev.recurrence_interval
-        results['recurrence_end'] = group_rev.end_date
+        results['recurrence_end'] = format(group_rev.end_date, 'U')
     return results
     
 def parse_json_event_dict(jsdict):

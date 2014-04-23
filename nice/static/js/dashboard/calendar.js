@@ -72,9 +72,7 @@ function Cal_init() {
 function Cal_reload()
 {
     try {
-        var endDate = moment().add('months', 3).unix();
-        var startDate = moment().subtract('months', 3).unix();
-        var eventIDs = EventsMan_getEventIDForRange(startDate, endDate);
+        var eventIDs = EventsMan_getAllEventIDs();
         Cal_eventSource.events = [];
         $.each(eventIDs, function(index){
             eventDict = EventsMan_getEventByID(this);

@@ -100,6 +100,36 @@ function CourseMan_unenrollCourseID(courseID)
     courseManager.modified = true;
     CourseMan_callUpdateListeners();
 }
+function CourseMan_sectionEnrolled(courseID, sectionID)
+{
+    var ret = false;
+    $.each(courseManager.courseSectionsMap[courseID], function(index){
+        if (this == sectionID)
+        {
+            ret = true;
+            return false;
+        }
+    });
+    return ret;
+}
+function CourseMan_enrollSectionID(courseID, sectionID)
+{
+    if (CourseMan_sectionEnrolled(courseID, sectionID))
+        return;
+    courseManager.courseSectionsMap[courseID].push(sectionID);
+    courseManager.modified = true;
+    CourseMan_callUpdateListeners();
+}
+function CourseMan_unenrollSectionID(courseID, sectionID)
+{
+    if (!CourseMan_sectionEnrolled(courseID, sectionID))
+        return;
+    var sectionsArray = courseManager.courseSectionsMap[courseID];
+    var index = $.inArray(sectionID, sectionsArray);
+    sectionsArray.splice(index, 1);
+    courseManager.modified = true;
+    CourseMan_callUpdateListeners();
+}
 
 /***************************************************
  * Server code
