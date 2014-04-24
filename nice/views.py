@@ -10,8 +10,8 @@ from django.utils import timezone
 from django.db.models import Q
 
 from nice.models import *
-from nice import scrape
-from nice.forms import *
+from nice import scrape # TODO: this line is probably unnnecessary, slows down requests a bit
+from nice.forms import * 
 from nice import queries
 from datetime import datetime
 

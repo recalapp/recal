@@ -23,14 +23,24 @@ def get_events(netid, **kwargs):
     else:
         hidden_events = []
     filtered = Event.objects.filter(group__section__in = all_sections)
-    filtered = [event for event in filtered if event.best_revision(netid=netid) != None]
-    if start_date:
-        filtered = [event for event in filtered if event.best_revision(netid=netid).event_start >= start_date]
-    if end_date:
-        filtered = [event for event in filtered if event.best_revision(netid=netid).event_start <= end_date]
-    if last_updated:
-        filtered = [event for event in filtered if event.best_revision(netid=netid).modified_time > last_updated]
-    return [construct_event_dict(event, netid=netid) for event in filtered if event.id not in hidden_events]
+    survived = []
+    for event in filtered:
+        best_rev = event.best_revision(netid=netid) # load the best revision once
+        # conditions we don't want are below -- if any are matched, continue to the next event
+        if not best_rev or best_rev is None:
+            continue
+        if start_date and best_rev.event_start < start_date:
+            continue
+        if end_date and best_rev.event_end > end_date:
+            continue
+        if last_updated and best_rev.modified_time < last_updated:
+            continue
+        if event.id in hidden_events:
+            continue
+        # if we made it to here, then the event is good
+        survived.append(event)
+
+    return [construct_event_dict(event, netid=netid, best_rev=best_rev) for event in survived]
 
 def get_events_by_course_ids(course_ids, **kwargs):
     courses = [Course.objects.get(id=course_id) for course_id in course_ids]
@@ -281,12 +291,14 @@ def get_state_restoration(netid):
     except Exception, e:
         return None
 
-def construct_event_dict(event, netid=None):
+def construct_event_dict(event, netid=None, best_rev=None):
     """
     Selects the best revision, then converts it into a dict for client-side rendering.
     """
     
-    rev = event.best_revision(netid=netid)
+    rev = best_rev
+    if not rev:
+        rev = event.best_revision(netid=netid)
     group = event.group
     group_rev = group.best_revision()
     assert rev != None and group != None and group_rev != None
