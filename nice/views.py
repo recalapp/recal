@@ -31,7 +31,17 @@ def index(request):
         return redirect('cas_login')
     if not user_profile_filled_out(request.user):
         return redirect('edit_profile')
-    return render(request, "main/index.html", {'username': request.user.username, 'formatted_name': unicode(request.user.profile)})
+    user = request.user.profile
+    page = 0
+    if user.ui_state_restoration:
+        ui_sr = json.loads(user.ui_state_restoration)
+        if 'nav_page' in ui_sr:
+            page = ui_sr['nav_page']
+    return render(request, "main/index.html", {
+        'username': request.user.username, 
+        'formatted_name': unicode(request.user.profile),
+        'nav_page': page,
+        })
 
 def logout(request):
     user = request.user.profile

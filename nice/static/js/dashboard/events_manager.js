@@ -181,7 +181,7 @@ function EventsMan_pullFromServer(complete)
                 var eventsDict = eventsArray[i];
                 if (eventsManager.deletedIDs.contains(eventsDict.event_id))
                     return; // event already deleted
-                if (eventsDcit.event_id in eventsManager.updatedIDs)
+                if (eventsDict.event_id in eventsManager.updatedIDs)
                 {
                     // TODO notify user of updates
                 }
