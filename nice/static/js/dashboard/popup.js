@@ -494,9 +494,9 @@ function PopUp_clickedSaveElement(form)
     //actual saving
     var text = $(popUp).find("#"+text_id)[0];
     var safe = _PopUp_Form_getValue(form).escapeHTML();
-    if ($(form).find('input')[0].type == 'date')
+    if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'date')
         safe = moment(safe).tz(MAIN_TIMEZONE).format("MMMM D, YYYY");
-    else if ($(form).find('input')[0].type == 'time')
+    else if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'time')
         safe = moment('April 25, 2014 ' + safe).tz(MAIN_TIMEZONE).format('h:mm A');
     if ($(text).html() == nl2br(safe))
         return; // no saving needed
