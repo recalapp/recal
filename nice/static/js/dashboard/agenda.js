@@ -38,6 +38,7 @@ function Agenda_reload()
     var startDate = moment().date(curDate.date() - 1).hour(0).minute(0).second(0);
     var endDate = moment().date(curDate.date()).hour(0).minute(0).second(0);
     var eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    eventIDs = Agenda_filterEvents(eventIDs);
     if (eventIDs.length > 0)
     {
         added |= true;
@@ -49,6 +50,7 @@ function Agenda_reload()
     startDate = endDate;
     endDate = moment().date(curDate.date() + 1).hour(0).minute(0).second(0);
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    eventIDs = Agenda_filterEvents(eventIDs);
     if (eventIDs.length > 0)
     {
         added |= true;
@@ -60,6 +62,7 @@ function Agenda_reload()
     startDate = endDate;
     endDate = moment().date(curDate.date() + 7).hour(0).minute(0).second(0);
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    eventIDs = Agenda_filterEvents(eventIDs);
     if (eventIDs.length > 0)
     {
         added |= true;
@@ -71,6 +74,7 @@ function Agenda_reload()
     startDate = endDate;
     endDate = moment().date(curDate.date() + 30).hour(0).minute(0).second(0);
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    eventIDs = Agenda_filterEvents(eventIDs);
     if (eventIDs.length > 0)
     {
         added |=true;
@@ -81,6 +85,18 @@ function Agenda_reload()
     {
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
+}
+function Agenda_filterEvents(eventIDs)
+{
+    var ret = [];
+    $.each(eventIDs, function(index){
+        var eventDict = EventsMan_getEventByID(this);
+        if (!eventDict)
+            return;
+        if (AGENDA_FILTER.contains(eventDict.event_type))
+            ret.push(this);
+    });
+    return ret;
 }
 function Agenda_loadEvents(eventIDs)
 {

@@ -78,6 +78,8 @@ function Cal_reload()
             eventDict = EventsMan_getEventByID(this);
             if (!eventDict)
                 return;
+            if (!CAL_FILTER.contains(eventDict.event_type))
+                return;
             var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
             Cal_eventSource.events.push({
                 id: eventDict.event_id,
