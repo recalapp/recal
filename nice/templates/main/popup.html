@@ -28,14 +28,14 @@
         <div class="panel-body panel-body-scroll">
             <h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 1, 2014</h4>
             <div class="hide" id="popup-date-form">
-                <input type="date" class="form-control withdatepicker">
+                <input type="date" class="form-control withdatepicker" required>
             </div>
  
             <div class="row">
                 <div class="col-xs-5">
                     <h4 id="popup-time-start" onclick="PopUp_clickedElement(this)">12:00 PM</h4>
                     <div class="hide" id="popup-time-start-form">
-                        <input type="text" class="form-control withtimepicker" data-date-format="MM/DD/YYYY">
+                        <input type="time" class="form-control withtimepicker" data-date-format="MM/DD/YYYY" required>
                     </div>         
                 </div>
                 <div class="col-xs-2">
@@ -44,7 +44,7 @@
                 <div class="col-xs-5">
                     <h4 id="popup-time-end" onclick="PopUp_clickedElement(this)">4:00 PM</h4>
                     <div class="hide" id="popup-time-end-form">
-                        <input type="text" class="form-control withtimepicker" data-date-format="MM/DD/YYYY">
+                        <input type="time" class="form-control withtimepicker" data-date-format="MM/DD/YYYY" required>
                     </div>
                 </div>
             </div>

@@ -36,6 +36,7 @@
 {% endif %}
 
 <script src="{% static 'js/global.js' %}"></script>
+<script src="{% static 'js/dashboard/global.js' %}"></script>
 <script>
 var USER_NETID = '{{ username }}';
 var CACHEMAN_PRELOAD = ['{% url 'nice.views.agenda' %}', '{% url 'nice.views.popup' %}', '{% url 'nice.views.agenda_header' %}', '{% url 'nice.views.typepicker' %}', '{% url 'nice.views.sectionpicker' %}', '{% url 'nice.views.notifications' %}', '{% url 'nice.views.event_picker' %}', '{% url 'nice.views.event_picker_item' %}', '{% url 'nice.views.loading' %}'];
