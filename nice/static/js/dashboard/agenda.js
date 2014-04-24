@@ -72,7 +72,8 @@ function Agenda_reload()
 
     // this month
     startDate = endDate;
-    endDate = moment().date(curDate.date() + 30).hour(0).minute(0).second(0);
+    endDate = moment().month(curDate.month() + 1);
+    endDate = endDate.date(0) // does this go back to prev month??
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
     eventIDs = Agenda_filterEvents(eventIDs);
     if (eventIDs.length > 0)
