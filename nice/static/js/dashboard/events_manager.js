@@ -103,7 +103,12 @@ function EventsMan_init()
         _EventsMan_callUpdateListeners()
     });
 
-    $(window).on('beforeunload', function() {
+    $(window).on('beforeunload', function(ev) {
+        if (Object.getOwnPropertyNames(eventsManager.uncommitted).length > 0)
+        {
+            ev.preventDefault()
+            return 'You have unsaved changes';
+        }
         EventsMan_pushToServer(false);
     });
 
