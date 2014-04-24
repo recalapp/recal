@@ -7,6 +7,12 @@ function CacheMan_init()
         return;
     CACHE_INIT = true;
     cacheManager = new _CacheMan();
+    if (CACHEMAN_PRELOAD)
+    {
+        for (var i = 0; i < CACHEMAN_PRELOAD.length; i++) {
+            _CacheMan_cacheURL(CACHEMAN_PRELOAD[i], true);
+        };
+    }
 }
 
 function _CacheMan()
@@ -18,14 +24,14 @@ function _CacheMan()
 function CacheMan_load(url)
 {
     if (cacheManager.cached[url] == null)
-        _CacheMan_cacheURL(url);
+        _CacheMan_cacheURL(url, false);
     return cacheManager.cached[url];
 }
 
-function _CacheMan_cacheURL(url)
+function _CacheMan_cacheURL(url, async)
 {
     $.ajax(url, {
-        async: false,
+        async: async,
         dataType: "html",
         success: function(data){
             cacheManager.cached[url] = data;

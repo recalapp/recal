@@ -119,15 +119,15 @@ function EventsMan_deleteEvent(id)
     {
         eventsManager.events[id] = null;
         delete eventsManager.events[id];
-        var dIndex = null;
-        $.each(eventsManager.order, function(index){
-            if (this.event_id == id)
-            {
-                dIndex = index;
-                return false;
-            }
-        });
-        eventsManager.order.splice(dIndex, 1);
+        //var dIndex = null;
+        //$.each(eventsManager.order, function(index){
+        //    if (this.event_id == id)
+        //    {
+        //        dIndex = index;
+        //        return false;
+        //    }
+        //});
+        //eventsManager.order.splice(dIndex, 1);
         eventsManager.deletedIDs.push(id);
     }
     if (id in eventsManager.uncommitted)

@@ -76,6 +76,8 @@ function Cal_reload()
         Cal_eventSource.events = [];
         $.each(eventIDs, function(index){
             eventDict = EventsMan_getEventByID(this);
+            if (!eventDict)
+                return;
             var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
             Cal_eventSource.events.push({
                 id: eventDict.event_id,

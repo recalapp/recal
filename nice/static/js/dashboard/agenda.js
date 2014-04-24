@@ -78,10 +78,13 @@ function Agenda_loadEvents(eventIDs)
     var agendaContainer = $("#agenda");
 
     $.each(eventIDs, function(index) {
+        var eventDict = EventsMan_getEventByID(this);
+        if (!eventDict)
+            return;
         agendaContainer.append(CacheMan_load("agenda-template"));
         var agenda = agendaContainer.find("#agenda123")[0];
         agenda.id = this;
-        var eventDict = EventsMan_getEventByID(this);
+        
         $(agenda).find(".panel-body").find('h4').text(eventDict.event_title);
 
         if (UI_isPinned(agenda.id))
