@@ -18,8 +18,10 @@ import urllib2
 from bs4 import BeautifulSoup
 import re
 from datetime import datetime
+import settings.common as settings
 
-TERM_CODE = 1144  # spring 2014
+#TERM_CODE = 1144  # spring 2014
+TERM_CODE = settings.CURR_TERM
 COURSE_OFFERINGS = "http://registrar.princeton.edu/course-offerings/"
 FEED_PREFIX = "http://etcweb.princeton.edu/webfeeds/courseofferings/"
 TERM_PREFIX = FEED_PREFIX + "?term=" + str(TERM_CODE)
@@ -126,9 +128,12 @@ def parse_course(course, subject):
     course_object.professor = ''
     course_object.save()
 
+    course_count += 1
     if created:
         new_course_count += 1 # for debugging
-    course_count += 1
+    else:
+        # for now let's not update the listings/sections when run again
+        return
 
     # handle course listings
     create_or_update_listings(course, subject, course_object)
@@ -186,6 +191,7 @@ def create_or_update_events(section, section_object):
 
     # now we check if there is already an event for this section
     # TODO: try to prevent creating duplicate events
+    section_registrar_id = section.find('class_number')
 
     section_type = section.find('type_name').text
 
@@ -195,7 +201,13 @@ def create_or_update_events(section, section_object):
     str_end_date = schedule.find('end_date').text
     end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
 
+    # count the occurrences of this event
+    # so the titles can be: 'Lecture 1', 'Lecture 2', and so on
+    event_count = 0
+
     for meeting in meetings:
+        event_count += 1
+
         # the times are in the format:
         # HH:MM AM/PM
         str_end_time = meeting.find('end_time').text
@@ -224,7 +236,11 @@ def create_or_update_events(section, section_object):
                 break
 
         if not type_is_valid:
+            # print 'new section type: ' + section_type
+            # Force everything unseen before into a Lecture
             event_type = 'LE'
+
+        event_title = section_type
 
         # we need start_date_time, end_time, end_date
         # start_date_time is start_date and start_time
@@ -232,10 +248,10 @@ def create_or_update_events(section, section_object):
         modify_events(community_user.username, [{
             'event_start': start_date_time,
             'event_end' : end_date_time,
-            'event_title': str(section_object.course),
+            'event_title': event_title,
             'event_description': '',
             # TODO: figure out how to pass the real type
-            'event_type': 'LE',
+            'event_type': event_type,
             # -1 for new event
             'event_id': -1,
             'event_location': location,
