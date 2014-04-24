@@ -58,6 +58,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'cas.middleware.CASMiddleware',
+    'minidetector.Middleware'
 )
 
 ROOT_URLCONF = 'nice.urls'

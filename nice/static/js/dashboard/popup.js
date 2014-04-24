@@ -50,12 +50,17 @@ function PopUp_init()
 
 function PopUp_initialize(popUp)
 {
-    $(popUp).find(".withdatepicker").datetimepicker({
-        format: "MM d, yyyy",
-        autoclose: true,
-        minView: 2,
-        maxView: 3
-    });
+    if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker
+    {
+        $(popUp).find(".withdatepicker").datetimepicker({
+            format: "MM d, yyyy",
+            autoclose: true,
+            minView: 2,
+            maxView: 3
+        });
+    } else {
+        $(popUp).find('.withdatepicker').removeClass('withdatepicker');
+    }
     $(popUp).find(".withtimepicker").datetimepicker({
         format: "H:ii P",
         formatViewType: "time",
@@ -352,7 +357,15 @@ function _PopUp_Form_getValue(form)
 function _PopUp_Form_setValue(form, newValue)
 {
     if ($(form).find("input").length > 0)
-        $(form).find("input").val(newValue);
+    {
+        if ($(form).find('input')[0].type == 'date')
+        {
+            var date = moment(newValue).format('YYYY-MM-DD');
+            $(form).find("input").val(date)
+        }
+        else
+            $(form).find("input").val(newValue);
+    }
     else if ($(form).find("textarea").length > 0)
     {
         var sanitized = br2nl(newValue);
@@ -470,9 +483,11 @@ function PopUp_clickedSaveElement(form)
 
     //actual saving
     var text = $(popUp).find("#"+text_id)[0];
-    if ($(text).html() == nl2br(_PopUp_Form_getValue(form)))
-        return; // no saving needed
     var safe = _PopUp_Form_getValue(form).escapeHTML();
+    if ($(form).find('input')[0].type == 'date')
+        safe = moment(safe).tz(MAIN_TIMEZONE).format("MMMM D, YYYY");
+    if ($(text).html() == nl2br(safe))
+        return; // no saving needed
     $(text).html(nl2br(safe));
     PopUp_markAsUnsaved(popUp);
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));

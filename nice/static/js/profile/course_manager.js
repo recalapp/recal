@@ -145,12 +145,14 @@ function CourseMan_pullEnrolledCourseIDs(complete)
         });
         return;
     }
+    LO_show();
     courseManager.isIdle = false;
     $.ajax('/get/sections', {
         dataType: 'json',
         success: function(data){
             courseManager.courseSectionsMap = data;
             courseManager.isIdle = true;
+            LO_hide();
             if (complete)
                 complete();
             CourseMan_handleQueue();
@@ -158,6 +160,7 @@ function CourseMan_pullEnrolledCourseIDs(complete)
         },
         error: function(data){
             courseManager.isIdle = true;
+            LO_hide();
             CourseMan_handleQueue();
         }
     });
@@ -228,11 +231,13 @@ function CourseMan_handleQueue()
 
 function CourseMan_pullAutoComplete(request, complete)
 {
+    LO_show();
     $.getJSON('/api/classlist', request, function(data, status, xhr){
         // process data
         $.each(data, function(index){
             CourseMan_saveCourseDict(this);
         });
+        LO_hide();
         if (complete)
             complete(data);
     });

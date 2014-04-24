@@ -19,6 +19,7 @@ function EventsMan_pullFromServer(complete)
 {
     if (!eventsManager.isIdle)
         return;
+    LO_show();
     eventsManager.isIdle = false;
     var courseIDs = CourseMan_getEnrolledCourses();
     var start = moment.unix(CUR_SEM.start_date);
@@ -32,6 +33,7 @@ function EventsMan_pullFromServer(complete)
         },
         success: function(data){
             var eventsArray = data;
+            LO_hide();
             if (data.length == 0)
             {
                 eventsManager.isIdle = true;
@@ -53,6 +55,7 @@ function EventsMan_pullFromServer(complete)
         },
         error: function(data){
             eventsManager.isIdle = true;
+            LO_hide();
         }
     });
 }
