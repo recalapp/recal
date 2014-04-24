@@ -9,3 +9,18 @@ String.prototype.escapeHTML = function() {
         return tagsToReplace[tag] || tag;
     });
 };
+Array.prototype.contains = function(a){
+    for (var i = 0; i < this.length; i++)
+    {
+        if (this[i] == a)
+            return true;
+    }
+    return false;
+}
+Array.prototype.find = function(a){
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] == a)
+            return i;
+    };
+    return -1;
+}

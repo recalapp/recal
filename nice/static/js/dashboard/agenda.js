@@ -31,6 +31,7 @@ function Agenda_init() {
 function Agenda_reload()
 {
     var agendaContainer = $("#agenda")
+    var added = false;
     agendaContainer[0].innerHTML = null;
     // yesterday 0:00:00 AM to before midnight
     var curDate = moment();
@@ -39,6 +40,7 @@ function Agenda_reload()
     var eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
     if (eventIDs.length > 0)
     {
+        added |= true;
         Agenda_insertHeader('Yesterday');
         Agenda_loadEvents(eventIDs);
     }
@@ -49,6 +51,7 @@ function Agenda_reload()
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
     if (eventIDs.length > 0)
     {
+        added |= true;
         Agenda_insertHeader('Today');
         Agenda_loadEvents(eventIDs);
     }
@@ -59,6 +62,7 @@ function Agenda_reload()
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
     if (eventIDs.length > 0)
     {
+        added |= true;
         Agenda_insertHeader('This Week');
         Agenda_loadEvents(eventIDs);
     }
@@ -69,8 +73,13 @@ function Agenda_reload()
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
     if (eventIDs.length > 0)
     {
+        added |=true;
         Agenda_insertHeader('This month');
         Agenda_loadEvents(eventIDs);
+    }
+    if (!added)
+    {
+        Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
 }
 function Agenda_loadEvents(eventIDs)

@@ -67,6 +67,17 @@
   }*/
   
   </style>
+<script>
+var CACHEMAN_PRELOAD = [
+    '{% url 'nice.views.popup_course' %}', 
+    '{% url 'nice.views.course' %}', 
+];
+var CUR_SEM = {
+    term_code: '{{ cur_sem.term_code }}',
+    start_date: '{{ cur_sem.start_date }}',
+    end_date: '{{ cur_sem.end_date }}',
+}
+</script>
 
 {% endblock %}
 

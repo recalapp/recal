@@ -7,10 +7,10 @@
 {% include 'main/nav.html' %}
 {% include 'main/sidebar.html' %}
 <div class="tab-content">
-    <div class="tab-pane fade left active in container" id="agenda">
+    <div class="tab-pane fade left {% if nav_page == 0 %} active in {% endif %} container" id="agenda">
         {% include 'main/agenda-placeholder.html' %}
     </div>         
-    <div class="tab-pane fade right container" id="calendar">
+    <div class="tab-pane fade right {% if nav_page == 1 %} active in {% endif %} container" id="calendar">
         {% include 'main/calendar.html' %}
     </div>
 </div>
@@ -31,7 +31,7 @@
 <script src="{% static 'js/global.js' %}"></script>
 <script>
 var USER_NETID = '{{ username }}';
-var CACHEMAN_PRELOAD = ['{% url 'nice.views.agenda' %}', '{% url 'nice.views.popup' %}', '{% url 'nice.views.agenda_header' %}', '{% url 'nice.views.typepicker' %}', '{% url 'nice.views.sectionpicker' %}', '{% url 'nice.views.notifications' %}', '{% url 'nice.views.event_picker' %}', '{% url 'nice.views.event_picker_item' %}'];
+var CACHEMAN_PRELOAD = ['{% url 'nice.views.agenda' %}', '{% url 'nice.views.popup' %}', '{% url 'nice.views.agenda_header' %}', '{% url 'nice.views.typepicker' %}', '{% url 'nice.views.sectionpicker' %}', '{% url 'nice.views.notifications' %}', '{% url 'nice.views.event_picker' %}', '{% url 'nice.views.event_picker_item' %}', '{% url 'nice.views.loading' %}'];
 </script>
 {% endblock %}
 
@@ -45,6 +45,7 @@ var CACHEMAN_PRELOAD = ['{% url 'nice.views.agenda' %}', '{% url 'nice.views.pop
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
 <script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
 <script src="{% static 'js/set.js' %}"></script>
+<script src="{% static 'js/loading.js' %}"></script>
 <script src="{% static 'js/dashboard/agenda.js' %}"></script>
 <script src="{% static 'js/dashboard/keymap.js' %}"></script>
 <script src="{% static 'js/calendar-base.js' %}"></script>

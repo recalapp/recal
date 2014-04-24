@@ -31,10 +31,17 @@ def get_events(netid, **kwargs):
     if last_updated:
         filtered = [event for event in filtered if event.best_revision(netid=netid).modified_time > last_updated]
     return [construct_event_dict(event, netid=netid) for event in filtered if event.id not in hidden_events]
+
 def get_events_by_course_ids(course_ids, **kwargs):
     courses = [Course.objects.get(id=course_id) for course_id in course_ids]
     last_updated = kwargs.pop('last_updated', None)
+    start_date = kwargs.pop('start_date', None)
+    end_date = kwargs.pop('end_date', None)
     filtered = Event.objects.filter(group__section__course__in=courses)
+    if start_date:
+        filtered = [event for event in filtered if event.best_revision().event_start >= start_date]
+    if end_date:
+        filtered = [event for event in filtered if event.best_revision().event_start <= end_date]
     if last_updated:
         filtered = [event for event in filtered if event.best_revision().modified_time > last_updated]
     return [construct_event_dict(event) for event in filtered]

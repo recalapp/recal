@@ -124,3 +124,34 @@ a {
 .agenda-item.panel-primary{
     background-color: #e8f1f9;
 }*/
+
+#loading{
+    position: fixed;
+    bottom: 0;
+    right: 20%;
+}
+#loading-icon{
+    float: right;
+    -webkit-animation: rotateIcon 1s infinite linear;
+    animation: rotateIcon 1s infinite linear;
+}
+@-webkit-keyframes rotateIcon {
+    from {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes rotateIcon {
+    from {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+    }
+}

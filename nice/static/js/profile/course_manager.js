@@ -125,7 +125,7 @@ function CourseMan_unenrollSectionID(courseID, sectionID)
     if (!CourseMan_sectionEnrolled(courseID, sectionID))
         return;
     var sectionsArray = courseManager.courseSectionsMap[courseID];
-    var index = $.inArray(sectionID, sectionsArray);
+    var index = sectionsArray.find(sectionID);
     sectionsArray.splice(index, 1);
     courseManager.modified = true;
     CourseMan_callUpdateListeners();
