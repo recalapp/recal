@@ -272,6 +272,8 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
         last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
+    #return render(request, 'main/event-json-test.html')
+
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs'])
     if start_date:

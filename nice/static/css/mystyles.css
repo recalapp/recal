@@ -143,21 +143,25 @@ a {
 }
 @-webkit-keyframes rotateIcon {
     from {
-        transform: rotate(0deg);
         -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
     }
     to {
-        transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(360deg);
     }
 }
-@-webkit-keyframes rotateIcon {
+@keyframes rotateIcon {
     from {
-        transform: rotate(0deg);
         -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
     }
     to {
-        transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(360deg);
     }
 }
