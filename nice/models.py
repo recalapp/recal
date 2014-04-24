@@ -71,8 +71,8 @@ class Course_Listing(models.Model):
 
 class Section(models.Model):
     TYPE_ALL = "ALL"
-    TYPE_CLA = "CLASS"
-    TYPE_DRI = "DRILL"
+    TYPE_CLA = "CLA"
+    TYPE_DRI = "DRI"
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
@@ -121,6 +121,8 @@ class User_Section_Table(models.Model):
 class Event_Group(models.Model):
     # relationships
     section = models.ForeignKey(Section)
+    registrar_id = models.CharField(max_length=10, null=True, blank=True)
+
     def __unicode__(self):
         if self.best_revision():
             return 'Event group: ' +  self.best_revision().__unicode__() + ' in ' + self.section.__unicode__()
