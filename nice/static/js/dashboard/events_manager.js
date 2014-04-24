@@ -178,7 +178,13 @@ function EventsMan_pullFromServer(complete)
             var eventsArray = data;
             for (var i = 0; i < eventsArray.length; i++)
             {
-                var eventsDict = eventsArray[i]; 
+                var eventsDict = eventsArray[i];
+                if ($.inArray(eventsDict.event_id, eventsManager.deletedIDs) >= 0)
+                    return; // event already deleted
+                if (eventsDcit.event_id in eventsManager.updatedIDs)
+                {
+                    // TODO notify user of updates
+                }
                 eventsManager.events[eventsDict.event_id] = eventsDict;
             }
             EventsMan_constructOrderArray();

@@ -21,7 +21,10 @@ function EventsMan_pullFromServer(complete)
         return;
     eventsManager.isIdle = false;
     var courseIDs = CourseMan_getEnrolledCourses();
-    $.ajax('/get/bycourses/0', {
+    var start = moment.unix(CUR_SEM.start_date);
+    var end = moment.unix(CUR_SEM.start_date);
+    end.week(start.week() + 1);
+    $.ajax('/get/bycourses/0/' + start.unix() + '/' + end.unix(), {
         dataType: 'json',
         type: 'GET',
         data: {

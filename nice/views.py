@@ -1,3 +1,4 @@
+from django.utils.dateformat import format
 from django.shortcuts import * # render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -109,7 +110,15 @@ def edit_profile_autocomplete(request):
     Change which courses you are enrolled in, and edit your name.
     This is an autocomplete for course selection demo.
     '''
-    return render(request, "main/edit-profile-autocomplete.html", {'formatted_name': unicode(request.user.profile)})
+    cur_sem = get_cur_semester()
+    return render(request, "main/edit-profile-autocomplete.html", {
+        'formatted_name': unicode(request.user.profile),
+        'cur_sem': {
+            'term_code': cur_sem.term_code,
+            'start_date': format(cur_sem.start_date, 'U'),
+            'end_date': format(cur_sem.end_date, 'U'),
+        },
+    })
 
 @login_required
 def enroll_sections(request):
@@ -238,17 +247,6 @@ def login_admin(request):
     '''
     return redirect('/admin/') # send to admin panel once the staff member has logged in
     
-@staff_member_required 
-def seed_data(request):
-    scrape.scrape_all()
-    return HttpResponse("Data added.")
-    
-@staff_member_required 
-def delete_data(request):
-    clear_all_data()
-    return HttpResponse("Data removed.")
-	
-
 # for AJAX
 def events_json(request, start_date=None, end_date=None, last_updated=None):
     netid = request.user.username
@@ -260,10 +258,14 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
         last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
-def events_by_course_json(request, last_updated=0):
+def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs'])
+    if start_date:
+        start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
+    if end_date:
+        end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
     last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
-    events = queries.get_events_by_course_ids(course_ids, last_updated=last_updated)
+    events = queries.get_events_by_course_ids(course_ids, last_updated=last_updated, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
     
 

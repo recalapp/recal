@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^get/sections', views.sections_json, name='sections-json'),
     url(r'^get/course/(?P<course_id>\d+)$', views.course_json, name='course-json'),
     url(r'^get/bycourses/(?P<last_updated>\d*)$', views.events_by_course_json, name='events-by-course'),
+    url(r'^get/bycourses/(?P<last_updated>\d+)/(?P<start_date>\d+)/(?P<end_date>\d+)$', views.events_by_course_json, name='events-by-course'),
     url(r'^get$', views.events_json, name='events-json'),
     url(r'^put/state-restoration$', views.save_state_restoration, name='save-state-restoration'),
     url(r'^put$', views.modify_events, name='modify_events'),
@@ -41,8 +42,6 @@ urlpatterns = patterns('',
     url(r'^hidden_events$', views.hidden_events, name='hidden-events'), # NOTE: will be used later when we want to give the users a toggle
     # a few debug tricks
     url(r'^debug/su_login$', views.login_admin, name="login_admin"),
-    url(r'^debug/seed_data$', views.seed_data, name="seed_data"),
-    url(r'^debug/delete_data$', views.delete_data, name="delete_data"),
     url(r'^testform$', views.contact_us, name="test_form"),
     url(r'^testform2$', views.form_test_two, name="test_form2"),
 )
