@@ -69,7 +69,9 @@ def event_picker(request):
 def event_picker_item(request):
     return render(request, 'main/event-picker-item.html', None)
 def course(request):
-    return render(request, 'main/course.html', None);
+    return render(request, 'main/course.html', None)
+def loading(request):
+    return render(request, 'main/loading.html', None)
 
 @login_required
 def edit_profile(request):

@@ -8,7 +8,7 @@ function EventsMan_init()
     EventsMan_pullFromServer(function() {
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
-    });
+    }, true);
     PopUp_addEditListener(function(id, field, value) {
         if (field == 'event_type')
         {
@@ -128,6 +128,7 @@ function EventsMan_pushToServer(async)
     var deleted = eventsManager.deletedIDs;
     if (updated.length > 0 || deleted.length > 0)
     {
+        LO_show();
         $.ajax('put', {
             dataType: 'json',
             type: 'POST',
@@ -151,6 +152,7 @@ function EventsMan_pushToServer(async)
                     EventsMan_callEventIDsChangeListener(oldID, newID);
                 });
                 eventsManager.isIdle = true;
+                LO_hide();
                 eventsManager.addedCount = 0;
                 eventsManager.deletedIDs = [];
                 eventsManager.updatedIDs = new Set();
@@ -160,16 +162,20 @@ function EventsMan_pushToServer(async)
             async: async,
             error: function(data){
                 eventsManager.isIdle = true;
+                LO_hide();
             },
         });
     } else {
         eventsManager.isIdle = true;
     }
 }
-function EventsMan_pullFromServer(complete)
+function EventsMan_pullFromServer(complete, showLoading)
 {
     if (!eventsManager.isIdle)
         return;
+    showLoading = typeof showLoading != 'undefined' ? showLoading : false;
+    if (showLoading)
+        LO_show();
     eventsManager.isIdle = false;
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
@@ -192,6 +198,7 @@ function EventsMan_pullFromServer(complete)
             eventsManager.lastSyncedTime = moment().unix();
 
             eventsManager.isIdle = true;
+            LO_hide();
 
             if (complete != null)
                 complete();
@@ -199,6 +206,7 @@ function EventsMan_pullFromServer(complete)
         },
         error: function(data){
             eventsManager.isIdle = true;
+            LO_hide();
         },
     });
 }
