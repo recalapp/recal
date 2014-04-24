@@ -67,7 +67,7 @@ function EventsMan_getEnrolledEvents()
     });
     var ret = [];
     $.each(eventsManager.events, function(eventID, eventDict){
-        if ($.inArray(eventDict.section_id, sectionIDs) > -1)
+        if (sectionIDs.contains(eventDict.section_id))
             ret.push(eventID);
     });
     return ret;

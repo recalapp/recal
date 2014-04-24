@@ -179,7 +179,7 @@ function EventsMan_pullFromServer(complete)
             for (var i = 0; i < eventsArray.length; i++)
             {
                 var eventsDict = eventsArray[i];
-                if ($.inArray(eventsDict.event_id, eventsManager.deletedIDs) >= 0)
+                if (eventsManager.deletedIDs.contains(eventsDict.event_id))
                     return; // event already deleted
                 if (eventsDcit.event_id in eventsManager.updatedIDs)
                 {
