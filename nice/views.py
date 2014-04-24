@@ -41,6 +41,7 @@ def index(request):
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
         'nav_page': page,
+        'is_mobile': request.mobile,
         })
 
 def logout(request):
@@ -130,6 +131,7 @@ def edit_profile_autocomplete(request):
             'start_date': format(cur_sem.start_date, 'U'),
             'end_date': format(cur_sem.end_date, 'U'),
         },
+        'is_mobile': request.mobile,
     })
 
 @login_required
