@@ -128,9 +128,12 @@ def parse_course(course, subject):
     course_object.professor = ''
     course_object.save()
 
+    course_count += 1
     if created:
         new_course_count += 1 # for debugging
-    course_count += 1
+    else:
+        # for now let's not update the listings/sections when run again
+        return
 
     # handle course listings
     create_or_update_listings(course, subject, course_object)
@@ -233,10 +236,11 @@ def create_or_update_events(section, section_object):
                 break
 
         if not type_is_valid:
-            print 'new event type: ' + event_type
+            # print 'new section type: ' + section_type
+            # Force everything unseen before into a Lecture
             event_type = 'LE'
 
-        event_title = section_object.section_type + ' ' + str(event_count)
+        event_title = section_type
 
         # we need start_date_time, end_time, end_date
         # start_date_time is start_date and start_time
