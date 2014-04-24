@@ -531,8 +531,8 @@ function PopUp_clickedSavePopUp(anchor)
         return;
     }
     PopUp_markAsSaved(popUp);
-    EventsMan_commitChanges(id);
     $(popUp).find('.unsaved').removeClass('unsaved');
+    EventsMan_commitChanges(id);
 }
 function PopUp_clickedUndo(anchor)
 {
@@ -542,6 +542,6 @@ function PopUp_clickedUndo(anchor)
     var id = PopUp_getID(popUp);
     $(popUp).find('#save_button').addClass('hide');
     $(popUp).find('#undo_button').addClass('hide');
-    EventsMan_cancelChanges(id);
     $(popUp).find('.unsaved').removeClass('unsaved');
+    EventsMan_cancelChanges(id);
 }
