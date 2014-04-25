@@ -62,28 +62,6 @@ body {
     margin-bottom:10px;
 }
 
-.icon-refresh-animate {
-	-webkit-animation-name: rotateThis;
-	animation-name: rotateThis;
-	-webkit-animation-duration: 0.5s;
-	animation-duration: 0.5s;
-	-webkit-animation-iteration-count: infinite;
-	animation-iteration-count: infinite;
-        -webkit-animation-timing-function: linear;
-	animation-timing-function: linear;
-}
-
-@keyframes rotateThis {
-	from { 
-            -webkit-transform: scale( 1 ) rotate( 0deg );
-            transform: scale( 1 ) rotate( 0deg ); 
-        }
-
-	to   { 
-            -webkit-transform: scale( 1 ) rotate( 360deg ); 
-            transform: scale( 1 ) rotate( 360deg ); 
-        }
-}
 a {
     cursor: pointer;
 }
@@ -164,4 +142,17 @@ a {
         -ms-transform: rotate(0deg);
         transform: rotate(360deg);
     }
+}
+
+#agenda-title{
+    margin-bottom: 0;
+}
+#agenda-section{
+    color: rgba(0, 0, 0, 0.4);
+    margin: 0;
+}
+#agenda-time{
+    margin-top: 15px;
+    text-align: right;
+    color: rgba(0,0,0, 0.4)
 }

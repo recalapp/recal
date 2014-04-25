@@ -115,6 +115,11 @@ function Agenda_loadEvents(eventIDs)
         agenda.id = this;
         
         $(agenda).find(".panel-body").find('h4').text(eventDict.event_title);
+        $(agenda).find('#agenda-section').text(SP_keyToText(eventDict.section_id));
+        
+        var start = moment.unix(eventDict.event_start);
+        var timeText = start.tz(MAIN_TIMEZONE).calendar();
+        $(agenda).find('#agenda-time').text(timeText);
 
         if (UI_isPinned(agenda.id))
             Agenda_highlight(agenda);

@@ -189,7 +189,8 @@ function EventsMan_pullFromServer(complete, showLoading)
 
             if (complete != null)
                 complete();
-            _EventsMan_callUpdateListeners();
+            if (data.length > 0)
+                _EventsMan_callUpdateListeners();
         },
         error: function(data){
             eventsManager.isIdle = true;
