@@ -44,18 +44,27 @@ def get_events(netid, **kwargs):
     return survived
 
 def get_events_by_course_ids(course_ids, **kwargs):
-    courses = [Course.objects.get(id=course_id) for course_id in course_ids]
+    courses = Course.objects.filter(id__in=course_ids)
     last_updated = kwargs.pop('last_updated', None)
     start_date = kwargs.pop('start_date', None)
     end_date = kwargs.pop('end_date', None)
     filtered = Event.objects.filter(group__section__course__in=courses)
-    if start_date:
-        filtered = [event for event in filtered if event.best_revision().event_start >= start_date]
-    if end_date:
-        filtered = [event for event in filtered if event.best_revision().event_start <= end_date]
-    if last_updated:
-        filtered = [event for event in filtered if event.best_revision().modified_time > last_updated]
-    return [construct_event_dict(event) for event in filtered]
+
+    survived = []
+    for event in filtered:
+        best_rev = event.best_revision() # TODO(Naphat): why no netid here?
+        # conditions we don't want are below -- if any are matched, continue to the next event
+        if not best_rev or best_rev is None:
+            continue
+        if start_date and best_rev.event_start < start_date:
+            continue
+        if end_date and best_rev.event_end > end_date:
+            continue
+        if last_updated and best_rev.modified_time < last_updated:
+            continue
+        # if we made it to here, then the event is good
+        survived.append(construct_event_dict(event, best_rev=best_rev))
+    return survived
 
 def modify_events(netid, events):
     """ 
