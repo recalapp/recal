@@ -3,6 +3,9 @@
     border-bottom-left-radius: 3px;
     background-color: rgba(255, 255, 255, 0.85); /* NAVBAR COLOR */ 
 }
+.navbar-basic.dark{
+    background-color: rgba(50, 50, 50, 0.75);
+}
 .nav-link > h2 {
     margin-top: 5px;
     margin-bottom: 5px;
@@ -86,7 +89,12 @@ a {
 }
 .white-link-btn:hover{
     text-decoration: None;
-    
+}
+.white-link-btn.dark{
+    color: rgb(50, 50, 50);
+}
+.white-link-btn.dark:hover{
+    color: rgb(100, 100, 100);
 }
 
 .disabled-btn {
@@ -156,7 +164,12 @@ a {
     text-align: right;
     color: rgba(0,0,0, 0.4)
 }
-
+#agenda-section.dark{
+    color: rgba(255, 255, 255, 0.5);
+}
+#agenda-time.dark{
+    color: rgba(255, 255, 255, 0.5);
+}
 
 /* Navbar icons: removing default underlines and changing color on hover. */
 

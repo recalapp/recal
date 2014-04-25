@@ -43,7 +43,7 @@
 <link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}"> 
 <!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
-<link rel="stylesheet" href="{% static 'lumen/bootstrap.min.css' %}"> 
+<link rel="stylesheet" href="{% static 'cyborg/bootstrap.min.css' %}"> 
 
 
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
@@ -76,7 +76,6 @@ var CUR_SEM = {
     end_date: '{{ cur_sem.end_date }}',
 }
 {% if is_mobile %}
-{% this is mobile. Show everything in agenda %}
 AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 {% endif %}
 
