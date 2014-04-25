@@ -15,7 +15,8 @@ function Cal_init() {
     var height = window.innerHeight - $(".navbar").height() - 50;
 
     EventsMan_addUpdateListener(function(){
-        Cal_reload();
+        if (Cal_active())
+            Cal_reload();
     });
 
     Cal_options.height = height;
@@ -69,26 +70,35 @@ function Cal_init() {
         });
     });
 }
+function Cal_active()
+{
+    return $('#calendar').hasClass('active');
+}
 function Cal_reload()
 {
     try {
         var eventIDs = EventsMan_getAllEventIDs();
         Cal_eventSource.events = [];
-        $.each(eventIDs, function(index){
-            eventDict = EventsMan_getEventByID(this);
-            if (!eventDict)
-                return;
-            var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
-            Cal_eventSource.events.push({
-                id: eventDict.event_id,
-                title: eventDict.event_title,
-                start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
-                end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
-                highlighted: shouldHighlight,
-                backgroundColor: shouldHighlight ? '#428be8' : '#74a2ca'
-            });
-        });
-        $("#calendarui").fullCalendar("refetchEvents");
+        setTimeout(function(){
+                $.each(eventIDs, function(index){
+                    eventDict = EventsMan_getEventByID(this);
+                    if (!eventDict)
+                        return;
+                    if (!CAL_FILTER.contains(eventDict.event_type))
+                        return;
+                    var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
+                    Cal_eventSource.events.push({
+                        id: eventDict.event_id,
+                        title: eventDict.event_title,
+                        start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
+                        end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
+                        highlighted: shouldHighlight,
+                        backgroundColor: shouldHighlight ? '#428be8' : '#74a2ca'
+                    });
+                });
+                $("#calendarui").fullCalendar("refetchEvents");
+            }, 10);
+        
     }
     catch(err) {
     }

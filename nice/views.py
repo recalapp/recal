@@ -31,7 +31,7 @@ def index(request):
     if not user_profile_filled_out(request.user):
         return redirect('edit_profile')
     user = request.user.profile
-    page = 0
+    page = 1
     if user.ui_state_restoration:
         ui_sr = json.loads(user.ui_state_restoration)
         if 'nav_page' in ui_sr:

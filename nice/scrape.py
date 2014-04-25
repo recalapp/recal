@@ -219,7 +219,7 @@ def create_or_update_events(section, section_object):
         start_date_time = datetime.strptime(str_start_date_time, '%Y-%m-%d%I:%M %p')
 
         try:
-            location = meeting.find('building').find('name').text + meeting.find('room').text
+            location = meeting.find('building').find('name').text + ' ' + meeting.find('room').text
         except:
             location = ''
 

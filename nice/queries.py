@@ -38,9 +38,8 @@ def get_events(netid, **kwargs):
         if event.id in hidden_events:
             continue
         # if we made it to here, then the event is good
-        survived.append(event)
-
-    return [construct_event_dict(event, netid=netid, best_rev=best_rev) for event in survived]
+        survived.append(construct_event_dict(event, netid=netid, best_rev=best_rev))
+    return survived
 
 def get_events_by_course_ids(course_ids, **kwargs):
     courses = [Course.objects.get(id=course_id) for course_id in course_ids]
