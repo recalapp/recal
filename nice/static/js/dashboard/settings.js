@@ -1,7 +1,10 @@
-SE_show()
+function SE_init()
 {
-}
-
-SE_hide()
-{
+    $('#settingsModal').on('show.bs.modal', function(){
+        // set up
+        
+    });
+    $('#settingsModal').on('hide.bs.modal', function(){
+        // save
+    });
 }

@@ -48,15 +48,6 @@ function EventsMan_init()
             endDate.date(newDate.date());
             eventDict.event_start = startDate.unix();
             eventDict.event_end = endDate.unix();
-            //$.each(eventsManager.order, function(index) {
-            //    if (this.event_id == eventDict.event_id)
-            //    {
-            //        this.event_start = eventDict.event_start;
-            //    }
-            //});
-            //eventsManager.order.sort(function(a,b){
-            //    return parseInt(a.event_start) - parseInt(b.event_start);
-            //});
         }
         else if (field == 'event_start' || field == 'event_end')
         {
@@ -71,15 +62,6 @@ function EventsMan_init()
             oldTime.hour(newTime.hour());
             oldTime.minute(newTime.minute());
             eventDict[field] = oldTime.unix();
-            //$.each(eventsManager.order, function(index) {
-            //    if (this.event_id == eventDict.event_id)
-            //    {
-            //        this.event_start = eventDict.event_start;
-            //    }
-            //});
-            //eventsManager.order.sort(function(a,b){
-            //    return parseInt(a.event_start) - parseInt(b.event_start);
-            //});
         }
         else
         {
@@ -107,7 +89,7 @@ function EventsMan_init()
         if (Object.getOwnPropertyNames(eventsManager.uncommitted).length > 0)
         {
             ev.preventDefault()
-            return 'You have unsaved changes';
+            return 'Your changes have not been saved. Are you sure you want to leave?';
         }
         EventsMan_pushToServer(false);
     });
