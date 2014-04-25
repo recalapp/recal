@@ -12,6 +12,9 @@ function Agenda_init() {
     EventsMan_addUpdateListener(function(){
         Agenda_reload();
     });
+    $('#'+SE_id).on('close', function(ev){
+        Agenda_reload();
+    });
 
 
     $(".tab-pane").each(function(index){

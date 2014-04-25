@@ -34,6 +34,7 @@ function SCM_select(button)
 function SCM_deselect(button)
 {
     SC_unhighlight(button);
+    var choices = {};
     $(button).parent().find('.btn').each(function(index){
         choices[$(this).data('value')] = $(this).hasClass('btn-primary')
     });

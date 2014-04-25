@@ -264,6 +264,8 @@ class User_Profile(models.Model):
     sections = models.ManyToManyField(Section, through='User_Section_Table', blank=True,null=True)
     ui_state_restoration = models.TextField(blank=True,null=True)
     hidden_events = models.TextField(blank=True,null=True)
+    ui_agenda_pref = models.TextField(blank=True,null=True)
+    ui_calendar_pref = models.TextField(blank=True,null=True)
 
     def __unicode__(self):
         """

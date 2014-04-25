@@ -37,11 +37,20 @@ def index(request):
         ui_sr = json.loads(user.ui_state_restoration)
         if 'nav_page' in ui_sr:
             page = ui_sr['nav_page']
+    agenda_pref = ['AS', 'RS', 'EX']
+    if user.ui_agenda_pref:
+        agenda_pref = json.loads(user.ui_agenda_pref)
+    calendar_pref = ['RS', 'EX', 'LE', 'LA', 'OH', 'PR']
+    if user.ui_calendar_pref:
+        calendar_pref = json.loads(user.ui_calendar_pref)
+
     return render(request, "main/index.html", {
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
         'nav_page': page,
         'is_mobile': request.mobile,
+        'agenda_pref': agenda_pref,
+        'calendar_pref': calendar_pref
         })
 
 def logout(request):
@@ -271,8 +280,8 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
     if last_updated:
         last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
-    #return HttpResponse(json.dumps(events), content_type='application/javascript')
-    return render(request, 'main/event-json-test.html')
+    return HttpResponse(json.dumps(events), content_type='application/javascript')
+    #return render(request, 'main/event-json-test.html')
 
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs'])
@@ -330,6 +339,12 @@ def save_state_restoration(request):
     netid = request.user.username
     state_restoration = request.POST['state_restoration']
     return HttpResponse(str(int(queries.save_state_restoration(netid=netid, state_restoration=state_restoration))))
+def save_ui_pref(request):
+    user = request.user.profile
+    user.ui_agenda_pref = request.POST['agenda_pref']
+    user.ui_calendar_pref = request.POST['calendar_pref']
+    user.save()
+    return HttpResponse('')
 
 def all_sections(request):
     all_sections = {}
