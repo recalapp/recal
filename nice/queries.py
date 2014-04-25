@@ -543,6 +543,7 @@ def search_classes(query):
     * COS ELE
     """
     q = query.lower()
+    # TODO(Maxim): escape the query before searching for classes
     filtered = Course.objects
 
     # First, search input string for any two, three, or four digit numbers. Use results to filter by course number.

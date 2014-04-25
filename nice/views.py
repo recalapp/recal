@@ -167,6 +167,8 @@ def enroll_sections(request):
 def get_classes(request):
     """
     Returns list of classes for an autocomplete query. Used on profile (class and section enrollment) page.
+
+    TODO(Maxim): cache by ?term.
     """
     if request.is_ajax():
         q = request.GET.get('term', '') # autocomplete query
