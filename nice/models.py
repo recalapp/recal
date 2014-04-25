@@ -335,9 +335,16 @@ def clear_all_data():
     Section.objects.all().delete()
     Course.objects.all().delete()
     Semester.objects.all().delete()
+
+def clear_events():
+    Event_Revision.objects.all().delete()
+    Event.objects.all().delete()
+    Event_Group_Revision.objects.all().delete()
+    Event_Group.objects.all().delete()
+
     
 def get_cur_semester():
-    import settings.common as settings
+    import settings
     try:
         return Semester.objects.get(term_code = settings.CURR_TERM)
     except: # CURR_TERM is invalid or not specified

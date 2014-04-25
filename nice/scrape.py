@@ -18,7 +18,7 @@ import urllib2
 from bs4 import BeautifulSoup
 import re
 from datetime import datetime
-import settings.common as settings
+import settings
 
 #TERM_CODE = 1144  # spring 2014
 TERM_CODE = settings.CURR_TERM
