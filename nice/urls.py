@@ -8,6 +8,7 @@ from nice import views
 urlpatterns = patterns('',
     url(r'^login/$', cas.views.login, name='cas_login'),
     url(r'^logout/$', cas.views.logout, name='cas_logout'),
+    url(r'^verify$', views.verify, name='verify'),
     url(r'^user-logout$', views.logout, name='user_logout'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name="index"),

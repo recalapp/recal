@@ -60,6 +60,12 @@ def logout(request):
     user.save()
     return redirect('cas_logout')
 
+def verify(request):
+    if request.user.is_authenticated():
+        return HttpResponse('1')
+    else:
+        return HttpResponse('0')
+
 # loading templates
 def popup(request):
     return render(request, 'main/popup.html', None)
