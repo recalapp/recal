@@ -83,10 +83,9 @@ def loading(request):
     return render(request, 'main/loading.html', None)
 
 @login_required
-def edit_profile(request):
+def edit_profile_manual(request):
     '''
     Change which courses you are enrolled in, and edit your name.
-    TODO: add autocomplete for course selection.
     '''
     user_profile_filled_out(request.user) # create profile if not already create
     profile = request.user.profile
@@ -126,11 +125,14 @@ def edit_profile(request):
     
 
 @login_required
-def edit_profile_autocomplete(request):
+def edit_profile(request):
     '''
     Change which courses you are enrolled in, and edit your name.
-    This is an autocomplete for course selection demo.
+    TODO: enable name editing.
     '''
+    user_profile_filled_out(request.user) # create profile if not already create
+    profile = request.user.profile
+
     cur_sem = get_cur_semester()
     return render(request, "main/edit-profile-autocomplete.html", {
         'formatted_name': unicode(request.user.profile),
