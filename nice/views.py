@@ -276,6 +276,15 @@ def course_json(request, course_id):
     ret = queries.get_course_by_id(course_id)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+def user_json(request):
+    user = request.user
+    ret = {
+        'netid': user.username,
+        'name': unicode(user.profile),
+        'lastActivityTime': format(user.profile.lastActivityTime, 'U')
+    }
+    return HttpResponse(json.dumps(ret), content_type='application/javascript')
+
 @login_required
 @require_POST
 def modify_events(request):
