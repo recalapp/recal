@@ -70,6 +70,11 @@ var CAL_FILTER = [
     '{{ type }}',
     {% endfor %}
 ];
+var CUR_SEM = {
+    term_code: '{{ cur_sem.term_code }}',
+    start_date: '{{ cur_sem.start_date }}',
+    end_date: '{{ cur_sem.end_date }}',
+}
 
 </script>
 {% endblock %}

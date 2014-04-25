@@ -48,7 +48,7 @@ function PopUp_init()
  * Creating/removing
  **************************************************/
 
-function PopUp_initialize(popUp)
+function PopUp_initialize_deferred(popUp)
 {
     if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker
     {
@@ -156,6 +156,19 @@ function PopUp_initialize(popUp)
         });
     });
 }
+function PopUp_initialize(popUp)
+{
+    var choices = [];
+    $.each (DAYS_DICT, function(index){
+        choices.push({
+            value: index,
+            pretty: this,
+            selected: false,
+        });
+    });
+    var repeat_scm = SCM_initWithChoices('', choices);
+    $(popUp).find('#popup-repeat-pattern').append(repeat_scm); 
+}
 
 /***************************************************
  * Getters and Setters
@@ -214,6 +227,67 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setDate(popUp, eventDict.event_start);
     PopUp_setStartTime(popUp, eventDict.event_start);
     PopUp_setEndTime(popUp, eventDict.event_end);
+
+
+    $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
+    $(popUp).find('#popup-repeat').off('change');
+    $(popUp).find('#popup-repeat-pattern').off('select');
+    if ('recurrence_days' in eventDict)
+    {
+        var pattern = JSON.parse(eventDict.recurrence_days);
+        var choices = [];
+        $.each(DAYS_DICT, function(index){
+            choices.push({
+                value: index,
+                pretty: this,
+                selected: pattern.contains(index)
+            });
+        });
+        $(popUp).find('#popup-repeat-pattern').removeClass('hide');
+        var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
+        SCM_setToChoices(scm, choices);
+    }
+    else
+    {
+        var choices = [];
+        $.each(DAYS_DICT, function(index){
+            choices.push({
+                value: index,
+                pretty: this,
+                selected: false
+            });
+        });
+        $(popUp).find('#popup-repeat-pattern').addClass('hide');
+        var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
+        SCM_setToChoices(scm, choices);
+    }
+    $(popUp).find('#popup-repeat').on('change', function(ev){
+        if (this.checked)
+        {
+            if (!('recurrence_days' in eventDict))
+                PopUp_markAsUnsaved(popUp);
+            $(popUp).find('#popup-repeat-pattern').removeClass('hide');
+            PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', []);
+        }
+        else
+        {
+            if ('recurrence_days' in eventDict)
+                PopUp_markAsUnsaved(popUp);
+            $(popUp).find('#popup-repeat-pattern').addClass('hide');
+            PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', null);
+        }
+    });
+    $(popUp).find('#popup-repeat-pattern').on('select', function(ev, choices){
+        var pattern = [];
+        $.each(choices, function(value, selected){
+            if (selected)
+                pattern.push(parseInt(value));
+        });
+        pattern.sort();
+        if (JSON.stringify(pattern) != eventDict.recurrence_days)
+            PopUp_markAsUnsaved(popUp);
+        PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', pattern);
+    });
 }
 
 

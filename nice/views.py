@@ -43,13 +43,19 @@ def index(request):
     if user.ui_calendar_pref:
         calendar_pref = json.loads(user.ui_calendar_pref)
 
+    cur_sem = get_cur_semester()
     return render(request, "main/index.html", {
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
         'nav_page': page,
         'is_mobile': request.mobile,
         'agenda_pref': agenda_pref,
-        'calendar_pref': calendar_pref
+        'calendar_pref': calendar_pref,
+        'cur_sem': {
+            'term_code': cur_sem.term_code,
+            'start_date': format(cur_sem.start_date, 'U'),
+            'end_date': format(cur_sem.end_date, 'U'),
+        },
         })
 
 def logout(request):
@@ -327,7 +333,6 @@ def modify_events(request):
 
 def state_restoration(request):
     netid = request.user.username
-    # TODO what to return when null?
     state_restoration = queries.get_state_restoration(netid=netid)
     if state_restoration:
         return HttpResponse(state_restoration, content_type='application/javascript')

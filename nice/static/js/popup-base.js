@@ -106,14 +106,16 @@ function PopUp_insertPopUp(isMain)
     };
     maxHeight = window.innerHeight - $(".navbar").height() - 100;
     $(popUp).css("max-height", maxHeight+"px");
-    _PopUp_setBodyHeight(popUp);
+    _PopUp_setBodyHeight(popUp); 
+    PopUp_initialize(popUp);
     setTimeout(function(){
-        PopUp_initialize(popUp);
+        PopUp_initialize_deferred(popUp);
     }, 300) // doesn't block
     return popUp;
 }
 
 function PopUp_initialize(popUp){};
+function PopUp_initialize_deferred(popUp){};
 
 function PopUp_close(popUp)
 {
