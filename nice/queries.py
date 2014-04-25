@@ -552,7 +552,6 @@ def search_classes(query):
         filtered = filtered.filter(Q(course_listing__number__contains = num)) # filter by this course number
         q = q.replace(num, ' ') # remove from remaining query (replace with space so that "COS333advanced" becomes "COS advanced", not"COSadvanced")
     
-
     # Then, if any remaining parts are three letter string and are in depts list, filter by them.
     parts = q.split() # split string by spaces
     all_depts = [x.lower() for x in list(Course_Listing.objects.values_list('dept', flat=True).distinct())]
@@ -561,13 +560,12 @@ def search_classes(query):
             filtered = filtered.filter(Q(course_listing__dept__iexact = p)) # filter by this department
             q = q.replace(p, '') # remove from remaining query
 
-
-
     # Filter title by everything that wasn't used. I.e. when we used the dept name remove it from original string, and same for matched course numbe
     q = q.strip() # remove spaces that class_num replacing might have added
     if len(q) > 0:
         filtered = filtered.filter(Q(title__icontains=q))
 
+    filtered = filtered.distinct()
     courses = filtered[:20] # top 20 results
     results = []
     for c in courses:
