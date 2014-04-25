@@ -156,3 +156,11 @@ a {
     text-align: right;
     color: rgba(0,0,0, 0.4)
 }
+
+
+/* Navbar icons: removing default underlines and changing color on hover. */
+
+div.nav_controls a:hover, div.nav_controls a:focus {
+    text-decoration: none; /* default: underline; */
+    color: #ff851b; /* default: #158cba; */
+}
