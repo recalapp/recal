@@ -8,7 +8,7 @@ function EventsMan_init()
     EventsMan_pullFromServer(function() {
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
-    });
+    }, true);
     PopUp_addEditListener(function(id, field, value) {
         if (field == 'event_type')
         {
@@ -48,15 +48,6 @@ function EventsMan_init()
             endDate.date(newDate.date());
             eventDict.event_start = startDate.unix();
             eventDict.event_end = endDate.unix();
-            //$.each(eventsManager.order, function(index) {
-            //    if (this.event_id == eventDict.event_id)
-            //    {
-            //        this.event_start = eventDict.event_start;
-            //    }
-            //});
-            //eventsManager.order.sort(function(a,b){
-            //    return parseInt(a.event_start) - parseInt(b.event_start);
-            //});
         }
         else if (field == 'event_start' || field == 'event_end')
         {
@@ -71,15 +62,6 @@ function EventsMan_init()
             oldTime.hour(newTime.hour());
             oldTime.minute(newTime.minute());
             eventDict[field] = oldTime.unix();
-            //$.each(eventsManager.order, function(index) {
-            //    if (this.event_id == eventDict.event_id)
-            //    {
-            //        this.event_start = eventDict.event_start;
-            //    }
-            //});
-            //eventsManager.order.sort(function(a,b){
-            //    return parseInt(a.event_start) - parseInt(b.event_start);
-            //});
         }
         else
         {
@@ -103,7 +85,12 @@ function EventsMan_init()
         _EventsMan_callUpdateListeners()
     });
 
-    $(window).on('beforeunload', function() {
+    $(window).on('beforeunload', function(ev) {
+        if (Object.getOwnPropertyNames(eventsManager.uncommitted).length > 0)
+        {
+            ev.preventDefault()
+            return 'Your changes have not been saved. Are you sure you want to leave?';
+        }
         EventsMan_pushToServer(false);
     });
 
@@ -128,6 +115,7 @@ function EventsMan_pushToServer(async)
     var deleted = eventsManager.deletedIDs;
     if (updated.length > 0 || deleted.length > 0)
     {
+        LO_show();
         $.ajax('put', {
             dataType: 'json',
             type: 'POST',
@@ -151,6 +139,7 @@ function EventsMan_pushToServer(async)
                     EventsMan_callEventIDsChangeListener(oldID, newID);
                 });
                 eventsManager.isIdle = true;
+                LO_hide();
                 eventsManager.addedCount = 0;
                 eventsManager.deletedIDs = [];
                 eventsManager.updatedIDs = new Set();
@@ -160,16 +149,20 @@ function EventsMan_pushToServer(async)
             async: async,
             error: function(data){
                 eventsManager.isIdle = true;
+                LO_hide();
             },
         });
     } else {
         eventsManager.isIdle = true;
     }
 }
-function EventsMan_pullFromServer(complete)
+function EventsMan_pullFromServer(complete, showLoading)
 {
     if (!eventsManager.isIdle)
         return;
+    showLoading = typeof showLoading != 'undefined' ? showLoading : false;
+    if (showLoading)
+        LO_show();
     eventsManager.isIdle = false;
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
@@ -178,7 +171,13 @@ function EventsMan_pullFromServer(complete)
             var eventsArray = data;
             for (var i = 0; i < eventsArray.length; i++)
             {
-                var eventsDict = eventsArray[i]; 
+                var eventsDict = eventsArray[i];
+                if (eventsManager.deletedIDs.contains(eventsDict.event_id))
+                    return; // event already deleted
+                if (eventsDict.event_id in eventsManager.updatedIDs)
+                {
+                    // TODO notify user of updates
+                }
                 eventsManager.events[eventsDict.event_id] = eventsDict;
             }
             EventsMan_constructOrderArray();
@@ -186,13 +185,16 @@ function EventsMan_pullFromServer(complete)
             eventsManager.lastSyncedTime = moment().unix();
 
             eventsManager.isIdle = true;
+            LO_hide();
 
             if (complete != null)
                 complete();
-            _EventsMan_callUpdateListeners();
+            if (data.length > 0)
+                _EventsMan_callUpdateListeners();
         },
         error: function(data){
             eventsManager.isIdle = true;
+            LO_hide();
         },
     });
 }

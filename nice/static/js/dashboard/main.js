@@ -60,6 +60,7 @@ function init()
     NO_init();
     Agenda_init();
     Cal_init();
+    SE_init();
     SR_addWillSaveListener(function (){
         Nav_save();
         UI_save();
@@ -85,6 +86,7 @@ function Nav_save()
 }
 function Nav_load()
 {
+    return;
     var index = SR_get("nav_page");
     if (index == null)
         return;

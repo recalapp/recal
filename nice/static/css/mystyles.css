@@ -1,7 +1,7 @@
 .navbar-basic {
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.85); /* NAVBAR COLOR */ 
 }
 .nav-link > h2 {
     margin-top: 5px;
@@ -16,12 +16,12 @@ body {
     
     /*background-color: #f5faff;*/
     padding-top: 90px;
-    background-size: 20px;
-    background: -webkit-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Safari 5.1 to 6.0 */
-    background: -o-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px); /* For Opera 11.1 to 12.0 */
-    background: -moz-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Firefox 3.6 to 15 */
-    background: repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* Standard syntax */
-    background-attachment: fixed;
+    /* background-size: 20px;
+    /* background: -webkit-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Safari 5.1 to 6.0 */
+    /* background: -o-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px); /* For Opera 11.1 to 12.0 */
+    /* background: -moz-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Firefox 3.6 to 15 */
+    /* background: repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* Standard syntax */
+    /* background-attachment: fixed; */
 }
 
 .slide {
@@ -34,7 +34,7 @@ body {
 }
 
 .event-selected{
-    background-color: #428be8 !important;
+    background-color: #428be8 !important; /* SELECTION COLOR */
 }
 .fc-event {
     cursor: pointer;
@@ -62,28 +62,6 @@ body {
     margin-bottom:10px;
 }
 
-.icon-refresh-animate {
-	-webkit-animation-name: rotateThis;
-	animation-name: rotateThis;
-	-webkit-animation-duration: 0.5s;
-	animation-duration: 0.5s;
-	-webkit-animation-iteration-count: infinite;
-	animation-iteration-count: infinite;
-        -webkit-animation-timing-function: linear;
-	animation-timing-function: linear;
-}
-
-@keyframes rotateThis {
-	from { 
-            -webkit-transform: scale( 1 ) rotate( 0deg );
-            transform: scale( 1 ) rotate( 0deg ); 
-        }
-
-	to   { 
-            -webkit-transform: scale( 1 ) rotate( 360deg ); 
-            transform: scale( 1 ) rotate( 360deg ); 
-        }
-}
 a {
     cursor: pointer;
 }
@@ -117,10 +95,72 @@ a {
     cursor: default;
 }
 
-.agenda-item.panel{
+/*.agenda-item.panel{
     border-radius: 0;
-    border: 1px solid rgba(100, 100, 100, 0.1); /* NOTE remove to get border selection effect */
+    border: 1px solid rgba(100, 100, 100, 0.1); 
 }
 .agenda-item.panel-primary{
     background-color: #e8f1f9;
+}*/
+
+#loading{
+    position: fixed;
+    bottom: 0;
+    right: 20%;
+    -webkit-transition: opacity 0.1s ease-out;
+    transition: opacity 0.1s ease-out;
+    opacity: 0;
+}
+#loading.in{
+    opacity: 1;
+}
+#loading-icon{
+    float: right;
+    -webkit-animation: rotateIcon 1s infinite linear;
+    animation: rotateIcon 1s infinite linear;
+}
+@-webkit-keyframes rotateIcon {
+    from {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes rotateIcon {
+    from {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(360deg);
+    }
+}
+
+#agenda-title{
+    margin-bottom: 0;
+}
+#agenda-section{
+    color: rgba(0, 0, 0, 0.4);
+    margin: 0;
+}
+#agenda-time{
+    margin-top: 15px;
+    text-align: right;
+    color: rgba(0,0,0, 0.4)
+}
+
+
+/* Navbar icons: removing default underlines and changing color on hover. */
+
+div.nav_controls a:hover, div.nav_controls a:focus {
+    text-decoration: none; /* default: underline; */
+    color: #ff851b; /* default: #158cba; */
 }

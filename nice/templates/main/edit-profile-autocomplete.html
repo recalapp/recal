@@ -67,6 +67,18 @@
   }*/
   
   </style>
+<script>
+var CACHEMAN_PRELOAD = [
+    '{% url 'nice.views.popup_course' %}', 
+    '{% url 'nice.views.course' %}', 
+    '{% url 'nice.views.loading' %}',
+];
+var CUR_SEM = {
+    term_code: '{{ cur_sem.term_code }}',
+    start_date: '{{ cur_sem.start_date }}',
+    end_date: '{{ cur_sem.end_date }}',
+}
+</script>
 
 {% endblock %}
 
@@ -80,7 +92,8 @@
 <script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 
 <script src="{% static 'js/set.js' %}"></script>
-<script src="{% static 'js/profile/segmented_control.js' %}"></script>
+<script src="{% static 'js/loading.js' %}"></script>
+<script src="{% static 'js/segmented_control.js' %}"></script>
 <script src="{% static 'js/profile/keymap.js' %}"></script>
 <script src="{% static 'js/profile/profile_auto.js' %}"></script>
 

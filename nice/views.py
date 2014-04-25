@@ -1,3 +1,4 @@
+from django.utils.dateformat import format
 from django.shortcuts import * # render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -9,8 +10,7 @@ from django.utils import timezone
 from django.db.models import Q
 
 from nice.models import *
-from nice import scrape
-from nice.forms import *
+from nice.forms import * 
 from nice import queries
 from datetime import datetime
 
@@ -30,7 +30,27 @@ def index(request):
         return redirect('cas_login')
     if not user_profile_filled_out(request.user):
         return redirect('edit_profile')
-    response = render(request, "main/index.html", {'username': request.user.username, 'formatted_name': unicode(request.user.profile)});
+    user = request.user.profile
+    page = 1
+    if user.ui_state_restoration:
+        ui_sr = json.loads(user.ui_state_restoration)
+        if 'nav_page' in ui_sr:
+            page = ui_sr['nav_page']
+    agenda_pref = ['AS', 'RS', 'EX']
+    if user.ui_agenda_pref:
+        agenda_pref = json.loads(user.ui_agenda_pref)
+    calendar_pref = ['RS', 'EX', 'LE', 'LA', 'OH', 'PR']
+    if user.ui_calendar_pref:
+        calendar_pref = json.loads(user.ui_calendar_pref)
+
+    response = render(request, "main/index.html", {
+        'username': request.user.username, 
+        'formatted_name': unicode(request.user.profile),
+        'nav_page': page,
+        'is_mobile': request.mobile,
+        'agenda_pref': agenda_pref,
+        'calendar_pref': calendar_pref
+        })
     response.set_cookie('netid', request.user.username)
     return response
 
@@ -60,13 +80,14 @@ def event_picker(request):
 def event_picker_item(request):
     return render(request, 'main/event-picker-item.html', None)
 def course(request):
-    return render(request, 'main/course.html', None);
+    return render(request, 'main/course.html', None)
+def loading(request):
+    return render(request, 'main/loading.html', None)
 
 @login_required
-def edit_profile(request):
+def edit_profile_manual(request):
     '''
     Change which courses you are enrolled in, and edit your name.
-    TODO: add autocomplete for course selection.
     '''
     user_profile_filled_out(request.user) # create profile if not already create
     profile = request.user.profile
@@ -106,12 +127,24 @@ def edit_profile(request):
     
 
 @login_required
-def edit_profile_autocomplete(request):
+def edit_profile(request):
     '''
     Change which courses you are enrolled in, and edit your name.
-    This is an autocomplete for course selection demo.
+    TODO: enable name editing.
     '''
-    return render(request, "main/edit-profile-autocomplete.html", {'formatted_name': unicode(request.user.profile)})
+    user_profile_filled_out(request.user) # create profile if not already create
+    profile = request.user.profile
+
+    cur_sem = get_cur_semester()
+    return render(request, "main/edit-profile-autocomplete.html", {
+        'formatted_name': unicode(request.user.profile),
+        'cur_sem': {
+            'term_code': cur_sem.term_code,
+            'start_date': format(cur_sem.start_date, 'U'),
+            'end_date': format(cur_sem.end_date, 'U'),
+        },
+        'is_mobile': request.mobile,
+    })
 
 @login_required
 def enroll_sections(request):
@@ -135,53 +168,17 @@ def enroll_sections(request):
 @login_required
 def get_classes(request):
     """
-    Returns list of classes for an autocomplete query.
+    Returns list of classes for an autocomplete query. Used on profile (class and section enrollment) page.
 
-    Designed to handle many query forms, including these examples:
-    * COS
-    * COS 33 (matches all 33*)
-    * COS advanced
-    * COS 333
-    * COS333advanced
-    * programming TECHNIQUES (case doesn't matter)
-    * COS ELE
+    TODO(Maxim): cache by ?term.
     """
     if request.is_ajax():
-        q = request.GET.get('term', '').lower() # autocomplete query
-        print 'query:', q
-        filtered = Course.objects
-
-        # First, search input string for any two, three, or four digit numbers. Use results to filter by course number.
-        class_num = re.search(r'(\d{2,4})', q)
-        if class_num:
-            num = class_num.group()
-            filtered = filtered.filter(Q(course_listing__number__contains = num)) # filter by this course number
-            q = q.replace(num, ' ') # remove from remaining query (replace with space so that "COS333advanced" becomes "COS advanced", not"COSadvanced")
-        
-
-        # Then, if any remaining parts are three letter string and are in depts list, filter by them.
-        parts = q.split() # split string by spaces
-        all_depts = [x.lower() for x in list(Course_Listing.objects.values_list('dept', flat=True).distinct())]
-        for p in parts:
-            if p in all_depts:
-                filtered = filtered.filter(Q(course_listing__dept__iexact = p)) # filter by this department
-                q = q.replace(p, '') # remove from remaining query
-
-
-
-        # Filter title by everything that wasn't used. I.e. when we used the dept name remove it from original string, and same for matched course numbe
-        q = q.strip() # remove spaces that class_num replacing might have added
-        if len(q) > 0:
-            filtered = filtered.filter(Q(title__icontains=q))
-
-        courses = filtered[:20] # top 20 results
-        results = []
-        for c in courses:
-            results.append(queries.construct_course_dict(c))
-            #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
+        q = request.GET.get('term', '') # autocomplete query
+        results = queries.search_classes(q)
         data = json.dumps(results) 
         status = 200 # OK
     else:
+        data = 'fail'
         status = 400 # Bad Request (need to use AJAX)
     return HttpResponse(data, 'application/json', status=status)
 
@@ -240,17 +237,6 @@ def login_admin(request):
     '''
     return redirect('/admin/') # send to admin panel once the staff member has logged in
     
-@staff_member_required 
-def seed_data(request):
-    scrape.scrape_all()
-    return HttpResponse("Data added.")
-    
-@staff_member_required 
-def delete_data(request):
-    clear_all_data()
-    return HttpResponse("Data removed.")
-	
-
 # for AJAX
 def events_json(request, start_date=None, end_date=None, last_updated=None):
     netid = request.user.username
@@ -262,10 +248,16 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
         last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
-def events_by_course_json(request, last_updated=0):
+    #return render(request, 'main/event-json-test.html')
+
+def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs'])
+    if start_date:
+        start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
+    if end_date:
+        end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
     last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
-    events = queries.get_events_by_course_ids(course_ids, last_updated=last_updated)
+    events = queries.get_events_by_course_ids(course_ids, last_updated=last_updated, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
     
 
@@ -314,6 +306,12 @@ def save_state_restoration(request):
     netid = request.user.username
     state_restoration = request.POST['state_restoration']
     return HttpResponse(str(int(queries.save_state_restoration(netid=netid, state_restoration=state_restoration))))
+def save_ui_pref(request):
+    user = request.user.profile
+    user.ui_agenda_pref = request.POST['agenda_pref']
+    user.ui_calendar_pref = request.POST['calendar_pref']
+    user.save()
+    return HttpResponse('')
 
 def all_sections(request):
     all_sections = {}
@@ -349,7 +347,7 @@ def user_profile_filled_out(user):
         return False # just created, but not filled out yet
         
         
-        
+
         
         
         
@@ -376,4 +374,3 @@ def form_test_two(request):
         print 'succeeded form' 
         # use form.cleaned_data
         return redirect("/")
-        

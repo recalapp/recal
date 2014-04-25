@@ -11,6 +11,7 @@ CourseManager.prototype.allSections = {};
 CourseManager.prototype.isIdle = true;
 CourseManager.prototype.queue = [];
 CourseManager.prototype.modified = false;
+CourseManager.prototype.queries = {};
 
 var courseManager = null;
 var CourseMan_updateListeners = [];
@@ -125,7 +126,7 @@ function CourseMan_unenrollSectionID(courseID, sectionID)
     if (!CourseMan_sectionEnrolled(courseID, sectionID))
         return;
     var sectionsArray = courseManager.courseSectionsMap[courseID];
-    var index = $.inArray(sectionID, sectionsArray);
+    var index = sectionsArray.find(sectionID);
     sectionsArray.splice(index, 1);
     courseManager.modified = true;
     CourseMan_callUpdateListeners();
@@ -145,12 +146,14 @@ function CourseMan_pullEnrolledCourseIDs(complete)
         });
         return;
     }
+    LO_show();
     courseManager.isIdle = false;
     $.ajax('/get/sections', {
         dataType: 'json',
         success: function(data){
             courseManager.courseSectionsMap = data;
             courseManager.isIdle = true;
+            LO_hide();
             if (complete)
                 complete();
             CourseMan_handleQueue();
@@ -158,6 +161,7 @@ function CourseMan_pullEnrolledCourseIDs(complete)
         },
         error: function(data){
             courseManager.isIdle = true;
+            LO_hide();
             CourseMan_handleQueue();
         }
     });
@@ -228,11 +232,20 @@ function CourseMan_handleQueue()
 
 function CourseMan_pullAutoComplete(request, complete)
 {
+    if (request.term in courseManager.queries)
+    {
+        if (complete)
+            complete(courseManager.queries[request.term]);
+        return;
+    }
+    LO_show();
     $.getJSON('/api/classlist', request, function(data, status, xhr){
         // process data
         $.each(data, function(index){
             CourseMan_saveCourseDict(this);
         });
+        LO_hide();
+        courseManager.queries[request.term] = data;
         if (complete)
             complete(data);
     });

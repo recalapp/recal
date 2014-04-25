@@ -2,9 +2,11 @@ from django.utils.dateformat import format
 from django.utils import timezone
 
 import json
+import re
 
 from nice.models import *
 from datetime import *
+
 
 # TODO(Naphat, Maxim): Should we switch netid parameter inputs to User object inputs from request.user? May save a database call.
 
@@ -23,21 +25,46 @@ def get_events(netid, **kwargs):
     else:
         hidden_events = []
     filtered = Event.objects.filter(group__section__in = all_sections)
-    filtered = [event for event in filtered if event.best_revision(netid=netid) != None]
-    if start_date:
-        filtered = [event for event in filtered if event.best_revision(netid=netid).event_start >= start_date]
-    if end_date:
-        filtered = [event for event in filtered if event.best_revision(netid=netid).event_start <= end_date]
-    if last_updated:
-        filtered = [event for event in filtered if event.best_revision(netid=netid).modified_time > last_updated]
-    return [construct_event_dict(event, netid=netid) for event in filtered if event.id not in hidden_events]
+    survived = []
+    for event in filtered:
+        best_rev = event.best_revision(netid=netid) # load the best revision once
+        # conditions we don't want are below -- if any are matched, continue to the next event
+        if not best_rev or best_rev is None:
+            continue
+        if start_date and best_rev.event_start < start_date:
+            continue
+        if end_date and best_rev.event_end > end_date:
+            continue
+        if last_updated and best_rev.modified_time < last_updated:
+            continue
+        if event.id in hidden_events:
+            continue
+        # if we made it to here, then the event is good
+        survived.append(construct_event_dict(event, netid=netid, best_rev=best_rev))
+    return survived
+
 def get_events_by_course_ids(course_ids, **kwargs):
-    courses = [Course.objects.get(id=course_id) for course_id in course_ids]
+    courses = Course.objects.filter(id__in=course_ids)
     last_updated = kwargs.pop('last_updated', None)
+    start_date = kwargs.pop('start_date', None)
+    end_date = kwargs.pop('end_date', None)
     filtered = Event.objects.filter(group__section__course__in=courses)
-    if last_updated:
-        filtered = [event for event in filtered if event.best_revision().modified_time > last_updated]
-    return [construct_event_dict(event) for event in filtered]
+
+    survived = []
+    for event in filtered:
+        best_rev = event.best_revision() # TODO(Naphat): why no netid here?
+        # conditions we don't want are below -- if any are matched, continue to the next event
+        if not best_rev or best_rev is None:
+            continue
+        if start_date and best_rev.event_start < start_date:
+            continue
+        if end_date and best_rev.event_end > end_date:
+            continue
+        if last_updated and best_rev.modified_time < last_updated:
+            continue
+        # if we made it to here, then the event is good
+        survived.append(construct_event_dict(event, best_rev=best_rev))
+    return survived
 
 def modify_events(netid, events):
     """ 
@@ -47,6 +74,7 @@ def modify_events(netid, events):
         * event_start
         * event_end (for the first event)
         * event_title
+        * event_group_registrar_id
         * event_description
         * event_location
         * event_id (default: None)
@@ -130,7 +158,13 @@ def modify_events(netid, events):
             isNewEvent = True
             # create a new event group to hold the event
             section = Section.objects.get(id=event_dict['section_id'])
+
+            ## pass it a registrar id as well
+            # TODO TODO TODO: Dyland: fix this
             event_group = Event_Group(section=section)
+        
+            if 'event_group_registrar_id' in event_dict:
+                event_group.registrar_id = event_dict['event_group_registrar_id']
             
             # save the event group
             event_group.save()
@@ -163,7 +197,11 @@ def modify_events(netid, events):
 
         ## Handle recurring events
         if event_dict['recurring'] is True:
-            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1), event_dict['event_end']+timedelta(days=1), new_event_group_rev.end_date, event_dict['recurrence_days'], event_dict['recurrence_interval']) # events in this group starting with next day
+            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1),
+                                                event_dict['event_end']+timedelta(days=1),
+                                                new_event_group_rev.end_date,
+                                                event_dict['recurrence_days'],
+                                                event_dict['recurrence_interval'])   # events in this group starting with next day
         else:
             event_dates = [(event_dict['event_start'], event_dict['event_end'])]
         def create_new_events(dates):
@@ -178,7 +216,8 @@ def modify_events(netid, events):
         if isNewEvent:
             # This is a new event group.
             # Per recurrence pattern, make more events with copies of this event revision.
-            create_new_events(event_dates)
+            if event_dict['recurring'] is True:
+                create_new_events(event_dates)
         else:
             # This is not a new event group.
             if recurrence_has_changed:
@@ -267,12 +306,14 @@ def get_state_restoration(netid):
     except Exception, e:
         return None
 
-def construct_event_dict(event, netid=None):
+def construct_event_dict(event, netid=None, best_rev=None):
     """
     Selects the best revision, then converts it into a dict for client-side rendering.
     """
     
-    rev = event.best_revision(netid=netid)
+    rev = best_rev
+    if not rev:
+        rev = event.best_revision(netid=netid)
     group = event.group
     group_rev = group.best_revision()
     assert rev != None and group != None and group_rev != None
@@ -310,13 +351,12 @@ def parse_json_event_dict(jsdict):
     """
     
     # Parse JSON if necessary
-    if type(jsdict) is str:
-        event_dict = json.loads(jsdict)
+    if type(jsdict) is dict:
+        event_dict = jsdict
     elif type(jsdict) is list:
         event_dict = jsdict[0]
-    else:
-        event_dict = jsdict
-    
+    else: # str or unicode
+        event_dict = json.loads(jsdict)
     
     # Handle datetimes
     def make_time_aware(timestamp):
@@ -495,3 +535,50 @@ def construct_section_dict(section):
         'section_id': section.id,
         'section_name': section.name,
     }
+
+
+
+def search_classes(query):
+    """
+    Returns list of classes for an autocomplete query.
+
+    Designed to handle many query forms, including these examples:
+    * COS
+    * COS 33 (matches all 33*)
+    * COS advanced
+    * COS 333
+    * COS333advanced
+    * programming TECHNIQUES (case doesn't matter)
+    * COS ELE
+    """
+    q = query.lower()
+    # TODO(Maxim): escape the query before searching for classes
+    filtered = Course.objects
+
+    # First, search input string for any two, three, or four digit numbers. Use results to filter by course number.
+    class_num = re.search(r'(\d{2,4})', q)
+    if class_num:
+        num = class_num.group()
+        filtered = filtered.filter(Q(course_listing__number__contains = num)) # filter by this course number
+        q = q.replace(num, ' ') # remove from remaining query (replace with space so that "COS333advanced" becomes "COS advanced", not"COSadvanced")
+    
+    # Then, if any remaining parts are three letter string and are in depts list, filter by them.
+    parts = q.split() # split string by spaces
+    all_depts = [x.lower() for x in list(Course_Listing.objects.values_list('dept', flat=True).distinct())]
+    for p in parts:
+        if p in all_depts:
+            filtered = filtered.filter(Q(course_listing__dept__iexact = p)) # filter by this department
+            q = q.replace(p, '') # remove from remaining query
+
+    # Filter title by everything that wasn't used. I.e. when we used the dept name remove it from original string, and same for matched course numbe
+    q = q.strip() # remove spaces that class_num replacing might have added
+    if len(q) > 0:
+        filtered = filtered.filter(Q(title__icontains=q))
+
+    filtered = filtered.distinct()
+    courses = filtered[:20] # top 20 results
+    results = []
+    for c in courses:
+        results.append(construct_course_dict(c))
+        #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
+    return results

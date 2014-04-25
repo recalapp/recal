@@ -12,6 +12,9 @@ function Agenda_init() {
     EventsMan_addUpdateListener(function(){
         Agenda_reload();
     });
+    $('#'+SE_id).on('close', function(ev){
+        Agenda_reload();
+    });
 
 
     $(".tab-pane").each(function(index){
@@ -31,14 +34,17 @@ function Agenda_init() {
 function Agenda_reload()
 {
     var agendaContainer = $("#agenda")
+    var added = false;
     agendaContainer[0].innerHTML = null;
     // yesterday 0:00:00 AM to before midnight
     var curDate = moment();
     var startDate = moment().date(curDate.date() - 1).hour(0).minute(0).second(0);
     var endDate = moment().date(curDate.date()).hour(0).minute(0).second(0);
     var eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    eventIDs = Agenda_filterEvents(eventIDs);
     if (eventIDs.length > 0)
     {
+        added |= true;
         Agenda_insertHeader('Yesterday');
         Agenda_loadEvents(eventIDs);
     }
@@ -47,8 +53,10 @@ function Agenda_reload()
     startDate = endDate;
     endDate = moment().date(curDate.date() + 1).hour(0).minute(0).second(0);
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    eventIDs = Agenda_filterEvents(eventIDs);
     if (eventIDs.length > 0)
     {
+        added |= true;
         Agenda_insertHeader('Today');
         Agenda_loadEvents(eventIDs);
     }
@@ -57,32 +65,61 @@ function Agenda_reload()
     startDate = endDate;
     endDate = moment().date(curDate.date() + 7).hour(0).minute(0).second(0);
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    eventIDs = Agenda_filterEvents(eventIDs);
     if (eventIDs.length > 0)
     {
+        added |= true;
         Agenda_insertHeader('This Week');
         Agenda_loadEvents(eventIDs);
     }
 
     // this month
     startDate = endDate;
-    endDate = moment().date(curDate.date() + 30).hour(0).minute(0).second(0);
+    endDate = moment().month(curDate.month() + 1);
+    endDate = endDate.date(0) // does this go back to prev month??
     eventIDs = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+    eventIDs = Agenda_filterEvents(eventIDs);
     if (eventIDs.length > 0)
     {
+        added |=true;
         Agenda_insertHeader('This month');
         Agenda_loadEvents(eventIDs);
     }
+    if (!added)
+    {
+        Agenda_insertHeader('Congrats! You have nothing on your agenda!');
+    }
+}
+function Agenda_filterEvents(eventIDs)
+{
+    var ret = [];
+    $.each(eventIDs, function(index){
+        var eventDict = EventsMan_getEventByID(this);
+        if (!eventDict)
+            return;
+        if (AGENDA_FILTER.contains(eventDict.event_type))
+            ret.push(this);
+    });
+    return ret;
 }
 function Agenda_loadEvents(eventIDs)
 {
     var agendaContainer = $("#agenda");
 
     $.each(eventIDs, function(index) {
+        var eventDict = EventsMan_getEventByID(this);
+        if (!eventDict)
+            return;
         agendaContainer.append(CacheMan_load("agenda-template"));
         var agenda = agendaContainer.find("#agenda123")[0];
         agenda.id = this;
-        var eventDict = EventsMan_getEventByID(this);
+        
         $(agenda).find(".panel-body").find('h4').text(eventDict.event_title);
+        $(agenda).find('#agenda-section').text(SP_keyToText(eventDict.section_id));
+        
+        var start = moment.unix(eventDict.event_start);
+        var timeText = start.tz(MAIN_TIMEZONE).calendar();
+        $(agenda).find('#agenda-time').text(timeText);
 
         if (UI_isPinned(agenda.id))
             Agenda_highlight(agenda);

@@ -50,24 +50,34 @@ function PopUp_init()
 
 function PopUp_initialize(popUp)
 {
-    $(popUp).find(".withdatepicker").datetimepicker({
-        format: "MM d, yyyy",
-        autoclose: true,
-        minView: 2,
-        maxView: 3
-    });
-    $(popUp).find(".withtimepicker").datetimepicker({
-        format: "H:ii P",
-        formatViewType: "time",
-        autoclose: true,
-        minView: 0,
-        maxView: 1,
-        startView: 0,
-        linkField: "withdatepicker",
-        linkFormat: "yyyy-mm-dd",
-        showMeridian: true,
-        minuteStep: 10
-    });
+    if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker
+    {
+        $(popUp).find(".withdatepicker").datetimepicker({
+            format: "MM d, yyyy",
+            autoclose: true,
+            minView: 2,
+            maxView: 3
+        });
+    } else {
+        $(popUp).find('.withdatepicker').removeClass('withdatepicker');
+    }
+    if ($(popUp).find(".withtimepicker")[0].type == 'text')// defaults to browser's builtin date picker
+    {   
+        $(popUp).find(".withtimepicker").datetimepicker({
+            format: "H:ii P",
+            formatViewType: "time",
+            autoclose: true,
+            minView: 0,
+            maxView: 1,
+            startView: 0,
+            linkField: "withdatepicker",
+            linkFormat: "yyyy-mm-dd",
+            showMeridian: true,
+            minuteStep: 10
+        });
+    } else {
+        $(popUp).find('.withtimepicker').removeClass('withtimepicker');
+    }
     var htmlcontent = CacheMan_load("type-picker")
     $(popUp).find(".withtypepicker").popover({
         placement: "left auto",
@@ -352,7 +362,20 @@ function _PopUp_Form_getValue(form)
 function _PopUp_Form_setValue(form, newValue)
 {
     if ($(form).find("input").length > 0)
-        $(form).find("input").val(newValue);
+    {
+        if ($(form).find('input')[0].type == 'date')
+        {
+            var date = moment(newValue).format('YYYY-MM-DD');
+            $(form).find("input").val(date)
+        }
+        else if ($(form).find('input')[0].type == 'time')
+        {
+            var time = moment('April 25, 2014 ' + newValue).format('HH:mm:ss');
+            $(form).find('input').val(time);
+        }
+        else
+            $(form).find("input").val(newValue);
+    }
     else if ($(form).find("textarea").length > 0)
     {
         var sanitized = br2nl(newValue);
@@ -470,9 +493,13 @@ function PopUp_clickedSaveElement(form)
 
     //actual saving
     var text = $(popUp).find("#"+text_id)[0];
-    if ($(text).html() == nl2br(_PopUp_Form_getValue(form)))
-        return; // no saving needed
     var safe = _PopUp_Form_getValue(form).escapeHTML();
+    if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'date')
+        safe = moment(safe).tz(MAIN_TIMEZONE).format("MMMM D, YYYY");
+    else if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'time')
+        safe = moment('April 25, 2014 ' + safe).tz(MAIN_TIMEZONE).format('h:mm A');
+    if ($(text).html() == nl2br(safe))
+        return; // no saving needed
     $(text).html(nl2br(safe));
     PopUp_markAsUnsaved(popUp);
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
@@ -516,8 +543,8 @@ function PopUp_clickedSavePopUp(anchor)
         return;
     }
     PopUp_markAsSaved(popUp);
-    EventsMan_commitChanges(id);
     $(popUp).find('.unsaved').removeClass('unsaved');
+    EventsMan_commitChanges(id);
 }
 function PopUp_clickedUndo(anchor)
 {
@@ -527,6 +554,6 @@ function PopUp_clickedUndo(anchor)
     var id = PopUp_getID(popUp);
     $(popUp).find('#save_button').addClass('hide');
     $(popUp).find('#undo_button').addClass('hide');
-    EventsMan_cancelChanges(id);
     $(popUp).find('.unsaved').removeClass('unsaved');
+    EventsMan_cancelChanges(id);
 }

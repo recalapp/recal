@@ -71,8 +71,8 @@ class Course_Listing(models.Model):
 
 class Section(models.Model):
     TYPE_ALL = "ALL"
-    TYPE_CLA = "CLASS"
-    TYPE_DRI = "DRILL"
+    TYPE_CLA = "CLA"
+    TYPE_DRI = "DRI"
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
@@ -121,6 +121,8 @@ class User_Section_Table(models.Model):
 class Event_Group(models.Model):
     # relationships
     section = models.ForeignKey(Section)
+    registrar_id = models.CharField(max_length=10, null=True, blank=True)
+
     def __unicode__(self):
         if self.best_revision():
             return 'Event group: ' +  self.best_revision().__unicode__() + ' in ' + self.section.__unicode__()
@@ -176,7 +178,7 @@ class Event(models.Model):
         
         Arguments: username (optional). If not specified, returns globally-seen last approved revision.
         """
-        if self.event_revision_set.all():
+        if self.event_revision_set.exists():
             latest_approved = self.event_revision_set.filter(Q(approved=True) | Q(modified_user__user__username=netid)).latest('modified_time')
             #if netid:
             #    latest_mine = self.event_revision_set.filter(modified_user__user__username=netid).latest('modified_time') #TODO this has a bug where if the filter eliminates everything, we are screwed
@@ -262,6 +264,8 @@ class User_Profile(models.Model):
     sections = models.ManyToManyField(Section, through='User_Section_Table', blank=True,null=True)
     ui_state_restoration = models.TextField(blank=True,null=True)
     hidden_events = models.TextField(blank=True,null=True)
+    ui_agenda_pref = models.TextField(blank=True,null=True)
+    ui_calendar_pref = models.TextField(blank=True,null=True)
 
     def __unicode__(self):
         """
@@ -333,6 +337,13 @@ def clear_all_data():
     Section.objects.all().delete()
     Course.objects.all().delete()
     Semester.objects.all().delete()
+
+def clear_events():
+    Event_Revision.objects.all().delete()
+    Event.objects.all().delete()
+    Event_Group_Revision.objects.all().delete()
+    Event_Group.objects.all().delete()
+
     
 def get_cur_semester():
     import settings.common as settings

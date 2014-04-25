@@ -57,7 +57,7 @@ function PopUp_setToCourseID(popUp, courseID)
             choices.push({
                 value: section.section_id,
                 pretty: section.section_name,
-                selected: $.inArray(section.section_id, enrolledSections) > -1,
+                selected: enrolledSections.contains(section.section_id),
             });
         });
         choices.sort(function(a, b){
