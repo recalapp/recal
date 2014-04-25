@@ -2,9 +2,11 @@ from django.utils.dateformat import format
 from django.utils import timezone
 
 import json
+import re
 
 from nice.models import *
 from datetime import *
+
 
 # TODO(Naphat, Maxim): Should we switch netid parameter inputs to User object inputs from request.user? May save a database call.
 
@@ -524,3 +526,51 @@ def construct_section_dict(section):
         'section_id': section.id,
         'section_name': section.name,
     }
+
+
+
+def search_classes(query):
+    """
+    Returns list of classes for an autocomplete query.
+
+    Designed to handle many query forms, including these examples:
+    * COS
+    * COS 33 (matches all 33*)
+    * COS advanced
+    * COS 333
+    * COS333advanced
+    * programming TECHNIQUES (case doesn't matter)
+    * COS ELE
+    """
+    q = query.lower()
+    filtered = Course.objects
+
+    # First, search input string for any two, three, or four digit numbers. Use results to filter by course number.
+    class_num = re.search(r'(\d{2,4})', q)
+    if class_num:
+        num = class_num.group()
+        filtered = filtered.filter(Q(course_listing__number__contains = num)) # filter by this course number
+        q = q.replace(num, ' ') # remove from remaining query (replace with space so that "COS333advanced" becomes "COS advanced", not"COSadvanced")
+    
+
+    # Then, if any remaining parts are three letter string and are in depts list, filter by them.
+    parts = q.split() # split string by spaces
+    all_depts = [x.lower() for x in list(Course_Listing.objects.values_list('dept', flat=True).distinct())]
+    for p in parts:
+        if p in all_depts:
+            filtered = filtered.filter(Q(course_listing__dept__iexact = p)) # filter by this department
+            q = q.replace(p, '') # remove from remaining query
+
+
+
+    # Filter title by everything that wasn't used. I.e. when we used the dept name remove it from original string, and same for matched course numbe
+    q = q.strip() # remove spaces that class_num replacing might have added
+    if len(q) > 0:
+        filtered = filtered.filter(Q(title__icontains=q))
+
+    courses = filtered[:20] # top 20 results
+    results = []
+    for c in courses:
+        results.append(construct_course_dict(c))
+        #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
+    return results

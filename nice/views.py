@@ -166,53 +166,15 @@ def enroll_sections(request):
 @login_required
 def get_classes(request):
     """
-    Returns list of classes for an autocomplete query.
-
-    Designed to handle many query forms, including these examples:
-    * COS
-    * COS 33 (matches all 33*)
-    * COS advanced
-    * COS 333
-    * COS333advanced
-    * programming TECHNIQUES (case doesn't matter)
-    * COS ELE
+    Returns list of classes for an autocomplete query. Used on profile (class and section enrollment) page.
     """
     if request.is_ajax():
-        q = request.GET.get('term', '').lower() # autocomplete query
-        print 'query:', q
-        filtered = Course.objects
-
-        # First, search input string for any two, three, or four digit numbers. Use results to filter by course number.
-        class_num = re.search(r'(\d{2,4})', q)
-        if class_num:
-            num = class_num.group()
-            filtered = filtered.filter(Q(course_listing__number__contains = num)) # filter by this course number
-            q = q.replace(num, ' ') # remove from remaining query (replace with space so that "COS333advanced" becomes "COS advanced", not"COSadvanced")
-        
-
-        # Then, if any remaining parts are three letter string and are in depts list, filter by them.
-        parts = q.split() # split string by spaces
-        all_depts = [x.lower() for x in list(Course_Listing.objects.values_list('dept', flat=True).distinct())]
-        for p in parts:
-            if p in all_depts:
-                filtered = filtered.filter(Q(course_listing__dept__iexact = p)) # filter by this department
-                q = q.replace(p, '') # remove from remaining query
-
-
-
-        # Filter title by everything that wasn't used. I.e. when we used the dept name remove it from original string, and same for matched course numbe
-        q = q.strip() # remove spaces that class_num replacing might have added
-        if len(q) > 0:
-            filtered = filtered.filter(Q(title__icontains=q))
-
-        courses = filtered[:20] # top 20 results
-        results = []
-        for c in courses:
-            results.append(queries.construct_course_dict(c))
-            #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
+        q = request.GET.get('term', '') # autocomplete query
+        results = queries.search_classes(q)
         data = json.dumps(results) 
         status = 200 # OK
     else:
+        data = 'fail'
         status = 400 # Bad Request (need to use AJAX)
     return HttpResponse(data, 'application/json', status=status)
 
