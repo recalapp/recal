@@ -344,7 +344,7 @@ def clear_events():
 
     
 def get_cur_semester():
-    import settings
+    import settings.common as settings
     try:
         return Semester.objects.get(term_code = settings.CURR_TERM)
     except: # CURR_TERM is invalid or not specified

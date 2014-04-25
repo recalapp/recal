@@ -186,7 +186,11 @@ def modify_events(netid, events):
 
         ## Handle recurring events
         if event_dict['recurring'] is True:
-            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1), event_dict['event_end']+timedelta(days=1), new_event_group_rev.end_date, event_dict['recurrence_days'], event_dict['recurrence_interval']) # events in this group starting with next day
+            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1),
+                                                event_dict['event_end']+timedelta(days=1),
+                                                new_event_group_rev.end_date,
+                                                event_dict['recurrence_days'],
+                                                event_dict['recurrence_interval'])   # events in this group starting with next day
         else:
             event_dates = [(event_dict['event_start'], event_dict['event_end'])]
         def create_new_events(dates):

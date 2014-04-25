@@ -18,7 +18,7 @@ import urllib2
 from bs4 import BeautifulSoup
 import re
 from datetime import datetime
-import settings
+import settings.common as settings
 
 #TERM_CODE = 1144  # spring 2014
 TERM_CODE = settings.CURR_TERM
@@ -201,6 +201,8 @@ def create_or_update_events(section, section_object):
     str_end_date = schedule.find('end_date').text
     end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
 
+
+
     # count the occurrences of this event
     # so the titles can be: 'Lecture 1', 'Lecture 2', and so on
     event_count = 0
@@ -208,15 +210,24 @@ def create_or_update_events(section, section_object):
     for meeting in meetings:
         event_count += 1
 
+        days = []
+        for day in meeting.find('days'):
+            days.append(DAYS[day.text])
+
+        # The event_start of any event must fall on a day the event occurs.
+        day_offset = timedelta(days=0)
+        if len(days) > 0:
+            day_offset = timedelta(days=days[0])
+
         # the times are in the format:
         # HH:MM AM/PM
         str_end_time = meeting.find('end_time').text
         str_end_date_time = str_start_date + str_end_time
-        end_date_time = datetime.strptime(str_end_date_time, '%Y-%m-%d%I:%M %p')
+        end_date_time = datetime.strptime(str_end_date_time, '%Y-%m-%d%I:%M %p') + day_offset
 
         str_start_time = meeting.find('start_time').text
         str_start_date_time = str_start_date + str_start_time
-        start_date_time = datetime.strptime(str_start_date_time, '%Y-%m-%d%I:%M %p')
+        start_date_time = datetime.strptime(str_start_date_time, '%Y-%m-%d%I:%M %p') + day_offset
 
         try:
             location = meeting.find('building').find('name').text + ' ' + meeting.find('room').text
@@ -224,9 +235,6 @@ def create_or_update_events(section, section_object):
             location = ''
 
         # create event_group
-        days = []
-        for day in meeting.find('days'):
-            days.append(DAYS[day.text])
 
         event_type = section_object.section_type[0:2]
         type_is_valid = False
@@ -249,7 +257,7 @@ def create_or_update_events(section, section_object):
             'event_start': start_date_time,
             'event_end' : end_date_time,
             'event_title': event_title,
-            'event_description': '',
+            'event_description': 'Add a description...',
             # TODO: figure out how to pass the real type
             'event_type': event_type,
             # -1 for new event
@@ -260,7 +268,7 @@ def create_or_update_events(section, section_object):
             'recurrence_days' : days,
             # we assume the class is weekly
             'recurrence_interval': 1,
-            'recurrence_end': end_date,
+            'recurrence_end': end_date, # or None?
         }])
         
         # create event
