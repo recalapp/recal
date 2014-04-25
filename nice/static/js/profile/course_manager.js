@@ -11,6 +11,7 @@ CourseManager.prototype.allSections = {};
 CourseManager.prototype.isIdle = true;
 CourseManager.prototype.queue = [];
 CourseManager.prototype.modified = false;
+CourseManager.prototype.queries = {};
 
 var courseManager = null;
 var CourseMan_updateListeners = [];
@@ -231,6 +232,12 @@ function CourseMan_handleQueue()
 
 function CourseMan_pullAutoComplete(request, complete)
 {
+    if (request.term in courseManager.queries)
+    {
+        if (complete)
+            complete(courseManager.queries[request.term]);
+        return;
+    }
     LO_show();
     $.getJSON('/api/classlist', request, function(data, status, xhr){
         // process data
@@ -238,6 +245,7 @@ function CourseMan_pullAutoComplete(request, complete)
             CourseMan_saveCourseDict(this);
         });
         LO_hide();
+        courseManager.queries[request.term] = data;
         if (complete)
             complete(data);
     });

@@ -178,7 +178,7 @@ class Event(models.Model):
         
         Arguments: username (optional). If not specified, returns globally-seen last approved revision.
         """
-        if self.event_revision_set.all():
+        if self.event_revision_set.exists():
             latest_approved = self.event_revision_set.filter(Q(approved=True) | Q(modified_user__user__username=netid)).latest('modified_time')
             #if netid:
             #    latest_mine = self.event_revision_set.filter(modified_user__user__username=netid).latest('modified_time') #TODO this has a bug where if the filter eliminates everything, we are screwed
