@@ -4,8 +4,7 @@ function EventsMan_init()
         return;
     EVENTS_INIT = true;
     eventsManager = new _EventsMan_new();
-    eventsManager.courseEventsMap = {};
-    eventsManager.sectionEventsMap = {};
+    eventsManager.loadedCourseIDs = new Set();
     EventsMan_pullFromServer(function(){
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
@@ -19,9 +18,17 @@ function EventsMan_pullFromServer(complete)
 {
     if (!eventsManager.isIdle)
         return;
+    var courseIDs = CourseMan_getEnrolledCourses();
+    var filtered = [];
+    for (var i = 0; i < courseIDs.length; i++) {
+        var id = courseIDs[i];
+        if (!(id in eventsManager.loadedCourseIDs))
+            filtered.push(id);
+    };
+    if (filtered.length == 0)
+        return;
     LO_show();
     eventsManager.isIdle = false;
-    var courseIDs = CourseMan_getEnrolledCourses();
     var start = moment.unix(CUR_SEM.start_date);
     var end = moment.unix(CUR_SEM.start_date);
     end.week(start.week() + 1);
@@ -47,6 +54,9 @@ function EventsMan_pullFromServer(complete)
             }
             EventsMan_constructOrderArray();
             eventsManager.lastSyncedTime = moment().unix();
+            for (var i = 0; i < filtered.length; i++) {
+                eventsManager.loadedCourseIDs.add(filtered[i]);
+            };
             eventsManager.isIdle = true;
 
             if (complete != null)

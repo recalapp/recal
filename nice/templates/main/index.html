@@ -17,6 +17,26 @@
     {% endif %}
 </div>
 <div id="content_bounds"></div>
+<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Dashboard Settings</h4>
+            </div>
+            <div class="modal-body">
+                <div id="agenda_options" class="row">
+                    
+                </div>
+                <div id="calendar_options" class="row">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block link_or_script_blocking %}
@@ -40,6 +60,17 @@
 <script>
 var USER_NETID = '{{ username }}';
 var CACHEMAN_PRELOAD = ['{% url 'nice.views.agenda' %}', '{% url 'nice.views.popup' %}', '{% url 'nice.views.agenda_header' %}', '{% url 'nice.views.typepicker' %}', '{% url 'nice.views.sectionpicker' %}', '{% url 'nice.views.notifications' %}', '{% url 'nice.views.event_picker' %}', '{% url 'nice.views.event_picker_item' %}', '{% url 'nice.views.loading' %}'];
+var AGENDA_FILTER = [
+    {% for type in agenda_pref %}
+    '{{ type }}',
+    {% endfor %}
+];
+var CAL_FILTER = [
+    {% for type in calendar_pref %}
+    '{{ type }}',
+    {% endfor %}
+];
+
 </script>
 {% endblock %}
 
@@ -53,6 +84,9 @@ var CACHEMAN_PRELOAD = ['{% url 'nice.views.agenda' %}', '{% url 'nice.views.pop
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
 <script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
 <script src="{% static 'js/set.js' %}"></script>
+<script src="{% static 'js/segmented_control.js' %}"></script>
+<script src="{% static 'js/segmented_control_multi.js' %}"></script>
+<script src="{% static 'js/dashboard/settings.js' %}"></script>
 <script src="{% static 'js/loading.js' %}"></script>
 <script src="{% static 'js/dashboard/agenda.js' %}"></script>
 <script src="{% static 'js/dashboard/keymap.js' %}"></script>

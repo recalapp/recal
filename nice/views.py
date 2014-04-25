@@ -36,11 +36,20 @@ def index(request):
         ui_sr = json.loads(user.ui_state_restoration)
         if 'nav_page' in ui_sr:
             page = ui_sr['nav_page']
+    agenda_pref = ['AS', 'RS', 'EX']
+    if user.ui_agenda_pref:
+        agenda_pref = json.loads(user.ui_agenda_pref)
+    calendar_pref = ['RS', 'EX', 'LE', 'LA', 'OH', 'PR']
+    if user.ui_calendar_pref:
+        calendar_pref = json.loads(user.ui_calendar_pref)
+
     return render(request, "main/index.html", {
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
         'nav_page': page,
         'is_mobile': request.mobile,
+        'agenda_pref': agenda_pref,
+        'calendar_pref': calendar_pref
         })
 
 def logout(request):
@@ -329,6 +338,12 @@ def save_state_restoration(request):
     netid = request.user.username
     state_restoration = request.POST['state_restoration']
     return HttpResponse(str(int(queries.save_state_restoration(netid=netid, state_restoration=state_restoration))))
+def save_ui_pref(request):
+    user = request.user.profile
+    user.ui_agenda_pref = request.POST['agenda_pref']
+    user.ui_calendar_pref = request.POST['calendar_pref']
+    user.save()
+    return HttpResponse('')
 
 def all_sections(request):
     all_sections = {}

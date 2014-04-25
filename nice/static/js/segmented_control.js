@@ -48,3 +48,7 @@ function SC_unhighlight(button)
 {
     $(button).addClass('btn-default').removeClass('btn-primary');
 }
+function SC_isHighlighted(button)
+{
+    return $(button).hasClass('btn-primary');
+}

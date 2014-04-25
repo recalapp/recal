@@ -1,4 +1,4 @@
-
+var CAL_LOADING = false;
 //eventSources: [{
 //    events: [{
 //            id: "1",
@@ -17,6 +17,10 @@ function Cal_init() {
     EventsMan_addUpdateListener(function(){
         if (Cal_active())
             Cal_reload();
+    });
+    $('#'+SE_id).on('close', function(ev){
+        //if (Cal_active())
+        Cal_reload();
     });
 
     Cal_options.height = height;
@@ -76,29 +80,32 @@ function Cal_active()
 }
 function Cal_reload()
 {
+    if (CAL_LOADING)
+        return;
+    CAL_LOADING = true;
     try {
         var eventIDs = EventsMan_getAllEventIDs();
         Cal_eventSource.events = [];
         setTimeout(function(){
-                $.each(eventIDs, function(index){
-                    eventDict = EventsMan_getEventByID(this);
-                    if (!eventDict)
-                        return;
-                    if (!CAL_FILTER.contains(eventDict.event_type))
-                        return;
-                    var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
-                    Cal_eventSource.events.push({
-                        id: eventDict.event_id,
-                        title: eventDict.event_title,
-                        start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
-                        end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
-                        highlighted: shouldHighlight,
-                        backgroundColor: shouldHighlight ? '#428be8' : '#74a2ca'
-                    });
+            $.each(eventIDs, function(index){
+                eventDict = EventsMan_getEventByID(this);
+                if (!eventDict)
+                    return;
+                if (!CAL_FILTER.contains(eventDict.event_type))
+                    return;
+                var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
+                Cal_eventSource.events.push({
+                    id: eventDict.event_id,
+                    title: eventDict.event_title,
+                    start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
+                    end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
+                    highlighted: shouldHighlight,
+                    backgroundColor: shouldHighlight ? '#428be8' : '#74a2ca'
                 });
-                $("#calendarui").fullCalendar("refetchEvents");
-            }, 10);
-        
+            });
+            $("#calendarui").fullCalendar("refetchEvents");
+        }, 10);
+        CAL_LOADING = false;
     }
     catch(err) {
     }
