@@ -86,12 +86,19 @@ def modify_events(netid, events):
 
     For example, you can call this with: modify_events(get_community_user().username, [{...}])
 
+    Returns:
+    * changed_ids dictionary: mapping from previous ID (usually a temporary one set in the UI) to the list [actual event ID, actual event_group ID this event belongs to]
+    * deleted_ids array (list of event IDs)
+
     """
     try:
         user = User.objects.get(username=netid).profile
     except:
         raise Exception("Invalid user")
+    
     changed_ids = {}
+    deleted_ids = []
+
     for event_dict in events:
         event_dict = parse_json_event_dict(event_dict) # handles datetimes and such
         new_modified_time = get_current_utc() # don't trust client's timestamps
@@ -174,7 +181,7 @@ def modify_events(netid, events):
             # create the actual event
             event = Event(group=event_group)
             event.save()
-            changed_ids[event_dict['event_id']] = event.id
+            changed_ids[event_dict['event_id']] = [event.pk, event_group.pk] # mark down new event ID and its event group ID
         
         
         # Now that we have a new or existing event selected, create a new revision.
@@ -232,6 +239,7 @@ def modify_events(netid, events):
                     
                     # find and remove old events
                     old_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
+                    deleted_ids.extend([oe.pk for oe in old_events])
                     old_events.delete()
 
                     # recreate events at their new times
@@ -244,7 +252,7 @@ def modify_events(netid, events):
                 old, new = previous_best_revision.compare(new_rev)
 
                 # By default, recurring event edit settings is to change all future events
-                # Select all future events in this event group (other than this event)
+                # Select all future events in this event group (other than this event) (then we overwrite changed fields)
                 all_future_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
                 for future_event in all_future_events: # Edit each future event
                     # Take its last revision, as seen by this user
@@ -255,7 +263,7 @@ def modify_events(netid, events):
                     this_event_last_rev.approved = False
                     this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
         
-    return changed_ids
+    return changed_ids, deleted_ids
 
 def hide_events(netid, event_IDs):
     """
