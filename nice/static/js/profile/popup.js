@@ -61,10 +61,11 @@ function PopUp_setToCourseID(popUp, courseID)
             });
         });
         choices.sort(function(a, b){
-            a.pretty.localeCompare(b.pretty);
+            return a.pretty.localeCompare(b.pretty);
         });
         var segmented = SC_initWithChoices(sectionType, choices);
-        $(popUp).find('.panel-body').append(segmented);
+        CourseMan_enrollSectionID(courseID, choices[0].value);
+        $(popUp).find('#popup-title').after(segmented);
         $(segmented).on('select', function(ev, choices){
             $.each(choices, function(sectionID, enroll){
                 if (enroll)

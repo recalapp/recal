@@ -18,7 +18,7 @@ function SC_initWithChoices(heading, choices)
             SC_select(this);
         });;
         $control.append($button);
-        if (this.selected)
+        if (this.selected || index == 0)
             SC_select($button);
     });
     $container.append($control);
