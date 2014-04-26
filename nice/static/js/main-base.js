@@ -75,6 +75,6 @@ function loadDarkTheme()
         document.createStyleSheet('/static/cyborg/bootstrap.min.css');
     }
     else {
-        $('head').append($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.min.css' type='text/css' media='screen' />"));
+        $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
     }
 }

@@ -11,12 +11,12 @@ function SE_init()
             {
                 value: 'w',
                 pretty: 'White',
-                selected: true,
+                selected: THEME == 'w',
             },
             {
                 value: 'b',
                 pretty: 'Black',
-                selected: false,
+                selected: THEME == 'b',
             },
         ]);
         $(theme_sc).on('select', function(ev, choices){

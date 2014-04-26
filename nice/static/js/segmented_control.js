@@ -13,7 +13,7 @@ function SC_initWithChoices(heading, choices)
     $container.find('h5').text(heading);
     var $control = $('<div>').addClass('btn-group');
     $.each(choices, function(index){
-        var $button = $('<button>').addClass('btn').addClass('btn-sm').addClass('btn-default').text(this.pretty).data('value', this.value).on('click', function(ev){
+        var $button = $('<button>').addClass('btn').addClass('btn-sm').text(this.pretty).data('value', this.value).on('click', function(ev){
             ev.preventDefault();
             SC_select(this);
         });;
@@ -42,11 +42,11 @@ function SC_select(button)
 }
 function SC_highlight(button)
 {
-    $(button).addClass('btn-primary').removeClass('btn-default');
+    $(button).addClass('btn-primary');
 }
 function SC_unhighlight(button)
 {
-    $(button).addClass('btn-default').removeClass('btn-primary');
+    $(button).removeClass('btn-primary');
 }
 function SC_isHighlighted(button)
 {

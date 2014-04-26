@@ -1402,7 +1402,7 @@ pre code {
 }
 table {
   max-width: 100%;
-  background-color: #181818;
+  /*background-color: #181818;*/
 }
 th {
   text-align: left;
