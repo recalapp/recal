@@ -582,3 +582,29 @@ def search_classes(query):
         results.append(construct_course_dict(c))
         #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
     return results
+
+
+def get_unapproved_revisions(netid, count=3):
+    """Fetches [count] (default 3) unapproved revisions for this user to vote on.
+
+    How it works: Filter to revisions that:
+    - classes the user is in
+    - not created by the user
+    - bias towards events the user has participated in before?
+    - are newer than the last approved revision
+    - are future events
+    - are unapproved, regardless of what their current vote total is
+    """
+    pass
+
+
+def process_vote_on_revision(netid, isPositive, revision_id):
+    """Handles users' votes on unapproved revisions -- checks the votes for eligibility, records them, then processes side-effects (approval, points).
+
+    """
+    # check if voter is eligible to vote on this revision, else stop
+    # record the vote 
+    # recompute total vote count for this revision
+    # if the revision passes the approval threshold, approve it
+    # award points to users -- points to the voter, and points to the person who made the revision
+    pass
