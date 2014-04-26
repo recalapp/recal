@@ -266,6 +266,7 @@ class User_Profile(models.Model):
     hidden_events = models.TextField(blank=True,null=True)
     ui_agenda_pref = models.TextField(blank=True,null=True)
     ui_calendar_pref = models.TextField(blank=True,null=True)
+    ui_pref = models.TextField(blank=True,null=True) # msc. pref, like themes
 
     def __unicode__(self):
         """

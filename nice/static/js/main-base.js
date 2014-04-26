@@ -63,3 +63,18 @@ function nl2br(text)
     return text.replace(/(\n|\r)/g, "<br>");
 }
 
+function loadWhiteTheme()
+{
+    $('.theme').removeClass('dark');
+    $('#dark_theme_css').remove();
+}
+function loadDarkTheme()
+{
+    $('.theme').addClass('dark');
+    if (document.createStyleSheet) {
+        document.createStyleSheet('/static/cyborg/bootstrap.min.css');
+    }
+    else {
+        $('head').append($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.min.css' type='text/css' media='screen' />"));
+    }
+}

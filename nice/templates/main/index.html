@@ -25,6 +25,8 @@
                 <h4 class="modal-title" id="myModalLabel">Dashboard Settings</h4>
             </div>
             <div class="modal-body">
+                <div id="theme_options" class="row">
+                </div>
                 <div id="agenda_options" class="row">
                     
                 </div>
@@ -43,7 +45,7 @@
 <link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}"> 
 <!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
-<link rel="stylesheet" href="{% static 'lumen/bootstrap.min.css' %}"> 
+<link rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}"> 
 
 
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
@@ -70,6 +72,15 @@ var CAL_FILTER = [
     '{{ type }}',
     {% endfor %}
 ];
+var CUR_SEM = {
+    term_code: '{{ cur_sem.term_code }}',
+    start_date: '{{ cur_sem.start_date }}',
+    end_date: '{{ cur_sem.end_date }}',
+}
+var THEME = '{{ theme }}';
+{% if is_mobile %}
+AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
+{% endif %}
 
 </script>
 {% endblock %}

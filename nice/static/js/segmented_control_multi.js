@@ -40,3 +40,18 @@ function SCM_deselect(button)
     });
     $(button).trigger('select', choices);
 }
+function SCM_setToChoices(scm, choices)
+{
+    $(scm).find('button').each(function(index){
+        SCM_deselect(this);
+        for (var i = 0; i < choices.length; i++) {
+            var choice = choices[i];
+            if (choice.value == $(this).data('value'))
+            {
+                if (choice.selected)
+                    SCM_select(this);
+                break;
+            }
+        };
+    });
+}

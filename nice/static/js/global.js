@@ -1,4 +1,5 @@
 var MAIN_TIMEZONE = 'America/New_York';
+var DAYS_DICT = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'S'];
 String.prototype.escapeHTML = function() {
     var tagsToReplace = {
         '&': '&amp;',

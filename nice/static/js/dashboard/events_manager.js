@@ -63,6 +63,26 @@ function EventsMan_init()
             oldTime.minute(newTime.minute());
             eventDict[field] = oldTime.unix();
         }
+        else if (field == 'event_recurrence')
+        {
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+            var eventDict = eventsManager.uncommitted[id];
+            if (value)
+            {
+                // TODO figure out how to get last day of class (not the same as last day of semester - reading period, etc.)
+                eventDict['recurrence_days'] = JSON.stringify(value);
+                eventDict['recurrence_interval'] = 1;
+                eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
+            }
+            else 
+            {
+                // delete recurrence
+                delete eventDict['recurrence_days'];
+                delete eventDict['recurrence_end'];
+                delete eventDict['recurrence_interval'];
+            }
+        }
         else
         {
             if (id in eventsManager.events && eventsManager.events[id][field] == value)
@@ -72,14 +92,15 @@ function EventsMan_init()
             eventsManager.uncommitted[id][field] = value;
         }
         eventsManager.uncommitted[id].modified_time = moment().unix()
-        // should first check that this is a new event.
-        
-        // display notifications if similar events exist.
-        $.post('get/similar-events', {
-            event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
-        }, function (data){
-            NO_showSimilarEventsNotification(id, data);
-        }, 'json')
+        if (!(id in eventsManager.events)) // new event
+        {
+            // display notifications if similar events exist.
+            $.post('get/similar-events', {
+                event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
+            }, function (data){
+                NO_showSimilarEventsNotification(id, data);
+            }, 'json')
+        }
         // uncomment to remove save button behavior
         // eventsManager.updatedIDs.add(id)
         _EventsMan_callUpdateListeners()

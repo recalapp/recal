@@ -78,6 +78,11 @@ function init()
             UI_pin(newID);
         }
     });
+    if (THEME == 'w')
+        loadWhiteTheme();
+    else
+        loadDarkTheme();
+
 }
 function Nav_save()
 {

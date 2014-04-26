@@ -42,14 +42,24 @@ def index(request):
     calendar_pref = ['RS', 'EX', 'LE', 'LA', 'OH', 'PR']
     if user.ui_calendar_pref:
         calendar_pref = json.loads(user.ui_calendar_pref)
+    theme = 'w'
+    if user.ui_pref:
+        theme = json.loads(user.ui_pref)['theme']
 
-    response = render(request, "main/index.html", {
+    cur_sem = get_cur_semester()
+    return render(request, "main/index.html", {
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
         'nav_page': page,
         'is_mobile': request.mobile,
         'agenda_pref': agenda_pref,
-        'calendar_pref': calendar_pref
+        'calendar_pref': calendar_pref,
+        'cur_sem': {
+            'term_code': cur_sem.term_code,
+            'start_date': format(cur_sem.start_date, 'U'),
+            'end_date': format(cur_sem.end_date, 'U'),
+        },
+        'theme': theme,
         })
     response.set_cookie('netid', request.user.username)
     return response
@@ -295,7 +305,6 @@ def modify_events(request):
 
 def state_restoration(request):
     netid = request.user.username
-    # TODO what to return when null?
     state_restoration = queries.get_state_restoration(netid=netid)
     if state_restoration:
         return HttpResponse(state_restoration, content_type='application/javascript')
@@ -310,6 +319,7 @@ def save_ui_pref(request):
     user = request.user.profile
     user.ui_agenda_pref = request.POST['agenda_pref']
     user.ui_calendar_pref = request.POST['calendar_pref']
+    user.ui_pref = request.POST['ui_pref']
     user.save()
     return HttpResponse('')
 

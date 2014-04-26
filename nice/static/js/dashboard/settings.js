@@ -7,6 +7,33 @@ function SE_init()
         $(this).find('#agenda_options').append(agenda_scm);
         var calendar_scm = SE_addTypeSegmentedControlWithFilter('Calendar', CAL_FILTER);
         $(this).find('#calendar_options').append(calendar_scm);
+        var theme_sc = SC_initWithChoices('Theme', [
+            {
+                value: 'w',
+                pretty: 'White',
+                selected: true,
+            },
+            {
+                value: 'b',
+                pretty: 'Black',
+                selected: false,
+            },
+        ]);
+        $(theme_sc).on('select', function(ev, choices){
+            var chosen;
+            $.each(choices, function(key, selected){
+                if (selected) {
+                    chosen = key;
+                    return false;
+                }
+            });
+            THEME = chosen;
+            if (chosen == 'w')
+                loadWhiteTheme();
+            else
+                loadDarkTheme();
+        });
+        $(this).find('#theme_options').append(theme_sc);
     });
     $('#' + SE_id).on('hide.bs.modal', function(){
         // save
@@ -24,6 +51,9 @@ function SE_init()
             data: {
                 agenda_pref: JSON.stringify(AGENDA_FILTER),
                 calendar_pref: JSON.stringify(CAL_FILTER),
+                ui_pref: JSON.stringify({
+                    theme: THEME,
+                })
             },
         });
     });
