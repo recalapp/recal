@@ -66,15 +66,16 @@ function nl2br(text)
 function loadWhiteTheme()
 {
     $('.theme').removeClass('dark');
-    $('#dark_theme_css').remove();
+    $('#theme_css').attr('href','/static/cosmo/bootstrap.css');
 }
 function loadDarkTheme()
 {
     $('.theme').addClass('dark');
-    if (document.createStyleSheet) {
-        document.createStyleSheet('/static/cyborg/bootstrap.min.css');
-    }
-    else {
-        $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
-    }
+    //if (document.createStyleSheet) {
+    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
+    //}
+    //else {
+    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
+    //}
+    $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
 }
