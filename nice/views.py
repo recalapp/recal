@@ -42,6 +42,9 @@ def index(request):
     calendar_pref = ['RS', 'EX', 'LE', 'LA', 'OH', 'PR']
     if user.ui_calendar_pref:
         calendar_pref = json.loads(user.ui_calendar_pref)
+    theme = 'w'
+    if user.ui_pref:
+        theme = json.loads(user.ui_pref)['theme']
 
     cur_sem = get_cur_semester()
     return render(request, "main/index.html", {
@@ -56,6 +59,7 @@ def index(request):
             'start_date': format(cur_sem.start_date, 'U'),
             'end_date': format(cur_sem.end_date, 'U'),
         },
+        'theme': theme,
         })
     response.set_cookie('netid', request.user.username)
     return response
@@ -315,6 +319,7 @@ def save_ui_pref(request):
     user = request.user.profile
     user.ui_agenda_pref = request.POST['agenda_pref']
     user.ui_calendar_pref = request.POST['calendar_pref']
+    user.ui_pref = request.POST['ui_pref']
     user.save()
     return HttpResponse('')
 

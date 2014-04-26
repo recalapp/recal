@@ -51,6 +51,9 @@ function SE_init()
             data: {
                 agenda_pref: JSON.stringify(AGENDA_FILTER),
                 calendar_pref: JSON.stringify(CAL_FILTER),
+                ui_pref: JSON.stringify({
+                    theme: THEME,
+                })
             },
         });
     });

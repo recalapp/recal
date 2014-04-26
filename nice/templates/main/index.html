@@ -77,7 +77,7 @@ var CUR_SEM = {
     start_date: '{{ cur_sem.start_date }}',
     end_date: '{{ cur_sem.end_date }}',
 }
-var THEME = 'w';
+var THEME = '{{ theme }}';
 {% if is_mobile %}
 AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 {% endif %}
