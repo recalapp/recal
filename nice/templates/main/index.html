@@ -25,6 +25,8 @@
                 <h4 class="modal-title" id="myModalLabel">Dashboard Settings</h4>
             </div>
             <div class="modal-body">
+                <div id="theme_options" class="row">
+                </div>
                 <div id="agenda_options" class="row">
                     
                 </div>
@@ -75,6 +77,7 @@ var CUR_SEM = {
     start_date: '{{ cur_sem.start_date }}',
     end_date: '{{ cur_sem.end_date }}',
 }
+var THEME = 'w';
 {% if is_mobile %}
 AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 {% endif %}
