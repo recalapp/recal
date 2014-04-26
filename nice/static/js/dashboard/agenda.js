@@ -126,6 +126,10 @@ function Agenda_loadEvents(eventIDs)
         if (UI_isMain(agenda.id))
             Agenda_highlight(agenda);
     });
+    if (THEME == 'w')
+        $('.theme').removeClass('dark');
+    else
+        $('.theme').addClass('dark');
 }
 function Agenda_insertHeader(text)
 {
