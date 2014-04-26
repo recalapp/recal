@@ -108,6 +108,7 @@ function Cal_reload()
         CAL_LOADING = false;
     }
     catch(err) {
+        CAL_LOADING = false;
     }
 }
 
