@@ -14,6 +14,8 @@ from nice.forms import *
 from nice import queries
 from datetime import datetime
 
+from django.views.decorators.clickjacking import xframe_options_exempt
+
 import json
 
 # Views go here.
@@ -25,6 +27,7 @@ To restrict a method to staff members only, decorate with @staff_member_required
 Alternatives: @user_passes_test(lambda u: u.is_staff) or @permission_required('is_superuser')
 '''
 
+@xframe_options_exempt # can load in Chrome extension
 def index(request):
     if not request.user.is_authenticated():
         return redirect('cas_login')
