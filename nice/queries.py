@@ -590,13 +590,45 @@ def get_unapproved_revisions(netid, count=3):
     How it works: Filter to revisions that:
     - classes the user is in
     - not created by the user
-    - bias towards events the user has participated in before?
     - are newer than the last approved revision
-    - are future events
     - are unapproved, regardless of what their current vote total is
+    - don't belong to an event this user hid previously
+    
+    Later, perhaps add these constraints:
+    - bias towards events the user has participated in before?
+    - are future events?
     """
-    pass
+    try:
+        user = User.objects.get(username=netid).profile
+    except Exception, e:
+        return []
+    all_sections = user.sections.all()
+    hidden_events = user.hidden_events
+    if hidden_events:
+        hidden_events = json.loads(hidden_events)
+    else:
+        hidden_events = []
+    filtered = Event.objects.filter(group__section__in = all_sections)
+    survived = []
+    for event in filtered:
+        if event.id in hidden_events:
+            continue  # skip this event if it's in the user hid it previously
 
+        best_rev = event.best_revision(netid=netid) # load the best revision once
+        unapproved_revs = event.revision_set.filter(approved=False)
+        
+        if best_rev:
+            unapproved_revs = unapproved_revs.filter(modified_time__gte = best_rev.modified_time) # newer than the last approved revision (if one exists)
+        
+        unapproved_revs = unapproved_revs.order_by('modified_time') # earlier ones first, so they don't get missed
+
+        for unapproved_rev in unapproved_revs:
+            # conditions we don't want are below -- if any are matched, continue to the next unapproved revision (or next event)
+            if unapproved_rev.modified_user = user: # avoid revisions made by this user
+                continue
+            # if we made it to here, then the revision ought to be voted upon
+            survived.append(construct_event_dict(event, netid=netid, best_rev=unapproved_rev))
+    return survived
 
 def process_vote_on_revision(netid, isPositive, revision_id):
     """Handles users' votes on unapproved revisions -- checks the votes for eligibility, records them, then processes side-effects (approval, points).
