@@ -6,9 +6,13 @@ from django.test import TestCase
 from nice.models import *
 from nice.queries import *
 
-class EventMethodTests(TestCase):
+class NewiceTestCase(TestCase):
+	fixtures = ['initial_data.json', 'test_data.json',]
+
+
+class EventMethodTests(NewiceTestCase):
     pass
-class EnrollmentMethodTests(TestCase):
+class EnrollmentMethodTests(NewiceTestCase):
 	""" Handles testing for methods we use for class enrollment.
 	This includes autocomplete, course and section selection, etc.
 	"""
@@ -22,3 +26,7 @@ class EnrollmentMethodTests(TestCase):
 			num_classes.append(len(search_classes(s)))
 		for n in num_classes:
 			self.assertEqual(n, num_classes[0])
+
+	def test_num_users(self):
+		# Validating that fixtures are imported properly
+		self.assertEqual(User.objects.count(), 2)
