@@ -63,6 +63,7 @@ def index(request):
             'end_date': format(cur_sem.end_date, 'U'),
         },
         'theme': theme,
+        'base_url': request.build_absolute_uri()
         })
     response.set_cookie('netid', request.user.username)
     return response
