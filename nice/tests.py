@@ -29,4 +29,4 @@ class EnrollmentMethodTests(NewiceTestCase):
 
 	def test_num_users(self):
 		# Validating that fixtures are imported properly
-		self.assertEqual(User.objects.count(), 2)
+		self.assertEqual(User.objects.count(), 3)

@@ -1,0 +1,107 @@
+
+
+{
+    "pk": 3, 
+    "model": "nice.user_profile", 
+    "fields": {
+        "ui_state_restoration": "", 
+        "lastActivityTime": "2014-04-11T00:47:45.735Z", 
+        "name": null, 
+        "ui_calendar_pref": "[\"RS\",\"EX\",\"LE\",\"LA\",\"OH\",\"PR\"]", 
+        "ui_pref": "{\"theme\":\"w\"}", 
+        "hidden_events": "[]",
+        "ui_agenda_pref": "[\"AS\",\"RS\",\"EX\"]", 
+        "user": 1
+    }
+},
+
+{
+    "pk": 4, 
+    "model": "nice.user_profile", 
+    "fields": {
+        "ui_state_restoration": "", 
+        "lastActivityTime": "2014-04-11T00:47:45.735Z", 
+        "name": null, 
+        "ui_calendar_pref": "[\"RS\",\"EX\",\"LE\",\"LA\",\"OH\",\"PR\"]", 
+        "ui_pref": "{\"theme\":\"w\"}", 
+        "hidden_events": "[]", 
+        "ui_agenda_pref": "[\"AS\",\"RS\",\"EX\"]", 
+        "user": 2
+    }
+},
+
+{
+    "pk": 1, 
+    "model": "nice.user_section_table", 
+    "fields": {
+        "add_date": "2014-04-25T01:06:34.524Z", 
+        "section": 1, 
+        "user": 1
+    }
+},
+{
+    "pk": 2, 
+    "model": "nice.user_section_table", 
+    "fields": {
+        "add_date": "2014-04-25T01:06:34.524Z", 
+        "section": 2, 
+        "user": 1
+    }
+},
+
+
+
+{
+    "pk": 1, 
+    "model": "nice.event_group", 
+    "fields": {
+        "section": 2, 
+        "registrar_id": null
+    }
+},
+
+
+
+{
+    "pk": 1, 
+    "model": "nice.event_group_revision", 
+    "fields": {
+        "recurrence_days": "[3]", 
+        "end_date": "2014-05-13", 
+        "recurrence_interval": 1, 
+        "modified_user": 0, 
+        "modified_time": "2014-04-25T01:40:01.841Z", 
+        "start_date": "2014-02-06", 
+        "approved": true, 
+        "event_group": 1
+    }
+},
+
+
+{
+    "pk": 1, 
+    "model": "nice.event", 
+    "fields": {
+        "group": 1
+    }
+},
+
+
+
+
+{
+    "pk": 1, 
+    "model": "nice.event_revision", 
+    "fields": {
+        "event_description": "Add a description...", 
+        "event_type": "PR", 
+        "event_end": "2014-02-06T19:20:00Z", 
+        "event_title": "Precept", 
+        "modified_user": 0, 
+        "event_start": "2014-02-06T18:30:00Z", 
+        "approved": "True", 
+        "modified_time": "2014-04-25T01:39:58.504Z", 
+        "event_location": "Stanhope Hall 101", 
+        "event": 1
+    }
+}
