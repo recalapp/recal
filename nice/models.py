@@ -179,12 +179,14 @@ class Event(models.Model):
         Arguments: username (optional). If not specified, returns globally-seen last approved revision.
         """
         if self.event_revision_set.exists():
-            latest_approved = self.event_revision_set.filter(Q(approved=True) | Q(modified_user__user__username=netid)).latest('modified_time')
-            #if netid:
-            #    latest_mine = self.event_revision_set.filter(modified_user__user__username=netid).latest('modified_time') #TODO this has a bug where if the filter eliminates everything, we are screwed
-            #    
-            #    if latest_mine.modified_time > latest_approved.modified_time: 
-            #        return latest_mine # their own revision is newest, so show that
+            # Choose either the last approved revision or the last revision this user made, whichever is newer
+            latest_approved = self.event_revision_set.filter(Q(approved=STATUS_APPROVED) | Q(modified_user__user__username=netid)).latest('modified_time') 
+
+            if netid:
+                # Compare to revisions for this event that the user has voted on
+                event_vote = Vote.objects.filter(voter__user__username = netid).filter(voted_on__event__pk=self.pk).filter(score=1).latest('when') # upvote on some revision of this event
+                if event_vote and event_vote.voted_on.modified_time > latest_approved.modified_time: # if the upvoted revision is newer than the last approved revision, then show the upvoted revision instead.
+                    latest_approved = event_vote
             return latest_approved # show the latest approved revision because the user's revisions don't exist or are older
         return None # no revisions available
 
@@ -344,7 +346,7 @@ def make_blank_profile(sender, instance, created, **kwargs):
 post_save.connect(make_blank_profile, sender=User)
 
 
-class Votes(models.Model):
+class Vote(models.Model):
     """Reputation system"""
     # relationships
     voter = models.ForeignKey('User_Profile') # the user who voted
@@ -352,7 +354,7 @@ class Votes(models.Model):
 
     # main fields
     when = models.DateTimeField() # when the vote was placed
-    value = models.IntegerField(default=1) # +1 or -1: upvote or downvote
+    score = models.IntegerField(default=1) # +1 or -1: upvote or downvote
     
     def __unicode__(self):
         return 'Vote by ' + unicode(self.voter) + ' on ' + unicode(self.voted_on)

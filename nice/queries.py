@@ -260,7 +260,7 @@ def modify_events(netid, events):
                     # Edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
                     this_event_last_rev.apply_changes(new)
                     # Save as new unapproved revision.
-                    this_event_last_rev.approved = False
+                    this_event_last_rev.approved = STATUS_PENDING
                     this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
         
     return changed_ids, deleted_ids
