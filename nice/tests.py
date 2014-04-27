@@ -31,7 +31,7 @@ def make_sample_events():
         event_title= "Precept", 
         modified_user=User.objects.get(pk=0).profile,
         event_start= datetime(2014,02,06,18,30,00),
-        approved= True,
+        approved= "S_AP",
         modified_time=get_current_utc(),
         event_location= "Stanhope Hall 101",
         event=event)
@@ -53,7 +53,25 @@ class NewiceTestCase(TestCase):
 		clean_up()
 
 class EventMethodTests(NewiceTestCase):
-    pass
+    def test_best_revision_behavior(self):
+    	"""
+    	Test 4 cases:
+
+    	* A user made a new revision since the last globally-approved revision
+    		Expected: the user sees this one, but other users see the globally-approved revision.
+    	* A user voted on an unapproved revision since the last globally-approved revision
+    		Expected: the user sees the one they voted on, but other users see the globally-approved revision.
+    	* A user voted on an unapproved revision before the last globally-approved revision
+    		Expected: all users see the globally-approved revision.
+		* Since the last globally-approved revision, there are new unapproved revision that the user hasn't interacted with (yet).
+			Expected: all users see the globally-approved revision.
+
+
+
+    	"""
+
+    	
+
 class EnrollmentMethodTests(NewiceTestCase):
 	""" Handles testing for methods we use for class enrollment.
 	This includes autocomplete, course and section selection, etc.
@@ -69,8 +87,12 @@ class EnrollmentMethodTests(NewiceTestCase):
 		for n in num_classes:
 			self.assertEqual(n, num_classes[0])
 
-	def test_num_users(self):
-		# Validating that fixtures are imported properly
-		self.assertEqual(User.objects.count(), 3)
-		
-
+class UnapprovedRevisionTests(NewiceTestCase):
+	def test_appears_in_queue(self):
+		pass
+	def test_vote_threshold_checks(self):
+		pass
+	def test_can_only_vote_once(self):
+		pass
+	def test_points_are_assigned_properly(self):
+		pass

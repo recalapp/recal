@@ -634,6 +634,8 @@ def get_unapproved_revisions(netid, count=3):
             # conditions we don't want are below -- if any are matched, continue to the next unapproved revision (or next event)
             if unapproved_rev.modified_user is user: # avoid revisions made by this user
                 continue
+            if Vote.objects.filter(voted_on=unapproved_rev, voter=user).all(): # if already voted
+                continue
             # if we made it to here, then the revision ought to be voted upon
             survived.append(construct_event_dict(event, netid=netid, best_rev=unapproved_rev))
     return survived
@@ -660,7 +662,7 @@ def process_vote_on_revision(netid, isPositive, revision_id):
     except Exception, e:
         return False
 
-    if revision.approved is not STATUS_PENDING or revision.modified_user is user:
+    if revision.approved is not STATUS_PENDING or revision.modified_user is user or Vote.objects.filter(voted_on=unapproved_rev, voter=user).all():
         # Voter is not eligible to vote on this revision
         return False
 
