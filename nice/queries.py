@@ -632,7 +632,7 @@ def get_unapproved_revisions(netid, count=3):
 
         for unapproved_rev in unapproved_revs:
             # conditions we don't want are below -- if any are matched, continue to the next unapproved revision (or next event)
-            if unapproved_rev.modified_user = user: # avoid revisions made by this user
+            if unapproved_rev.modified_user is user: # avoid revisions made by this user
                 continue
             # if we made it to here, then the revision ought to be voted upon
             survived.append(construct_event_dict(event, netid=netid, best_rev=unapproved_rev))
