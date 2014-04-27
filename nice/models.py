@@ -331,6 +331,12 @@ class User_Profile(models.Model):
                 self.save()
             cache.set(cache_key, points, 60*10) # caches for 10 minutes
         return points
+    
+    def award_points(self, score):
+        """Safely awards [score] points to this user."""
+        self.pending_points = self.pending_points + score
+        self.save()
+
 		
 # create user profile as soon as a user is added
 def make_blank_profile(sender, instance, created, **kwargs):  

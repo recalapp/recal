@@ -616,14 +616,14 @@ def get_unapproved_revisions(netid, count=3):
         hidden_events = json.loads(hidden_events)
     else:
         hidden_events = []
-    filtered = Event.objects.filter(group__section__in = all_sections)
+    filtered = Event.objects.filter(group__section__in = all_sections)[:count]
     survived = []
     for event in filtered:
         if event.id in hidden_events:
             continue  # skip this event if it's in the user hid it previously
 
         best_rev = event.best_revision(netid=netid) # load the best revision once
-        unapproved_revs = event.revision_set.filter(approved=False)
+        unapproved_revs = event.revision_set.filter(approved=STATUS_PENDING)
         
         if best_rev:
             unapproved_revs = unapproved_revs.filter(modified_time__gte = best_rev.modified_time) # newer than the last approved revision (if one exists)
@@ -641,10 +641,63 @@ def get_unapproved_revisions(netid, count=3):
 def process_vote_on_revision(netid, isPositive, revision_id):
     """Handles users' votes on unapproved revisions -- checks the votes for eligibility, records them, then processes side-effects (approval, points).
 
+    Procedure:
+
+    Check if voter is eligible to vote on this revision, else stop
+    Record the vote
+    Recompute total vote count for this revision
+    Award points to the voter for having submitted a vote.
+    If the revision passes the approval threshold, approve it. If it passes the rejection threshold, reject it.
+    If we changed state to Approved or Rejected (no longer Pending), then award points to this voter, previous voters, and revision creator.
+
+    Returns: True if succeeded, False if failed
+
     """
-    # check if voter is eligible to vote on this revision, else stop
-    # record the vote 
-    # recompute total vote count for this revision
-    # if the revision passes the approval threshold, approve it
-    # award points to users -- points to the voter, and points to the person who made the revision
-    pass
+
+    try:
+        revision = Event_Revision.objects.get(pk=revision_id)
+        user = User.objects.get(username=netid).profile
+    except Exception, e:
+        return False
+
+    if revision.approved is not STATUS_PENDING or revision.modified_user is user:
+        # Voter is not eligible to vote on this revision
+        return False
+
+    # Record the vote 
+    v = Vote(voter=user, voted_on=revision, when=get_current_utc(), score=(1 if isPositive else -1))
+    v.save()
+
+    # Award points for making this vote
+    user.award_points(REWARD_FOR_UPVOTING if isPositive else REWARD_FOR_DOWNVOTING)
+    user.save()
+
+    # Recompute total vote count for this revision
+    all_votes = Vote.objects.filter(voted_on=revision)
+    total_score = sum(vt.score for vt in all_votes)
+
+    # If the revision passes the approval threshold, approve it. If it passes the rejection threshold, reject it. Assign points accordingly.
+    if total_score >= THRESHOLD_APPROVE:
+        revision.approved = STATUS_APPROVED
+        revision.save()
+        # Award points to all voters
+        for vt in all_votes:
+            if vt.score > 0: # voted correctly
+                vt.voter.award_points(REWARD_FOR_PROPER_UPVOTE)
+            elif vt.score < 0: # voted incorrectly
+                vt.voter.award_points(REWARD_FOR_IMPROPER_DOWNVOTE)
+        # Award points to revision creator
+        revision.modified_user.award_points(REWARD_FOR_APPROVED_SUBMISSION)
+    elif total_score <= THRESHOLD_REJECT:
+        revision.approved = STATUS_REJECTED
+        revision.save()
+        # Award points to all voters
+        for vt in all_votes:
+            if vt.score < 0: # voted correctly
+                vt.voter.award_points(REWARD_FOR_PROPER_DOWNVOTE)
+            elif vt.score > 0: # voted incorrectly
+                vt.voter.award_points(REWARD_FOR_IMPROPER_UPVOTE)
+        # Award points to revision creator
+        revision.modified_user.award_points(REWARD_FOR_REJECTED_SUBMISSION)
+    
+    return True
