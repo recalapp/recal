@@ -25,3 +25,10 @@ Array.prototype.find = function(a){
     };
     return -1;
 }
+Array.prototype.equals = function(a){
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] != a[i])
+            return false;
+    }
+    return true;
+}

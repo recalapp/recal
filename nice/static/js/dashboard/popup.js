@@ -234,7 +234,7 @@ function PopUp_setToEventID(popUp, id)
     $(popUp).find('#popup-repeat-pattern').off('select');
     if ('recurrence_days' in eventDict)
     {
-        var pattern = JSON.parse(eventDict.recurrence_days);
+        var pattern = eventDict.recurrence_days;
         var choices = [];
         $.each(DAYS_DICT, function(index){
             choices.push({
@@ -243,7 +243,7 @@ function PopUp_setToEventID(popUp, id)
                 selected: pattern.contains(index)
             });
         });
-        $(popUp).find('#popup-repeat-pattern').removeClass('hide');
+        $(popUp).find('.popup-repeat-item').removeClass('hide');
         var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
         SCM_setToChoices(scm, choices);
     }
@@ -257,7 +257,7 @@ function PopUp_setToEventID(popUp, id)
                 selected: false
             });
         });
-        $(popUp).find('#popup-repeat-pattern').addClass('hide');
+        $(popUp).find('.popup-repeat-item').addClass('hide');
         var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
         SCM_setToChoices(scm, choices);
     }
@@ -266,14 +266,14 @@ function PopUp_setToEventID(popUp, id)
         {
             if (!('recurrence_days' in eventDict))
                 PopUp_markAsUnsaved(popUp);
-            $(popUp).find('#popup-repeat-pattern').removeClass('hide');
+            $(popUp).find('.popup-repeat-item').removeClass('hide');
             PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', []);
         }
         else
         {
             if ('recurrence_days' in eventDict)
                 PopUp_markAsUnsaved(popUp);
-            $(popUp).find('#popup-repeat-pattern').addClass('hide');
+            $(popUp).find('.popup-repeat-item').addClass('hide');
             PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', null);
         }
     });
@@ -284,7 +284,7 @@ function PopUp_setToEventID(popUp, id)
                 pattern.push(parseInt(value));
         });
         pattern.sort();
-        if (JSON.stringify(pattern) != eventDict.recurrence_days)
+        if (pattern.equals(eventDict.recurrence_days))
             PopUp_markAsUnsaved(popUp);
         PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', pattern);
     });

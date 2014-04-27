@@ -347,7 +347,7 @@ def __construct_revision_dict(rev, group, group_rev):
         'modified_time': format(rev.modified_time, 'U'),
     }
     if group_rev.recurrence_interval is not None:
-        results['recurrence_days'] = group_rev.recurrence_days
+        results['recurrence_days'] = json.loads(group_rev.recurrence_days)
         results['recurrence_interval'] = group_rev.recurrence_interval
         results['recurrence_end'] = format(group_rev.end_date, 'U')
     return results
