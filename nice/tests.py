@@ -294,7 +294,7 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		# Try to vote on it -- should succeed
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=False, revision_id=unapproved_rev.pk), True)
 
-		# Get new point balances.
+		# Get new point balances, now that the revision is rejected.
 		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
 		new_points_balance_submitter = get_community_user().profile.pending_points
 
