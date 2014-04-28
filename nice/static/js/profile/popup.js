@@ -52,6 +52,7 @@ function PopUp_setToCourseID(popUp, courseID)
         if (sectionType == 'ALL')
             return;
         var choices = [];
+        var enrolled = false;
         $.each(sectionList, function(index){
             var section = CourseMan_getSectionByID(this);
             choices.push({
@@ -59,12 +60,14 @@ function PopUp_setToCourseID(popUp, courseID)
                 pretty: section.section_name,
                 selected: enrolledSections.contains(section.section_id),
             });
+            enrolled |= enrolledSections.contains(section.section_id);
         });
         choices.sort(function(a, b){
             return a.pretty.localeCompare(b.pretty);
         });
         var segmented = SC_initWithChoices(sectionType, choices);
-        CourseMan_enrollSectionID(courseID, choices[0].value);
+        if (!enrolled)
+            CourseMan_enrollSectionID(courseID, choices[0].value);
         $(popUp).find('#popup-title').after(segmented);
         $(segmented).on('select', function(ev, choices){
             $.each(choices, function(sectionID, enroll){

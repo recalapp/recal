@@ -30,8 +30,6 @@ function EventsMan_init()
         }
         else if (field == 'event_date')
         {
-            
-            
             if (!(id in eventsManager.uncommitted))
                 eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
             var eventDict = eventsManager.uncommitted[id];
@@ -65,19 +63,32 @@ function EventsMan_init()
         }
         else if (field == 'event_recurrence')
         {
-            if (!(id in eventsManager.uncommitted))
-                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
-            var eventDict = eventsManager.uncommitted[id];
             if (value)
             {
                 // TODO figure out how to get last day of class (not the same as last day of semester - reading period, etc.)
-                eventDict['recurrence_days'] = JSON.stringify(value);
+                if (id in eventsManager.events 
+                    && 'recurrence_days' in eventsManager.events[id]
+                    && eventsManager.events[id].recurrence_days.equals(value))
+                    return; // no change
+                if (!(id in eventsManager.uncommitted))
+                    eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+                var eventDict = eventsManager.uncommitted[id];
+
+                value.sort();
+                eventDict['recurrence_days'] = value;
                 eventDict['recurrence_interval'] = 1;
                 eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
             }
             else 
             {
                 // delete recurrence
+                if (id in eventsManager.events
+                    && !('recurrence_days' in eventsManager.events[id]))
+                    return; // no change
+                if (!(id in eventsManager.uncommitted))
+                    eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+                var eventDict = eventsManager.uncommitted[id];
+
                 delete eventDict['recurrence_days'];
                 delete eventDict['recurrence_end'];
                 delete eventDict['recurrence_interval'];
@@ -101,8 +112,6 @@ function EventsMan_init()
                 NO_showSimilarEventsNotification(id, data);
             }, 'json')
         }
-        // uncomment to remove save button behavior
-        // eventsManager.updatedIDs.add(id)
         _EventsMan_callUpdateListeners()
     });
 
@@ -145,23 +154,47 @@ function EventsMan_pushToServer(async)
                 hide: JSON.stringify(deleted)
             },
             success: function(data){
-                $.each(data, function(oldID, newID){
-                    var eventDict = eventsManager.events[oldID];
-                    delete eventsManager.events[oldID];
-                    eventDict.event_id = newID;
-                    eventsManager.events[newID] = eventDict;
-                    $.each(eventsManager.order, function(index){
-                        if (this.event_id == oldID)
-                        {
-                            this.event_id = newID;
-                            return false;
-                        }
-                    });
+                var changedIDs = data.changed_ids;
+                $.each(changedIDs, function(oldID, idArray){
+                    var newID = idArray[0];
+                    var newGroupID = idArray[1];
+                    if (oldID in eventsManager.events) {
+                        var eventDict = eventsManager.events[oldID];
+                        delete eventsManager.events[oldID];
+                        eventDict.event_id = newID;
+                        eventDict.event_group_id = newGroupID;
+                        eventsManager.events[newID] = eventDict;
+                    }
+                    //$.each(eventsManager.order, function(index){
+                    //    if (this.event_id == oldID)
+                    //    {
+                    //        this.event_id = newID;
+                    //        return false;
+                    //    }
+                    //});
+                    if (oldID in eventsManager.uncommitted) {
+                        var eventDict = eventsManager.uncommitted[oldID];
+                        delete eventsManager.uncommitted[oldID];
+                        eventDict.event_id = newID;
+                        eventDict.event_group_id = newGroupID;
+                        eventsManager.uncommitted[newID] = eventDict;
+                    }
                     EventsMan_callEventIDsChangeListener(oldID, newID);
+                });
+                EventsMan_constructOrderArray();
+                var deletedIDs = data.deleted_ids;
+                $.each(deletedIDs, function(index){
+                    // TODO what if the id was already opened? this code doesn't handle that
+                    if (this in eventsManager.events) {
+                        delete eventsManager.events[this];
+                    }
+                    if (this in eventsManager.uncommitted){
+                        delete eventsManager.uncommitted[this];
+                    }
                 });
                 eventsManager.isIdle = true;
                 LO_hide();
-                eventsManager.addedCount = 0;
+                //eventsManager.addedCount = 0; // not gonna overflow, no need to set to 0. Safer, so IDs don't ever crash
                 eventsManager.deletedIDs = [];
                 eventsManager.updatedIDs = new Set();
 
@@ -181,6 +214,8 @@ function EventsMan_pullFromServer(complete, showLoading)
 {
     if (!eventsManager.isIdle)
         return;
+    if (eventsManager.updatedIDs.size > 0)
+        return; // don't pull until changes are pushed
     showLoading = typeof showLoading != 'undefined' ? showLoading : false;
     if (showLoading)
         LO_show();
@@ -195,11 +230,17 @@ function EventsMan_pullFromServer(complete, showLoading)
                 var eventsDict = eventsArray[i];
                 if (eventsManager.deletedIDs.contains(eventsDict.event_id))
                     return; // event already deleted
-                if (eventsDict.event_id in eventsManager.updatedIDs)
+                if (eventsDict.event_id in eventsManager.uncommitted)
                 {
                     // TODO notify user of updates
                 }
-                eventsManager.events[eventsDict.event_id] = eventsDict;
+                if (eventsDict.event_id in eventsManager.updatedIDs)
+                {
+                    // TODO don't do anything?
+                }
+                else {
+                    eventsManager.events[eventsDict.event_id] = eventsDict;
+                }
             }
             EventsMan_constructOrderArray();
             eventsManager.addedCount = 0;

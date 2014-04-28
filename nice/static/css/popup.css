@@ -52,23 +52,6 @@
 .unsaved{
     background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
 }
-.popover{
-    z-index: 10000;
-}
-.prompt-btn{
-    display: block;
-    margin: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-.prompt-btn.yes{
-}
-.prompt-btn.no{
-    color: red;
-}
-.prompt-btn.no:hover{
-    color: #cb1c03;
-}
 
 /*.popup > .panel{
     border: 1px solid rgba(100, 100, 100, 0.15); 

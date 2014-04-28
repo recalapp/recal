@@ -116,45 +116,6 @@ function PopUp_initialize_deferred(popUp)
             $(inputField).val(selectedSection);
         });
     });
-    $(popUp).find('#close_button').popover({
-        title: 'Save changes?',
-        //container: 'body',
-        placement: 'bottom auto',
-        html: true,
-        content: '<a id="yes_button" class="white-link-btn prompt-btn yes">Yes</a><a id="no_button" class="white-link-btn prompt-btn no">No</a>',
-        trigger: 'manual'
-    });
-    $(popUp).find('#close_button').on('shown.bs.popover', function(ev){
-        $('#no_button').on('click', function(ev){
-            ev.preventDefault();
-            $(popUp).find('#close_button').popover('toggle');
-            PopUp_clickedUndo(popUp);
-            PopUp_clickedClose(popUp);
-        });
-        $('#yes_button').on('click', function(ev){
-            ev.preventDefault();
-            $(popUp).find('#close_button').popover('toggle');
-            PopUp_clickedSavePopUp(popUp);
-            PopUp_clickedClose(popUp);
-        });  
-    });
-    $(popUp).find('#save_button').popover({
-        title: 'There seems to be a similar event already on the calendar',
-        placement: 'bottom',
-        html: true,
-        content: '<a id="show_similar_events_button" class="white-link-btn prompt-btn yes">Show events</a><a id="save_anyways_button" class="white-link-btn prompt-btn no">Save anyways</a>',
-        trigger: 'manual'
-    }).on('shown.bs.popover', function(ev){
-        $('#show_similar_events_button').on('click', function(ev){
-            NO_showSimilarEvents(PopUp_getID(popUp));
-            $(popUp).find('#save_button').popover('toggle');
-        });
-        $('#save_anyways_button').on('click', function(ev){
-            NO_removeSimilarEventsNotification(PopUp_getID(popUp));
-            PopUp_clickedSavePopUp(popUp);
-            $(popUp).find('#save_button').popover('toggle');
-        });
-    });
 }
 function PopUp_initialize(popUp)
 {
@@ -234,7 +195,7 @@ function PopUp_setToEventID(popUp, id)
     $(popUp).find('#popup-repeat-pattern').off('select');
     if ('recurrence_days' in eventDict)
     {
-        var pattern = JSON.parse(eventDict.recurrence_days);
+        var pattern = eventDict.recurrence_days;
         var choices = [];
         $.each(DAYS_DICT, function(index){
             choices.push({
@@ -243,7 +204,7 @@ function PopUp_setToEventID(popUp, id)
                 selected: pattern.contains(index)
             });
         });
-        $(popUp).find('#popup-repeat-pattern').removeClass('hide');
+        $(popUp).find('.popup-repeat-item').removeClass('hide');
         var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
         SCM_setToChoices(scm, choices);
     }
@@ -257,7 +218,7 @@ function PopUp_setToEventID(popUp, id)
                 selected: false
             });
         });
-        $(popUp).find('#popup-repeat-pattern').addClass('hide');
+        $(popUp).find('.popup-repeat-item').addClass('hide');
         var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
         SCM_setToChoices(scm, choices);
     }
@@ -266,14 +227,14 @@ function PopUp_setToEventID(popUp, id)
         {
             if (!('recurrence_days' in eventDict))
                 PopUp_markAsUnsaved(popUp);
-            $(popUp).find('#popup-repeat-pattern').removeClass('hide');
+            $(popUp).find('.popup-repeat-item').removeClass('hide');
             PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', []);
         }
         else
         {
             if ('recurrence_days' in eventDict)
                 PopUp_markAsUnsaved(popUp);
-            $(popUp).find('#popup-repeat-pattern').addClass('hide');
+            $(popUp).find('.popup-repeat-item').addClass('hide');
             PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', null);
         }
     });
@@ -284,7 +245,9 @@ function PopUp_setToEventID(popUp, id)
                 pattern.push(parseInt(value));
         });
         pattern.sort();
-        if (JSON.stringify(pattern) != eventDict.recurrence_days)
+        if (!('recurrence_days' in eventDict))
+            PopUp_markAsUnsaved(popUp);
+        else if (!pattern.equals(eventDict.recurrence_days))
             PopUp_markAsUnsaved(popUp);
         PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', pattern);
     });
@@ -588,7 +551,28 @@ function PopUp_clickedClose(popUpAnchor)
     // check if there are unsaved changes
     if (EventsMan_hasUncommitted(PopUp_getID(popUp)))
     {
-        $(popUpAnchor).popover('toggle');
+        AS_showActionSheetFromElement($(popUp).find('#close_button')[0], popUp, 'Save changes?',
+            [
+                {
+                    important: false,
+                    text: 'Save',
+                },
+                {
+                    important: true,
+                    text: 'Don\'t save',
+                }
+            ],
+            function(index){
+                if (index == 0) {
+                    PopUp_clickedSavePopUp(popUp, true);
+                    //PopUp_clickedClose(popUp);
+                }
+                else{
+                    PopUp_clickedUndo(popUp);
+                    PopUp_clickedClose(popUp);
+                }
+            }
+        );
         return;
     }
 
@@ -602,23 +586,110 @@ function PopUp_clickedDelete(popUpAnchor)
     if (PopUp_isEditing(popUp))
         return;
     var event_id = PopUp_getID(popUp);
+    var eventDict = EventsMan_getEventByID(event_id);
+    if ('recurrence_days' in eventDict)
+    {
+        AS_showActionSheetFromElement(popUpAnchor, popUp, null, [
+                {important: false, text:'Only this event'},
+                {important: true, text:'All future events'}
+            ], function(index){
+            if (index == 0)
+            {
+                // only this event
+                PopUp_close(popUp);
+                EventsMan_deleteEvent(event_id);
+            }
+            else 
+            {
+                // all future events
+                PopUp_close(popUp);
+                EventsMan_deleteAllFutureEvents(event_id);
+            }
+        });
+        return;
+    }
+
     PopUp_close(popUp);
     EventsMan_deleteEvent(event_id);
 }
-function PopUp_clickedSavePopUp(anchor)
+function PopUp_clickedSavePopUp(anchor, shouldClose)
 {
     var popUp = _PopUp_getPopUp(anchor);
     if (PopUp_isEditing(popUp))
         return;
+    shouldClose = shouldClose || false;
     var id = PopUp_getID(popUp);
     if (NO_hasSimilarEvents(id))
     {
-        $(anchor).popover('toggle');
+        AS_showActionSheetFromElement($(popUp).find('#save_button')[0], popUp,
+            'There seems to be a similar event already on the calendar',
+            [
+                {
+                    important: false,
+                    text: 'Show similar events',
+                },
+                {
+                    important: true,
+                    text: 'Save anyways',
+                },
+            ], function(index){
+                if (index == 0)
+                {
+                    NO_showSimilarEvents(PopUp_getID(popUp));
+                }
+                else
+                {
+                    NO_removeSimilarEventsNotification(PopUp_getID(popUp));
+                    PopUp_clickedSavePopUp(popUp);
+                }
+            }
+        );
         return;
+    }
+    var eventDict = EventsMan_getEventByID(id);
+    var uncommitted = EventsMan_getUncommitted(id);
+    if (eventDict // new events won't have eventDict, in which case we don't ask
+        && 'recurrence_days' in eventDict 
+        && 'recurrence_days' in uncommitted)
+    {
+        // check whether recurrence pattern was modified. If it was, don't ask
+        if (eventDict.recurrence_days.equals(uncommitted.recurrence_days))
+        {
+            AS_showActionSheetFromElement($(popUp).find('#save_button')[0], popUp,
+                'This event is part of a recurring event.',
+                [
+                    {
+                        important: false,
+                        text: 'Only this event',
+                    },
+                    {
+                        important: true,
+                        text: 'All future events',
+                    }
+                ], function(index){
+                    PopUp_markAsSaved(popUp);
+                    $(popUp).find('.unsaved').removeClass('unsaved');
+                    if (index == 0)
+                    {
+                        EventsMan_commitChanges(id);
+                    }
+                    else 
+                    {
+                        // TODO save changes to recurring events
+                        EventsMan_commitChangesToAllFutureEvents(id);
+                    }
+                    if (shouldClose)
+                        PopUp_clickedClose(popUp);
+                }
+            );
+            return;
+        }
     }
     PopUp_markAsSaved(popUp);
     $(popUp).find('.unsaved').removeClass('unsaved');
     EventsMan_commitChanges(id);
+    if (shouldClose)
+        PopUp_clickedClose(popUp);
 }
 function PopUp_clickedUndo(anchor)
 {

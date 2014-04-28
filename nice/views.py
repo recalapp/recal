@@ -293,7 +293,11 @@ def modify_events(request):
     if 'events' in request.POST:
         try:
             events = json.loads(request.POST['events'])
-            ret = queries.modify_events(netid, events)
+            changed, deleted = queries.modify_events(netid, events)
+            ret = {
+                'changed_ids': changed,
+                'deleted_ids': deleted
+            }
         except Exception, e:
             print 'Modifying events error: ', e
             return HttpResponse(status=500) # 500 Internal Server Error
