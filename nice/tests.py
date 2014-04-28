@@ -110,7 +110,19 @@ class UnapprovedRevisionTests(NewiceTestCase):
 	def test_vote_threshold_checks(self):
 		pass
 	def test_can_only_vote_once(self):
-		pass
+		event, approved_rev, unapproved_rev = self.pre_run()
+		unapproved_rev.modified_user = get_community_user().profile # different owner now, so that bob can vote on it
+		unapproved_rev.save()
+
+		# try to vote on something -- should succeed
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), True)
+
+		# try to vote on something again -- should fail
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), False)
+
+		self.purge_votes()
+		self.post_run()
+
 	def test_points_are_assigned_properly(self):
 		pass
 	def test_user_not_in_section_cant_vote(self):
