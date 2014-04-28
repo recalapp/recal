@@ -10,6 +10,7 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
         }
         $button.on('click', function(ev){
             ev.preventDefault();
+            $(element).blur();
             clickListener(index);
         });
         $content.append($button);

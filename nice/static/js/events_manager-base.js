@@ -113,8 +113,9 @@ function EventsMan_addEvent()
     return id;
 }
 
-function EventsMan_deleteEvent(id)
+function EventsMan_deleteEvent(id, silent)
 {
+    silent = silent || false;
     if (id in eventsManager.events)
     {
         eventsManager.events[id] = null;
@@ -139,7 +140,21 @@ function EventsMan_deleteEvent(id)
     {
         eventsManager.updatedIDs.remove(id);
     }
-    _EventsMan_callUpdateListeners();
+    if (!silent)
+        _EventsMan_callUpdateListeners();
+}
+function EventsMan_deleteAllFutureEvents(id)
+{
+    var eventDict = EventsMan_getEventByID(id);
+    var endDate = moment.unix(eventDict.event_start);
+    endDate.year(endDate.year() + 20);
+    var eventIDs = EventsMan_getEventIDForRange(eventDict.event_start, endDate.unix());
+    $.each(eventIDs, function(index){
+        var otherEventDict = EventsMan_getEventByID(this);
+        if (otherEventDict.event_group_id == eventDict.event_group_id && otherEventDict != eventDict)
+            EventsMan_deleteEvent(this, true);
+    });
+    EventsMan_deleteEvent(id);
 }
 
 function EventsMan_ready()
@@ -158,6 +173,38 @@ function EventsMan_cancelChanges(id)
 {
     delete eventsManager.uncommitted[id];
     _EventsMan_callUpdateListeners();
+}
+function EventsMan_commitChangesToAllFutureEvents(id)
+{
+    var newEventDict = eventsManager.uncommitted[id];
+    var oldEventDict = eventsManager.events[id];
+    var endDate = moment.unix(oldEventDict.event_start);
+    endDate.year(endDate.year() + 20);
+    var eventIDs = EventsMan_getEventIDForRange(oldEventDict.event_start, endDate.unix());
+    var newStart = moment.unix(newEventDict.event_start);
+    var newEnd = moment.unix(newEventDict.event_end);
+    $.each(eventIDs, function(index){
+        var otherEventDict = EventsMan_getEventByID(this);
+        if (otherEventDict.event_group_id == oldEventDict.event_group_id && otherEventDict != oldEventDict)
+        {
+            otherEventDict.event_title = newEventDict.event_title;
+            otherEventDict.event_description = newEventDict.event_description;
+            otherEventDict.event_location = newEventDict.event_location;
+            otherEventDict.section_id = newEventDict.section_id;
+            otherEventDict.event_type = newEventDict.event_type;
+            otherEventDict.modified_time = newEventDict.modified_time;
+            otherEventDict.modified_user = newEventDict.modified_user;
+            var start = moment.unix(otherEventDict.event_start).hour(newStart.hour());
+            start.minute(newStart.minute());
+            start.second(newStart.second());
+            otherEventDict.event_start = start.unix();
+            var end = moment.unix(otherEventDict.event_end).hour(newEnd.hour());
+            end.minute(newEnd.minute());
+            end.second(newEnd.second());
+            otherEventDict.event_end = end.unix();
+        }
+    });
+    EventsMan_commitChanges(id);
 }
 // replaces only in the uncommitted array - ok because we're only
 // doing this for new events

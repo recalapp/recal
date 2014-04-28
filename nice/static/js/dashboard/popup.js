@@ -564,8 +564,8 @@ function PopUp_clickedClose(popUpAnchor)
             ],
             function(index){
                 if (index == 0) {
-                    PopUp_clickedSavePopUp(popUp);
-                    PopUp_clickedClose(popUp);
+                    PopUp_clickedSavePopUp(popUp, true);
+                    //PopUp_clickedClose(popUp);
                 }
                 else{
                     PopUp_clickedUndo(popUp);
@@ -593,7 +593,18 @@ function PopUp_clickedDelete(popUpAnchor)
                 {important: false, text:'Only this event'},
                 {important: true, text:'All future events'}
             ], function(index){
-            console.log(index);
+            if (index == 0)
+            {
+                // only this event
+                PopUp_close(popUp);
+                EventsMan_deleteEvent(event_id);
+            }
+            else 
+            {
+                // all future events
+                PopUp_close(popUp);
+                EventsMan_deleteAllFutureEvents(event_id);
+            }
         });
         return;
     }
@@ -601,11 +612,12 @@ function PopUp_clickedDelete(popUpAnchor)
     PopUp_close(popUp);
     EventsMan_deleteEvent(event_id);
 }
-function PopUp_clickedSavePopUp(anchor)
+function PopUp_clickedSavePopUp(anchor, shouldClose)
 {
     var popUp = _PopUp_getPopUp(anchor);
     if (PopUp_isEditing(popUp))
         return;
+    shouldClose = shouldClose || false;
     var id = PopUp_getID(popUp);
     if (NO_hasSimilarEvents(id))
     {
@@ -634,9 +646,50 @@ function PopUp_clickedSavePopUp(anchor)
         );
         return;
     }
+    var eventDict = EventsMan_getEventByID(id);
+    var uncommitted = EventsMan_getUncommitted(id);
+    if (eventDict // new events won't have eventDict, in which case we don't ask
+        && 'recurrence_days' in eventDict 
+        && 'recurrence_days' in uncommitted)
+    {
+        // check whether recurrence pattern was modified. If it was, don't ask
+        if (eventDict.recurrence_days.equals(uncommitted.recurrence_days))
+        {
+            AS_showActionSheetFromElement($(popUp).find('#save_button')[0], popUp,
+                'This event is part of a recurring event.',
+                [
+                    {
+                        important: false,
+                        text: 'Only this event',
+                    },
+                    {
+                        important: true,
+                        text: 'All future events',
+                    }
+                ], function(index){
+                    PopUp_markAsSaved(popUp);
+                    $(popUp).find('.unsaved').removeClass('unsaved');
+                    if (index == 0)
+                    {
+                        EventsMan_commitChanges(id);
+                    }
+                    else 
+                    {
+                        // TODO save changes to recurring events
+                        EventsMan_commitChangesToAllFutureEvents(id);
+                    }
+                    if (shouldClose)
+                        PopUp_clickedClose(popUp);
+                }
+            );
+            return;
+        }
+    }
     PopUp_markAsSaved(popUp);
     $(popUp).find('.unsaved').removeClass('unsaved');
     EventsMan_commitChanges(id);
+    if (shouldClose)
+        PopUp_clickedClose(popUp);
 }
 function PopUp_clickedUndo(anchor)
 {
