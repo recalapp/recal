@@ -14,7 +14,7 @@ def enroll(uname):
 	user_in_section2 = User_Section_Table(user = profile, section=Section.objects.get(pk=2), add_date = get_current_utc())
 	user_in_section2.save()
 
-def make_sample_events():
+def make_sample_events(uname):
 	e_group = Event_Group(section=Section.objects.get(pk=2))
 	e_group_rev = Event_Group_Revision(start_date=datetime(2014,02,06,0,0,0).date(), end_date=datetime(2014,02,06,0,0,0).date(), modified_time=get_current_utc(), modified_user=User.objects.get(pk=0).profile, approved=True)
 	e_group.save()
@@ -37,6 +37,19 @@ def make_sample_events():
         event=event)
 	event_rev.save()
 
+	event_rev2 = Event_Revision(event_description="New description", 
+        event_type= "PR", 
+        event_end= datetime(2014,02,06,19,20,00),
+        event_title= "Precept", 
+        modified_user=User.objects.get(username=uname).profile,
+        event_start= datetime(2014,02,06,18,30,00),
+        approved= "S_PE",
+        modified_time=get_current_utc(),
+        event_location= "Stanhope Hall 101",
+        event=event)
+	event_rev2.save()
+	return event, event_rev, event_rev2
+
 def clean_up():
 	User_Section_Table.objects.all().delete()
 	clear_events()
@@ -48,7 +61,7 @@ class NewiceTestCase(TestCase):
 
 	def pre_run(self):
 		enroll(self.usernames[0])
-		make_sample_events()
+		return make_sample_events(self.usernames[0])
 	def post_run(self):
 		clean_up()
 
@@ -69,8 +82,9 @@ class EventMethodTests(NewiceTestCase):
 
 
     	"""
+    	pass
 
-    	
+
 
 class EnrollmentMethodTests(NewiceTestCase):
 	""" Handles testing for methods we use for class enrollment.
@@ -88,6 +102,9 @@ class EnrollmentMethodTests(NewiceTestCase):
 			self.assertEqual(n, num_classes[0])
 
 class UnapprovedRevisionTests(NewiceTestCase):
+	def purge_votes(self):
+		Vote.objects.all().delete()
+	
 	def test_appears_in_queue(self):
 		pass
 	def test_vote_threshold_checks(self):
@@ -96,3 +113,26 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		pass
 	def test_points_are_assigned_properly(self):
 		pass
+	def test_user_not_in_section_cant_vote(self):
+		pass
+	def test_user_cant_vote_on_their_own_content(self):
+		self.purge_votes() # just in case
+		event, event_rev, event_rev2 = self.pre_run()
+		
+		# try to vote on your own content
+		user = event_rev2.modified_user
+		username = user.user.username
+		self.assertEqual(process_vote_on_revision(netid=username, isPositive=True, revision_id=event_rev2.pk), False)
+		
+		# try to vote on other person's content
+		event_rev2.modified_user = get_community_user().profile # different owner now
+		event_rev2.save()
+		self.assertEqual(process_vote_on_revision(netid=username, isPositive=True, revision_id=event_rev2.pk), True)
+
+		# verify that vote was created
+		self.assertEqual(Vote.objects.all().count(), 1)
+		
+		self.purge_votes()
+		self.post_run()
+
+

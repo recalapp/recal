@@ -6,6 +6,7 @@ import re
 
 from nice.models import *
 from datetime import *
+import settings.common as settings
 
 
 # TODO(Naphat, Maxim): Should we switch netid parameter inputs to User object inputs from request.user? May save a database call.
@@ -661,9 +662,15 @@ def process_vote_on_revision(netid, isPositive, revision_id):
         user = User.objects.get(username=netid).profile
     except Exception, e:
         return False
-
-    if revision.approved is not STATUS_PENDING or revision.modified_user is user or Vote.objects.filter(voted_on=unapproved_rev, voter=user).all():
-        # Voter is not eligible to vote on this revision
+    
+    # Voter is not eligible to vote on this revision
+    if revision.approved != revision.STATUS_PENDING:
+        return False
+    if revision.modified_user.user.username == netid:
+        return False
+    if Vote.objects.filter(voted_on=revision, voter=user).all().count() > 0:
+        return False
+    if revision.event.group.section not in user.sections.all():
         return False
 
     # Record the vote 
@@ -671,7 +678,7 @@ def process_vote_on_revision(netid, isPositive, revision_id):
     v.save()
 
     # Award points for making this vote
-    user.award_points(REWARD_FOR_UPVOTING if isPositive else REWARD_FOR_DOWNVOTING)
+    user.award_points(settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING)
     user.save()
 
     # Recompute total vote count for this revision
@@ -679,27 +686,27 @@ def process_vote_on_revision(netid, isPositive, revision_id):
     total_score = sum(vt.score for vt in all_votes)
 
     # If the revision passes the approval threshold, approve it. If it passes the rejection threshold, reject it. Assign points accordingly.
-    if total_score >= THRESHOLD_APPROVE:
-        revision.approved = STATUS_APPROVED
+    if total_score >= settings.THRESHOLD_APPROVE:
+        revision.approved = revision.STATUS_APPROVED
         revision.save()
         # Award points to all voters
         for vt in all_votes:
             if vt.score > 0: # voted correctly
-                vt.voter.award_points(REWARD_FOR_PROPER_UPVOTE)
+                vt.voter.award_points(settings.REWARD_FOR_PROPER_UPVOTE)
             elif vt.score < 0: # voted incorrectly
-                vt.voter.award_points(REWARD_FOR_IMPROPER_DOWNVOTE)
+                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_DOWNVOTE)
         # Award points to revision creator
-        revision.modified_user.award_points(REWARD_FOR_APPROVED_SUBMISSION)
-    elif total_score <= THRESHOLD_REJECT:
-        revision.approved = STATUS_REJECTED
+        revision.modified_user.award_points(settings.REWARD_FOR_APPROVED_SUBMISSION)
+    elif total_score <= settings.THRESHOLD_REJECT:
+        revision.approved = revision.STATUS_REJECTED
         revision.save()
         # Award points to all voters
         for vt in all_votes:
             if vt.score < 0: # voted correctly
-                vt.voter.award_points(REWARD_FOR_PROPER_DOWNVOTE)
+                vt.voter.award_points(settings.REWARD_FOR_PROPER_DOWNVOTE)
             elif vt.score > 0: # voted incorrectly
-                vt.voter.award_points(REWARD_FOR_IMPROPER_UPVOTE)
+                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_UPVOTE)
         # Award points to revision creator
-        revision.modified_user.award_points(REWARD_FOR_REJECTED_SUBMISSION)
+        revision.modified_user.award_points(settings.REWARD_FOR_REJECTED_SUBMISSION)
     
     return True
