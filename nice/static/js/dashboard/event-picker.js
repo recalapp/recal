@@ -30,6 +30,13 @@ function EP_initWithEvents(oldEventID, events)
             SB_unfill();
         });
     });
+    $('#event-picker').find('#cancel_button').on('click', function(ev){
+        ev.preventDefault();
+        PopUp_markIDAsNotEditing(oldEventID);
+        PopUp_makeIDDraggable(oldEventID);
+        SB_pop(this);
+        SB_unfill();
+    });
     SB_addWillCloseListener(function(){
         $('#event-picker').each(function(index){
             SB_pop(this);

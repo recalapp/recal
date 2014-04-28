@@ -114,6 +114,12 @@ a {
 .white-link-btn.dark:hover{
     color: rgb(100, 100, 100);
 }
+.white-link-btn.emphasis {
+    color: red;
+}
+.white-link-btn.emphasis:hover {
+    color: #cb1c03;
+}
 
 .disabled-btn {
     color: rgb(200, 200, 200) !important;
