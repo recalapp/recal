@@ -68,7 +68,7 @@ function EventsMan_init()
                 // TODO figure out how to get last day of class (not the same as last day of semester - reading period, etc.)
                 if (id in eventsManager.events 
                     && 'recurrence_days' in eventsManager.events[id]
-                    && eventsManager.events[id].equals(value))
+                    && eventsManager.events[id].recurrence_days.equals(value))
                     return; // no change
                 if (!(id in eventsManager.uncommitted))
                     eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);

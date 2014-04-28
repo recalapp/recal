@@ -26,9 +26,12 @@ Array.prototype.find = function(a){
     return -1;
 }
 Array.prototype.equals = function(a){
-    for (var i = 0; i < this.length; i++) {
-        if (this[i] != a[i])
+    var i;
+    for (i = 0; i < this.length; i++) {
+        if (i >= a.length)
+            return false;
+        else if (this[i] != a[i])
             return false;
     }
-    return true;
+    return i == a.length;
 }

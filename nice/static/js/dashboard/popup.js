@@ -116,45 +116,6 @@ function PopUp_initialize_deferred(popUp)
             $(inputField).val(selectedSection);
         });
     });
-    $(popUp).find('#close_button').popover({
-        title: 'Save changes?',
-        //container: 'body',
-        placement: 'bottom auto',
-        html: true,
-        content: '<a id="yes_button" class="white-link-btn prompt-btn yes">Yes</a><a id="no_button" class="white-link-btn prompt-btn no">No</a>',
-        trigger: 'manual'
-    });
-    $(popUp).find('#close_button').on('shown.bs.popover', function(ev){
-        $('#no_button').on('click', function(ev){
-            ev.preventDefault();
-            $(popUp).find('#close_button').popover('toggle');
-            PopUp_clickedUndo(popUp);
-            PopUp_clickedClose(popUp);
-        });
-        $('#yes_button').on('click', function(ev){
-            ev.preventDefault();
-            $(popUp).find('#close_button').popover('toggle');
-            PopUp_clickedSavePopUp(popUp);
-            PopUp_clickedClose(popUp);
-        });  
-    });
-    $(popUp).find('#save_button').popover({
-        title: 'There seems to be a similar event already on the calendar',
-        placement: 'bottom',
-        html: true,
-        content: '<a id="show_similar_events_button" class="white-link-btn prompt-btn yes">Show events</a><a id="save_anyways_button" class="white-link-btn prompt-btn no">Save anyways</a>',
-        trigger: 'manual'
-    }).on('shown.bs.popover', function(ev){
-        $('#show_similar_events_button').on('click', function(ev){
-            NO_showSimilarEvents(PopUp_getID(popUp));
-            $(popUp).find('#save_button').popover('toggle');
-        });
-        $('#save_anyways_button').on('click', function(ev){
-            NO_removeSimilarEventsNotification(PopUp_getID(popUp));
-            PopUp_clickedSavePopUp(popUp);
-            $(popUp).find('#save_button').popover('toggle');
-        });
-    });
 }
 function PopUp_initialize(popUp)
 {
@@ -284,7 +245,9 @@ function PopUp_setToEventID(popUp, id)
                 pattern.push(parseInt(value));
         });
         pattern.sort();
-        if (pattern.equals(eventDict.recurrence_days))
+        if (!('recurrence_days' in eventDict))
+            PopUp_markAsUnsaved(popUp);
+        else if (!pattern.equals(eventDict.recurrence_days))
             PopUp_markAsUnsaved(popUp);
         PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', pattern);
     });
@@ -588,7 +551,28 @@ function PopUp_clickedClose(popUpAnchor)
     // check if there are unsaved changes
     if (EventsMan_hasUncommitted(PopUp_getID(popUp)))
     {
-        $(popUpAnchor).popover('toggle');
+        AS_showActionSheetFromElement($(popUp).find('#close_button')[0], popUp, 'Save changes?',
+            [
+                {
+                    important: false,
+                    text: 'Save',
+                },
+                {
+                    important: true,
+                    text: 'Don\'t save',
+                }
+            ],
+            function(index){
+                if (index == 0) {
+                    PopUp_clickedSavePopUp(popUp);
+                    PopUp_clickedClose(popUp);
+                }
+                else{
+                    PopUp_clickedUndo(popUp);
+                    PopUp_clickedClose(popUp);
+                }
+            }
+        );
         return;
     }
 
@@ -602,6 +586,18 @@ function PopUp_clickedDelete(popUpAnchor)
     if (PopUp_isEditing(popUp))
         return;
     var event_id = PopUp_getID(popUp);
+    var eventDict = EventsMan_getEventByID(event_id);
+    if ('recurrence_days' in eventDict)
+    {
+        AS_showActionSheetFromElement(popUpAnchor, popUp, null, [
+                {important: false, text:'Only this event'},
+                {important: true, text:'All future events'}
+            ], function(index){
+            console.log(index);
+        });
+        return;
+    }
+
     PopUp_close(popUp);
     EventsMan_deleteEvent(event_id);
 }
@@ -613,7 +609,29 @@ function PopUp_clickedSavePopUp(anchor)
     var id = PopUp_getID(popUp);
     if (NO_hasSimilarEvents(id))
     {
-        $(anchor).popover('toggle');
+        AS_showActionSheetFromElement($(popUp).find('#save_button')[0], popUp,
+            'There seems to be a similar event already on the calendar',
+            [
+                {
+                    important: false,
+                    text: 'Show similar events',
+                },
+                {
+                    important: true,
+                    text: 'Save anyways',
+                },
+            ], function(index){
+                if (index == 0)
+                {
+                    NO_showSimilarEvents(PopUp_getID(popUp));
+                }
+                else
+                {
+                    NO_removeSimilarEventsNotification(PopUp_getID(popUp));
+                    PopUp_clickedSavePopUp(popUp);
+                }
+            }
+        );
         return;
     }
     PopUp_markAsSaved(popUp);
