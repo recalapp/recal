@@ -5,6 +5,7 @@ from django.test import TestCase
 
 from nice.models import *
 from nice.queries import *
+import settings.common as settings
 
 
 def enroll(uname):
@@ -108,7 +109,51 @@ class UnapprovedRevisionTests(NewiceTestCase):
 	def test_appears_in_queue(self):
 		pass
 	def test_vote_threshold_checks(self):
-		pass
+		event, approved_rev, unapproved_rev = self.pre_run()
+		unapproved_rev.modified_user = get_community_user().profile # different owner now, so that bob can vote on it
+		unapproved_rev.save()
+
+		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
+
+		# manually make votes to avoid check about having voted before: upvote threshold-1 times
+		for i in range(settings.THRESHOLD_APPROVE - 1):
+			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=1) # note: this is an illegal way to make a vote!
+
+		# try to vote on it -- should succeed
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), True)
+
+		# the system should have approved the revision
+		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_APPROVED)
+
+		# try to vote on something now that it has been approved -- should fail
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), False)
+
+		self.purge_votes()
+		self.post_run()
+
+		# Do the same with downvotes.
+
+		event, approved_rev, unapproved_rev = self.pre_run()
+		unapproved_rev.modified_user = get_community_user().profile # different owner now, so that bob can vote on it
+		unapproved_rev.save()
+
+		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
+
+		# manually make votes to avoid check about having voted before: upvote threshold-1 times
+		for i in range(settings.THRESHOLD_REJECT - 1):
+			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=-1) # note: this is an illegal way to make a vote!
+
+		# try to vote on it -- should succeed
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=False, revision_id=unapproved_rev.pk), True)
+
+		# the system should have accepted the revision
+		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_REJECTED)
+
+		# try to vote on something now that it has been rejected -- should fail
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=False, revision_id=unapproved_rev.pk), False)
+
+		self.purge_votes()
+		self.post_run()
 	def test_can_only_vote_once(self):
 		event, approved_rev, unapproved_rev = self.pre_run()
 		unapproved_rev.modified_user = get_community_user().profile # different owner now, so that bob can vote on it
