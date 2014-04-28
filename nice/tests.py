@@ -114,7 +114,21 @@ class UnapprovedRevisionTests(NewiceTestCase):
 	def test_points_are_assigned_properly(self):
 		pass
 	def test_user_not_in_section_cant_vote(self):
-		pass
+		event, approved_rev, unapproved_rev = self.pre_run()
+		unapproved_rev.modified_user = get_community_user().profile # different owner now, so that bob can vote on it
+		unapproved_rev.save()
+
+		# try to vote on something in your section -- should succeed
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), True)
+
+		# try to vote on something not in your section -- should fail
+		# janet's not in this section, hence fail
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[1], isPositive=True, revision_id=unapproved_rev.pk), False)
+
+		self.purge_votes()
+		self.post_run()
+
+
 	def test_user_cant_vote_on_their_own_content(self):
 		self.purge_votes() # just in case
 		event, event_rev, event_rev2 = self.pre_run()
