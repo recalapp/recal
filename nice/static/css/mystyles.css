@@ -177,15 +177,23 @@ a {
     color: rgba(0, 0, 0, 0.4);
     margin: 0;
 }
+#agenda-section.dark{
+    color: rgba(255, 255, 255, 0.5);
+}
 #agenda-time{
     margin-top: 15px;
     text-align: right;
     color: rgba(0,0,0, 0.4)
 }
-#agenda-section.dark{
+#agenda-time.dark{
     color: rgba(255, 255, 255, 0.5);
 }
-#agenda-time.dark{
+#agenda-color{
+    margin-top: 15px;
+    text-align: right;
+    color: rgba(0,0,0, 0.4)
+}
+#agenda-color.dark{
     color: rgba(255, 255, 255, 0.5);
 }
 

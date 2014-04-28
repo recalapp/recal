@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'cas',
+    'colorfield',
     'nice'
 )
 
