@@ -118,11 +118,25 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		# manually make votes to avoid check about having voted before: upvote threshold-1 times
 		for i in range(settings.THRESHOLD_APPROVE - 1):
 			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=1) # note: this is an illegal way to make a vote!
+			v.save()
+
+		all_votes = Vote.objects.filter(voted_on=unapproved_rev)
+		total_score = sum([vt.score for vt in all_votes])
+
+		self.assertEqual(len(all_votes), settings.THRESHOLD_APPROVE - 1)
+		self.assertEqual(total_score, settings.THRESHOLD_APPROVE - 1)
 
 		# try to vote on it -- should succeed
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), True)
 
+		all_votes = Vote.objects.filter(voted_on=unapproved_rev)
+		total_score = sum([vt.score for vt in all_votes])
+
+		self.assertEqual(len(all_votes), settings.THRESHOLD_APPROVE)
+		self.assertEqual(total_score, settings.THRESHOLD_APPROVE)
+
 		# the system should have approved the revision
+		unapproved_rev = Event_Revision.objects.get(pk=unapproved_rev.pk) # refetch from database
 		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_APPROVED)
 
 		# try to vote on something now that it has been approved -- should fail
@@ -140,13 +154,21 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
 
 		# manually make votes to avoid check about having voted before: upvote threshold-1 times
-		for i in range(settings.THRESHOLD_REJECT - 1):
+		for i in range(abs(settings.THRESHOLD_REJECT) - 1):
 			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=-1) # note: this is an illegal way to make a vote!
+			v.save()
 
 		# try to vote on it -- should succeed
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=False, revision_id=unapproved_rev.pk), True)
 
-		# the system should have accepted the revision
+		all_votes = Vote.objects.filter(voted_on=unapproved_rev)
+		total_score = sum([vt.score for vt in all_votes])
+
+		self.assertEqual(len(all_votes), abs(settings.THRESHOLD_REJECT))
+		self.assertEqual(total_score, settings.THRESHOLD_REJECT)
+
+		# the system should have rejected the revision
+		unapproved_rev = Event_Revision.objects.get(pk=unapproved_rev.pk) # refetch from database
 		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_REJECTED)
 
 		# try to vote on something now that it has been rejected -- should fail
