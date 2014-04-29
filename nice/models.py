@@ -179,18 +179,19 @@ class Event(models.Model):
         Arguments: username (optional). If not specified, returns globally-seen last approved revision.
         """
         if self.event_revision_set.exists():
-            latest_approved = self.event_revision_set.filter(Q(approved=True) | Q(modified_user__user__username=netid)).latest('modified_time')
-            #if netid:
-            #    latest_mine = self.event_revision_set.filter(modified_user__user__username=netid).latest('modified_time') #TODO this has a bug where if the filter eliminates everything, we are screwed
-            #    
-            #    if latest_mine.modified_time > latest_approved.modified_time: 
-            #        return latest_mine # their own revision is newest, so show that
+            # Choose either the last approved revision or the last revision this user made, whichever is newer
+            latest_approved = self.event_revision_set.filter(Q(approved=STATUS_APPROVED) | Q(modified_user__user__username=netid)).latest('modified_time') 
+
+            if netid:
+                # Compare to revisions for this event that the user has voted on
+                event_vote = Vote.objects.filter(voter__user__username = netid).filter(voted_on__event__pk=self.pk).filter(voted_on__approved=STATUS_PENDING).filter(score=1).latest('when') # upvote on some revision of this event
+                if event_vote and event_vote.voted_on.modified_time > latest_approved.modified_time: # if the upvoted revision is newer than the last approved revision, then show the upvoted revision instead.
+                    latest_approved = event_vote
             return latest_approved # show the latest approved revision because the user's revisions don't exist or are older
         return None # no revisions available
 
 class Event_Revision(models.Model):
     # constants
-		
     TYPE_ASSIGNMENT = "AS"
     TYPE_EXAM = "EX"
     TYPE_LAB = "LA"
@@ -208,6 +209,15 @@ class Event_Revision(models.Model):
         (TYPE_REVIEW_SESSION, "review session")
     )
 
+    STATUS_APPROVED = "S_AP"
+    STATUS_PENDING = "S_PE"
+    STATUS_REJECTED = "S_RE"
+    STATUS_CHOICES = (
+        (STATUS_APPROVED, "Approved"),
+        (STATUS_PENDING, "Pending"),
+        (STATUS_REJECTED, "Rejected")
+    )
+
     # relationships
     event = models.ForeignKey(Event)
 
@@ -220,7 +230,7 @@ class Event_Revision(models.Model):
     event_location = models.CharField(max_length=100)
     modified_user = models.ForeignKey('User_Profile')
     modified_time = models.DateTimeField()
-    approved = models.BooleanField(default=True) # TODO: change default value	
+    approved = models.CharField(max_length=4, choices=STATUS_CHOICES, default=STATUS_PENDING)
     
     def __unicode__(self):
         return self.event_title # TODO: improve the way that revisions appear in admin panel by changing this.
@@ -268,6 +278,11 @@ class User_Profile(models.Model):
     ui_calendar_pref = models.TextField(blank=True,null=True)
     ui_pref = models.TextField(blank=True,null=True) # msc. pref, like themes
 
+    # Reputation system
+    current_points = models.IntegerField(default=0, blank=True) # The publicly-visible count the user sees. Updated once a day.
+    pending_points = models.IntegerField(default=0, blank=True) # Points earned/lost since the last time "Current points" was updated.
+    last_point_update_time = models.DateTimeField(blank=True, null=True) # The last time we flushed pending points into current points.
+
     def __unicode__(self):
         """
         Returns "[first_name] [last_name]" if both fields available, or "[first_name]" if only first name is given, or netid if neither names are filled in.
@@ -283,6 +298,45 @@ class User_Profile(models.Model):
             return first
         else:
             return netid
+
+    def get_point_count(self):
+        """Get user's point count
+
+        This method's output is cached for 5 minutes so that we don't have to hit the database after every refresh. Maybe also poll the server from client side every 5 minutes for a new point count?
+
+        Procedure:
+
+        Check cache to see if we already have a cached point count for this user.
+        Compare current date & time to "Last point update time".
+        If difference is less than 24 hours, then return "Current points".
+        If difference is more than 24 hours, "Current points" += "Pending points", "Pending points" -> 0, and return "Current points".
+        Before returning anything, put it in cache with a 5 minute expiration.
+
+        """
+        from django.core.cache import cache
+        cache_key = 'points_%s' % self.user.username
+        points = cache.get(cache_key)
+        if not points:
+            cur_time = get_current_utc() 
+            if self.last_point_update_time:
+                time_diff = cur_time - self.last_point_update_time
+                time_threshold = datetime.timedelta(hours=24)
+            if self.last_point_update_time and time_diff < time_threshold:
+                points = self.current_points
+            else:
+                self.current_points = self.current_points + self.pending_points
+                self.pending_points = 0
+                points = self.current_points
+                self.last_point_update_time = cur_time
+                self.save()
+            cache.set(cache_key, points, 60*10) # caches for 10 minutes
+        return points
+    
+    def award_points(self, score):
+        """Safely awards [score] points to this user."""
+        self.pending_points = self.pending_points + score
+        self.save()
+
 		
 # create user profile as soon as a user is added
 def make_blank_profile(sender, instance, created, **kwargs):  
@@ -296,6 +350,20 @@ def make_blank_profile(sender, instance, created, **kwargs):
         pass
      
 post_save.connect(make_blank_profile, sender=User)
+
+
+class Vote(models.Model):
+    """Reputation system"""
+    # relationships
+    voter = models.ForeignKey('User_Profile') # the user who voted
+    voted_on = models.ForeignKey('Event_Revision') # which revision was voted on
+
+    # main fields
+    when = models.DateTimeField() # when the vote was placed
+    score = models.IntegerField(default=1) # +1 or -1: upvote or downvote
+    
+    def __unicode__(self):
+        return 'Vote by ' + unicode(self.voter) + ' on ' + unicode(self.voted_on)
 
 ### HELPER METHODS        
 import datetime

@@ -6,6 +6,7 @@ import re
 
 from nice.models import *
 from datetime import *
+import settings.common as settings
 
 
 # TODO(Naphat, Maxim): Should we switch netid parameter inputs to User object inputs from request.user? May save a database call.
@@ -279,10 +280,6 @@ def modify_events(netid, events):
         
                     all_future_events = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
                     matching_future_events = [r for r in all_future_events if r.event_start >= event_dict['event_start']]
-                    """if shouldWeModifyFutureEvents:
-                    else:
-                        matching_future_events = [r for r in all_future_events if r.event_start == event_dict['event_start']]
-                    """
                     for future_event in matching_future_events: # Edit each future event
                         # Take its last revision, as seen by this user
                         this_event_last_rev = future_event
@@ -293,7 +290,7 @@ def modify_events(netid, events):
                         # Save as new unapproved revision.
                         this_event_last_rev.modified_user = user
                         this_event_last_rev.modified_time = new_modified_time
-                        this_event_last_rev.approved = False
+                        this_event_last_rev.approved = STATUS_PENDING
                         this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
         
     return changed_ids, deleted_ids
@@ -623,3 +620,124 @@ def search_classes(query):
         results.append(construct_course_dict(c))
         #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
     return results
+
+
+def get_unapproved_revisions(netid, count=3):
+    """Fetches [count] (default 3) unapproved revisions for this user to vote on.
+
+    How it works: Filter to revisions that:
+    - classes the user is in
+    - not created by the user
+    - are newer than the last approved revision
+    - are unapproved, regardless of what their current vote total is
+    - don't belong to an event this user hid previously
+    
+    Later, perhaps add these constraints:
+    - bias towards events the user has participated in before?
+    - are future events?
+    """
+    try:
+        user = User.objects.get(username=netid).profile
+    except Exception, e:
+        return []
+    all_sections = user.sections.all()
+    hidden_events = user.hidden_events
+    if hidden_events:
+        hidden_events = json.loads(hidden_events)
+    else:
+        hidden_events = []
+    filtered = Event.objects.filter(group__section__in = all_sections)[:count]
+    survived = []
+    for event in filtered:
+        if event.id in hidden_events:
+            continue  # skip this event if it's in the user hid it previously
+
+        best_rev = event.best_revision(netid=netid) # load the best revision once
+        unapproved_revs = event.revision_set.filter(approved=STATUS_PENDING)
+        
+        if best_rev:
+            unapproved_revs = unapproved_revs.filter(modified_time__gte = best_rev.modified_time) # newer than the last approved revision (if one exists)
+        
+        unapproved_revs = unapproved_revs.order_by('modified_time') # earlier ones first, so they don't get missed
+
+        for unapproved_rev in unapproved_revs:
+            # conditions we don't want are below -- if any are matched, continue to the next unapproved revision (or next event)
+            if unapproved_rev.modified_user is user: # avoid revisions made by this user
+                continue
+            if Vote.objects.filter(voted_on=unapproved_rev, voter=user).all(): # if already voted
+                continue
+            # if we made it to here, then the revision ought to be voted upon
+            survived.append(construct_event_dict(event, netid=netid, best_rev=unapproved_rev))
+    return survived
+
+def process_vote_on_revision(netid, isPositive, revision_id):
+    """Handles users' votes on unapproved revisions -- checks the votes for eligibility, records them, then processes side-effects (approval, points).
+
+    Procedure:
+
+    Check if voter is eligible to vote on this revision, else stop
+    Record the vote
+    Recompute total vote count for this revision
+    Award points to the voter for having submitted a vote.
+    If the revision passes the approval threshold, approve it. If it passes the rejection threshold, reject it.
+    If we changed state to Approved or Rejected (no longer Pending), then award points to this voter, previous voters, and revision creator.
+
+    Returns: True if succeeded, False if failed
+
+    """
+
+    try:
+        revision = Event_Revision.objects.get(pk=revision_id)
+        user = User.objects.get(username=netid).profile
+    except Exception, e:
+        return False
+    
+    # Voter is not eligible to vote on this revision
+    if revision.approved != revision.STATUS_PENDING:
+        return False
+    if revision.modified_user.user.username == netid:
+        return False
+    if Vote.objects.filter(voted_on=revision, voter=user).all().count() > 0:
+        return False
+    if revision.event.group.section not in user.sections.all():
+        return False
+
+    # Record the vote 
+    v = Vote(voter=user, voted_on=revision, when=get_current_utc(), score=(1 if isPositive else -1))
+    v.save()
+
+    # Award points for making this vote
+    user.award_points(settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING)
+    user.save()
+
+    # Recompute total vote count for this revision
+    all_votes = Vote.objects.filter(voted_on=revision)
+    total_score = sum([vt.score for vt in all_votes])
+
+    # If the revision passes the approval threshold, approve it. If it passes the rejection threshold, reject it. Assign points accordingly.
+    if total_score >= settings.THRESHOLD_APPROVE:
+        revision.approved = revision.STATUS_APPROVED
+        revision.save()
+
+        # Award points to all voters
+        for vt in all_votes:
+            if vt.score > 0: # voted correctly
+                vt.voter.award_points(settings.REWARD_FOR_PROPER_UPVOTE)
+            elif vt.score < 0: # voted incorrectly
+                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_DOWNVOTE)
+        # Award points to revision creator
+        revision.modified_user.award_points(settings.REWARD_FOR_APPROVED_SUBMISSION)
+    elif total_score <= settings.THRESHOLD_REJECT:
+        revision.approved = revision.STATUS_REJECTED
+        revision.save()
+        
+        # Award points to all voters
+        for vt in all_votes:
+            if vt.score < 0: # voted correctly
+                vt.voter.award_points(settings.REWARD_FOR_PROPER_DOWNVOTE)
+            elif vt.score > 0: # voted incorrectly
+                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_UPVOTE)
+        # Award points to revision creator
+        revision.modified_user.award_points(settings.REWARD_FOR_REJECTED_SUBMISSION)
+    
+    return True
