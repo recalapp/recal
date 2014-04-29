@@ -315,6 +315,7 @@ def modify_events(request):
             to_hide = json.loads(request.POST['hide'])
             queries.hide_events(netid, to_hide)
         except Exception, e:
+            print 'Modifying events error 2: ', e
             return HttpResponse(status=500) # 500 Internal Server Error
         
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created

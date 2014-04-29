@@ -249,7 +249,7 @@ def modify_events(netid, events):
                 # Recurrence pattern hasn't changed.
 
                 # Which fields have changed since previous revision? Compare to the best-revision this user sees (stored in previous_best_revision) -- not to the global last-approved revision.
-                old, new = previous_best_revision.compare(new_rev)
+                old, new = previous_best_revision.compare(eventRev)
 
                 # By default, recurring event edit settings is to change all future events
                 # Select all future events in this event group (other than this event) (then we overwrite changed fields)
