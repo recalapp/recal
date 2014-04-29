@@ -100,7 +100,7 @@ function Cal_reload()
                     start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
                     end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
                     highlighted: shouldHighlight,
-                    backgroundColor: shouldHighlight ? '#428be8' : '#74a2ca'
+                    backgroundColor: shouldHighlight ? eventDict.section_color : colorLuminance(eventDict.section_color, 0.3)
                 });
             });
             $("#calendarui").fullCalendar("refetchEvents");
@@ -118,7 +118,8 @@ function Cal_render() {
 
 function Cal_highlightEvent(calEvent, update)
 {
-    calEvent.backgroundColor = "#428be8";
+    if (!calEvent.highlighted)
+        calEvent.backgroundColor = colorLuminance(calEvent.backgroundColor, -0.2);
     calEvent.highlighted = true;
     if (update)
         $("#calendarui").fullCalendar("updateEvent", calEvent);
@@ -126,10 +127,31 @@ function Cal_highlightEvent(calEvent, update)
 }
 function Cal_unhighlightEvent(calEvent, update)
 {
-    delete calEvent["backgroundColor"];
+    // delete calEvent["backgroundColor"];
+    if (calEvent.highlighted)
+        calEvent["backgroundColor"] = colorLuminance(calEvent["backgroundColor"], 0.2);
     calEvent.highlighted = false;
     if (update)
         $("#calendarui").fullCalendar("updateEvent", calEvent);
     //$(eventDiv).removeClass("event-selected");
 }
 
+function colorLuminance(hex, lum) 
+{
+	// validate hex string
+	hex = String(hex).replace(/[^0-9a-f]/gi, '');
+	if (hex.length < 6) {
+		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+	}
+	lum = lum || 0;
+
+	// convert to decimal and change luminosity
+	var rgb = "#", c, i;
+	for (i = 0; i < 3; i++) {
+		c = parseInt(hex.substr(i*2,2), 16);
+		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+		rgb += ("00"+c).substr(c.length);
+	}
+
+	return rgb;
+}
