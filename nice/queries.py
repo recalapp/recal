@@ -144,15 +144,15 @@ def modify_events(netid, events):
             recurrence_has_changed = False # used in recurring events handling further down
             if last_rev.start_date != new_event_group_rev.start_date or last_rev.end_date != new_event_group_rev.end_date:
                 event_groups_match = False 
-            elif 'recurring' in event_dict and event_dict['recurring'] is True: # recurrence is enabled in updated event_dict
-                if (last_rev.recurrence_days != new_event_group_rev.recurrence_days):
+            if 'recurring' in event_dict and event_dict['recurring'] is True: # recurrence is enabled in updated event_dict
+                if (json.dumps(last_rev.recurrence_days) != event_dict['recurrence_days']):
                     event_groups_match = False
                     recurrence_has_changed = True
                 if (last_rev.recurrence_interval != new_event_group_rev.recurrence_interval):
                     event_groups_match = False
                     recurrence_has_changed = True
             elif 'recurring' in event_dict and event_dict['recurring'] is False: # recurrence is disabled in updated event_dict
-                if last_rev.recurrence_days is not None or last_rev.recurrence_interval is not None:
+                if last_rev.recurrence_days is not None and len(last_rev.recurrence_days) is not 0:
                     event_groups_match = False
                     recurrence_has_changed = True
             
@@ -205,8 +205,8 @@ def modify_events(netid, events):
 
         ## Handle recurring events
         if event_dict['recurring'] is True:
-            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1),
-                                                event_dict['event_end']+timedelta(days=1),
+            event_dates = get_recurrence_dates(event_dict['event_start'],#+timedelta(days=1),
+                                                event_dict['event_end'],#+timedelta(days=1),
                                                 new_event_group_rev.end_date,
                                                 event_dict['recurrence_days'],
                                                 event_dict['recurrence_interval'])   # events in this group starting with next day
@@ -229,18 +229,22 @@ def modify_events(netid, events):
         else:
             # This is not a new event group.
             if recurrence_has_changed:
+                print 'recurrence pattern has changed'
                 # Recurrence pattern has changed.
 
                 if last_rev.recurrence_days is None: # no previous recurrence pattern
                     # Make all new events with this same event revision
                     create_new_events(event_dates)
+                    print 'no previous recurrence pattern'
                 else:
+                    print 'recurrence pattern has changed from previous'
                     # Previous recurrence pattern has changed -- need to find the previous-created events and move them
                     # By default, only edit the ones after this event
                     
                     # find and remove old events
                     old_events_pre = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
                     old_events = [r for r in old_events_pre if r.event_start >= event_dict['event_start']]
+                    print 'deleting all events after ', event_dict['event_start']
 
                     for oe in old_events:
                         oe_e = oe.event
@@ -250,9 +254,11 @@ def modify_events(netid, events):
                     
                     # recreate events at their new times
                     create_new_events(event_dates)
+                    print 'created events on', event_dates
 
             else:
                 # Recurrence pattern hasn't changed.
+                print "Recurrence pattern hasn't changed."
 
                 # Which fields have changed since previous revision? Compare to the best-revision this user sees (stored in previous_best_revision) -- not to the global last-approved revision.
                 old, new = previous_best_revision.compare(eventRev)
