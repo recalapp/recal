@@ -180,11 +180,11 @@ class Event(models.Model):
         """
         if self.event_revision_set.exists():
             # Choose either the last approved revision or the last revision this user made, whichever is newer
-            latest_approved = self.event_revision_set.filter(Q(approved=STATUS_APPROVED) | Q(modified_user__user__username=netid)).latest('modified_time') 
+            latest_approved = self.event_revision_set.filter(Q(approved=Event_Revision.STATUS_APPROVED) | Q(modified_user__user__username=netid)).latest('modified_time') 
 
             if netid:
                 # Compare to revisions for this event that the user has voted on
-                event_vote = Vote.objects.filter(voter__user__username = netid).filter(voted_on__event__pk=self.pk).filter(voted_on__approved=STATUS_PENDING).filter(score=1).latest('when') # upvote on some revision of this event
+                event_vote = Vote.objects.filter(voter__user__username = netid).filter(voted_on__event__pk=self.pk).filter(voted_on__approved=Event_Revision.STATUS_PENDING).filter(score=1).order_by('-when').first() # upvote on some revision of this event
                 if event_vote and event_vote.voted_on.modified_time > latest_approved.modified_time: # if the upvoted revision is newer than the last approved revision, then show the upvoted revision instead.
                     latest_approved = event_vote
             return latest_approved # show the latest approved revision because the user's revisions don't exist or are older

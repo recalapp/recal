@@ -254,24 +254,27 @@ def login_admin(request):
     
 # for AJAX
 def events_json(request, start_date=None, end_date=None, last_updated=None):
-    netid = request.user.username
-    if start_date:
-        start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
-    if end_date:
-        end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
-    if last_updated:
-        last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
-    events = queries.get_events(netid, start_date=start_date, end_date=end_date)
-    hidden_events = request.user.profile.hidden_events
-    if hidden_events:
-        hidden_events = json.loads(hidden_events)
-    else:
-        hidden_events = []
-    return HttpResponse(json.dumps({
-        'events': events,
-        'hidden_events': hidden_events,
-    }), content_type='application/javascript')
-    #return render(request, 'main/event-json-test.html')
+    try:
+        netid = request.user.username
+        if start_date:
+            start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
+        if end_date:
+            end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
+        if last_updated:
+            last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
+        events = queries.get_events(netid, start_date=start_date, end_date=end_date)
+        hidden_events = request.user.profile.hidden_events
+        if hidden_events:
+            hidden_events = json.loads(hidden_events)
+        else:
+            hidden_events = []
+        return HttpResponse(json.dumps({
+            'events': events,
+            'hidden_events': hidden_events,
+        }), content_type='application/javascript')
+        #return render(request, 'main/event-json-test.html')
+    except Exception, e:
+        print e
 
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs'])
