@@ -1,8 +1,3 @@
-.event-picker{
-}
-.event-picker > tr {
-    vertical-align: top;
-}
 .event-picker-item{
     height: 500px;
 }
@@ -38,4 +33,11 @@
 .ep-center-btn:hover, .ep-control:hover{
     background-color: rgb(240, 240, 240);
 }
-
+#ep-title{
+    text-align: center;
+}
+.ep-center-control {
+    margin-left: 20%;
+    margin-right: 20%;
+    text-align: center;
+}

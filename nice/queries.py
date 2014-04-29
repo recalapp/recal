@@ -37,8 +37,8 @@ def get_events(netid, **kwargs):
             continue
         if last_updated and best_rev.modified_time < last_updated:
             continue
-        if event.id in hidden_events:
-            continue
+        #if event.id in hidden_events:
+        #    continue
         # if we made it to here, then the event is good
         survived.append(construct_event_dict(event, netid=netid, best_rev=best_rev))
     return survived

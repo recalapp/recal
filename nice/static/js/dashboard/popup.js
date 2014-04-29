@@ -608,7 +608,6 @@ function PopUp_clickedDelete(popUpAnchor)
         });
         return;
     }
-
     PopUp_close(popUp);
     EventsMan_deleteEvent(event_id);
 }
