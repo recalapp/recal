@@ -49,7 +49,7 @@ function SE_init()
         $(hidden_sc).on('select', function(ev, choices){
             $.each(choices, function(key, selected){
                 if (selected)
-                    EventsMan_showHidden(key);
+                    EventsMan_showHidden(Boolean(key));
             });
         });
         $(this).find('#hidden_options').append(hidden_sc);
