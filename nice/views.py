@@ -311,13 +311,17 @@ def modify_events(request):
             return HttpResponse(status=500) # 500 Internal Server Error
         
         
-    if 'hide' in request.POST:
-        try:
+    if 'hidden' in request.POST:
+        user = request.user.profile
+        user.hidden_events = request.POST['hidden']
+        user.save()
+        """try:
             to_hide = json.loads(request.POST['hide'])
             queries.hide_events(netid, to_hide)
         except Exception, e:
             print 'Modifying events error 2: ', e
             return HttpResponse(status=500) # 500 Internal Server Error
+        """
         
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created
 

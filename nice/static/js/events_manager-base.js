@@ -12,10 +12,11 @@ function _EventsMan_new()
     this.order = []; // {start: "start", id: "id"}, keep sorted
     this.lastSyncedTime = 0; // will be set when populating
     this.addedCount = 0;
-    this.deletedIDs = [];
+    //this.deletedIDs = [];
     this.updatedIDs = new Set(); // if it is in updatedIDs, it'll be pushed on the next connection
     this.uncommitted = {}; // copies of events dict with uncommitted changes, once saved, the event dict is copied to eventsManager.events, and its ID is added to updatedIDs
     this.hiddenIDs = new Set();
+    this.changed = false; // true if hidden IDs have changed and not been pushed
     this.isIdle = true;
     this.showHidden = false;
     return this;
@@ -39,7 +40,7 @@ function EventsMan_constructOrderArray()
 
 function EventsMan_showHidden(hide)
 {
-    if (hide)
+    if (typeof hide != 'undefined')
     {
         eventsManager.showHidden = hide;
         _EventsMan_callUpdateListeners();
@@ -134,8 +135,9 @@ function EventsMan_deleteEvent(id, silent)
     {
         //eventsManager.events[id] = null;
         //delete eventsManager.events[id];
-        eventsManager.deletedIDs.push(id);
+        //eventsManager.deletedIDs.push(id);
         eventsManager.hiddenIDs.add(id);
+        eventsManager.changed = true;
     }
     if (id in eventsManager.uncommitted)
     {
