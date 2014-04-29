@@ -158,6 +158,7 @@ def edit_profile(request):
             'end_date': format(cur_sem.end_date, 'U'),
         },
         'is_mobile': request.mobile,
+        'user': request.user,
     })
 
 @login_required
@@ -324,6 +325,15 @@ def modify_events(request):
         """
         
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created
+
+@login_required
+def modify_user(request):
+    user_dict = json.loads(request.POST['user'])
+    user = request.user
+    user.first_name = user_dict['first_name']
+    user.last_name = user_dict['last_name']
+    user.save()
+    return HttpResponse('')
 
 def state_restoration(request):
     netid = request.user.username
