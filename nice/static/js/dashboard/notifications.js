@@ -68,7 +68,15 @@ function NO_showSimilarEvents(event_id)
     SB_pop(noti);
     var popUp = PopUp_getPopUpByID(event_id)
     PopUp_markAsEditing(popUp);
-    //$(popUp).data('is_editing', true);
+    if (PopUp_hasMain() && !PopUp_isMain(popUp))
+    {
+        var main = PopUp_getMainPopUp();
+        PopUp_callCloseListeners(PopUp_getID(main));
+        $(main).remove();
+    }
+    SB_push(popUp);
+    PopUp_updateSize(popUp);
+    PopUp_makeMain(popUp);
     $(popUp).draggable('disable');
     var called = false; // TODO bad for memory
     SB_addWillCloseListener(function(){

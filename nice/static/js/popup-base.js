@@ -15,7 +15,9 @@ var POPUP_EDITDICT = {
     'popup-time-end': 'event_end',
     "popup-type": "event_type",
     "popup-section": "section_id",
-    "popup-desc": "event_description"
+    "popup-desc": "event_description",
+    "popup-repeat-end": "recurrence_end",
+    "popup-repeat-interval": "recurrence_interval",
 }
 var PopUp_Main_optFirstDrag = function(popUp){};
 var POPUP_MAIN_FIRSTDRAG = function(popUp){

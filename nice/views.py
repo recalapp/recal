@@ -296,6 +296,16 @@ def course_json(request, course_id):
     ret = queries.get_course_by_id(course_id)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+def unapproved_revisions_json(request, event_id=None):
+    unapproved = queries.get_unapproved_revisions(request.user.username)
+    return HttpResponse(json.dumps(unapproved), content_type='application/javascript')
+
+def process_votes(request):
+    votes = json.loads(request.POST['votes'])
+    for vote in votes:
+        queries.process_vote_on_revision(request.user.username, votes['is_positive'], votes['revision_id'])
+    return HttpResponse('')
+
 @login_required
 @require_POST
 def modify_events(request):

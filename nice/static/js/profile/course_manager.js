@@ -215,11 +215,10 @@ function CourseMan_pushChanges(async)
 
 function CourseMan_cacheEnrolledCourses()
 {
-    for (var courseID in courseManager.enrolledCourses())
-    {
+    $.each(courseManager.enrolledCourses(), function(index, courseID){
         if (!(courseID in courseManager.allCourses))
             CourseMan_pullCourseByID(courseID, true);
-    }
+    });
 }
 
 function CourseMan_handleQueue()
