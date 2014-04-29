@@ -90,6 +90,7 @@ function Agenda_reload()
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
 }
+
 function Agenda_filterEvents(eventIDs)
 {
     var ret = [];
@@ -102,6 +103,21 @@ function Agenda_filterEvents(eventIDs)
     });
     return ret;
 }
+
+// function Agenda_loadEventsWithTime(eventIDs, time)
+// {
+//     if (time == 'yesterday')
+//     {
+//         $.each(eventIDs, function(index) {
+//             var eventDict = EventsMan_getEventById(this);
+//             if (eventDict['event_type'] == "AS")
+//             {
+//                 eventDict['overdue'] = 'true';
+//             }
+//         });
+//     }
+// }
+
 function Agenda_loadEvents(eventIDs)
 {
     var agendaContainer = $("#agenda");
@@ -120,6 +136,11 @@ function Agenda_loadEvents(eventIDs)
         var start = moment.unix(eventDict.event_start);
         var timeText = start.tz(MAIN_TIMEZONE).calendar();
         $(agenda).find('#agenda-time').text(timeText);
+        // TODO: add overdue field when creating new event
+        // if (eventDict['overdue'])
+        // {
+        //     $(agenda).find('#agenda-time').css('color', 'red');
+        // }
 
         // set colors in the agenda
         _Agenda_setColors(agenda, eventDict);
@@ -141,11 +162,13 @@ function _Agenda_setColors(agenda, eventDict)
     var courseColor = eventDict.section_color;
     $(agenda).find('#agenda-section').addClass(agendaColorClass).css('color', courseColor);
     $(agenda).find('#agenda-title').addClass(agendaColorClass).css('color', courseColor);
+    $(agenda).parent().find('.agenda-tag').addClass(agendaColorClass).css('background-color', courseColor);
+    $(agenda).data('new-color', courseColor);
     // $(agenda).find('#agenda-section').closest('panel').addClass(agendaColorClass).css('border-color', '#A1B2C3');
     console.log('courseColor is: ' + courseColor);
     console.log( $(agenda).find('#agenda-section').closest('panel'));
 
-    $(agenda).data('new-color', '#334499');
+    // $(agenda).data('new-color', '#334499');
 
     var oldColor = $(agenda).css('border-color');
     $(agenda).data('default-color', oldColor);
@@ -202,8 +225,8 @@ function Agenda_highlight(agenda)
         return;
     var newColor = $(agenda).data('new-color');
     //var newColor = '#123456';
-    var oldColor = $(agenda).css('border-color');
-    $(agenda).data('default-color', oldColor);
+    // var oldColor = $(agenda).css('border-color');
+    // $(agenda).data('default-color', oldColor);
     $(agenda).addClass("panel-primary").removeClass("panel-default").css({
         'border-color': newColor,
     });

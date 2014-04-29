@@ -121,13 +121,16 @@ a {
     cursor: default;
 }
 
-/*.agenda-item.panel{
-    border-radius: 0;
-    border: 1px solid rgba(100, 100, 100, 0.1); 
+.agenda-item.panel{
+    margin-bottom: 0;
 }
+
 .agenda-item.panel-primary{
-    background-color: #e8f1f9;
-}*/
+}
+
+.agenda-container {
+    margin-bottom: 21px;
+}
 
 #loading{
     position: fixed;
@@ -223,6 +226,15 @@ a {
 */
 #agenda-color.dark{
     color: rgba(255, 255, 255, 0.5);
+}
+
+.agenda-tag{
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background-color: black;
+    width: 20px;
 }
 
 /* Navbar icons: removing default underlines and changing color on hover. */
