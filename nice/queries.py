@@ -91,6 +91,7 @@ def modify_events(netid, events):
     * deleted_ids array (list of event IDs)
 
     """
+    print events
     try:
         user = User.objects.get(username=netid).profile
     except:
@@ -239,12 +240,12 @@ def modify_events(netid, events):
                     
                     # find and remove old events
                     old_events_pre = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
-                    old_events = [r for r in all_future_events if r.event_start >= event_dict['event_start']]
+                    old_events = [r for r in old_events_pre if r.event_start >= event_dict['event_start']]
 
                     for oe in old_events:
                         oe_e = oe.event
                         deleted_ids.append(oe_e.pk)
-                        oe_e.revision_set.delete()
+                        oe_e.event_revision_set.all().delete()
                         oe_e.delete()
                     
                     # recreate events at their new times
