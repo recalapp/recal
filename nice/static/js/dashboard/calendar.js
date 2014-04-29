@@ -94,6 +94,8 @@ function Cal_reload()
                 if (!CAL_FILTER.contains(eventDict.event_type))
                     return;
                 var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
+                var isHidden = EventsMan_eventIsHidden(this);
+                // TODO(Dyland) distinguish between hidden and non-hidden events
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
                     title: eventDict.event_title,
