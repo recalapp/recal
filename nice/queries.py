@@ -124,6 +124,7 @@ def modify_events(netid, events):
             new_event_group_rev.recurrence_interval = None
             
         isNewEvent = False
+        shouldWeModifyFutureEvents = False
 
         # Decide whether to edit existing event, or make new event.
         try:
@@ -145,16 +146,21 @@ def modify_events(netid, events):
             if last_rev.start_date != new_event_group_rev.start_date or last_rev.end_date != new_event_group_rev.end_date:
                 event_groups_match = False 
             if 'recurring' in event_dict and event_dict['recurring'] is True: # recurrence is enabled in updated event_dict
-                if (json.dumps(last_rev.recurrence_days) != event_dict['recurrence_days']):
+                print 'rec1'
+                if last_rev.recurrence_days != json.dumps(event_dict['recurrence_days']):
                     event_groups_match = False
                     recurrence_has_changed = True
-                if (last_rev.recurrence_interval != new_event_group_rev.recurrence_interval):
+                    print 'rec1.1', last_rev.recurrence_days, json.dumps(event_dict['recurrence_days'])
+                if last_rev.recurrence_interval != new_event_group_rev.recurrence_interval:
                     event_groups_match = False
                     recurrence_has_changed = True
+                    print 'rec1.2'
             elif 'recurring' in event_dict and event_dict['recurring'] is False: # recurrence is disabled in updated event_dict
+                print 'rec2'
                 if last_rev.recurrence_days is not None and len(last_rev.recurrence_days) is not 0:
                     event_groups_match = False
                     recurrence_has_changed = True
+                    print 'rec2.2'
             
             # If we concluded that event groups don't match, save new event group revision
             if not event_groups_match:
@@ -205,8 +211,13 @@ def modify_events(netid, events):
 
         ## Handle recurring events
         if event_dict['recurring'] is True:
-            event_dates = get_recurrence_dates(event_dict['event_start'],#+timedelta(days=1),
-                                                event_dict['event_end'],#+timedelta(days=1),
+            event_dates = get_recurrence_dates(event_dict['event_start'],
+                                                event_dict['event_end'],
+                                                new_event_group_rev.end_date,
+                                                event_dict['recurrence_days'],
+                                                event_dict['recurrence_interval'])   # events in this group starting with next day
+            event_dates_starting_tomorrow = get_recurrence_dates(event_dict['event_start']+timedelta(days=1),
+                                                event_dict['event_end']+timedelta(days=1),
                                                 new_event_group_rev.end_date,
                                                 event_dict['recurrence_days'],
                                                 event_dict['recurrence_interval'])   # events in this group starting with next day
@@ -234,7 +245,7 @@ def modify_events(netid, events):
 
                 if last_rev.recurrence_days is None: # no previous recurrence pattern
                     # Make all new events with this same event revision
-                    create_new_events(event_dates)
+                    create_new_events(event_dates_starting_tomorrow) # don't make event that matches the original one being edited (i.e. start a day later)
                     print 'no previous recurrence pattern'
                 else:
                     print 'recurrence pattern has changed from previous'
@@ -260,25 +271,30 @@ def modify_events(netid, events):
                 # Recurrence pattern hasn't changed.
                 print "Recurrence pattern hasn't changed."
 
-                # Which fields have changed since previous revision? Compare to the best-revision this user sees (stored in previous_best_revision) -- not to the global last-approved revision.
-                old, new = previous_best_revision.compare(eventRev)
 
-                # By default, recurring event edit settings is to change all future events
                 # Select all future events in this event group (other than this event) (then we overwrite changed fields)
-                all_future_events = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
-                matching_future_events = [r for r in all_future_events if r.event_start >= event_dict['event_start']]
-                for future_event in matching_future_events: # Edit each future event
-                    # Take its last revision, as seen by this user
-                    this_event_last_rev = future_event
-                    this_event_last_rev.pk = None
-                    # Edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
-                    this_event_last_rev.apply_changes(new)
-                    
-                    # Save as new unapproved revision.
-                    this_event_last_rev.modified_user = user
-                    this_event_last_rev.modified_time = new_modified_time
-                    this_event_last_rev.approved = False
-                    this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
+                if shouldWeModifyFutureEvents:
+                    # Which fields have changed since previous revision? Compare to the best-revision this user sees (stored in previous_best_revision) -- not to the global last-approved revision.
+                    old, new = previous_best_revision.compare(eventRev)
+        
+                    all_future_events = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
+                    matching_future_events = [r for r in all_future_events if r.event_start >= event_dict['event_start']]
+                    """if shouldWeModifyFutureEvents:
+                    else:
+                        matching_future_events = [r for r in all_future_events if r.event_start == event_dict['event_start']]
+                    """
+                    for future_event in matching_future_events: # Edit each future event
+                        # Take its last revision, as seen by this user
+                        this_event_last_rev = future_event
+                        this_event_last_rev.pk = None
+                        # Edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
+                        this_event_last_rev.apply_changes(new)
+                        
+                        # Save as new unapproved revision.
+                        this_event_last_rev.modified_user = user
+                        this_event_last_rev.modified_time = new_modified_time
+                        this_event_last_rev.approved = False
+                        this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
         
     return changed_ids, deleted_ids
 
