@@ -207,4 +207,9 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     margin-top: 6px;
     margin-bottom: 7px;
 }
-
+#settingsModal{
+    z-index: 200000;
+}
+.modal-backdrop{
+    z-index: 100000;
+}
