@@ -80,6 +80,7 @@ def modify_events(netid, events):
         * event_id (default: None)
         * event_type 
         * section_id
+        * section_color
         * recurrence_days
         * recurrence_interval   
         * recurrence_end (end date for the recurring series)
@@ -184,6 +185,21 @@ def modify_events(netid, events):
             changed_ids[event_dict['event_id']] = [event.pk, event_group.pk] # mark down new event ID and its event group ID
         
         
+        # TODO: Dyland. Test if this breaks anything
+        curr_section = Section.objects.get(id=event_dict['section_id'])
+        try:
+            user_section_table = User_Section_Table.filter(
+                user=user
+            ).get(
+                section=curr_section
+            )
+
+            if event_dict['section_color']:
+                user_section_table.color = event_dict['section_color']
+                user_section_table.save()
+        except:
+            pass
+
         # Now that we have a new or existing event selected, create a new revision.
         def make_new_rev(e):
             return Event_Revision(
@@ -333,11 +349,15 @@ def __construct_revision_dict(rev, group, group_rev, netid):
     Serializes a specific revision into a dict that can be passed to the client for rendering.
 
     """
-    section_color = User_Section_Table.objects.filter(
+    try:
+        section_color = User_Section_Table.objects.filter(
             user=User.objects.get(username=netid).profile
         ).get(
             section=rev.event.group.section.id
         ).color
+    except:
+        section_color = ''
+
     results = {
         'event_id': rev.event.id,
         'event_group_id': rev.event.group.id,

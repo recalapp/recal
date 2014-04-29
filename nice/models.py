@@ -110,13 +110,45 @@ def make_default_table(sender, instance, created, **kwargs):
 post_save.connect(make_default_table, sender=Course)
 
 class User_Section_Table(models.Model):
+    """
+    only 5 default colors
+    """
+    COLOR_1 = '#84D7DB'
+    COLOR_2 = '#306278'
+    COLOR_3 = '#FFC926'
+    COLOR_4 = '#F26022'
+    COLOR_5 = '#6B2119'
+    COLOR_6 = '#000000'
+
+    COLOR_CHOICES = (
+        (COLOR_1, 'bermuda'),
+        (COLOR_2, 'light blue'),
+        (COLOR_3, 'lightening yellow'),
+        (COLOR_4, 'flamingo'),
+        (COLOR_5, 'persian plum'),
+        (COLOR_6, 'black'),
+    )
     # relationships
     user = models.ForeignKey('User_Profile')
     section = models.ForeignKey(Section)
-    color = ColorField(default='343434')
+    color = ColorField(default=COLOR_CHOICES[0][0])
 
     # fields
     add_date = models.DateTimeField()
+
+    def get_usable_color(self):
+        section_tables = User_Section_Table.objects.filter(user=self.user).exclude(section=self.section)
+        for color_tuple in self.COLOR_CHOICES:
+            curr_available = True
+            for table in section_tables:
+                if table.section.course.id == self.section.course.id:
+                    return table.color
+                if table.color == color_tuple[0]:
+                    curr_available = False
+                    break
+            if curr_available:
+                return color_tuple[0]
+        return '#550000'
 
     def __unicode__(self):
         return self.user.__unicode__() + ' enrolled in ' + unicode(self.section)

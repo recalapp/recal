@@ -125,6 +125,8 @@ def edit_profile_manual(request):
                     for default_section in the_course.section_set.filter(isDefault=True):
                         user_in_section = User_Section_Table(user = profile, section=default_section, add_date = get_current_utc())
                         user_in_section.save()
+                        user_in_section.color = user_in_section.get_usable_color()
+                        user_in_section.save()
                 else:
                     # Remove user from class, i.e. remove from all sections matching this course ID
                     User_Section_Table.objects.filter(section__course_id=the_course.id).filter(user=profile).delete()
@@ -173,6 +175,8 @@ def enroll_sections(request):
                 prev_enrollment = [enrollment for enrollment in prev_enrollment if enrollment.section != section]
             else:
                 enrollment = User_Section_Table(user=user, section=section, add_date=get_current_utc())
+                enrollment.save()
+                enrollment.color = enrollment.get_usable_color()
                 enrollment.save()
     for enrollment in prev_enrollment:
         enrollment.delete()
@@ -231,6 +235,7 @@ def edit_sections(request):
             if enrolled and s not in my_current_sections: # This section has been changed to enrolled status
                 # Enrolling in new section.
                 user_in_section = User_Section_Table(user = profile, section=s, add_date = get_current_utc())
+                user_in_section.color = user_in_section.get_usable_color()
                 user_in_section.save()
             elif not enrolled and s in my_current_sections and not s.isDefault: # This section has been changed to not-enrolled status (and isn't a default section, i.e. enrollment isn't mandatory)
                 # Unenrolling in a section
