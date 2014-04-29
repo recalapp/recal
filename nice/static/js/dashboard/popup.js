@@ -508,6 +508,23 @@ function PopUp_clickedElement(element)
     {
         $(popUp).find('.popup-ctrl').addClass('hidden');
     }
+    $(form).find('input').off('keyup').on('keyup', function(ev){
+        var keyCode = ev.keyCode || ev.which;
+        if (keyCode == 13) // enter key
+        {
+            PopUp_clickedSaveElement(form);
+        }
+    });
+    $(form).find('.withtimepicker').off('keyup').off('keydown').on('keydown', function(ev){
+        ev.preventDefault();
+    });
+    $(form).find('.withdatepicker').off('keyup').off('keydown').on('keydown', function(ev){
+        ev.preventDefault();
+    });
+    $(form).find('.withcustompicker').off('keyup').off('keydown').on('keydown', function(ev){
+        ev.preventDefault();
+    });
+
     //$(form).find("input").data("datetimepicker");
     //$(form).find("input").datetimepicker();
 }
