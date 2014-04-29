@@ -238,10 +238,15 @@ def modify_events(netid, events):
                     # By default, only edit the ones after this event
                     
                     # find and remove old events
-                    old_events = event_group.event_set.filter(start_date__gte = event_dict['event_start']) # TODO(Maxim): ANOTHER BUG
-                    deleted_ids.extend([oe.pk for oe in old_events])
-                    old_events.delete()
+                    old_events_pre = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
+                    old_events = [r for r in all_future_events if r.event_start >= event_dict['event_start']]
 
+                    for oe in old_events:
+                        oe_e = oe.event
+                        deleted_ids.append(oe_e.pk)
+                        oe_e.revision_set.delete()
+                        oe_e.delete()
+                    
                     # recreate events at their new times
                     create_new_events(event_dates)
 
