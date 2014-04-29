@@ -119,10 +119,9 @@ function Agenda_loadEvents(eventIDs)
         
         var start = moment.unix(eventDict.event_start);
         var timeText = start.tz(MAIN_TIMEZONE).calendar();
-        var agendaColor = eventDict.section_color;
+        var agendaColorClass = 'section-color-' + eventDict.color_id;
         $(agenda).find('#agenda-time').text(timeText);
-        $(agenda).find('#agenda-color').text(timeText);
-        $(agenda).find('#agenda-color').css("color", agendaColor);
+        $(agenda).find('#agenda-section').addClass(agendaColorClass);
 
         if (UI_isPinned(agenda.id))
             Agenda_highlight(agenda);

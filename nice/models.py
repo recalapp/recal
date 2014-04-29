@@ -45,7 +45,6 @@ class Course(models.Model):
     description = models.TextField()
     professor = models.CharField(max_length=100, null=True, blank=True)
     registrar_id = models.CharField(max_length=20)
-    color = ColorField(default='ffffff')
 
     def course_listings(self):
         return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')]) #+ ' ' + ': ' + self.title
@@ -94,7 +93,6 @@ class Section(models.Model):
     name = models.CharField(max_length=100, default='all_students')
     isDefault = models.BooleanField(default=False) # if true, then everyone in the course is automatically enrolled in this section
     section_type = models.CharField(max_length=3, choices=TYPE_CHOICES)
-    color = ColorField(default=course.color)
 
     def __unicode__(self):
         return unicode(self.course) + ' - ' + self.name
@@ -115,10 +113,10 @@ class User_Section_Table(models.Model):
     # relationships
     user = models.ForeignKey('User_Profile')
     section = models.ForeignKey(Section)
+    color = ColorField(default='ffffff')
 
     # fields
     add_date = models.DateTimeField()
-    color = ColorField(default=section.color)
 
     def __unicode__(self):
         return self.user.__unicode__() + ' enrolled in ' + unicode(self.section)

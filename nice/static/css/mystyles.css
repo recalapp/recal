@@ -173,10 +173,12 @@ a {
 #agenda-title{
     margin-bottom: 0;
 }
+/*
 #agenda-section{
     color: rgba(0, 0, 0, 0.4);
     margin: 0;
 }
+*/
 #agenda-section.dark{
     color: rgba(255, 255, 255, 0.5);
 }
@@ -188,11 +190,37 @@ a {
 #agenda-time.dark{
     color: rgba(255, 255, 255, 0.5);
 }
+
+
+.section-color-0 {
+    color: rgba(22,77,11, 0.4);
+}
+.section-color-1 {
+    color: rgba(11,99,11, 0.4);
+}
+.section-color-2 {
+    color: rgba(22,55,22, 0.4);
+}
+.section-color-3 {
+    color: rgba(77,11,255, 0.7);
+}
+.section-color-4 {
+    color: rgba(255,11,66, 0.7);
+}
+.section-color-5 {
+    color: rgba(11,34,54, 0.4);
+}
+.section-color-6 {
+    color: rgba(00,32,44, 0.4);
+}
+
+/*
 #agenda-color{
     margin-top: 15px;
     text-align: right;
     color: rgba(0,0,0, 0.4)
 }
+*/
 #agenda-color.dark{
     color: rgba(255, 255, 255, 0.5);
 }
