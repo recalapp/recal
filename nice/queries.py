@@ -1,3 +1,4 @@
+from random import randrange
 from django.utils.dateformat import format
 from django.utils import timezone
 
@@ -50,6 +51,15 @@ def get_events_by_course_ids(course_ids, **kwargs):
     end_date = kwargs.pop('end_date', None)
     filtered = Event.objects.filter(group__section__course__in=courses)
 
+    # get colors for courses first
+    count = 0
+    mapping = {}
+    for course_id in course_ids:
+        mapping[str(course_id)] = count
+        count += 1
+        if count == len(User_Section_Table.COLOR_CHOICES):
+            count = 0
+
     survived = []
     for event in filtered:
         best_rev = event.best_revision() # TODO(Naphat): why no netid here?
@@ -63,7 +73,11 @@ def get_events_by_course_ids(course_ids, **kwargs):
         if last_updated and best_rev.modified_time < last_updated:
             continue
         # if we made it to here, then the event is good
-        survived.append(construct_event_dict(event, best_rev=best_rev))
+        
+        temp = construct_event_dict(event, best_rev=best_rev)
+        course_id = Section.objects.get(id=temp['section_id']).course.id
+        temp['section_color'] = User_Section_Table.COLOR_CHOICES[mapping[str(course_id)]][0]
+        survived.append(temp)
     return survived
 
 def modify_events(netid, events):
@@ -356,7 +370,8 @@ def __construct_revision_dict(rev, group, group_rev, netid):
             section=rev.event.group.section.id
         ).color
     except:
-        section_color = ''
+        color_choices = len(User_Section_Table.COLOR_CHOICES)
+        section_color = User_Section_Table.COLOR_CHOICES[randrange(0,color_choices)][0]
 
     results = {
         'event_id': rev.event.id,
