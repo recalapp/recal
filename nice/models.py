@@ -113,7 +113,7 @@ class User_Section_Table(models.Model):
     # relationships
     user = models.ForeignKey('User_Profile')
     section = models.ForeignKey(Section)
-    color = ColorField(default='ffffff')
+    color = ColorField(default='343434')
 
     # fields
     add_date = models.DateTimeField()

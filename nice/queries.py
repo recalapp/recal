@@ -325,14 +325,19 @@ def construct_event_dict(event, netid=None, best_rev=None):
     group = event.group
     group_rev = group.best_revision()
     assert rev != None and group != None and group_rev != None
-    return __construct_revision_dict(rev, group, group_rev)
+    return __construct_revision_dict(rev, group, group_rev, netid)
     
     
-def __construct_revision_dict(rev, group, group_rev):
+def __construct_revision_dict(rev, group, group_rev, netid):
     """
     Serializes a specific revision into a dict that can be passed to the client for rendering.
 
     """
+    section_color = User_Section_Table.objects.filter(
+            user=User.objects.get(username=netid).profile
+        ).get(
+            section=rev.event.group.section.id
+        ).color
     results = {
         'event_id': rev.event.id,
         'event_group_id': rev.event.group.id,
@@ -342,6 +347,8 @@ def __construct_revision_dict(rev, group, group_rev):
         'event_end': format(rev.event_end, 'U'),
         'event_description': rev.event_description,
         'event_location': rev.event_location,
+        'section_color': section_color,
+        'course_id': rev.event.group.section.course.id,
         'section_id': rev.event.group.section.id,
         'modified_user': rev.modified_user.user.username,
         'modified_time': format(rev.modified_time, 'U'),
@@ -506,13 +513,18 @@ def get_section_colors(netid):
     """
     returns:
     {
-        section_id: color
+        section_id: {
+            color,
+            course_id
+        }
     }
     """
     user = User.objects.get(username=netid).profile
     ret = {}
     for table in User_Section_Table.objects.all().filter(user=user):
-        ret[table.section.id] = table.color
+        ret[table.section.id] = [] 
+        ret[table.section.id].append(table.section.course.id)
+        ret[table.section.id].append(table.color)
     return ret
 
 def get_course_by_id(course_id):
