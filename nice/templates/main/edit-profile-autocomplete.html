@@ -6,6 +6,26 @@
 {% block main_content %}
 {% include 'main/sidebar.html' %}
 <div class="container">
+    <div id="userinfo" class="theme row">
+        <div class="col-xs-9">
+            <div class="row">
+                <div class="col-xs-3">
+                    <input id="first_name_box" type="text" class="form-control" placeholder="First Name">
+                    </input>
+                </div>
+                <div class="col-xs-3">
+                    <input id="last_name_box" type="text" class="form-control" placeholder="Last Name">
+                    </input>
+                </div>
+                <div class="col-xs-6" id="profile-control">
+                    <a href="/" class="white-link-btn theme">
+                        Back to Dashboard
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-6">
             <h2>Preview:</h2>
@@ -78,6 +98,10 @@ var CUR_SEM = {
     start_date: '{{ cur_sem.start_date }}',
     end_date: '{{ cur_sem.end_date }}',
 }
+var USER = {
+    first_name: '{{ user.first_name }}',
+    last_name: '{{ user.last_name }}',
+}
 </script>
 
 {% endblock %}
@@ -113,6 +137,8 @@ var CUR_SEM = {
 
 <script src="{% static 'js/popup-base.js' %}"></script>
 <script src="{% static 'js/profile/popup.js' %}"></script>
+
+<script src="{% static 'js/profile/user_profile.js' %}"></script>
 
 <script src="{% static 'js/main-base.js' %}"></script>
 <script src="{% static 'js/profile/main.js' %}"></script>
