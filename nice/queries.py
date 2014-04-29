@@ -38,8 +38,8 @@ def get_events(netid, **kwargs):
             continue
         if last_updated and best_rev.modified_time < last_updated:
             continue
-        if event.id in hidden_events:
-            continue
+        #if event.id in hidden_events:
+        #    continue
         # if we made it to here, then the event is good
         survived.append(construct_event_dict(event, netid=netid, best_rev=best_rev))
     return survived
@@ -239,10 +239,15 @@ def modify_events(netid, events):
                     # By default, only edit the ones after this event
                     
                     # find and remove old events
-                    old_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
-                    deleted_ids.extend([oe.pk for oe in old_events])
-                    old_events.delete()
+                    old_events_pre = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
+                    old_events = [r for r in all_future_events if r.event_start >= event_dict['event_start']]
 
+                    for oe in old_events:
+                        oe_e = oe.event
+                        deleted_ids.append(oe_e.pk)
+                        oe_e.revision_set.delete()
+                        oe_e.delete()
+                    
                     # recreate events at their new times
                     create_new_events(event_dates)
 
@@ -250,17 +255,22 @@ def modify_events(netid, events):
                 # Recurrence pattern hasn't changed.
 
                 # Which fields have changed since previous revision? Compare to the best-revision this user sees (stored in previous_best_revision) -- not to the global last-approved revision.
-                old, new = previous_best_revision.compare(new_rev)
+                old, new = previous_best_revision.compare(eventRev)
 
                 # By default, recurring event edit settings is to change all future events
                 # Select all future events in this event group (other than this event) (then we overwrite changed fields)
-                all_future_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
-                for future_event in all_future_events: # Edit each future event
+                all_future_events = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
+                matching_future_events = [r for r in all_future_events if r.event_start >= event_dict['event_start']]
+                for future_event in matching_future_events: # Edit each future event
                     # Take its last revision, as seen by this user
-                    this_event_last_rev = future_event.best_revision()
+                    this_event_last_rev = future_event
+                    this_event_last_rev.pk = None
                     # Edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
                     this_event_last_rev.apply_changes(new)
+                    
                     # Save as new unapproved revision.
+                    this_event_last_rev.modified_user = user
+                    this_event_last_rev.modified_time = new_modified_time
                     this_event_last_rev.approved = STATUS_PENDING
                     this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
         
@@ -348,7 +358,7 @@ def __construct_revision_dict(rev, group, group_rev):
         'modified_time': format(rev.modified_time, 'U'),
     }
     if group_rev.recurrence_interval is not None:
-        results['recurrence_days'] = group_rev.recurrence_days
+        results['recurrence_days'] = json.loads(group_rev.recurrence_days)
         results['recurrence_interval'] = group_rev.recurrence_interval
         results['recurrence_end'] = format(group_rev.end_date, 'U')
     return results

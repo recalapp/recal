@@ -261,7 +261,15 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
     if last_updated:
         last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
     events = queries.get_events(netid, start_date=start_date, end_date=end_date)
-    return HttpResponse(json.dumps(events), content_type='application/javascript')
+    hidden_events = request.user.profile.hidden_events
+    if hidden_events:
+        hidden_events = json.loads(hidden_events)
+    else:
+        hidden_events = []
+    return HttpResponse(json.dumps({
+        'events': events,
+        'hidden_events': hidden_events,
+    }), content_type='application/javascript')
     #return render(request, 'main/event-json-test.html')
 
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
@@ -291,18 +299,24 @@ def modify_events(request):
     ret = ''
     
     if 'events' in request.POST:
-        try:
-            events = json.loads(request.POST['events'])
-            ret = queries.modify_events(netid, events)
-        except Exception, e:
+        #try:
+        events = json.loads(request.POST['events'])
+        changed, deleted = queries.modify_events(netid, events)
+        ret = {
+            'changed_ids': changed,
+            'deleted_ids': deleted
+        }
+        """except Exception, e:
             print 'Modifying events error: ', e
             return HttpResponse(status=500) # 500 Internal Server Error
+        """
         
     if 'hide' in request.POST:
         try:
             to_hide = json.loads(request.POST['hide'])
             queries.hide_events(netid, to_hide)
         except Exception, e:
+            print 'Modifying events error 2: ', e
             return HttpResponse(status=500) # 500 Internal Server Error
         
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created

@@ -15,7 +15,9 @@ function _EventsMan_new()
     this.deletedIDs = [];
     this.updatedIDs = new Set(); // if it is in updatedIDs, it'll be pushed on the next connection
     this.uncommitted = {}; // copies of events dict with uncommitted changes, once saved, the event dict is copied to eventsManager.events, and its ID is added to updatedIDs
+    this.hiddenIDs = new Set();
     this.isIdle = true;
+    this.showHidden = false;
     return this;
 }
 function EventsMan_constructOrderArray()
@@ -35,6 +37,15 @@ function EventsMan_constructOrderArray()
  * the server.
  **************************************************/
 
+function EventsMan_showHidden(hide)
+{
+    if (hide)
+    {
+        eventsManager.showHidden = hide;
+        _EventsMan_callUpdateListeners();
+    }
+    return eventsManager.showHidden;
+}
  //{
 //    'event_group_id': event.group.id,
 //    'event_title': rev.event_title,
@@ -64,16 +75,19 @@ function EventsMan_getEventIDForRange(start, end)
     while (i < eventsManager.order.length && eventsManager.order[i].event_start < end)
         i++;
     var iEnd = Math.min(i, eventsManager.order.length); // slice method is exclusive on the right end
-    var ret = eventsManager.order.slice(iStart, iEnd);
-    for (var i = 0; i < ret.length; i++)
-        ret[i] = ret[i].event_id;
+    var events = eventsManager.order.slice(iStart, iEnd);
+    var ret = [];
+    for (var i = 0; i < events.length; i++)
+        if (EventsMan_showHidden() || !EventsMan_eventIsHidden(events[i].event_id))
+            ret.push(events[i].event_id);
     return ret;
 }
 function EventsMan_getAllEventIDs()
 {
     var ret = [];
     $.each(eventsManager.events, function(eventID, eventDict){
-        ret.push(eventID);
+        if (EventsMan_showHidden() || !EventsMan_eventIsHidden(eventID))
+            ret.push(eventID);
     });
     return ret;
 }
@@ -113,22 +127,15 @@ function EventsMan_addEvent()
     return id;
 }
 
-function EventsMan_deleteEvent(id)
+function EventsMan_deleteEvent(id, silent)
 {
+    silent = silent || false;
     if (id in eventsManager.events)
     {
-        eventsManager.events[id] = null;
-        delete eventsManager.events[id];
-        //var dIndex = null;
-        //$.each(eventsManager.order, function(index){
-        //    if (this.event_id == id)
-        //    {
-        //        dIndex = index;
-        //        return false;
-        //    }
-        //});
-        //eventsManager.order.splice(dIndex, 1);
+        //eventsManager.events[id] = null;
+        //delete eventsManager.events[id];
         eventsManager.deletedIDs.push(id);
+        eventsManager.hiddenIDs.add(id);
     }
     if (id in eventsManager.uncommitted)
     {
@@ -139,7 +146,25 @@ function EventsMan_deleteEvent(id)
     {
         eventsManager.updatedIDs.remove(id);
     }
-    _EventsMan_callUpdateListeners();
+    if (!silent)
+        _EventsMan_callUpdateListeners();
+}
+function EventsMan_deleteAllFutureEvents(id)
+{
+    var eventDict = EventsMan_getEventByID(id);
+    var endDate = moment.unix(eventDict.event_start);
+    endDate.year(endDate.year() + 20);
+    var eventIDs = EventsMan_getEventIDForRange(eventDict.event_start, endDate.unix());
+    $.each(eventIDs, function(index){
+        var otherEventDict = EventsMan_getEventByID(this);
+        if (otherEventDict.event_group_id == eventDict.event_group_id && otherEventDict != eventDict)
+            EventsMan_deleteEvent(this, true);
+    });
+    EventsMan_deleteEvent(id);
+}
+function EventsMan_eventIsHidden(id)
+{
+    return id in eventsManager.hiddenIDs;
 }
 
 function EventsMan_ready()
@@ -158,6 +183,38 @@ function EventsMan_cancelChanges(id)
 {
     delete eventsManager.uncommitted[id];
     _EventsMan_callUpdateListeners();
+}
+function EventsMan_commitChangesToAllFutureEvents(id)
+{
+    var newEventDict = eventsManager.uncommitted[id];
+    var oldEventDict = eventsManager.events[id];
+    var endDate = moment.unix(oldEventDict.event_start);
+    endDate.year(endDate.year() + 20);
+    var eventIDs = EventsMan_getEventIDForRange(oldEventDict.event_start, endDate.unix());
+    var newStart = moment.unix(newEventDict.event_start);
+    var newEnd = moment.unix(newEventDict.event_end);
+    $.each(eventIDs, function(index){
+        var otherEventDict = EventsMan_getEventByID(this);
+        if (otherEventDict.event_group_id == oldEventDict.event_group_id && otherEventDict != oldEventDict)
+        {
+            otherEventDict.event_title = newEventDict.event_title;
+            otherEventDict.event_description = newEventDict.event_description;
+            otherEventDict.event_location = newEventDict.event_location;
+            otherEventDict.section_id = newEventDict.section_id;
+            otherEventDict.event_type = newEventDict.event_type;
+            otherEventDict.modified_time = newEventDict.modified_time;
+            otherEventDict.modified_user = newEventDict.modified_user;
+            var start = moment.unix(otherEventDict.event_start).hour(newStart.hour());
+            start.minute(newStart.minute());
+            start.second(newStart.second());
+            otherEventDict.event_start = start.unix();
+            var end = moment.unix(otherEventDict.event_end).hour(newEnd.hour());
+            end.minute(newEnd.minute());
+            end.second(newEnd.second());
+            otherEventDict.event_end = end.unix();
+        }
+    });
+    EventsMan_commitChanges(id);
 }
 // replaces only in the uncommitted array - ok because we're only
 // doing this for new events

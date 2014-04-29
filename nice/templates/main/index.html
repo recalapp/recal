@@ -28,6 +28,8 @@
                 <div class="container">
                     <div id="theme_options" class="row">
                     </div>
+                    <div id="hidden_options" class="row">
+                    </div>
                     <div id="agenda_options" class="row">
                         
                     </div>
@@ -54,6 +56,7 @@
 <link rel="stylesheet" href="{% static 'css/popup.css' %}">
 <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'css/event-picker.css' %}">
+<link rel="stylesheet" href="{% static 'css/actionsheet.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
 {% if is_mobile %}
 <link rel="stylesheet" href="{% static 'css/sidebar-mobile-addition.css' %}">
@@ -97,6 +100,7 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
 <script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
 <script src="{% static 'js/set.js' %}"></script>
+<script src="{% static 'js/actionsheet.js' %}"></script>
 <script src="{% static 'js/segmented_control.js' %}"></script>
 <script src="{% static 'js/segmented_control_multi.js' %}"></script>
 <script src="{% static 'js/dashboard/settings.js' %}"></script>
