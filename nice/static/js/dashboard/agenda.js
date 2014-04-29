@@ -125,6 +125,14 @@ function Agenda_loadEvents(eventIDs)
             Agenda_highlight(agenda);
         if (UI_isMain(agenda.id))
             Agenda_highlight(agenda);
+        if (EventsMan_eventIsHidden(this))
+        {
+            // TODO(Dyland) change appearance of hidden agendas
+        }
+        else
+        {
+            // TODO(Dyland) change appearance of non-hidden agendas
+        }
     });
     if (THEME == 'w')
         $('.theme').removeClass('dark');

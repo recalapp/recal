@@ -36,7 +36,7 @@ function PopUp_init()
     });
     EventsMan_addUpdateListener(function(){
         PopUp_map(function(popUp, isMain){
-            if (EventsMan_hasEvent(PopUp_getID(popUp)))
+            if (EventsMan_hasEvent(PopUp_getID(popUp)) && EventsMan_eventShouldBeShown(PopUp_getID(popUp)))
                 PopUp_setToEventID(popUp, PopUp_getID(popUp));
             else
                 PopUp_close(popUp);
@@ -251,6 +251,18 @@ function PopUp_setToEventID(popUp, id)
             PopUp_markAsUnsaved(popUp);
         PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', pattern);
     });
+
+
+    if (EventsMan_eventIsHidden(id))
+    {
+        $(popUp).find('#unhide_button').removeClass('hide');
+        $(popUp).find('#hide_button').addClass('hide');
+    }
+    else
+    {
+        $(popUp).find('#unhide_button').addClass('hide');
+        $(popUp).find('#hide_button').removeClass('hide');
+    }
 }
 
 
@@ -596,20 +608,51 @@ function PopUp_clickedDelete(popUpAnchor)
             if (index == 0)
             {
                 // only this event
-                PopUp_close(popUp);
                 EventsMan_deleteEvent(event_id);
+                if (!EventsMan_eventShouldBeShown(event_id))
+                    PopUp_close(popUp);
             }
             else 
             {
                 // all future events
-                PopUp_close(popUp);
                 EventsMan_deleteAllFutureEvents(event_id);
+                if (!EventsMan_eventShouldBeShown(event_id))
+                    PopUp_close(popUp);
             }
         });
         return;
     }
-    PopUp_close(popUp);
     EventsMan_deleteEvent(event_id);
+    if (!EventsMan_eventShouldBeShown(event_id))
+        PopUp_close(popUp);
+}
+function PopUp_clickedUnhide(popUpAnchor)
+{
+    var popUp = _PopUp_getPopUp(popUpAnchor);
+    if (PopUp_isEditing(popUp))
+        return;
+    var event_id = PopUp_getID(popUp);
+    var eventDict = EventsMan_getEventByID(event_id);
+    if ('recurrence_days' in eventDict)
+    {
+        AS_showActionSheetFromElement(popUpAnchor, popUp, null, [
+                {important: false, text:'Only this event'},
+                {important: true, text:'All future events'}
+            ], function(index){
+            if (index == 0)
+            {
+                // only this event
+                EventsMan_unhideEvent(event_id);
+            }
+            else 
+            {
+                // all future events
+                EventsMan_unhideAllFutureEvents(event_id);
+            }
+        });
+        return;
+    }
+    EventsMan_unhideEvent(event_id);
 }
 function PopUp_clickedSavePopUp(anchor, shouldClose)
 {

@@ -164,9 +164,40 @@ function EventsMan_deleteAllFutureEvents(id)
     });
     EventsMan_deleteEvent(id);
 }
+function EventsMan_unhideEvent(id, silent)
+{
+    silent = silent || false;
+    if (id in eventsManager.events)
+    {
+        //eventsManager.events[id] = null;
+        //delete eventsManager.events[id];
+        //eventsManager.deletedIDs.push(id);
+        eventsManager.hiddenIDs.remove(id);
+        eventsManager.changed = true;
+    }
+    if (!silent)
+        _EventsMan_callUpdateListeners();
+}
+function EventsMan_unhideAllFutureEvents(id)
+{
+    var eventDict = EventsMan_getEventByID(id);
+    var endDate = moment.unix(eventDict.event_start);
+    endDate.year(endDate.year() + 20);
+    var eventIDs = EventsMan_getEventIDForRange(eventDict.event_start, endDate.unix());
+    $.each(eventIDs, function(index){
+        var otherEventDict = EventsMan_getEventByID(this);
+        if (otherEventDict.event_group_id == eventDict.event_group_id && otherEventDict != eventDict)
+            EventsMan_unhideEvent(this, true);
+    });
+    EventsMan_unhideEvent(id);
+}
 function EventsMan_eventIsHidden(id)
 {
     return id in eventsManager.hiddenIDs;
+}
+function EventsMan_eventShouldBeShown(id)
+{
+    return !EventsMan_eventIsHidden(id) || EventsMan_showHidden();
 }
 
 function EventsMan_ready()
