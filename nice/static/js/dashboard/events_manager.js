@@ -137,11 +137,10 @@ function EventsMan_pushToServer(async)
         return;
     eventsManager.isIdle = false;
     var updated = [];
-    $.each(eventsManager.events, function(id, eventDict){
-        //if (eventDict.modified_time > eventsManager.lastSyncedTime)
-        if (eventDict.event_id in eventsManager.updatedIDs)
-            updated.push(eventDict);
+    $.each(eventsManager.updatedIDs.toArray(), function(index){
+        updated.push(eventsManager.events[this]);
     });
+   
     var deleted = eventsManager.deletedIDs;
     if (updated.length > 0 || deleted.length > 0)
     {
@@ -224,7 +223,8 @@ function EventsMan_pullFromServer(complete, showLoading)
         dataType: 'json',
         success: function(data){
             //var eventsArray = JSON.parse(data);
-            var eventsArray = data;
+            var changed = false;
+            var eventsArray = data.events;
             for (var i = 0; i < eventsArray.length; i++)
             {
                 var eventsDict = eventsArray[i];
@@ -241,6 +241,13 @@ function EventsMan_pullFromServer(complete, showLoading)
                 else {
                     eventsManager.events[eventsDict.event_id] = eventsDict;
                 }
+                changed = true;
+            }
+            var hiddenIDs = Set.prototype.fromArray(data.hidden_events);
+            if (!hiddenIDs.equals(eventsManager.hiddenIDs))
+            {
+                eventsManager.hiddenIDs = hiddenIDs; // NOTE ok, since we don't pull until all changes are pushed
+                changed = true;
             }
             EventsMan_constructOrderArray();
             eventsManager.addedCount = 0;
@@ -251,7 +258,7 @@ function EventsMan_pullFromServer(complete, showLoading)
 
             if (complete != null)
                 complete();
-            if (data.length > 0)
+            if (changed)
                 _EventsMan_callUpdateListeners();
         },
         error: function(data){

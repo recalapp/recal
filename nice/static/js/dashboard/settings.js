@@ -34,6 +34,25 @@ function SE_init()
                 loadDarkTheme();
         });
         $(this).find('#theme_options').append(theme_sc);
+        var hidden_sc = SC_initWithChoices('Show hidden events', [
+            {
+                value: true,
+                pretty: 'Yes',
+                selected: EventsMan_showHidden(),
+            },
+            {
+                value: false,
+                pretty: 'No',
+                selected: !EventsMan_showHidden(),
+            }
+        ]);
+        $(hidden_sc).on('select', function(ev, choices){
+            $.each(choices, function(key, selected){
+                if (selected)
+                    EventsMan_showHidden(key);
+            });
+        });
+        $(this).find('#hidden_options').append(hidden_sc);
     });
     $('#' + SE_id).on('hide.bs.modal', function(){
         // save
