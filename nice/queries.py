@@ -253,13 +253,17 @@ def modify_events(netid, events):
 
                 # By default, recurring event edit settings is to change all future events
                 # Select all future events in this event group (other than this event) (then we overwrite changed fields)
-                all_future_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
+                all_future_events = [evt.best_revision(netid=netid) for evt in event_group.event_set].filter(event_start__gte = event_dict['event_start'])
                 for future_event in all_future_events: # Edit each future event
                     # Take its last revision, as seen by this user
-                    this_event_last_rev = future_event.best_revision()
+                    this_event_last_rev = future_event
+                    this_event_last_rev.pk = None
                     # Edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
                     this_event_last_rev.apply_changes(new)
+                    
                     # Save as new unapproved revision.
+                    this_event_last_rev.modified_user = user
+                    this_event_last_rev.modified_time = new_modified_time
                     this_event_last_rev.approved = False
                     this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
         
