@@ -238,7 +238,7 @@ def modify_events(netid, events):
                     # By default, only edit the ones after this event
                     
                     # find and remove old events
-                    old_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
+                    old_events = event_group.event_set.filter(start_date__gte = event_dict['event_start']) # TODO(Maxim): ANOTHER BUG
                     deleted_ids.extend([oe.pk for oe in old_events])
                     old_events.delete()
 
@@ -253,8 +253,9 @@ def modify_events(netid, events):
 
                 # By default, recurring event edit settings is to change all future events
                 # Select all future events in this event group (other than this event) (then we overwrite changed fields)
-                all_future_events = [evt.best_revision(netid=netid) for evt in event_group.event_set].filter(event_start__gte = event_dict['event_start'])
-                for future_event in all_future_events: # Edit each future event
+                all_future_events = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
+                matching_future_events = [r in all_future_events if r.event_start >= event_dict['event_start']
+                for future_event in matching_future_events: # Edit each future event
                     # Take its last revision, as seen by this user
                     this_event_last_rev = future_event
                     this_event_last_rev.pk = None
