@@ -142,6 +142,7 @@ a {
     -webkit-transition: opacity 0.1s ease-out;
     transition: opacity 0.1s ease-out;
     opacity: 0;
+    z-index: 10000;
 }
 #loading.in{
     opacity: 1;
