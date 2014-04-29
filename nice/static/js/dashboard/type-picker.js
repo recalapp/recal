@@ -1,22 +1,3 @@
-var TP_MAP = {
-    "assignment":"AS",
-    "exam":"EX",
-    "lab":"LA",
-    "lecture":"LE",
-    "office hours":"OH",
-    "precept":"PR",
-    "review session":"RS"
-}
-var TP_MAP_INVERSE = {
-    AS: "assignment",
-    EX: "exam",
-    LA: "lab",
-    LE: "lecture",
-    OH: "office hours",
-    PR: "precept",
-    RS: "review session"
-}
-
 var TP_selectListener;
 function TP_clickedType(button)
 {

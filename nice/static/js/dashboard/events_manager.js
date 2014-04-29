@@ -12,7 +12,7 @@ function EventsMan_init()
     PopUp_addEditListener(function(id, field, value) {
         if (field == 'event_type')
         {
-            value = TP_textToKey(value);
+            value = TYPE_MAP_INVERSE[value.toLowerCase()];
             if (id in eventsManager.events && eventsManager.events[id][field] == value)
                 return;
             if (!(id in eventsManager.uncommitted))
@@ -21,7 +21,7 @@ function EventsMan_init()
         }
         else if (field == 'section_id')
         {
-            value = SP_textToKey(value);
+            value = SECTION_MAP_INVERSE[value];
             if (id in eventsManager.events && eventsManager.events[id][field] == value)
                 return;
             if (!(id in eventsManager.uncommitted))

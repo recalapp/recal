@@ -64,7 +64,7 @@
 <script src="{% static 'js/dashboard/global.js' %}"></script>
 <script>
 var USER_NETID = '{{ username }}';
-var CACHEMAN_PRELOAD = ['{% url 'nice.views.agenda' %}', '{% url 'nice.views.popup' %}', '{% url 'nice.views.agenda_header' %}', '{% url 'nice.views.typepicker' %}', '{% url 'nice.views.sectionpicker' %}', '{% url 'nice.views.notifications' %}', '{% url 'nice.views.event_picker' %}', '{% url 'nice.views.event_picker_item' %}', '{% url 'nice.views.loading' %}'];
+var CACHEMAN_PRELOAD = ['{% url 'nice.views.agenda' %}', '{% url 'nice.views.popup' %}', '{% url 'nice.views.agenda_header' %}', '{% url 'nice.views.notifications' %}', '{% url 'nice.views.event_picker' %}', '{% url 'nice.views.event_picker_item' %}', '{% url 'nice.views.loading' %}'];
 var AGENDA_FILTER = [
     {% for type in agenda_pref %}
     '{{ type }}',
@@ -101,6 +101,7 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 <script src="{% static 'js/actionsheet.js' %}"></script>
 <script src="{% static 'js/segmented_control.js' %}"></script>
 <script src="{% static 'js/segmented_control_multi.js' %}"></script>
+<script src="{% static 'js/segmented_control_popover.js' %}"></script>
 <script src="{% static 'js/dashboard/settings.js' %}"></script>
 <script src="{% static 'js/loading.js' %}"></script>
 <script src="{% static 'js/dashboard/agenda.js' %}"></script>
@@ -115,8 +116,6 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 <script src="{% static 'js/cache_manager.js' %}"></script>
 <script src="{% static 'js/events_manager-base.js' %}"></script>
 <script src="{% static 'js/dashboard/events_manager.js' %}"></script>
-<script src="{% static 'js/dashboard/type-picker.js' %}"></script>
-<script src="{% static 'js/dashboard/section-picker.js' %}"></script>
 <script src="{% static 'js/sidebar-base.js' %}"></script>
 <script src="{% static 'js/dashboard/sidebar.js' %}"></script>
 <script src="{% static 'js/dashboard/notifications.js' %}"></script>

@@ -1,5 +1,23 @@
 var MAIN_TIMEZONE = 'America/New_York';
 var DAYS_DICT = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'S'];
+var TYPE_MAP_INVERSE = {
+    "assignment":"AS",
+    "exam":"EX",
+    "lab":"LA",
+    "lecture":"LE",
+    "office hours":"OH",
+    "precept":"PR",
+    "review session":"RS"
+}
+var TYPE_MAP = {
+    AS: "assignment",
+    EX: "exam",
+    LA: "lab",
+    LE: "lecture",
+    OH: "office hours",
+    PR: "precept",
+    RS: "review session"
+}
 String.prototype.escapeHTML = function() {
     var tagsToReplace = {
         '&': '&amp;',

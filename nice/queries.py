@@ -670,6 +670,7 @@ def get_unapproved_revisions(netid, count=3):
             survived.append(construct_event_dict(event, netid=netid, best_rev=unapproved_rev))
     return survived
 
+# TODO(Maxim) what is revision id? It is never passed to front end
 def process_vote_on_revision(netid, isPositive, revision_id):
     """Handles users' votes on unapproved revisions -- checks the votes for eligibility, records them, then processes side-effects (approval, points).
 
