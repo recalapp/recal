@@ -36,12 +36,12 @@ function SE_init()
         $(this).find('#theme_options').append(theme_sc);
         var hidden_sc = SC_initWithChoices('Show hidden events', [
             {
-                value: true,
+                value: 1,
                 pretty: 'Yes',
                 selected: EventsMan_showHidden(),
             },
             {
-                value: false,
+                value: 0,
                 pretty: 'No',
                 selected: !EventsMan_showHidden(),
             }
@@ -49,7 +49,7 @@ function SE_init()
         $(hidden_sc).on('select', function(ev, choices){
             $.each(choices, function(key, selected){
                 if (selected)
-                    EventsMan_showHidden(key);
+                    EventsMan_showHidden(Boolean(parseInt(key)));
             });
         });
         $(this).find('#hidden_options').append(hidden_sc);

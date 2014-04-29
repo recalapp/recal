@@ -141,8 +141,8 @@ function EventsMan_pushToServer(async)
         updated.push(eventsManager.events[this]);
     });
    
-    var deleted = eventsManager.deletedIDs;
-    if (updated.length > 0 || deleted.length > 0)
+    //var deleted = eventsManager.deletedIDs;
+    if (updated.length > 0 || eventsManager.changed)
     {
         LO_show();
         $.ajax('put', {
@@ -150,7 +150,7 @@ function EventsMan_pushToServer(async)
             type: 'POST',
             data: {
                 events: JSON.stringify(updated),
-                hide: JSON.stringify(deleted)
+                hidden: JSON.stringify(eventsManager.hiddenIDs.toArray())
             },
             success: function(data){
                 var changedIDs = data.changed_ids;
@@ -194,8 +194,9 @@ function EventsMan_pushToServer(async)
                 eventsManager.isIdle = true;
                 LO_hide();
                 //eventsManager.addedCount = 0; // not gonna overflow, no need to set to 0. Safer, so IDs don't ever crash
-                eventsManager.deletedIDs = [];
+                //eventsManager.deletedIDs = [];
                 eventsManager.updatedIDs = new Set();
+                eventsManager.changed = false;
 
                 EventsMan_pullFromServer();
             },
@@ -213,7 +214,7 @@ function EventsMan_pullFromServer(complete, showLoading)
 {
     if (!eventsManager.isIdle)
         return;
-    if (eventsManager.updatedIDs.size > 0)
+    if (eventsManager.updatedIDs.size > 0 || eventsManager.changed)
         return; // don't pull until changes are pushed
     showLoading = typeof showLoading != 'undefined' ? showLoading : false;
     if (showLoading)
@@ -228,8 +229,6 @@ function EventsMan_pullFromServer(complete, showLoading)
             for (var i = 0; i < eventsArray.length; i++)
             {
                 var eventsDict = eventsArray[i];
-                if (eventsManager.deletedIDs.contains(eventsDict.event_id))
-                    return; // event already deleted
                 if (eventsDict.event_id in eventsManager.uncommitted)
                 {
                     // TODO notify user of updates
@@ -244,7 +243,7 @@ function EventsMan_pullFromServer(complete, showLoading)
                 changed = true;
             }
             var hiddenIDs = Set.prototype.fromArray(data.hidden_events);
-            if (!hiddenIDs.equals(eventsManager.hiddenIDs))
+            if (!hiddenIDs.equals(eventsManager.hiddenIDs) && !eventsManager.changed)
             {
                 eventsManager.hiddenIDs = hiddenIDs; // NOTE ok, since we don't pull until all changes are pushed
                 changed = true;
