@@ -214,6 +214,7 @@ function EventsMan_commitChangesToAllFutureEvents(id)
             end.minute(newEnd.minute());
             end.second(newEnd.second());
             otherEventDict.event_end = end.unix();
+            eventsManager.updatedIDs.add(otherEventDict.event_id);
         }
     });
     EventsMan_commitChanges(id);
