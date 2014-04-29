@@ -53,6 +53,10 @@ function Cal_init() {
         PopUp_setToEventID(popUp, calEvent.id);
         PopUp_giveFocus(popUp);
     }
+    Cal_options.windowResize = function(view){
+        var height = window.innerHeight - $(".navbar").height() - 50;
+        $('#calendarui').fullCalendar('option', 'height', height);
+    };
 
     $("#calendarui").fullCalendar(Cal_options);
     CAL_INIT = true;
@@ -100,7 +104,8 @@ function Cal_reload()
                     start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
                     end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
                     highlighted: shouldHighlight,
-                    backgroundColor: shouldHighlight ? eventDict.section_color : colorLuminance(eventDict.section_color, 0.3)
+                    backgroundColor: shouldHighlight ? colorLuminance(eventDict.section_color, 0) : colorLuminance(eventDict.section_color, 0.2),
+                    borderColor: colorLuminance(eventDict.section_color, 0)
                 });
             });
             $("#calendarui").fullCalendar("refetchEvents");
