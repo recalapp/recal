@@ -1,3 +1,4 @@
+from random import randrange
 from django.utils.dateformat import format
 from django.utils import timezone
 
@@ -51,6 +52,15 @@ def get_events_by_course_ids(course_ids, **kwargs):
     end_date = kwargs.pop('end_date', None)
     filtered = Event.objects.filter(group__section__course__in=courses)
 
+    # get colors for courses first
+    count = 0
+    mapping = {}
+    for course_id in course_ids:
+        mapping[str(course_id)] = count
+        count += 1
+        if count == len(User_Section_Table.COLOR_CHOICES):
+            count = 0
+
     survived = []
     for event in filtered:
         best_rev = event.best_revision() # TODO(Naphat): why no netid here?
@@ -64,7 +74,11 @@ def get_events_by_course_ids(course_ids, **kwargs):
         if last_updated and best_rev.modified_time < last_updated:
             continue
         # if we made it to here, then the event is good
-        survived.append(construct_event_dict(event, best_rev=best_rev))
+        
+        temp = construct_event_dict(event, best_rev=best_rev)
+        course_id = Section.objects.get(id=temp['section_id']).course.id
+        temp['section_color'] = User_Section_Table.COLOR_CHOICES[mapping[str(course_id)]][0]
+        survived.append(temp)
     return survived
 
 def modify_events(netid, events):
@@ -81,6 +95,7 @@ def modify_events(netid, events):
         * event_id (default: None)
         * event_type 
         * section_id
+        * section_color
         * recurrence_days
         * recurrence_interval   
         * recurrence_end (end date for the recurring series)
@@ -192,6 +207,21 @@ def modify_events(netid, events):
             changed_ids[event_dict['event_id']] = [event.pk, event_group.pk] # mark down new event ID and its event group ID
         
         
+        # TODO: Dyland. Test if this breaks anything
+        curr_section = Section.objects.get(id=event_dict['section_id'])
+        try:
+            user_section_table = User_Section_Table.filter(
+                user=user
+            ).get(
+                section=curr_section
+            )
+
+            if event_dict['section_color']:
+                user_section_table.color = event_dict['section_color']
+                user_section_table.save()
+        except:
+            pass
+
         # Now that we have a new or existing event selected, create a new revision.
         def make_new_rev(e):
             return Event_Revision(
@@ -355,14 +385,24 @@ def construct_event_dict(event, netid=None, best_rev=None):
     group = event.group
     group_rev = group.best_revision()
     assert rev != None and group != None and group_rev != None
-    return __construct_revision_dict(rev, group, group_rev)
+    return __construct_revision_dict(rev, group, group_rev, netid)
     
     
-def __construct_revision_dict(rev, group, group_rev):
+def __construct_revision_dict(rev, group, group_rev, netid):
     """
     Serializes a specific revision into a dict that can be passed to the client for rendering.
 
     """
+    try:
+        section_color = User_Section_Table.objects.filter(
+            user=User.objects.get(username=netid).profile
+        ).get(
+            section=rev.event.group.section.id
+        ).color
+    except:
+        color_choices = len(User_Section_Table.COLOR_CHOICES)
+        section_color = User_Section_Table.COLOR_CHOICES[randrange(0,color_choices)][0]
+
     results = {
         'event_id': rev.event.id,
         'event_group_id': rev.event.group.id,
@@ -372,6 +412,8 @@ def __construct_revision_dict(rev, group, group_rev):
         'event_end': format(rev.event_end, 'U'),
         'event_description': rev.event_description,
         'event_location': rev.event_location,
+        'section_color': section_color,
+        'course_id': rev.event.group.section.course.id,
         'section_id': rev.event.group.section.id,
         'modified_user': rev.modified_user.user.username,
         'modified_time': format(rev.modified_time, 'U'),
@@ -530,6 +572,24 @@ def get_sections(netid):
     for section in user.sections.all():
         sections_array = ret.setdefault(section.course.id, [])
         sections_array.append(section.id)
+    return ret
+
+def get_section_colors(netid):
+    """
+    returns:
+    {
+        section_id: {
+            color,
+            course_id
+        }
+    }
+    """
+    user = User.objects.get(username=netid).profile
+    ret = {}
+    for table in User_Section_Table.objects.all().filter(user=user):
+        ret[table.section.id] = [] 
+        ret[table.section.id].append(table.section.course.id)
+        ret[table.section.id].append(table.color)
     return ret
 
 def get_course_by_id(course_id):

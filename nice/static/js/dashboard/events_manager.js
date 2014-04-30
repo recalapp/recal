@@ -124,7 +124,7 @@ function EventsMan_init()
         EventsMan_pushToServer(false);
     });
 
-    window.setInterval("EventsMan_pushToServer(true); EventsMan_pullFromServer();", 10 * 1000);
+    // window.setInterval("EventsMan_pushToServer(true); EventsMan_pullFromServer();", 10 * 1000);
 }
 
 /***************************************************
@@ -203,7 +203,7 @@ function EventsMan_pushToServer(async)
             async: async,
             error: function(data){
                 eventsManager.isIdle = true;
-                LO_hide();
+                LO_showError();
             },
         });
     } else {
@@ -262,7 +262,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         },
         error: function(data){
             eventsManager.isIdle = true;
-            LO_hide();
+            LO_showError(); // TODO should this be shown? this is pulling, not pushing. maybe not important
         },
     });
 }

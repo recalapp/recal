@@ -39,6 +39,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +48,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'cas',
+    'colorfield',
     'nice'
 )
 
@@ -110,6 +112,15 @@ ALLOWED_HOSTS = ['*']
 # Static asset configuration
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    "django.core.context_processors.request",
+)
 
 STATICFILES_DIRS = (
     normpath(join(DJANGO_ROOT, 'nice', 'static')),

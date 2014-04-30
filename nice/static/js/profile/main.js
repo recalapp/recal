@@ -56,6 +56,7 @@ function init()
     Cal_init();
     PopUp_init();
     CL_init();
+    UP_init();
 }
 function enableAllInteractions()
 {

@@ -125,6 +125,8 @@ def edit_profile_manual(request):
                     for default_section in the_course.section_set.filter(isDefault=True):
                         user_in_section = User_Section_Table(user = profile, section=default_section, add_date = get_current_utc())
                         user_in_section.save()
+                        user_in_section.color = user_in_section.get_usable_color()
+                        user_in_section.save()
                 else:
                     # Remove user from class, i.e. remove from all sections matching this course ID
                     User_Section_Table.objects.filter(section__course_id=the_course.id).filter(user=profile).delete()
@@ -158,6 +160,7 @@ def edit_profile(request):
             'end_date': format(cur_sem.end_date, 'U'),
         },
         'is_mobile': request.mobile,
+        'user': request.user,
     })
 
 @login_required
@@ -173,6 +176,8 @@ def enroll_sections(request):
                 prev_enrollment = [enrollment for enrollment in prev_enrollment if enrollment.section != section]
             else:
                 enrollment = User_Section_Table(user=user, section=section, add_date=get_current_utc())
+                enrollment.save()
+                enrollment.color = enrollment.get_usable_color()
                 enrollment.save()
     for enrollment in prev_enrollment:
         enrollment.delete()
@@ -231,6 +236,7 @@ def edit_sections(request):
             if enrolled and s not in my_current_sections: # This section has been changed to enrolled status
                 # Enrolling in new section.
                 user_in_section = User_Section_Table(user = profile, section=s, add_date = get_current_utc())
+                user_in_section.color = user_in_section.get_usable_color()
                 user_in_section.save()
             elif not enrolled and s in my_current_sections and not s.isDefault: # This section has been changed to not-enrolled status (and isn't a default section, i.e. enrollment isn't mandatory)
                 # Unenrolling in a section
@@ -291,6 +297,11 @@ def sections_json(request):
     ret = queries.get_sections(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+def section_colors_json(request):
+    netid = request.user.username
+    ret = queries.get_section_colors(netid)
+    return HttpResponse(json.dumps(ret), content_type='application/javascript')
+
 def course_json(request, course_id):
     ret = queries.get_course_by_id(course_id)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
@@ -327,6 +338,15 @@ def modify_events(request):
         """
         
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created
+
+@login_required
+def modify_user(request):
+    user_dict = json.loads(request.POST['user'])
+    user = request.user
+    user.first_name = user_dict['first_name']
+    user.last_name = user_dict['last_name']
+    user.save()
+    return HttpResponse('')
 
 def state_restoration(request):
     netid = request.user.username
