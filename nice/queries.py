@@ -384,7 +384,9 @@ def construct_event_dict(event, netid=None, best_rev=None):
         rev = event.best_revision(netid=netid)
     group = event.group
     group_rev = group.best_revision()
-    assert rev != None and group != None and group_rev != None
+    assert group != None and group_rev != None
+    if not rev:
+        return None
     return __construct_revision_dict(rev, group, group_rev, netid)
     
     

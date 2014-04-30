@@ -386,6 +386,7 @@ def similar_events(request):
     ed = queries.parse_json_event_dict(json_dict)
     results = queries.get_similar_events(ed) # these are revisions
     event_dicts = [queries.construct_event_dict(r.event) for r in results]
+    filtered_edicts = [fed for fed in event_dicts if fed is not None] # will have None for events without any approved revisions
     return HttpResponse(json.dumps(event_dicts), content_type='application/javascript')
     
 
