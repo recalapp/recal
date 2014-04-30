@@ -310,6 +310,47 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		self.purge_votes()
 		self.post_run()
 
+	def test_points_are_assigned_properly_for_rejection_voting_against_hivemind(self):
+		# Punishment of those who upvote something that is rejected.
+
+		event, approved_rev, unapproved_rev = self.pre_run()
+		unapproved_rev.modified_user = get_community_user().profile # different owner now, so that bob can vote on it
+		unapproved_rev.save()
+
+		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
+
+		# Manually make votes to avoid check about having voted before: upvote threshold-1 times
+		for i in range(abs(settings.THRESHOLD_REJECT) + 1): # 1 vote over the threshold so that when we place a vote against the hivemind, the threshold is triggered and punishment is enacted
+			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=(-1)) # note: this is an illegal way to make a vote!
+			v.save()
+
+		all_votes = Vote.objects.filter(voted_on=unapproved_rev)
+		total_score = sum([vt.score for vt in all_votes])
+
+		self.assertEqual(len(all_votes), settings.THRESHOLD_REJECT + 1)
+		self.assertEqual(abs(total_score), settings.THRESHOLD_REJECT + 1)
+
+		# Get point balances before this last vote.
+		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
+		previous_points_balance_submitter = get_community_user().profile.pending_points
+
+		# Try to vote on it -- should succeed
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), True)
+
+		# Get new point balances.
+		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
+		new_points_balance_submitter = get_community_user().profile.pending_points
+
+		# The system should have given you points for voting once and then for voting with the hivemind
+		expected_diff_you = settings.REWARD_FOR_UPVOTING + settings.REWARD_FOR_IMPROPER_UPVOTE
+		expected_diff_submitter = settings.REWARD_FOR_REJECTED_SUBMISSION
+
+		self.assertEqual(new_points_balance_you - previous_points_balance_you, expected_diff_you)
+		self.assertEqual(new_points_balance_submitter - previous_points_balance_submitter, expected_diff_submitter)
+
+		self.purge_votes()
+		self.post_run()
+
 		
 	def test_user_not_in_section_cant_vote(self):
 		event, approved_rev, unapproved_rev = self.pre_run()
