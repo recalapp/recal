@@ -21,7 +21,7 @@ function EventsMan_init()
         }
         else if (field == 'section_id')
         {
-            value = SECTION_MAP_INVERSE[value.toLowerCase()];
+            value = SECTION_MAP_INVERSE[value];
             if (id in eventsManager.events && eventsManager.events[id][field] == value)
                 return;
             if (!(id in eventsManager.uncommitted))
@@ -124,6 +124,7 @@ function EventsMan_init()
         EventsMan_pushToServer(false);
     });
 
+<<<<<<< HEAD
     window.setInterval(function(){
         if (!eventsManager.active)
             return;
@@ -138,8 +139,11 @@ function EventsMan_init()
         eventsManager.active = true;
         timeoutIDs.push(window.setTimeout(function(){
             eventsManager.active = false;
-        }, 30*1000));
+        }, 50*1000));
     });
+=======
+    // window.setInterval("EventsMan_pushToServer(true); EventsMan_pullFromServer();", 10 * 1000);
+>>>>>>> master
 }
 
 /***************************************************
