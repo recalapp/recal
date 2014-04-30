@@ -80,7 +80,7 @@ function SE_init()
 function SE_addTypeSegmentedControlWithFilter(heading, filter)
 {
     var choices = [];
-    $.each(TP_MAP_INVERSE /* see type-picker.js */, function(key, value) {
+    $.each(TYPE_MAP, function(key, value) {
         choices.push({
             value: key,
             pretty: value,
