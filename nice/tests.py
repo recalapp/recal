@@ -285,8 +285,8 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
 
 		# Manually make votes to avoid check about having voted before: downvote threshold-1 times
-		for i in range(settings.THRESHOLD_REJECT - 1):
-			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=-1) # note: this is an illegal way to make a vote!
+		for i in range(abs(settings.THRESHOLD_REJECT) - 1):
+			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=(-1)) # note: this is an illegal way to make a vote!
 			v.save()
 
 		# Get point balances before the downvote that puts it over the edge.

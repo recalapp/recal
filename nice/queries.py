@@ -775,11 +775,14 @@ def process_vote_on_revision(netid, isPositive, revision_id):
 
     # Award points for making this vote
     user.award_points(settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING)
+    print 'assigned to user:', settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING
     user.save()
 
     # Recompute total vote count for this revision
     all_votes = Vote.objects.filter(voted_on=revision)
     total_score = sum([vt.score for vt in all_votes])
+
+    print 'checking thresholds with total_score', total_score 
 
     # If the revision passes the approval threshold, approve it. If it passes the rejection threshold, reject it. Assign points accordingly.
     if total_score >= settings.THRESHOLD_APPROVE:
@@ -797,14 +800,20 @@ def process_vote_on_revision(netid, isPositive, revision_id):
     elif total_score <= settings.THRESHOLD_REJECT:
         revision.approved = revision.STATUS_REJECTED
         revision.save()
+        print 'assigning rejection'
         
         # Award points to all voters
         for vt in all_votes:
             if vt.score < 0: # voted correctly
                 vt.voter.award_points(settings.REWARD_FOR_PROPER_DOWNVOTE)
+                print 'assigned to user downvote:', settings.REWARD_FOR_PROPER_DOWNVOTE
             elif vt.score > 0: # voted incorrectly
                 vt.voter.award_points(settings.REWARD_FOR_IMPROPER_UPVOTE)
+                print 'assigned to user wrong upvote:', settings.REWARD_FOR_IMPROPER_UPVOTE
         # Award points to revision creator
         revision.modified_user.award_points(settings.REWARD_FOR_REJECTED_SUBMISSION)
+        print 'assigned to creator rejected submission:', settings.REWARD_FOR_REJECTED_SUBMISSION
+    else:
+        print 'no thresholds hit'
     
     return True
