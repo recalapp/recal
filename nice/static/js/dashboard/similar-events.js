@@ -1,3 +1,23 @@
+function SE_checkSimilarEvents(eventDict)
+{
+    $.post('/get/similar-events', {
+        event_dict: JSON.stringify(eventDict),
+    }, function(data){
+        if (data.length > 0)
+            SE_showSimilarEventsNotification(eventDict.event_id, data);
+    }, 'json');
+}
+function SE_showSimilarEventsNotification(eventID, similarEvents)
+{
+    var $noti = NO_showNotification(eventID, 'A similar event already exists', NO_TYPES.WARNING, null);
+    $noti.on('noti.click', function(ev){
+        SE_showSimilarEvents(eventID, similarEvents);
+    });
+}
+function SE_hasSimilarEvents(eventID)
+{
+    return NO_hasNotificationID(eventID);
+}
 function SE_showSimilarEvents(eventID, similarEvents)
 {
     var choices = [];

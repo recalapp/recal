@@ -106,11 +106,12 @@ function EventsMan_init()
         if (!(id in eventsManager.events)) // new event
         {
             // display notifications if similar events exist.
-            $.post('get/similar-events', {
-                event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
-            }, function (data){
-                NO_showSimilarEventsNotification(id, data);
-            }, 'json')
+            SE_checkSimilarEvents(eventsManager.uncommitted[id]);
+            //$.post('get/similar-events', {
+            //    event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
+            //}, function (data){
+            //    NO_showSimilarEventsNotification(id, data);
+            //}, 'json')
         }
         _EventsMan_callUpdateListeners()
     });
