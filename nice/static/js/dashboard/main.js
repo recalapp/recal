@@ -1,6 +1,8 @@
 $(init)
 var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
+var SECTION_MAP;
+var SECTION_MAP_INVERSE;
 
 function init()
 {
@@ -51,7 +53,6 @@ function init()
             }
         }
     });
-    SP_init(); // give priority - not dependent on anything
     SB_init();
     SR_init();
     CacheMan_init();
@@ -82,6 +83,13 @@ function init()
         loadWhiteTheme();
     else
         loadDarkTheme();
+    $.get('all-sections', function(data){
+        SECTION_MAP = data;
+        SECTION_MAP_INVERSE = {};
+        $.each(SECTION_MAP, function (key, value) {
+            SECTION_MAP_INVERSE[value.toLowerCase()] = key;
+        });
+    }, 'json');
 
 }
 function Nav_save()

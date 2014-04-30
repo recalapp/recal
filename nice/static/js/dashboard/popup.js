@@ -78,44 +78,45 @@ function PopUp_initialize_deferred(popUp)
     } else {
         $(popUp).find('.withtimepicker').removeClass('withtimepicker');
     }
-    var htmlcontent = CacheMan_load("type-picker")
-    $(popUp).find(".withtypepicker").popover({
-        placement: "left auto",
-        trigger: "focus",
-        html: true,
-        content: htmlcontent,
-        container: 'body'
-    })
-    var input = $(popUp).find(".withtypepicker")[0];
-    $(input).on("shown.bs.popover", function(){
-        var tp = $("#type-picker123")[0];
-        tp.id = "";
-        this.tp = tp;
-        var type = $(this).val();
-        TP_select(this.tp, type);
-        var inputField = this;
-        TP_setSelectListener(function(tp, selectedType){
-            $(inputField).val(selectedType);
-        });
-    });
+    //var htmlcontent = CacheMan_load("type-picker")
+    //$(popUp).find(".withtypepicker").popover({
+    //    placement: "left auto",
+    //    trigger: "focus",
+    //    html: true,
+    //    content: htmlcontent,
+    //    container: 'body'
+    //})
+    //var input = $(popUp).find(".withtypepicker")[0];
+    //$(input).on("shown.bs.popover", function(){
+    //    var tp = $("#type-picker123")[0];
+    //    tp.id = "";
+    //    this.tp = tp;
+    //    var type = $(this).val();
+    //    TP_select(this.tp, type);
+    //    var inputField = this;
+    //    TP_setSelectListener(function(tp, selectedType){
+    //        $(inputField).val(selectedType);
+    //    });
+    //});
+    
 
-    $(popUp).find('.withsectionpicker').popover({
-        placement: 'left auto',
-        trigger: 'focus', 
-        html: true,
-        content: CacheMan_load('section-picker'),
-        container: 'body'
-    }).on('shown.bs.popover', function(){
-        var sp = $('#section-picker123')[0];
-        sp.id = '';
-        this.sp = sp;
-        var section = $(this).val();
-        SP_select(this.sp, section);
-        var inputField = this;
-        SP_setSelectListener(function(sp, selectedSection){
-            $(inputField).val(selectedSection);
-        });
-    });
+    //$(popUp).find('.withsectionpicker').popover({
+    //    placement: 'left auto',
+    //    trigger: 'focus', 
+    //    html: true,
+    //    content: CacheMan_load('section-picker'),
+    //    container: 'body'
+    //}).on('shown.bs.popover', function(){
+    //    var sp = $('#section-picker123')[0];
+    //    sp.id = '';
+    //    this.sp = sp;
+    //    var section = $(this).val();
+    //    SP_select(this.sp, section);
+    //    var inputField = this;
+    //    SP_setSelectListener(function(sp, selectedSection){
+    //        $(inputField).val(selectedSection);
+    //    });
+    //});
 }
 function PopUp_initialize(popUp)
 {
@@ -178,6 +179,7 @@ function PopUp_setToEventID(popUp, id)
     if (!eventDict)
     {
         console.log("errorneous event id");
+        PopUp_close(popUp);
         return;
     }
     PopUp_setTitle(popUp, eventDict.event_title);
@@ -263,8 +265,51 @@ function PopUp_setToEventID(popUp, id)
         $(popUp).find('#unhide_button').addClass('hide');
         $(popUp).find('#hide_button').removeClass('hide');
     }
-}
 
+    var choices = [];
+    $.each(TYPE_MAP, function(key, value){
+        choices.push({
+            value: key,
+            pretty: value,
+            selected: eventDict.event_type == key,
+        });
+    });
+    var scp = SCP_initOnElement($(popUp).find('.withtypepicker')[0], popUp, null, choices);
+    $(scp).on('select', function(ev, choices){
+        var selectedType;
+        $.each(choices, function(key, selected){
+            if (selected)
+            {
+                selectedType = key;
+                return false;
+            }
+        });
+        $(popUp).find('.withtypepicker').val(toTitleCase(TYPE_MAP[selectedType]));
+        $(popUp).find('.withtypepicker').trigger('value_set');
+    });
+
+    var choices = [];
+    $.each(SECTION_MAP, function(key, value){
+        choices.push({
+            value: key,
+            pretty: value,
+            selected: eventDict.section_id == key,
+        });
+    });
+    var scpSection = SCP_initOnElement($(popUp).find('.withsectionpicker')[0], popUp, null, choices);
+    $(scpSection).on('select', function(ev, choices){
+        var selectedSection;
+        $.each(choices, function(key, selected){
+            if (selected)
+            {
+                selectedSection = key;
+                return false;
+            }
+        });
+        $(popUp).find('.withsectionpicker').val(SECTION_MAP[selectedSection]);
+        $(popUp).find('.withsectionpicker').trigger('value_set');
+    });
+}
 
 function PopUp_setTitle(popUp, title)
 {
@@ -280,11 +325,11 @@ function PopUp_setLocation(popUp, loc)
 }
 function PopUp_setSection(popUp, sectionKey)
 {
-    $(popUp).find('#popup-section').text(SP_keyToText(sectionKey));
+    $(popUp).find('#popup-section').text(SECTION_MAP[sectionKey]);
 }
 function PopUp_setType(popUp, typeKey)
 {
-    var type = toTitleCase(TP_keyToText(typeKey));
+    var type = toTitleCase(TYPE_MAP[typeKey]);
     $(popUp).find('#popup-type').text(type);
 }
 function PopUp_setDate(popUp, unixTime)
@@ -453,7 +498,7 @@ function _PopUp_Form_addOnBlurListener(form, listener)
     else if ($(form).find(".withtimepicker").length > 0)
         $(form).find(".withtimepicker").datetimepicker().on("hide", listener);
     else if ($(form).find(".withcustompicker").length > 0)
-        $(form).find(".withcustompicker").on("hidden.bs.popover", listener); // must be hidden, not hide, otherwise timing doesn't work out
+        $(form).find(".withcustompicker").on('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
     else if ($(form).find("input").length > 0)
         $(form).find("input").on("blur", listener);
     else if ($(form).find("textarea").length > 0)
@@ -488,20 +533,6 @@ function PopUp_clickedElement(element)
         _PopUp_Form_addOnBlurListener(form, function(){
             PopUp_clickedSaveElement(form);
         });
-        if ($(form).find("input").hasClass("withtypepicker"))
-        {
-            $(form).find("input").on("change keyup paste", function(){
-                var tp = $(form).find("input")[0].tp;
-                TP_select(tp, $(form).find("input").val());
-            });
-        }
-        if ($(form).find('input').hasClass('withsectionpicker'))
-        {
-            $(form).find('input').on('change keyup paste', function(){
-                var sp = $(form).find('input')[0].sp;
-                SP_select(sp, $(form).find('input').val());
-            });
-        }
     }
     var text_id = _PopUp_Form_getElementIDForForm(form);
     if (text_id == 'popup-title')
@@ -535,16 +566,16 @@ function PopUp_clickedSaveElement(form)
         _PopUp_Form_giveFocus(form);
         return;
     }
-    if ($(form).find("input").hasClass("withtypepicker") && !TP_validateType(_PopUp_Form_getValue(form)))
-    {
-        _PopUp_Form_giveFocus(form);
-        return;
-    }
-    if ($(form).find('input').hasClass('withsectionpicker') && !SP_validateSection(_PopUp_Form_getValue(form)))
-    {
-        _PopUp_Form_giveFocus(form);
-        return;
-    }
+    //if ($(form).find("input").hasClass("withtypepicker") && !TP_validateType(_PopUp_Form_getValue(form)))
+    //{
+    //    _PopUp_Form_giveFocus(form);
+    //    return;
+    //}
+    //if ($(form).find('input').hasClass('withsectionpicker') && !SP_validateSection(_PopUp_Form_getValue(form)))
+    //{
+    //    _PopUp_Form_giveFocus(form);
+    //    return;
+    //}
     var popUp = _PopUp_getPopUp(form);
     PopUp_markAsNotEditing(popUp);
     // hide the form and unhide the text
