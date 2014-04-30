@@ -660,7 +660,7 @@ def search_classes(query):
     class_num = re.search(r'(\d{1,4})', q)
     if class_num:
         num = class_num.group()
-        filtered = filtered.filter(Q(course_listing__number__contains = num)) # filter by this course number
+        filtered = filtered.filter(Q(course_listing__number__startswith = num)) # filter by this course number
         q = q.replace(num, ' ') # remove from remaining query (replace with space so that "COS333advanced" becomes "COS advanced", not"COSadvanced")
     
     # Then, if any remaining parts are three letter string and are in depts list, filter by them.
@@ -682,7 +682,7 @@ def search_classes(query):
     for c in courses:
         results.append(construct_course_dict(c))
         #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
-    return sorted(results, key=lambda r: r['label']) # alphabetical sort
+    return sorted(results, key=lambda r: r['course_listings']) # alphabetical sort
 
 
 def get_unapproved_revisions(netid, count=3):
