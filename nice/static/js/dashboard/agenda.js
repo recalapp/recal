@@ -172,8 +172,6 @@ function _Agenda_setColors(agenda, eventDict)
     $(agenda).parent().find('.agenda-tag').addClass(agendaColorClass).css('background-color', courseColor);
     $(agenda).data('new-color', courseColor);
     // $(agenda).find('#agenda-section').closest('panel').addClass(agendaColorClass).css('border-color', '#A1B2C3');
-    console.log('courseColor is: ' + courseColor);
-    console.log( $(agenda).find('#agenda-section').closest('panel'));
 
     // $(agenda).data('new-color', '#334499');
 
