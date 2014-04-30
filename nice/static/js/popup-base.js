@@ -217,7 +217,11 @@ function PopUp_makeMain(popUp)
     if (UI_isPinned(id))
         UI_unpin(id);
     UI_setMain(id);
-    $(popUp).find('.panel').resizable('destroy');
+    try{
+        $(popUp).find('.panel').resizable('destroy');
+    }
+    catch (e) {
+    }
 }
 function PopUp_hasMain(popUp)
 {

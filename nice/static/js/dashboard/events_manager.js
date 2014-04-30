@@ -297,9 +297,8 @@ function EventsMan_clickAddEvent()
     PopUp_setToEventID(popUp, id);
     PopUp_markAsUnsaved(popUp);
     
-    // request server for new id
     PopUp_giveFocus(popUp);
-    _EventsMan_callUpdateListeners();
+    //_EventsMan_callUpdateListeners();
 }
 
 function EventsMan_clickSync()

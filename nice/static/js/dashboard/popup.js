@@ -309,6 +309,9 @@ function PopUp_setToEventID(popUp, id)
         $(popUp).find('.withsectionpicker').val(SECTION_MAP[selectedSection]);
         $(popUp).find('.withsectionpicker').trigger('value_set');
     });
+    $(popUp).find('.withcustompicker').on('hidden.bs.popover', function(ev){
+        $(this).trigger('value_set');
+    });
 }
 
 function PopUp_setTitle(popUp, title)

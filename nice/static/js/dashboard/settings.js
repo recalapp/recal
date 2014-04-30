@@ -56,17 +56,11 @@ function SE_init()
     });
     $('#' + SE_id).on('hide.bs.modal', function(){
         // save
-        $('#settingsModal').trigger('close');
-    });
-    $('#' + SE_id).on('hidden.bs.modal', function(){
-        SC_removeAllFromContainer(this);
-    });
-    $(window).on('beforeunload', function(ev){
-        // push filter arrays
+        $(this).trigger('close');
         $.ajax('/put/ui-pref', {
             dataType: 'json',
             type: 'POST',
-            async: false,
+            async: true,
             data: {
                 agenda_pref: JSON.stringify(AGENDA_FILTER),
                 calendar_pref: JSON.stringify(CAL_FILTER),
@@ -75,6 +69,9 @@ function SE_init()
                 })
             },
         });
+    });
+    $('#' + SE_id).on('hidden.bs.modal', function(){
+        SC_removeAllFromContainer(this);
     });
 }
 function SE_addTypeSegmentedControlWithFilter(heading, filter)

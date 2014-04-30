@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 {% load staticfiles %}
 
-{% block title %}SEC - Socially Engineered Calendar{% endblock %}
+{% block title %}ReCal - Spring 2014{% endblock %}
 
 {% block main_content %}
 {% include 'main/nav.html' %}
@@ -120,4 +120,7 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 <script src="{% static 'js/dashboard/sidebar.js' %}"></script>
 <script src="{% static 'js/dashboard/notifications.js' %}"></script>
 <script src="{% static 'js/dashboard/event-picker.js' %}"></script>
+<script src="{% static 'js/dashboard/unapproved-revisions.js' %}"></script>
+<script src="{% static 'js/event-picker.js' %}"></script>
+<script src="{% static 'js/dashboard/similar-events.js' %}"></script>
 {% endblock %}

@@ -4,19 +4,6 @@ function NO_init()
         NO_closeAllNotificationsForEventID(id);
     });
 }
-function NO_addRecentlyUpdated(text)
-{
-    var htmlContent = CacheMan_load('notifications-template');
-    SB_push(htmlContent);
-    var noti = $('#noti-123')[0];
-    noti.id = '';
-    $(noti).addClass('alert-info');
-    $(noti).find('#noti-content').text(text);
-    $(noti).find('button').on('click', function(){
-        $(noti).remove();
-        SB_hideIfEmpty();
-    });
-}
 
 function NO_showSimilarEventsNotification(event_id, similarEvents)
 {
@@ -47,7 +34,8 @@ function NO_showSimilarEventsNotification(event_id, similarEvents)
     $(noti).data('events', similarEvents);
     $(noti).find('#noti-content').on('click', function(ev){
         ev.preventDefault();
-        NO_showSimilarEvents(event_id);
+        SE_showSimilarEvents(event_id, $(noti).data('events'));
+        //NO_showSimilarEvents(event_id);
         //return false;
     });
     $(noti).find('button').on('click', function(){
@@ -99,3 +87,7 @@ function NO_closeAllNotificationsForEventID(event_id)
         SB_pop(this);
     });
 }
+
+function NO_showUnapprovedRevisionsNotifications()
+{
+    }

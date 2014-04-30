@@ -719,7 +719,7 @@ def get_unapproved_revisions(netid, count=3):
             continue  # skip this event if it's in the user hid it previously
 
         best_rev = event.best_revision(netid=netid) # load the best revision once
-        unapproved_revs = event.revision_set.filter(approved=STATUS_PENDING)
+        unapproved_revs = event.event_revision_set.filter(approved=Event_Revision.STATUS_PENDING)
         
         if best_rev:
             unapproved_revs = unapproved_revs.filter(modified_time__gte = best_rev.modified_time) # newer than the last approved revision (if one exists)
