@@ -740,7 +740,7 @@ function PopUp_clickedSavePopUp(anchor, shouldClose)
         return;
     shouldClose = shouldClose || false;
     var id = PopUp_getID(popUp);
-    if (NO_hasSimilarEvents(id))
+    if (SE_hasSimilarEvents(id))
     {
         AS_showActionSheetFromElement($(popUp).find('#save_button')[0], popUp,
             'There seems to be a similar event already on the calendar',
