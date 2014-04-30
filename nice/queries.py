@@ -419,6 +419,7 @@ def __construct_revision_dict(rev, group, group_rev, netid):
         'section_id': rev.event.group.section.id,
         'modified_user': rev.modified_user.user.username,
         'modified_time': format(rev.modified_time, 'U'),
+        'revision_id': rev.pk
     }
     if group_rev.recurrence_interval is not None:
         results['recurrence_days'] = json.loads(group_rev.recurrence_days)
