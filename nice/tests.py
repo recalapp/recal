@@ -323,12 +323,13 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		for i in range(abs(settings.THRESHOLD_REJECT) + 1): # 1 vote over the threshold so that when we place a vote against the hivemind, the threshold is triggered and punishment is enacted
 			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=(-1)) # note: this is an illegal way to make a vote!
 			v.save()
+			print 'made one vote'
 
 		all_votes = Vote.objects.filter(voted_on=unapproved_rev)
 		total_score = sum([vt.score for vt in all_votes])
 
-		self.assertEqual(len(all_votes), settings.THRESHOLD_REJECT + 1)
-		self.assertEqual(abs(total_score), settings.THRESHOLD_REJECT + 1)
+		self.assertEqual(len(all_votes), abs(settings.THRESHOLD_REJECT) + 1)
+		self.assertEqual(abs(total_score), abs(settings.THRESHOLD_REJECT) + 1)
 
 		# Get point balances before this last vote.
 		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
