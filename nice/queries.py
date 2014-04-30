@@ -653,8 +653,8 @@ def search_classes(query):
     # TODO(Maxim): escape the query before searching for classes
     filtered = Course.objects
 
-    # First, search input string for any two, three, or four digit numbers. Use results to filter by course number.
-    class_num = re.search(r'(\d{2,4})', q)
+    # First, search input string for any one, two, three, or four digit numbers. Use results to filter by course number.
+    class_num = re.search(r'(\d{1,4})', q)
     if class_num:
         num = class_num.group()
         filtered = filtered.filter(Q(course_listing__number__contains = num)) # filter by this course number
@@ -679,7 +679,7 @@ def search_classes(query):
     for c in courses:
         results.append(construct_course_dict(c))
         #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
-    return results
+    return sorted(results, key=lambda r: r['label']) # alphabetical sort
 
 
 def get_unapproved_revisions(netid, count=3):
