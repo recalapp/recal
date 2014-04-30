@@ -122,7 +122,6 @@ function EventsMan_addEvent()
         event_location: 'Event location',
         // Add color for event
         course_id: -1,
-        section_color: '#BE008A',
         section_id: firstSectionKey, 
         modified_user: USER_NETID,
         modified_time: moment().unix()

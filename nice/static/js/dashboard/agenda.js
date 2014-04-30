@@ -166,7 +166,7 @@ function Agenda_loadEvents(eventIDs)
 function _Agenda_setColors(agenda, eventDict)
 {
     var agendaColorClass = 'course-color-' + eventDict.course_id;
-    var courseColor = eventDict.section_color;
+    var courseColor = SECTION_COLOR_MAP[eventDict.section_id]['color'];
     $(agenda).find('#agenda-section').addClass(agendaColorClass).css('color', courseColor);
     $(agenda).find('#agenda-title').addClass(agendaColorClass).css('color', courseColor);
     $(agenda).parent().find('.agenda-tag').addClass(agendaColorClass).css('background-color', courseColor);

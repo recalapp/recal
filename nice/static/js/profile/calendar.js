@@ -28,10 +28,10 @@ function Cal_reload()
             title: eventDict.event_title,
             start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
             end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
-            backgroundColor: eventDict.section_color,
-            borderColor: eventDict.section_color
+            backgroundColor: SECTION_COLOR_MAP[eventDict.section_id]['color'],
+            borderColor: SECTION_COLOR_MAP[eventDict.section_id]['color']
         });
-        console.log('color is ' + eventDict.section_color);
+        console.log('in cal_reload, color is ' + SECTION_COLOR_MAP[eventDict.section_id]['color']);
     });
     var start = moment.unix(CUR_SEM.start_date);
     $('#calendarui').fullCalendar('gotoDate', start.year(), start.month(), start.date());
