@@ -269,7 +269,7 @@ def create_or_update_events(section, section_object):
             # we assume the class is weekly
             'recurrence_interval': 1,
             'recurrence_end': end_date, # or None?
-        }])
+        }], auto_approve=True)
         
         # create event
         new_event_count += 1

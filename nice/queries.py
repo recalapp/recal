@@ -81,7 +81,7 @@ def get_events_by_course_ids(course_ids, **kwargs):
         survived.append(temp)
     return survived
 
-def modify_events(netid, events):
+def modify_events(netid, events, auto_approve=False):
     """ 
     Handles event creation and modification.
 
@@ -223,8 +223,8 @@ def modify_events(netid, events):
             pass
 
         # Now that we have a new or existing event selected, create a new revision.
-        def make_new_rev(e):
-            return Event_Revision(
+        def make_new_rev(e, auto_approve=False):
+            for_ret = Event_Revision(
                 event = e,
                 event_title = event_dict['event_title'],
                 event_type = event_dict['event_type'],
@@ -235,7 +235,10 @@ def modify_events(netid, events):
                 modified_user = user,
                 modified_time = new_modified_time
             )
-        eventRev = make_new_rev(event)
+            if auto_approve:
+                for_ret.approved = for_ret.STATUS_ACCEPTED
+            return for_ret
+        eventRev = make_new_rev(event, auto_approve)
         # Save
         eventRev.save()
         event.save()
@@ -258,7 +261,7 @@ def modify_events(netid, events):
             for d_start, d_end in dates:
                 new_event = Event(group=event_group)
                 new_event.save() 
-                new_rev = make_new_rev(new_event)
+                new_rev = make_new_rev(new_event, auto_approve)
                 new_rev.event_start = d_start
                 new_rev.event_end = d_end
                 new_rev.save() # must have saved event first, so that revision points to an event ID
@@ -320,7 +323,7 @@ def modify_events(netid, events):
                         # Save as new unapproved revision.
                         this_event_last_rev.modified_user = user
                         this_event_last_rev.modified_time = new_modified_time
-                        this_event_last_rev.approved = STATUS_PENDING
+                        this_event_last_rev.approved = this_event_last_rev.STATUS_ACCEPTED if auto_approve else this_event_last_rev.STATUS_PENDING
                         this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
         
     return changed_ids, deleted_ids
