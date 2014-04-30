@@ -69,7 +69,7 @@ class NewiceTestCase(TestCase):
 class EventMethodTests(NewiceTestCase):
     def test_best_revision_behavior(self):
     	"""
-    	Test 4 cases:
+    	Test these cases:
 
     	* A user made a new revision since the last globally-approved revision
     		Expected: the user sees this one, but other users see the globally-approved revision.
@@ -79,6 +79,8 @@ class EventMethodTests(NewiceTestCase):
     		Expected: all users see the globally-approved revision.
 		* Since the last globally-approved revision, there are new unapproved revision that the user hasn't interacted with (yet).
 			Expected: all users see the globally-approved revision.
+		* There are no approved revisions or user-created revisions or user-voted-upon revisions for this event.
+			Expected: return None.
 
 
 
