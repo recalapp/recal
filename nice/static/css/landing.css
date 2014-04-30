@@ -1,0 +1,50 @@
+body{
+    padding: 0;
+}
+.main-body{
+    height: 100vh;
+    position: relative;
+}
+.main-body.alternate{
+    background-color: rgba(255, 255, 255, 0.95);
+}
+#login-nav-item{
+    opacity: 1;
+    -webkit-transition: opacity 0.5s linear, margin-left 0.5s ease-in-out;
+    transition: opacity 0.5s linear, margin-left 0.5s ease-in-out;
+}
+#login-nav-item.active{
+    opacity: 0;
+    margin-left: -100px;
+}
+#login_button{
+    max-width: 30vh;
+}
+#login_button:not(.btn-primary){
+    display: block;
+
+}
+#login-container{
+    padding-top: 70vh;
+    margin-left: 20px;
+    margin-right: 20px;
+    text-align: center;
+}
+.big-img{
+    height: 100%;
+}
+.big-img.left{
+    margin-left: -5%;
+}
+.content{
+    background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), white 40%);
+    background: linear-gradient(left, red, blue 100px, green 200px);
+    width: 60%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: right;
+    padding-left: 40%;
+    padding-right: 5px;
+}

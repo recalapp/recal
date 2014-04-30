@@ -1,0 +1,45 @@
+{% extends 'landing/base.html' %}
+{% load staticfiles %}
+
+{% block title %}ReCal - Rethinking Calendar{% endblock %}
+
+{% block main_content %}
+{% include 'landing/nav.html' %}
+
+
+<div id="login" class="main-body">
+    <div id="login-container">
+        <a id="login_button" class="white-link-btn">
+            <h1>Log in</h1>
+        </a>
+    </div>
+</div>
+
+<div id="agenda" class="main-body alternate" >
+    <img class="big-img left" src="{% static 'images/agenda.png' %}">
+    <div class="content right">
+        <p> some text goes here </p>
+    </div>
+</div>
+
+<div id="calendar" class="main-body">
+
+</div>
+
+
+
+
+{% endblock %}
+
+{% block link_or_script_blocking %}
+<base href="{{ base_url }}">
+<link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+{% endblock %}
+
+{% block link_or_script_nonblocking %}
+<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+{% endblock %}
+

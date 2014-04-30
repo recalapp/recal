@@ -68,6 +68,9 @@ def index(request):
     response.set_cookie('netid', request.user.username)
     return response
 
+def landing(request):
+    return render(request, 'landing/index.html', None)
+
 def logout(request):
     user = request.user.profile
     user.ui_state_restoration = None;
