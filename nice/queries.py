@@ -334,7 +334,7 @@ def hide_events(netid, event_IDs):
     
     Arguments: User object, event IDs list.
     
-    Returns: True if succeeded, False if failed.
+    Returns: True if succeeded, exception if failed.
     """
     user = User.objects.get(username=netid).profile
     hidden_events = user.hidden_events
@@ -343,13 +343,38 @@ def hide_events(netid, event_IDs):
     else:
         hidden_events = []
     for event_id in event_IDs:
-        try:
-            event = Event.objects.get(id=event_id) # verify that id exists
-            hidden_events.append(event.id)
-        except Exception, e:
-            pass # event doesn't exist, or something went wrong with hide events call (that's okay)
+        if event_id not in hidden_events: # prevent duplicates
+            try:
+                event = Event.objects.get(id=event_id) # verify that id exists
+                hidden_events.append(event.id)
+            except Exception, e:
+                pass # event doesn't exist
     user.hidden_events = json.dumps(hidden_events)
     user.save()
+    return True
+
+def unhide_events(netid, event_IDs):
+    """Removes events from user's hidden event list.
+
+    Arguments: netid, event IDs list.
+
+    Returns: True if successed, False if failed.
+    """
+    user = User.objects.get(username=netid).profile
+    hidden_events = user.hidden_events
+    if hidden_events:
+        hidden_events = json.loads(hidden_events)
+    else:
+        hidden_events = []
+    
+    for event_id in event_IDs:
+        try:
+            hidden_events.remove(event.id) # removes first occurence of this value -- not this index!
+        except Exception, e:
+            pass # wasn't in hidden_events
+    user.hidden_events = json.dumps(hidden_events)
+    user.save()
+    return True
     
 def get_hidden_events(netid):
     user = User.objects.get(username=netid).profile
@@ -720,7 +745,7 @@ def get_unapproved_revisions(netid, count=3):
             continue  # skip this event if it's in the user hid it previously
 
         best_rev = event.best_revision(netid=netid) # load the best revision once
-        unapproved_revs = event.revision_set.filter(approved=STATUS_PENDING)
+        unapproved_revs = event.event_revision_set.filter(approved=Event_Revision.STATUS_PENDING)
         
         if best_rev:
             unapproved_revs = unapproved_revs.filter(modified_time__gte = best_rev.modified_time) # newer than the last approved revision (if one exists)
@@ -729,7 +754,7 @@ def get_unapproved_revisions(netid, count=3):
 
         for unapproved_rev in unapproved_revs:
             # conditions we don't want are below -- if any are matched, continue to the next unapproved revision (or next event)
-            if unapproved_rev.modified_user is user: # avoid revisions made by this user
+            if unapproved_rev.modified_user == user: # avoid revisions made by this user
                 continue
             if Vote.objects.filter(voted_on=unapproved_rev, voter=user).all(): # if already voted
                 continue
@@ -776,11 +801,14 @@ def process_vote_on_revision(netid, isPositive, revision_id):
 
     # Award points for making this vote
     user.award_points(settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING)
+    print 'assigned to user:', settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING
     user.save()
 
     # Recompute total vote count for this revision
     all_votes = Vote.objects.filter(voted_on=revision)
     total_score = sum([vt.score for vt in all_votes])
+
+    print 'checking thresholds with total_score', total_score 
 
     # If the revision passes the approval threshold, approve it. If it passes the rejection threshold, reject it. Assign points accordingly.
     if total_score >= settings.THRESHOLD_APPROVE:
@@ -798,14 +826,20 @@ def process_vote_on_revision(netid, isPositive, revision_id):
     elif total_score <= settings.THRESHOLD_REJECT:
         revision.approved = revision.STATUS_REJECTED
         revision.save()
+        print 'assigning rejection'
         
         # Award points to all voters
         for vt in all_votes:
             if vt.score < 0: # voted correctly
                 vt.voter.award_points(settings.REWARD_FOR_PROPER_DOWNVOTE)
+                print 'assigned to user downvote:', settings.REWARD_FOR_PROPER_DOWNVOTE
             elif vt.score > 0: # voted incorrectly
                 vt.voter.award_points(settings.REWARD_FOR_IMPROPER_UPVOTE)
+                print 'assigned to user wrong upvote:', settings.REWARD_FOR_IMPROPER_UPVOTE
         # Award points to revision creator
         revision.modified_user.award_points(settings.REWARD_FOR_REJECTED_SUBMISSION)
+        print 'assigned to creator rejected submission:', settings.REWARD_FOR_REJECTED_SUBMISSION
+    else:
+        print 'no thresholds hit'
     
     return True

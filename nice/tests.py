@@ -109,7 +109,45 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		Vote.objects.all().delete()
 	
 	def test_appears_in_queue(self):
-		pass
+		"""Test conditions for appearing in unapproved revisions queue.
+
+		Cases:
+		* User 1 makes an unapproved revision for an event in a section user 2 is in. User 2 hasn't touched this event yet.
+			Expected: user 2 sees unapproved revision in queue. user 1 doesn't see it in their queue.
+		* User 1 makes an unapproved revision for an event in a section user 2 is in. User 2 hid this event in the past.
+			Expected: user 2 doesn't see it in their queue.
+
+		"""
+
+		event, approved_rev, unapproved_rev = self.pre_run()
+		unapproved_rev.modified_user = User.objects.get(username=self.usernames[0]).profile # bob is the owner
+		unapproved_rev.save()
+
+		# enroll user 2
+		enroll(self.usernames[1])
+
+		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
+
+		# check if it's in janet's queue -- expected True because janet is in the section
+		unapproved_revs_janet = get_unapproved_revisions(self.usernames[1])
+		self.assertEqual(any(x['revision_id'] == unapproved_rev.pk for x in unapproved_revs_janet), True)
+		
+		# check if it's in bob's queue -- expected False because bob is the creator
+		unapproved_revs_bob = get_unapproved_revisions(self.usernames[0])
+		self.assertEqual(any(x['revision_id'] == unapproved_rev.pk for x in unapproved_revs_bob), False)
+
+		# janet hides the event
+		hide_events(self.usernames[1], [unapproved_rev.event.pk])
+
+		# check if it's in janet's queue -- expected False because the event is hidden
+		unapproved_revs_janet = get_unapproved_revisions(self.usernames[1])
+		self.assertEqual(any(x['revision_id'] == unapproved_rev.pk for x in unapproved_revs_janet), False)
+
+		# undo hide events
+		unhide_events(self.usernames[1], [unapproved_rev.event.pk])
+		
+		self.post_run()
+
 	def test_vote_threshold_checks(self):
 		event, approved_rev, unapproved_rev = self.pre_run()
 		unapproved_rev.modified_user = get_community_user().profile # different owner now, so that bob can vote on it
@@ -285,8 +323,8 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
 
 		# Manually make votes to avoid check about having voted before: downvote threshold-1 times
-		for i in range(settings.THRESHOLD_REJECT - 1):
-			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=-1) # note: this is an illegal way to make a vote!
+		for i in range(abs(settings.THRESHOLD_REJECT) - 1):
+			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=(-1)) # note: this is an illegal way to make a vote!
 			v.save()
 
 		# Get point balances before the downvote that puts it over the edge.
@@ -302,6 +340,48 @@ class UnapprovedRevisionTests(NewiceTestCase):
 
 		# The system should have given you points for voting once and then for voting with the hivemind
 		expected_diff_you = settings.REWARD_FOR_DOWNVOTING + settings.REWARD_FOR_PROPER_DOWNVOTE
+		expected_diff_submitter = settings.REWARD_FOR_REJECTED_SUBMISSION
+
+		self.assertEqual(new_points_balance_you - previous_points_balance_you, expected_diff_you)
+		self.assertEqual(new_points_balance_submitter - previous_points_balance_submitter, expected_diff_submitter)
+
+		self.purge_votes()
+		self.post_run()
+
+	def test_points_are_assigned_properly_for_rejection_voting_against_hivemind(self):
+		# Punishment of those who upvote something that is rejected.
+
+		event, approved_rev, unapproved_rev = self.pre_run()
+		unapproved_rev.modified_user = get_community_user().profile # different owner now, so that bob can vote on it
+		unapproved_rev.save()
+
+		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
+
+		# Manually make votes to avoid check about having voted before: upvote threshold-1 times
+		for i in range(abs(settings.THRESHOLD_REJECT) + 1): # 1 vote over the threshold so that when we place a vote against the hivemind, the threshold is triggered and punishment is enacted
+			v = Vote(voter=get_community_user().profile, voted_on=unapproved_rev, when=get_current_utc(), score=(-1)) # note: this is an illegal way to make a vote!
+			v.save()
+			print 'made one vote'
+
+		all_votes = Vote.objects.filter(voted_on=unapproved_rev)
+		total_score = sum([vt.score for vt in all_votes])
+
+		self.assertEqual(len(all_votes), abs(settings.THRESHOLD_REJECT) + 1)
+		self.assertEqual(abs(total_score), abs(settings.THRESHOLD_REJECT) + 1)
+
+		# Get point balances before this last vote.
+		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
+		previous_points_balance_submitter = get_community_user().profile.pending_points
+
+		# Try to vote on it -- should succeed
+		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), True)
+
+		# Get new point balances.
+		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
+		new_points_balance_submitter = get_community_user().profile.pending_points
+
+		# The system should have given you points for voting once and then for voting with the hivemind
+		expected_diff_you = settings.REWARD_FOR_UPVOTING + settings.REWARD_FOR_IMPROPER_UPVOTE
 		expected_diff_submitter = settings.REWARD_FOR_REJECTED_SUBMISSION
 
 		self.assertEqual(new_points_balance_you - previous_points_balance_you, expected_diff_you)
