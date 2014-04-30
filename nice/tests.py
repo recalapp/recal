@@ -128,14 +128,24 @@ class UnapprovedRevisionTests(NewiceTestCase):
 
 		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
 
-		# check if it's in bob's queue
-		self.assertEqual(get_unapproved_revisions(self.usernames[0]).find(lambda x: x['revision_id'] == unapproved_rev.pk) != -1, True)
-		# check if it's in janet's queue
+		# check if it's in janet's queue -- expected True because janet is in the section
+		unapproved_revs_janet = get_unapproved_revisions(self.usernames[1])
+		self.assertEqual(any(x['revision_id'] == unapproved_rev.pk for x in unapproved_revs_janet), True)
+		
+		# check if it's in bob's queue -- expected False because bob is the creator
+		unapproved_revs_bob = get_unapproved_revisions(self.usernames[0])
+		self.assertEqual(any(x['revision_id'] == unapproved_rev.pk for x in unapproved_revs_bob), False)
 
-		# bob hides the event
+		# janet hides the event
+		hide_events(self.usernames[1], [unapproved_rev.event.pk])
 
-		# check if it's in bob's queue
+		# check if it's in janet's queue -- expected False because the event is hidden
+		unapproved_revs_janet = get_unapproved_revisions(self.usernames[1])
+		self.assertEqual(any(x['revision_id'] == unapproved_rev.pk for x in unapproved_revs_janet), False)
 
+		# undo hide events
+		unhide_events(self.usernames[1], [unapproved_rev.event.pk])
+		
 		self.post_run()
 
 	def test_vote_threshold_checks(self):
