@@ -113,20 +113,18 @@ class User_Section_Table(models.Model):
     """
     only 5 default colors
     """
-    COLOR_1 = '#84D7DB'
+    COLOR_1 = '#8441A5'
     COLOR_2 = '#306278'
-    COLOR_3 = '#FFC926'
-    COLOR_4 = '#F26022'
-    COLOR_5 = '#6B2119'
-    COLOR_6 = '#000000'
+    COLOR_4 = '#339213'
+    COLOR_5 = '#D60030'
+    COLOR_6 = '#6B2119'
 
     COLOR_CHOICES = (
-        (COLOR_1, 'bermuda'),
+        (COLOR_1, 'purple'),
         (COLOR_2, 'light blue'),
-        (COLOR_3, 'lightening yellow'),
-        (COLOR_4, 'flamingo'),
-        (COLOR_5, 'persian plum'),
-        (COLOR_6, 'black'),
+        (COLOR_4, 'green'),
+        (COLOR_5, 'red'),
+        (COLOR_6, 'persian plum'),
     )
     # relationships
     user = models.ForeignKey('User_Profile')

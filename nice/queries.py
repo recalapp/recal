@@ -593,9 +593,10 @@ def get_section_colors(netid):
     user = User.objects.get(username=netid).profile
     ret = {}
     for table in User_Section_Table.objects.all().filter(user=user):
-        ret[table.section.id] = [] 
-        ret[table.section.id].append(table.section.course.id)
-        ret[table.section.id].append(table.color)
+        ret[table.section.id] = {
+            'color': table.color,
+            'course_id': table.section.course.id,
+        }
     return ret
 
 def get_course_by_id(course_id):
