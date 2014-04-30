@@ -155,6 +155,10 @@ function PopUp_getPopUpByID(id)
 }
 function PopUp_getID(popUp)
 {
+    if (!popUp)
+        return null;
+    if (!('id' in $(popUp).find('.panel')[0]))
+        return null;
     return $(popUp).find(".panel")[0].id;
 }
 function PopUp_setID(popUp, id)
@@ -183,6 +187,8 @@ function _PopUp_setBodyHeight(popUp)
 
 function PopUp_giveFocus(popUp)
 {
+    if (!popUp)
+        return;
     $('.' + POPUP_CLASS).not(popUp).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary");
     $(popUp).css("z-index", "200");
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default");
