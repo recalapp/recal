@@ -1,4 +1,4 @@
-
+var timeoutIDs = [];
 function EventsMan_init()
 {
     if (EVENTS_INIT)
@@ -124,7 +124,22 @@ function EventsMan_init()
         EventsMan_pushToServer(false);
     });
 
-    window.setInterval("EventsMan_pushToServer(true); EventsMan_pullFromServer();", 10 * 1000);
+    window.setInterval(function(){
+        if (!eventsManager.active)
+            return;
+        EventsMan_pushToServer(true); 
+        EventsMan_pullFromServer();
+    }, 10 * 1000);
+    $(window).on('mousemove click', function(){
+        $.each(timeoutIDs, function(index){
+            window.clearTimeout(this);
+        });
+        timeoutIDs = [];
+        eventsManager.active = true;
+        timeoutIDs.push(window.setTimeout(function(){
+            eventsManager.active = false;
+        }, 50*1000));
+    });
 }
 
 /***************************************************
