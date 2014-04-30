@@ -109,7 +109,35 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		Vote.objects.all().delete()
 	
 	def test_appears_in_queue(self):
-		pass
+		"""Test conditions for appearing in unapproved revisions queue.
+
+		Cases:
+		* User 1 makes an unapproved revision for an event in a section user 2 is in. User 2 hasn't touched this event yet.
+			Expected: user 2 sees unapproved revision in queue. user 1 doesn't see it in their queue.
+		* User 1 makes an unapproved revision for an event in a section user 2 is in. User 2 hid this event in the past.
+			Expected: user 2 doesn't see it in their queue.
+
+		"""
+
+		event, approved_rev, unapproved_rev = self.pre_run()
+		unapproved_rev.modified_user = User.objects.get(username=self.usernames[0]).profile # bob is the owner
+		unapproved_rev.save()
+
+		# enroll user 2
+		enroll(self.usernames[1])
+
+		self.assertEqual(unapproved_rev.approved, unapproved_rev.STATUS_PENDING) # original state
+
+		# check if it's in bob's queue
+		self.assertEqual(get_unapproved_revisions(self.usernames[0]).find(lambda x: x['revision_id'] == unapproved_rev.pk) != -1, True)
+		# check if it's in janet's queue
+
+		# bob hides the event
+
+		# check if it's in bob's queue
+
+		self.post_run()
+
 	def test_vote_threshold_checks(self):
 		event, approved_rev, unapproved_rev = self.pre_run()
 		unapproved_rev.modified_user = get_community_user().profile # different owner now, so that bob can vote on it
