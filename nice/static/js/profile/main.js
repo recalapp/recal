@@ -57,6 +57,8 @@ function init()
     PopUp_init();
     CL_init();
     UP_init();
+
+    SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
 }
 function enableAllInteractions()
 {
