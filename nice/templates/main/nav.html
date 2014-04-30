@@ -23,20 +23,20 @@
              </ul> 
          </div>
          <div class="col-sm-5 nav_controls"> 
-            <h4 style="display: inline-block">
-                <a href="#" onclick="EventsMan_clickAddEvent();return false;" title="Add Event">
+            <h3 style="display: inline-block">
+                <a href="#" onclick="EventsMan_clickAddEvent();return false;" class="withtooltip" data-toggle="tooltip" data-placement="auto right" title="Add Event">
                     <span class="glyphicon glyphicon-plus "></span>
                 </a>
-                <a href="{% url 'nice.views.edit_profile' %}" title="Edit Profile">
+                <a href="{% url 'nice.views.edit_profile' %}" class="withtooltip" data-toggle="tooltip" data-placement="auto right" title="Edit Profile">
                     <span class="glyphicon glyphicon-user"></span>
                 </a>
-                <a title="Settings" data-toggle="modal" data-target="#settingsModal">
+                <a title="Settings" data-toggle="modal" class="withtooltip" data-toggle="tooltip" data-placement="auto right" data-target="#settingsModal">
                     <span class="glyphicon glyphicon-cog"></span>
                 </a>
-                <a href="/user-logout" title="Log Out">
+                <a href="/user-logout" data-toggle="tooltip" class="withtooltip" data-placement="auto right" title="Log Out">
                     <span class="glyphicon glyphicon-log-out"></span>
                 </a>
-            </h4>
+            </h3>
             <h2 style="display: inline-block">
             {{formatted_name}}
             </h2>

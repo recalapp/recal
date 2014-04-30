@@ -92,6 +92,8 @@ function init()
         loadDarkTheme();
 
     SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
+    $('.withtooltip').tooltip({
+    });
 }
 
 function Nav_save()

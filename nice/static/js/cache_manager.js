@@ -24,7 +24,10 @@ function _CacheMan()
 function CacheMan_load(url)
 {
     if (cacheManager.cached[url] == null)
+    {
         _CacheMan_cacheURL(url, false);
+        return CacheMan_load(url);
+    }
     return cacheManager.cached[url];
 }
 
