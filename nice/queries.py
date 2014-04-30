@@ -236,7 +236,7 @@ def modify_events(netid, events, auto_approve=False):
                 modified_time = new_modified_time
             )
             if auto_approve:
-                for_ret.approved = for_ret.STATUS_ACCEPTED
+                for_ret.approved = for_ret.STATUS_APPROVED
             return for_ret
         eventRev = make_new_rev(event, auto_approve)
         # Save
@@ -323,7 +323,7 @@ def modify_events(netid, events, auto_approve=False):
                         # Save as new unapproved revision.
                         this_event_last_rev.modified_user = user
                         this_event_last_rev.modified_time = new_modified_time
-                        this_event_last_rev.approved = this_event_last_rev.STATUS_ACCEPTED if auto_approve else this_event_last_rev.STATUS_PENDING
+                        this_event_last_rev.approved = this_event_last_rev.STATUS_APPROVED if auto_approve else this_event_last_rev.STATUS_PENDING
                         this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
         
     return changed_ids, deleted_ids
