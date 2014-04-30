@@ -124,7 +124,7 @@ function EventsMan_init()
         EventsMan_pushToServer(false);
     });
 
-    window.setInterval("EventsMan_pushToServer(true); EventsMan_pullFromServer();", 10 * 1000);
+    // window.setInterval("EventsMan_pushToServer(true); EventsMan_pullFromServer();", 10 * 1000);
 }
 
 /***************************************************

@@ -127,13 +127,16 @@ a {
     cursor: default;
 }
 
-/*.agenda-item.panel{
-    border-radius: 0;
-    border: 1px solid rgba(100, 100, 100, 0.1); 
+.agenda-item.panel{
+    margin-bottom: 0;
 }
+
 .agenda-item.panel-primary{
-    background-color: #e8f1f9;
-}*/
+}
+
+.agenda-container {
+    margin-bottom: 21px;
+}
 
 #loading{
     position: fixed;
@@ -180,20 +183,65 @@ a {
 #agenda-title{
     margin-bottom: 0;
 }
+/*
 #agenda-section{
     color: rgba(0, 0, 0, 0.4);
     margin: 0;
+}
+*/
+#agenda-section.dark{
+    color: rgba(255, 255, 255, 0.5);
 }
 #agenda-time{
     margin-top: 15px;
     text-align: right;
     color: rgba(0,0,0, 0.4)
 }
-#agenda-section.dark{
-    color: rgba(255, 255, 255, 0.5);
-}
 #agenda-time.dark{
     color: rgba(255, 255, 255, 0.5);
+}
+
+
+.section-color-0 {
+    color: rgba(22,77,11, 0.4);
+}
+.section-color-1 {
+    color: rgba(11,99,11, 0.4);
+}
+.section-color-2 {
+    color: rgba(22,55,22, 0.4);
+}
+.section-color-3 {
+    color: rgba(77,11,255, 0.7);
+}
+.section-color-4 {
+    color: rgba(255,11,66, 0.7);
+}
+.section-color-5 {
+    color: rgba(11,34,54, 0.4);
+}
+.section-color-6 {
+    color: rgba(00,32,44, 0.4);
+}
+
+/*
+#agenda-color{
+    margin-top: 15px;
+    text-align: right;
+    color: rgba(0,0,0, 0.4)
+}
+*/
+#agenda-color.dark{
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.agenda-tag{
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background-color: black;
+    width: 20px;
 }
 
 /* Navbar icons: removing default underlines and changing color on hover. */
