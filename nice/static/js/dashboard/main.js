@@ -3,6 +3,7 @@ var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
 var SECTION_MAP;
 var SECTION_MAP_INVERSE;
+var SECTION_COLOR_MAP;
 
 function init()
 {
@@ -90,6 +91,10 @@ function init()
         loadWhiteTheme();
     else
         loadDarkTheme();
+
+    $.get('/get/section-colors', function(data){
+        SECTION_COLOR_MAP = data;
+    }, 'json');
 
 }
 function Nav_save()
