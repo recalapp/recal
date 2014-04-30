@@ -267,7 +267,7 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
             end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
         if last_updated:
             last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
-        events = queries.get_events(netid, start_date=start_date, end_date=end_date)
+        events = queries.get_events(netid, start_date=start_date, end_date=end_date, last_updated=last_updated)
         hidden_events = request.user.profile.hidden_events
         if hidden_events:
             hidden_events = json.loads(hidden_events)
