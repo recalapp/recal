@@ -100,14 +100,15 @@ function Cal_reload()
                 var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
                 var isHidden = EventsMan_eventIsHidden(this);
                 // TODO(Dyland) distinguish between hidden and non-hidden events
+                color = SECTION_COLOR_MAP[eventDict.section_id]['color'];
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
                     title: eventDict.event_title,
                     start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
                     end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
                     highlighted: shouldHighlight,
-                    backgroundColor: shouldHighlight ? colorLuminance(eventDict.section_color, 0) : colorLuminance(eventDict.section_color, 0.2),
-                    borderColor: colorLuminance(eventDict.section_color, 0)
+                    backgroundColor: shouldHighlight ? colorLuminance(color, 0) : colorLuminance(color, 0.2),
+                    borderColor: colorLuminance(color, 0)
                 });
             });
             $("#calendarui").fullCalendar("refetchEvents");
