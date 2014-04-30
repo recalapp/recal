@@ -10,7 +10,7 @@ function PopUp_init()
         this._trigger("beforeStart", event, this._uiHash());
         oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
     };
-    
+
     // setting bounds
     topPos = parseInt($(".navbar").css("height")) + parseInt($(".navbar").css("margin-top"));
     height = window.innerHeight - topPos + 300;
@@ -355,11 +355,28 @@ function PopUp_setEndTime(popUp, unixTime)
 }
 function PopUp_setColor(popUp, color)
 {
-    var defaultColor = $(popUp).find('.panel').css('border-color');
-    $(popUp).find('#popup-title').parent().parent().css('background-color', color).css('border-color', color);
+    if (!($(popUp).find('.panel').data('my-color')))
+    {
+        $(popUp).find('.panel').data('my-color', color);
+    }
+
+    color = $(popUp).find('.panel').data('my-color');
+
     // TODO: bad idea to hardwire the default color?
-    $(popUp).find('.panel').data('default-color', '#D3D3D3');
-    $(popUp).find('.panel').css('border-color', color);
+    var defaultBorder = '#DDDDDD';
+    var defaultHeader = '#F5F5F5';
+    $(popUp).find('.panel').data('default-border', defaultBorder);
+    $(popUp).find('.panel').data('default-header', defaultHeader);
+    if (PopUp_hasFocus(popUp))
+    {
+        $(popUp).find('#popup-title').parent().parent().css('background-color', color).css('border-color', color);
+        $(popUp).find('.panel').css('border-color', color);
+    }
+    else
+    {
+        $(popUp).find('#popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
+        $(popUp).find('.panel').css('border-color', defaultBorder);
+    }
 }
 
 /***************************************************

@@ -193,21 +193,27 @@ function PopUp_giveFocus(popUp)
     if (!popUp)
         return;
     // take away focus from other popups
-    $('.' + POPUP_CLASS).not(popUp).each(function(index) {
-        var defaultColor = $(this).find('.panel').data('default-color');
-        $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultColor);
-        var oldColor = $(this).find('#popup-title').parent().parent().css('background-color');
-        var newColor = colorLuminance(oldColor, -0.05);
-        // $(this).find('#popup-title').parent().parent().css('background-color', newColor);
-    });
+    PopUp_loseFocus($('.' + POPUP_CLASS).not(popUp));
 
     // give focus to this panel
     $(popUp).css("z-index", "200");
-    var color = $(popUp).find("#popup-title").parent().parent().css('background-color');
+    var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
+    $(popUp).find("#popup-title").parent().parent().css('background-color', color).css('border-color', color);
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
+
+function PopUp_loseFocus($popUps)
+{
+    $popUps.each(function(index) {
+        var defaultBorder = $(this).find('.panel').data('default-border');
+        var defaultHeader = $(this).find('.panel').data('default-header');
+        $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
+        $(this).find('#popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
+    });
+}
+
 function PopUp_giveFocusToID(id)
 {
     popUp = $('.'+POPUP_CLASS).find("#"+id).parent();
