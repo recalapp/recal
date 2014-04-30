@@ -16,4 +16,31 @@ function SE_showSimilarEvents(eventID, similarEvents)
     var ep = EP_init('Is this the same as your event?', choices);
     SB_setMainContent(ep);
     SB_fill();
+
+    // set the left hand component of the side bar
+    var popUp = PopUp_getPopUpByID(eventID)
+    PopUp_markAsEditing(popUp);
+    if (PopUp_hasMain() && !PopUp_isMain(popUp))
+    {
+        var main = PopUp_getMainPopUp();
+        PopUp_callCloseListeners(PopUp_getID(main));
+        $(main).remove();
+    }
+    SB_push(popUp);
+    PopUp_updateSize(popUp);
+    PopUp_makeMain(popUp);
+    $(popUp).draggable('disable');
+
+
+    // set event listeners
+    // TODO doesn't handle if the user clicks on the hide sidebar button
+    $(ep).on('ep.cancel ep.select', function(ev){
+        PopUp_markAsNotEditing(popUp);
+        $(popUp).draggable('enable');
+        SB_pop(this);
+        SB_unfill();
+    });
+    $(ep).on('ep.select', function(ev, meta){
+        EventsMan_replaceEventIDWithEvent(meta.eventID, meta.eventDict);
+    });
 }

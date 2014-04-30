@@ -53,9 +53,16 @@ function init()
             }
         }
     });
+    CacheMan_init();
+
+    SECTION_MAP = JSON.parse(CacheMan_load('/all-sections'));
+    SECTION_MAP_INVERSE = {};
+    $.each(SECTION_MAP, function (key, value) {
+        SECTION_MAP_INVERSE[value.toLowerCase()] = key;
+    });
+    
     SB_init();
     SR_init();
-    CacheMan_init();
     EventsMan_init();
     PopUp_init();
     NO_init();
@@ -83,13 +90,6 @@ function init()
         loadWhiteTheme();
     else
         loadDarkTheme();
-    $.get('all-sections', function(data){
-        SECTION_MAP = data;
-        SECTION_MAP_INVERSE = {};
-        $.each(SECTION_MAP, function (key, value) {
-            SECTION_MAP_INVERSE[value.toLowerCase()] = key;
-        });
-    }, 'json');
 
 }
 function Nav_save()
@@ -122,14 +122,16 @@ function UI_load()
     {
         var savedPinnedIDs = JSON.parse(SR_get('pinned_IDs'));
         $.each(savedPinnedIDs, function (key, value) {
-            UI_pin(key);
+            if (PopUp_getPopUpByID(key) != null)
+                UI_pin(key);
         });
         //$.removeCookie('pinned_IDs');
     } 
     if (SR_get('main_ID') != null)
     {
         if (SR_get('main_ID') != 'null')
-            UI_setMain(SR_get('main_ID'));
+            if (PopUp_getPopUpByID(SR_get('main_ID')) != null)
+                UI_setMain(SR_get('main_ID'));
         //$.removeCookie('main_ID')
     }
 }

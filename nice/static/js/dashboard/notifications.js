@@ -35,6 +35,7 @@ function NO_showSimilarEventsNotification(event_id, similarEvents)
     $(noti).find('#noti-content').on('click', function(ev){
         ev.preventDefault();
         SE_showSimilarEvents(event_id, $(noti).data('events'));
+        SB_pop(noti);
         //NO_showSimilarEvents(event_id);
         //return false;
     });
@@ -48,33 +49,6 @@ function NO_removeSimilarEventsNotification(event_id)
 {
     SB_pop($('#' + event_id + '.alert.in')[0]);
     SB_hideIfEmpty();
-}
-function NO_showSimilarEvents(event_id)
-{
-    var noti = $('#' + event_id + '.alert')[0];
-    SB_fill(); 
-    SB_pop(noti);
-    var popUp = PopUp_getPopUpByID(event_id)
-    PopUp_markAsEditing(popUp);
-    if (PopUp_hasMain() && !PopUp_isMain(popUp))
-    {
-        var main = PopUp_getMainPopUp();
-        PopUp_callCloseListeners(PopUp_getID(main));
-        $(main).remove();
-    }
-    SB_push(popUp);
-    PopUp_updateSize(popUp);
-    PopUp_makeMain(popUp);
-    $(popUp).draggable('disable');
-    var called = false; // TODO bad for memory
-    SB_addWillCloseListener(function(){
-        if (called)
-            return;
-        called = true;
-        PopUp_markAsNotEditing(popUp);
-        $(popUp).draggable('enable');
-    });
-    EP_initWithEvents(event_id, $(noti).data('events'));
 }
 function NO_hasSimilarEvents(event_id)
 {

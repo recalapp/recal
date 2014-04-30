@@ -29,10 +29,13 @@ function PopUp_init()
         PopUp_save();
     })
     EventsMan_addEventIDsChangeListener(function(oldID, newID){
-        PopUp_map(function(popUp, isMain){
-            if (PopUp_getID(popUp) == oldID)
-                PopUp_setID(popUp, newID);
-        });
+        var popUp = PopUp_getPopUpByID(newID);
+        if (popUp)
+        {
+            PopUp_close(popUp);
+        }
+        var popUp = PopUp_getPopUpByID(oldID);
+        PopUp_setToEventID(popUp, newID);
     });
     EventsMan_addUpdateListener(function(){
         PopUp_map(function(popUp, isMain){
@@ -650,7 +653,7 @@ function PopUp_clickedDelete(popUpAnchor)
         return;
     var event_id = PopUp_getID(popUp);
     var eventDict = EventsMan_getEventByID(event_id);
-    if ('recurrence_days' in eventDict)
+    if (eventDict && 'recurrence_days' in eventDict)
     {
         AS_showActionSheetFromElement(popUpAnchor, popUp, null, [
                 {important: false, text:'Only this event'},

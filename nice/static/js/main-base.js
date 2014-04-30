@@ -22,6 +22,8 @@ function UI_isMain(id)
 }
 function UI_setMain(id)
 {
+    if (UI_isPinned(id))
+        UI_unpin(id);
     mainID = id;
 }
 function UI_unsetMain()

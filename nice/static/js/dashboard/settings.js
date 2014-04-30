@@ -60,7 +60,6 @@ function SE_init()
         $.ajax('/put/ui-pref', {
             dataType: 'json',
             type: 'POST',
-            async: true,
             data: {
                 agenda_pref: JSON.stringify(AGENDA_FILTER),
                 calendar_pref: JSON.stringify(CAL_FILTER),

@@ -337,7 +337,9 @@ def modify_events(request):
         
     if 'hidden' in request.POST:
         user = request.user.profile
-        user.hidden_events = request.POST['hidden']
+        hidden = json.loads(request.POST['hidden'])
+        hidden = [event_id for event_id in hidden if Event.objects.filter(id=event_id).exists()]
+        user.hidden_events = json.dumps(hidden)
         user.save()
         """try:
             to_hide = json.loads(request.POST['hide'])

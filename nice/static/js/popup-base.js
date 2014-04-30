@@ -151,7 +151,10 @@ function PopUp_getMainPopUp()
 }
 function PopUp_getPopUpByID(id)
 {
-    return $('.' + POPUP_CLASS).find("#"+id).parent()[0];
+    if ($('.' + POPUP_CLASS).find("#"+id).length > 0)
+        return $('.' + POPUP_CLASS).find("#"+id).parent()[0];
+    else
+        return null;
 }
 function PopUp_getID(popUp)
 {

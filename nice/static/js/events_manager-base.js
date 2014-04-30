@@ -268,6 +268,19 @@ function EventsMan_replaceUncommittedEventIDWithEvent(id, eventDict)
     EventsMan_callEventIDsChangeListener(id, eventDict.event_id);
     _EventsMan_callUpdateListeners();
 }
+function EventsMan_replaceEventIDWithEvent(id, eventDict)
+{
+    // first replace it in the main events array
+    eventsManager.events[id] = null;
+    delete eventsManager.events[id];
+    eventsManager.events[eventDict.event_id] = eventDict;
+    if (EventsMan_hasUncommitted(id))
+    {
+        delete eventsManager.uncommitted[id];
+    }
+    EventsMan_callEventIDsChangeListener(id, eventDict.event_id);
+    _EventsMan_callUpdateListeners();
+}
 /***************************************************
  * Server code
  **************************************************/
