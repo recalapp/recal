@@ -181,10 +181,10 @@ function _Agenda_setColors(agenda, eventDict)
 function Agenda_insertHeader(text)
 {
     var agendaContainer = $("#agenda");
-    agendaContainer.append(CacheMan_load('agenda-header'));
-    var header = $('#agenda-header123')[0];
-    header.id = '';
-    $(header).find('#agenda-header-text').text(text);
+    var $agendaHeader = $('<div class="agenda-header row">');
+    $('<div class="col-xs-5">').append('<h3 id="agenda-header-text"></h3>').appendTo($agendaHeader);
+    agendaContainer.append($agendaHeader);
+    $agendaHeader.find('#agenda-header-text').text(text);
 }
 
 /***************************************************

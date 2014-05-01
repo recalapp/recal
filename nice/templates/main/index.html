@@ -66,12 +66,9 @@
 <script>
 var USER_NETID = '{{ username }}';
 var CACHEMAN_PRELOAD = [
-    '{% url 'nice.views.loading' %}',
     '{% url 'nice.views.all_sections' %}',
     '{% url 'nice.views.agenda' %}', 
-    '{% url 'nice.views.agenda_header' %}', 
     '{% url 'nice.views.popup' %}', 
-    '{% url 'nice.views.notifications' %}', 
     '{% url 'nice.views.event_picker' %}', 
     '{% url 'nice.views.event_picker_item' %}',
     ];
