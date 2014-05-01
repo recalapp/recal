@@ -30,7 +30,8 @@ Alternatives: @user_passes_test(lambda u: u.is_staff) or @permission_required('i
 @xframe_options_exempt # can load in Chrome extension
 def index(request):
     if not request.user.is_authenticated():
-        return redirect('cas_login')
+        return redirect('landing')
+        #return redirect('cas_login')
     if not user_profile_filled_out(request.user):
         return redirect('edit_profile')
     user = request.user.profile
@@ -75,6 +76,8 @@ def index(request):
     return response
 
 def landing(request):
+    if request.user.is_authenticated():
+        return redirect('index')
     return render(request, 'landing/index.html', None)
 
 def logout(request):
