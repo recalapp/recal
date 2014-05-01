@@ -53,6 +53,18 @@
 
 {% block link_or_script_blocking %}
 <base href="{{ base_url }}">
+<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
+<link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'compiled/dashboard.min.css' %}">
+
+{% if is_mobile %}
+<link rel="stylesheet" href="{% static 'css/mobile/sidebar-mobile-addition.css' %}">
+{% endif %}
 
 <!--<script src="{% static 'js/global.js' %}"></script>
 <script src="{% static 'js/dashboard/global.js' %}"></script>-->
@@ -90,18 +102,6 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 {% endblock %}
 
 {% block link_or_script_nonblocking %}
-<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
-<link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}">
-<!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
-<link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
-<link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
-<link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
-
-<link rel="stylesheet" href="{% static 'compiled/dashboard.min.css' %}">
-
-{% if is_mobile %}
-<link rel="stylesheet" href="{% static 'css/mobile/sidebar-mobile-addition.css' %}">
-{% endif %}
 <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'bower_components/jqueryui/ui/minified/jquery-ui.min.js' %}"></script>
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
