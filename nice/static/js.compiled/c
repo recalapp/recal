@@ -1,0 +1,4 @@
+#!/bin/bash
+rm -f dashboard.js dashboard.min.js
+cat ../js/*.js ../js/dashboard/*.js > dashboard.js
+yuicompressor dashboard.js -o dashboard.min.js

@@ -38,7 +38,7 @@ function EP_init(heading, choices)
 
         $.each(choice.buttons, function(index, buttonDict){
             var $button = $('<a>').addClass('white-link-btn').addClass('theme');
-            $button.text(buttonDict.pretty);
+            $button.html(buttonDict.pretty);
             $button.data('value', buttonDict.value);
             $button.on('click', function(ev){
                 ev.preventDefault();
@@ -62,7 +62,8 @@ function EP_init(heading, choices)
        var choice = choices[index];
        $(this).trigger('ep.slid', {
            eventID: choice.eventID,
-           eventDict: choice.eventDict
+           eventDict: choice.eventDict,
+           index: index,
        });
    });
    _EP_updateButtons($ep[0]);

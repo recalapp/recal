@@ -1,5 +1,6 @@
 var NO_TYPES = {
     WARNING: 'alert-warning',
+    INFO: 'alert-info',
 }
 function NO_init()
 {

@@ -6,6 +6,7 @@ var SECTION_MAP_INVERSE;
 
 function init()
 {
+    pinnedIDs = new Set();
     moment.tz.add({
         "zones": {
             "America/New_York": [

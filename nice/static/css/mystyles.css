@@ -26,18 +26,13 @@ body {
     /*background-attachment: fixed;*/
     background: url('/static/images/crossword.png') repeat fixed;
 }
+
 body.dark{
-    background: -webkit-repeating-linear-gradient(3deg, black, black  100px, rgba(10, 10, 10, 1) 100px, rgba(10, 10, 10, 1) 250px);/* For Safari 5.1 to 6.0 */
-    background: -o-repeating-linear-gradient(3deg, black, black  100px, rgba(10, 10, 10, 1) 100px, rgba(10, 10, 10, 1) 250px); /* For Opera 11.1 to 12.0 */
-    background: -moz-repeating-linear-gradient(3deg, black, black  100px, rgba(10, 10, 10, 1) 100px, rgba(10, 10, 10, 1) 250px);/* For Firefox 3.6 to 15 */
-    background: repeating-linear-gradient(3deg, black, black  100px, rgba(10, 10, 10, 1) 100px, rgba(10, 10, 10, 1) 250px);/* Standard syntax */
-    background-attachment: fixed;
-}
-body.dark{
-    background-color:black;
-    background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px), radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px), radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px), radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 30px);
-    background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px; 
-    background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+    /*background-color:black;
+    /*background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px), radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px), radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px), radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 30px);
+    /*background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px; 
+    /*background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;*/
+    background: url('/static/images/dark_fish_skin.png') repeat fixed;
 }
 
 .slide {

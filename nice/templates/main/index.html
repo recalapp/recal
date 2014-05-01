@@ -92,6 +92,7 @@ var THEME = '{{ theme }}';
 AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 {% endif %}
 
+
 </script>
 {% endblock %}
 
@@ -104,7 +105,7 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 <script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
 <script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
-<script src="{% static 'js/set.js' %}"></script>
+<!--<script src="{% static 'js/set.js' %}"></script>
 <script src="{% static 'js/actionsheet.js' %}"></script>
 <script src="{% static 'js/segmented_control.js' %}"></script>
 <script src="{% static 'js/segmented_control_multi.js' %}"></script>
@@ -129,4 +130,6 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 <script src="{% static 'js/dashboard/unapproved-revisions.js' %}"></script>
 <script src="{% static 'js/event-picker.js' %}"></script>
 <script src="{% static 'js/dashboard/similar-events.js' %}"></script>
+-->
+<script src="{% static 'js.compiled/dashboard.min.js' %}"></script>
 {% endblock %}
