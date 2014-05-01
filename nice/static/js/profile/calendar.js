@@ -1,3 +1,4 @@
+
 function Cal_init() {
     if (CAL_INIT)
         return;
@@ -23,13 +24,19 @@ function Cal_reload()
     Cal_eventSource.events = [];
     $.each(eventIDs, function(index){
         eventDict = EventsMan_getEventByID(this);
+        section_color = SECTION_COLOR_MAP[eventDict.section_id];
+        var color;
+        if (section_color)
+            color = section_color['color'];
+        else
+            color = getUsableColor();
         Cal_eventSource.events.push({
             id: eventDict.event_id,
             title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
             start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
             end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
-            backgroundColor: '#123456', // SECTION_COLOR_MAP[eventDict.section_id]['color'],
-            borderColor: '#123456' // SECTION_COLOR_MAP[eventDict.section_id]['color']
+            backgroundColor: color,
+            borderColor: color //'#123456' 
         });
     });
     var start = moment.unix(CUR_SEM.start_date);

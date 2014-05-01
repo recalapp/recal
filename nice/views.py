@@ -300,6 +300,11 @@ def sections_json(request):
     ret = queries.get_sections(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+def default_section_colors_json(request):
+    netid = request.user.username
+    ret = queries.get_default_colors(netid)
+    return HttpResponse(json.dumps(ret), content_type='application/javascript')
+
 def section_colors_json(request):
     netid = request.user.username
     ret = queries.get_section_colors(netid)

@@ -1,3 +1,6 @@
+var DEFAULT_SECTION_COLORS;
+var USABLE_COLORS = [];
+
 $(init)
 
 function init()
@@ -59,7 +62,10 @@ function init()
     UP_init();
 
     SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
+    DEFAULT_SECTION_COLORS = JSON.parse(CacheMan_load('/get/default-section-colors'));
+    usableColor_init();
 }
+
 function enableAllInteractions()
 {
 }
@@ -79,4 +85,33 @@ function sameOrigin(url) {
         (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
         // or any other URL that isn't scheme relative or absolute i.e relative.
         !(/^(\/\/|http:|https:).*/.test(url));
+}
+
+function usableColor_init() {
+    $.each(DEFAULT_SECTION_COLORS, function(index, color) {
+        var curr_available = true;
+        $.each(SECTION_COLOR_MAP, function(sec_id, sec_color) {
+            if (sec_color['color'] == color)
+            {
+                curr_available = false;
+                return false;
+            }
+        });
+        if (curr_available)
+        {
+            USABLE_COLORS.push(color);
+        }
+    });
+}
+
+function getUsableColor() {
+    var color = USABLE_COLORS.pop();
+    if (!color)
+    {
+        return DEFAULT_SECTION_COLORS[0];
+    }
+    else
+    {
+        return color;
+    }
 }
