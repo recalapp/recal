@@ -25,7 +25,7 @@ function Cal_reload()
         eventDict = EventsMan_getEventByID(this);
         Cal_eventSource.events.push({
             id: eventDict.event_id,
-            title: CourseMan_getCourseByID(eventDict.course_id).course_listings,
+            title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
             start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
             end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
             backgroundColor: '#123456', // SECTION_COLOR_MAP[eventDict.section_id]['color'],

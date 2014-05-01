@@ -7,10 +7,7 @@ admin.site.register(Event)
 admin.site.register(Event_Group)
 admin.site.register(Event_Group_Revision)
 admin.site.register(Event_Revision)
-admin.site.register(Course)
-admin.site.register(Section)
 admin.site.register(User_Section_Table)
-admin.site.register(Semester)
 
 # Define an inline admin descriptor for UserProfile model
 # which acts a bit like a singleton -- see https://docs.djangoproject.com/en/1.6/topics/auth/customizing/
@@ -31,8 +28,13 @@ class SemesterAdmin(admin.ModelAdmin):
     model = Semester
     list_display = ('term_code', 'start_date', 'end_date', )
 
+class CourseListingInline(admin.StackedInline):
+    model = Course_Listing
+    can_delete = False
+
 class CourseAdmin(admin.ModelAdmin):
     model = Course
+    inlines = (CourseListingInline, )
     list_display = ('__unicode__', 'title', 'course_listings', )
     list_filter  = ('semester', )
     ordering = ('-title',)
@@ -46,9 +48,6 @@ class SectionAdmin(admin.ModelAdmin):
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-admin.site.unregister(Course)
 admin.site.register(Course, CourseAdmin)
-admin.site.unregister(Semester)
 admin.site.register(Semester, SemesterAdmin)
-admin.site.unregister(Section)
 admin.site.register(Section, SectionAdmin)

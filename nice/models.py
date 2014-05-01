@@ -51,6 +51,13 @@ class Course(models.Model):
 
     course_listings.admin_order_field = 'course_listings'
 
+    # TODO: test this function
+    def primary_listing(self):
+        """
+        returns a string
+        """
+        return unicode(self.course_listing_set.all().get(is_primary=True))
+
     def __unicode__(self):
         return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')]) #+ ' ' + ': ' + self.title
 
