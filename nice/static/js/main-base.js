@@ -1,6 +1,7 @@
 var pinnedIDs = new Set();
 var mainID = null;
 var csrftoken = $.cookie('csrftoken');
+var COURSE_COLOR_MAP;
 var SECTION_COLOR_MAP;
 
 // pinned and main

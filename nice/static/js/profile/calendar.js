@@ -24,12 +24,10 @@ function Cal_reload()
     Cal_eventSource.events = [];
     $.each(eventIDs, function(index){
         eventDict = EventsMan_getEventByID(this);
-        section_color = SECTION_COLOR_MAP[eventDict.section_id];
-        var color;
-        if (section_color)
-            color = section_color['color'];
-        else
-            color = getUsableColor();
+        var color = COURSE_COLOR_MAP[eventDict.course_id];
+        if (!color)
+            color = getUsableColor(eventDict.course_id);
+
         Cal_eventSource.events.push({
             id: eventDict.event_id,
             title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
