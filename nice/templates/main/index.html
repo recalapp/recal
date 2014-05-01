@@ -45,24 +45,27 @@
 
 {% block link_or_script_blocking %}
 <base href="{{ base_url }}">
-<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.min.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}">
 <!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
 <link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
 
+<link rel="stylesheet" href="{% static 'compiled/dashboard.min.css' %}">
+<!--
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
 <link rel="stylesheet" href="{% static 'css/popup.css' %}">
 <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'css/event-picker.css' %}">
 <link rel="stylesheet" href="{% static 'css/actionsheet.css' %}">
-<link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
+-->
 {% if is_mobile %}
-<link rel="stylesheet" href="{% static 'css/sidebar-mobile-addition.css' %}">
+<link rel="stylesheet" href="{% static 'css/mobile/sidebar-mobile-addition.css' %}">
 {% endif %}
 
-<script src="{% static 'js/global.js' %}"></script>
-<script src="{% static 'js/dashboard/global.js' %}"></script>
+<!--<script src="{% static 'js/global.js' %}"></script>
+<script src="{% static 'js/dashboard/global.js' %}"></script>-->
 <script>
 var USER_NETID = '{{ username }}';
 var CACHEMAN_PRELOAD = [
@@ -104,7 +107,7 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 <script src="{% static 'bower_components/fullcalendar/fullcalendar.min.js' %}"></script>
 <script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
-<script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
+<script src="{% static 'bower_components/moment-timezone/min/moment-timezone.min.js' %}"></script>
 <!--<script src="{% static 'js/set.js' %}"></script>
 <script src="{% static 'js/actionsheet.js' %}"></script>
 <script src="{% static 'js/segmented_control.js' %}"></script>
@@ -131,5 +134,5 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 <script src="{% static 'js/event-picker.js' %}"></script>
 <script src="{% static 'js/dashboard/similar-events.js' %}"></script>
 -->
-<script src="{% static 'js.compiled/dashboard.min.js' %}"></script>
+<script src="{% static 'compiled/dashboard.min.js' %}"></script>
 {% endblock %}

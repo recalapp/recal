@@ -2,6 +2,7 @@ $(init)
 
 function init()
 {
+    pinnedIDs = new Set();
     moment.tz.add({
         "zones": {
             "America/New_York": [
