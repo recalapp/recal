@@ -144,6 +144,8 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setID(popUp, id);
     var eventDict;
     $(popUp).find('.unsaved').removeClass('unsaved');
+    //$(popUp).find('.withcustompicker').off('hidden.bs.popover');
+    //$(popUp).find('.withcustompicker').popover('destroy');
     if (EventsMan_hasUncommitted(id))
     {
         eventDict = EventsMan_getUncommitted(id);
