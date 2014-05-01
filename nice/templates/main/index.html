@@ -41,6 +41,14 @@
         </div>
     </div>
 </div>
+
+<div id='agenda-template' class='hide'>
+{% include 'main/agenda.html' %}
+</div>
+<div id='popup-template' class='hide'>
+{% include 'main/popup.html' %}
+</div>
+
 {% endblock %}
 
 {% block link_or_script_blocking %}
@@ -70,8 +78,6 @@
 var USER_NETID = '{{ username }}';
 var CACHEMAN_PRELOAD = [
     /* '{% url 'nice.views.all_sections' %}', */ // executed way too early
-    '{% url 'nice.views.agenda' %}', 
-    '{% url 'nice.views.popup' %}', 
     '{% url 'nice.views.event_picker' %}', 
     '{% url 'nice.views.event_picker_item' %}',
     '{% url 'nice.views.section_colors_json' %}',

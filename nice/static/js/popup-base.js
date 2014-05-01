@@ -1,5 +1,6 @@
 // REQUIRES UI module - isMain, isPinned, etc.
 // REQUIRES SB module
+var POPUP_HTML = null;
 var POPUP_CLASS = 'popup';
 var POPUP_URL = 'popup-template';
 var PopUp_closeListeners = [];
@@ -50,7 +51,11 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
 
 function PopUp_insertPopUp(isMain)
 {
-    var popUpHTML = CacheMan_load(POPUP_URL);
+    var popUpHTML;
+    if (POPUP_HTML)
+        popUpHTML = POPUP_HTML;
+    else
+        popUpHTML = CacheMan_load(POPUP_URL);
     if (isMain)
         SB_push(popUpHTML);
     else

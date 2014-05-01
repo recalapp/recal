@@ -693,6 +693,7 @@ function loadDarkTheme()
 }
 // REQUIRES UI module - isMain, isPinned, etc.
 // REQUIRES SB module
+var POPUP_HTML = null;
 var POPUP_CLASS = 'popup';
 var POPUP_URL = 'popup-template';
 var PopUp_closeListeners = [];
@@ -743,7 +744,11 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
 
 function PopUp_insertPopUp(isMain)
 {
-    var popUpHTML = CacheMan_load(POPUP_URL);
+    var popUpHTML;
+    if (POPUP_HTML)
+        popUpHTML = POPUP_HTML;
+    else
+        popUpHTML = CacheMan_load(POPUP_URL);
     if (isMain)
         SB_push(popUpHTML);
     else
@@ -1298,6 +1303,7 @@ function SB_callWillCloseListeners()
     });
 }
 AGENDA_INIT = false;
+var AGENDA_HTML = null;
 
 /***************************************************
  * Initialization/State Restoration
@@ -1307,6 +1313,10 @@ function Agenda_init() {
     if (AGENDA_INIT)
         return;
     AGENDA_INIT = true;
+
+    AGENDA_HTML = $('#agenda-template').html();
+    $('#agenda-template').remove();
+
     EventsMan_addUpdateListener(function(){
         Agenda_reload();
     });
@@ -1424,7 +1434,8 @@ function Agenda_loadEvents(eventIDs)
         var eventDict = EventsMan_getEventByID(this);
         if (!eventDict)
             return;
-        agendaContainer.append(CacheMan_load("agenda-template"));
+        //agendaContainer.append(CacheMan_load("agenda-template"));
+        agendaContainer.append($(AGENDA_HTML));
         var agenda = agendaContainer.find("#agenda123")[0];
         agenda.id = this;
         
@@ -2340,7 +2351,9 @@ function PopUp_init()
     if (POPUP_INIT)
         return;
     POPUP_INIT = true;
-
+    POPUP_HTML = $('#popup-template').html();
+    $('#popup-template').remove();
+    
     var oldMouseStart = $.ui.draggable.prototype._mouseStart;
     $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
         this._trigger("beforeStart", event, this._uiHash());
