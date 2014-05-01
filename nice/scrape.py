@@ -143,7 +143,14 @@ def parse_course(course, subject):
 def create_or_update_listings(course, subject, course_object):
     sub = subject.find('code').text
     catalog = course.find('catalog_number').text
-    course_listings = [(sub, catalog)]
+    new_listing, created = Course_Listing.objects.get_or_create(
+        course=course_object,
+        dept=sub,
+        number=catalog,
+        is_primary=True
+    )
+
+    course_listings = []
     if course.find('crosslistings') is not None:
         for cross_listing in course.find('crosslistings'):
             course_listings.append((cross_listing.find('subject').text, cross_listing.find('catalog_number').text))
@@ -153,7 +160,8 @@ def create_or_update_listings(course, subject, course_object):
         new_listing, created = Course_Listing.objects.get_or_create(
             course=course_object,
             dept=course_listing[0],
-            number=course_listing[1]
+            number=course_listing[1],
+            is_primary=False
         )
         
 def create_or_update_sections(course, course_object):

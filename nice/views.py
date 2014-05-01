@@ -39,7 +39,7 @@ def index(request):
         ui_sr = json.loads(user.ui_state_restoration)
         if 'nav_page' in ui_sr:
             page = ui_sr['nav_page']
-    agenda_pref = ['AS', 'RS', 'EX']
+    agenda_pref = ['AS', 'RS', 'EX', 'LE', 'LA', 'OH', 'PR']
     if user.ui_agenda_pref:
         agenda_pref = json.loads(user.ui_agenda_pref)
     calendar_pref = ['RS', 'EX', 'LE', 'LA', 'OH', 'PR']
@@ -84,22 +84,12 @@ def popup_course(request):
     return render(request, 'main/popup-course.html', None)
 def agenda(request):
     return render(request, 'main/agenda.html', None)
-def agenda_header(request):
-    return render(request, 'main/agenda-header.html', None)
-def typepicker(request):
-    return render(request, 'main/type-picker.html', None)
-def sectionpicker(request):
-    return render(request, 'main/section-picker.html', { 'all_sections': request.user.profile.sections.all() })
-def notifications(request):
-    return render(request, 'main/notifications.html', None)
 def event_picker(request):
     return render(request, 'main/event-picker.html', None)
 def event_picker_item(request):
     return render(request, 'main/event-picker-item.html', None)
 def course(request):
     return render(request, 'main/course.html', None)
-def loading(request):
-    return render(request, 'main/loading.html', None)
 
 @login_required
 def edit_profile_manual(request):

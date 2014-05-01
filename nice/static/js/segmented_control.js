@@ -25,15 +25,33 @@ function SC_initWithChoices(heading, choices)
     return $container[0];
 }
 
+function SC_setToChoices(sc, choices)
+{
+    $(sc).find('button').each(function(index){
+        for (var i = 0; i < choices.length; i++) {
+            var choice = choices[i];
+            if (choice.value == $(this).data('value'))
+            {
+                if (choice.selected)
+                    SC_select(this, true);
+                break;
+            }
+        };
+    });
+}
+
 function SC_removeAllFromContainer(container)
 {
     $(container).find('.segmented-control').remove();
 }
 
-function SC_select(button)
+function SC_select(button, silent)
 {
+    silent = silent || false;
     SC_unhighlight($(button).parent().find('.btn-primary'));
     SC_highlight(button);
+    if (silent)
+        return;
     var choices = {};
     $(button).parent().find('.btn').each(function(index){
         choices[$(this).data('value')] = $(this).hasClass('btn-primary')

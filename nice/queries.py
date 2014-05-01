@@ -107,7 +107,6 @@ def modify_events(netid, events, auto_approve=False):
     * deleted_ids array (list of event IDs)
 
     """
-    print events
     try:
         user = User.objects.get(username=netid).profile
     except:
@@ -162,21 +161,16 @@ def modify_events(netid, events, auto_approve=False):
             if last_rev.start_date != new_event_group_rev.start_date or last_rev.end_date != new_event_group_rev.end_date:
                 event_groups_match = False 
             if 'recurring' in event_dict and event_dict['recurring'] is True: # recurrence is enabled in updated event_dict
-                print 'rec1'
                 if last_rev.recurrence_days != json.dumps(event_dict['recurrence_days']):
                     event_groups_match = False
                     recurrence_has_changed = True
-                    print 'rec1.1', last_rev.recurrence_days, json.dumps(event_dict['recurrence_days'])
                 if last_rev.recurrence_interval != new_event_group_rev.recurrence_interval:
                     event_groups_match = False
                     recurrence_has_changed = True
-                    print 'rec1.2'
             elif 'recurring' in event_dict and event_dict['recurring'] is False: # recurrence is disabled in updated event_dict
-                print 'rec2'
                 if last_rev.recurrence_days is not None and len(last_rev.recurrence_days) is not 0:
                     event_groups_match = False
                     recurrence_has_changed = True
-                    print 'rec2.2'
             
             # If we concluded that event groups don't match, save new event group revision
             if not event_groups_match:
@@ -274,22 +268,18 @@ def modify_events(netid, events, auto_approve=False):
         else:
             # This is not a new event group.
             if recurrence_has_changed:
-                print 'recurrence pattern has changed'
                 # Recurrence pattern has changed.
 
                 if last_rev.recurrence_days is None: # no previous recurrence pattern
                     # Make all new events with this same event revision
                     create_new_events(event_dates_starting_tomorrow) # don't make event that matches the original one being edited (i.e. start a day later)
-                    print 'no previous recurrence pattern'
                 else:
-                    print 'recurrence pattern has changed from previous'
                     # Previous recurrence pattern has changed -- need to find the previous-created events and move them
                     # By default, only edit the ones after this event
                     
                     # find and remove old events
                     old_events_pre = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
                     old_events = [r for r in old_events_pre if r.event_start >= event_dict['event_start']]
-                    print 'deleting all events after ', event_dict['event_start']
 
                     for oe in old_events:
                         oe_e = oe.event
@@ -299,11 +289,9 @@ def modify_events(netid, events, auto_approve=False):
                     
                     # recreate events at their new times
                     create_new_events(event_dates)
-                    print 'created events on', event_dates
 
             else:
                 # Recurrence pattern hasn't changed.
-                print "Recurrence pattern hasn't changed."
 
 
                 # Select all future events in this event group (other than this event) (then we overwrite changed fields)
@@ -631,6 +619,7 @@ def get_course_by_id(course_id):
         course_id:
         course_title:
         course_listings:
+        course_primary_listing:
         course_professor:
         course_description:
         sections: {
@@ -655,6 +644,7 @@ def construct_course_dict(course):
         'course_id': course.id,
         'course_title': course.title,
         'course_listings': course.course_listings(),
+        'course_primary_listing': course.primary_listing(),
         'course_professor': course.professor,
         'course_description': course.description,
         'sections': sections_group,

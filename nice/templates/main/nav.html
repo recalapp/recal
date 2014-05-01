@@ -16,7 +16,7 @@
             </h2>
         </div>
         {% else %}
-         <div class="col-xs-5 col-xs-offset-1">
+         <div class="hideWhenSmall col-xs-5 col-xs-offset-1">
              <ul id="maintab" class="nav nav-tabs nav-justified">
                  <li class="{% if nav_page == 0 %} active {% endif %}">
                  <a id="agendatab" class="nav-link" href="#agenda" data-toggle="tab">
@@ -31,24 +31,25 @@
                  </a></li>
              </ul> 
          </div>
-         <div class="col-sm-5 nav_controls"> 
-            <h3 style="display: inline-block">
-                <a href="#" onclick="EventsMan_clickAddEvent();return false;" class="withtooltip" data-toggle="tooltip" data-placement="auto right" title="Add Event">
+         <div id="nav_right" class="col-sm-5 nav_controls"> 
+            
+            <h3 id="user_name" style="display: block">
+            {{formatted_name}}
+            </h3>
+            <h3 id="nav_controls" style="display: block">
+                <a href="#" onclick="EventsMan_clickAddEvent();return false;" class="withtooltip" data-toggle="tooltip" data-placement="auto top" title="Add Event">
                     <span class="glyphicon glyphicon-plus "></span>
                 </a>
-                <a href="{% url 'nice.views.edit_profile' %}" class="withtooltip" data-toggle="tooltip" data-placement="auto right" title="Edit Profile">
+                <a href="{% url 'nice.views.edit_profile' %}" class="withtooltip" data-toggle="tooltip" data-placement="auto top" title="Edit Profile">
                     <span class="glyphicon glyphicon-user"></span>
                 </a>
-                <a title="Settings" data-toggle="modal" class="withtooltip" data-toggle="tooltip" data-placement="auto right" data-target="#settingsModal">
+                <a title="Settings" data-toggle="modal" class="withtooltip" data-toggle="tooltip" data-placement="auto top" data-target="#settingsModal">
                     <span class="glyphicon glyphicon-cog"></span>
                 </a>
-                <a href="/user-logout" data-toggle="tooltip" class="withtooltip" data-placement="auto right" title="Log Out">
+                <a href="/user-logout" data-toggle="tooltip" class="withtooltip" data-placement="auto top" title="Log Out">
                     <span class="glyphicon glyphicon-log-out"></span>
                 </a>
             </h3>
-            <h2 style="display: inline-block">
-            {{formatted_name}}
-            </h2>
         </div>
         {% endif %}
      </div>
