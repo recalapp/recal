@@ -77,6 +77,8 @@ function Cal_init() {
             Cal_unhighlightEvent(this, true);
         });
     });
+    if (Cal_active())
+        Cal_reload();
 }
 function Cal_active()
 {

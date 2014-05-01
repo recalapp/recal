@@ -33,6 +33,7 @@ function Agenda_init() {
     PopUp_addCloseListener(function(id) {
         Agenda_unhighlight($('.tab-content').find('.agenda-item.panel#'+id));
     });
+    Agenda_reload();
 } 
 
 function Agenda_reload()

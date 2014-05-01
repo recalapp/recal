@@ -61,6 +61,7 @@ function init()
     $.each(SECTION_MAP, function (key, value) {
         SECTION_MAP_INVERSE[value.toLowerCase()] = key;
     });
+    SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
     
     SB_init();
     SR_init();
@@ -92,7 +93,6 @@ function init()
     else
         loadDarkTheme();
 
-    SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
     $('.withtooltip').tooltip({
     });
 }

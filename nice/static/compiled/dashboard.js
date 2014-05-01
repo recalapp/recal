@@ -517,6 +517,28 @@ function EventsMan_cloneEventDict(eventDict)
     var newDict = JSON.parse(JSON.stringify(eventDict)) // hack for cloning
     return newDict;
 }
+
+function EventsMan_save()
+{
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        localStorage.setItem('eventsman.events', JSON.stringify(eventsManager.events));
+        localStorage.setItem('eventsman.lastsyncedtime', eventsManager.lastSyncedTime);
+    }
+}
+
+function EventsMan_load()
+{
+    if (!('localStorage' in window && window['localStorage'] !== null))
+        return false;
+    var events = localStorage.getItem('eventsman.events');
+    if (!events)
+        return false;
+    eventsManager.events = JSON.parse(events);
+    eventsManager.lastSyncedTime = localStorage.getItem('eventsman.lastsyncedtime');
+    EventsMan_constructOrderArray();
+    return true;
+}
 var MAIN_TIMEZONE = 'America/New_York';
 var DAYS_DICT = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'S'];
 var TYPE_MAP_INVERSE = {
@@ -1338,6 +1360,7 @@ function Agenda_init() {
     PopUp_addCloseListener(function(id) {
         Agenda_unhighlight($('.tab-content').find('.agenda-item.panel#'+id));
     });
+    Agenda_reload();
 } 
 
 function Agenda_reload()
@@ -1637,6 +1660,8 @@ function Cal_init() {
             Cal_unhighlightEvent(this, true);
         });
     });
+    if (Cal_active())
+        Cal_reload();
 }
 function Cal_active()
 {
@@ -1731,9 +1756,8 @@ function EventsMan_init()
         return;
     EVENTS_INIT = true;
     eventsManager = new _EventsMan_new();
-    if (typeof EVENTSMAN_PRELOAD != 'undefined')
+    if (EventsMan_load())
     {
-        EventsMan_processDownloadedEvents(JSON.parse(EVENTSMAN_PRELOAD));
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
         _EventsMan_callUpdateListeners();
@@ -1859,6 +1883,7 @@ function EventsMan_init()
             return 'Your changes have not been saved. Are you sure you want to leave?';
         }
         EventsMan_pushToServer(false);
+        EventsMan_save();
     });
 
     window.setInterval(function(){
@@ -2150,6 +2175,7 @@ function init()
     $.each(SECTION_MAP, function (key, value) {
         SECTION_MAP_INVERSE[value.toLowerCase()] = key;
     });
+    SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
     
     SB_init();
     SR_init();
@@ -2181,7 +2207,6 @@ function init()
     else
         loadDarkTheme();
 
-    SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
     $('.withtooltip').tooltip({
     });
 }

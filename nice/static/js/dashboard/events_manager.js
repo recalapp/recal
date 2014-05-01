@@ -6,9 +6,8 @@ function EventsMan_init()
         return;
     EVENTS_INIT = true;
     eventsManager = new _EventsMan_new();
-    if (typeof EVENTSMAN_PRELOAD != 'undefined')
+    if (EventsMan_load())
     {
-        EventsMan_processDownloadedEvents(JSON.parse(EVENTSMAN_PRELOAD));
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
         _EventsMan_callUpdateListeners();
@@ -134,6 +133,7 @@ function EventsMan_init()
             return 'Your changes have not been saved. Are you sure you want to leave?';
         }
         EventsMan_pushToServer(false);
+        EventsMan_save();
     });
 
     window.setInterval(function(){

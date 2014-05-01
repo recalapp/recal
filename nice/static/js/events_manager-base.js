@@ -337,3 +337,25 @@ function EventsMan_cloneEventDict(eventDict)
     var newDict = JSON.parse(JSON.stringify(eventDict)) // hack for cloning
     return newDict;
 }
+
+function EventsMan_save()
+{
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        localStorage.setItem('eventsman.events', JSON.stringify(eventsManager.events));
+        localStorage.setItem('eventsman.lastsyncedtime', eventsManager.lastSyncedTime);
+    }
+}
+
+function EventsMan_load()
+{
+    if (!('localStorage' in window && window['localStorage'] !== null))
+        return false;
+    var events = localStorage.getItem('eventsman.events');
+    if (!events)
+        return false;
+    eventsManager.events = JSON.parse(events);
+    eventsManager.lastSyncedTime = localStorage.getItem('eventsman.lastsyncedtime');
+    EventsMan_constructOrderArray();
+    return true;
+}
