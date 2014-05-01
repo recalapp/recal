@@ -63,6 +63,7 @@ class Course_Listing(models.Model):
     # Even though the max_length should be 3~4, there are extreme cases.
     dept = models.CharField(max_length=10)
     number = models.CharField(max_length=10)
+    is_primary = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.dept + ' ' + self.number
