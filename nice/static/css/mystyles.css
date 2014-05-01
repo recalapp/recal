@@ -19,11 +19,12 @@ body {
     
     /*background-color: #f5faff;*/
     padding-top: 110px;
-    background: -webkit-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Safari 5.1 to 6.0 */
-    background: -o-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px); /* For Opera 11.1 to 12.0 */
-    background: -moz-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Firefox 3.6 to 15 */
-    background: repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* Standard syntax */
-    background-attachment: fixed;
+    /*background: -webkit-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Safari 5.1 to 6.0 */
+    /*background: -o-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px); /* For Opera 11.1 to 12.0 */
+    /*background: -moz-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Firefox 3.6 to 15 */
+    /*background: repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* Standard syntax */
+    /*background-attachment: fixed;*/
+    background: url('/static/images/crossword.png') repeat fixed;
 }
 body.dark{
     background: -webkit-repeating-linear-gradient(3deg, black, black  100px, rgba(10, 10, 10, 1) 100px, rgba(10, 10, 10, 1) 250px);/* For Safari 5.1 to 6.0 */

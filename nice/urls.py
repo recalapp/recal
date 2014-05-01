@@ -50,6 +50,7 @@ urlpatterns = patterns('',
     url(r'^debug/su_login$', views.login_admin, name="login_admin"),
     url(r'^testform$', views.contact_us, name="test_form"),
     url(r'^testform2$', views.form_test_two, name="test_form2"),
+    url(r'^landing$', views.landing, name="landing"),
 )
 
 if settings.DEBUG:

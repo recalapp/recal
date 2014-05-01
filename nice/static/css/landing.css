@@ -1,0 +1,70 @@
+body{
+    padding: 0;
+}
+.main-body{
+    height: 100vh;
+    position: relative;
+}
+.main-body.alternate{
+    background-color: white;
+}
+#login-nav-item{
+    opacity: 1;
+    -webkit-transition: opacity 0.5s linear, margin-left 0.5s ease-in-out;
+    transition: opacity 0.5s linear, margin-left 0.5s ease-in-out;
+}
+#login-nav-item.active{
+    opacity: 0;
+    margin-left: -100px;
+}
+#login_button{
+    max-width: 40vh;
+    min-width: 30vh;
+}
+#login_button:not(.btn-primary){
+    display: block;
+
+}
+#login-container{
+    padding-top: 70vh;
+    margin-left: 20px;
+    margin-right: 20px;
+    text-align: center;
+}
+.big-img{
+    height: 90vh;
+    margin-top: 5vh;
+}
+.big-img.left{
+    margin-left: -5%;
+}
+.big-img.right{
+    margin-left: 30%;
+}
+.content{
+    width: 60%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    padding-top: 15vh;
+}
+.content.right{
+    right: 0;
+    text-align: right;
+    padding-left: 30%;
+    padding-right: 40px;
+    background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), white 40%);
+    background: linear-gradient(left, red, blue 100px, green 200px);
+}
+.content.left{
+    left: 0;
+    text-align: left;
+    padding-right: 30%;
+    padding-left: 40px;
+    background: -webkit-linear-gradient(right, rgba(255, 255, 255, 0), white 40%);
+    background: linear-gradient(right, red, blue 100px, green 200px);
+}
+
+#about.main-body{
+    padding-top: 15vh;
+}

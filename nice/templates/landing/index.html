@@ -1,0 +1,114 @@
+{% extends 'landing/base.html' %}
+{% load staticfiles %}
+
+{% block title %}ReCal - Rethinking Calendar{% endblock %}
+
+{% block main_content %}
+{% include 'landing/nav.html' %}
+
+
+<div id="login" class="main-body">
+    <div id="login-container">
+        <a id="login_button" class="btn btn-primary">
+            <h2>Log in</h2>
+        </a>
+    </div>
+</div>
+
+<div id="calendar" class="main-body alternate">
+    <img class="big-img right" src="{% static 'images/calendar.png' %}">
+    <div class="content left">
+        <h2>Your Calendar, Reimagined</h2>
+        <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        </p>
+    </div>
+</div>
+
+<div id="agenda" class="main-body" >
+    <img class="big-img left" src="{% static 'images/agenda.png' %}">
+    <div class="content right">
+        <h2>Your Agenda, Recalled</h2>
+        <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        </p>
+    </div>
+</div>
+
+
+<div id="about" class="main-body alternate">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-5 col-xs-offset-1">
+                <h2>The Original ReCal Team</h2>
+                <br>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                <div class="thumbnail">
+                    <img data-src="holder.js/300x200" alt="...">
+                    <div class="caption">
+                        <h4>Travis Perlee</h4>
+                        <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="thumbnail">
+                    <img data-src="holder.js/300x200" alt="...">
+                    <div class="caption">
+                        <h4>Naphat Sanguansin</h4>
+                        <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="thumbnail">
+                    <img data-src="holder.js/300x200" alt="...">
+                    <div class="caption">
+                        <h4>Dyland Xue</h4>
+                        <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="thumbnail">
+                    <img data-src="holder.js/300x200" alt="...">
+                    <div class="caption">
+                        <h4>Maxim Zaslavsky</h4>
+                        <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
+
+{% block link_or_script_blocking %}
+<base href="{{ base_url }}">
+<link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+{% endblock %}
+
+{% block link_or_script_nonblocking %}
+<script src="{% static 'bower_components/holderjs/holder.js' %}"></script>
+<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+{% endblock %}
+
