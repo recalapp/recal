@@ -609,6 +609,7 @@ function LO_getLoadingHTML()
 var pinnedIDs = null;
 var mainID = null;
 var csrftoken = $.cookie('csrftoken');
+var COURSE_COLOR_MAP;
 var SECTION_COLOR_MAP;
 
 // pinned and main
@@ -3337,7 +3338,7 @@ function SE_showSimilarEvents(eventID, similarEvents)
 }
 var SR_willSaveListeners = []
 var SR_didLoadListeners = []
-var SR_ON = false;
+var SR_ON = true;
 var SR_manager = {}
 var SR_loaded = false;
 
@@ -3376,7 +3377,8 @@ function SR_load()
 
 function SR_save()
 {
-    return;
+    if (!SR_ON)
+        return;
     SR_callWillSaveListeners();
     $.ajax('put/state-restoration', {
         dataType: 'json',
