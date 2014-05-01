@@ -263,3 +263,24 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 .modal-backdrop{
     z-index: 100000;
 }
+#nav_controls{
+    display: block;
+    margin-top: 0;
+}
+#user_name{
+    display: block;
+}
+@media screen and (max-width: 768px)
+{
+    .hideWhenSmall
+    {
+        visibility: hidden;
+        width: 0;
+        height: 0;
+    }
+    #nav_right
+    {
+        width: 100%;
+    }
+}
+
