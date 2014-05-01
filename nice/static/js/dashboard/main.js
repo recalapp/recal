@@ -95,6 +95,12 @@ function init()
 
     $('.withtooltip').tooltip({
     });
+    $(window).on('beforeunload', function(ev){
+        if ('localStorage' in window && window['localStorage'] !== null)
+        {
+            localStorage.setItem('user', USER_NETID);
+        }
+    });
 }
 
 function Nav_save()

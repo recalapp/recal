@@ -29,12 +29,23 @@ function SR_load()
 {
     if (!SR_ON)
         return;
-    $.get('get/state-restoration', null, function (data, textStatus, jqXHR) {
-        if (data != '')
-            SR_manager = data;
-        SR_loaded = true;
-        SR_callDidLoadListeners();
-    }, 'json');
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        var stored = localStorage.getItem('state-restoration');
+        var user = localStorage.getItem('user');
+        if (user == USER_NETID && stored)
+        {
+            SR_manager = JSON.parse(stored);
+        }
+    }
+    SR_loaded = true;
+    SR_callDidLoadListeners();
+    //$.get('get/state-restoration', null, function (data, textStatus, jqXHR) {
+    //    if (data != '')
+    //        SR_manager = data;
+    //    SR_loaded = true;
+    //    SR_callDidLoadListeners();
+    //}, 'json');
 }
 
 function SR_save()
@@ -42,14 +53,19 @@ function SR_save()
     if (!SR_ON)
         return;
     SR_callWillSaveListeners();
-    $.ajax('put/state-restoration', {
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        localStorage.setItem('state-restoration', JSON.stringify(SR_manager));
+    }
+
+    /*$.ajax('put/state-restoration', {
         dataType: 'json',
         type: 'POST',
         data: {
             state_restoration: JSON.stringify(SR_manager),
         }, 
         async: false,
-    });
+    });*/
 }
 
 function SR_addWillSaveListener(listener)

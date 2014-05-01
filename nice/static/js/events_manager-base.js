@@ -344,6 +344,7 @@ function EventsMan_save()
     {
         localStorage.setItem('eventsman.events', JSON.stringify(eventsManager.events));
         localStorage.setItem('eventsman.lastsyncedtime', eventsManager.lastSyncedTime);
+        localStorage.setItem('eventsman.hidden', JSON.stringify(eventsManager.hiddenIDs.toArray()));
     }
 }
 
@@ -351,11 +352,19 @@ function EventsMan_load()
 {
     if (!('localStorage' in window && window['localStorage'] !== null))
         return false;
+    var user = localStorage.getItem('user');
+    if (user != USER_NETID)
+        return false;
     var events = localStorage.getItem('eventsman.events');
     if (!events)
         return false;
     eventsManager.events = JSON.parse(events);
-    eventsManager.lastSyncedTime = localStorage.getItem('eventsman.lastsyncedtime');
+    var hidden = localStorage.getItem('eventsman.hidden');
+    if (hidden)
+        eventsManager.hiddenIDs = Set.prototype.fromArray(JSON.parse(hidden));
+    var time = localStorage.getItem('eventsman.lastsyncedtime');
+    if (time)
+        eventsManager.lastSyncedTime = time;
     EventsMan_constructOrderArray();
     return true;
 }

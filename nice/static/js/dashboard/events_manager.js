@@ -11,6 +11,7 @@ function EventsMan_init()
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
         _EventsMan_callUpdateListeners();
+        EventsMan_pullFromServer();
     }
     else
     {

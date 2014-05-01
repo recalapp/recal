@@ -524,6 +524,7 @@ function EventsMan_save()
     {
         localStorage.setItem('eventsman.events', JSON.stringify(eventsManager.events));
         localStorage.setItem('eventsman.lastsyncedtime', eventsManager.lastSyncedTime);
+        localStorage.setItem('eventsman.hidden', JSON.stringify(eventsManager.hiddenIDs.toArray()));
     }
 }
 
@@ -531,11 +532,19 @@ function EventsMan_load()
 {
     if (!('localStorage' in window && window['localStorage'] !== null))
         return false;
+    var user = localStorage.getItem('user');
+    if (user != USER_NETID)
+        return false;
     var events = localStorage.getItem('eventsman.events');
     if (!events)
         return false;
     eventsManager.events = JSON.parse(events);
-    eventsManager.lastSyncedTime = localStorage.getItem('eventsman.lastsyncedtime');
+    var hidden = localStorage.getItem('eventsman.hidden');
+    if (hidden)
+        eventsManager.hiddenIDs = Set.prototype.fromArray(JSON.parse(hidden));
+    var time = localStorage.getItem('eventsman.lastsyncedtime');
+    if (time)
+        eventsManager.lastSyncedTime = time;
     EventsMan_constructOrderArray();
     return true;
 }
@@ -1761,6 +1770,7 @@ function EventsMan_init()
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
         _EventsMan_callUpdateListeners();
+        EventsMan_pullFromServer();
     }
     else
     {
@@ -2208,6 +2218,12 @@ function init()
         loadDarkTheme();
 
     $('.withtooltip').tooltip({
+    });
+    $(window).on('beforeunload', function(ev){
+        if ('localStorage' in window && window['localStorage'] !== null)
+        {
+            localStorage.setItem('user', USER_NETID);
+        }
     });
 }
 
@@ -3392,12 +3408,23 @@ function SR_load()
 {
     if (!SR_ON)
         return;
-    $.get('get/state-restoration', null, function (data, textStatus, jqXHR) {
-        if (data != '')
-            SR_manager = data;
-        SR_loaded = true;
-        SR_callDidLoadListeners();
-    }, 'json');
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        var stored = localStorage.getItem('state-restoration');
+        var user = localStorage.getItem('user');
+        if (user == USER_NETID && stored)
+        {
+            SR_manager = JSON.parse(stored);
+        }
+    }
+    SR_loaded = true;
+    SR_callDidLoadListeners();
+    //$.get('get/state-restoration', null, function (data, textStatus, jqXHR) {
+    //    if (data != '')
+    //        SR_manager = data;
+    //    SR_loaded = true;
+    //    SR_callDidLoadListeners();
+    //}, 'json');
 }
 
 function SR_save()
@@ -3405,14 +3432,19 @@ function SR_save()
     if (!SR_ON)
         return;
     SR_callWillSaveListeners();
-    $.ajax('put/state-restoration', {
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        localStorage.setItem('state-restoration', JSON.stringify(SR_manager));
+    }
+
+    /*$.ajax('put/state-restoration', {
         dataType: 'json',
         type: 'POST',
         data: {
             state_restoration: JSON.stringify(SR_manager),
         }, 
         async: false,
-    });
+    });*/
 }
 
 function SR_addWillSaveListener(listener)
