@@ -3365,6 +3365,7 @@ function SR_load()
 
 function SR_save()
 {
+    return;
     SR_callWillSaveListeners();
     $.ajax('put/state-restoration', {
         dataType: 'json',
