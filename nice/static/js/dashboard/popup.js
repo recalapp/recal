@@ -355,12 +355,12 @@ function PopUp_setEndTime(popUp, unixTime)
 }
 function PopUp_setColor(popUp, color)
 {
-    if (!($(popUp).find('.panel').data('my-color')))
-    {
-        $(popUp).find('.panel').data('my-color', color);
-    }
+    //if (!($(popUp).find('.panel').data('my-color')))
+    //{
+    $(popUp).find('.panel').data('my-color', color);
+    //}
 
-    color = $(popUp).find('.panel').data('my-color');
+    // color = $(popUp).find('.panel').data('my-color');
 
     // TODO: bad idea to hardwire the default color?
     var defaultBorder = '#DDDDDD';
