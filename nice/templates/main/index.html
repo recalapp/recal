@@ -76,12 +76,13 @@
 <script src="{% static 'js/dashboard/global.js' %}"></script>-->
 <script>
 var USER_NETID = '{{ username }}';
-var CACHEMAN_PRELOAD = [
+var CACHEMAN_PRELOAD = {
     /* '{% url 'nice.views.all_sections' %}', */ // executed way too early
-    '{% url 'nice.views.event_picker' %}', 
+    '/all-sections' : '{% autoescape off %}{{ all_sections }}{% endautoescape %} ',
+    /*'{% url 'nice.views.event_picker' %}', 
     '{% url 'nice.views.event_picker_item' %}',
-    '{% url 'nice.views.section_colors_json' %}',
-    ];
+    '{% url 'nice.views.section_colors_json' %}',*/
+    };
 var AGENDA_FILTER = [
     {% for type in agenda_pref %}
     '{{ type }}',

@@ -51,6 +51,10 @@ def index(request):
 
     cur_sem = get_cur_semester()
 
+    all_sections = {}
+    for section in request.user.profile.sections.all():
+        all_sections[section.id] = unicode(section)
+
     return render(request, "main/index.html", {
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
@@ -65,6 +69,7 @@ def index(request):
         },
         'theme': theme,
         'base_url': request.build_absolute_uri(),
+        'all_sections': json.dumps(all_sections),
         })
     response.set_cookie('netid', request.user.username)
     return response
