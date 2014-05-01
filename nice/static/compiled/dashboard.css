@@ -332,6 +332,7 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     .hideWhenSmall
     {
         visibility: hidden;
+        display: none;
         width: 0;
         height: 0;
     }
@@ -427,9 +428,6 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 #sidebar.in{
     right: -53.3333333%; /* 80% * 2/3; only 1/3 is shown */
 }
-#sidebar.in.mobile{
-    right: 0;
-}
 #sidebar.full.in{
     right: 0;
 }
@@ -484,4 +482,18 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 }
 #sb-handle.dark:hover{
     background-color: rgb(100, 100, 100);
+}
+
+@media (max-width: 768px)
+{
+    #sidebar.in{
+        right: -26.6666667%;
+    }
+}
+
+@media (max-width: 400px)
+{
+    #sidebar.in{
+        right: 0;
+    }
 }

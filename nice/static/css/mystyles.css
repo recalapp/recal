@@ -270,6 +270,7 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     .hideWhenSmall
     {
         visibility: hidden;
+        display: none;
         width: 0;
         height: 0;
     }
