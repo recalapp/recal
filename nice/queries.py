@@ -593,6 +593,20 @@ def get_sections(netid):
         sections_array.append(section.id)
     return ret
 
+def get_default_colors(netid):
+    """
+    returns:
+    {
+        index: color
+    }
+    """
+    ret = {}
+    i = 0
+    for color_pair in User_Section_Table.COLOR_CHOICES:
+        ret[i] = color_pair[0]
+        i += 1
+    return ret
+
 def get_section_colors(netid):
     """
     returns:

@@ -15,6 +15,7 @@ CourseManager.prototype.queries = {};
 
 var courseManager = null;
 var CourseMan_updateListeners = [];
+var DEFAULT_SECTION_COLORS;
 
 function CourseMan_init()
 {
