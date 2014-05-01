@@ -65,7 +65,16 @@
 <script src="{% static 'js/dashboard/global.js' %}"></script>
 <script>
 var USER_NETID = '{{ username }}';
-var CACHEMAN_PRELOAD = ['{% url 'nice.views.all_sections' %}','{% url 'nice.views.agenda' %}', '{% url 'nice.views.popup' %}', '{% url 'nice.views.agenda_header' %}', '{% url 'nice.views.notifications' %}', '{% url 'nice.views.event_picker' %}', '{% url 'nice.views.event_picker_item' %}', '{% url 'nice.views.loading' %}'];
+var CACHEMAN_PRELOAD = [
+    '{% url 'nice.views.loading' %}',
+    '{% url 'nice.views.all_sections' %}',
+    '{% url 'nice.views.agenda' %}', 
+    '{% url 'nice.views.agenda_header' %}', 
+    '{% url 'nice.views.popup' %}', 
+    '{% url 'nice.views.notifications' %}', 
+    '{% url 'nice.views.event_picker' %}', 
+    '{% url 'nice.views.event_picker_item' %}',
+    ];
 var AGENDA_FILTER = [
     {% for type in agenda_pref %}
     '{{ type }}',
