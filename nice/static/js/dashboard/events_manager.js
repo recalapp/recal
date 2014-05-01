@@ -6,10 +6,20 @@ function EventsMan_init()
         return;
     EVENTS_INIT = true;
     eventsManager = new _EventsMan_new();
-    EventsMan_pullFromServer(function() {
+    if (typeof EVENTSMAN_PRELOAD != 'undefined')
+    {
+        EventsMan_processDownloadedEvents(JSON.parse(EVENTSMAN_PRELOAD));
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
-    }, true);
+        _EventsMan_callUpdateListeners();
+    }
+    else
+    {
+        EventsMan_pullFromServer(function() {
+            EVENTS_READY = true;
+            EventsMan_callOnReadyListeners();
+        }, true);
+    }
     PopUp_addEditListener(function(id, field, value) {
         if (field == 'event_type')
         {
@@ -241,34 +251,7 @@ function EventsMan_pullFromServer(complete, showLoading)
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
         success: function(data){
-            //var eventsArray = JSON.parse(data);
-            var changed = false;
-            var eventsArray = data.events;
-            for (var i = 0; i < eventsArray.length; i++)
-            {
-                var eventsDict = eventsArray[i];
-                if (eventsDict.event_id in eventsManager.uncommitted)
-                {
-                    // TODO notify user of updates
-                }
-                if (eventsDict.event_id in eventsManager.updatedIDs)
-                {
-                    // TODO don't do anything?
-                }
-                else {
-                    eventsManager.events[eventsDict.event_id] = eventsDict;
-                }
-                changed = true;
-            }
-            var hiddenIDs = Set.prototype.fromArray(data.hidden_events);
-            if (!hiddenIDs.equals(eventsManager.hiddenIDs) && !eventsManager.changed)
-            {
-                eventsManager.hiddenIDs = hiddenIDs; // NOTE ok, since we don't pull until all changes are pushed
-                changed = true;
-            }
-            EventsMan_constructOrderArray();
-            eventsManager.addedCount = 0;
-            eventsManager.lastSyncedTime = moment().unix();
+            var changed = EventsMan_processDownloadedEvents(data);
 
             eventsManager.isIdle = true;
             LO_hide();
@@ -283,6 +266,39 @@ function EventsMan_pullFromServer(complete, showLoading)
             LO_showError(); // TODO should this be shown? this is pulling, not pushing. maybe not important
         },
     });
+}
+
+function EventsMan_processDownloadedEvents(data)
+{
+    //var eventsArray = JSON.parse(data);
+    var changed = false;
+    var eventsArray = data.events;
+    for (var i = 0; i < eventsArray.length; i++)
+    {
+        var eventsDict = eventsArray[i];
+        if (eventsDict.event_id in eventsManager.uncommitted)
+        {
+            // TODO notify user of updates
+        }
+        if (eventsDict.event_id in eventsManager.updatedIDs)
+        {
+            // TODO don't do anything?
+        }
+        else {
+            eventsManager.events[eventsDict.event_id] = eventsDict;
+        }
+        changed = true;
+    }
+    var hiddenIDs = Set.prototype.fromArray(data.hidden_events);
+    if (!hiddenIDs.equals(eventsManager.hiddenIDs) && !eventsManager.changed)
+    {
+        eventsManager.hiddenIDs = hiddenIDs; // NOTE ok, since we don't pull until all changes are pushed
+        changed = true;
+    }
+    EventsMan_constructOrderArray();
+    eventsManager.addedCount = 0;
+    eventsManager.lastSyncedTime = moment().unix();
+    return changed;
 }
 
 /***************************************************

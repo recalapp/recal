@@ -1,4 +1,4 @@
-var pinnedIDs = new Set();
+var pinnedIDs = null;
 var mainID = null;
 var csrftoken = $.cookie('csrftoken');
 var SECTION_COLOR_MAP;
