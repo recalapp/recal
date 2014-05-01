@@ -9,11 +9,11 @@ function CacheMan_init()
     cacheManager = new _CacheMan();
     if (typeof CACHEMAN_PRELOAD != 'undefined')
     {
-        setTimeout(function(){
+        function(){
             for (var i = 0; i < CACHEMAN_PRELOAD.length; i++) {
-                _CacheMan_cacheURL(CACHEMAN_PRELOAD[i], false);
+                _CacheMan_cacheURL(CACHEMAN_PRELOAD[i], true);
             };
-        }, 1 * 1000);
+        }
     }
 }
 

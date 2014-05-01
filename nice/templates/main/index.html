@@ -69,11 +69,11 @@
 <script>
 var USER_NETID = '{{ username }}';
 var CACHEMAN_PRELOAD = [
-    '{% url 'nice.views.all_sections' %}',
+    /* '{% url 'nice.views.all_sections' %}', */ // executed way too early
     '{% url 'nice.views.agenda' %}', 
     '{% url 'nice.views.popup' %}', 
-    /*'{% url 'nice.views.event_picker' %}', */
-    /*'{% url 'nice.views.event_picker_item' %}',*/
+    '{% url 'nice.views.event_picker' %}', 
+    '{% url 'nice.views.event_picker_item' %}',
     '{% url 'nice.views.section_colors_json' %}',
     ];
 var AGENDA_FILTER = [

@@ -87,10 +87,10 @@ function Cal_reload()
     if (CAL_LOADING)
         return;
     CAL_LOADING = true;
-    try {
-        var eventIDs = EventsMan_getAllEventIDs();
-        Cal_eventSource.events = [];
-        setTimeout(function(){
+    var eventIDs = EventsMan_getAllEventIDs();
+    Cal_eventSource.events = [];
+    setTimeout(function(){
+        try {
             $.each(eventIDs, function(index){
                 eventDict = EventsMan_getEventByID(this);
                 if (!eventDict)
@@ -112,12 +112,12 @@ function Cal_reload()
                 });
             });
             $("#calendarui").fullCalendar("refetchEvents");
-        }, 10);
-        CAL_LOADING = false;
-    }
-    catch(err) {
-        CAL_LOADING = false;
-    }
+            CAL_LOADING = false;
+        }
+        catch(err){
+            CAL_LOADING = false;
+        }
+    }, 10);
 }
 
 function Cal_render() {
