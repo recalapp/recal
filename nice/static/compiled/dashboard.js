@@ -2225,6 +2225,24 @@ function init()
             localStorage.setItem('user', USER_NETID);
         }
     });
+    $(window).on('resize', function(ev){
+        adaptSize();
+    });
+    adaptSize();
+}
+function adaptSize()
+{
+    if (window.innerWidth <= 768)
+    {
+        $('#agendatab').tab('show');
+        $('#sb-left-container').removeClass('col-xs-4').addClass('col-xs-12');
+        $('#sidebar').addClass('mobile');
+    }
+    else
+    {
+        $('#sb-left-container').addClass('col-xs-4').removeClass('col-xs-12');
+        $('#sidebar').removeClass('mobile');
+    }
 }
 
 function Nav_save()
