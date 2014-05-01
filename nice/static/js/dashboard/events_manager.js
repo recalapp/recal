@@ -1,4 +1,5 @@
 var timeoutIDs = [];
+var EVENTSMAN_COUNT = 0;
 function EventsMan_init()
 {
     if (EVENTS_INIT)
@@ -126,7 +127,8 @@ function EventsMan_init()
     });
 
     window.setInterval(function(){
-        if (!eventsManager.active)
+        EVENTSMAN_COUNT = (EVENTSMAN_COUNT + 1) % 30; // every 5 min. -> 30 * 10s = 300s = 5min
+        if (!eventsManager.active && EVENTSMAN_COUNT != 0)
             return;
         EventsMan_pushToServer(true); 
         EventsMan_pullFromServer();
