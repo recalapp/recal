@@ -51,6 +51,10 @@ def index(request):
 
     cur_sem = get_cur_semester()
 
+    all_sections = {}
+    for section in request.user.profile.sections.all():
+        all_sections[section.id] = unicode(section)
+
     return render(request, "main/index.html", {
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
@@ -65,6 +69,7 @@ def index(request):
         },
         'theme': theme,
         'base_url': request.build_absolute_uri(),
+        'all_sections': json.dumps(all_sections),
         })
     response.set_cookie('netid', request.user.username)
     return response
@@ -289,6 +294,11 @@ def events_by_course_json(request, last_updated=0, start_date=None, end_date=Non
 def sections_json(request):
     netid = request.user.username
     ret = queries.get_sections(netid)
+    return HttpResponse(json.dumps(ret), content_type='application/javascript')
+
+def default_section_colors_json(request):
+    netid = request.user.username
+    ret = queries.get_default_colors(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
 def section_colors_json(request):

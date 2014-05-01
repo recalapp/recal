@@ -4,7 +4,9 @@ function PopUp_init()
     if (POPUP_INIT)
         return;
     POPUP_INIT = true;
-
+    POPUP_HTML = $('#popup-template').html();
+    $('#popup-template').remove();
+    
     var oldMouseStart = $.ui.draggable.prototype._mouseStart;
     $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
         this._trigger("beforeStart", event, this._uiHash());

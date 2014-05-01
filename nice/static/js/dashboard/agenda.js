@@ -1,4 +1,5 @@
 AGENDA_INIT = false;
+var AGENDA_HTML = null;
 
 /***************************************************
  * Initialization/State Restoration
@@ -8,6 +9,10 @@ function Agenda_init() {
     if (AGENDA_INIT)
         return;
     AGENDA_INIT = true;
+
+    AGENDA_HTML = $('#agenda-template').html();
+    $('#agenda-template').remove();
+
     EventsMan_addUpdateListener(function(){
         Agenda_reload();
     });
@@ -125,7 +130,8 @@ function Agenda_loadEvents(eventIDs)
         var eventDict = EventsMan_getEventByID(this);
         if (!eventDict)
             return;
-        agendaContainer.append(CacheMan_load("agenda-template"));
+        //agendaContainer.append(CacheMan_load("agenda-template"));
+        agendaContainer.append($(AGENDA_HTML));
         var agenda = agendaContainer.find("#agenda123")[0];
         agenda.id = this;
         

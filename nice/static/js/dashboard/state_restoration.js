@@ -1,6 +1,6 @@
 var SR_willSaveListeners = []
 var SR_didLoadListeners = []
-var SR_ON = false;
+var SR_ON = true;
 var SR_manager = {}
 var SR_loaded = false;
 
@@ -39,7 +39,8 @@ function SR_load()
 
 function SR_save()
 {
-    return;
+    if (!SR_ON)
+        return;
     SR_callWillSaveListeners();
     $.ajax('put/state-restoration', {
         dataType: 'json',

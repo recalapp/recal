@@ -41,6 +41,14 @@
         </div>
     </div>
 </div>
+
+<div id='agenda-template' class='hide'>
+{% include 'main/agenda.html' %}
+</div>
+<div id='popup-template' class='hide'>
+{% include 'main/popup.html' %}
+</div>
+
 {% endblock %}
 
 {% block link_or_script_blocking %}
@@ -53,13 +61,7 @@
 <link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
 
 <link rel="stylesheet" href="{% static 'compiled/dashboard.min.css' %}">
-<!--
-<link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
-<link rel="stylesheet" href="{% static 'css/popup.css' %}">
-<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
-<link rel="stylesheet" href="{% static 'css/event-picker.css' %}">
-<link rel="stylesheet" href="{% static 'css/actionsheet.css' %}">
--->
+
 {% if is_mobile %}
 <link rel="stylesheet" href="{% static 'css/mobile/sidebar-mobile-addition.css' %}">
 {% endif %}
@@ -68,14 +70,13 @@
 <script src="{% static 'js/dashboard/global.js' %}"></script>-->
 <script>
 var USER_NETID = '{{ username }}';
-var CACHEMAN_PRELOAD = [
+var CACHEMAN_PRELOAD = {
     /* '{% url 'nice.views.all_sections' %}', */ // executed way too early
-    '{% url 'nice.views.agenda' %}', 
-    '{% url 'nice.views.popup' %}', 
-    '{% url 'nice.views.event_picker' %}', 
+    '/all-sections' : '{% autoescape off %}{{ all_sections }}{% endautoescape %}',
+    /*'{% url 'nice.views.event_picker' %}', 
     '{% url 'nice.views.event_picker_item' %}',
-    '{% url 'nice.views.section_colors_json' %}',
-    ];
+    '{% url 'nice.views.section_colors_json' %}',*/
+    };
 var AGENDA_FILTER = [
     {% for type in agenda_pref %}
     '{{ type }}',
