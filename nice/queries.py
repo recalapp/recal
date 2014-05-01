@@ -631,6 +631,7 @@ def get_course_by_id(course_id):
         course_id:
         course_title:
         course_listings:
+        course_primary_listing:
         course_professor:
         course_description:
         sections: {
@@ -655,6 +656,7 @@ def construct_course_dict(course):
         'course_id': course.id,
         'course_title': course.title,
         'course_listings': course.course_listings(),
+        'course_primary_listing': course.primary_listing(),
         'course_professor': course.professor,
         'course_description': course.description,
         'sections': sections_group,

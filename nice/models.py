@@ -56,7 +56,7 @@ class Course(models.Model):
         """
         returns a string
         """
-        return self.course_listings_set.filter(is_primary=True).unicode()
+        return unicode(self.course_listing_set.all().get(is_primary=True))
 
     def __unicode__(self):
         return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')]) #+ ' ' + ': ' + self.title
