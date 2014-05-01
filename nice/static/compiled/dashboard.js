@@ -35,7 +35,7 @@ function CacheMan_init()
         return;
     CACHE_INIT = true;
     cacheManager = new _CacheMan();
-    if (typeof CACHEMAN_PRELOAD != 'undefined')
+    if (false && typeof CACHEMAN_PRELOAD != 'undefined')
     {
         for (var i = 0; i < CACHEMAN_PRELOAD.length; i++) {
             _CacheMan_cacheURL(CACHEMAN_PRELOAD[i], true);
