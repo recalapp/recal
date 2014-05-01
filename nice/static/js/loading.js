@@ -29,6 +29,6 @@ function LO_getLoadingHTML()
     var $loading = $('<div>').addClass('alert alert-dismissable alert-info');
     $loading.attr('id', 'loading');
     $loading.append($('<span id="loading-content">'));
-    $loading.find('#loading-content').append('Loading...&nbsp;&nbsp;&nbsp;<span id="loading-icon" class="glyphicon glyphicon-refresh"></span>');
+    $loading.find('#loading-content').append('Loading...&nbsp;&nbsp;&nbsp;<i class="fa fa-spinner fa-spin"></i>');
     return $loading;
 }

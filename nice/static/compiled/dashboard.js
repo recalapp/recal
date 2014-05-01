@@ -2252,7 +2252,6 @@ function Nav_save()
 }
 function Nav_load()
 {
-    return;
     var index = SR_get("nav_page");
     if (index == null)
         return;
