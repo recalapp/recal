@@ -1,3 +1,7 @@
+var DEFAULT_SECTION_COLORS;
+var COURSE_COLOR_MAP = {};
+var USABLE_COLORS = [];
+
 $(init)
 
 function init()
@@ -60,7 +64,11 @@ function init()
     UP_init();
 
     SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
+    DEFAULT_SECTION_COLORS = JSON.parse(CacheMan_load('/get/default-section-colors'));
+    courseColorMap_init();
+    usableColor_init();
 }
+
 function enableAllInteractions()
 {
 }
@@ -80,4 +88,43 @@ function sameOrigin(url) {
         (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
         // or any other URL that isn't scheme relative or absolute i.e relative.
         !(/^(\/\/|http:|https:).*/.test(url));
+}
+
+function courseColorMap_init() {
+    // TODO: does this overwrite values when two sections with the 
+    // same color are found?
+    $.each(SECTION_COLOR_MAP, function(key, value) {
+        COURSE_COLOR_MAP[value['course_id']] = value['color'];
+    });
+
+}
+
+function usableColor_init() {
+    $.each(DEFAULT_SECTION_COLORS, function(index, color) {
+        var curr_available = true;
+        $.each(COURSE_COLOR_MAP, function(key, value) {
+            if (value == color)
+            {
+                curr_available = false;
+                return false;
+            }
+        });
+        if (curr_available)
+        {
+            USABLE_COLORS.push(color);
+        }
+    });
+}
+
+function getUsableColor(course_id) {
+    var color = USABLE_COLORS.pop();
+    if (!color)
+    {
+        color = DEFAULT_SECTION_COLORS[0];
+    }
+
+    // if (!COURSE_COLOR_MAP[course_id])
+    COURSE_COLOR_MAP[course_id] = color;
+
+    return color;
 }
