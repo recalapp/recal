@@ -6,7 +6,7 @@ body{
     position: relative;
 }
 .main-body.alternate{
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: white;
 }
 #login-nav-item{
     opacity: 1;
@@ -18,7 +18,8 @@ body{
     margin-left: -100px;
 }
 #login_button{
-    max-width: 30vh;
+    max-width: 40vh;
+    min-width: 30vh;
 }
 #login_button:not(.btn-primary){
     display: block;
@@ -31,20 +32,39 @@ body{
     text-align: center;
 }
 .big-img{
-    height: 100%;
+    height: 90vh;
+    margin-top: 5vh;
 }
 .big-img.left{
     margin-left: -5%;
 }
+.big-img.right{
+    margin-left: 30%;
+}
 .content{
-    background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), white 40%);
-    background: linear-gradient(left, red, blue 100px, green 200px);
     width: 60%;
     height: 100%;
     position: absolute;
     top: 0;
+    padding-top: 15vh;
+}
+.content.right{
     right: 0;
     text-align: right;
-    padding-left: 40%;
-    padding-right: 5px;
+    padding-left: 30%;
+    padding-right: 40px;
+    background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), white 40%);
+    background: linear-gradient(left, red, blue 100px, green 200px);
+}
+.content.left{
+    left: 0;
+    text-align: left;
+    padding-right: 30%;
+    padding-left: 40px;
+    background: -webkit-linear-gradient(right, rgba(255, 255, 255, 0), white 40%);
+    background: linear-gradient(right, red, blue 100px, green 200px);
+}
+
+#about.main-body{
+    padding-top: 15vh;
 }
