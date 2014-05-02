@@ -31,7 +31,9 @@ function EventsMan_pullFromServer(complete)
     eventsManager.isIdle = false;
     var start = moment.unix(CUR_SEM.start_date);
     var end = moment.unix(CUR_SEM.start_date);
+    start.week(start.week() + 1);
     end.week(start.week() + 1);
+
     $.ajax('/get/bycourses/0/' + start.unix() + '/' + end.unix(), {
         dataType: 'json',
         type: 'GET',

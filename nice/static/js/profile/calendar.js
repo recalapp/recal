@@ -38,6 +38,7 @@ function Cal_reload()
         });
     });
     var start = moment.unix(CUR_SEM.start_date);
+    start.week(start.week() + 1);
     $('#calendarui').fullCalendar('gotoDate', start.year(), start.month(), start.date());
     $("#calendarui").fullCalendar("refetchEvents");
     //}
