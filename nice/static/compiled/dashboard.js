@@ -1361,9 +1361,13 @@ function Agenda_init() {
     $('#agenda-template').remove();
 
     EventsMan_addUpdateListener(function(){
+        if (!Agenda_active())
+            return;
         Agenda_reload();
     });
     $('#'+SE_id).on('close', function(ev){
+        if (!Agenda_active())
+            return;
         Agenda_reload();
     });
 
@@ -1390,8 +1394,6 @@ function Agenda_active()
 
 function Agenda_reload()
 {
-    if (!Agenda_active())
-        return;
     LO_show();
     var agendaContainer = $("#agenda")
     var added = false;
