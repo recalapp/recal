@@ -5,6 +5,8 @@ function LO_show()
     LO_count++;
     if ($('#loading').length > 0)
         return;
+    if (LO_count <= 0)
+        return;
     var $loading = LO_getLoadingHTML();
     $('body').append($loading);
     $('#loading').addClass('in');
@@ -14,9 +16,10 @@ function LO_hide()
     LO_count--;
     if (LO_count <= 0)
     {
-        $('#loading').removeClass('in').on('transitionend', function(){
-            $(this).remove();
-        });
+        $('#loading').remove();
+        //$('#loading').removeClass('in').on('transitionend', function(){
+        //    $(this).remove();
+        //});
     }
 }
 function LO_showError()

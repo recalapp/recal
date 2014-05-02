@@ -52,20 +52,18 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
+            if (settings.loadingIndicator == false)
+                return;
+            LO_show();
         }
     });
-    $(document).ajaxSend(function(event, xhr, settings){
-        if (settings.loadingIdicator == false)
-            return;
-        LO_show();
-    });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        if (settings.loadingIdicator == false)
+        if (settings.loadingIndicator == false)
             return;
         LO_hide();
     });
     $(document).ajaxError(function(event, xhr, settings){
-        if (settings.loadingIdicator == false)
+        if (settings.loadingIndicator == false)
             return;
         LO_hide();
         LO_showError();

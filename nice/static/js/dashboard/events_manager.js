@@ -246,12 +246,11 @@ function EventsMan_pullFromServer(complete, showLoading)
     eventsManager.isIdle = false;
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
-        loadingIndicator: showLoading,
+        loadingIndicator: (eventsManager.events.length == 0),
         success: function(data){
             var changed = EventsMan_processDownloadedEvents(data);
 
             eventsManager.isIdle = true;
-            LO_hide();
 
             if (complete != null)
                 complete();

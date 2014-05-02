@@ -200,8 +200,8 @@ a {
     position: fixed;
     bottom: 0;
     right: 20%;
-    -webkit-transition: opacity 0.1s ease-out;
-    transition: opacity 0.1s ease-out;
+    /*-webkit-transition: opacity 0.1s ease-out;
+    transition: opacity 0.1s ease-out;*/
     opacity: 0;
     z-index: 10000;
 }

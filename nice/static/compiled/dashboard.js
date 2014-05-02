@@ -610,6 +610,8 @@ function LO_show()
     LO_count++;
     if ($('#loading').length > 0)
         return;
+    if (LO_count <= 0)
+        return;
     var $loading = LO_getLoadingHTML();
     $('body').append($loading);
     $('#loading').addClass('in');
@@ -619,9 +621,10 @@ function LO_hide()
     LO_count--;
     if (LO_count <= 0)
     {
-        $('#loading').removeClass('in').on('transitionend', function(){
-            $(this).remove();
-        });
+        $('#loading').remove();
+        //$('#loading').removeClass('in').on('transitionend', function(){
+        //    $(this).remove();
+        //});
     }
 }
 function LO_showError()
@@ -1693,6 +1696,7 @@ function Cal_reload()
     var eventIDs = EventsMan_getAllEventIDs();
     Cal_eventSource.events = [];
     setTimeout(function(){
+        LO_show();
         try {
             $.each(eventIDs, function(index){
                 eventDict = EventsMan_getEventByID(this);
@@ -1733,6 +1737,7 @@ function Cal_reload()
         catch(err){
             CAL_LOADING = false;
         }
+        LO_hide();
     }, 10);
 }
 
@@ -2103,12 +2108,11 @@ function EventsMan_pullFromServer(complete, showLoading)
     eventsManager.isIdle = false;
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
-        loadingIndicator: showLoading,
+        loadingIndicator: (eventsManager.events.length == 0),
         success: function(data){
             var changed = EventsMan_processDownloadedEvents(data);
 
             eventsManager.isIdle = true;
-            LO_hide();
 
             if (complete != null)
                 complete();
@@ -2269,20 +2273,18 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
+            if (settings.loadingIndicator == false)
+                return;
+            LO_show();
         }
     });
-    $(document).ajaxSend(function(event, xhr, settings){
-        if (settings.loadingIdicator == false)
-            return;
-        LO_show();
-    });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        if (settings.loadingIdicator == false)
+        if (settings.loadingIndicator == false)
             return;
         LO_hide();
     });
     $(document).ajaxError(function(event, xhr, settings){
-        if (settings.loadingIdicator == false)
+        if (settings.loadingIndicator == false)
             return;
         LO_hide();
         LO_showError();
