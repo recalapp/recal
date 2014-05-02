@@ -1379,8 +1379,16 @@ function Agenda_init() {
     Agenda_reload();
 } 
 
+function Agenda_active()
+{
+    return $('#agenda').hasClass('active');
+}
+
 function Agenda_reload()
 {
+    if (!Agenda_active())
+        return;
+    LO_show();
     var agendaContainer = $("#agenda")
     var added = false;
     agendaContainer[0].innerHTML = null;
@@ -1437,6 +1445,7 @@ function Agenda_reload()
     {
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
+    LO_hide();
 }
 
 function Agenda_filterEvents(eventIDs)
@@ -1693,6 +1702,7 @@ function Cal_reload()
     var eventIDs = EventsMan_getAllEventIDs();
     Cal_eventSource.events = [];
     setTimeout(function(){
+        LO_show();
         try {
             $.each(eventIDs, function(index){
                 eventDict = EventsMan_getEventByID(this);
@@ -1733,6 +1743,7 @@ function Cal_reload()
         catch(err){
             CAL_LOADING = false;
         }
+        LO_hide();
     }, 10);
 }
 

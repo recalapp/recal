@@ -94,6 +94,7 @@ function Cal_reload()
     var eventIDs = EventsMan_getAllEventIDs();
     Cal_eventSource.events = [];
     setTimeout(function(){
+        LO_show();
         try {
             $.each(eventIDs, function(index){
                 eventDict = EventsMan_getEventByID(this);
@@ -134,6 +135,7 @@ function Cal_reload()
         catch(err){
             CAL_LOADING = false;
         }
+        LO_hide();
     }, 10);
 }
 
