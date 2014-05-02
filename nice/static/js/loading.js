@@ -12,7 +12,7 @@ function LO_show()
 function LO_hide()
 {
     LO_count--;
-    if (LO_count == 0)
+    if (LO_count <= 0)
     {
         $('#loading').removeClass('in').on('transitionend', function(){
             $(this).remove();
@@ -21,7 +21,6 @@ function LO_hide()
 }
 function LO_showError()
 {
-    LO_count++;
     if ($('#loading.error').length > 0)
         return;
     if ($('#loading').not('.error').length > 0)
