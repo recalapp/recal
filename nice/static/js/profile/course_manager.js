@@ -162,7 +162,7 @@ function CourseMan_pullEnrolledCourseIDs(complete)
         },
         error: function(data){
             courseManager.isIdle = true;
-            //LO_hide();
+            LO_hide();
             LO_showError();
             CourseMan_handleQueue();
         }

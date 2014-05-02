@@ -603,8 +603,11 @@ Array.prototype.equals = function(a){
     }
     return i == a.length;
 }
+var LO_count = 0;
+
 function LO_show()
 {
+    LO_count++;
     if ($('#loading').length > 0)
         return;
     var $loading = LO_getLoadingHTML();
@@ -613,9 +616,13 @@ function LO_show()
 }
 function LO_hide()
 {
-    $('#loading').removeClass('in').on('transitionend', function(){
-        $(this).remove();
-    });
+    LO_count--;
+    if (LO_count <= 0)
+    {
+        $('#loading').removeClass('in').on('transitionend', function(){
+            $(this).remove();
+        });
+    }
 }
 function LO_showError()
 {
@@ -2082,6 +2089,7 @@ function EventsMan_pushToServer(async)
             async: async,
             error: function(data){
                 eventsManager.isIdle = true;
+                LO_hide();
                 LO_showError();
             },
         });
@@ -2114,6 +2122,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         },
         error: function(data){
             eventsManager.isIdle = true;
+            LO_hide();
             LO_showError(); // TODO should this be shown? this is pulling, not pushing. maybe not important
         },
     });
