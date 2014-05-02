@@ -2030,7 +2030,6 @@ function EventsMan_pushToServer(async)
     //var deleted = eventsManager.deletedIDs;
     if (updated.length > 0 || eventsManager.changed)
     {
-        LO_show();
         $.ajax('put', {
             dataType: 'json',
             type: 'POST',
@@ -2078,7 +2077,6 @@ function EventsMan_pushToServer(async)
                     }
                 });
                 eventsManager.isIdle = true;
-                LO_hide();
                 //eventsManager.addedCount = 0; // not gonna overflow, no need to set to 0. Safer, so IDs don't ever crash
                 //eventsManager.deletedIDs = [];
                 eventsManager.updatedIDs = new Set();
@@ -2089,8 +2087,6 @@ function EventsMan_pushToServer(async)
             async: async,
             error: function(data){
                 eventsManager.isIdle = true;
-                LO_hide();
-                LO_showError();
             },
         });
     } else {
@@ -2104,11 +2100,10 @@ function EventsMan_pullFromServer(complete, showLoading)
     if (eventsManager.updatedIDs.size > 0 || eventsManager.changed)
         return; // don't pull until changes are pushed
     showLoading = typeof showLoading != 'undefined' ? showLoading : false;
-    if (showLoading)
-        LO_show();
     eventsManager.isIdle = false;
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
+        loadingIndicator: showLoading,
         success: function(data){
             var changed = EventsMan_processDownloadedEvents(data);
 
@@ -2122,8 +2117,6 @@ function EventsMan_pullFromServer(complete, showLoading)
         },
         error: function(data){
             eventsManager.isIdle = true;
-            LO_hide();
-            LO_showError(); // TODO should this be shown? this is pulling, not pushing. maybe not important
         },
     });
 }
@@ -2277,6 +2270,22 @@ function init()
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
         }
+    });
+    $(document).ajaxSend(function(event, xhr, settings){
+        if (settings.loadingIdicator == false)
+            return;
+        LO_show();
+    });
+    $(document).ajaxSuccess(function(event, xhr, settings){
+        if (settings.loadingIdicator == false)
+            return;
+        LO_hide();
+    });
+    $(document).ajaxError(function(event, xhr, settings){
+        if (settings.loadingIdicator == false)
+            return;
+        LO_hide();
+        LO_showError();
     });
     CacheMan_init();
 

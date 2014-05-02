@@ -54,6 +54,22 @@ function init()
             }
         }
     });
+    $(document).ajaxSend(function(event, xhr, settings){
+        if (settings.loadingIdicator == false)
+            return;
+        LO_show();
+    });
+    $(document).ajaxSuccess(function(event, xhr, settings){
+        if (settings.loadingIdicator == false)
+            return;
+        LO_hide();
+    });
+    $(document).ajaxError(function(event, xhr, settings){
+        if (settings.loadingIdicator == false)
+            return;
+        LO_hide();
+        LO_showError();
+    });
     CacheMan_init();
 
     SECTION_MAP = JSON.parse(CacheMan_load('/all-sections'));

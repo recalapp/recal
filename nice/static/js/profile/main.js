@@ -60,6 +60,22 @@ function init()
             }
         }
     });
+    $(document).ajaxSend(function(event, xhr, settings){
+        if (settings.loadingIdicator == false)
+            return;
+        LO_show();
+    });
+    $(document).ajaxSuccess(function(event, xhr, settings){
+        if (settings.loadingIdicator == false)
+            return;
+        LO_hide();
+    });
+    $(document).ajaxError(function(event, xhr, settings){
+        if (settings.loadingIdicator == false)
+            return;
+        LO_hide();
+        LO_showError();
+    });
     SB_init();
     CacheMan_init();
     CourseMan_init();
