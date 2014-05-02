@@ -67,8 +67,8 @@ function EventsMan_pullFromServer(complete)
         },
         error: function(data){
             eventsManager.isIdle = true;
+            LO_hide();
             LO_showError();
-            //LO_hide();
         }
     });
 }

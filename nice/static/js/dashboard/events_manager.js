@@ -232,6 +232,7 @@ function EventsMan_pushToServer(async)
             async: async,
             error: function(data){
                 eventsManager.isIdle = true;
+                LO_hide();
                 LO_showError();
             },
         });
@@ -264,6 +265,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         },
         error: function(data){
             eventsManager.isIdle = true;
+            LO_hide();
             LO_showError(); // TODO should this be shown? this is pulling, not pushing. maybe not important
         },
     });
