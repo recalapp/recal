@@ -619,6 +619,7 @@ function LO_show()
 function LO_hide()
 {
     LO_count--;
+    LO_count = LO_count < 0 ? 0 : LO_count;
     if (LO_count <= 0)
     {
         $('#loading').remove();
@@ -2288,13 +2289,9 @@ function init()
         }
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        if (settings.loadingIndicator == false)
-            return;
         LO_hide();
     });
     $(document).ajaxError(function(event, xhr, settings){
-        if (settings.loadingIndicator == false)
-            return;
         LO_hide();
         LO_showError();
     });
@@ -3429,6 +3426,7 @@ function SE_init()
                     theme: THEME,
                 })
             },
+            loadingIndicator: false,
         });
     });
     $('#' + SE_id).on('hidden.bs.modal', function(){

@@ -58,13 +58,9 @@ function init()
         }
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        if (settings.loadingIndicator == false)
-            return;
         LO_hide();
     });
     $(document).ajaxError(function(event, xhr, settings){
-        if (settings.loadingIndicator == false)
-            return;
         LO_hide();
         LO_showError();
     });

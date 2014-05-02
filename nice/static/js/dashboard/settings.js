@@ -67,6 +67,7 @@ function SE_init()
                     theme: THEME,
                 })
             },
+            loadingIndicator: false,
         });
     });
     $('#' + SE_id).on('hidden.bs.modal', function(){

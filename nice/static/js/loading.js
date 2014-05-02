@@ -14,6 +14,7 @@ function LO_show()
 function LO_hide()
 {
     LO_count--;
+    LO_count = LO_count < 0 ? 0 : LO_count;
     if (LO_count <= 0)
     {
         $('#loading').remove();
