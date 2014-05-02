@@ -6,6 +6,12 @@ $(init)
 
 function init()
 {
+    // // setup for loading icon
+    // $(document).on({
+    //     ajaxStart: LO_show(),
+    //     ajaxStop: LO_hide(),
+    // });
+
     pinnedIDs = new Set();
     moment.tz.add({
         "zones": {

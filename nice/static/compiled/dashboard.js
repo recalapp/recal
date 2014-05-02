@@ -1382,8 +1382,16 @@ function Agenda_init() {
     Agenda_reload();
 } 
 
+function Agenda_active()
+{
+    return $('#agenda').hasClass('active');
+}
+
 function Agenda_reload()
 {
+    if (!Agenda_active())
+        return;
+    LO_show();
     var agendaContainer = $("#agenda")
     var added = false;
     agendaContainer[0].innerHTML = null;
@@ -1440,6 +1448,7 @@ function Agenda_reload()
     {
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
+    LO_hide();
 }
 
 function Agenda_filterEvents(eventIDs)
