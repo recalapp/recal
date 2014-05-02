@@ -421,10 +421,7 @@ def user_profile_filled_out(user):
         profile = User_Profile.objects.create(user=user, lastActivityTime=get_current_utc())
         return False # just created, but not filled out yet
         
-        
-
-        
-        
+  
         
 # test
 def contact_us(req):
