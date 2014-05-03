@@ -4,13 +4,15 @@ function PopUp_init()
     if (POPUP_INIT)
         return;
     POPUP_INIT = true;
-
+    POPUP_HTML = $('#popup-template').html();
+    $('#popup-template').remove();
+    
     var oldMouseStart = $.ui.draggable.prototype._mouseStart;
     $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
         this._trigger("beforeStart", event, this._uiHash());
         oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
     };
-    
+
     // setting bounds
     topPos = parseInt($(".navbar").css("height")) + parseInt($(".navbar").css("margin-top"));
     height = window.innerHeight - topPos + 300;
@@ -29,14 +31,17 @@ function PopUp_init()
         PopUp_save();
     })
     EventsMan_addEventIDsChangeListener(function(oldID, newID){
-        PopUp_map(function(popUp, isMain){
-            if (PopUp_getID(popUp) == oldID)
-                PopUp_setID(popUp, newID);
-        });
+        var popUp = PopUp_getPopUpByID(newID);
+        if (popUp)
+        {
+            PopUp_close(popUp);
+        }
+        var popUp = PopUp_getPopUpByID(oldID);
+        PopUp_setToEventID(popUp, newID);
     });
     EventsMan_addUpdateListener(function(){
         PopUp_map(function(popUp, isMain){
-            if (EventsMan_hasEvent(PopUp_getID(popUp)))
+            if (EventsMan_hasEvent(PopUp_getID(popUp)) && EventsMan_eventShouldBeShown(PopUp_getID(popUp)))
                 PopUp_setToEventID(popUp, PopUp_getID(popUp));
             else
                 PopUp_close(popUp);
@@ -48,7 +53,7 @@ function PopUp_init()
  * Creating/removing
  **************************************************/
 
-function PopUp_initialize(popUp)
+function PopUp_initialize_deferred(popUp)
 {
     if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker
     {
@@ -78,83 +83,58 @@ function PopUp_initialize(popUp)
     } else {
         $(popUp).find('.withtimepicker').removeClass('withtimepicker');
     }
-    var htmlcontent = CacheMan_load("type-picker")
-    $(popUp).find(".withtypepicker").popover({
-        placement: "left auto",
-        trigger: "focus",
-        html: true,
-        content: htmlcontent,
-        container: 'body'
-    })
-    var input = $(popUp).find(".withtypepicker")[0];
-    $(input).on("shown.bs.popover", function(){
-        var tp = $("#type-picker123")[0];
-        tp.id = "";
-        this.tp = tp;
-        var type = $(this).val();
-        TP_select(this.tp, type);
-        var inputField = this;
-        TP_setSelectListener(function(tp, selectedType){
-            $(inputField).val(selectedType);
-        });
-    });
+    //var htmlcontent = CacheMan_load("type-picker")
+    //$(popUp).find(".withtypepicker").popover({
+    //    placement: "left auto",
+    //    trigger: "focus",
+    //    html: true,
+    //    content: htmlcontent,
+    //    container: 'body'
+    //})
+    //var input = $(popUp).find(".withtypepicker")[0];
+    //$(input).on("shown.bs.popover", function(){
+    //    var tp = $("#type-picker123")[0];
+    //    tp.id = "";
+    //    this.tp = tp;
+    //    var type = $(this).val();
+    //    TP_select(this.tp, type);
+    //    var inputField = this;
+    //    TP_setSelectListener(function(tp, selectedType){
+    //        $(inputField).val(selectedType);
+    //    });
+    //});
+    
 
-    $(popUp).find('.withsectionpicker').popover({
-        placement: 'left auto',
-        trigger: 'focus', 
-        html: true,
-        content: CacheMan_load('section-picker'),
-        container: 'body'
-    }).on('shown.bs.popover', function(){
-        var sp = $('#section-picker123')[0];
-        sp.id = '';
-        this.sp = sp;
-        var section = $(this).val();
-        SP_select(this.sp, section);
-        var inputField = this;
-        SP_setSelectListener(function(sp, selectedSection){
-            $(inputField).val(selectedSection);
+    //$(popUp).find('.withsectionpicker').popover({
+    //    placement: 'left auto',
+    //    trigger: 'focus', 
+    //    html: true,
+    //    content: CacheMan_load('section-picker'),
+    //    container: 'body'
+    //}).on('shown.bs.popover', function(){
+    //    var sp = $('#section-picker123')[0];
+    //    sp.id = '';
+    //    this.sp = sp;
+    //    var section = $(this).val();
+    //    SP_select(this.sp, section);
+    //    var inputField = this;
+    //    SP_setSelectListener(function(sp, selectedSection){
+    //        $(inputField).val(selectedSection);
+    //    });
+    //});
+}
+function PopUp_initialize(popUp)
+{
+    var choices = [];
+    $.each (DAYS_DICT, function(index){
+        choices.push({
+            value: index,
+            pretty: this,
+            selected: false,
         });
     });
-    $(popUp).find('#close_button').popover({
-        title: 'Save changes?',
-        //container: 'body',
-        placement: 'bottom auto',
-        html: true,
-        content: '<a id="yes_button" class="white-link-btn prompt-btn yes">Yes</a><a id="no_button" class="white-link-btn prompt-btn no">No</a>',
-        trigger: 'manual'
-    });
-    $(popUp).find('#close_button').on('shown.bs.popover', function(ev){
-        $('#no_button').on('click', function(ev){
-            ev.preventDefault();
-            $(popUp).find('#close_button').popover('toggle');
-            PopUp_clickedUndo(popUp);
-            PopUp_clickedClose(popUp);
-        });
-        $('#yes_button').on('click', function(ev){
-            ev.preventDefault();
-            $(popUp).find('#close_button').popover('toggle');
-            PopUp_clickedSavePopUp(popUp);
-            PopUp_clickedClose(popUp);
-        });  
-    });
-    $(popUp).find('#save_button').popover({
-        title: 'There seems to be a similar event already on the calendar',
-        placement: 'bottom',
-        html: true,
-        content: '<a id="show_similar_events_button" class="white-link-btn prompt-btn yes">Show events</a><a id="save_anyways_button" class="white-link-btn prompt-btn no">Save anyways</a>',
-        trigger: 'manual'
-    }).on('shown.bs.popover', function(ev){
-        $('#show_similar_events_button').on('click', function(ev){
-            NO_showSimilarEvents(PopUp_getID(popUp));
-            $(popUp).find('#save_button').popover('toggle');
-        });
-        $('#save_anyways_button').on('click', function(ev){
-            NO_removeSimilarEventsNotification(PopUp_getID(popUp));
-            PopUp_clickedSavePopUp(popUp);
-            $(popUp).find('#save_button').popover('toggle');
-        });
-    });
+    var repeat_scm = SCM_initWithChoices('', choices);
+    $(popUp).find('#popup-repeat-pattern').append(repeat_scm); 
 }
 
 /***************************************************
@@ -166,6 +146,8 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setID(popUp, id);
     var eventDict;
     $(popUp).find('.unsaved').removeClass('unsaved');
+    //$(popUp).find('.withcustompicker').off('hidden.bs.popover');
+    //$(popUp).find('.withcustompicker').popover('destroy');
     if (EventsMan_hasUncommitted(id))
     {
         eventDict = EventsMan_getUncommitted(id);
@@ -204,6 +186,7 @@ function PopUp_setToEventID(popUp, id)
     if (!eventDict)
     {
         console.log("errorneous event id");
+        PopUp_close(popUp);
         return;
     }
     PopUp_setTitle(popUp, eventDict.event_title);
@@ -214,8 +197,129 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setDate(popUp, eventDict.event_start);
     PopUp_setStartTime(popUp, eventDict.event_start);
     PopUp_setEndTime(popUp, eventDict.event_end);
-}
+    PopUp_setColor(popUp, SECTION_COLOR_MAP[eventDict.section_id]['color']);
 
+    $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
+    $(popUp).find('#popup-repeat').off('change');
+    $(popUp).find('#popup-repeat-pattern').off('select');
+    if ('recurrence_days' in eventDict)
+    {
+        var pattern = eventDict.recurrence_days;
+        var choices = [];
+        $.each(DAYS_DICT, function(index){
+            choices.push({
+                value: index,
+                pretty: this,
+                selected: pattern.contains(index)
+            });
+        });
+        $(popUp).find('.popup-repeat-item').removeClass('hide');
+        var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
+        SCM_setToChoices(scm, choices);
+    }
+    else
+    {
+        var choices = [];
+        $.each(DAYS_DICT, function(index){
+            choices.push({
+                value: index,
+                pretty: this,
+                selected: false
+            });
+        });
+        $(popUp).find('.popup-repeat-item').addClass('hide');
+        var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
+        SCM_setToChoices(scm, choices);
+    }
+    $(popUp).find('#popup-repeat').on('change', function(ev){
+        if (this.checked)
+        {
+            if (!('recurrence_days' in eventDict))
+                PopUp_markAsUnsaved(popUp);
+            $(popUp).find('.popup-repeat-item').removeClass('hide');
+            PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', []);
+        }
+        else
+        {
+            if ('recurrence_days' in eventDict)
+                PopUp_markAsUnsaved(popUp);
+            $(popUp).find('.popup-repeat-item').addClass('hide');
+            PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', null);
+        }
+    });
+    $(popUp).find('#popup-repeat-pattern').on('select', function(ev, choices){
+        var pattern = [];
+        $.each(choices, function(value, selected){
+            if (selected)
+                pattern.push(parseInt(value));
+        });
+        pattern.sort();
+        if (!('recurrence_days' in eventDict))
+            PopUp_markAsUnsaved(popUp);
+        else if (!pattern.equals(eventDict.recurrence_days))
+            PopUp_markAsUnsaved(popUp);
+        PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', pattern);
+    });
+
+
+    if (EventsMan_eventIsHidden(id))
+    {
+        $(popUp).find('#unhide_button').removeClass('hide');
+        $(popUp).find('#hide_button').addClass('hide');
+    }
+    else
+    {
+        $(popUp).find('#unhide_button').addClass('hide');
+        $(popUp).find('#hide_button').removeClass('hide');
+    }
+
+    var choices = [];
+    $.each(TYPE_MAP, function(key, value){
+        choices.push({
+            value: key,
+            pretty: value,
+            selected: eventDict.event_type == key,
+        });
+    });
+    var scp = SCP_initOnElement($(popUp).find('.withtypepicker')[0], popUp, null, choices);
+    $(scp).on('select', function(ev, choices){
+        var selectedType;
+        $.each(choices, function(key, selected){
+            if (selected)
+            {
+                selectedType = key;
+                return false;
+            }
+        });
+        $(popUp).find('.withtypepicker').val(toTitleCase(TYPE_MAP[selectedType]));
+        $(popUp).find('.withtypepicker').trigger('value_set');
+    });
+
+    var choices = [];
+    $.each(SECTION_MAP, function(key, value){
+        choices.push({
+            value: key,
+            pretty: value,
+            selected: eventDict.section_id == key,
+        });
+    });
+    var scpSection = SCP_initOnElement($(popUp).find('.withsectionpicker')[0], popUp, null, choices);
+    $(scpSection).on('select', function(ev, choices){
+        var selectedSection;
+        $.each(choices, function(key, selected){
+            if (selected)
+            {
+                selectedSection = key;
+                return false;
+            }
+        });
+        $(popUp).find('.withsectionpicker').val(SECTION_MAP[selectedSection]);
+        $(popUp).find('.withsectionpicker').trigger('value_set');
+    });
+    $(popUp).find('.withcustompicker').on('hidden.bs.popover', function(ev){
+        $(this).trigger('value_set');
+    });
+}
 
 function PopUp_setTitle(popUp, title)
 {
@@ -231,11 +335,11 @@ function PopUp_setLocation(popUp, loc)
 }
 function PopUp_setSection(popUp, sectionKey)
 {
-    $(popUp).find('#popup-section').text(SP_keyToText(sectionKey));
+    $(popUp).find('#popup-section').text(SECTION_MAP[sectionKey]);
 }
 function PopUp_setType(popUp, typeKey)
 {
-    var type = toTitleCase(TP_keyToText(typeKey));
+    var type = toTitleCase(TYPE_MAP[typeKey]);
     $(popUp).find('#popup-type').text(type);
 }
 function PopUp_setDate(popUp, unixTime)
@@ -252,6 +356,31 @@ function PopUp_setEndTime(popUp, unixTime)
 {
     var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-end').text(time.format("h:mm A"));
+}
+function PopUp_setColor(popUp, color)
+{
+    //if (!($(popUp).find('.panel').data('my-color')))
+    //{
+    $(popUp).find('.panel').data('my-color', color);
+    //}
+
+    // color = $(popUp).find('.panel').data('my-color');
+
+    // TODO: bad idea to hardwire the default color?
+    var defaultBorder = '#DDDDDD';
+    var defaultHeader = '#F5F5F5';
+    $(popUp).find('.panel').data('default-border', defaultBorder);
+    $(popUp).find('.panel').data('default-header', defaultHeader);
+    if (PopUp_hasFocus(popUp))
+    {
+        $(popUp).find('#popup-title').parent().parent().css('background-color', color).css('border-color', color);
+        $(popUp).find('.panel').css('border-color', color);
+    }
+    else
+    {
+        $(popUp).find('#popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
+        $(popUp).find('.panel').css('border-color', defaultBorder);
+    }
 }
 
 /***************************************************
@@ -404,7 +533,7 @@ function _PopUp_Form_addOnBlurListener(form, listener)
     else if ($(form).find(".withtimepicker").length > 0)
         $(form).find(".withtimepicker").datetimepicker().on("hide", listener);
     else if ($(form).find(".withcustompicker").length > 0)
-        $(form).find(".withcustompicker").on("hidden.bs.popover", listener); // must be hidden, not hide, otherwise timing doesn't work out
+        $(form).find(".withcustompicker").on('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
     else if ($(form).find("input").length > 0)
         $(form).find("input").on("blur", listener);
     else if ($(form).find("textarea").length > 0)
@@ -439,26 +568,29 @@ function PopUp_clickedElement(element)
         _PopUp_Form_addOnBlurListener(form, function(){
             PopUp_clickedSaveElement(form);
         });
-        if ($(form).find("input").hasClass("withtypepicker"))
-        {
-            $(form).find("input").on("change keyup paste", function(){
-                var tp = $(form).find("input")[0].tp;
-                TP_select(tp, $(form).find("input").val());
-            });
-        }
-        if ($(form).find('input').hasClass('withsectionpicker'))
-        {
-            $(form).find('input').on('change keyup paste', function(){
-                var sp = $(form).find('input')[0].sp;
-                SP_select(sp, $(form).find('input').val());
-            });
-        }
     }
     var text_id = _PopUp_Form_getElementIDForForm(form);
     if (text_id == 'popup-title')
     {
         $(popUp).find('.popup-ctrl').addClass('hidden');
     }
+    $(form).find('input').off('keyup').on('keyup', function(ev){
+        var keyCode = ev.keyCode || ev.which;
+        if (keyCode == 13) // enter key
+        {
+            PopUp_clickedSaveElement(form);
+        }
+    });
+    $(form).find('.withtimepicker').off('keyup').off('keydown').on('keydown', function(ev){
+        ev.preventDefault();
+    });
+    $(form).find('.withdatepicker').off('keyup').off('keydown').on('keydown', function(ev){
+        ev.preventDefault();
+    });
+    $(form).find('.withcustompicker').off('keyup').off('keydown').on('keydown', function(ev){
+        ev.preventDefault();
+    });
+
     //$(form).find("input").data("datetimepicker");
     //$(form).find("input").datetimepicker();
 }
@@ -469,16 +601,16 @@ function PopUp_clickedSaveElement(form)
         _PopUp_Form_giveFocus(form);
         return;
     }
-    if ($(form).find("input").hasClass("withtypepicker") && !TP_validateType(_PopUp_Form_getValue(form)))
-    {
-        _PopUp_Form_giveFocus(form);
-        return;
-    }
-    if ($(form).find('input').hasClass('withsectionpicker') && !SP_validateSection(_PopUp_Form_getValue(form)))
-    {
-        _PopUp_Form_giveFocus(form);
-        return;
-    }
+    //if ($(form).find("input").hasClass("withtypepicker") && !TP_validateType(_PopUp_Form_getValue(form)))
+    //{
+    //    _PopUp_Form_giveFocus(form);
+    //    return;
+    //}
+    //if ($(form).find('input').hasClass('withsectionpicker') && !SP_validateSection(_PopUp_Form_getValue(form)))
+    //{
+    //    _PopUp_Form_giveFocus(form);
+    //    return;
+    //}
     var popUp = _PopUp_getPopUp(form);
     PopUp_markAsNotEditing(popUp);
     // hide the form and unhide the text
@@ -514,7 +646,28 @@ function PopUp_clickedClose(popUpAnchor)
     // check if there are unsaved changes
     if (EventsMan_hasUncommitted(PopUp_getID(popUp)))
     {
-        $(popUpAnchor).popover('toggle');
+        AS_showActionSheetFromElement($(popUp).find('#close_button')[0], popUp, 'Save changes?',
+            [
+                {
+                    important: false,
+                    text: 'Save',
+                },
+                {
+                    important: true,
+                    text: 'Don\'t save',
+                }
+            ],
+            function(index){
+                if (index == 0) {
+                    PopUp_clickedSavePopUp(popUp, true);
+                    //PopUp_clickedClose(popUp);
+                }
+                else{
+                    PopUp_clickedUndo(popUp);
+                    PopUp_clickedClose(popUp);
+                }
+            }
+        );
         return;
     }
 
@@ -528,23 +681,140 @@ function PopUp_clickedDelete(popUpAnchor)
     if (PopUp_isEditing(popUp))
         return;
     var event_id = PopUp_getID(popUp);
-    PopUp_close(popUp);
+    var eventDict = EventsMan_getEventByID(event_id);
+    if (eventDict && 'recurrence_days' in eventDict)
+    {
+        AS_showActionSheetFromElement(popUpAnchor, popUp, null, [
+                {important: false, text:'Only this event'},
+                {important: true, text:'All future events'}
+            ], function(index){
+            if (index == 0)
+            {
+                // only this event
+                EventsMan_deleteEvent(event_id);
+                if (!EventsMan_eventShouldBeShown(event_id))
+                    PopUp_close(popUp);
+            }
+            else 
+            {
+                // all future events
+                EventsMan_deleteAllFutureEvents(event_id);
+                if (!EventsMan_eventShouldBeShown(event_id))
+                    PopUp_close(popUp);
+            }
+        });
+        return;
+    }
     EventsMan_deleteEvent(event_id);
+    if (!EventsMan_eventShouldBeShown(event_id))
+        PopUp_close(popUp);
 }
-function PopUp_clickedSavePopUp(anchor)
+function PopUp_clickedUnhide(popUpAnchor)
+{
+    var popUp = _PopUp_getPopUp(popUpAnchor);
+    if (PopUp_isEditing(popUp))
+        return;
+    var event_id = PopUp_getID(popUp);
+    var eventDict = EventsMan_getEventByID(event_id);
+    if ('recurrence_days' in eventDict)
+    {
+        AS_showActionSheetFromElement(popUpAnchor, popUp, null, [
+                {important: false, text:'Only this event'},
+                {important: true, text:'All future events'}
+            ], function(index){
+            if (index == 0)
+            {
+                // only this event
+                EventsMan_unhideEvent(event_id);
+            }
+            else 
+            {
+                // all future events
+                EventsMan_unhideAllFutureEvents(event_id);
+            }
+        });
+        return;
+    }
+    EventsMan_unhideEvent(event_id);
+}
+function PopUp_clickedSavePopUp(anchor, shouldClose)
 {
     var popUp = _PopUp_getPopUp(anchor);
     if (PopUp_isEditing(popUp))
         return;
+    shouldClose = shouldClose || false;
     var id = PopUp_getID(popUp);
-    if (NO_hasSimilarEvents(id))
+    if (SE_hasSimilarEvents(id))
     {
-        $(anchor).popover('toggle');
+        AS_showActionSheetFromElement($(popUp).find('#save_button')[0], popUp,
+            'There seems to be a similar event already on the calendar',
+            [
+                {
+                    important: false,
+                    text: 'Show similar events',
+                },
+                {
+                    important: true,
+                    text: 'Save anyways',
+                },
+            ], function(index){
+                if (index == 0)
+                {
+                    NO_showSimilarEvents(PopUp_getID(popUp));
+                }
+                else
+                {
+                    NO_removeSimilarEventsNotification(PopUp_getID(popUp));
+                    PopUp_clickedSavePopUp(popUp);
+                }
+            }
+        );
         return;
+    }
+    var eventDict = EventsMan_getEventByID(id);
+    var uncommitted = EventsMan_getUncommitted(id);
+    if (eventDict // new events won't have eventDict, in which case we don't ask
+        && 'recurrence_days' in eventDict 
+        && 'recurrence_days' in uncommitted)
+    {
+        // check whether recurrence pattern was modified. If it was, don't ask
+        if (eventDict.recurrence_days.equals(uncommitted.recurrence_days))
+        {
+            AS_showActionSheetFromElement($(popUp).find('#save_button')[0], popUp,
+                'This event is part of a recurring event.',
+                [
+                    {
+                        important: false,
+                        text: 'Only this event',
+                    },
+                    {
+                        important: true,
+                        text: 'All future events',
+                    }
+                ], function(index){
+                    PopUp_markAsSaved(popUp);
+                    $(popUp).find('.unsaved').removeClass('unsaved');
+                    if (index == 0)
+                    {
+                        EventsMan_commitChanges(id);
+                    }
+                    else 
+                    {
+                        // TODO save changes to recurring events
+                        EventsMan_commitChangesToAllFutureEvents(id);
+                    }
+                    if (shouldClose)
+                        PopUp_clickedClose(popUp);
+                }
+            );
+            return;
+        }
     }
     PopUp_markAsSaved(popUp);
     $(popUp).find('.unsaved').removeClass('unsaved');
     EventsMan_commitChanges(id);
+    if (shouldClose)
+        PopUp_clickedClose(popUp);
 }
 function PopUp_clickedUndo(anchor)
 {

@@ -1,3 +1,4 @@
+from random import randrange
 from django.utils.dateformat import format
 from django.utils import timezone
 
@@ -6,6 +7,7 @@ import re
 
 from nice.models import *
 from datetime import *
+import settings.common as settings
 
 
 # TODO(Naphat, Maxim): Should we switch netid parameter inputs to User object inputs from request.user? May save a database call.
@@ -37,8 +39,8 @@ def get_events(netid, **kwargs):
             continue
         if last_updated and best_rev.modified_time < last_updated:
             continue
-        if event.id in hidden_events:
-            continue
+        #if event.id in hidden_events:
+        #    continue
         # if we made it to here, then the event is good
         survived.append(construct_event_dict(event, netid=netid, best_rev=best_rev))
     return survived
@@ -49,6 +51,15 @@ def get_events_by_course_ids(course_ids, **kwargs):
     start_date = kwargs.pop('start_date', None)
     end_date = kwargs.pop('end_date', None)
     filtered = Event.objects.filter(group__section__course__in=courses)
+
+    # get colors for courses first
+    count = 0
+    mapping = {}
+    for course_id in course_ids:
+        mapping[str(course_id)] = count
+        count += 1
+        if count == len(User_Section_Table.COLOR_CHOICES):
+            count = 0
 
     survived = []
     for event in filtered:
@@ -63,10 +74,14 @@ def get_events_by_course_ids(course_ids, **kwargs):
         if last_updated and best_rev.modified_time < last_updated:
             continue
         # if we made it to here, then the event is good
-        survived.append(construct_event_dict(event, best_rev=best_rev))
+        
+        temp = construct_event_dict(event, best_rev=best_rev)
+        course_id = Section.objects.get(id=temp['section_id']).course.id
+        temp['section_color'] = User_Section_Table.COLOR_CHOICES[mapping[str(course_id)]][0]
+        survived.append(temp)
     return survived
 
-def modify_events(netid, events):
+def modify_events(netid, events, auto_approve=False):
     """ 
     Handles event creation and modification.
 
@@ -80,18 +95,26 @@ def modify_events(netid, events):
         * event_id (default: None)
         * event_type 
         * section_id
+        * section_color
         * recurrence_days
         * recurrence_interval   
         * recurrence_end (end date for the recurring series)
 
     For example, you can call this with: modify_events(get_community_user().username, [{...}])
 
+    Returns:
+    * changed_ids dictionary: mapping from previous ID (usually a temporary one set in the UI) to the list [actual event ID, actual event_group ID this event belongs to]
+    * deleted_ids array (list of event IDs)
+
     """
     try:
         user = User.objects.get(username=netid).profile
     except:
         raise Exception("Invalid user")
+    
     changed_ids = {}
+    deleted_ids = []
+
     for event_dict in events:
         event_dict = parse_json_event_dict(event_dict) # handles datetimes and such
         new_modified_time = get_current_utc() # don't trust client's timestamps
@@ -116,6 +139,7 @@ def modify_events(netid, events):
             new_event_group_rev.recurrence_interval = None
             
         isNewEvent = False
+        shouldWeModifyFutureEvents = False
 
         # Decide whether to edit existing event, or make new event.
         try:
@@ -136,15 +160,15 @@ def modify_events(netid, events):
             recurrence_has_changed = False # used in recurring events handling further down
             if last_rev.start_date != new_event_group_rev.start_date or last_rev.end_date != new_event_group_rev.end_date:
                 event_groups_match = False 
-            elif 'recurring' in event_dict and event_dict['recurring'] is True: # recurrence is enabled in updated event_dict
-                if (last_rev.recurrence_days != new_event_group_rev.recurrence_days):
+            if 'recurring' in event_dict and event_dict['recurring'] is True: # recurrence is enabled in updated event_dict
+                if last_rev.recurrence_days != json.dumps(event_dict['recurrence_days']):
                     event_groups_match = False
                     recurrence_has_changed = True
-                if (last_rev.recurrence_interval != new_event_group_rev.recurrence_interval):
+                if last_rev.recurrence_interval != new_event_group_rev.recurrence_interval:
                     event_groups_match = False
                     recurrence_has_changed = True
             elif 'recurring' in event_dict and event_dict['recurring'] is False: # recurrence is disabled in updated event_dict
-                if last_rev.recurrence_days is not None or last_rev.recurrence_interval is not None:
+                if last_rev.recurrence_days is not None and len(last_rev.recurrence_days) is not 0:
                     event_groups_match = False
                     recurrence_has_changed = True
             
@@ -174,12 +198,27 @@ def modify_events(netid, events):
             # create the actual event
             event = Event(group=event_group)
             event.save()
-            changed_ids[event_dict['event_id']] = event.id
+            changed_ids[event_dict['event_id']] = [event.pk, event_group.pk] # mark down new event ID and its event group ID
         
         
+        # TODO: Dyland. Test if this breaks anything
+        curr_section = Section.objects.get(id=event_dict['section_id'])
+        try:
+            user_section_table = User_Section_Table.filter(
+                user=user
+            ).get(
+                section=curr_section
+            )
+
+            if event_dict['section_color']:
+                user_section_table.color = event_dict['section_color']
+                user_section_table.save()
+        except:
+            pass
+
         # Now that we have a new or existing event selected, create a new revision.
-        def make_new_rev(e):
-            return Event_Revision(
+        def make_new_rev(e, auto_approve=False):
+            for_ret = Event_Revision(
                 event = e,
                 event_title = event_dict['event_title'],
                 event_type = event_dict['event_type'],
@@ -190,14 +229,22 @@ def modify_events(netid, events):
                 modified_user = user,
                 modified_time = new_modified_time
             )
-        eventRev = make_new_rev(event)
+            if auto_approve:
+                for_ret.approved = for_ret.STATUS_APPROVED
+            return for_ret
+        eventRev = make_new_rev(event, auto_approve)
         # Save
         eventRev.save()
         event.save()
 
         ## Handle recurring events
         if event_dict['recurring'] is True:
-            event_dates = get_recurrence_dates(event_dict['event_start']+timedelta(days=1),
+            event_dates = get_recurrence_dates(event_dict['event_start'],
+                                                event_dict['event_end'],
+                                                new_event_group_rev.end_date,
+                                                event_dict['recurrence_days'],
+                                                event_dict['recurrence_interval'])   # events in this group starting with next day
+            event_dates_starting_tomorrow = get_recurrence_dates(event_dict['event_start']+timedelta(days=1),
                                                 event_dict['event_end']+timedelta(days=1),
                                                 new_event_group_rev.end_date,
                                                 event_dict['recurrence_days'],
@@ -208,7 +255,7 @@ def modify_events(netid, events):
             for d_start, d_end in dates:
                 new_event = Event(group=event_group)
                 new_event.save() 
-                new_rev = make_new_rev(new_event)
+                new_rev = make_new_rev(new_event, auto_approve)
                 new_rev.event_start = d_start
                 new_rev.event_end = d_end
                 new_rev.save() # must have saved event first, so that revision points to an event ID
@@ -225,37 +272,49 @@ def modify_events(netid, events):
 
                 if last_rev.recurrence_days is None: # no previous recurrence pattern
                     # Make all new events with this same event revision
-                    create_new_events(event_dates)
+                    create_new_events(event_dates_starting_tomorrow) # don't make event that matches the original one being edited (i.e. start a day later)
                 else:
                     # Previous recurrence pattern has changed -- need to find the previous-created events and move them
                     # By default, only edit the ones after this event
                     
                     # find and remove old events
-                    old_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
-                    old_events.delete()
+                    old_events_pre = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
+                    old_events = [r for r in old_events_pre if r.event_start >= event_dict['event_start']]
 
+                    for oe in old_events:
+                        oe_e = oe.event
+                        deleted_ids.append(oe_e.pk)
+                        oe_e.event_revision_set.all().delete()
+                        oe_e.delete()
+                    
                     # recreate events at their new times
                     create_new_events(event_dates)
 
             else:
                 # Recurrence pattern hasn't changed.
 
-                # Which fields have changed since previous revision? Compare to the best-revision this user sees (stored in previous_best_revision) -- not to the global last-approved revision.
-                old, new = previous_best_revision.compare(new_rev)
 
-                # By default, recurring event edit settings is to change all future events
-                # Select all future events in this event group (other than this event)
-                all_future_events = event_group.event_set.filter(start_date__gte = event_dict['event_start'])
-                for future_event in all_future_events: # Edit each future event
-                    # Take its last revision, as seen by this user
-                    this_event_last_rev = future_event.best_revision()
-                    # Edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
-                    this_event_last_rev.apply_changes(new)
-                    # Save as new unapproved revision.
-                    this_event_last_rev.approved = False
-                    this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
+                # Select all future events in this event group (other than this event) (then we overwrite changed fields)
+                if shouldWeModifyFutureEvents:
+                    # Which fields have changed since previous revision? Compare to the best-revision this user sees (stored in previous_best_revision) -- not to the global last-approved revision.
+                    old, new = previous_best_revision.compare(eventRev)
         
-    return changed_ids
+                    all_future_events = [evt.best_revision(netid=netid) for evt in event_group.event_set.all()]
+                    matching_future_events = [r for r in all_future_events if r.event_start >= event_dict['event_start']]
+                    for future_event in matching_future_events: # Edit each future event
+                        # Take its last revision, as seen by this user
+                        this_event_last_rev = future_event
+                        this_event_last_rev.pk = None
+                        # Edit the fields that have changed -- just overwrite (no matter if specific event changes have been made)
+                        this_event_last_rev.apply_changes(new)
+                        
+                        # Save as new unapproved revision.
+                        this_event_last_rev.modified_user = user
+                        this_event_last_rev.modified_time = new_modified_time
+                        this_event_last_rev.approved = this_event_last_rev.STATUS_APPROVED if auto_approve else this_event_last_rev.STATUS_PENDING
+                        this_event_last_rev.save() # Note: each of these revisions will have to be approved separately.
+        
+    return changed_ids, deleted_ids
 
 def hide_events(netid, event_IDs):
     """
@@ -263,7 +322,7 @@ def hide_events(netid, event_IDs):
     
     Arguments: User object, event IDs list.
     
-    Returns: True if succeeded, False if failed.
+    Returns: True if succeeded, exception if failed.
     """
     user = User.objects.get(username=netid).profile
     hidden_events = user.hidden_events
@@ -272,13 +331,38 @@ def hide_events(netid, event_IDs):
     else:
         hidden_events = []
     for event_id in event_IDs:
-        try:
-            event = Event.objects.get(id=event_id) # verify that id exists
-            hidden_events.append(event.id)
-        except Exception, e:
-            pass # event doesn't exist, or something went wrong with hide events call (that's okay)
+        if event_id not in hidden_events: # prevent duplicates
+            try:
+                event = Event.objects.get(id=event_id) # verify that id exists
+                hidden_events.append(event.id)
+            except Exception, e:
+                pass # event doesn't exist
     user.hidden_events = json.dumps(hidden_events)
     user.save()
+    return True
+
+def unhide_events(netid, event_IDs):
+    """Removes events from user's hidden event list.
+
+    Arguments: netid, event IDs list.
+
+    Returns: True if successed, False if failed.
+    """
+    user = User.objects.get(username=netid).profile
+    hidden_events = user.hidden_events
+    if hidden_events:
+        hidden_events = json.loads(hidden_events)
+    else:
+        hidden_events = []
+    
+    for event_id in event_IDs:
+        try:
+            hidden_events.remove(event.id) # removes first occurence of this value -- not this index!
+        except Exception, e:
+            pass # wasn't in hidden_events
+    user.hidden_events = json.dumps(hidden_events)
+    user.save()
+    return True
     
 def get_hidden_events(netid):
     user = User.objects.get(username=netid).profile
@@ -316,15 +400,27 @@ def construct_event_dict(event, netid=None, best_rev=None):
         rev = event.best_revision(netid=netid)
     group = event.group
     group_rev = group.best_revision()
-    assert rev != None and group != None and group_rev != None
-    return __construct_revision_dict(rev, group, group_rev)
+    assert group != None and group_rev != None
+    if not rev:
+        return None
+    return __construct_revision_dict(rev, group, group_rev, netid)
     
     
-def __construct_revision_dict(rev, group, group_rev):
+def __construct_revision_dict(rev, group, group_rev, netid):
     """
     Serializes a specific revision into a dict that can be passed to the client for rendering.
 
     """
+    try:
+        section_color = User_Section_Table.objects.filter(
+            user=User.objects.get(username=netid).profile
+        ).get(
+            section=rev.event.group.section.id
+        ).color
+    except:
+        color_choices = len(User_Section_Table.COLOR_CHOICES)
+        section_color = User_Section_Table.COLOR_CHOICES[randrange(0,color_choices)][0]
+
     results = {
         'event_id': rev.event.id,
         'event_group_id': rev.event.group.id,
@@ -334,12 +430,15 @@ def __construct_revision_dict(rev, group, group_rev):
         'event_end': format(rev.event_end, 'U'),
         'event_description': rev.event_description,
         'event_location': rev.event_location,
+        'section_color': section_color,
+        'course_id': rev.event.group.section.course.id,
         'section_id': rev.event.group.section.id,
         'modified_user': rev.modified_user.user.username,
         'modified_time': format(rev.modified_time, 'U'),
+        'revision_id': rev.pk
     }
     if group_rev.recurrence_interval is not None:
-        results['recurrence_days'] = group_rev.recurrence_days
+        results['recurrence_days'] = json.loads(group_rev.recurrence_days)
         results['recurrence_interval'] = group_rev.recurrence_interval
         results['recurrence_end'] = format(group_rev.end_date, 'U')
     return results
@@ -494,6 +593,39 @@ def get_sections(netid):
         sections_array.append(section.id)
     return ret
 
+def get_default_colors(netid):
+    """
+    returns:
+    {
+        index: color
+    }
+    """
+    ret = {}
+    i = 0
+    for color_pair in User_Section_Table.COLOR_CHOICES:
+        ret[i] = color_pair[0]
+        i += 1
+    return ret
+
+def get_section_colors(netid):
+    """
+    returns:
+    {
+        section_id: {
+            color,
+            course_id
+        }
+    }
+    """
+    user = User.objects.get(username=netid).profile
+    ret = {}
+    for table in User_Section_Table.objects.all().filter(user=user):
+        ret[table.section.id] = {
+            'color': table.color,
+            'course_id': table.section.course.id,
+        }
+    return ret
+
 def get_course_by_id(course_id):
     """
     returns:
@@ -501,6 +633,7 @@ def get_course_by_id(course_id):
         course_id:
         course_title:
         course_listings:
+        course_primary_listing:
         course_professor:
         course_description:
         sections: {
@@ -525,6 +658,7 @@ def construct_course_dict(course):
         'course_id': course.id,
         'course_title': course.title,
         'course_listings': course.course_listings(),
+        'course_primary_listing': course.primary_listing(),
         'course_professor': course.professor,
         'course_description': course.description,
         'sections': sections_group,
@@ -555,11 +689,11 @@ def search_classes(query):
     # TODO(Maxim): escape the query before searching for classes
     filtered = Course.objects
 
-    # First, search input string for any two, three, or four digit numbers. Use results to filter by course number.
-    class_num = re.search(r'(\d{2,4})', q)
+    # First, search input string for any one, two, three, or four digit numbers. Use results to filter by course number.
+    class_num = re.search(r'(\d{1,4})', q)
     if class_num:
         num = class_num.group()
-        filtered = filtered.filter(Q(course_listing__number__contains = num)) # filter by this course number
+        filtered = filtered.filter(Q(course_listing__number__startswith = num)) # filter by this course number
         q = q.replace(num, ' ') # remove from remaining query (replace with space so that "COS333advanced" becomes "COS advanced", not"COSadvanced")
     
     # Then, if any remaining parts are three letter string and are in depts list, filter by them.
@@ -581,4 +715,135 @@ def search_classes(query):
     for c in courses:
         results.append(construct_course_dict(c))
         #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
-    return results
+    return sorted(results, key=lambda r: r['course_listings']) # alphabetical sort
+
+
+def get_unapproved_revisions(netid, count=3):
+    """Fetches [count] (default 3) unapproved revisions for this user to vote on.
+
+    How it works: Filter to revisions that:
+    - classes the user is in
+    - not created by the user
+    - are newer than the last approved revision
+    - are unapproved, regardless of what their current vote total is
+    - don't belong to an event this user hid previously
+    
+    Later, perhaps add these constraints:
+    - bias towards events the user has participated in before?
+    - are future events?
+    """
+    try:
+        user = User.objects.get(username=netid).profile
+    except Exception, e:
+        return []
+    all_sections = user.sections.all()
+    hidden_events = user.hidden_events
+    if hidden_events:
+        hidden_events = json.loads(hidden_events)
+    else:
+        hidden_events = []
+    filtered = Event.objects.filter(group__section__in = all_sections)[:count]
+    survived = []
+    for event in filtered:
+        if event.id in hidden_events:
+            continue  # skip this event if it's in the user hid it previously
+
+        best_rev = event.best_revision(netid=netid) # load the best revision once
+        unapproved_revs = event.event_revision_set.filter(approved=Event_Revision.STATUS_PENDING)
+        
+        if best_rev:
+            unapproved_revs = unapproved_revs.filter(modified_time__gte = best_rev.modified_time) # newer than the last approved revision (if one exists)
+        
+        unapproved_revs = unapproved_revs.order_by('modified_time') # earlier ones first, so they don't get missed
+
+        for unapproved_rev in unapproved_revs:
+            # conditions we don't want are below -- if any are matched, continue to the next unapproved revision (or next event)
+            if unapproved_rev.modified_user == user: # avoid revisions made by this user
+                continue
+            if Vote.objects.filter(voted_on=unapproved_rev, voter=user).all(): # if already voted
+                continue
+            # if we made it to here, then the revision ought to be voted upon
+            survived.append(construct_event_dict(event, netid=netid, best_rev=unapproved_rev))
+    return survived
+
+# TODO(Maxim) what is revision id? It is never passed to front end
+def process_vote_on_revision(netid, isPositive, revision_id):
+    """Handles users' votes on unapproved revisions -- checks the votes for eligibility, records them, then processes side-effects (approval, points).
+
+    Procedure:
+
+    Check if voter is eligible to vote on this revision, else stop
+    Record the vote
+    Recompute total vote count for this revision
+    Award points to the voter for having submitted a vote.
+    If the revision passes the approval threshold, approve it. If it passes the rejection threshold, reject it.
+    If we changed state to Approved or Rejected (no longer Pending), then award points to this voter, previous voters, and revision creator.
+
+    Returns: True if succeeded, False if failed
+
+    """
+
+    try:
+        revision = Event_Revision.objects.get(pk=revision_id)
+        user = User.objects.get(username=netid).profile
+    except Exception, e:
+        return False
+    
+    # Voter is not eligible to vote on this revision
+    if revision.approved != revision.STATUS_PENDING:
+        return False
+    if revision.modified_user.user.username == netid:
+        return False
+    if Vote.objects.filter(voted_on=revision, voter=user).all().count() > 0:
+        return False
+    if revision.event.group.section not in user.sections.all():
+        return False
+
+    # Record the vote 
+    v = Vote(voter=user, voted_on=revision, when=get_current_utc(), score=(1 if isPositive else -1))
+    v.save()
+
+    # Award points for making this vote
+    user.award_points(settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING)
+    print 'assigned to user:', settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING
+    user.save()
+
+    # Recompute total vote count for this revision
+    all_votes = Vote.objects.filter(voted_on=revision)
+    total_score = sum([vt.score for vt in all_votes])
+
+    print 'checking thresholds with total_score', total_score 
+
+    # If the revision passes the approval threshold, approve it. If it passes the rejection threshold, reject it. Assign points accordingly.
+    if total_score >= settings.THRESHOLD_APPROVE:
+        revision.approved = revision.STATUS_APPROVED
+        revision.save()
+
+        # Award points to all voters
+        for vt in all_votes:
+            if vt.score > 0: # voted correctly
+                vt.voter.award_points(settings.REWARD_FOR_PROPER_UPVOTE)
+            elif vt.score < 0: # voted incorrectly
+                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_DOWNVOTE)
+        # Award points to revision creator
+        revision.modified_user.award_points(settings.REWARD_FOR_APPROVED_SUBMISSION)
+    elif total_score <= settings.THRESHOLD_REJECT:
+        revision.approved = revision.STATUS_REJECTED
+        revision.save()
+        print 'assigning rejection'
+        
+        # Award points to all voters
+        for vt in all_votes:
+            if vt.score < 0: # voted correctly
+                vt.voter.award_points(settings.REWARD_FOR_PROPER_DOWNVOTE)
+                print 'assigned to user downvote:', settings.REWARD_FOR_PROPER_DOWNVOTE
+            elif vt.score > 0: # voted incorrectly
+                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_UPVOTE)
+                print 'assigned to user wrong upvote:', settings.REWARD_FOR_IMPROPER_UPVOTE
+        # Award points to revision creator
+        revision.modified_user.award_points(settings.REWARD_FOR_REJECTED_SUBMISSION)
+        print 'assigned to creator rejected submission:', settings.REWARD_FOR_REJECTED_SUBMISSION
+    else:
+        print 'no thresholds hit'
+    
+    return True

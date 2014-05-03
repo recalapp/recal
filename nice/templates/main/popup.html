@@ -9,15 +9,17 @@
                 <div class="hide" id="popup-title-form">
                     <input type="text" class="form-control" maxlength="100">
                 </div>
-                <a href="#" onclick="PopUp_clickedDelete(this); return false;" class="popup-ctrl">
-                    <span class="glyphicon glyphicon-trash"></span>
+                <a href="#" id="unhide_button" onclick="PopUp_clickedUnhide(this); return false;" class="hide popup-ctrl">
+                    <!-- <span class="glyphicon glyphicon-eye-open"></span> -->
+                    <i class="fa fa-plus-square-o"></i>
+                </a>
+                <a href="#" id="hide_button" onclick="PopUp_clickedDelete(this); return false;" class="popup-ctrl">
+                    <!-- <span class="glyphicon glyphicon-eye-close"></span> -->
+                    <i class="fa fa-minus-square-o"></i>
                 </a>
                 <a href="#" onclick="PopUp_clickedSavePopUp(this); return false;" id="save_button" class="popup-ctrl hide">
-                    <span class="glyphicon glyphicon-floppy-saved"></span>
+                    <span class="glyphicon glyphicon-ok"></span>
                 </a>
-                <a href="#" onclick="PopUp_clickedUndo(this); return false;" id="undo_button" class="popup-ctrl hide">
-                    <span class="glyphicon glyphicon-floppy-remove"></span>
-                </a> 
                 <!--
                 <a href="#" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl popup-ctrl-right">
                     <span class="glyphicon glyphicon-remove"></span>
@@ -48,6 +50,20 @@
                     </div>
                 </div>
             </div>
+
+            <input id="popup-repeat" class="" type="checkbox" name="repeat" value="true"><label for="popup-repeat"><h4>&nbsp;&nbsp;Repeat</h4></label>
+            <div id="popup-repeat-pattern" class="popup-repeat-item hide">
+            </div>
+            <!--<div class="popup-repeat-item hide row">
+                <div id="popup-repeat-end">
+                    <input type="date" class="form-control withdatepicker" required>
+                </div>
+                <div id="popup-repeat-interval">
+                </div>
+            </div>
+            -->
+
+
             <h4 id="popup-loc" onclick="PopUp_clickedElement(this)">CS Building</h4>
             <div class="hide" id="popup-loc-form">
                 <input type="text" class="form-control" maxlength="100">

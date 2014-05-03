@@ -1,93 +1,98 @@
+var NO_TYPES = {
+    WARNING: 'alert-warning',
+    INFO: 'alert-info',
+}
 function NO_init()
 {
     PopUp_addCloseListener(function(id){
-        NO_closeAllNotificationsForEventID(id);
-    });
-}
-function NO_addRecentlyUpdated(text)
-{
-    var htmlContent = CacheMan_load('notifications-template');
-    SB_push(htmlContent);
-    var noti = $('#noti-123')[0];
-    noti.id = '';
-    $(noti).addClass('alert-info');
-    $(noti).find('#noti-content').text(text);
-    $(noti).find('button').on('click', function(){
-        $(noti).remove();
-        SB_hideIfEmpty();
+        NO_removeNotificationID(id);
     });
 }
 
-function NO_showSimilarEventsNotification(event_id, similarEvents)
+function NO_showNotification(id, text, type, meta)
 {
-    if ($('#' + event_id + '.alert').length > 0)
+    var $noti;
+    if (NO_hasNotificationID(id))
     {
-        // notification already shown
-        var noti = $('#' + event_id + '.alert')[0];
-        if (similarEvents.length == 0)
-        {
-            // not similar anymore. remove
-            SB_pop(noti);
-            SB_hideIfEmpty();
-        }
-        else
-        {
-            $(noti).data('events', similarEvents);
-        }
-        return;
+        $noti = $('#'+id+'.alert');
+    } else 
+    {
+        $noti = $('<div>').addClass('alert').addClass('alert-dismissible');
+        $noti.append('<button id="close_button" type="button" class="close" aria-hidden="true">&times;</button>');
+        $('<span id="noti-content">').appendTo($noti);
+        $noti.attr('id', id);
+        SB_push($noti);
     }
-    if (similarEvents.length == 0)
-        return;
-    var htmlContent = CacheMan_load('notifications-template');
-    SB_push(htmlContent);
-    var noti = $('#noti-123')[0];
-    noti.id = event_id;
-    $(noti).addClass('alert-warning');
-    $(noti).find('#noti-content').html('<a href="#" class="alert-link" onclick="">A similar event</a> already exists.');
-    $(noti).data('events', similarEvents);
-    $(noti).find('#noti-content').on('click', function(ev){
+    $noti.addClass(type);
+    $text = $('<a>').addClass('alert-link').text(text).on('click', function(ev){
         ev.preventDefault();
-        NO_showSimilarEvents(event_id);
-        //return false;
+        $noti.trigger('noti.click');
+        SB_pop($noti);
     });
-    $(noti).find('button').on('click', function(){
-        SB_pop(noti);
-        //$(noti).remove();
-        SB_hideIfEmpty();
+    $noti.find('#close_button').on('click', function(ev){
+        ev.preventDefault();
+        NO_removeNotificationID($noti.attr('id'));
     });
+    $noti.find('#noti-content').append($text);
+    //$(noti).data('events', similarEvents);
+    if (meta)
+    {
+        $.each(meta, function(key, value){
+            $noti.data(key, value);
+        });
+    }
+    return $noti;
 }
-function NO_removeSimilarEventsNotification(event_id)
+function NO_hasNotificationID(id)
 {
-    SB_pop($('#' + event_id + '.alert.in')[0]);
+    return $('#' + id + '.alert').length > 0;
+}
+
+function NO_removeNotificationID(id)
+{
+    if (!NO_hasNotificationID(id))
+        return;
+    SB_pop($('#' + id + '.alert.in')[0]);
     SB_hideIfEmpty();
 }
-function NO_showSimilarEvents(event_id)
-{
-    var noti = $('#' + event_id + '.alert')[0];
-    SB_fill(); 
-    SB_pop(noti);
-    var popUp = PopUp_getPopUpByID(event_id)
-    PopUp_markAsEditing(popUp);
-    //$(popUp).data('is_editing', true);
-    $(popUp).draggable('disable');
-    var called = false; // TODO bad for memory
-    SB_addWillCloseListener(function(){
-        if (called)
-            return;
-        called = true;
-        PopUp_markAsNotEditing(popUp);
-        $(popUp).draggable('enable');
-    });
-    EP_initWithEvents(event_id, $(noti).data('events'));
-}
-function NO_hasSimilarEvents(event_id)
-{
-    return $('#' + event_id + '.alert.in').length > 0;
-}
 
-function NO_closeAllNotificationsForEventID(event_id)
-{
-    $('#'+event_id+'.alert').each(function(index){
-        SB_pop(this);
-    });
-}
+//function NO_showSimilarEventsNotification(event_id, similarEvents)
+//{
+//    if ($('#' + event_id + '.alert').length > 0)
+//    {
+//        // notification already shown
+//        var noti = $('#' + event_id + '.alert')[0];
+//        if (similarEvents.length == 0)
+//        {
+//            // not similar anymore. remove
+//            SB_pop(noti);
+//            SB_hideIfEmpty();
+//        }
+//        else
+//        {
+//            $(noti).data('events', similarEvents);
+//        }
+//        return;
+//    }
+//    if (similarEvents.length == 0)
+//        return;
+//    var htmlContent = CacheMan_load('notifications-template');
+//    SB_push(htmlContent);
+//    var noti = $('#noti-123')[0];
+//    noti.id = event_id;
+//    $(noti).addClass('alert-warning');
+//    $(noti).find('#noti-content').html('<a href="#" class="alert-link" onclick="">A similar event</a> already exists.');
+//    $(noti).data('events', similarEvents);
+//    $(noti).find('#noti-content').on('click', function(ev){
+//        ev.preventDefault();
+//        SE_showSimilarEvents(event_id, $(noti).data('events'));
+//        SB_pop(noti);
+//        //NO_showSimilarEvents(event_id);
+//        //return false;
+//    });
+//    $(noti).find('button').on('click', function(){
+//        SB_pop(noti);
+//        //$(noti).remove();
+//        SB_hideIfEmpty();
+//    });
+//}

@@ -27,11 +27,12 @@ function EventsMan_pullFromServer(complete)
     };
     if (filtered.length == 0)
         return;
-    LO_show();
     eventsManager.isIdle = false;
     var start = moment.unix(CUR_SEM.start_date);
     var end = moment.unix(CUR_SEM.start_date);
+    start.week(start.week() + 1);
     end.week(start.week() + 1);
+
     $.ajax('/get/bycourses/0/' + start.unix() + '/' + end.unix(), {
         dataType: 'json',
         type: 'GET',
@@ -40,7 +41,6 @@ function EventsMan_pullFromServer(complete)
         },
         success: function(data){
             var eventsArray = data;
-            LO_hide();
             if (data.length == 0)
             {
                 eventsManager.isIdle = true;
@@ -65,7 +65,6 @@ function EventsMan_pullFromServer(complete)
         },
         error: function(data){
             eventsManager.isIdle = true;
-            LO_hide();
         }
     });
 }

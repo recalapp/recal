@@ -1,3 +1,4 @@
+
 function Cal_init() {
     if (CAL_INIT)
         return;
@@ -21,20 +22,36 @@ function Cal_reload()
     //try{
     var eventIDs = EventsMan_getEnrolledEvents();
     Cal_eventSource.events = [];
+    // $("#calendar").fullCalendar({
+    //     loading: function(isLoading, view) {
+    //         if(isLoading) { // starting to fetch events
+    //             LO_show();
+    //         } else { // done fetching events
+    //             LO_hide();
+    //         }
+    //     },
+    // });
     $.each(eventIDs, function(index){
         eventDict = EventsMan_getEventByID(this);
+        var color = COURSE_COLOR_MAP[eventDict.course_id];
+        if (!color)
+            color = getUsableColor(eventDict.course_id);
+
         Cal_eventSource.events.push({
             id: eventDict.event_id,
-            title: eventDict.event_title,
+            title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
             start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
             end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
-            backgroundColor: '#74a2ca'
+            backgroundColor: color,
+            borderColor: '#ffffff' //color //'#123456' 
         });
     });
     var start = moment.unix(CUR_SEM.start_date);
+    start.week(start.week() + 1);
     $('#calendarui').fullCalendar('gotoDate', start.year(), start.month(), start.date());
     $("#calendarui").fullCalendar("refetchEvents");
-    //}
+    
+        //}
     //catch(err){
     //}
 }

@@ -1,9 +1,12 @@
 $(init)
 var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
+var SECTION_MAP;
+var SECTION_MAP_INVERSE;
 
 function init()
 {
+    pinnedIDs = new Set();
     moment.tz.add({
         "zones": {
             "America/New_York": [
@@ -49,12 +52,29 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
+            if (settings.loadingIndicator == false)
+                return;
+            LO_show();
         }
     });
-    SP_init(); // give priority - not dependent on anything
+    $(document).ajaxSuccess(function(event, xhr, settings){
+        LO_hide();
+    });
+    $(document).ajaxError(function(event, xhr, settings){
+        LO_hide();
+        LO_showError();
+    });
+    CacheMan_init();
+
+    SECTION_MAP = JSON.parse(CacheMan_load('/all-sections'));
+    SECTION_MAP_INVERSE = {};
+    $.each(SECTION_MAP, function (key, value) {
+        SECTION_MAP_INVERSE[value.toLowerCase()] = key;
+    });
+    SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
+    
     SB_init();
     SR_init();
-    CacheMan_init();
     EventsMan_init();
     PopUp_init();
     NO_init();
@@ -78,7 +98,46 @@ function init()
             UI_pin(newID);
         }
     });
+    if (THEME == 'w')
+        loadWhiteTheme();
+    else
+        loadDarkTheme();
+
+    $('.withtooltip').tooltip({
+    });
+    $(window).on('beforeunload', function(ev){
+        if ('localStorage' in window && window['localStorage'] !== null)
+        {
+            localStorage.setItem('user', USER_NETID);
+        }
+    });
+    $(window).on('resize', function(ev){
+        adaptSize();
+    });
+    adaptSize();
 }
+function adaptSize()
+{
+    if (window.innerWidth <= 768)
+    {
+        // tablet
+        $('#agendatab').tab('show');
+        $('#sb-left-container').removeClass('col-xs-4 col-xs-12 col-xs-8');
+        $('#sb-left-container').addClass('col-xs-8');
+    }
+    else
+    {
+        // desktop
+        $('#sb-left-container').removeClass('col-xs-4 col-xs-12 col-xs-8');
+        $('#sb-left-container').addClass('col-xs-4');
+    }
+    if (window.innerWidth <= 400)
+    {
+        $('#sb-left-container').removeClass('col-xs-4 col-xs-12 col-xs-8');
+        $('#sb-left-container').addClass('col-xs-12');
+    }
+}
+
 function Nav_save()
 {
     var id = $("#maintab").find(".active").find("a")[0].id;
@@ -86,7 +145,6 @@ function Nav_save()
 }
 function Nav_load()
 {
-    return;
     var index = SR_get("nav_page");
     if (index == null)
         return;
@@ -109,14 +167,16 @@ function UI_load()
     {
         var savedPinnedIDs = JSON.parse(SR_get('pinned_IDs'));
         $.each(savedPinnedIDs, function (key, value) {
-            UI_pin(key);
+            if (PopUp_getPopUpByID(key) != null)
+                UI_pin(key);
         });
         //$.removeCookie('pinned_IDs');
     } 
     if (SR_get('main_ID') != null)
     {
         if (SR_get('main_ID') != 'null')
-            UI_setMain(SR_get('main_ID'));
+            if (PopUp_getPopUpByID(SR_get('main_ID')) != null)
+                UI_setMain(SR_get('main_ID'));
         //$.removeCookie('main_ID')
     }
 }

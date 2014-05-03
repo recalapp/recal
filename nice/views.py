@@ -14,6 +14,8 @@ from nice.forms import *
 from nice import queries
 from datetime import datetime
 
+from django.views.decorators.clickjacking import xframe_options_exempt
+
 import json
 
 # Views go here.
@@ -25,9 +27,11 @@ To restrict a method to staff members only, decorate with @staff_member_required
 Alternatives: @user_passes_test(lambda u: u.is_staff) or @permission_required('is_superuser')
 '''
 
+@xframe_options_exempt # can load in Chrome extension
 def index(request):
     if not request.user.is_authenticated():
-        return redirect('cas_login')
+        return redirect('landing')
+        #return redirect('cas_login')
     if not user_profile_filled_out(request.user):
         return redirect('edit_profile')
     user = request.user.profile
@@ -36,23 +40,45 @@ def index(request):
         ui_sr = json.loads(user.ui_state_restoration)
         if 'nav_page' in ui_sr:
             page = ui_sr['nav_page']
-    agenda_pref = ['AS', 'RS', 'EX']
+    agenda_pref = ['AS', 'RS', 'EX', 'LE', 'LA', 'OH', 'PR']
     if user.ui_agenda_pref:
         agenda_pref = json.loads(user.ui_agenda_pref)
     calendar_pref = ['RS', 'EX', 'LE', 'LA', 'OH', 'PR']
     if user.ui_calendar_pref:
         calendar_pref = json.loads(user.ui_calendar_pref)
+    theme = 'w'
+    if user.ui_pref:
+        theme = json.loads(user.ui_pref)['theme']
 
-    response = render(request, "main/index.html", {
+    cur_sem = get_cur_semester()
+
+    all_sections = {}
+    for section in request.user.profile.sections.all():
+        all_sections[section.id] = unicode(section)
+
+    return render(request, "main/index.html", {
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
         'nav_page': page,
         'is_mobile': request.mobile,
         'agenda_pref': agenda_pref,
-        'calendar_pref': calendar_pref
+        'calendar_pref': calendar_pref,
+        'cur_sem': {
+            'term_code': cur_sem.term_code,
+            'start_date': format(cur_sem.start_date, 'U'),
+            'end_date': format(cur_sem.end_date, 'U'),
+        },
+        'theme': theme,
+        'base_url': request.build_absolute_uri(),
+        'all_sections': json.dumps(all_sections),
         })
     response.set_cookie('netid', request.user.username)
     return response
+
+def landing(request):
+    if request.user.is_authenticated():
+        return redirect('index')
+    return render(request, 'landing/index.html', None)
 
 def logout(request):
     user = request.user.profile
@@ -73,22 +99,12 @@ def popup_course(request):
     return render(request, 'main/popup-course.html', None)
 def agenda(request):
     return render(request, 'main/agenda.html', None)
-def agenda_header(request):
-    return render(request, 'main/agenda-header.html', None)
-def typepicker(request):
-    return render(request, 'main/type-picker.html', None)
-def sectionpicker(request):
-    return render(request, 'main/section-picker.html', { 'all_sections': request.user.profile.sections.all() })
-def notifications(request):
-    return render(request, 'main/notifications.html', None)
 def event_picker(request):
     return render(request, 'main/event-picker.html', None)
 def event_picker_item(request):
     return render(request, 'main/event-picker-item.html', None)
 def course(request):
     return render(request, 'main/course.html', None)
-def loading(request):
-    return render(request, 'main/loading.html', None)
 
 @login_required
 def edit_profile_manual(request):
@@ -116,6 +132,8 @@ def edit_profile_manual(request):
                     # Enroll user in course, i.e. add to default "All Students" section(s)
                     for default_section in the_course.section_set.filter(isDefault=True):
                         user_in_section = User_Section_Table(user = profile, section=default_section, add_date = get_current_utc())
+                        user_in_section.save()
+                        user_in_section.color = user_in_section.get_usable_color()
                         user_in_section.save()
                 else:
                     # Remove user from class, i.e. remove from all sections matching this course ID
@@ -150,6 +168,7 @@ def edit_profile(request):
             'end_date': format(cur_sem.end_date, 'U'),
         },
         'is_mobile': request.mobile,
+        'user': request.user,
     })
 
 @login_required
@@ -165,6 +184,8 @@ def enroll_sections(request):
                 prev_enrollment = [enrollment for enrollment in prev_enrollment if enrollment.section != section]
             else:
                 enrollment = User_Section_Table(user=user, section=section, add_date=get_current_utc())
+                enrollment.save()
+                enrollment.color = enrollment.get_usable_color()
                 enrollment.save()
     for enrollment in prev_enrollment:
         enrollment.delete()
@@ -223,6 +244,7 @@ def edit_sections(request):
             if enrolled and s not in my_current_sections: # This section has been changed to enrolled status
                 # Enrolling in new section.
                 user_in_section = User_Section_Table(user = profile, section=s, add_date = get_current_utc())
+                user_in_section.color = user_in_section.get_usable_color()
                 user_in_section.save()
             elif not enrolled and s in my_current_sections and not s.isDefault: # This section has been changed to not-enrolled status (and isn't a default section, i.e. enrollment isn't mandatory)
                 # Unenrolling in a section
@@ -245,16 +267,27 @@ def login_admin(request):
     
 # for AJAX
 def events_json(request, start_date=None, end_date=None, last_updated=None):
-    netid = request.user.username
-    if start_date:
-        start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
-    if end_date:
-        end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
-    if last_updated:
-        last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
-    events = queries.get_events(netid, start_date=start_date, end_date=end_date)
-    return HttpResponse(json.dumps(events), content_type='application/javascript')
-    #return render(request, 'main/event-json-test.html')
+    try:
+        netid = request.user.username
+        if start_date:
+            start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
+        if end_date:
+            end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
+        if last_updated:
+            last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
+        events = queries.get_events(netid, start_date=start_date, end_date=end_date, last_updated=last_updated)
+        hidden_events = request.user.profile.hidden_events
+        if hidden_events:
+            hidden_events = json.loads(hidden_events)
+        else:
+            hidden_events = []
+        return HttpResponse(json.dumps({
+            'events': events,
+            'hidden_events': hidden_events,
+        }), content_type='application/javascript')
+        #return render(request, 'main/event-json-test.html')
+    except Exception, e:
+        print e
 
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs'])
@@ -272,6 +305,16 @@ def sections_json(request):
     ret = queries.get_sections(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+def default_section_colors_json(request):
+    netid = request.user.username
+    ret = queries.get_default_colors(netid)
+    return HttpResponse(json.dumps(ret), content_type='application/javascript')
+
+def section_colors_json(request):
+    netid = request.user.username
+    ret = queries.get_section_colors(netid)
+    return HttpResponse(json.dumps(ret), content_type='application/javascript')
+
 def course_json(request, course_id):
     ret = queries.get_course_by_id(course_id)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
@@ -285,6 +328,16 @@ def user_json(request):
     }
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+def unapproved_revisions_json(request, event_id=None):
+    unapproved = queries.get_unapproved_revisions(request.user.username)
+    return HttpResponse(json.dumps(unapproved), content_type='application/javascript')
+
+def process_votes(request):
+    votes = json.loads(request.POST['votes'])
+    for vote in votes:
+        queries.process_vote_on_revision(request.user.username, votes['is_positive'], votes['revision_id'])
+    return HttpResponse('')
+
 @login_required
 @require_POST
 def modify_events(request):
@@ -294,23 +347,43 @@ def modify_events(request):
     if 'events' in request.POST:
         try:
             events = json.loads(request.POST['events'])
-            ret = queries.modify_events(netid, events)
+            changed, deleted = queries.modify_events(netid, events)
+            ret = {
+                'changed_ids': changed,
+                'deleted_ids': deleted
+            }
         except Exception, e:
             print 'Modifying events error: ', e
             return HttpResponse(status=500) # 500 Internal Server Error
         
-    if 'hide' in request.POST:
-        try:
+        
+    if 'hidden' in request.POST:
+        user = request.user.profile
+        hidden = json.loads(request.POST['hidden'])
+        hidden = [event_id for event_id in hidden if Event.objects.filter(id=event_id).exists()]
+        user.hidden_events = json.dumps(hidden)
+        user.save()
+        """try:
             to_hide = json.loads(request.POST['hide'])
             queries.hide_events(netid, to_hide)
         except Exception, e:
+            print 'Modifying events error 2: ', e
             return HttpResponse(status=500) # 500 Internal Server Error
+        """
         
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created
 
+@login_required
+def modify_user(request):
+    user_dict = json.loads(request.POST['user'])
+    user = request.user
+    user.first_name = user_dict['first_name']
+    user.last_name = user_dict['last_name']
+    user.save()
+    return HttpResponse('')
+
 def state_restoration(request):
     netid = request.user.username
-    # TODO what to return when null?
     state_restoration = queries.get_state_restoration(netid=netid)
     if state_restoration:
         return HttpResponse(state_restoration, content_type='application/javascript')
@@ -325,6 +398,7 @@ def save_ui_pref(request):
     user = request.user.profile
     user.ui_agenda_pref = request.POST['agenda_pref']
     user.ui_calendar_pref = request.POST['calendar_pref']
+    user.ui_pref = request.POST['ui_pref']
     user.save()
     return HttpResponse('')
 
@@ -346,7 +420,8 @@ def similar_events(request):
     ed = queries.parse_json_event_dict(json_dict)
     results = queries.get_similar_events(ed) # these are revisions
     event_dicts = [queries.construct_event_dict(r.event) for r in results]
-    return HttpResponse(json.dumps(event_dicts), content_type='application/javascript')
+    filtered_edicts = [fed for fed in event_dicts if fed is not None] # will have None for events without any approved revisions
+    return HttpResponse(json.dumps(filtered_edicts), content_type='application/javascript')
     
 
 # Helper methods
@@ -361,10 +436,7 @@ def user_profile_filled_out(user):
         profile = User_Profile.objects.create(user=user, lastActivityTime=get_current_utc())
         return False # just created, but not filled out yet
         
-        
-
-        
-        
+  
         
 # test
 def contact_us(req):

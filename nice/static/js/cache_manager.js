@@ -9,9 +9,9 @@ function CacheMan_init()
     cacheManager = new _CacheMan();
     if (typeof CACHEMAN_PRELOAD != 'undefined')
     {
-        for (var i = 0; i < CACHEMAN_PRELOAD.length; i++) {
-            _CacheMan_cacheURL(CACHEMAN_PRELOAD[i], true);
-        };
+        $.each(CACHEMAN_PRELOAD, function(key, value){
+            cacheManager.cached[key] = value;
+        });
     }
 }
 
@@ -24,7 +24,10 @@ function _CacheMan()
 function CacheMan_load(url)
 {
     if (cacheManager.cached[url] == null)
+    {
         _CacheMan_cacheURL(url, false);
+        return CacheMan_load(url);
+    }
     return cacheManager.cached[url];
 }
 

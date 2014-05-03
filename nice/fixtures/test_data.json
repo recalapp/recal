@@ -1,0 +1,143 @@
+[
+
+
+
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "bob",
+      "password": ""
+    }
+  },
+    {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "janet",
+      "password": ""
+    }
+  },
+
+
+
+{
+    "pk": 1, 
+    "model": "nice.semester", 
+    "fields": {
+        "term_code": "1144", 
+        "start_date": "2014-02-03", 
+        "end_date": "2014-06-03"
+    }
+},
+
+
+
+{
+    "pk": 2, 
+    "model": "nice.course", 
+    "fields": {
+        "professor": "", 
+        "semester": 1, 
+        "registrar_id": "1144002509", 
+        "description": "Modern computer processor architecture. I/O Architecture. Instruction-set architecture and high-performance processor organization including pipelining and data and instruction parallelism. Cache, memory, and storage architectures. Multiprocessors and multicore processors. Coherent caches. Interconnection and network infrastructures.", 
+        "title": "Computer Architecture"
+    }
+},
+
+{
+    "pk": 1, 
+    "model": "nice.course", 
+    "fields": {
+        "professor": "", 
+        "semester": 1, 
+        "registrar_id": "1144002065", 
+        "description": "This is a course about the practice of programming.  Programming is more than just writing code.  Programmers must also assess tradeoffs, choose among design alternatives, debug and test, improve performance, and maintain software written by themselves & others. At the same time, they must be concerned with compatibility, robustness, and reliability, while meeting specifications.  Students will have the opportunity to develop these skills by working on their own code and in group projects.", 
+        "title": "Advanced Programming Techniques"
+    }
+},
+
+
+{
+    "pk": 3, 
+    "model": "nice.course_listing", 
+    "fields": {
+        "course": 2, 
+        "number": "475", 
+        "dept": "ELE"
+    }
+},
+{
+    "pk": 2, 
+    "model": "nice.course_listing", 
+    "fields": {
+        "course": 2, 
+        "number": "475", 
+        "dept": "COS"
+    }
+},
+{
+    "pk": 1, 
+    "model": "nice.course_listing", 
+    "fields": {
+        "course": 1, 
+        "number": "333", 
+        "dept": "COS"
+    }
+},
+
+
+
+{
+    "pk": 1, 
+    "model": "nice.section", 
+    "fields": {
+        "course": 1, 
+        "section_type": "ALL", 
+        "name": "All Students", 
+        "isDefault": true
+    }
+},
+{
+    "pk": 2, 
+    "model": "nice.section", 
+    "fields": {
+        "course": 1, 
+        "section_type": "LEC", 
+        "name": "L01", 
+        "isDefault": false
+    }
+},
+{
+    "pk": 3, 
+    "model": "nice.section", 
+    "fields": {
+        "course": 2, 
+        "section_type": "ALL", 
+        "name": "All Students", 
+        "isDefault": true
+    }
+},
+{
+    "pk": 4, 
+    "model": "nice.section", 
+    "fields": {
+        "course": 2, 
+        "section_type": "LEC", 
+        "name": "L01", 
+        "isDefault": false
+    }
+},
+{
+    "pk": 5, 
+    "model": "nice.section", 
+    "fields": {
+        "course": 2, 
+        "section_type": "PRE", 
+        "name": "P01", 
+        "isDefault": false
+    }
+}
+
+]
+

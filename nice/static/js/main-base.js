@@ -1,6 +1,9 @@
-var pinnedIDs = new Set();
+var pinnedIDs = null;
 var mainID = null;
 var csrftoken = $.cookie('csrftoken');
+var COURSE_COLOR_MAP;
+var SECTION_COLOR_MAP;
+
 // pinned and main
 function UI_pin(id)
 {
@@ -22,6 +25,8 @@ function UI_isMain(id)
 }
 function UI_setMain(id)
 {
+    if (UI_isPinned(id))
+        UI_unpin(id);
     mainID = id;
 }
 function UI_unsetMain()
@@ -63,3 +68,19 @@ function nl2br(text)
     return text.replace(/(\n|\r)/g, "<br>");
 }
 
+function loadWhiteTheme()
+{
+    $('.theme').removeClass('dark');
+    $('#theme_css').attr('href','/static/cosmo/bootstrap.css');
+}
+function loadDarkTheme()
+{
+    $('.theme').addClass('dark');
+    //if (document.createStyleSheet) {
+    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
+    //}
+    //else {
+    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
+    //}
+    $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
+}

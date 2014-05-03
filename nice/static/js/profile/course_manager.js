@@ -15,6 +15,7 @@ CourseManager.prototype.queries = {};
 
 var courseManager = null;
 var CourseMan_updateListeners = [];
+var DEFAULT_SECTION_COLORS;
 
 function CourseMan_init()
 {
@@ -146,7 +147,6 @@ function CourseMan_pullEnrolledCourseIDs(complete)
         });
         return;
     }
-    LO_show();
     courseManager.isIdle = false;
     $.ajax('/get/sections', {
         dataType: 'json',
@@ -161,7 +161,6 @@ function CourseMan_pullEnrolledCourseIDs(complete)
         },
         error: function(data){
             courseManager.isIdle = true;
-            LO_hide();
             CourseMan_handleQueue();
         }
     });
@@ -214,11 +213,10 @@ function CourseMan_pushChanges(async)
 
 function CourseMan_cacheEnrolledCourses()
 {
-    for (var courseID in courseManager.enrolledCourses())
-    {
+    $.each(courseManager.enrolledCourses(), function(index, courseID){
         if (!(courseID in courseManager.allCourses))
             CourseMan_pullCourseByID(courseID, true);
-    }
+    });
 }
 
 function CourseMan_handleQueue()
@@ -238,13 +236,11 @@ function CourseMan_pullAutoComplete(request, complete)
             complete(courseManager.queries[request.term]);
         return;
     }
-    LO_show();
     $.getJSON('/api/classlist', request, function(data, status, xhr){
         // process data
         $.each(data, function(index){
             CourseMan_saveCourseDict(this);
         });
-        LO_hide();
         courseManager.queries[request.term] = data;
         if (complete)
             complete(data);

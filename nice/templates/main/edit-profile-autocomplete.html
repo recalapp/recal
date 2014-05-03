@@ -6,6 +6,26 @@
 {% block main_content %}
 {% include 'main/sidebar.html' %}
 <div class="container">
+    <div id="userinfo" class="theme row">
+        <div class="col-xs-9">
+            <div class="row">
+                <div class="col-xs-3">
+                    <input id="first_name_box" type="text" class="form-control" placeholder="First Name">
+                    </input>
+                </div>
+                <div class="col-xs-3">
+                    <input id="last_name_box" type="text" class="form-control" placeholder="Last Name">
+                    </input>
+                </div>
+                <div class="col-xs-6" id="profile-control">
+                    <a href="/" class="white-link-btn theme">
+                        Back to Dashboard
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-6">
             <h2>Preview:</h2>
@@ -21,7 +41,7 @@
     <br>
     <div id="search" class="row">
         <div class="col-xs-7 col-xs-offset-1">
-            <input id="class" class="form-control" placeholder="e.g. 'COS', 'PHY 105', 'LA', 'Introduction to Metaphysics'">
+            <input id="class" class="form-control" placeholder="e.g. 'COS', 'PHY 105', 'Introduction to Metaphysics'">
             <input type="hidden" id="class-id">
             <p id="class-description"></p>
         </div>
@@ -34,9 +54,10 @@
 <link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}"> 
 <link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
 <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
-<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile/profile.css' %}">
 <link rel="stylesheet" href="{% static 'css/popup.css' %}">
 <script src="{% static 'js/global.js' %}"></script>
 
@@ -71,12 +92,15 @@
 var CACHEMAN_PRELOAD = [
     '{% url 'nice.views.popup_course' %}', 
     '{% url 'nice.views.course' %}', 
-    '{% url 'nice.views.loading' %}',
 ];
 var CUR_SEM = {
     term_code: '{{ cur_sem.term_code }}',
     start_date: '{{ cur_sem.start_date }}',
     end_date: '{{ cur_sem.end_date }}',
+}
+var USER = {
+    first_name: '{{ user.first_name }}',
+    last_name: '{{ user.last_name }}',
 }
 </script>
 
@@ -113,6 +137,8 @@ var CUR_SEM = {
 
 <script src="{% static 'js/popup-base.js' %}"></script>
 <script src="{% static 'js/profile/popup.js' %}"></script>
+
+<script src="{% static 'js/profile/user_profile.js' %}"></script>
 
 <script src="{% static 'js/main-base.js' %}"></script>
 <script src="{% static 'js/profile/main.js' %}"></script>

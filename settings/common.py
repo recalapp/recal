@@ -39,6 +39,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +48,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'cas',
+    'colorfield',
     'nice'
 )
 
@@ -75,6 +77,8 @@ AUTHENTICATION_BACKENDS = (
 CAS_SERVER_URL = 'https://fed.princeton.edu/cas/'
 
 CAS_REDIRECT_URL = '/'
+
+LOGIN_URL = '/login'
 
 ########## END AUTHENTICATION CONFIGURATION
 
@@ -111,11 +115,47 @@ ALLOWED_HOSTS = ['*']
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    "django.core.context_processors.request",
+)
+
 STATICFILES_DIRS = (
     normpath(join(DJANGO_ROOT, 'nice', 'static')),
 )
 
 TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'nice', 'templates'))]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache', # overwritten in prod.py
+    }
+}
+
 ########## GLOBAL VARIABLES
 CURR_TERM = 1144 # Use helper method nice.models.get_cur_semester() to get current Semester object.
+
+### Reputation system
+
+## For handling individual votes:
+THRESHOLD_APPROVE = 4 #Threshold to approve a revision: +4
+THRESHOLD_REJECT = -4 #Threshold to reject a revision: -4
+REWARD_FOR_UPVOTING = 1 #For upvoting a revision: +1 -- regardless of what happens to this revision later
+REWARD_FOR_DOWNVOTING = -1 # For downvoting a revision: -1 (this is why we don't tell them the voting scheme and only update their points count once a day).
+# After each vote, we'll check for whether either threshold has been reached. If so, we approve or reject the revision.
+
+## At time of approval:
+
+REWARD_FOR_APPROVED_SUBMISSION = 10 # For having created a revision that is approved: +10
+REWARD_FOR_PROPER_UPVOTE = 2 # For having upvoted a revision that is now approved: +2
+REWARD_FOR_IMPROPER_DOWNVOTE = -5 # For having downvoted a revision that is now approved: -5
+
+## At time of rejection:
+
+REWARD_FOR_REJECTED_SUBMISSION = -15 # For having created a revision that is rejected: -15
+REWARD_FOR_IMPROPER_UPVOTE = -1 #For having upvoted a revision that is rejected: -1
+REWARD_FOR_PROPER_DOWNVOTE = 5 #For having downvoted a revision that is rejected: +5 (offsets the initial -1)

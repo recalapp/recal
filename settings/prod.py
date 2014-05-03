@@ -24,6 +24,13 @@ ALLOWED_HOSTS = ['*']
 
 SECRET_KEY = environ.get('DJANGO_SECRET_KEY', '')
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-newice'
+    }
+}
+
 ########## TOOLBAR CONFIGURATION
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
 INSTALLED_APPS += (

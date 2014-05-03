@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 {% load staticfiles %}
 
-{% block title %}SEC - Socially Engineered Calendar{% endblock %}
+{% block title %}ReCal - Spring 2014{% endblock %}
 
 {% block main_content %}
 {% include 'main/nav.html' %}
@@ -10,11 +10,9 @@
     <div class="tab-pane fade left {% if nav_page == 0 %} active in {% endif %} container" id="agenda">
         {% include 'main/agenda-placeholder.html' %}
     </div>         
-    {% if not is_mobile %}
     <div class="tab-pane fade right {% if nav_page == 1 %} active in {% endif %} container" id="calendar">
         {% include 'main/calendar.html' %}
     </div>
-    {% endif %}
 </div>
 <div id="content_bounds"></div>
 <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModal" aria-hidden="true">
@@ -25,11 +23,15 @@
                 <h4 class="modal-title" id="myModalLabel">Dashboard Settings</h4>
             </div>
             <div class="modal-body">
-                <div id="agenda_options" class="row">
-                    
-                </div>
-                <div id="calendar_options" class="row">
-                    
+                <div class="container">
+                    <div id="theme_options" class="row">
+                    </div>
+                    <div id="hidden_options" class="row">
+                    </div>
+                    <div id="agenda_options" class="row">
+                    </div>
+                    <div id="calendar_options" class="row">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -37,29 +39,38 @@
         </div>
     </div>
 </div>
+
+<div id='agenda-template' class='hide'>
+{% include 'main/agenda.html' %}
+</div>
+<div id='popup-template' class='hide'>
+{% include 'main/popup.html' %}
+</div>
+
 {% endblock %}
 
 {% block link_or_script_blocking %}
+<base href="{{ base_url }}">
 <link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
-<link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}"> 
+<link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}">
 <!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
-<link rel="stylesheet" href="{% static 'lumen/bootstrap.min.css' %}"> 
-
-
-<link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
-<link rel="stylesheet" href="{% static 'css/popup.css' %}">
-<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
-<link rel="stylesheet" href="{% static 'css/event-picker.css' %}">
+<link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
-{% if is_mobile %}
-<link rel="stylesheet" href="{% static 'css/sidebar-mobile-addition.css' %}">
-{% endif %}
 
-<script src="{% static 'js/global.js' %}"></script>
-<script src="{% static 'js/dashboard/global.js' %}"></script>
+<link rel="stylesheet" href="{% static 'compiled/dashboard.min.css' %}">
+
+<!--<script src="{% static 'js/global.js' %}"></script>
+<script src="{% static 'js/dashboard/global.js' %}"></script>-->
 <script>
 var USER_NETID = '{{ username }}';
-var CACHEMAN_PRELOAD = ['{% url 'nice.views.agenda' %}', '{% url 'nice.views.popup' %}', '{% url 'nice.views.agenda_header' %}', '{% url 'nice.views.typepicker' %}', '{% url 'nice.views.sectionpicker' %}', '{% url 'nice.views.notifications' %}', '{% url 'nice.views.event_picker' %}', '{% url 'nice.views.event_picker_item' %}', '{% url 'nice.views.loading' %}'];
+var CACHEMAN_PRELOAD = {
+    /* '{% url 'nice.views.all_sections' %}', */ // executed way too early
+    '/all-sections' : '{% autoescape off %}{{ all_sections }}{% endautoescape %}',
+    /*'{% url 'nice.views.event_picker' %}', 
+    '{% url 'nice.views.event_picker_item' %}',
+    '{% url 'nice.views.section_colors_json' %}',*/
+    };
 var AGENDA_FILTER = [
     {% for type in agenda_pref %}
     '{{ type }}',
@@ -70,40 +81,28 @@ var CAL_FILTER = [
     '{{ type }}',
     {% endfor %}
 ];
+var CUR_SEM = {
+    term_code: '{{ cur_sem.term_code }}',
+    start_date: '{{ cur_sem.start_date }}',
+    end_date: '{{ cur_sem.end_date }}',
+}
+var THEME = '{{ theme }}';
+{% if is_mobile %}
+AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
+{% endif %}
+
 
 </script>
 {% endblock %}
 
 {% block link_or_script_nonblocking %}
 <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'bower_components/jqueryui/ui/minified/jquery-ui.min.js' %}"></script>
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'bower_components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
-<script src="{% static 'bower_components/jqueryui/ui/minified/jquery-ui.min.js' %}"></script>
 <script src="{% static 'bower_components/fullcalendar/fullcalendar.min.js' %}"></script>
 <script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
-<script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
-<script src="{% static 'js/set.js' %}"></script>
-<script src="{% static 'js/segmented_control.js' %}"></script>
-<script src="{% static 'js/segmented_control_multi.js' %}"></script>
-<script src="{% static 'js/dashboard/settings.js' %}"></script>
-<script src="{% static 'js/loading.js' %}"></script>
-<script src="{% static 'js/dashboard/agenda.js' %}"></script>
-<script src="{% static 'js/dashboard/keymap.js' %}"></script>
-<script src="{% static 'js/calendar-base.js' %}"></script>
-<script src="{% static 'js/dashboard/calendar.js' %}"></script>
-<script src="{% static 'js/popup-base.js' %}"></script>
-<script src="{% static 'js/dashboard/popup.js' %}"></script>
-<script src="{% static 'js/dashboard/state_restoration.js' %}"></script>
-<script src="{% static 'js/main-base.js' %}"></script>
-<script src="{% static 'js/dashboard/main.js' %}"></script>
-<script src="{% static 'js/cache_manager.js' %}"></script>
-<script src="{% static 'js/events_manager-base.js' %}"></script>
-<script src="{% static 'js/dashboard/events_manager.js' %}"></script>
-<script src="{% static 'js/dashboard/type-picker.js' %}"></script>
-<script src="{% static 'js/dashboard/section-picker.js' %}"></script>
-<script src="{% static 'js/sidebar-base.js' %}"></script>
-<script src="{% static 'js/dashboard/sidebar.js' %}"></script>
-<script src="{% static 'js/dashboard/notifications.js' %}"></script>
-<script src="{% static 'js/dashboard/event-picker.js' %}"></script>
+<script src="{% static 'bower_components/moment-timezone/min/moment-timezone.min.js' %}"></script>
+<script src="{% static 'compiled/dashboard.js' %}"></script>
 {% endblock %}

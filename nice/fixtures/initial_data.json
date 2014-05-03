@@ -6,5 +6,15 @@
       "username": "community_user",
       "password": ""
     }
+  },
+    {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "brian",
+      "password": "brian",
+      "is_superuser": true,
+      "is_staff": true
+    }
   }
 ]
