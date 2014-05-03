@@ -102,6 +102,8 @@ function Cal_reload()
                     return;
                 if (!CAL_FILTER.contains(eventDict.event_type))
                     return;
+                if (eventDict.course_id in COURSE_FILTER_BLACKLIST)
+                    return;
                 var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
                 var isHidden = EventsMan_eventIsHidden(this);
                 // TODO(Dyland) distinguish between hidden and non-hidden events

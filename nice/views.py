@@ -408,6 +408,15 @@ def all_sections(request):
         all_sections[section.id] = unicode(section)
     return HttpResponse(json.dumps(all_sections), content_type='application/javascript')
 
+def all_courses(request):
+    all_courses = {}
+    for section in request.user.profile.sections.all():
+        all_courses[section.course.id] = unicode(section.course)
+    return HttpResponse(json.dumps({
+            'courses': all_courses,
+            'course_sections_map': queries.get_sections(netid=request.user.username),
+        }), content_type='application/javascript')
+
 def hidden_events(request):
     netid = request.user.username
     hidden_events = queries.get_hidden_events(netid)

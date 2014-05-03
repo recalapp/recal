@@ -10,15 +10,7 @@ function SCM_initWithChoices(heading, choices)
             else
                 SCM_select(this);
         });
-        for (var i = 0; i < choices.length; i++) {
-            var choice = choices[i];
-            if (choice.value == $(this).data('value'))
-            {
-                if (choice.selected)
-                    SCM_select(this);
-                break;
-            }
-        };
+        SCM_setToChoices(sc, choices);
     });
     return sc;
 }
