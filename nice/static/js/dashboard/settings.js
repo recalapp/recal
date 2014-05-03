@@ -53,6 +53,25 @@ function SE_init()
             });
         });
         $(this).find('#hidden_options').append(hidden_sc);
+
+        var choices = [];
+        $.each(COURSE_MAP, function(key, value){
+            choices.push({
+                value: key,
+                pretty: value,
+                selected: !(key in COURSE_FILTER_BLACKLIST),
+            });
+        });
+        var course_scm = SCM_initWithChoices('Filter courses', choices);
+        $(course_scm).on('select', function(ev, choices){
+            $.each(choices, function(key, selected){
+                if (selected)
+                    COURSE_FILTER_BLACKLIST.remove(key);
+                else
+                    COURSE_FILTER_BLACKLIST.add(key);
+            });
+        });
+        $(this).find('#course_options').append(course_scm);
     });
     $('#' + SE_id).on('hide.bs.modal', function(){
         // save

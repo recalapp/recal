@@ -115,7 +115,8 @@ function Agenda_filterEvents(eventIDs)
         if (!eventDict)
             return;
         if (AGENDA_FILTER.contains(eventDict.event_type))
-            ret.push(this);
+            if (!(eventDict.course_id in COURSE_FILTER_BLACKLIST))
+                ret.push(this);
     });
     return ret;
 }

@@ -1132,15 +1132,7 @@ function SCM_initWithChoices(heading, choices)
             else
                 SCM_select(this);
         });
-        for (var i = 0; i < choices.length; i++) {
-            var choice = choices[i];
-            if (choice.value == $(this).data('value'))
-            {
-                if (choice.selected)
-                    SCM_select(this);
-                break;
-            }
-        };
+        SCM_setToChoices(sc, choices);
     });
     return sc;
 }
@@ -1463,7 +1455,8 @@ function Agenda_filterEvents(eventIDs)
         if (!eventDict)
             return;
         if (AGENDA_FILTER.contains(eventDict.event_type))
-            ret.push(this);
+            if (!(eventDict.course_id in COURSE_FILTER_BLACKLIST))
+                ret.push(this);
     });
     return ret;
 }
@@ -1716,6 +1709,8 @@ function Cal_reload()
                 if (!eventDict)
                     return;
                 if (!CAL_FILTER.contains(eventDict.event_type))
+                    return;
+                if (eventDict.course_id in COURSE_FILTER_BLACKLIST)
                     return;
                 var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
                 var isHidden = EventsMan_eventIsHidden(this);
@@ -2237,6 +2232,9 @@ var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
 var SECTION_MAP;
 var SECTION_MAP_INVERSE;
+var COURSE_MAP;
+var COURSE_SECTIONS_MAP;
+var COURSE_FILTER_BLACKLIST;
 
 function init()
 {
@@ -2306,6 +2304,11 @@ function init()
         SECTION_MAP_INVERSE[value.toLowerCase()] = key;
     });
     SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
+
+    var loaded = JSON.parse(CacheMan_load('/all-courses'));
+    COURSE_MAP = loaded.courses;
+    COURSE_SECTIONS_MAP = loaded.course_sections_map;
+    COURSE_FILTER_BLACKLIST = new Set();
     
     SB_init();
     SR_init();
@@ -2337,8 +2340,7 @@ function init()
     else
         loadDarkTheme();
 
-    $('.withtooltip').tooltip({
-    });
+    $('.withtooltip').tooltip({});
     $(window).on('beforeunload', function(ev){
         if ('localStorage' in window && window['localStorage'] !== null)
         {
@@ -3415,6 +3417,25 @@ function SE_init()
             });
         });
         $(this).find('#hidden_options').append(hidden_sc);
+
+        var choices = [];
+        $.each(COURSE_MAP, function(key, value){
+            choices.push({
+                value: key,
+                pretty: value,
+                selected: !(key in COURSE_FILTER_BLACKLIST),
+            });
+        });
+        var course_scm = SCM_initWithChoices('Show courses', choices);
+        $(course_scm).on('select', function(ev, choices){
+            $.each(choices, function(key, selected){
+                if (selected)
+                    COURSE_FILTER_BLACKLIST.remove(key);
+                else
+                    COURSE_FILTER_BLACKLIST.add(key);
+            });
+        });
+        $(this).find('#course_options').append(course_scm);
     });
     $('#' + SE_id).on('hide.bs.modal', function(){
         // save
