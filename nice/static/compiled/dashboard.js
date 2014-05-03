@@ -854,6 +854,7 @@ function PopUp_insertPopUp(isMain)
     setTimeout(function(){
         PopUp_initialize_deferred(popUp);
     }, 300) // doesn't block
+    $(popUp).find('.withtooltip').tooltip({});
     return popUp;
 }
 
