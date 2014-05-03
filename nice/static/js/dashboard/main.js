@@ -3,6 +3,9 @@ var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
 var SECTION_MAP;
 var SECTION_MAP_INVERSE;
+var COURSE_MAP;
+var COURSE_SECTIONS_MAP;
+var COURSE_FILTER_BLACKLIST;
 
 function init()
 {
@@ -72,6 +75,11 @@ function init()
         SECTION_MAP_INVERSE[value.toLowerCase()] = key;
     });
     SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
+
+    var loaded = JSON.parse(CacheMan_load('/all-courses'));
+    COURSE_MAP = loaded.courses;
+    COURSE_SECTIONS_MAP = loaded.course_sections_map;
+    COURSE_FILTER_BLACKLIST = new Set();
     
     SB_init();
     SR_init();
@@ -103,8 +111,7 @@ function init()
     else
         loadDarkTheme();
 
-    $('.withtooltip').tooltip({
-    });
+    $('.withtooltip').tooltip({});
     $(window).on('beforeunload', function(ev){
         if ('localStorage' in window && window['localStorage'] !== null)
         {

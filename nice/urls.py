@@ -41,6 +41,7 @@ urlpatterns = patterns('',
     url(r'^event-picker$', views.event_picker, name="event-picker"),
     url(r'^event-picker-item$', views.event_picker_item, name="event-picker-item"),
     url(r'^all-sections$', views.all_sections, name='all-sections'),
+    url(r'^all-courses', views.all_courses, name='all-courses'),
     url(r'^hidden_events$', views.hidden_events, name='hidden-events'), # NOTE: will be used later when we want to give the users a toggle
     # a few debug tricks
     url(r'^debug/su_login$', views.login_admin, name="login_admin"),
