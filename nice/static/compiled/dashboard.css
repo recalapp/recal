@@ -1,3 +1,16 @@
+#about-content{
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    -webkit-transition:  opacity 0.2s linear;
+    transition:  opacity 0.2s linear;
+}
+#about-content.about-hidden{
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}
 .prompt-btn{
     display: block;
     margin: 5px;
@@ -342,6 +355,14 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     }
 }
 
+.main-content{
+    -webkit-transition:  opacity 0.2s linear;
+    transition:  opacity 0.2s linear;
+}
+.main-content.main-hidden{
+    height: 0;
+    opacity: 0;
+}
 .popup-container.old {
     position: fixed;
     top: 100px;
