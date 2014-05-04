@@ -206,3 +206,7 @@ function enableAllInteractions()
 {
     $('#disabler').remove();
 }
+function toggleInfo()
+{
+    $('.main-content, .about-content').toggleClass('hide');
+}
