@@ -280,3 +280,11 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     }
 }
 
+.main-content{
+    -webkit-transition:  opacity 0.2s linear;
+    transition:  opacity 0.2s linear;
+}
+.main-content.main-hidden{
+    height: 0;
+    opacity: 0;
+}

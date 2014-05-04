@@ -1,0 +1,13 @@
+#about-content{
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    -webkit-transition:  opacity 0.2s linear;
+    transition:  opacity 0.2s linear;
+}
+#about-content.about-hidden{
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}

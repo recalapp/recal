@@ -208,5 +208,6 @@ function enableAllInteractions()
 }
 function toggleInfo()
 {
-    $('.main-content, .about-content').toggleClass('hide');
+    $('.main-content').toggleClass('main-hidden');
+    $('#about-content').toggleClass('about-hidden');
 }
