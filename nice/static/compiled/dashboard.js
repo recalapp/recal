@@ -2435,6 +2435,11 @@ function enableAllInteractions()
 {
     $('#disabler').remove();
 }
+function toggleInfo()
+{
+    $('.main-content').toggleClass('main-hidden');
+    $('#about-content').toggleClass('about-hidden');
+}
 var NO_TYPES = {
     WARNING: 'alert-warning',
     INFO: 'alert-info',
@@ -3426,7 +3431,7 @@ function SE_init()
                 selected: !(key in COURSE_FILTER_BLACKLIST),
             });
         });
-        var course_scm = SCM_initWithChoices('Show courses', choices);
+        var course_scm = SCM_initWithChoices('Filter courses', choices);
         $(course_scm).on('select', function(ev, choices){
             $.each(choices, function(key, selected){
                 if (selected)

@@ -6,7 +6,7 @@
 {% block main_content %}
 {% include 'main/nav.html' %}
 {% include 'main/sidebar.html' %}
-<div class="tab-content">
+<div class="main-content tab-content">
     <div class="tab-pane fade left {% if nav_page == 0 %} active in {% endif %} container" id="agenda">
         {% include 'main/agenda-placeholder.html' %}
     </div>         
@@ -15,6 +15,9 @@
     </div>
 </div>
 <div id="content_bounds"></div>
+<div id="about-content" class="about-hidden">
+    {% include 'landing/content.html' %}
+</div>
 <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -60,6 +63,7 @@
 <link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
 
+<link rel="stylesheet" href="{% static 'css/landing/landing.css' %}">
 <link rel="stylesheet" href="{% static 'compiled/dashboard.min.css' %}">
 
 <!--<script src="{% static 'js/global.js' %}"></script>
