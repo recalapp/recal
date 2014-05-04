@@ -72,8 +72,6 @@ def index(request):
         'base_url': request.build_absolute_uri(),
         'all_sections': json.dumps(all_sections),
         })
-    response.set_cookie('netid', request.user.username)
-    return response
 
 def landing(request):
     if request.user.is_authenticated():
