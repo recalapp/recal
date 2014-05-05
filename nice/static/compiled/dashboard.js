@@ -2312,6 +2312,8 @@ function init()
     });
     $(document).ajaxError(function(event, xhr, settings){
         LO_hide();
+        if (settings.loadingIndicator == false)
+            return;
         LO_showError();
     });
     CacheMan_init();
