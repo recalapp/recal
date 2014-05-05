@@ -64,7 +64,8 @@
     "fields": {
         "course": 2, 
         "number": "475", 
-        "dept": "ELE"
+        "dept": "ELE",
+        "is_primary": true
     }
 },
 {
@@ -73,7 +74,8 @@
     "fields": {
         "course": 2, 
         "number": "475", 
-        "dept": "COS"
+        "dept": "COS",
+        "is_primary": false
     }
 },
 {
@@ -82,7 +84,8 @@
     "fields": {
         "course": 1, 
         "number": "333", 
-        "dept": "COS"
+        "dept": "COS",
+        "is_primary": true
     }
 },
 
