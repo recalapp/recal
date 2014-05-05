@@ -37,7 +37,8 @@ function PopUp_init()
             PopUp_close(popUp);
         }
         var popUp = PopUp_getPopUpByID(oldID);
-        PopUp_setToEventID(popUp, newID);
+        if (popUp)
+            PopUp_setToEventID(popUp, newID);
     });
     EventsMan_addUpdateListener(function(){
         PopUp_map(function(popUp, isMain){
@@ -137,6 +138,26 @@ function PopUp_initialize(popUp)
     });
     var repeat_scm = SCM_initWithChoices('', choices);
     $(popUp).find('#popup-repeat-pattern').append(repeat_scm); 
+
+    var choices = [
+        {
+            value: 1,
+            pretty: 'Every week',
+            selected: false,
+        },
+        {
+            value: 2,
+            pretty: 'Every 2 weeks',
+            selected: false,
+        },
+        {
+            value: 4,
+            pretty: 'Every month',
+            selected: false,
+        },
+    ];
+    var repeat_interval_sc = SC_initWithChoices('', choices);
+    $(popUp).find('#popup-repeat-interval').append(repeat_interval_sc);
 }
 
 /***************************************************
@@ -204,6 +225,7 @@ function PopUp_setToEventID(popUp, id)
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
     $(popUp).find('#popup-repeat-pattern').off('select');
+    $(popUp).find('#popup-repeat-interval').off('select');
     if ('recurrence_days' in eventDict)
     {
         var pattern = eventDict.recurrence_days;
@@ -218,6 +240,25 @@ function PopUp_setToEventID(popUp, id)
         $(popUp).find('.popup-repeat-item').removeClass('hide');
         var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
         SCM_setToChoices(scm, choices);
+        var repeat_sc = $(popUp).find('#popup-repeat-interval').children()[0];
+        var choices = [
+            {
+                value: 1,
+                pretty: 'Every week',
+                selected: eventDict['recurrence_interval'] == 1,
+            },
+            {
+                value: 2,
+                pretty: 'Every 2 weeks',
+                selected: eventDict['recurrence_interval'] == 2,
+            },
+            {
+                value: 4,
+                pretty: 'Every month',
+                selected: eventDict['recurrence_interval'] == 4,
+            },
+        ];
+        SC_setToChoices(repeat_sc, choices);
     }
     else
     {
@@ -232,6 +273,25 @@ function PopUp_setToEventID(popUp, id)
         $(popUp).find('.popup-repeat-item').addClass('hide');
         var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
         SCM_setToChoices(scm, choices);
+        var repeat_sc = $(popUp).find('#popup-repeat-interval').children()[0];
+        var choices = [
+            {
+                value: 1,
+                pretty: 'Every week',
+                selected: true,
+            },
+            {
+                value: 2,
+                pretty: 'Every 2 weeks',
+                selected: false,
+            },
+            {
+                value: 4,
+                pretty: 'Every month',
+                selected: false,
+            },
+        ];
+        SC_setToChoices(repeat_sc, choices);
     }
     $(popUp).find('#popup-repeat').on('change', function(ev){
         if (this.checked)
@@ -256,13 +316,39 @@ function PopUp_setToEventID(popUp, id)
                 pattern.push(parseInt(value));
         });
         pattern.sort();
+        if (EventsMan_hasUncommitted(id))
+        {
+            eventDict = EventsMan_getUncommitted(id);
+        }
+        else
+        {
+            eventDict = EventsMan_getEventByID(id);
+        }
+
         if (!('recurrence_days' in eventDict))
             PopUp_markAsUnsaved(popUp);
         else if (!pattern.equals(eventDict.recurrence_days))
             PopUp_markAsUnsaved(popUp);
         PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', pattern);
     });
-
+    $(popUp).find('#popup-repeat-interval').on('select', function(ev, choices){
+        $.each(choices, function(value, selected){
+            if (selected)
+            {
+                if (EventsMan_hasUncommitted(id))
+                {
+                    eventDict = EventsMan_getUncommitted(id);
+                }
+                else
+                {
+                    eventDict = EventsMan_getEventByID(id);
+                }
+                if (eventDict.recurrence_interval != value)
+                    PopUp_markAsUnsaved(popUp);
+                PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-repeat-interval'], value);
+            }
+        });
+    });
 
     if (EventsMan_eventIsHidden(id))
     {
@@ -603,6 +689,7 @@ function _PopUp_Form_enforceStartDate(popUp)
     var time = $(popUp).find('#popup-time-start').text();
     var startDate = moment('Dec 31, 1899 ' + time);
     $(popUp).find('#popup-time-end-form').find('.withtimepicker').datetimepicker('setStartDate', new Date(startDate.unix() * 1000));
+    $(popUp).find('#popup-time-end-form').find('input').not('.withtimepicker').attr('min', startDate.format('HH:mm:ss'));
 }
 function PopUp_clickedSaveElement(form)
 {
@@ -792,7 +879,8 @@ function PopUp_clickedSavePopUp(anchor, shouldClose)
         && 'recurrence_days' in uncommitted)
     {
         // check whether recurrence pattern was modified. If it was, don't ask
-        if (eventDict.recurrence_days.equals(uncommitted.recurrence_days))
+        if (eventDict.recurrence_days.equals(uncommitted.recurrence_days)
+                && eventDict.recurrence_interval == uncommitted.recurrence_interval)
         {
             AS_showActionSheetFromElement($(popUp).find('#save_button')[0], popUp,
                 'This event is part of a recurring event.',

@@ -393,10 +393,19 @@ function EventsMan_ready()
 }
 function EventsMan_commitChanges(id)
 {
+    var oldEventDict = eventsManager.events[id];
+    var newEventDict = eventsManager.uncommitted[id];
     eventsManager.events[id] = eventsManager.uncommitted[id];
     delete eventsManager.uncommitted[id];
     eventsManager.updatedIDs.add(id);
     EventsMan_constructOrderArray();
+    if ('recurrence_days' in oldEventDict 
+            && (!oldEventDict.recurrence_days.equals(newEventDict.recurrence_days)
+                    || oldEventDict.recurrence_interval != newEventDict.recurrence_interval))
+    {
+        // recurrence changes. push right away.
+        EventsMan_pushToServer(true);
+    }
     _EventsMan_callUpdateListeners();
 }
 function EventsMan_cancelChanges(id)
@@ -1975,6 +1984,15 @@ function EventsMan_init()
                 delete eventDict['recurrence_interval'];
             }
         }
+        else if (false && field == 'event_recurrence_interval')
+        {
+            if (id in eventsManager.events && eventsManager.events[id]['reccurrence_interval'] == value)
+                return;
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+            var eventDict = eventsManager.uncommitted[id];
+            eventDict['reccurence_interval'] = value;
+        }
         else
         {
             if (id in eventsManager.events && eventsManager.events[id][field] == value)
@@ -2095,7 +2113,7 @@ function EventsMan_pushToServer(async)
                 eventsManager.updatedIDs = new Set();
                 eventsManager.changed = false;
 
-                EventsMan_pullFromServer();
+                EventsMan_pullFromServer(null, true);
             },
             async: async,
             error: function(data){
@@ -2116,7 +2134,7 @@ function EventsMan_pullFromServer(complete, showLoading)
     eventsManager.isIdle = false;
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
-        loadingIndicator: (eventsManager.events.length == 0),
+        loadingIndicator: showLoading,
         success: function(data){
             var changed = EventsMan_processDownloadedEvents(data);
 
@@ -2341,16 +2359,14 @@ function init()
         loadDarkTheme();
 
     $('.withtooltip').tooltip({});
-    $(window).on('beforeunload', function(ev){
-        if ('localStorage' in window && window['localStorage'] !== null)
-        {
-            localStorage.setItem('user', USER_NETID);
-        }
-    });
     $(window).on('resize', function(ev){
         adaptSize();
     });
     adaptSize();
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        localStorage.setItem('user', USER_NETID);
+    }
 }
 function adaptSize()
 {
@@ -2439,6 +2455,17 @@ function toggleInfo()
 {
     $('.main-content').toggleClass('main-hidden');
     $('#about-content').toggleClass('about-hidden');
+}
+function onLogOut()
+{
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        localStorage.removeItem('eventsman.events');
+        localStorage.removeItem('eventsman.hidden');
+        localStorage.removeItem('eventsman.lastsyncedtime');
+        localStorage.removeItem('user');
+        localStorage.removeItem('state-restoration');
+    } 
 }
 var NO_TYPES = {
     WARNING: 'alert-warning',
@@ -2577,7 +2604,8 @@ function PopUp_init()
             PopUp_close(popUp);
         }
         var popUp = PopUp_getPopUpByID(oldID);
-        PopUp_setToEventID(popUp, newID);
+        if (popUp)
+            PopUp_setToEventID(popUp, newID);
     });
     EventsMan_addUpdateListener(function(){
         PopUp_map(function(popUp, isMain){
@@ -2677,6 +2705,26 @@ function PopUp_initialize(popUp)
     });
     var repeat_scm = SCM_initWithChoices('', choices);
     $(popUp).find('#popup-repeat-pattern').append(repeat_scm); 
+
+    var choices = [
+        {
+            value: 1,
+            pretty: 'Every week',
+            selected: false,
+        },
+        {
+            value: 2,
+            pretty: 'Every 2 weeks',
+            selected: false,
+        },
+        {
+            value: 4,
+            pretty: 'Every month',
+            selected: false,
+        },
+    ];
+    var repeat_interval_sc = SC_initWithChoices('', choices);
+    $(popUp).find('#popup-repeat-interval').append(repeat_interval_sc);
 }
 
 /***************************************************
@@ -2744,6 +2792,7 @@ function PopUp_setToEventID(popUp, id)
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
     $(popUp).find('#popup-repeat-pattern').off('select');
+    $(popUp).find('#popup-repeat-interval').off('select');
     if ('recurrence_days' in eventDict)
     {
         var pattern = eventDict.recurrence_days;
@@ -2758,6 +2807,25 @@ function PopUp_setToEventID(popUp, id)
         $(popUp).find('.popup-repeat-item').removeClass('hide');
         var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
         SCM_setToChoices(scm, choices);
+        var repeat_sc = $(popUp).find('#popup-repeat-interval').children()[0];
+        var choices = [
+            {
+                value: 1,
+                pretty: 'Every week',
+                selected: eventDict['recurrence_interval'] == 1,
+            },
+            {
+                value: 2,
+                pretty: 'Every 2 weeks',
+                selected: eventDict['recurrence_interval'] == 2,
+            },
+            {
+                value: 4,
+                pretty: 'Every month',
+                selected: eventDict['recurrence_interval'] == 4,
+            },
+        ];
+        SC_setToChoices(repeat_sc, choices);
     }
     else
     {
@@ -2772,6 +2840,25 @@ function PopUp_setToEventID(popUp, id)
         $(popUp).find('.popup-repeat-item').addClass('hide');
         var scm = $(popUp).find('#popup-repeat-pattern').children()[0];
         SCM_setToChoices(scm, choices);
+        var repeat_sc = $(popUp).find('#popup-repeat-interval').children()[0];
+        var choices = [
+            {
+                value: 1,
+                pretty: 'Every week',
+                selected: true,
+            },
+            {
+                value: 2,
+                pretty: 'Every 2 weeks',
+                selected: false,
+            },
+            {
+                value: 4,
+                pretty: 'Every month',
+                selected: false,
+            },
+        ];
+        SC_setToChoices(repeat_sc, choices);
     }
     $(popUp).find('#popup-repeat').on('change', function(ev){
         if (this.checked)
@@ -2796,13 +2883,39 @@ function PopUp_setToEventID(popUp, id)
                 pattern.push(parseInt(value));
         });
         pattern.sort();
+        if (EventsMan_hasUncommitted(id))
+        {
+            eventDict = EventsMan_getUncommitted(id);
+        }
+        else
+        {
+            eventDict = EventsMan_getEventByID(id);
+        }
+
         if (!('recurrence_days' in eventDict))
             PopUp_markAsUnsaved(popUp);
         else if (!pattern.equals(eventDict.recurrence_days))
             PopUp_markAsUnsaved(popUp);
         PopUp_callEditListeners(PopUp_getID(popUp), 'event_recurrence', pattern);
     });
-
+    $(popUp).find('#popup-repeat-interval').on('select', function(ev, choices){
+        $.each(choices, function(value, selected){
+            if (selected)
+            {
+                if (EventsMan_hasUncommitted(id))
+                {
+                    eventDict = EventsMan_getUncommitted(id);
+                }
+                else
+                {
+                    eventDict = EventsMan_getEventByID(id);
+                }
+                if (eventDict.recurrence_interval != value)
+                    PopUp_markAsUnsaved(popUp);
+                PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-repeat-interval'], value);
+            }
+        });
+    });
 
     if (EventsMan_eventIsHidden(id))
     {
@@ -3143,6 +3256,7 @@ function _PopUp_Form_enforceStartDate(popUp)
     var time = $(popUp).find('#popup-time-start').text();
     var startDate = moment('Dec 31, 1899 ' + time);
     $(popUp).find('#popup-time-end-form').find('.withtimepicker').datetimepicker('setStartDate', new Date(startDate.unix() * 1000));
+    $(popUp).find('#popup-time-end-form').find('input').not('.withtimepicker').attr('min', startDate.format('HH:mm:ss'));
 }
 function PopUp_clickedSaveElement(form)
 {
@@ -3332,7 +3446,8 @@ function PopUp_clickedSavePopUp(anchor, shouldClose)
         && 'recurrence_days' in uncommitted)
     {
         // check whether recurrence pattern was modified. If it was, don't ask
-        if (eventDict.recurrence_days.equals(uncommitted.recurrence_days))
+        if (eventDict.recurrence_days.equals(uncommitted.recurrence_days)
+                && eventDict.recurrence_interval == uncommitted.recurrence_interval)
         {
             AS_showActionSheetFromElement($(popUp).find('#save_button')[0], popUp,
                 'This event is part of a recurring event.',
