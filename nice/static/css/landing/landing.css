@@ -9,7 +9,7 @@ body{
 .main-body.alternate{
     /*background-color: white;*/
 }
-@media screen {
+@media only screen and (max-device-width: 768) {
     .main-body{
         height: 100%;
     }
