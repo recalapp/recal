@@ -251,15 +251,15 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		self.assertEqual(total_score, settings.THRESHOLD_APPROVE - 1)
 
 		# Get point balances before the upvote that puts it over the edge.
-		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
-		previous_points_balance_submitter = get_community_user().profile.pending_points
+		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.current_points
+		previous_points_balance_submitter = get_community_user().profile.current_points
 
 		# Try to vote on it -- should succeed
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), True)
 
 		# Get new point balances.
-		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
-		new_points_balance_submitter = get_community_user().profile.pending_points
+		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.current_points
+		new_points_balance_submitter = get_community_user().profile.current_points
 
 		# The system should have given you points for voting once and then for voting with the hivemind
 		expected_diff_you = settings.REWARD_FOR_UPVOTING + settings.REWARD_FOR_PROPER_UPVOTE
@@ -293,15 +293,15 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		self.assertEqual(total_score, settings.THRESHOLD_APPROVE + 1)
 
 		# Get point balances before this last vote.
-		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
-		previous_points_balance_submitter = get_community_user().profile.pending_points
+		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.current_points
+		previous_points_balance_submitter = get_community_user().profile.current_points
 
 		# Try to vote on it -- should succeed
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=False, revision_id=unapproved_rev.pk), True)
 
 		# Get new point balances.
-		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
-		new_points_balance_submitter = get_community_user().profile.pending_points
+		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.current_points
+		new_points_balance_submitter = get_community_user().profile.current_points
 
 		# The system should have given you points for voting once and then for voting with the hivemind
 		expected_diff_you = settings.REWARD_FOR_DOWNVOTING + settings.REWARD_FOR_IMPROPER_DOWNVOTE
@@ -328,15 +328,15 @@ class UnapprovedRevisionTests(NewiceTestCase):
 			v.save()
 
 		# Get point balances before the downvote that puts it over the edge.
-		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
-		previous_points_balance_submitter = get_community_user().profile.pending_points
+		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.current_points
+		previous_points_balance_submitter = get_community_user().profile.current_points
 
 		# Try to vote on it -- should succeed
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=False, revision_id=unapproved_rev.pk), True)
 
 		# Get new point balances, now that the revision is rejected.
-		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
-		new_points_balance_submitter = get_community_user().profile.pending_points
+		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.current_points
+		new_points_balance_submitter = get_community_user().profile.current_points
 
 		# The system should have given you points for voting once and then for voting with the hivemind
 		expected_diff_you = settings.REWARD_FOR_DOWNVOTING + settings.REWARD_FOR_PROPER_DOWNVOTE
@@ -370,15 +370,15 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		self.assertEqual(abs(total_score), abs(settings.THRESHOLD_REJECT) + 1)
 
 		# Get point balances before this last vote.
-		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
-		previous_points_balance_submitter = get_community_user().profile.pending_points
+		previous_points_balance_you = User.objects.get(username=self.usernames[0]).profile.current_points
+		previous_points_balance_submitter = get_community_user().profile.current_points
 
 		# Try to vote on it -- should succeed
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), True)
 
 		# Get new point balances.
-		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.pending_points
-		new_points_balance_submitter = get_community_user().profile.pending_points
+		new_points_balance_you = User.objects.get(username=self.usernames[0]).profile.current_points
+		new_points_balance_submitter = get_community_user().profile.current_points
 
 		# The system should have given you points for voting once and then for voting with the hivemind
 		expected_diff_you = settings.REWARD_FOR_UPVOTING + settings.REWARD_FOR_IMPROPER_UPVOTE

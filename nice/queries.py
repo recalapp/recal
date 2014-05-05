@@ -766,7 +766,6 @@ def get_unapproved_revisions(netid, count=3):
             survived.append(construct_event_dict(event, netid=netid, best_rev=unapproved_rev))
     return survived
 
-# TODO(Maxim) what is revision id? It is never passed to front end
 def process_vote_on_revision(netid, isPositive, revision_id):
     """Handles users' votes on unapproved revisions -- checks the votes for eligibility, records them, then processes side-effects (approval, points).
 
@@ -788,6 +787,8 @@ def process_vote_on_revision(netid, isPositive, revision_id):
         user = User.objects.get(username=netid).profile
     except Exception, e:
         return False
+
+    modified_time = get_current_utc()
     
     # Voter is not eligible to vote on this revision
     if revision.approved != revision.STATUS_PENDING:
@@ -804,7 +805,7 @@ def process_vote_on_revision(netid, isPositive, revision_id):
     v.save()
 
     # Award points for making this vote
-    user.award_points(settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING)
+    user.award_points(settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING, PointChange.REL_UPVOTER if isPositive else PointChange.REL_DOWNVOTER, when=modified_time, why=revision)
     print 'assigned to user:', settings.REWARD_FOR_UPVOTING if isPositive else settings.REWARD_FOR_DOWNVOTING
     user.save()
 
@@ -822,11 +823,11 @@ def process_vote_on_revision(netid, isPositive, revision_id):
         # Award points to all voters
         for vt in all_votes:
             if vt.score > 0: # voted correctly
-                vt.voter.award_points(settings.REWARD_FOR_PROPER_UPVOTE)
+                vt.voter.award_points(settings.REWARD_FOR_PROPER_UPVOTE, PointChange.REL_PROPER_UPVOTER, when=modified_time, why=revision)
             elif vt.score < 0: # voted incorrectly
-                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_DOWNVOTE)
+                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_DOWNVOTE, PointChange.REL_IMPROPER_DOWNVOTER, when=modified_time, why=revision)
         # Award points to revision creator
-        revision.modified_user.award_points(settings.REWARD_FOR_APPROVED_SUBMISSION)
+        revision.modified_user.award_points(settings.REWARD_FOR_APPROVED_SUBMISSION, PointChange.REL_GOOD_SUBMITTER, when=modified_time, why=revision)
     elif total_score <= settings.THRESHOLD_REJECT:
         revision.approved = revision.STATUS_REJECTED
         revision.save()
@@ -835,13 +836,13 @@ def process_vote_on_revision(netid, isPositive, revision_id):
         # Award points to all voters
         for vt in all_votes:
             if vt.score < 0: # voted correctly
-                vt.voter.award_points(settings.REWARD_FOR_PROPER_DOWNVOTE)
+                vt.voter.award_points(settings.REWARD_FOR_PROPER_DOWNVOTE, PointChange.REL_PROPER_DOWNVOTER, when=modified_time, why=revision)
                 print 'assigned to user downvote:', settings.REWARD_FOR_PROPER_DOWNVOTE
             elif vt.score > 0: # voted incorrectly
-                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_UPVOTE)
+                vt.voter.award_points(settings.REWARD_FOR_IMPROPER_UPVOTE, PointChange.REL_IMPROPER_UPVOTER, when=modified_time, why=revision)
                 print 'assigned to user wrong upvote:', settings.REWARD_FOR_IMPROPER_UPVOTE
         # Award points to revision creator
-        revision.modified_user.award_points(settings.REWARD_FOR_REJECTED_SUBMISSION)
+        revision.modified_user.award_points(settings.REWARD_FOR_REJECTED_SUBMISSION, PointChange.REL_BAD_SUBMITTER, when=modified_time, why=revision)
         print 'assigned to creator rejected submission:', settings.REWARD_FOR_REJECTED_SUBMISSION
     else:
         print 'no thresholds hit'
