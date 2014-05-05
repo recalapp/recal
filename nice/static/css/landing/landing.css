@@ -19,18 +19,22 @@ body{
     opacity: 0;
     margin-left: -100px;
 }
-#login_button{
+.login_button{
     max-width: 40vh;
     min-width: 30vh;
 }
-#login_button:not(.btn-primary){
+.login_button:not(.btn-primary){
     display: block;
 }
-#login-container{
-    padding-top: 70vh;
+.login-container{
+    /*padding-top: 70vh; */
+    padding-bottom: 10vh;
     margin-left: 20px;
     margin-right: 20px;
     text-align: center;
+}
+.login-body {
+    height: 100%;
 }
 .big-img{
     height: 85vh;
