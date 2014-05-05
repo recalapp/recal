@@ -105,6 +105,15 @@ function EventsMan_init()
                 delete eventDict['recurrence_interval'];
             }
         }
+        else if (false && field == 'event_recurrence_interval')
+        {
+            if (id in eventsManager.events && eventsManager.events[id]['reccurrence_interval'] == value)
+                return;
+            if (!(id in eventsManager.uncommitted))
+                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+            var eventDict = eventsManager.uncommitted[id];
+            eventDict['reccurence_interval'] = value;
+        }
         else
         {
             if (id in eventsManager.events && eventsManager.events[id][field] == value)
@@ -225,7 +234,7 @@ function EventsMan_pushToServer(async)
                 eventsManager.updatedIDs = new Set();
                 eventsManager.changed = false;
 
-                EventsMan_pullFromServer();
+                EventsMan_pullFromServer(null, true);
             },
             async: async,
             error: function(data){
@@ -246,7 +255,7 @@ function EventsMan_pullFromServer(complete, showLoading)
     eventsManager.isIdle = false;
     $.ajax('get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
-        loadingIndicator: (eventsManager.events.length == 0),
+        loadingIndicator: showLoading,
         success: function(data){
             var changed = EventsMan_processDownloadedEvents(data);
 

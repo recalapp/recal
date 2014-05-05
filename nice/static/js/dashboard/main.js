@@ -112,16 +112,14 @@ function init()
         loadDarkTheme();
 
     $('.withtooltip').tooltip({});
-    $(window).on('beforeunload', function(ev){
-        if ('localStorage' in window && window['localStorage'] !== null)
-        {
-            localStorage.setItem('user', USER_NETID);
-        }
-    });
     $(window).on('resize', function(ev){
         adaptSize();
     });
     adaptSize();
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        localStorage.setItem('user', USER_NETID);
+    }
 }
 function adaptSize()
 {
@@ -210,4 +208,15 @@ function toggleInfo()
 {
     $('.main-content').toggleClass('main-hidden');
     $('#about-content').toggleClass('about-hidden');
+}
+function onLogOut()
+{
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        localStorage.removeItem('eventsman.events');
+        localStorage.removeItem('eventsman.hidden');
+        localStorage.removeItem('eventsman.lastsyncedtime');
+        localStorage.removeItem('user');
+        localStorage.removeItem('state-restoration');
+    } 
 }

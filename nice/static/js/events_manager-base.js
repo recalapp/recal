@@ -213,10 +213,19 @@ function EventsMan_ready()
 }
 function EventsMan_commitChanges(id)
 {
+    var oldEventDict = eventsManager.events[id];
+    var newEventDict = eventsManager.uncommitted[id];
     eventsManager.events[id] = eventsManager.uncommitted[id];
     delete eventsManager.uncommitted[id];
     eventsManager.updatedIDs.add(id);
     EventsMan_constructOrderArray();
+    if ('recurrence_days' in oldEventDict 
+            && (!oldEventDict.recurrence_days.equals(newEventDict.recurrence_days)
+                    || oldEventDict.recurrence_interval != newEventDict.recurrence_interval))
+    {
+        // recurrence changes. push right away.
+        EventsMan_pushToServer(true);
+    }
     _EventsMan_callUpdateListeners();
 }
 function EventsMan_cancelChanges(id)
