@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name="index"),
+    url(r'^chromeframe/$', views.chromeframe, name="chrome_frame"),
+    url(r'^chromeframe/loggedout$', views.embedded_not_logged_in, name="embedded_not_logged_in"),
     url(r'^get/(?P<last_updated>\d+)/(?P<start_date>\d+)/(?P<end_date>\d+)$', views.events_json, name='events-json'),
     url(r'^get/(?P<last_updated>\d+)/(?P<start_date>\d+)$', views.events_json, name='events-json'),
     url(r'^get/(?P<last_updated>\d+)$', views.events_json, name='events-json'),

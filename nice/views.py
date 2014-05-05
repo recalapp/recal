@@ -27,13 +27,7 @@ To restrict a method to staff members only, decorate with @staff_member_required
 Alternatives: @user_passes_test(lambda u: u.is_staff) or @permission_required('is_superuser')
 '''
 
-@xframe_options_exempt # can load in Chrome extension
-def index(request):
-    if not request.user.is_authenticated():
-        return redirect('landing')
-        #return redirect('cas_login')
-    if not user_profile_filled_out(request.user):
-        return redirect('edit_profile')
+def gather_dashboard(request):
     user = request.user.profile
     page = 1
     if user.ui_state_restoration:
@@ -72,6 +66,33 @@ def index(request):
         'base_url': request.build_absolute_uri(),
         'all_sections': json.dumps(all_sections),
         })
+
+
+def index(request):
+    """
+    Home page
+    """
+    if not request.user.is_authenticated():
+        return redirect('landing')
+        #return redirect('cas_login')
+    if not user_profile_filled_out(request.user):
+        return redirect('edit_profile')
+    return gather_dashboard(request)
+
+
+@xframe_options_exempt # can load in Chrome extension
+def chromeframe(request):
+    if not request.user.is_authenticated():
+        return redirect('embedded_not_logged_in')
+    if not user_profile_filled_out(request.user):
+        return redirect('embedded_not_logged_in')
+    return gather_dashboard(request)
+
+
+@xframe_options_exempt
+def embedded_not_logged_in(request):
+    return render(request, 'embedded/not-logged-in.html', None)
+
 
 def landing(request):
     if request.user.is_authenticated():
