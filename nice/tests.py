@@ -107,6 +107,14 @@ class EnrollmentMethodTests(NewiceTestCase):
 class UnapprovedRevisionTests(NewiceTestCase):
 	def purge_votes(self):
 		Vote.objects.all().delete()
+
+	def confirm_point_perma_storage_works(self, netid):
+		"""This is how we test PointChange table usage."""
+		user_prof = User.objects.get(username=netid).profile
+		orig = user_prof.current_points
+		user_prof.recalculate_points()
+		new = user_prof.current_points
+		return orig == new
 	
 	def test_appears_in_queue(self):
 		"""Test conditions for appearing in unapproved revisions queue.
@@ -182,6 +190,8 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		# try to vote on something now that it has been approved -- should fail
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), False)
 
+		self.assertEqual(self.confirm_point_perma_storage_works(self.usernames[0]), True)
+
 		self.purge_votes()
 		self.post_run()
 
@@ -227,6 +237,8 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		# try to vote on something again -- should fail
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk), False)
 
+		self.assertEqual(self.confirm_point_perma_storage_works(self.usernames[0]), True)
+
 		self.purge_votes()
 		self.post_run()
 
@@ -267,6 +279,8 @@ class UnapprovedRevisionTests(NewiceTestCase):
 
 		self.assertEqual(new_points_balance_you - previous_points_balance_you, expected_diff_you)
 		self.assertEqual(new_points_balance_submitter - previous_points_balance_submitter, expected_diff_submitter)
+
+		self.assertEqual(self.confirm_point_perma_storage_works(self.usernames[0]), True)
 
 		self.purge_votes()
 		self.post_run()
@@ -310,6 +324,8 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		self.assertEqual(new_points_balance_you - previous_points_balance_you, expected_diff_you)
 		self.assertEqual(new_points_balance_submitter - previous_points_balance_submitter, expected_diff_submitter)
 
+		self.assertEqual(self.confirm_point_perma_storage_works(self.usernames[0]), True)
+
 		self.purge_votes()
 		self.post_run()
 
@@ -344,6 +360,8 @@ class UnapprovedRevisionTests(NewiceTestCase):
 
 		self.assertEqual(new_points_balance_you - previous_points_balance_you, expected_diff_you)
 		self.assertEqual(new_points_balance_submitter - previous_points_balance_submitter, expected_diff_submitter)
+
+		self.assertEqual(self.confirm_point_perma_storage_works(self.usernames[0]), True)
 
 		self.purge_votes()
 		self.post_run()
@@ -387,6 +405,8 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		self.assertEqual(new_points_balance_you - previous_points_balance_you, expected_diff_you)
 		self.assertEqual(new_points_balance_submitter - previous_points_balance_submitter, expected_diff_submitter)
 
+		self.assertEqual(self.confirm_point_perma_storage_works(self.usernames[0]), True)
+
 		self.purge_votes()
 		self.post_run()
 
@@ -402,6 +422,9 @@ class UnapprovedRevisionTests(NewiceTestCase):
 		# try to vote on something not in your section -- should fail
 		# janet's not in this section, hence fail
 		self.assertEqual(process_vote_on_revision(netid=self.usernames[1], isPositive=True, revision_id=unapproved_rev.pk), False)
+
+		self.assertEqual(self.confirm_point_perma_storage_works(self.usernames[0]), True)
+		self.assertEqual(self.confirm_point_perma_storage_works(self.usernames[1]), True)
 
 		self.purge_votes()
 		self.post_run()

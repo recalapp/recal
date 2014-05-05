@@ -384,7 +384,8 @@ class User_Profile(models.Model):
 
     def recalculate_points(self):
         from django.db.models import Sum
-        self.current_points = PointChange.objects.filter(user=self).aggregate(Sum('score'))
+        sum_vals = PointChange.objects.filter(user=self).aggregate(Sum('score'))['score__sum']
+        self.current_points = sum_vals if sum_vals else 0
         self.save()
 
         # Invalidate cache entry

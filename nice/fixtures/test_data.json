@@ -4,7 +4,7 @@
 
   {
     "model": "auth.user",
-    "pk": 1,
+    "pk": 2,
     "fields": {
       "username": "bob",
       "password": ""
@@ -12,7 +12,7 @@
   },
     {
     "model": "auth.user",
-    "pk": 2,
+    "pk": 3,
     "fields": {
       "username": "janet",
       "password": ""
