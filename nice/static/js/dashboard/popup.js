@@ -78,7 +78,9 @@ function PopUp_initialize_deferred(popUp)
             linkField: "withdatepicker",
             linkFormat: "yyyy-mm-dd",
             showMeridian: true,
-            minuteStep: 10
+            minuteStep: 10,
+            startDate: new Date(moment('Dec 31, 1899 12:00 AM').unix() * 1000),
+            endDate: new Date(moment('Jan 1, 1900 12:00 AM').unix() * 1000),
         });
     } else {
         $(popUp).find('.withtimepicker').removeClass('withtimepicker');
@@ -319,6 +321,7 @@ function PopUp_setToEventID(popUp, id)
     $(popUp).find('.withcustompicker').on('hidden.bs.popover', function(ev){
         $(this).trigger('value_set');
     });
+
 }
 
 function PopUp_setTitle(popUp, title)
@@ -550,6 +553,7 @@ function PopUp_clickedElement(element)
     var popUp = _PopUp_getPopUp(element);
     if (PopUp_isEditing(popUp))
         return;
+    _PopUp_Form_enforceStartDate(popUp);
     PopUp_markAsEditing(popUp);
     var form_id = _PopUp_Form_getFormIDForElement(element);
     var form = $(popUp).find("#"+form_id)[0];
@@ -594,6 +598,12 @@ function PopUp_clickedElement(element)
     //$(form).find("input").data("datetimepicker");
     //$(form).find("input").datetimepicker();
 }
+function _PopUp_Form_enforceStartDate(popUp)
+{
+    var time = $(popUp).find('#popup-time-start').text();
+    var startDate = moment('Dec 31, 1899 ' + time);
+    $(popUp).find('#popup-time-end-form').find('.withtimepicker').datetimepicker('setStartDate', new Date(startDate.unix() * 1000));
+}
 function PopUp_clickedSaveElement(form)
 {
     if (!/\S/.test(_PopUp_Form_getValue(form)))
@@ -633,6 +643,10 @@ function PopUp_clickedSaveElement(form)
     if ($(text).html() == nl2br(safe))
         return; // no saving needed
     $(text).html(nl2br(safe));
+    if (text_id == 'popup-time-start')
+    {
+        _PopUp_Form_enforceStartDate(popUp);
+    }
     PopUp_markAsUnsaved(popUp);
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
 }
