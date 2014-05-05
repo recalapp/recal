@@ -53,6 +53,7 @@ def gather_dashboard(request):
     return render(request, "main/index.html", {
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
+        'point_count': request.user.profile.get_point_count(),
         'nav_page': page,
         'is_mobile': request.mobile,
         'agenda_pref': agenda_pref,
@@ -92,6 +93,18 @@ def chromeframe(request):
 @xframe_options_exempt
 def embedded_not_logged_in(request):
     return render(request, 'embedded/not-logged-in.html', None)
+
+@login_required
+def point_award_history(request):
+    """Fetches point award history"""
+    pointChanges = PointChange.objects.filter(user=request.user.profile).order_by('-when').all()
+    results = []
+    for p in pointChanges:
+        reason = filter(lambda x: x[0] == p.relationship, p.REL_CHOICES)[0][1]
+        event_title = unicode(p.why)
+        results.append(event_title, p.score, reason)
+    return HttpResponse(json.dumps(results), 'application/json', status=200) 
+
 
 
 def landing(request):

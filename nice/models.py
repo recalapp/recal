@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save
 from colorfield.fields import ColorField
+from django.core.cache import cache
 
 # Create your models here.
 # To start using the database: python manage.py syncdb
@@ -12,7 +13,15 @@ from colorfield.fields import ColorField
 # use foreign key for many to one rel
 # use OneToOneField for one to one rel
 
-# TODO not implemented: best revisions
+import datetime
+
+def get_current_utc():
+    '''
+    Returns current time in UTC, perfect for database storage.
+    '''
+    from django.utils.timezone import utc
+    return datetime.datetime.utcnow().replace(tzinfo=utc)
+
 
 class Semester(models.Model):
     # fields
@@ -321,8 +330,6 @@ class User_Profile(models.Model):
 
     # Reputation system
     current_points = models.IntegerField(default=0, blank=True) # The publicly-visible count the user sees. Updated once a day.
-    pending_points = models.IntegerField(default=0, blank=True) # Points earned/lost since the last time "Current points" was updated.
-    last_point_update_time = models.DateTimeField(blank=True, null=True) # The last time we flushed pending points into current points.
 
     def __unicode__(self):
         """
@@ -354,29 +361,35 @@ class User_Profile(models.Model):
         Before returning anything, put it in cache with a 5 minute expiration.
 
         """
-        from django.core.cache import cache
+        
         cache_key = 'points_%s' % self.user.username
         points = cache.get(cache_key)
         if not points:
-            cur_time = get_current_utc() 
-            if self.last_point_update_time:
-                time_diff = cur_time - self.last_point_update_time
-                time_threshold = datetime.timedelta(hours=24)
-            if self.last_point_update_time and time_diff < time_threshold:
-                points = self.current_points
-            else:
-                self.current_points = self.current_points + self.pending_points
-                self.pending_points = 0
-                points = self.current_points
-                self.last_point_update_time = cur_time
-                self.save()
+            points = self.current_points
             cache.set(cache_key, points, 60*10) # caches for 10 minutes
         return points
     
-    def award_points(self, score):
+    def award_points(self, score, reward_type, when=get_current_utc(), why=None):
         """Safely awards [score] points to this user."""
-        self.pending_points = self.pending_points + score
+        # Add to PointChanges. That way, we can recalculate points later, and also show the user why they gained/lost points.
+        pc = PointChange(when=when, why=why, score=score, user=self, relationship=reward_type)
+        pc.save()
+
+        # Add to current points
+        self.current_points = self.current_points + score
         self.save()
+
+        # Invalidate cache entry
+        cache.delete('points_%s' % self.user.username)
+
+    def recalculate_points(self):
+        from django.db.models import Sum
+        sum_vals = PointChange.objects.filter(user=self).aggregate(Sum('score'))['score__sum']
+        self.current_points = sum_vals if sum_vals else 0
+        self.save()
+
+        # Invalidate cache entry
+        cache.delete('points_%s' % self.user.username)
 
 		
 # create user profile as soon as a user is added
@@ -406,32 +419,46 @@ class Vote(models.Model):
     def __unicode__(self):
         return 'Vote by ' + unicode(self.voter) + ' on ' + unicode(self.voted_on)
 
-### HELPER METHODS        
-import datetime
+class PointChange(models.Model):
+    """Reputation system -- point award tracking"""
 
-def get_current_utc():
-    '''
-    Returns current time in UTC, perfect for database storage.
-    '''
-    from django.utils.timezone import utc
-    return datetime.datetime.utcnow().replace(tzinfo=utc)
-    
-    
-def seed_db_with_data():
-    '''
-    Inserts some test data: a semester, a course, and an extra section.
-    '''
-    # TODO(Maxim): prune stale code
-    # scrape.scrape_all()
-    # sem = Semester(start_date=datetime.datetime(2014,1,5), end_date=datetime.datetime(2014,6,1), term_code='1144')
-    # sem.save()
-    # c1 = Course(semester=sem, title='Advanced Programming Techniques', description='A compsci class', professor='Brian Kernighan')
-    # course_listing = Course_Listing(course=c1, dept='COS', number='333')
-    # c1.save()
-    # course_listing.save()
-    # # Note that once we create a Course, the All Students section is created automatically and marked Default (i.e. all students in the course are automatically enrolled in this section). 
-    # extra_section = Section(course=c1, name='Precept A')
-    # extra_section.save()
+    # relationships
+    user = models.ForeignKey('User_Profile') # the user whose points we're dealing with
+    why = models.ForeignKey('Event_Revision', null=True, blank=True) # which revision this point change stems from
+
+    # main fields
+    when = models.DateTimeField() # when the change was made
+    score = models.IntegerField() # change in point count from this
+
+    # a field for the explanation of the point change
+    REL_GOOD_SUBMITTER = 1
+    REL_BAD_SUBMITTER = 2
+    REL_UPVOTER = 3
+    REL_DOWNVOTER = 4
+    REL_PROPER_UPVOTER = 5
+    REL_IMPROPER_UPVOTER = 6
+    REL_PROPER_DOWNVOTER = 7
+    REL_IMPROPER_DOWNVOTER = 8
+    REL_OTHER = 9 
+    # Use below text in point history explanation window. Preface with "Reward for".
+    REL_CHOICES = (
+        (REL_GOOD_SUBMITTER, "an Approved Submission"),
+        (REL_BAD_SUBMITTER, "a Rejected Submission"),
+        (REL_UPVOTER, "an Upvote"),
+        (REL_DOWNVOTER, "a Downvote"),
+        (REL_PROPER_UPVOTER, "an Upvote of an Approved Submission"),
+        (REL_IMPROPER_UPVOTER, "an Upvote of a Rejected Submission"),
+        (REL_PROPER_DOWNVOTER, "a Downvote of a Rejected Submission"),
+        (REL_IMPROPER_DOWNVOTER, "a Downvote of an Approved Submission"),
+        (REL_OTHER, "Other")
+    )
+
+    relationship = models.IntegerField(choices=REL_CHOICES, default=REL_OTHER) 
+
+
+
+
+### HELPER METHODS        
     
     
 def get_community_user():
