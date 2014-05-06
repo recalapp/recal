@@ -264,7 +264,7 @@ def modify_events(netid, events, auto_approve=False):
             # This is a new event group.
             # Per recurrence pattern, make more events with copies of this event revision.
             if event_dict['recurring'] is True:
-                create_new_events(event_dates)
+                create_new_events(event_dates_starting_tomorrow)
         else:
             # This is not a new event group.
             if recurrence_has_changed:
