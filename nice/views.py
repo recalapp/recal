@@ -29,7 +29,7 @@ Alternatives: @user_passes_test(lambda u: u.is_staff) or @permission_required('i
 
 def gather_dashboard(request):
     user = request.user.profile
-    page = 1
+    page = 0
     if user.ui_state_restoration:
         ui_sr = json.loads(user.ui_state_restoration)
         if 'nav_page' in ui_sr:
