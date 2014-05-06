@@ -110,11 +110,8 @@ def point_award_history(request):
 def landing(request):
     if request.user.is_authenticated():
         return redirect('index')
-    try:
-        if request.is_mobile:
-            return render(request, 'landing/mobile.html', None) 
-    except:
-        pass
+    if request.mobile:
+        return render(request, 'landing/mobile.html', None) 
     return render(request, 'landing/index.html', None)
 
 def logout(request):
