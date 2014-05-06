@@ -7,7 +7,7 @@ body{
     height: 410px;
 }
 #search{
-    min-height: 180px;
+    min-height: 100px;
 }
 .course-item > .panel-body{
     padding-top: 5px;
