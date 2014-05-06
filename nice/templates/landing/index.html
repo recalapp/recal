@@ -6,8 +6,21 @@
 {% block main_content %}
 {% include 'landing/nav.html' %}
 
-
-
+<div id="login" class="main-body ">
+    <div id="login-header">
+        <h1>Welcome to ReCal</h1>
+    </div>
+    <div class="login-container" >
+        <a href="/login" class="btn btn-primary login_button">
+            <h3>Get Started &rarr;</h3>
+            <h4>(or Log Back In)</h4>
+        </a>
+    </div>
+    <div id="login-footer">
+        <h4>Scroll to learn more.</h4>
+        <h1><i class="fa fa-angle-down"></i></h1>
+    </div>
+</div>
 {% include 'landing/content.html' %}
 
 {% endblock %}
