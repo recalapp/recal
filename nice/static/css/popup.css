@@ -52,6 +52,12 @@
 .unsaved{
     background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
 }
+label.popup-help-text {
+
+    color: #555;
+    font-style: italic;
+    display: inline;
+}
 
 /*.popup > .panel{
     border: 1px solid rgba(100, 100, 100, 0.15); 
