@@ -7,10 +7,10 @@
 {% include 'main/nav.html' %}
 {% include 'main/sidebar.html' %}
 <div class="main-content tab-content">
-    <div class="tab-pane fade left {% if nav_page == 0 %} active in {% endif %} container" id="agenda">
+    <div class="tab-pane fade left {% if nav_page == 0 %} active in {% endif %} container-fluid" id="agenda">
         {% include 'main/agenda-placeholder.html' %}
     </div>         
-    <div class="tab-pane fade right {% if nav_page == 1 %} active in {% endif %} container" id="calendar">
+    <div class="tab-pane fade right {% if nav_page == 1 %} active in {% endif %} container-fluid" id="calendar">
         {% include 'main/calendar.html' %}
     </div>
 </div>
@@ -111,5 +111,5 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 <script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
 <script src="{% static 'bower_components/moment-timezone/min/moment-timezone.min.js' %}"></script>
-<script src="{% static 'compiled/dashboard.js' %}"></script>
+<script src="{% static 'compiled/dashboard.min.js' %}"></script>
 {% endblock %}

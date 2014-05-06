@@ -201,7 +201,7 @@ function Agenda_insertHeader(text)
 {
     var agendaContainer = $("#agenda");
     var $agendaHeader = $('<div class="agenda-header row">');
-    $('<div class="col-xs-5">').append('<h3 id="agenda-header-text"></h3>').appendTo($agendaHeader);
+    $('<div class="col-xs-5 col-xs-offset-1">').append('<h3 id="agenda-header-text"></h3>').appendTo($agendaHeader);
     agendaContainer.append($agendaHeader);
     $agendaHeader.find('#agenda-header-text').text(text);
 }
