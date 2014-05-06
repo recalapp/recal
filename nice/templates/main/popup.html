@@ -15,10 +15,10 @@
                 </a>
                 <a href="#" id="hide_button" onclick="PopUp_clickedDelete(this); return false;" class="popup-ctrl withtooltip" data-toggle="tooltip" data-placement="right" title="hide">
                     <!-- <span class="glyphicon glyphicon-eye-close"></span> -->
-                    <i class="fa fa-minus-square-o"></i>
+                    <i class="fa fa-trash-o"></i>
                 </a>
                 <a href="#" onclick="PopUp_clickedSavePopUp(this); return false;" id="save_button" class="popup-ctrl hide">
-                    <span class="glyphicon glyphicon-ok"></span>
+                    Save
                 </a>
                 <!--
                 <a href="#" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl popup-ctrl-right">
@@ -28,7 +28,7 @@
             </h3>
         </div>
         <div class="panel-body panel-body-scroll">
-            <h6 class="popup-help-text">Click any field to edit...</h6>
+            <h6 class="popup-help-text center" style="margin-top: -8px;">Click any field to edit...</h6>
             <h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 1, 2014</h4>
             <div class="hide" id="popup-date-form">
                 <input type="date" class="form-control withdatepicker" required>
@@ -72,11 +72,11 @@
             <div class="hide" id="popup-loc-form">
                 <input type="text" class="form-control" maxlength="100">
             </div>
-            <label class="popup-help-text" for="popup-section">Class and Section:</label> <p id="popup-section" onclick="PopUp_clickedElement(this)">Section</p>
+            <h6 class="popup-help-text" for="popup-section">Class and Section:</h6> <p id="popup-section" onclick="PopUp_clickedElement(this)">Section</p>
             <div class="hide" id="popup-section-form">
                 <input type="text" class="form-control withcustompicker withsectionpicker">
             </div>
-            <label class="popup-help-text" for="popup-type">Event Type:</label> <p id="popup-type" onclick="PopUp_clickedElement(this)">Assignment</p>
+            <h6 class="popup-help-text" for="popup-type">Event Type:</h6> <p id="popup-type" onclick="PopUp_clickedElement(this)">Assignment</p>
             <!--
             <div class="hide" id="popup-type-form">
                 <select class="form-control">
