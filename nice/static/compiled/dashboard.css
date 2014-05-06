@@ -426,11 +426,10 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 .unsaved{
     background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
 }
-label.popup-help-text {
-
-    color: #555;
-    font-style: italic;
-    display: inline;
+.popup-help-text {
+    display: block; 
+    margin: 0;
+    color: gray;
 }
 
 /*.popup > .panel{
@@ -441,6 +440,10 @@ label.popup-help-text {
 .popup > .panel > .panel-heading{
     border-radius: 0px;
 }*/
+
+.popup-help-text.center{
+    text-align: center; 
+}
 #sidebar {
     width: 80%;
     height: 100%;
