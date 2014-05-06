@@ -67,3 +67,11 @@ label.popup-help-text {
 .popup > .panel > .panel-heading{
     border-radius: 0px;
 }*/
+
+.popup-help-text{
+    text-align: center; 
+    display: block; 
+    margin: 0;
+    margin-top: -8px;
+    color: gray;
+}
