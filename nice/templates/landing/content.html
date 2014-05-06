@@ -1,4 +1,19 @@
 {% load staticfiles %}
+<div id="login" class="main-body ">
+    <div id="login-header">
+        <h1>Welcome to ReCal</h1>
+    </div>
+    <div class="login-container" >
+        <a href="/login" class="btn btn-primary login_button">
+            <h3>Get Started &rarr;</h3>
+            <h4>(or Log Back In)</h4>
+        </a>
+    </div>
+    <div id="login-footer">
+        <h4>Scroll to learn more.</h4>
+        <h1><i class="fa fa-angle-down"></i></h1>
+    </div>
+</div>
 <div id="what" class="main-body alternate">
     <img class="big-img right" src="{% static 'images/what1.png' %}">
     <div class="content left">
@@ -10,16 +25,13 @@
         <p>Never sort through Blackboard, Piazza, email, and other notifications again.</p>
         <p>With a group calendar for every class, now you can collaborate with your classmates friends to stay on track with your work.</p>
         <p><b>Now open for FREE to all Princeton students!</b></p>
-    </div>
-</div>
-
-
-<div id="login" class="main-body login-body">
-    <div class="login-container">
-        <a href="/login" class="btn btn-primary login_button">
-            <h3>Add Your Courses &rarr;</h3>
-            <h4>(or Login to Dashboard)</h4> <!-- (or Log Back In) or (or Return to Dashboard) or (or Go to Dashboard)-->
-        </a>
+        <!--<div class="login-container">
+            <a href="/login" class="btn btn-primary login_button">
+                <h3>Log in</h3>
+                <h3>Add Your Courses &rarr;</h3>
+                <h4>(or Login to Dashboard)</h4> 
+            </a>
+    </div>-->
     </div>
 </div>
 
@@ -95,14 +107,6 @@
     </div>
 </div>
 
-<div id="login2" class="main-body login-body">
-    <div class="login-container" style="padding-top: 10vh;">
-        <a href="/login" class="btn btn-primary login_button">
-            <h3>Get Started &rarr;</h3>
-            <h4>(or Log Back In)</h4>
-        </a>
-    </div>
-</div>
 
 <div id="about" class="main-body">
     <div class="container-fluid">
