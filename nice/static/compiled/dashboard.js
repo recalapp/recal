@@ -134,10 +134,12 @@ function EP_init(heading, choices)
             $button.data('value', buttonDict.value);
             $button.on('click', function(ev){
                 ev.preventDefault();
+                var index = $(this).closest('.item.active').index();
                 $ep.trigger('ep.select', {
                     eventID: choice.eventID,
                     eventDict: choice.eventDict,
                     button: $(this).data('value'),
+                    index: index,
                 });
             });
             $pickerItem.find('#ep-item-controls').append($button);
@@ -177,6 +179,21 @@ function _EP_updateButtons(ep)
         // disable right button
         $ep.find('.right.ep-control').addClass('disabled-btn');
     }
+}
+function EP_removeItemAtIndex(ep, index)
+{
+    var count = $(ep).data('count');
+    var $toBeRemoved = $(ep).find('.item').filter(function(){
+        return $(this).index() == index;
+    });
+    if ($toBeRemoved.hasClass('active'))
+    {
+        // must cycle away
+        var newIndex = (index + 1) % count;
+        $(ep).carousel(newIndex);
+    }
+    $toBeRemoved.remove();
+    $(ep).data('count', count - 1);
 }
 var eventsManager = null;
 var EventsMan_updateListeners = [];
@@ -3818,7 +3835,7 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
     UR_updateLeft(0, unapprovedRevs);
     
     // set event listeners
-    $(ep).on('ep.cancel ep.select', function(ev){
+    $(ep).on('ep.cancel', function(ev){
         var mainPopUp = PopUp_getMainPopUp();
         PopUp_close(mainPopUp);
         SB_pop(this);
@@ -3832,6 +3849,7 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         else
         {
         }
+        EP_removeItemAtIndex(ep, index);
     });
     $(ep).on('ep.slid', function(ev, meta){
         UR_updateLeft(meta.index, unapprovedRevs);
