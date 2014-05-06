@@ -19,18 +19,9 @@ function Cal_init() {
 
 function Cal_reload()
 {
-    //try{
+    LO_show();
     var eventIDs = EventsMan_getEnrolledEvents();
     Cal_eventSource.events = [];
-    // $("#calendar").fullCalendar({
-    //     loading: function(isLoading, view) {
-    //         if(isLoading) { // starting to fetch events
-    //             LO_show();
-    //         } else { // done fetching events
-    //             LO_hide();
-    //         }
-    //     },
-    // });
     $.each(eventIDs, function(index){
         eventDict = EventsMan_getEventByID(this);
         var color = COURSE_COLOR_MAP[eventDict.course_id];
@@ -50,8 +41,5 @@ function Cal_reload()
     start.week(start.week() + 1);
     $('#calendarui').fullCalendar('gotoDate', start.year(), start.month(), start.date());
     $("#calendarui").fullCalendar("refetchEvents");
-    
-        //}
-    //catch(err){
-    //}
+    LO_hide();
 }
