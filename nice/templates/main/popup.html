@@ -28,6 +28,7 @@
             </h3>
         </div>
         <div class="panel-body panel-body-scroll">
+            <label class="popup-help-text" style="text-align: center; display: block; font-size: .9em;">Click any field to edit...</label>
             <h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 1, 2014</h4>
             <div class="hide" id="popup-date-form">
                 <input type="date" class="form-control withdatepicker" required>
@@ -71,11 +72,11 @@
             <div class="hide" id="popup-loc-form">
                 <input type="text" class="form-control" maxlength="100">
             </div>
-            <p id="popup-section" onclick="PopUp_clickedElement(this)">Section</p>
+            <label class="popup-help-text" for="popup-section">Class and Section:</label> <p id="popup-section" onclick="PopUp_clickedElement(this)">Section</p>
             <div class="hide" id="popup-section-form">
                 <input type="text" class="form-control withcustompicker withsectionpicker">
             </div>
-            <p id="popup-type" onclick="PopUp_clickedElement(this)">Assignment</p>
+            <label class="popup-help-text" for="popup-type">Event Type:</label> <p id="popup-type" onclick="PopUp_clickedElement(this)">Assignment</p>
             <!--
             <div class="hide" id="popup-type-form">
                 <select class="form-control">
