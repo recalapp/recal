@@ -74,11 +74,11 @@ Cal_eventSource = {
     events:[],
 }
 Cal_options = {
-    "defaultView": "agendaWeek",
-    "slotMinutes": 30,
-    "firstHour": 8,
-    "minTime": 8,
-    "maxTime": 23,
+    defaultView: "agendaWeek",
+    slotMinutes: 45,
+    firstHour: 8,
+    minTime: 8,
+    maxTime: 23,
     eventDurationEditable: false,
     eventStartEditable: false,
     eventBackgroundColor: "#74a2ca",
@@ -134,10 +134,12 @@ function EP_init(heading, choices)
             $button.data('value', buttonDict.value);
             $button.on('click', function(ev){
                 ev.preventDefault();
+                var index = $(this).closest('.item.active').index();
                 $ep.trigger('ep.select', {
                     eventID: choice.eventID,
                     eventDict: choice.eventDict,
                     button: $(this).data('value'),
+                    index: index,
                 });
             });
             $pickerItem.find('#ep-item-controls').append($button);
@@ -177,6 +179,21 @@ function _EP_updateButtons(ep)
         // disable right button
         $ep.find('.right.ep-control').addClass('disabled-btn');
     }
+}
+function EP_removeItemAtIndex(ep, index)
+{
+    var count = $(ep).data('count');
+    var $toBeRemoved = $(ep).find('.item').filter(function(){
+        return $(this).index() == index;
+    });
+    if ($toBeRemoved.hasClass('active'))
+    {
+        // must cycle away
+        var newIndex = (index + 1) % count;
+        $(ep).carousel(newIndex);
+    }
+    $toBeRemoved.remove();
+    $(ep).data('count', count - 1);
 }
 var eventsManager = null;
 var EventsMan_updateListeners = [];
@@ -1673,8 +1690,7 @@ function Cal_init() {
         PopUp_giveFocus(popUp);
     }
     Cal_options.windowResize = function(view){
-        var height = window.innerHeight - $(".navbar").height() - 50;
-        $('#calendarui').fullCalendar('option', 'height', height);
+        Cal_adjustHeight();
     };
 
     $("#calendarui").fullCalendar(Cal_options);
@@ -1698,6 +1714,11 @@ function Cal_init() {
     });
     if (Cal_active())
         Cal_reload();
+}
+function Cal_adjustHeight()
+{
+    var height = window.innerHeight - $(".navbar").height() - 50;
+    $('#calendarui').fullCalendar('option', 'height', height);
 }
 function Cal_active()
 {
@@ -2061,7 +2082,7 @@ function EventsMan_pushToServer(async)
     //var deleted = eventsManager.deletedIDs;
     if (updated.length > 0 || eventsManager.changed)
     {
-        $.ajax('put', {
+        $.ajax('/put', {
             dataType: 'json',
             type: 'POST',
             data: {
@@ -2132,7 +2153,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         return; // don't pull until changes are pushed
     showLoading = typeof showLoading != 'undefined' ? showLoading : false;
     eventsManager.isIdle = false;
-    $.ajax('get/' + eventsManager.lastSyncedTime, {
+    $.ajax('/get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
         loadingIndicator: showLoading,
         success: function(data){
@@ -3818,7 +3839,7 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
     UR_updateLeft(0, unapprovedRevs);
     
     // set event listeners
-    $(ep).on('ep.cancel ep.select', function(ev){
+    $(ep).on('ep.cancel', function(ev){
         var mainPopUp = PopUp_getMainPopUp();
         PopUp_close(mainPopUp);
         SB_pop(this);
@@ -3831,6 +3852,19 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         }
         else
         {
+        }
+        if (unapprovedRevs.length == 1)
+        {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+            SB_pop(this);
+            SB_unfill();
+            SB_hide();
+        }
+        else
+        {
+            EP_removeItemAtIndex(ep, index);
+            unapprovedRevs.splice(index, 1); // remove item from array as well
         }
     });
     $(ep).on('ep.slid', function(ev, meta){
