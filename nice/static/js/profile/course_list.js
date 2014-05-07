@@ -33,6 +33,8 @@ function CL_reload()
         });
         if (UI_isMain(this) || UI_isPinned(this))
             CL_highlight($courseItem.find('.panel'));
+        
+        CL_setColors($courseItem, courseDict);
     });
 }
 
@@ -72,15 +74,30 @@ function CL_selectID(courseID)
  **************************************************/
 function CL_highlight(course)
 {
+    if (CL_isHighlighted(course))
+        return;
+    // var newColor = $(course).data('new-color');
     $(course).addClass('panel-primary').removeClass('panel-default');
+    // $(course).css('background-color', newColor);
 }
 
 function CL_unhighlight(course)
 {
+    if (!CL_isHighlighted(course))
+        return;
     $(course).addClass('panel-default').removeClass('panel-primary');
 }
 
 function CL_isHighlighted(course)
 {
     return $(course).hasClass('panel-primary');
+}
+
+function CL_setColors(course, courseDict)
+{
+    var courseColorClass = 'course-color-' + courseDict.course_id;
+    var courseColor = COURSE_COLOR_MAP[courseDict.course_id];
+    $(course).data('new-color', courseColor);
+    // $(course).find('.panel-default').addClass(courseColorClass).css('border-color', courseColor);
+    $(course).find('.course-title').addClass(courseColorClass).css('color', courseColor);
 }

@@ -43,9 +43,16 @@ function PopUp_setToCourseID(popUp, courseID)
         console.log("errorneous course id");
         return;
     }
+
+    var courseColor = COURSE_COLOR_MAP[courseID];
+    if (!courseColor)
+        courseColor = getUsableColor(courseID);
+
     PopUp_setListing(popUp, courseDict.course_listings);
     PopUp_setTitle(popUp, courseDict.course_title);
     PopUp_setDescription(popUp, courseDict.course_description);
+    PopUp_setColor(popUp, courseColor);
+
     SC_removeAllFromContainer(popUp);
     var enrolledSections = CourseMan_getEnrolledSectionIDs(courseID);
     $.each(courseDict.sections, function(sectionType, sectionList){
