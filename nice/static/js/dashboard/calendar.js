@@ -1,6 +1,3 @@
-var CAL_LOADING = false;
-var FACTOR_LUM = 0.2;
-var FACTOR_TRANS = 0.7;
 //eventSources: [{
 //    events: [{
 //            id: "1",

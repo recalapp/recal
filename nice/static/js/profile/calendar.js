@@ -73,12 +73,26 @@ function Cal_reload()
         if (!color)
             color = getUsableColor(eventDict.course_id);
 
+        var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
+        color = colorLuminance(color, FACTOR_LUM);
+        var rgba;
+        if (shouldHighlight)
+        {
+            rgba = rgbToRgba(luminanceToRgb(color), 1.0);
+        }
+            else
+        {
+            rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
+        }
+
         Cal_eventSource.events.push({
             id: eventDict.event_id,
             title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
             start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
             end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
-            backgroundColor: color,
+            myColor: SECTION_COLOR_MAP[eventDict.section_id]['color'],
+            textColor: shouldHighlight ? '#ffffff' : color,
+            backgroundColor: rgba,
             borderColor: '#ffffff' //color //'#123456' 
         });
     });
