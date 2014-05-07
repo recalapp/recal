@@ -135,22 +135,24 @@ a {
     margin-bottom: 21px;
 }
 
-#loading{
-    position: fixed;
-    bottom: 0;
-    right: 20%;
-    /*-webkit-transition: opacity 0.1s ease-out;
-    transition: opacity 0.1s ease-out;*/
+.indicator{
+    /*-webkit-transition: opacity 1s ease-out;
+    transition: opacity 1s ease-out;*/
     opacity: 0;
-    z-index: 10000;
 }
-#loading.in{
+.indicator.in{
     opacity: 1;
 }
 #loading-icon{
     float: right;
     -webkit-animation: rotateIcon 1s infinite linear;
     animation: rotateIcon 1s infinite linear;
+}
+#indicators-container{
+    position: fixed;
+    bottom: 10px;
+    right: 20%;
+    z-index: 10000;
 }
 @-webkit-keyframes rotateIcon {
     from {

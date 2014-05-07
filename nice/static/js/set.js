@@ -7,8 +7,11 @@ Set.prototype.add = function(item) {
     this.size++;
 }
 Set.prototype.remove = function(item) {
-    delete this[item];
-    this.size--;
+    if (item in this)
+    {
+        delete this[item];
+        this.size--;
+    }
 }
 Set.prototype.fromArray = function(array){
     var ret = new Set();
@@ -36,3 +39,6 @@ Set.prototype.contains = function(a){
 Set.prototype.equals = function(a){
     return this.contains(a) && a.contains(this);
 };
+Set.prototype.isEmpty = function(a){
+    return this.size <= 0;
+}

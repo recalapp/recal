@@ -47,6 +47,9 @@ function init()
         },
         "links": {}
     });
+
+    LO_init();
+    
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
@@ -57,17 +60,17 @@ function init()
             }
             if (settings.loadingIndicator == false)
                 return;
-            LO_show();
+            LO_showLoading(settings.url);
         }
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        LO_hide();
+        LO_hideLoading(settings.url);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        LO_hide();
-        if (settings.loadingIndicator == false)
+        LO_hideLoading(settings.url);
+        if (false && settings.loadingIndicator == false)
             return;
-        LO_showError();
+        LO_showError(settings.url);
     });
     CacheMan_init();
 

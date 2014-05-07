@@ -153,7 +153,6 @@ function CourseMan_pullEnrolledCourseIDs(complete)
         success: function(data){
             courseManager.courseSectionsMap = data;
             courseManager.isIdle = true;
-            LO_hide();
             if (complete)
                 complete();
             CourseMan_handleQueue();
