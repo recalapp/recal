@@ -220,7 +220,12 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setDate(popUp, eventDict.event_start);
     PopUp_setStartTime(popUp, eventDict.event_start);
     PopUp_setEndTime(popUp, eventDict.event_end);
-    PopUp_setColor(popUp, SECTION_COLOR_MAP[eventDict.section_id]['color']);
+    var myColor = SECTION_COLOR_MAP[eventDict.section_id];
+    if (!myColor)
+        myColor = '#555555';
+    else
+        myColor = myColor['color'];
+    PopUp_setColor(popUp, myColor);
 
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
@@ -445,31 +450,6 @@ function PopUp_setEndTime(popUp, unixTime)
 {
     var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-end').text(time.format("h:mm A"));
-}
-function PopUp_setColor(popUp, color)
-{
-    //if (!($(popUp).find('.panel').data('my-color')))
-    //{
-    $(popUp).find('.panel').data('my-color', color);
-    //}
-
-    // color = $(popUp).find('.panel').data('my-color');
-
-    // TODO: bad idea to hardwire the default color?
-    var defaultBorder = '#DDDDDD';
-    var defaultHeader = '#F5F5F5';
-    $(popUp).find('.panel').data('default-border', defaultBorder);
-    $(popUp).find('.panel').data('default-header', defaultHeader);
-    if (PopUp_hasFocus(popUp))
-    {
-        $(popUp).find('#popup-title').parent().parent().css('background-color', color).css('border-color', color);
-        $(popUp).find('.panel').css('border-color', color);
-    }
-    else
-    {
-        $(popUp).find('#popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-        $(popUp).find('.panel').css('border-color', defaultBorder);
-    }
 }
 
 /***************************************************

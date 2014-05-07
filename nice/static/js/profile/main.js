@@ -137,6 +137,7 @@ function usableColor_init() {
     });
 }
 
+// TODO: make this random
 function getUsableColor(course_id) {
     var color = USABLE_COLORS.pop();
     if (!color)

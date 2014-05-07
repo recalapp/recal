@@ -38,6 +38,8 @@ function CL_reload()
         });
         if (UI_isMain(this) || UI_isPinned(this))
             CL_highlight($courseItem.find('.panel'));
+        
+        CL_setColors($courseItem, courseDict);
     });
     CL_LOADING = false;
 }
@@ -65,6 +67,23 @@ function CL_clickCourse(anchor)
     var popUp = PopUp_getMainPopUp();
     PopUp_setToCourseID(popUp, coursePanel.id);
     PopUp_giveFocus(popUp);
+
+    // find calendar events with the same course_id
+    // then highlight them
+    var myCourseID = coursePanel.id;
+    $.each($('#calendarui').fullCalendar('clientEvents'), function(index) {
+        var eventDict = EventsMan_getEventByID(this.id);
+        if (eventDict.course_id != myCourseID)
+        {
+            Cal_unhighlightEvent(this, true);
+            console.log('unhighlight ' + eventDict.course_id);
+        }
+        else
+        {
+            Cal_highlightEvent(this, true);
+            console.log('highlight ' + eventDict.course_id);
+        }
+    });
 }
 
 function CL_selectID(courseID)
@@ -78,15 +97,30 @@ function CL_selectID(courseID)
  **************************************************/
 function CL_highlight(course)
 {
+    if (CL_isHighlighted(course))
+        return;
+    // var newColor = $(course).data('new-color');
     $(course).addClass('panel-primary').removeClass('panel-default');
+    // $(course).css('background-color', newColor);
 }
 
 function CL_unhighlight(course)
 {
+    if (!CL_isHighlighted(course))
+        return;
     $(course).addClass('panel-default').removeClass('panel-primary');
 }
 
 function CL_isHighlighted(course)
 {
     return $(course).hasClass('panel-primary');
+}
+
+function CL_setColors(course, courseDict)
+{
+    var courseColorClass = 'course-color-' + courseDict.course_id;
+    var courseColor = COURSE_COLOR_MAP[courseDict.course_id];
+    $(course).data('new-color', courseColor);
+    // $(course).find('.panel-default').addClass(courseColorClass).css('border-color', courseColor);
+    $(course).find('.course-title').addClass(courseColorClass).css('color', courseColor);
 }

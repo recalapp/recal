@@ -69,6 +69,10 @@ function _CacheMan_cacheURL(url, async)
         }
     });
 }
+var CAL_LOADING = false;
+var FACTOR_LUM = 0.2;
+var FACTOR_TRANS = 0.7;
+
 CAL_INIT = false;
 Cal_eventSource = {
     events:[],
@@ -90,6 +94,122 @@ Cal_options = {
     slotEventOverlap: true,
 };
 function Cal_init(){};
+
+function Cal_highlightEvent(calEvent, update)
+{
+    if (!calEvent.highlighted)
+    {
+        calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, 1.0);
+        calEvent.textColor = '#ffffff';
+    }
+    calEvent.highlighted = true;
+    if (update)
+        $("#calendarui").fullCalendar("updateEvent", calEvent);
+    //$(eventDiv).addClass("event-selected");
+}
+function Cal_unhighlightEvent(calEvent, update)
+{
+    // delete calEvent["backgroundColor"];
+    if (calEvent.highlighted)
+    {
+        calEvent.textColor = calEvent.myColor;
+        calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, FACTOR_TRANS);
+    }
+    calEvent.highlighted = false;
+    if (update)
+        $("#calendarui").fullCalendar("updateEvent", calEvent);
+    //$(eventDiv).removeClass("event-selected");
+}
+
+function colorLuminance(hex, lum) 
+{
+	// validate hex string
+	hex = String(hex).replace(/[^0-9a-f]/gi, '');
+	if (hex.length < 6) {
+		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+	}
+	lum = lum || 0;
+
+	// convert to decimal and change luminosity
+	var rgb = "#", c, i;
+	for (i = 0; i < 3; i++) {
+		c = parseInt(hex.substr(i*2,2), 16);
+		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+		rgb += ("00"+c).substr(c.length);
+	}
+
+	return rgb;
+}
+
+function luminanceToRgb(lum)
+{
+    var r = parseInt(lum.substring(1, 3), 16);
+    var g = parseInt(lum.substring(3, 5), 16);
+    var b = parseInt(lum.substring(5, 7), 16);
+    return [r,g,b];
+}
+
+function rgbToRgba(rgb, trans)
+{
+    return "rgba(" + rgb[0] + ", " + rgb[1] + ", " + rgb[2] + ", " + trans + ")";
+}
+
+/*
+function rgbaToHex(rgba)
+{
+    var start;
+    var r, g, b;
+    for (i = 0; i < rgba.length; i++)
+    {
+        if (rgba[i] == '(')
+            start = i;
+        if (rgba[i] == ',')
+            break;
+    }
+
+    r = rgba.substring(start + 1, i).toString(16);
+
+    for (; i < rgba.length; i++)
+    {
+        if (rgba[i] == ' ')
+            start = i;
+        if (rgba[i] == ',')
+            break;
+    }
+
+    g = rgba.substring(start + 1, i).toString(16);
+
+    for (; i < rgba.length; i++)
+    {
+        if (rgba[i] == ' ')
+            start = i;
+        if (rgba[i] == ',')
+            break;
+    }
+
+    b = rgba.substring(start + 1, i).toString(16);
+
+    return "#" + r + g + b;
+}
+*/
+
+// hack to set the opacity for rgba string 
+// example:
+// if opacity = 1,
+// "rgba(12, 34, 56, 0.789907)" becomes
+// "rgba(12, 34, 56, 1)"
+function setOpacity(rgba, opacity)
+{
+    for (i = rgba.length - 1; i > 0; i--)
+    {
+        if (rgba[i] == ' ')
+            break;
+    }
+
+    // use i+1 because we still want the space
+    var newColor = rgba.substring(0, i + 1) + opacity + ")";
+    return newColor;
+}
 /*
  * [
  *  {
@@ -721,7 +841,7 @@ function LO_showTemporaryMessage(message, type)
     LO_insert($loading);
     setTimeout(function(){
         LO_remove($loading);
-    }, 5*1000);
+    }, 3*1000);
 }
 function LO_remove($loading)
 {
@@ -1037,7 +1157,7 @@ function PopUp_giveFocus(popUp)
     $(popUp).css("z-index", "200");
     var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
-    $(popUp).find("#popup-title").parent().parent().css('background-color', color).css('border-color', color);
+    $(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color);
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
@@ -1048,7 +1168,7 @@ function PopUp_loseFocus($popUps)
         var defaultBorder = $(this).find('.panel').data('default-border');
         var defaultHeader = $(this).find('.panel').data('default-header');
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
-        $(this).find('#popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
+        $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
     });
 }
 
@@ -1143,6 +1263,32 @@ function PopUp_map(apply)
     $("#popup-main").each(function(index) {
         apply(this, true);
     });
+}
+
+function PopUp_setColor(popUp, color)
+{
+    //if (!($(popUp).find('.panel').data('my-color')))
+    //{
+    $(popUp).find('.panel').data('my-color', color);
+    //}
+
+    // color = $(popUp).find('.panel').data('my-color');
+
+    // TODO: bad idea to hardwire the default color?
+    var defaultBorder = '#DDDDDD';
+    var defaultHeader = '#F5F5F5';
+    $(popUp).find('.panel').data('default-border', defaultBorder);
+    $(popUp).find('.panel').data('default-header', defaultHeader);
+    if (PopUp_hasFocus(popUp))
+    {
+        $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
+        $(popUp).find('.panel').css('border-color', color);
+    }
+    else
+    {
+        $(popUp).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
+        $(popUp).find('.panel').css('border-color', defaultBorder);
+    }
 }
 /*
  * choices = [
@@ -1708,9 +1854,6 @@ function Agenda_isHighlighted(agenda)
 {
     return $(agenda).hasClass("panel-primary");
 }
-var CAL_LOADING = false;
-var FACTOR_LUM = 0.2;
-var FACTOR_TRANS = 0.7;
 //eventSources: [{
 //    events: [{
 //            id: "1",
@@ -1857,122 +2000,6 @@ function Cal_reload()
 
 function Cal_render() {
     $("#calendarui").fullCalendar("render");
-}
-
-function Cal_highlightEvent(calEvent, update)
-{
-    if (!calEvent.highlighted)
-    {
-        calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, 1.0);
-        calEvent.textColor = '#ffffff';
-    }
-    calEvent.highlighted = true;
-    if (update)
-        $("#calendarui").fullCalendar("updateEvent", calEvent);
-    //$(eventDiv).addClass("event-selected");
-}
-function Cal_unhighlightEvent(calEvent, update)
-{
-    // delete calEvent["backgroundColor"];
-    if (calEvent.highlighted)
-    {
-        calEvent.textColor = calEvent.myColor;
-        calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, FACTOR_TRANS);
-    }
-    calEvent.highlighted = false;
-    if (update)
-        $("#calendarui").fullCalendar("updateEvent", calEvent);
-    //$(eventDiv).removeClass("event-selected");
-}
-
-function colorLuminance(hex, lum) 
-{
-	// validate hex string
-	hex = String(hex).replace(/[^0-9a-f]/gi, '');
-	if (hex.length < 6) {
-		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-	}
-	lum = lum || 0;
-
-	// convert to decimal and change luminosity
-	var rgb = "#", c, i;
-	for (i = 0; i < 3; i++) {
-		c = parseInt(hex.substr(i*2,2), 16);
-		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-		rgb += ("00"+c).substr(c.length);
-	}
-
-	return rgb;
-}
-
-function luminanceToRgb(lum)
-{
-    var r = parseInt(lum.substring(1, 3), 16);
-    var g = parseInt(lum.substring(3, 5), 16);
-    var b = parseInt(lum.substring(5, 7), 16);
-    return [r,g,b];
-}
-
-function rgbToRgba(rgb, trans)
-{
-    return "rgba(" + rgb[0] + ", " + rgb[1] + ", " + rgb[2] + ", " + trans + ")";
-}
-
-/*
-function rgbaToHex(rgba)
-{
-    var start;
-    var r, g, b;
-    for (i = 0; i < rgba.length; i++)
-    {
-        if (rgba[i] == '(')
-            start = i;
-        if (rgba[i] == ',')
-            break;
-    }
-
-    r = rgba.substring(start + 1, i).toString(16);
-
-    for (; i < rgba.length; i++)
-    {
-        if (rgba[i] == ' ')
-            start = i;
-        if (rgba[i] == ',')
-            break;
-    }
-
-    g = rgba.substring(start + 1, i).toString(16);
-
-    for (; i < rgba.length; i++)
-    {
-        if (rgba[i] == ' ')
-            start = i;
-        if (rgba[i] == ',')
-            break;
-    }
-
-    b = rgba.substring(start + 1, i).toString(16);
-
-    return "#" + r + g + b;
-}
-*/
-
-// hack to set the opacity for rgba string 
-// example:
-// if opacity = 1,
-// "rgba(12, 34, 56, 0.789907)" becomes
-// "rgba(12, 34, 56, 1)"
-function setOpacity(rgba, opacity)
-{
-    for (i = rgba.length - 1; i > 0; i--)
-    {
-        if (rgba[i] == ' ')
-            break;
-    }
-
-    // use i+1 because we still want the space
-    var newColor = rgba.substring(0, i + 1) + opacity + ")";
-    return newColor;
 }
 var timeoutIDs = [];
 var EVENTSMAN_COUNT = 0;
@@ -2910,7 +2937,12 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setDate(popUp, eventDict.event_start);
     PopUp_setStartTime(popUp, eventDict.event_start);
     PopUp_setEndTime(popUp, eventDict.event_end);
-    PopUp_setColor(popUp, SECTION_COLOR_MAP[eventDict.section_id]['color']);
+    var myColor = SECTION_COLOR_MAP[eventDict.section_id];
+    if (!myColor)
+        myColor = '#555555';
+    else
+        myColor = myColor['color'];
+    PopUp_setColor(popUp, myColor);
 
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
@@ -3135,31 +3167,6 @@ function PopUp_setEndTime(popUp, unixTime)
 {
     var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-end').text(time.format("h:mm A"));
-}
-function PopUp_setColor(popUp, color)
-{
-    //if (!($(popUp).find('.panel').data('my-color')))
-    //{
-    $(popUp).find('.panel').data('my-color', color);
-    //}
-
-    // color = $(popUp).find('.panel').data('my-color');
-
-    // TODO: bad idea to hardwire the default color?
-    var defaultBorder = '#DDDDDD';
-    var defaultHeader = '#F5F5F5';
-    $(popUp).find('.panel').data('default-border', defaultBorder);
-    $(popUp).find('.panel').data('default-header', defaultHeader);
-    if (PopUp_hasFocus(popUp))
-    {
-        $(popUp).find('#popup-title').parent().parent().css('background-color', color).css('border-color', color);
-        $(popUp).find('.panel').css('border-color', color);
-    }
-    else
-    {
-        $(popUp).find('#popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-        $(popUp).find('.panel').css('border-color', defaultBorder);
-    }
 }
 
 /***************************************************
