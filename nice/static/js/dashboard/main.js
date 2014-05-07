@@ -67,7 +67,7 @@ function init()
         LO_hideLoading(settings.url);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        LO_hideLoading(settings.url);
+        LO_hideLoading(settings.url, false);
         if (false && settings.loadingIndicator == false)
             return;
         LO_showError(settings.url);

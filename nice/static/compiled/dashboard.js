@@ -663,28 +663,31 @@ function LO_showLoading(id)
         return;
     }
     LO_idMap.loading.add(id);
-    if ($('#loading.in').length > 0)
+    if ($('#loading.active').length > 0)
         return;
     var $loading = LO_getLoadingHTML();
     $loading.attr('id', 'loading');
-    $('#indicators-container').append($loading);
-    $loading.addClass('in');
+    LO_insert($loading);
 }
-function LO_hideLoading(id)
+function LO_hideLoading(id, alsoHideErrorIfExists)
 {
+    if (typeof alsoHideErrorIfExists == 'undefined')
+        alsoHideErrorIfExists = true;
     if (typeof id == 'undefined')
         return;
     LO_idMap.loading.remove(id);
     if (LO_idMap.loading.isEmpty())
     {
-        LO_remove($('#loading.in'));
+        LO_remove($('#loading.active'));
     }
+    if (!alsoHideErrorIfExists)
+        return;
     if (id in LO_idMap.error)
     {
         LO_idMap.error.remove(id);
         if (LO_idMap.error.isEmpty())
         {
-            LO_remove($('#error.in'));
+            LO_remove($('#error.active'));
             LO_showTemporaryMessage('Connected', LO_TYPES.SUCCESS);
         }
     }
@@ -697,7 +700,7 @@ function LO_showError(id)
         return;
     LO_idMap.error.add(id);
 
-    if ($('#error.in').length > 0)
+    if ($('#error.active').length > 0)
         return;
 
     /*if ($('#loading.error').length > 0)
@@ -707,27 +710,32 @@ function LO_showError(id)
     var $loadingError = LO_getLoadingHTML();
     $loadingError.attr('id', 'error');
     $loadingError.removeClass('alert-info').addClass('alert-danger');
-    $loadingError.find('#loading-content').text('Error connecting. Will keep trying');
-    $('#indicators-container').append($loadingError);
-    $loadingError.addClass('in');
+    $loadingError.find('#loading-content').html('Error connecting.<br>Will keep trying');
+    LO_insert($loadingError); 
 }
 function LO_showTemporaryMessage(message, type)
 {
     var $loading = LO_getLoadingHTML();
     $loading.removeClass('alert-info').addClass(type);
     $loading.find('#loading-content').text(message);
-    $('#indicators-container').append($loading);
+    LO_insert($loading);
     setTimeout(function(){
         LO_remove($loading);
     }, 5*1000);
-    $loading.addClass('in');
 }
 function LO_remove($loading)
 {
     $loading.on('transitionend', function(ev){
         $(this).remove();
     });
+    $loading.removeClass('active');
     $loading.removeClass('in');
+}
+function LO_insert($loading)
+{
+    $('#indicators-container').append($loading);
+    $loading.addClass('active'); // NOTE an indicator does not technically exists unless it has class 'active'
+    $loading.addClass('in');
 }
 function LO_getLoadingHTML()
 {
@@ -2403,7 +2411,7 @@ function init()
         LO_hideLoading(settings.url);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        LO_hideLoading(settings.url);
+        LO_hideLoading(settings.url, false);
         if (false && settings.loadingIndicator == false)
             return;
         LO_showError(settings.url);
