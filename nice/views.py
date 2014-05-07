@@ -415,7 +415,7 @@ def modify_user(request):
     user.first_name = user_dict['first_name']
     user.last_name = user_dict['last_name']
     user.save()
-    return HttpResponse('')
+    return HttpResponse(content='1', status=200)
 
 def state_restoration(request):
     netid = request.user.username

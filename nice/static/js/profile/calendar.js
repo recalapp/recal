@@ -19,7 +19,7 @@ function Cal_init() {
 
 function Cal_reload()
 {
-    LO_show();
+    LO_showLoading('cal loading');
     var eventIDs = EventsMan_getEnrolledEvents();
     Cal_eventSource.events = [];
     $.each(eventIDs, function(index){
@@ -41,5 +41,5 @@ function Cal_reload()
     start.week(start.week() + 1);
     $('#calendarui').fullCalendar('gotoDate', start.year(), start.month(), start.date());
     $("#calendarui").fullCalendar("refetchEvents");
-    LO_hide();
+    LO_hideLoading('cal loading');
 }
