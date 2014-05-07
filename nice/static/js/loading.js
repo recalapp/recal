@@ -78,7 +78,7 @@ function LO_showTemporaryMessage(message, type)
     LO_insert($loading);
     setTimeout(function(){
         LO_remove($loading);
-    }, 5*1000);
+    }, 3*1000);
 }
 function LO_remove($loading)
 {
