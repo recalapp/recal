@@ -90,7 +90,7 @@ function Cal_reload()
             title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
             start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
             end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
-            myColor: SECTION_COLOR_MAP[eventDict.section_id]['color'],
+            myColor: COURSE_COLOR_MAP[eventDict.course_id],
             textColor: shouldHighlight ? '#ffffff' : color,
             backgroundColor: rgba,
             borderColor: '#ffffff' //color //'#123456' 
