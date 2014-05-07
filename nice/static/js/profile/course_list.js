@@ -61,6 +61,23 @@ function CL_clickCourse(anchor)
     var popUp = PopUp_getMainPopUp();
     PopUp_setToCourseID(popUp, coursePanel.id);
     PopUp_giveFocus(popUp);
+
+    // find calendar events with the same course_id
+    // then highlight them
+    var myCourseID = coursePanel.id;
+    $.each($('#calendarui').fullCalendar('clientEvents'), function(index) {
+        var eventDict = EventsMan_getEventByID(this.id);
+        if (eventDict.course_id != myCourseID)
+        {
+            Cal_unhighlightEvent(this, true);
+            console.log('unhighlight ' + eventDict.course_id);
+        }
+        else
+        {
+            Cal_highlightEvent(this, true);
+            console.log('highlight ' + eventDict.course_id);
+        }
+    });
 }
 
 function CL_selectID(courseID)

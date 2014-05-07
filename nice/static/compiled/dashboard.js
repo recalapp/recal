@@ -2816,7 +2816,12 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setDate(popUp, eventDict.event_start);
     PopUp_setStartTime(popUp, eventDict.event_start);
     PopUp_setEndTime(popUp, eventDict.event_end);
-    PopUp_setColor(popUp, SECTION_COLOR_MAP[eventDict.section_id]['color']);
+    var myColor = SECTION_COLOR_MAP[eventDict.section_id];
+    if (!myColor)
+        myColor = '#555555';
+    else
+        myColor = myColor['color'];
+    PopUp_setColor(popUp, myColor);
 
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
