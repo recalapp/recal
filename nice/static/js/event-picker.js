@@ -34,7 +34,7 @@ function EP_init(heading, choices)
         PopUp_setDate(popUp, eventDict.event_start);
         PopUp_setStartTime(popUp, eventDict.event_start);
         PopUp_setEndTime(popUp, eventDict.event_end);
-        //_PopUp_setBodyHeight(popUp);
+        _PopUp_setBodyHeight(popUp);
 
         $.each(choice.buttons, function(index, buttonDict){
             var $button = $('<a>').addClass('white-link-btn').addClass('theme');

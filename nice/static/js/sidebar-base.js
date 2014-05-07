@@ -73,7 +73,7 @@ function SB_pop(content)
     $(content).removeClass('in').on('transitionend', function(){
         $(content).remove();
     });
-    SB_hideIfEmpty();
+    //SB_hideIfEmpty();
 }
 function SB_setMainContent(content)
 {

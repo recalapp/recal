@@ -1,7 +1,9 @@
-.popup-container:not(.popup-ep){
-    position: fixed;
+.popup-container{
     width: 300px;
     height: 350px;
+}
+.popup-container:not(.popup-ep){
+    position: fixed;
     top: 100px;
     left: 50%;
 }

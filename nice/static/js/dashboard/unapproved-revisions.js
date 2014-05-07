@@ -77,7 +77,19 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
 
 function UR_updateLeft(index, unapprovedRevs)
 {
-    var mainPopUp = PopUp_getMainPopUp();
-    PopUp_setToEventID(mainPopUp, unapprovedRevs[index].event_id);
-    $(mainPopUp).draggable('disable');
+    if (EventsMan_hasEvent(unapprovedRevs[index].event_id))
+    {
+        var mainPopUp = PopUp_getMainPopUp();
+        PopUp_setToEventID(mainPopUp, unapprovedRevs[index].event_id);
+        $(mainPopUp).draggable('disable');
+    }
+    else
+    {
+        if (PopUp_hasMain())
+        {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+        }
+        //SB_pop(mainPopUp);
+    }
 }

@@ -126,7 +126,7 @@ function EP_init(heading, choices)
         PopUp_setDate(popUp, eventDict.event_start);
         PopUp_setStartTime(popUp, eventDict.event_start);
         PopUp_setEndTime(popUp, eventDict.event_end);
-        //_PopUp_setBodyHeight(popUp);
+        _PopUp_setBodyHeight(popUp);
 
         $.each(choice.buttons, function(index, buttonDict){
             var $button = $('<a>').addClass('white-link-btn').addClass('theme');
@@ -1329,7 +1329,7 @@ function SB_pop(content)
     $(content).removeClass('in').on('transitionend', function(){
         $(content).remove();
     });
-    SB_hideIfEmpty();
+    //SB_hideIfEmpty();
 }
 function SB_setMainContent(content)
 {
@@ -1690,8 +1690,7 @@ function Cal_init() {
         PopUp_giveFocus(popUp);
     }
     Cal_options.windowResize = function(view){
-        var height = window.innerHeight - $(".navbar").height() - 50;
-        $('#calendarui').fullCalendar('option', 'height', height);
+        Cal_adjustHeight();
     };
 
     $("#calendarui").fullCalendar(Cal_options);
@@ -1715,6 +1714,11 @@ function Cal_init() {
     });
     if (Cal_active())
         Cal_reload();
+}
+function Cal_adjustHeight()
+{
+    var height = window.innerHeight - $(".navbar").height() - 50;
+    $('#calendarui').fullCalendar('option', 'height', height);
 }
 function Cal_active()
 {
@@ -2078,7 +2082,7 @@ function EventsMan_pushToServer(async)
     //var deleted = eventsManager.deletedIDs;
     if (updated.length > 0 || eventsManager.changed)
     {
-        $.ajax('put', {
+        $.ajax('/put', {
             dataType: 'json',
             type: 'POST',
             data: {
@@ -2149,7 +2153,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         return; // don't pull until changes are pushed
     showLoading = typeof showLoading != 'undefined' ? showLoading : false;
     eventsManager.isIdle = false;
-    $.ajax('get/' + eventsManager.lastSyncedTime, {
+    $.ajax('/get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
         loadingIndicator: showLoading,
         success: function(data){
@@ -3849,7 +3853,19 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         else
         {
         }
-        EP_removeItemAtIndex(ep, index);
+        if (unapprovedRevs.length == 1)
+        {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+            SB_pop(this);
+            SB_unfill();
+            SB_hide();
+        }
+        else
+        {
+            EP_removeItemAtIndex(ep, index);
+            unapprovedRevs.splice(index, 1); // remove item from array as well
+        }
     });
     $(ep).on('ep.slid', function(ev, meta){
         UR_updateLeft(meta.index, unapprovedRevs);
@@ -3858,7 +3874,19 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
 
 function UR_updateLeft(index, unapprovedRevs)
 {
-    var mainPopUp = PopUp_getMainPopUp();
-    PopUp_setToEventID(mainPopUp, unapprovedRevs[index].event_id);
-    $(mainPopUp).draggable('disable');
+    if (EventsMan_hasEvent(unapprovedRevs[index].event_id))
+    {
+        var mainPopUp = PopUp_getMainPopUp();
+        PopUp_setToEventID(mainPopUp, unapprovedRevs[index].event_id);
+        $(mainPopUp).draggable('disable');
+    }
+    else
+    {
+        if (PopUp_hasMain())
+        {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+        }
+        //SB_pop(mainPopUp);
+    }
 }

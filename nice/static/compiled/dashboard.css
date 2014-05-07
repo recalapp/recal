@@ -372,10 +372,12 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     height: 0;
     opacity: 0;
 }
-.popup-container:not(.popup-ep){
-    position: fixed;
+.popup-container{
     width: 300px;
     height: 350px;
+}
+.popup-container:not(.popup-ep){
+    position: fixed;
     top: 100px;
     left: 50%;
 }
@@ -462,6 +464,10 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 }
 #sidebar.full.in{
     right: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+#sidebar.full.in.dark{
+    background-color: rgba(50, 50, 50, 0.8);
 }
 #sidebar-target{
     width: 15%;
