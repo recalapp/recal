@@ -1,4 +1,3 @@
-
 function Cal_init() {
     if (CAL_INIT)
         return;
@@ -11,6 +10,43 @@ function Cal_init() {
         week: 'ddd', // Mon
         day: 'dddd M/d'  // Monday 9/7
     }
+
+    Cal_options.eventClick = function(calEvent, jsEvent, view) {
+        if (calEvent.highlighted == true)
+        {
+            PopUp_giveFocusToID(calEvent.id);
+            return;
+        }
+
+        if (SHIFT_PRESSED)
+        {
+            Cal_highlightEvent(calEvent, true);
+            //UI_pin(calEvent.id);
+            var popUp = PopUp_insertPopUp(false);
+            // PopUp_setToEventID(popUp, calEvent.id);
+            PopUp_giveFocus(popUp);
+            return;
+        }
+
+        $($("#calendarui").fullCalendar("clientEvents", function(calEvent) {
+            return !UI_isPinned(calEvent.id)
+        })).each( function(index) {
+            Cal_unhighlightEvent(this, false);
+        });
+        Cal_highlightEvent(calEvent, true);
+
+        // we get the course_item with this course_id
+        // then click on it
+        var course_id = EventsMan_getEventByID(calEvent.id).course_id;
+        CL_selectID(course_id);
+
+        var popUp = PopUp_getMainPopUp();
+        console.log(popUp);
+
+        // PopUp_setToEventID(popUp, calEvent.id);
+        PopUp_giveFocus(popUp);
+    }
+
     $('#calendarui').fullCalendar(Cal_options);
     EventsMan_addUpdateListener(function(){
         Cal_reload();
