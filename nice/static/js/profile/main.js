@@ -61,7 +61,7 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
-            if (settings.loadingIdicator == false)
+            if (settings.loadingIndicator == false)
                 return;
             LO_showLoading(settings.url);
         }
@@ -71,7 +71,7 @@ function init()
     });
     $(document).ajaxError(function(event, xhr, settings){
         LO_hideLoading(settings.url, false);
-        if (false && settings.loadingIdicator == false)
+        if (settings.loadingIndicator == false)
             return;
         LO_showError(settings.url);
     });
@@ -88,16 +88,6 @@ function init()
     DEFAULT_SECTION_COLORS = JSON.parse(CacheMan_load('/get/default-section-colors'));
     courseColorMap_init();
     usableColor_init();
-    // clear out the cache if you come to this page, in case your classes change
-    // TODO detect what the changes are? then delete accordingly
-    if ('localStorage' in window && window['localStorage'] !== null)
-    {
-        localStorage.removeItem('eventsman.events');
-        localStorage.removeItem('eventsman.hidden');
-        localStorage.removeItem('eventsman.lastsyncedtime');
-        localStorage.removeItem('user');
-        localStorage.removeItem('state-restoration');
-    } 
 }
 
 function enableAllInteractions()

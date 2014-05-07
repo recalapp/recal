@@ -253,7 +253,8 @@ function EventsMan_pullFromServer(complete, showLoading)
         return; // don't pull until changes are pushed
     showLoading = typeof showLoading != 'undefined' ? showLoading : false;
     eventsManager.isIdle = false;
-    $.ajax('/get/' + eventsManager.lastSyncedTime, {
+    var url = '/get/' + eventsManager.lastSyncedTime;
+    $.ajax(url, {
         dataType: 'json',
         loadingIndicator: showLoading,
         success: function(data){
@@ -268,6 +269,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         },
         error: function(data){
             eventsManager.isIdle = true;
+            LO_showError(url);
         },
     });
 }
