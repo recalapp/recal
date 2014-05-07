@@ -3,11 +3,11 @@ Cal_eventSource = {
     events:[],
 }
 Cal_options = {
-    "defaultView": "agendaWeek",
-    "slotMinutes": 30,
-    "firstHour": 8,
-    "minTime": 8,
-    "maxTime": 23,
+    defaultView: "agendaWeek",
+    slotMinutes: 45,
+    firstHour: 8,
+    minTime: 8,
+    maxTime: 23,
     eventDurationEditable: false,
     eventStartEditable: false,
     eventBackgroundColor: "#74a2ca",

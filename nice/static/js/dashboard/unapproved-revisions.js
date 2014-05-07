@@ -42,7 +42,7 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
     UR_updateLeft(0, unapprovedRevs);
     
     // set event listeners
-    $(ep).on('ep.cancel ep.select', function(ev){
+    $(ep).on('ep.cancel', function(ev){
         var mainPopUp = PopUp_getMainPopUp();
         PopUp_close(mainPopUp);
         SB_pop(this);
@@ -55,6 +55,19 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         }
         else
         {
+        }
+        if (unapprovedRevs.length == 1)
+        {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+            SB_pop(this);
+            SB_unfill();
+            SB_hide();
+        }
+        else
+        {
+            EP_removeItemAtIndex(ep, index);
+            unapprovedRevs.splice(index, 1); // remove item from array as well
         }
     });
     $(ep).on('ep.slid', function(ev, meta){

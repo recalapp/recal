@@ -182,7 +182,7 @@ function EventsMan_pushToServer(async)
     //var deleted = eventsManager.deletedIDs;
     if (updated.length > 0 || eventsManager.changed)
     {
-        $.ajax('put', {
+        $.ajax('/put', {
             dataType: 'json',
             type: 'POST',
             data: {
@@ -253,7 +253,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         return; // don't pull until changes are pushed
     showLoading = typeof showLoading != 'undefined' ? showLoading : false;
     eventsManager.isIdle = false;
-    $.ajax('get/' + eventsManager.lastSyncedTime, {
+    $.ajax('/get/' + eventsManager.lastSyncedTime, {
         dataType: 'json',
         loadingIndicator: showLoading,
         success: function(data){
