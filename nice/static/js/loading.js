@@ -1,5 +1,6 @@
-var LO_count = 0;
-
+var LO_TYPES = {
+    SUCCESS: 'alert-success',
+}
 var LO_idMap = null;
 function LO_init()
 {
@@ -13,7 +14,6 @@ function LO_showLoading(id)
 {
     if (typeof id == 'undefined')
         return;
-    LO_count++;
     if (id in LO_idMap.loading)
     {
         // TODO should do anything here?
@@ -34,23 +34,16 @@ function LO_hideLoading(id)
     LO_idMap.loading.remove(id);
     if (LO_idMap.loading.isEmpty())
     {
-        $('#loading').remove();
+        LO_remove($('#loading.in'));
     }
-    LO_idMap.error.remove(id)
-    if (LO_idMap.error.isEmpty())
+    if (id in LO_idMap.error)
     {
-        // TODO should show success indicator
-        $('#error').remove();
-    }
-    return;
-    LO_count--;
-    LO_count = LO_count < 0 ? 0 : LO_count;
-    if (LO_count <= 0)
-    {
-        $('#loading').remove();
-        //$('#loading').removeClass('in').on('transitionend', function(){
-        //    $(this).remove();
-        //});
+        LO_idMap.error.remove(id);
+        if (LO_idMap.error.isEmpty())
+        {
+            LO_remove($('#error.in'));
+            LO_showTemporaryMessage('Connected', LO_TYPES.SUCCESS);
+        }
     }
 }
 function LO_showError(id)
@@ -74,6 +67,24 @@ function LO_showError(id)
     $loadingError.find('#loading-content').text('Error connecting. Will keep trying');
     $('#indicators-container').append($loadingError);
     $loadingError.addClass('in');
+}
+function LO_showTemporaryMessage(message, type)
+{
+    var $loading = LO_getLoadingHTML();
+    $loading.removeClass('alert-info').addClass(type);
+    $loading.find('#loading-content').text(message);
+    $('#indicators-container').append($loading);
+    setTimeout(function(){
+        LO_remove($loading);
+    }, 5*1000);
+    $loading.addClass('in');
+}
+function LO_remove($loading)
+{
+    $loading.on('transitionend', function(ev){
+        $(this).remove();
+    });
+    $loading.removeClass('in');
 }
 function LO_getLoadingHTML()
 {
