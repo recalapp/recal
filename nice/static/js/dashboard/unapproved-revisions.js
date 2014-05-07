@@ -56,7 +56,19 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         else
         {
         }
-        EP_removeItemAtIndex(ep, index);
+        if (unapprovedRevs.length == 1)
+        {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+            SB_pop(this);
+            SB_unfill();
+            SB_hide();
+        }
+        else
+        {
+            EP_removeItemAtIndex(ep, index);
+            unapprovedRevs.splice(index, 1); // remove item from array as well
+        }
     });
     $(ep).on('ep.slid', function(ev, meta){
         UR_updateLeft(meta.index, unapprovedRevs);

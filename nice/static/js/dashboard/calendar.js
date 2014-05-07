@@ -56,8 +56,7 @@ function Cal_init() {
         PopUp_giveFocus(popUp);
     }
     Cal_options.windowResize = function(view){
-        var height = window.innerHeight - $(".navbar").height() - 50;
-        $('#calendarui').fullCalendar('option', 'height', height);
+        Cal_adjustHeight();
     };
 
     $("#calendarui").fullCalendar(Cal_options);
@@ -81,6 +80,11 @@ function Cal_init() {
     });
     if (Cal_active())
         Cal_reload();
+}
+function Cal_adjustHeight()
+{
+    var height = window.innerHeight - $(".navbar").height() - 50;
+    $('#calendarui').fullCalendar('option', 'height', height);
 }
 function Cal_active()
 {
