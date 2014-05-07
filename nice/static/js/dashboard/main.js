@@ -47,6 +47,9 @@ function init()
         },
         "links": {}
     });
+
+    LO_init();
+    
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
@@ -57,17 +60,17 @@ function init()
             }
             if (settings.loadingIndicator == false)
                 return;
-            LO_show();
+            LO_showLoading(settings.url);
         }
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        LO_hide();
+        LO_hideLoading(settings.url);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        LO_hide();
+        LO_hideLoading(settings.url, false);
         if (settings.loadingIndicator == false)
             return;
-        LO_showError();
+        LO_showError(settings.url);
     });
     CacheMan_init();
 
@@ -82,6 +85,20 @@ function init()
     COURSE_MAP = loaded.courses;
     COURSE_SECTIONS_MAP = loaded.course_sections_map;
     COURSE_FILTER_BLACKLIST = new Set();
+
+    // verify local storage
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        var sectionsMap = localStorage.getItem('sectionsmap');
+        if (!sectionsMap)
+            clearLocalStorage();
+        else
+        {
+            if (sectionsMap != CacheMan_load('/get/sections'))
+                clearLocalStorage();
+        }
+        localStorage.setItem('sectionsmap', CacheMan_load('/get/sections'));
+    }
     
     SB_init();
     SR_init();
@@ -122,6 +139,7 @@ function init()
     {
         localStorage.setItem('user', USER_NETID);
     }
+    UR_pullUnapprovedRevisions();
 }
 function adaptSize()
 {
@@ -213,8 +231,12 @@ function toggleInfo()
 }
 function onLogOut()
 {
+}
+function clearLocalStorage()
+{
     if ('localStorage' in window && window['localStorage'] !== null)
     {
+        localStorage.removeItem('sectionsmap');
         localStorage.removeItem('eventsman.events');
         localStorage.removeItem('eventsman.hidden');
         localStorage.removeItem('eventsman.lastsyncedtime');

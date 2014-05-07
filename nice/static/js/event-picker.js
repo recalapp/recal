@@ -42,10 +42,12 @@ function EP_init(heading, choices)
             $button.data('value', buttonDict.value);
             $button.on('click', function(ev){
                 ev.preventDefault();
+                var index = $(this).closest('.item.active').index();
                 $ep.trigger('ep.select', {
                     eventID: choice.eventID,
                     eventDict: choice.eventDict,
                     button: $(this).data('value'),
+                    index: index,
                 });
             });
             $pickerItem.find('#ep-item-controls').append($button);
@@ -58,7 +60,7 @@ function EP_init(heading, choices)
    });
    $ep.on('slid.bs.carousel', function(ev){
        _EP_updateButtons(this);
-       var index = $(ep).find('.item.active').index();
+       var index = $(this).find('.item.active').index();
        var choice = choices[index];
        $(this).trigger('ep.slid', {
            eventID: choice.eventID,
@@ -68,6 +70,12 @@ function EP_init(heading, choices)
    });
    _EP_updateButtons($ep[0]);
    return $ep[0];
+}
+function EP_adjustPopUpSize(ep)
+{
+    $(ep).find('.popup-ep').each(function(){
+        _PopUp_setBodyHeight(this);
+    });
 }
 function _EP_updateButtons(ep)
 {
@@ -85,4 +93,25 @@ function _EP_updateButtons(ep)
         // disable right button
         $ep.find('.right.ep-control').addClass('disabled-btn');
     }
+}
+function EP_removeItemAtIndex(ep, index)
+{
+    var count = $(ep).data('count');
+    var $toBeRemoved = $(ep).find('.item').filter(function(){
+        return $(this).index() == index;
+    });
+    if ($toBeRemoved.hasClass('active'))
+    {
+        // must cycle away
+        var newIndex = (index + 1) % count;
+        $(ep).one('slid.bs.carousel', function(ev){
+            $toBeRemoved.remove();
+            $(this).data('count', count - 1);
+            _EP_updateButtons(this);
+        });
+        $(ep).carousel(newIndex);
+        return;
+    }
+    $toBeRemoved.remove();
+    $(ep).data('count', count - 1);
 }

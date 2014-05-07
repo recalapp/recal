@@ -47,7 +47,7 @@ function Agenda_active()
 
 function Agenda_reload()
 {
-    LO_show();
+    LO_showLoading('agenda loading');
     var agendaContainer = $("#agenda")
     var added = false;
     agendaContainer[0].innerHTML = null;
@@ -104,7 +104,7 @@ function Agenda_reload()
     {
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
-    LO_hide();
+    LO_hideLoading('agenda loading');
 }
 
 function Agenda_filterEvents(eventIDs)
@@ -201,7 +201,7 @@ function Agenda_insertHeader(text)
 {
     var agendaContainer = $("#agenda");
     var $agendaHeader = $('<div class="agenda-header row">');
-    $('<div class="col-xs-5">').append('<h3 id="agenda-header-text"></h3>').appendTo($agendaHeader);
+    $('<div class="col-xs-5 col-xs-offset-1">').append('<h3 id="agenda-header-text"></h3>').appendTo($agendaHeader);
     agendaContainer.append($agendaHeader);
     $agendaHeader.find('#agenda-header-text').text(text);
 }

@@ -6,8 +6,22 @@
 {% block main_content %}
 {% include 'landing/nav.html' %}
 
-
-
+<div id="login" class="main-body ">
+    <div id="login-header">
+        <h1>Rethinking Calendar.</h1> <!-- Welcome to ReCal -->
+        <h2>Take your course work management to a new level.</h2>
+    </div>
+    <div class="login-container" >
+        <a href="/login" class="btn btn-primary login_button">
+            <h3>Get Started &rarr;</h3>
+            <h4>(or Log Back In)</h4>
+        </a>
+    </div>
+    <div id="login-footer">
+        <h4>Scroll down to learn more.</h4>
+        <h1><i class="fa fa-angle-down"></i></h1>
+    </div>
+</div>
 {% include 'landing/content.html' %}
 
 {% endblock %}
@@ -15,6 +29,7 @@
 {% block link_or_script_blocking %}
 <base href="{{ base_url }}">
 <link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
 <link rel="stylesheet" href="{% static 'css/landing/landing.css' %}">
 {% endblock %}

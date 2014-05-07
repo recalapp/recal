@@ -29,7 +29,7 @@ Alternatives: @user_passes_test(lambda u: u.is_staff) or @permission_required('i
 
 def gather_dashboard(request):
     user = request.user.profile
-    page = 1
+    page = 0
     if user.ui_state_restoration:
         ui_sr = json.loads(user.ui_state_restoration)
         if 'nav_page' in ui_sr:
@@ -110,6 +110,8 @@ def point_award_history(request):
 def landing(request):
     if request.user.is_authenticated():
         return redirect('index')
+    if request.mobile:
+        return render(request, 'landing/mobile.html', None) 
     return render(request, 'landing/index.html', None)
 
 def logout(request):
@@ -320,6 +322,7 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
         #return render(request, 'main/event-json-test.html')
     except Exception, e:
         print e
+        return HttpResponse(status=500)
 
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs'])
@@ -367,7 +370,7 @@ def unapproved_revisions_json(request, event_id=None):
 def process_votes(request):
     votes = json.loads(request.POST['votes'])
     for vote in votes:
-        queries.process_vote_on_revision(request.user.username, votes['is_positive'], votes['revision_id'])
+        queries.process_vote_on_revision(request.user.username, vote['is_positive'], vote['revision_id'])
     return HttpResponse('')
 
 @login_required
@@ -412,7 +415,7 @@ def modify_user(request):
     user.first_name = user_dict['first_name']
     user.last_name = user_dict['last_name']
     user.save()
-    return HttpResponse('')
+    return HttpResponse(content='1', status=200)
 
 def state_restoration(request):
     netid = request.user.username

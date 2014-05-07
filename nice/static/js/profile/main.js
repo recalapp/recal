@@ -50,6 +50,9 @@ function init()
         },
         "links": {}
     });
+
+    LO_init();
+    
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
@@ -58,23 +61,19 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
+            if (settings.loadingIndicator == false)
+                return;
+            LO_showLoading(settings.url);
         }
     });
-    $(document).ajaxSend(function(event, xhr, settings){
-        if (settings.loadingIdicator == false)
-            return;
-        LO_show();
-    });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        if (settings.loadingIdicator == false)
-            return;
-        LO_hide();
+        LO_hideLoading(settings.url);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        if (settings.loadingIdicator == false)
+        LO_hideLoading(settings.url, false);
+        if (settings.loadingIndicator == false)
             return;
-        LO_hide();
-        LO_showError();
+        LO_showError(settings.url);
     });
     SB_init();
     CacheMan_init();

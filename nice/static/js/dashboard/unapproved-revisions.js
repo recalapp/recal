@@ -37,12 +37,13 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
     var ep = EP_init('Does this change look correct?', choices);
     SB_setMainContent(ep);
     SB_fill();
+    EP_adjustPopUpSize(ep);
 
     // set the left hand component of the side bar
     UR_updateLeft(0, unapprovedRevs);
     
     // set event listeners
-    $(ep).on('ep.cancel ep.select', function(ev){
+    $(ep).on('ep.cancel', function(ev){
         var mainPopUp = PopUp_getMainPopUp();
         PopUp_close(mainPopUp);
         SB_pop(this);
@@ -50,11 +51,29 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         SB_hide();
     });
     $(ep).on('ep.select', function(ev, meta){
-        if (meta.button == 'up')
+        $.ajax('/put/votes', {
+            data: {
+                    'votes': JSON.stringify([
+                        {
+                            is_positive: meta.button == 'up',
+                            revision_id: parseInt(meta.eventDict.revision_id),
+                        }
+                    ]),
+                },
+            type: 'POST',
+        });
+        if (unapprovedRevs.length == 1)
         {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+            SB_pop(this);
+            SB_unfill();
+            SB_hide();
         }
         else
         {
+            EP_removeItemAtIndex(ep, meta.index);
+            unapprovedRevs.splice(meta.index, 1); // remove item from array as well
         }
     });
     $(ep).on('ep.slid', function(ev, meta){
@@ -64,7 +83,19 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
 
 function UR_updateLeft(index, unapprovedRevs)
 {
-    var mainPopUp = PopUp_getMainPopUp();
-    PopUp_setToEventID(mainPopUp, unapprovedRevs[index].event_id);
-    $(mainPopUp).draggable('disable');
+    if (EventsMan_hasEvent(unapprovedRevs[index].event_id))
+    {
+        var mainPopUp = PopUp_getMainPopUp();
+        PopUp_setToEventID(mainPopUp, unapprovedRevs[index].event_id);
+        $(mainPopUp).draggable('disable');
+    }
+    else
+    {
+        if (PopUp_hasMain())
+        {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+        }
+        //SB_pop(mainPopUp);
+    }
 }

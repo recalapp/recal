@@ -765,7 +765,7 @@ function PopUp_clickedDelete(popUpAnchor)
     var eventDict = EventsMan_getEventByID(event_id);
     if (eventDict && 'recurrence_days' in eventDict)
     {
-        AS_showActionSheetFromElement(popUpAnchor, popUp, null, [
+        AS_showActionSheetFromElement(popUpAnchor, popUp, "Done with this event? Click to hide from your agenda and calendar.", [ 
                 {important: false, text:'Only this event'},
                 {important: true, text:'All future events'}
             ], function(index){

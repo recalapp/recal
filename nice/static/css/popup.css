@@ -1,16 +1,17 @@
-.popup-container.old {
-    position: fixed;
-    top: 100px;
-    left: 60%;
-    width: 25%;
-    height: 300px;
-}
 .popup-container{
-    position: fixed;
     width: 300px;
     height: 350px;
+}
+.popup-container:not(.popup-ep){
+    position: fixed;
     top: 100px;
     left: 50%;
+}
+.popup-container > .panel{
+    max-height: 100%;
+}
+.popup-container > .panel > .panel-body{
+    max-height: 100%;
 }
 .popup-container > .popup-ctrl{
     position: absolute;
@@ -52,6 +53,11 @@
 .unsaved{
     background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
 }
+.popup-help-text {
+    display: block; 
+    margin: 0;
+    color: gray;
+}
 
 /*.popup > .panel{
     border: 1px solid rgba(100, 100, 100, 0.15); 
@@ -61,3 +67,7 @@
 .popup > .panel > .panel-heading{
     border-radius: 0px;
 }*/
+
+.popup-help-text.center{
+    text-align: center; 
+}

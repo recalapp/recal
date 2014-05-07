@@ -187,6 +187,7 @@ a {
 }
 .white-link-btn:hover{
     text-decoration: None;
+    background-color: lightgray;
 }
 .white-link-btn.dark{
     color: rgb(50, 50, 50);
@@ -218,22 +219,27 @@ a {
     margin-bottom: 21px;
 }
 
-#loading{
-    position: fixed;
-    bottom: 0;
-    right: 20%;
-    /*-webkit-transition: opacity 0.1s ease-out;
-    transition: opacity 0.1s ease-out;*/
+.indicator{
+    -webkit-transition: bottom 0.2s ease-in-out, opacity 0.2s ease-out;
+    transition: bottom 0.2s ease-in-out, opacity 0.2s ease-out;
     opacity: 0;
-    z-index: 10000;
+    position: relative;
+    bottom: -100px;
 }
-#loading.in{
+.indicator.in{
     opacity: 1;
+    bottom: 0;
 }
 #loading-icon{
     float: right;
     -webkit-animation: rotateIcon 1s infinite linear;
     animation: rotateIcon 1s infinite linear;
+}
+#indicators-container{
+    position: fixed;
+    bottom: 10px;
+    right: 20%;
+    z-index: 10000;
 }
 @-webkit-keyframes rotateIcon {
     from {
@@ -372,19 +378,20 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     height: 0;
     opacity: 0;
 }
-.popup-container.old {
-    position: fixed;
-    top: 100px;
-    left: 60%;
-    width: 25%;
-    height: 300px;
-}
 .popup-container{
-    position: fixed;
     width: 300px;
     height: 350px;
+}
+.popup-container:not(.popup-ep){
+    position: fixed;
     top: 100px;
     left: 50%;
+}
+.popup-container > .panel{
+    max-height: 100%;
+}
+.popup-container > .panel > .panel-body{
+    max-height: 100%;
 }
 .popup-container > .popup-ctrl{
     position: absolute;
@@ -426,6 +433,11 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 .unsaved{
     background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
 }
+.popup-help-text {
+    display: block; 
+    margin: 0;
+    color: gray;
+}
 
 /*.popup > .panel{
     border: 1px solid rgba(100, 100, 100, 0.15); 
@@ -435,6 +447,10 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 .popup > .panel > .panel-heading{
     border-radius: 0px;
 }*/
+
+.popup-help-text.center{
+    text-align: center; 
+}
 #sidebar {
     width: 80%;
     height: 100%;
@@ -460,6 +476,10 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 }
 #sidebar.full.in{
     right: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+#sidebar.full.in.dark{
+    background-color: rgba(50, 50, 50, 0.8);
 }
 #sidebar-target{
     width: 15%;

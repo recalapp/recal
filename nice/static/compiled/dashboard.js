@@ -78,11 +78,11 @@ Cal_eventSource = {
     events:[],
 }
 Cal_options = {
-    "defaultView": "agendaWeek",
-    "slotMinutes": 30,
-    "firstHour": 8,
-    "minTime": 8,
-    "maxTime": 23,
+    defaultView: "agendaWeek",
+    slotMinutes: 45,
+    firstHour: 8,
+    minTime: 8,
+    maxTime: 23,
     eventDurationEditable: false,
     eventStartEditable: false,
     eventBackgroundColor: "#74a2ca",
@@ -254,10 +254,12 @@ function EP_init(heading, choices)
             $button.data('value', buttonDict.value);
             $button.on('click', function(ev){
                 ev.preventDefault();
+                var index = $(this).closest('.item.active').index();
                 $ep.trigger('ep.select', {
                     eventID: choice.eventID,
                     eventDict: choice.eventDict,
                     button: $(this).data('value'),
+                    index: index,
                 });
             });
             $pickerItem.find('#ep-item-controls').append($button);
@@ -270,7 +272,7 @@ function EP_init(heading, choices)
    });
    $ep.on('slid.bs.carousel', function(ev){
        _EP_updateButtons(this);
-       var index = $(ep).find('.item.active').index();
+       var index = $(this).find('.item.active').index();
        var choice = choices[index];
        $(this).trigger('ep.slid', {
            eventID: choice.eventID,
@@ -280,6 +282,12 @@ function EP_init(heading, choices)
    });
    _EP_updateButtons($ep[0]);
    return $ep[0];
+}
+function EP_adjustPopUpSize(ep)
+{
+    $(ep).find('.popup-ep').each(function(){
+        _PopUp_setBodyHeight(this);
+    });
 }
 function _EP_updateButtons(ep)
 {
@@ -297,6 +305,27 @@ function _EP_updateButtons(ep)
         // disable right button
         $ep.find('.right.ep-control').addClass('disabled-btn');
     }
+}
+function EP_removeItemAtIndex(ep, index)
+{
+    var count = $(ep).data('count');
+    var $toBeRemoved = $(ep).find('.item').filter(function(){
+        return $(this).index() == index;
+    });
+    if ($toBeRemoved.hasClass('active'))
+    {
+        // must cycle away
+        var newIndex = (index + 1) % count;
+        $(ep).one('slid.bs.carousel', function(ev){
+            $toBeRemoved.remove();
+            $(this).data('count', count - 1);
+            _EP_updateButtons(this);
+        });
+        $(ep).carousel(newIndex);
+        return;
+    }
+    $toBeRemoved.remove();
+    $(ep).data('count', count - 1);
 }
 var eventsManager = null;
 var EventsMan_updateListeners = [];
@@ -732,47 +761,105 @@ Array.prototype.equals = function(a){
     }
     return i == a.length;
 }
-var LO_count = 0;
-
-function LO_show()
+var LO_TYPES = {
+    SUCCESS: 'alert-success',
+}
+var LO_idMap = null;
+function LO_init()
 {
-    LO_count++;
-    if ($('#loading').length > 0)
+    LO_idMap = {
+        loading: new Set(),
+        error: new Set(),
+    };
+}
+
+function LO_showLoading(id)
+{
+    if (typeof id == 'undefined')
         return;
-    if (LO_count <= 0)
+    if (id in LO_idMap.loading)
+    {
+        // TODO should do anything here?
+        return;
+    }
+    LO_idMap.loading.add(id);
+    if ($('#loading.active').length > 0)
         return;
     var $loading = LO_getLoadingHTML();
-    $('body').append($loading);
-    $('#loading').addClass('in');
+    $loading.attr('id', 'loading');
+    LO_insert($loading);
 }
-function LO_hide()
+function LO_hideLoading(id, alsoHideErrorIfExists)
 {
-    LO_count--;
-    LO_count = LO_count < 0 ? 0 : LO_count;
-    if (LO_count <= 0)
+    if (typeof alsoHideErrorIfExists == 'undefined')
+        alsoHideErrorIfExists = true;
+    if (typeof id == 'undefined')
+        return;
+    LO_idMap.loading.remove(id);
+    if (LO_idMap.loading.isEmpty())
     {
-        $('#loading').remove();
-        //$('#loading').removeClass('in').on('transitionend', function(){
-        //    $(this).remove();
-        //});
+        LO_remove($('#loading.active'));
+    }
+    if (!alsoHideErrorIfExists)
+        return;
+    if (id in LO_idMap.error)
+    {
+        LO_idMap.error.remove(id);
+        if (LO_idMap.error.isEmpty())
+        {
+            LO_remove($('#error.active'));
+            LO_showTemporaryMessage('Connected', LO_TYPES.SUCCESS);
+        }
     }
 }
-function LO_showError()
+function LO_showError(id)
 {
-    if ($('#loading.error').length > 0)
+    if (typeof id == 'undefined')
+        return;
+    if (id in LO_idMap.error)
+        return;
+    LO_idMap.error.add(id);
+
+    if ($('#error.active').length > 0)
+        return;
+
+    /*if ($('#loading.error').length > 0)
         return;
     if ($('#loading').not('.error').length > 0)
-        $('#loading').not('.error').remove();
+        $('#loading').not('.error').remove();*/
     var $loadingError = LO_getLoadingHTML();
+    $loadingError.attr('id', 'error');
     $loadingError.removeClass('alert-info').addClass('alert-danger');
-    $loadingError.find('#loading-content').text('Error connecting. Will keep trying');
-    $('body').append($loadingError);
-    $('#loading').addClass('in');
+    $loadingError.find('#loading-content').html('Error connecting.<br>Will keep trying');
+    LO_insert($loadingError); 
+}
+function LO_showTemporaryMessage(message, type)
+{
+    var $loading = LO_getLoadingHTML();
+    $loading.removeClass('alert-info').addClass(type);
+    $loading.find('#loading-content').text(message);
+    LO_insert($loading);
+    setTimeout(function(){
+        LO_remove($loading);
+    }, 3*1000);
+}
+function LO_remove($loading)
+{
+    $loading.on('transitionend', function(ev){
+        $(this).remove();
+    });
+    $loading.removeClass('active');
+    $loading.removeClass('in');
+}
+function LO_insert($loading)
+{
+    $('#indicators-container').append($loading);
+    $loading.addClass('active'); // NOTE an indicator does not technically exists unless it has class 'active'
+    $loading.addClass('in');
 }
 function LO_getLoadingHTML()
 {
-    var $loading = $('<div>').addClass('alert alert-dismissable alert-info');
-    $loading.attr('id', 'loading');
+    var $loading = $('<div>').addClass('indicator alert alert-dismissable alert-info');
     $loading.append($('<span id="loading-content">'));
     $loading.find('#loading-content').append('Loading...&nbsp;&nbsp;&nbsp;<i class="fa fa-spinner fa-spin"></i>');
     return $loading;
@@ -1354,8 +1441,11 @@ Set.prototype.add = function(item) {
     this.size++;
 }
 Set.prototype.remove = function(item) {
-    delete this[item];
-    this.size--;
+    if (item in this)
+    {
+        delete this[item];
+        this.size--;
+    }
 }
 Set.prototype.fromArray = function(array){
     var ret = new Set();
@@ -1383,6 +1473,9 @@ Set.prototype.contains = function(a){
 Set.prototype.equals = function(a){
     return this.contains(a) && a.contains(this);
 };
+Set.prototype.isEmpty = function(a){
+    return this.size <= 0;
+}
 var SB_willCloseListeners = [];
 function SB_init()
 {
@@ -1458,7 +1551,7 @@ function SB_pop(content)
     $(content).removeClass('in').on('transitionend', function(){
         $(content).remove();
     });
-    SB_hideIfEmpty();
+    //SB_hideIfEmpty();
 }
 function SB_setMainContent(content)
 {
@@ -1542,7 +1635,7 @@ function Agenda_active()
 
 function Agenda_reload()
 {
-    LO_show();
+    LO_showLoading('agenda loading');
     var agendaContainer = $("#agenda")
     var added = false;
     agendaContainer[0].innerHTML = null;
@@ -1599,7 +1692,7 @@ function Agenda_reload()
     {
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
-    LO_hide();
+    LO_hideLoading('agenda loading');
 }
 
 function Agenda_filterEvents(eventIDs)
@@ -1696,7 +1789,7 @@ function Agenda_insertHeader(text)
 {
     var agendaContainer = $("#agenda");
     var $agendaHeader = $('<div class="agenda-header row">');
-    $('<div class="col-xs-5">').append('<h3 id="agenda-header-text"></h3>').appendTo($agendaHeader);
+    $('<div class="col-xs-5 col-xs-offset-1">').append('<h3 id="agenda-header-text"></h3>').appendTo($agendaHeader);
     agendaContainer.append($agendaHeader);
     $agendaHeader.find('#agenda-header-text').text(text);
 }
@@ -1816,8 +1909,7 @@ function Cal_init() {
         PopUp_giveFocus(popUp);
     }
     Cal_options.windowResize = function(view){
-        var height = window.innerHeight - $(".navbar").height() - 50;
-        $('#calendarui').fullCalendar('option', 'height', height);
+        Cal_adjustHeight();
     };
 
     $("#calendarui").fullCalendar(Cal_options);
@@ -1842,6 +1934,11 @@ function Cal_init() {
     if (Cal_active())
         Cal_reload();
 }
+function Cal_adjustHeight()
+{
+    var height = window.innerHeight - $(".navbar").height() - 50;
+    $('#calendarui').fullCalendar('option', 'height', height);
+}
 function Cal_active()
 {
     return $('#calendar').hasClass('active');
@@ -1854,7 +1951,7 @@ function Cal_reload()
     var eventIDs = EventsMan_getAllEventIDs();
     Cal_eventSource.events = [];
     setTimeout(function(){
-        LO_show();
+        LO_showLoading('cal loading');
         try {
             $.each(eventIDs, function(index){
                 eventDict = EventsMan_getEventByID(this);
@@ -1897,7 +1994,7 @@ function Cal_reload()
         catch(err){
             CAL_LOADING = false;
         }
-        LO_hide();
+        LO_hideLoading('cal loading');
     }, 10);
 }
 
@@ -2088,7 +2185,7 @@ function EventsMan_pushToServer(async)
     //var deleted = eventsManager.deletedIDs;
     if (updated.length > 0 || eventsManager.changed)
     {
-        $.ajax('put', {
+        $.ajax('/put', {
             dataType: 'json',
             type: 'POST',
             data: {
@@ -2159,7 +2256,8 @@ function EventsMan_pullFromServer(complete, showLoading)
         return; // don't pull until changes are pushed
     showLoading = typeof showLoading != 'undefined' ? showLoading : false;
     eventsManager.isIdle = false;
-    $.ajax('get/' + eventsManager.lastSyncedTime, {
+    var url = '/get/' + eventsManager.lastSyncedTime;
+    $.ajax(url, {
         dataType: 'json',
         loadingIndicator: showLoading,
         success: function(data){
@@ -2174,6 +2272,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         },
         error: function(data){
             eventsManager.isIdle = true;
+            LO_showError(url);
         },
     });
 }
@@ -2321,6 +2420,9 @@ function init()
         },
         "links": {}
     });
+
+    LO_init();
+    
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
@@ -2331,17 +2433,17 @@ function init()
             }
             if (settings.loadingIndicator == false)
                 return;
-            LO_show();
+            LO_showLoading(settings.url);
         }
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        LO_hide();
+        LO_hideLoading(settings.url);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        LO_hide();
+        LO_hideLoading(settings.url, false);
         if (settings.loadingIndicator == false)
             return;
-        LO_showError();
+        LO_showError(settings.url);
     });
     CacheMan_init();
 
@@ -2356,6 +2458,20 @@ function init()
     COURSE_MAP = loaded.courses;
     COURSE_SECTIONS_MAP = loaded.course_sections_map;
     COURSE_FILTER_BLACKLIST = new Set();
+
+    // verify local storage
+    if ('localStorage' in window && window['localStorage'] !== null)
+    {
+        var sectionsMap = localStorage.getItem('sectionsmap');
+        if (!sectionsMap)
+            clearLocalStorage();
+        else
+        {
+            if (sectionsMap != CacheMan_load('/get/sections'))
+                clearLocalStorage();
+        }
+        localStorage.setItem('sectionsmap', CacheMan_load('/get/sections'));
+    }
     
     SB_init();
     SR_init();
@@ -2396,6 +2512,7 @@ function init()
     {
         localStorage.setItem('user', USER_NETID);
     }
+    UR_pullUnapprovedRevisions();
 }
 function adaptSize()
 {
@@ -2487,8 +2604,12 @@ function toggleInfo()
 }
 function onLogOut()
 {
+}
+function clearLocalStorage()
+{
     if ('localStorage' in window && window['localStorage'] !== null)
     {
+        localStorage.removeItem('sectionsmap');
         localStorage.removeItem('eventsman.events');
         localStorage.removeItem('eventsman.hidden');
         localStorage.removeItem('eventsman.lastsyncedtime');
@@ -3361,7 +3482,7 @@ function PopUp_clickedDelete(popUpAnchor)
     var eventDict = EventsMan_getEventByID(event_id);
     if (eventDict && 'recurrence_days' in eventDict)
     {
-        AS_showActionSheetFromElement(popUpAnchor, popUp, null, [
+        AS_showActionSheetFromElement(popUpAnchor, popUp, "Done with this event? Click to hide from your agenda and calendar.", [ 
                 {important: false, text:'Only this event'},
                 {important: true, text:'All future events'}
             ], function(index){
@@ -3820,12 +3941,13 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
     var ep = EP_init('Does this change look correct?', choices);
     SB_setMainContent(ep);
     SB_fill();
+    EP_adjustPopUpSize(ep);
 
     // set the left hand component of the side bar
     UR_updateLeft(0, unapprovedRevs);
     
     // set event listeners
-    $(ep).on('ep.cancel ep.select', function(ev){
+    $(ep).on('ep.cancel', function(ev){
         var mainPopUp = PopUp_getMainPopUp();
         PopUp_close(mainPopUp);
         SB_pop(this);
@@ -3833,11 +3955,29 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         SB_hide();
     });
     $(ep).on('ep.select', function(ev, meta){
-        if (meta.button == 'up')
+        $.ajax('/put/votes', {
+            data: {
+                    'votes': JSON.stringify([
+                        {
+                            is_positive: meta.button == 'up',
+                            revision_id: parseInt(meta.eventDict.revision_id),
+                        }
+                    ]),
+                },
+            type: 'POST',
+        });
+        if (unapprovedRevs.length == 1)
         {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+            SB_pop(this);
+            SB_unfill();
+            SB_hide();
         }
         else
         {
+            EP_removeItemAtIndex(ep, meta.index);
+            unapprovedRevs.splice(meta.index, 1); // remove item from array as well
         }
     });
     $(ep).on('ep.slid', function(ev, meta){
@@ -3847,7 +3987,19 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
 
 function UR_updateLeft(index, unapprovedRevs)
 {
-    var mainPopUp = PopUp_getMainPopUp();
-    PopUp_setToEventID(mainPopUp, unapprovedRevs[index].event_id);
-    $(mainPopUp).draggable('disable');
+    if (EventsMan_hasEvent(unapprovedRevs[index].event_id))
+    {
+        var mainPopUp = PopUp_getMainPopUp();
+        PopUp_setToEventID(mainPopUp, unapprovedRevs[index].event_id);
+        $(mainPopUp).draggable('disable');
+    }
+    else
+    {
+        if (PopUp_hasMain())
+        {
+            var mainPopUp = PopUp_getMainPopUp();
+            PopUp_close(mainPopUp);
+        }
+        //SB_pop(mainPopUp);
+    }
 }

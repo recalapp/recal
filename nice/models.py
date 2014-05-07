@@ -236,7 +236,7 @@ class Event(models.Model):
                 # Compare to revisions for this event that the user has voted on
                 event_vote = Vote.objects.filter(voter__user__username = netid).filter(voted_on__event__pk=self.pk).filter(voted_on__approved=Event_Revision.STATUS_PENDING).filter(score=1).order_by('-when').first() # upvote on some revision of this event
                 if not latest_approved or (event_vote and event_vote.voted_on.modified_time > latest_approved.modified_time): # if the upvoted revision is newer than the last approved revision, then show the upvoted revision instead.
-                    latest_approved = event_vote
+                    latest_approved = event_vote.voted_on
             return latest_approved # show the latest approved revision because the user's revisions don't exist or are older
         return None # no revisions available
 
