@@ -1,3 +1,5 @@
+var CL_LOADING = false;
+
 function CL_init()
 {
     CourseMan_addUpdateListener(function(){
@@ -11,6 +13,9 @@ function CL_init()
 
 function CL_reload()
 {
+    if (CL_LOADING)
+        return;
+    CL_LOADING = true;
     var courseList = $('#course-list')[0];
     courseList.innerHTML = null;
     $.each(CourseMan_getEnrolledCourses(), function(index){
@@ -34,6 +39,7 @@ function CL_reload()
         if (UI_isMain(this) || UI_isPinned(this))
             CL_highlight($courseItem.find('.panel'));
     });
+    CL_LOADING = false;
 }
 
 function CL_clickCourse(anchor)
