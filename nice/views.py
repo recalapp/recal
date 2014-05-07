@@ -321,8 +321,9 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
         }), content_type='application/javascript')
         #return render(request, 'main/event-json-test.html')
     except Exception, e:
-        print e
-        return HttpResponse(status=500)
+        raise e
+        #print e
+        #return HttpResponse(status=500)
 
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs'])
