@@ -187,6 +187,7 @@ a {
 }
 .white-link-btn:hover{
     text-decoration: None;
+    background-color: lightgray;
 }
 .white-link-btn.dark{
     color: rgb(50, 50, 50);
@@ -380,6 +381,12 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     position: fixed;
     top: 100px;
     left: 50%;
+}
+.popup-container > .panel{
+    max-height: 100%;
+}
+.popup-container > .panel > .panel-body{
+    max-height: 100%;
 }
 .popup-container > .popup-ctrl{
     position: absolute;

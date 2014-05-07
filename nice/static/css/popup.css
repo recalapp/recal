@@ -7,6 +7,12 @@
     top: 100px;
     left: 50%;
 }
+.popup-container > .panel{
+    max-height: 100%;
+}
+.popup-container > .panel > .panel-body{
+    max-height: 100%;
+}
 .popup-container > .popup-ctrl{
     position: absolute;
     right: 0;

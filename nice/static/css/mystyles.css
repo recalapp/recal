@@ -103,6 +103,7 @@ a {
 }
 .white-link-btn:hover{
     text-decoration: None;
+    background-color: lightgray;
 }
 .white-link-btn.dark{
     color: rgb(50, 50, 50);

@@ -122,6 +122,7 @@ function init()
     {
         localStorage.setItem('user', USER_NETID);
     }
+    UR_pullUnapprovedRevisions();
 }
 function adaptSize()
 {

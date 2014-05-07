@@ -126,7 +126,7 @@ function EP_init(heading, choices)
         PopUp_setDate(popUp, eventDict.event_start);
         PopUp_setStartTime(popUp, eventDict.event_start);
         PopUp_setEndTime(popUp, eventDict.event_end);
-        _PopUp_setBodyHeight(popUp);
+        //_PopUp_setBodyHeight(popUp);
 
         $.each(choice.buttons, function(index, buttonDict){
             var $button = $('<a>').addClass('white-link-btn').addClass('theme');
@@ -152,7 +152,7 @@ function EP_init(heading, choices)
    });
    $ep.on('slid.bs.carousel', function(ev){
        _EP_updateButtons(this);
-       var index = $(ep).find('.item.active').index();
+       var index = $(this).find('.item.active').index();
        var choice = choices[index];
        $(this).trigger('ep.slid', {
            eventID: choice.eventID,
@@ -162,6 +162,12 @@ function EP_init(heading, choices)
    });
    _EP_updateButtons($ep[0]);
    return $ep[0];
+}
+function EP_adjustPopUpSize(ep)
+{
+    $(ep).find('.popup-ep').each(function(){
+        _PopUp_setBodyHeight(this);
+    });
 }
 function _EP_updateButtons(ep)
 {
@@ -190,7 +196,13 @@ function EP_removeItemAtIndex(ep, index)
     {
         // must cycle away
         var newIndex = (index + 1) % count;
+        $(ep).one('slid.bs.carousel', function(ev){
+            $toBeRemoved.remove();
+            $(this).data('count', count - 1);
+            _EP_updateButtons(this);
+        });
         $(ep).carousel(newIndex);
+        return;
     }
     $toBeRemoved.remove();
     $(ep).data('count', count - 1);
@@ -3834,6 +3846,7 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
     var ep = EP_init('Does this change look correct?', choices);
     SB_setMainContent(ep);
     SB_fill();
+    EP_adjustPopUpSize(ep);
 
     // set the left hand component of the side bar
     UR_updateLeft(0, unapprovedRevs);
@@ -3847,12 +3860,17 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         SB_hide();
     });
     $(ep).on('ep.select', function(ev, meta){
-        if (meta.button == 'up')
-        {
-        }
-        else
-        {
-        }
+        $.ajax('/put/votes', {
+            data: {
+                    'votes': JSON.stringify([
+                        {
+                            is_positive: meta.button == 'up',
+                            revision_id: parseInt(meta.eventDict.revision_id),
+                        }
+                    ]),
+                },
+            type: 'POST',
+        });
         if (unapprovedRevs.length == 1)
         {
             var mainPopUp = PopUp_getMainPopUp();
@@ -3863,8 +3881,8 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         }
         else
         {
-            EP_removeItemAtIndex(ep, index);
-            unapprovedRevs.splice(index, 1); // remove item from array as well
+            EP_removeItemAtIndex(ep, meta.index);
+            unapprovedRevs.splice(meta.index, 1); // remove item from array as well
         }
     });
     $(ep).on('ep.slid', function(ev, meta){

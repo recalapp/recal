@@ -322,6 +322,7 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
         #return render(request, 'main/event-json-test.html')
     except Exception, e:
         print e
+        return HttpResponse(status=500)
 
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs'])
@@ -369,7 +370,7 @@ def unapproved_revisions_json(request, event_id=None):
 def process_votes(request):
     votes = json.loads(request.POST['votes'])
     for vote in votes:
-        queries.process_vote_on_revision(request.user.username, votes['is_positive'], votes['revision_id'])
+        queries.process_vote_on_revision(request.user.username, vote['is_positive'], vote['revision_id'])
     return HttpResponse('')
 
 @login_required
