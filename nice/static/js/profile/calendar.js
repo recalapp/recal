@@ -14,7 +14,8 @@ function Cal_init() {
     Cal_options.eventClick = function(calEvent, jsEvent, view) {
         if (calEvent.highlighted == true)
         {
-            PopUp_giveFocusToID(calEvent.id);
+            // TODO: fix this function. PopUp_giveFocusToID does not seem to work
+            // PopUp_giveFocusToID(calEvent.id);
             return;
         }
 
@@ -28,10 +29,19 @@ function Cal_init() {
             return;
         }
 
+        var myCourseID = EventsMan_getEventByID(calEvent.id).course_id;
         $($("#calendarui").fullCalendar("clientEvents", function(calEvent) {
             return !UI_isPinned(calEvent.id)
         })).each( function(index) {
-            Cal_unhighlightEvent(this, false);
+            var eventDict = EventsMan_getEventByID(this.id);
+            if (eventDict.course_id != myCourseID)
+            {
+                Cal_unhighlightEvent(this, false);
+            }
+            else
+            {
+                Cal_highlightEvent(this, false);
+            }
         });
         Cal_highlightEvent(calEvent, true);
 
