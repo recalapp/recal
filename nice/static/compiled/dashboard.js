@@ -1776,6 +1776,10 @@ function Agenda_loadEvents(eventIDs)
             // TODO(Dyland) change appearance of non-hidden agendas
         }
     });
+    if (window.innerWidth <= 400)
+    {
+        $('.agenda-container').children('.col-xs-4').removeClass('col-xs-4 col-xs-offset-1').addClass('col-xs-12');
+    }
     if (THEME == 'w')
         $('.theme').removeClass('dark');
     else
@@ -2597,6 +2601,9 @@ function adaptSize()
     {
         $('#sb-left-container').removeClass('col-xs-4 col-xs-12 col-xs-8');
         $('#sb-left-container').addClass('col-xs-12');
+        $('.agenda-container').children('.col-xs-4').removeClass('col-xs-4 col-xs-offset-1').addClass('col-xs-12');
+    } else {
+        $('.agenda-container').children('.col-xs-12').addClass('col-xs-4 col-xs-offset-1').removeClass('col-xs-12');
     }
 }
 
