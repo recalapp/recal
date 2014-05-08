@@ -83,6 +83,8 @@ function PopUp_setToCourseID(popUp, courseID)
                 else
                     CourseMan_unenrollSectionID(courseID, sectionID);
             });
+
+            CL_selectID(courseID);
         });
     });
 }

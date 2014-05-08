@@ -139,7 +139,7 @@ function usableColor_init() {
 
 // TODO: make this random
 function getUsableColor(course_id) {
-    var color = USABLE_COLORS.pop();
+    var color = USABLE_COLORS.splice((Math.random() * USABLE_COLORS.length) | 0, 1)[0];
     if (!color)
     {
         color = DEFAULT_SECTION_COLORS[0];
