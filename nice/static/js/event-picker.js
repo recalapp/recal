@@ -37,7 +37,9 @@ function EP_init(heading, choices)
         //_PopUp_setBodyHeight(popUp);
 
         $.each(choice.buttons, function(index, buttonDict){
-            var $button = $('<a>').addClass('white-link-btn').addClass('theme');
+            var $button = $('<a>').addClass('white-link-btn').addClass('theme').css{
+                display: 'inline',
+            };
             $button.html(buttonDict.pretty);
             $button.data('value', buttonDict.value);
             $button.on('click', function(ev){
