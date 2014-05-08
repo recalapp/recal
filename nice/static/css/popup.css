@@ -52,6 +52,7 @@
 }
 .unsaved{
     background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
+    color: black;
 }
 .popup-help-text {
     display: block; 

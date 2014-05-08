@@ -439,6 +439,7 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 }
 .unsaved{
     background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
+    color: black;
 }
 .popup-help-text {
     display: block; 
