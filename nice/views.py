@@ -321,7 +321,7 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
         }), content_type='application/javascript')
         #return render(request, 'main/event-json-test.html')
     except Exception, e:
-        print e
+        raise e
         return HttpResponse(status=500)
 
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
@@ -416,6 +416,11 @@ def modify_user(request):
     user.last_name = user_dict['last_name']
     user.save()
     return HttpResponse(content='1', status=200)
+
+@login_required
+def get_user_point_count(request):
+    return HttpResponse(content=request.user.profile.get_point_count(), status=200)
+
 
 def state_restoration(request):
     netid = request.user.username
