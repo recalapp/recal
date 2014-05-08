@@ -11,7 +11,8 @@ function EventsMan_init()
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
         _EventsMan_callUpdateListeners();
-        EventsMan_pullFromServer();
+        EventsMan_verifyLocalData();
+        //EventsMan_pullFromServer();
     }
     else
     {
@@ -157,7 +158,7 @@ function EventsMan_init()
         EVENTSMAN_COUNT++ ; // every 5 min. -> 30 * 10s = 300s = 5min
         if (!eventsManager.active && (EVENTSMAN_COUNT % 30) != 0)
             return;
-        if ((EVENTSMAN_COUNT % 30) == 0)
+        if ((EVENTSMAN_COUNT % 30) == 0) // -1 so that it does this on first load
             EventsMan_verifyLocalData();
         EventsMan_pushToServer(true); 
         EventsMan_pullFromServer();
@@ -319,11 +320,14 @@ function EventsMan_processDownloadedEvents(data)
 
 function EventsMan_verifyLocalData()
 {
-    if (!eventsManager.isIdle)
+    eventsManager.lastSyncedTime = 0;
+    EventsMan_pullFromServer();
+    /*if (!eventsManager.isIdle)
         return;
     if (eventsManager.updatedIDs.size > 0 || eventsManager.changed)
         return;
     eventsManager.isIdle = false;
+
     var revisionIDs = [];
     var revIDToEventID = {};
     $.each(eventsManager.events, function(eventID, eventDict){
@@ -349,7 +353,7 @@ function EventsMan_verifyLocalData()
         error: function(){
             eventsManager.isIdle = true;
         },
-    });
+    });*/
 }
 
 /***************************************************
