@@ -128,10 +128,11 @@ post_save.connect(make_default_table, sender=Course)
 
 class User_Section_Table(models.Model):
     """
-    only 5 default colors
+    only 10 default colors
     """
     COLOR_1 = '#8441A5'
     COLOR_2 = '#306278'
+    COLOR_3 = '#F29D08'
     COLOR_4 = '#339213'
     COLOR_5 = '#D60030'
     COLOR_6 = '#6B2119'
@@ -139,6 +140,7 @@ class User_Section_Table(models.Model):
     COLOR_CHOICES = (
         (COLOR_1, 'purple'),
         (COLOR_2, 'light blue'),
+        (COLOR_3, 'orange'),
         (COLOR_4, 'green'),
         (COLOR_5, 'red'),
         (COLOR_6, 'persian plum'),
