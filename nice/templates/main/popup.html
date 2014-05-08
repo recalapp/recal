@@ -1,5 +1,5 @@
 <div id="popup-main123" class="main-content popup-container popup popup-event">
-    <h2 id="close_button" class="popup-ctrl"><a onclick="toggleInfo(); return false;"><i class="fa fa-times-circle"></a></i></h2>
+    <h2 id="close_button" class="popup-ctrl theme"><a onclick="toggleInfo(); return false;"><i class="fa fa-times-circle"></a></i></h2>
     <div class="panel panel-default panel-clipped">
         <div class="panel-heading panel-heading-handle">
             <h3 class="panel-title" >
@@ -25,77 +25,74 @@
                 -->
             </h3>
         </div>
-        <div class="panel-body panel-body-scroll">
-            <h6 class="popup-help-text center" style="margin-top: -8px;">Click any field to edit...</h6>
-            <h4 id="popup-date" onclick="PopUp_clickedElement(this)">April 1, 2014</h4>
-            <div class="hide" id="popup-date-form">
-                <input type="date" class="form-control withdatepicker" required>
-            </div>
+        <div class="panel-body panel-body-scroll theme">
+            <h6 class="popup-help-text center" >Click any field to edit...</h6>
+
+            <div class="popup-text-container theme">
+                <h5 id="popup-date" onclick="PopUp_clickedElement(this)">April 1, 2014</h5>
+                <div class="hide" id="popup-date-form">
+                    <input type="date" class="form-control withdatepicker" required>
+                </div>
  
-            <div class="row">
-                <div class="col-xs-5">
-                    <h4 id="popup-time-start" onclick="PopUp_clickedElement(this)">12:00 PM</h4>
-                    <div class="hide" id="popup-time-start-form">
-                        <input type="time" class="form-control withtimepicker" data-date-format="MM/DD/YYYY" required>
-                    </div>         
-                </div>
-                <div class="col-xs-2">
-                    <h4>to</h4>
-                </div>
-                <div class="col-xs-5">
-                    <h4 id="popup-time-end" onclick="PopUp_clickedElement(this)">4:00 PM</h4>
-                    <div class="hide" id="popup-time-end-form">
-                        <input type="time" class="form-control withtimepicker" data-date-format="MM/DD/YYYY" required>
+                <div class="row">
+                    <div class="col-xs-5">
+                        <h5 id="popup-time-start" onclick="PopUp_clickedElement(this)">12:00 PM</h5>
+                        <div class="hide" id="popup-time-start-form">
+                            <input type="time" class="form-control withtimepicker" data-date-format="MM/DD/YYYY" required>
+                        </div>         
+                    </div>
+                    <div class="col-xs-2">
+                        <h5>to</h5>
+                    </div>
+                    <div class="col-xs-5">
+                        <h5 id="popup-time-end" onclick="PopUp_clickedElement(this)">4:00 PM</h5>
+                        <div class="hide" id="popup-time-end-form">
+                            <input type="time" class="form-control withtimepicker" data-date-format="MM/DD/YYYY" required>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <input id="popup-repeat" class="" type="checkbox" name="repeat" value="true"><label for="popup-repeat"><h4>&nbsp;&nbsp;Repeat</h4></label>
-            <div id="popup-repeat-pattern" class="popup-repeat-item hide">
-            </div>
-            <div id="popup-repeat-interval" class="popup-repeat-item hide">
-            </div>
-            <div>
-                <!--
-                <div id="popup-repeat-end">
-                    <input type="date" class="form-control withdatepicker" required>
+            <div class="popup-text-container theme">
+                <input id="popup-repeat" class="" type="checkbox" name="repeat" value="true"><label for="popup-repeat"><h5>&nbsp;&nbsp;Repeat</h5></label>
+                <div id="popup-repeat-pattern" class="popup-repeat-item hide">
                 </div>
-                -->
-                
+                <div id="popup-repeat-interval" class="popup-repeat-item hide">
+                </div>
+                <div>
+                    <!--
+                    <div id="popup-repeat-end">
+                        <input type="date" class="form-control withdatepicker" required>
+                    </div>
+                    -->
+                </div>
             </div>
             
+            <div class="popup-text-container theme">
+                <span class="glyphicon glyphicon-map-marker"></span>
+                <h5 id="popup-loc" onclick="PopUp_clickedElement(this)">CS Building</h5>
+                <div class="hide" id="popup-loc-form">
+                    <input type="text" class="form-control" maxlength="100">
+                </div>
+            </div>
 
+            <div class="popup-text-container theme">
+                <h6 class="popup-help-text" for="popup-section">Class and Section:</h6> <p id="popup-section" onclick="PopUp_clickedElement(this)">Section</p>
+                <div class="hide" id="popup-section-form">
+                    <input type="text" class="form-control withcustompicker withsectionpicker">
+                </div>
+                <h6 class="popup-help-text" for="popup-type">Event Type:</h6> <p id="popup-type" onclick="PopUp_clickedElement(this)">Assignment</p>    
+                <div class="hide" id="popup-type-form">
+                    <input type="text" class="form-control withcustompicker withtypepicker">
+                </div>
+            </div>
 
-            <h4 id="popup-loc" onclick="PopUp_clickedElement(this)">CS Building</h4>
-            <div class="hide" id="popup-loc-form">
-                <input type="text" class="form-control" maxlength="100">
-            </div>
-            <h6 class="popup-help-text" for="popup-section">Class and Section:</h6> <p id="popup-section" onclick="PopUp_clickedElement(this)">Section</p>
-            <div class="hide" id="popup-section-form">
-                <input type="text" class="form-control withcustompicker withsectionpicker">
-            </div>
-            <h6 class="popup-help-text" for="popup-type">Event Type:</h6> <p id="popup-type" onclick="PopUp_clickedElement(this)">Assignment</p>
-            <!--
-            <div class="hide" id="popup-type-form">
-                <select class="form-control">
-                    <option id="AS" value="AS">Assignment</option>
-                    <option id="EX" value="EX">Exam</option>
-                    <option id="LA" value="LA">Lab</option>
-                    <option id="LE" value="LE">Lecture</option>
-                    <option id="OH" value="OH">Office Hours</option>
-                    <option id="PR" value="PR">Precept</option>
-                    <option id="RS" value="RS">Review Session</option>
-                </select>
-            </div>
-            -->
-            
-            <div class="hide" id="popup-type-form">
-                <input type="text" class="form-control withcustompicker withtypepicker">
-            </div>
-            <p id="popup-desc" onclick="PopUp_clickedElement(this)">Add description here. <br> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.            
-            </p> 
-            <div class="hide" id="popup-desc-form">
-                <textarea class="form-control"></textarea>
+            <div class="popup-text-container theme"> 
+                <p id="popup-desc" onclick="PopUp_clickedElement(this)">Add description here. <br> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.            
+                </p> 
+                <div class="hide" id="popup-desc-form">
+                    <textarea class="form-control"></textarea>
+                </div>
             </div>
         </div>
     </div>
