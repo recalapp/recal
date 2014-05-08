@@ -89,6 +89,7 @@ a {
     position: relative;
     left: auto;
     top: auto;
+    display: block;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 10px;
@@ -293,4 +294,10 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 .main-content.main-hidden{
     height: 0;
     opacity: 0;
+}
+#nav_mid_control{
+    text-align: center;
+}
+#add_button{
+    width: 100%;
 }

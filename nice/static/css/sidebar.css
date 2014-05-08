@@ -17,6 +17,10 @@
     background-color: rgba(50, 50, 50, 0.75);
 }
 #sidebar.hover-active{
+    background-color: lightyellow;
+}
+#sidebar.hover-active.dark{
+    background-color: lightgray;
 }
 #sidebar.in{
     right: -53.3333333%; /* 80% * 2/3; only 1/3 is shown */

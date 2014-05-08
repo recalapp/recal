@@ -2088,6 +2088,11 @@ function EventsMan_init()
                     eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
                 var eventDict = eventsManager.uncommitted[id];
 
+                var start = moment.unix(eventDict.event_start);
+                var day = (start.tz(MAIN_TIMEZONE).day() - 1) % 7;
+
+                if (!value.contains(day))
+                    value.push(day);
                 value.sort();
                 eventDict['recurrence_days'] = value;
                 if (!('recurrence_interval' in eventDict))
@@ -3689,9 +3694,9 @@ function SE_init()
 {
     $('#' + SE_id).on('show.bs.modal', function(){
         // set up
-        var agenda_scm = SE_addTypeSegmentedControlWithFilter('Agenda', AGENDA_FILTER);
+        var agenda_scm = SE_addTypeSegmentedControlWithFilter('Visible in agenda:', AGENDA_FILTER);
         $(this).find('#agenda_options').append(agenda_scm);
-        var calendar_scm = SE_addTypeSegmentedControlWithFilter('Calendar', CAL_FILTER);
+        var calendar_scm = SE_addTypeSegmentedControlWithFilter('Visible in calendar:', CAL_FILTER);
         $(this).find('#calendar_options').append(calendar_scm);
         var theme_sc = SC_initWithChoices('Theme', [
             {
@@ -3748,7 +3753,7 @@ function SE_init()
                 selected: !(key in COURSE_FILTER_BLACKLIST),
             });
         });
-        var course_scm = SCM_initWithChoices('Filter courses', choices);
+        var course_scm = SCM_initWithChoices('Visible courses:', choices);
         $(course_scm).on('select', function(ev, choices){
             $.each(choices, function(key, selected){
                 if (selected)
