@@ -107,10 +107,10 @@ a {
     background-color: lightgray;
 }
 .white-link-btn.dark{
-    color: rgb(50, 50, 50);
+    background-color: gray;
 }
 .white-link-btn.dark:hover{
-    color: rgb(100, 100, 100);
+    background-color: rgb(150, 150, 150);
 }
 .white-link-btn.emphasis {
     color: red;
