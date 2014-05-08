@@ -255,7 +255,7 @@ function updatePoints()
 {
     $.ajax('/api/point_count', {
         loadingIndicator: false,
-        contentType: 'json',
+        dataType: 'json',
         success: function(data){
             POINT_COUNT = data;
             $('#point_count').text(POINT_COUNT + ' points');
