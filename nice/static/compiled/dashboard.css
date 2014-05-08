@@ -191,10 +191,10 @@ a {
     background-color: lightgray;
 }
 .white-link-btn.dark{
-    color: rgb(50, 50, 50);
+    background-color: gray;
 }
 .white-link-btn.dark:hover{
-    color: rgb(100, 100, 100);
+    background-color: rgb(150, 150, 150);
 }
 .white-link-btn.emphasis {
     color: red;
@@ -402,12 +402,18 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 }
 .popup-container > .popup-ctrl{
     position: absolute;
-    right: 0;
-    top: 0;
-    padding: 10px;
-    color: white;
+    right: -15px;
+    top: -15px;
     z-index: 1000;
+    margin: 0px;
 }
+.popup-container > .popup-ctrl > a{
+    color: lightgray;
+}
+.popup-container > .popup-ctrl > a:hover{
+    color: gray;
+}
+
 .panel-title {
     max-width: 90%;
 }
@@ -446,15 +452,6 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     margin: 0;
     color: gray;
 }
-
-/*.popup > .panel{
-    border: 1px solid rgba(100, 100, 100, 0.15); 
-    border-radius: 0px;
-    box-shadow: 0px 3px 10px #ddd;
-}
-.popup > .panel > .panel-heading{
-    border-radius: 0px;
-}*/
 
 .popup-help-text.center{
     text-align: center; 
