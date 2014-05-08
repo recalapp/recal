@@ -2090,8 +2090,10 @@ function EventsMan_init()
 
                 value.sort();
                 eventDict['recurrence_days'] = value;
-                eventDict['recurrence_interval'] = 1;
-                eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
+                if (!('recurrence_interval' in eventDict))
+                    eventDict['recurrence_interval'] = 1;
+                if (!('recurrence_end' in eventDict))
+                    eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
             }
             else 
             {
@@ -2150,11 +2152,14 @@ function EventsMan_init()
     });
 
     window.setInterval(function(){
-        EVENTSMAN_COUNT = (EVENTSMAN_COUNT + 1) % 30; // every 5 min. -> 30 * 10s = 300s = 5min
-        if (!eventsManager.active && EVENTSMAN_COUNT != 0)
+        EVENTSMAN_COUNT++ ; // every 5 min. -> 30 * 10s = 300s = 5min
+        if (!eventsManager.active && (EVENTSMAN_COUNT % 30) != 0)
             return;
+        if ((EVENTSMAN_COUNT % 30) == 0)
+            EventsMan_verifyLocalData();
         EventsMan_pushToServer(true); 
         EventsMan_pullFromServer();
+        EVENTSMAN_COUNT %= 30; // can use a bigger number here, just need to prevent overflow
     }, 10 * 1000);
     $(window).on('mousemove click', function(){
         $.each(timeoutIDs, function(index){
@@ -2308,6 +2313,41 @@ function EventsMan_processDownloadedEvents(data)
     eventsManager.addedCount = 0;
     eventsManager.lastSyncedTime = moment().unix();
     return changed;
+}
+
+function EventsMan_verifyLocalData()
+{
+    if (!eventsManager.isIdle)
+        return;
+    if (eventsManager.updatedIDs.size > 0 || eventsManager.changed)
+        return;
+    eventsManager.isIdle = false;
+    var revisionIDs = [];
+    var revIDToEventID = {};
+    $.each(eventsManager.events, function(eventID, eventDict){
+        revisionIDs.push(eventDict.revision_id);
+        revIDToEventID[eventDict.revision_id] = eventID;
+    });
+    $.ajax('/api/localstorage/verify', {
+        type: 'POST',
+        data: {
+            revision_IDs: JSON.stringify(revisionIDs),
+        },
+        dataType: 'json',
+        loadingIndicator: false,
+        success: function(data){
+            $.each(data, function(revID, eventDict){
+                var eventID = revIDToEventID[revID];
+                eventsManager.events[eventID] = eventDict;
+            });
+            EventsMan_constructOrderArray();
+            eventsManager.isIdle = true;
+            _EventsMan_callUpdateListeners();
+        },
+        error: function(){
+            eventsManager.isIdle = true;
+        },
+    });
 }
 
 /***************************************************
@@ -2513,6 +2553,12 @@ function init()
         localStorage.setItem('user', USER_NETID);
     }
     UR_pullUnapprovedRevisions();
+    setInterval(function(){
+        UR_pullUNnapprovedRevisions();
+    }, 5 * 60 * 1000)
+    setInterval(function(){
+        updatePoints();
+    }, 60 * 1000);
 }
 function adaptSize()
 {
@@ -2604,6 +2650,7 @@ function toggleInfo()
 }
 function onLogOut()
 {
+    clearLocalStorage();
 }
 function clearLocalStorage()
 {
@@ -2616,6 +2663,17 @@ function clearLocalStorage()
         localStorage.removeItem('user');
         localStorage.removeItem('state-restoration');
     } 
+}
+function updatePoints()
+{
+    $.ajax('/api/point_count', {
+        loadingIndicator: false,
+        dataType: 'json',
+        success: function(data){
+            POINT_COUNT = data;
+            $('#point_count').text(POINT_COUNT + ' points');
+        }
+    });
 }
 var NO_TYPES = {
     WARNING: 'alert-warning',
@@ -3948,11 +4006,7 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
     
     // set event listeners
     $(ep).on('ep.cancel', function(ev){
-        var mainPopUp = PopUp_getMainPopUp();
-        PopUp_close(mainPopUp);
-        SB_pop(this);
-        SB_unfill();
-        SB_hide();
+        UR_close(this);
     });
     $(ep).on('ep.select', function(ev, meta){
         $.ajax('/put/votes', {
@@ -3965,14 +4019,13 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
                     ]),
                 },
             type: 'POST',
+            success: function(data){
+                updatePoints();
+            }
         });
         if (unapprovedRevs.length == 1)
         {
-            var mainPopUp = PopUp_getMainPopUp();
-            PopUp_close(mainPopUp);
-            SB_pop(this);
-            SB_unfill();
-            SB_hide();
+            UR_close(this);
         }
         else
         {
@@ -4002,4 +4055,13 @@ function UR_updateLeft(index, unapprovedRevs)
         }
         //SB_pop(mainPopUp);
     }
+}
+function UR_close(ep)
+{
+    var mainPopUp = PopUp_getMainPopUp();
+    PopUp_close(mainPopUp);
+    SB_pop(ep);
+    SB_unfill();
+    SB_hide();
+    LO_showTemporaryMessage('Thanks for voting!', LO_TYPES.SUCCESS);
 }

@@ -87,8 +87,10 @@ function EventsMan_init()
 
                 value.sort();
                 eventDict['recurrence_days'] = value;
-                eventDict['recurrence_interval'] = 1;
-                eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
+                if (!('recurrence_interval' in eventDict))
+                    eventDict['recurrence_interval'] = 1;
+                if (!('recurrence_end' in eventDict))
+                    eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
             }
             else 
             {
@@ -147,11 +149,14 @@ function EventsMan_init()
     });
 
     window.setInterval(function(){
-        EVENTSMAN_COUNT = (EVENTSMAN_COUNT + 1) % 30; // every 5 min. -> 30 * 10s = 300s = 5min
-        if (!eventsManager.active && EVENTSMAN_COUNT != 0)
+        EVENTSMAN_COUNT++ ; // every 5 min. -> 30 * 10s = 300s = 5min
+        if (!eventsManager.active && (EVENTSMAN_COUNT % 30) != 0)
             return;
+        if ((EVENTSMAN_COUNT % 30) == 0)
+            EventsMan_verifyLocalData();
         EventsMan_pushToServer(true); 
         EventsMan_pullFromServer();
+        EVENTSMAN_COUNT %= 30; // can use a bigger number here, just need to prevent overflow
     }, 10 * 1000);
     $(window).on('mousemove click', function(){
         $.each(timeoutIDs, function(index){
@@ -305,6 +310,41 @@ function EventsMan_processDownloadedEvents(data)
     eventsManager.addedCount = 0;
     eventsManager.lastSyncedTime = moment().unix();
     return changed;
+}
+
+function EventsMan_verifyLocalData()
+{
+    if (!eventsManager.isIdle)
+        return;
+    if (eventsManager.updatedIDs.size > 0 || eventsManager.changed)
+        return;
+    eventsManager.isIdle = false;
+    var revisionIDs = [];
+    var revIDToEventID = {};
+    $.each(eventsManager.events, function(eventID, eventDict){
+        revisionIDs.push(eventDict.revision_id);
+        revIDToEventID[eventDict.revision_id] = eventID;
+    });
+    $.ajax('/api/localstorage/verify', {
+        type: 'POST',
+        data: {
+            revision_IDs: JSON.stringify(revisionIDs),
+        },
+        dataType: 'json',
+        loadingIndicator: false,
+        success: function(data){
+            $.each(data, function(revID, eventDict){
+                var eventID = revIDToEventID[revID];
+                eventsManager.events[eventID] = eventDict;
+            });
+            EventsMan_constructOrderArray();
+            eventsManager.isIdle = true;
+            _EventsMan_callUpdateListeners();
+        },
+        error: function(){
+            eventsManager.isIdle = true;
+        },
+    });
 }
 
 /***************************************************

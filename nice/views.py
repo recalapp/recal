@@ -434,6 +434,7 @@ def local_storage_verify(request):
 
     Returns: dictionary that maps old revision IDs to new event dicts with the proper event details and best revision.
     """
+    print request.POST
     try:
         revision_ids = json.loads(request.POST['revision_IDs'])
     except:
