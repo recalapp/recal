@@ -140,6 +140,12 @@ function init()
         localStorage.setItem('user', USER_NETID);
     }
     UR_pullUnapprovedRevisions();
+    setInterval(function(){
+        UR_pullUNnapprovedRevisions();
+    }, 5 * 60 * 1000)
+    setInterval(function(){
+        updatePoints();
+    }, 60 * 1000);
 }
 function adaptSize()
 {
@@ -231,6 +237,7 @@ function toggleInfo()
 }
 function onLogOut()
 {
+    clearLocalStorage();
 }
 function clearLocalStorage()
 {
@@ -243,4 +250,15 @@ function clearLocalStorage()
         localStorage.removeItem('user');
         localStorage.removeItem('state-restoration');
     } 
+}
+function updatePoints()
+{
+    $.ajax('/api/point_count', {
+        loadingIndicator: false,
+        contentType: 'json',
+        success: function(data){
+            POINT_COUNT = data;
+            $('#point_count').text(POINT_COUNT + ' points');
+        }
+    });
 }

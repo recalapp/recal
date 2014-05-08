@@ -2606,6 +2606,7 @@ function toggleInfo()
 }
 function onLogOut()
 {
+    clearLocalStorage();
 }
 function clearLocalStorage()
 {
@@ -2618,6 +2619,17 @@ function clearLocalStorage()
         localStorage.removeItem('user');
         localStorage.removeItem('state-restoration');
     } 
+}
+function updatePoints()
+{
+    $.ajax('/api/point_count', {
+        loadingIndicator: false,
+        contentType: 'json',
+        success: function(data){
+            POINT_COUNT = data;
+            $('#point_count').text(POINT_COUNT + ' points');
+        }
+    });
 }
 var NO_TYPES = {
     WARNING: 'alert-warning',
@@ -3950,11 +3962,7 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
     
     // set event listeners
     $(ep).on('ep.cancel', function(ev){
-        var mainPopUp = PopUp_getMainPopUp();
-        PopUp_close(mainPopUp);
-        SB_pop(this);
-        SB_unfill();
-        SB_hide();
+        UR_close(this);
     });
     $(ep).on('ep.select', function(ev, meta){
         $.ajax('/put/votes', {
@@ -3967,14 +3975,13 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
                     ]),
                 },
             type: 'POST',
+            success: function(data){
+                updatePoints();
+            }
         });
         if (unapprovedRevs.length == 1)
         {
-            var mainPopUp = PopUp_getMainPopUp();
-            PopUp_close(mainPopUp);
-            SB_pop(this);
-            SB_unfill();
-            SB_hide();
+            UR_close(this);
         }
         else
         {
@@ -4004,4 +4011,13 @@ function UR_updateLeft(index, unapprovedRevs)
         }
         //SB_pop(mainPopUp);
     }
+}
+function UR_close(ep)
+{
+    var mainPopUp = PopUp_getMainPopUp();
+    PopUp_close(mainPopUp);
+    SB_pop(ep);
+    SB_unfill();
+    SB_hide();
+    LO_showTemporaryMessage('Thanks for voting!', LO_TYPES.SUCCESS);
 }
