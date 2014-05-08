@@ -238,7 +238,7 @@ a {
 #indicators-container{
     position: fixed;
     bottom: 10px;
-    right: 20%;
+    right: 20px;
     z-index: 10000;
 }
 @-webkit-keyframes rotateIcon {

@@ -87,8 +87,10 @@ function EventsMan_init()
 
                 value.sort();
                 eventDict['recurrence_days'] = value;
-                eventDict['recurrence_interval'] = 1;
-                eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
+                if (!('recurrence_interval' in eventDict))
+                    eventDict['recurrence_interval'] = 1;
+                if (!('recurrence_end' in eventDict))
+                    eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
             }
             else 
             {
