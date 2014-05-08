@@ -58,17 +58,14 @@ function Cal_init() {
 
     $("#calendarui").fullCalendar(Cal_options);
     CAL_INIT = true;
-    $(".tab-pane").each(function(index){
-        if (this.id == "calendar")
-        {
-            $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function(e) {
-                if ($(this).hasClass('in'))
-                {
-                    Cal_render();
-                    Cal_reload();
-                }
-            });
-        }
+    $("#calendar.tab-pane").each(function(index){
+        $(this).on("transitionend", function(e) {
+            if ($(this).hasClass('in'))
+            {
+                Cal_render();
+                Cal_reload();
+            }
+        });
     });
     PopUp_addCloseListener(function(id){
         $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){

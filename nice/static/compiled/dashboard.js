@@ -1555,6 +1555,7 @@ function SB_pop(content)
 }
 function SB_setMainContent(content)
 {
+    $('.sb-full-content').remove();
     content = $(content).addClass('sb-full-content')[0];
     $('#sb-full-container').append(content);
     setTimeout("$('#sb-full-container').find('.sb-full-content').addClass('in')", 10);
@@ -1567,6 +1568,7 @@ function SB_fill()
 function SB_unfill()
 {
     $('#sidebar').removeClass('full');
+    SB_pop($('.sb-full-content'));
     enableAllInteractions();
 }
 function SB_toggle()
@@ -1613,14 +1615,11 @@ function Agenda_init() {
     });
 
 
-    $(".tab-pane").each(function(index){
-        if (this.id == "agenda")
-        {
-            $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function (e){
-                if ($(this).hasClass('in'))
-                    Agenda_reload();
-            });
-        }
+    $("#agenda.tab-pane").each(function(index){
+        $(this).on("transitionend", function (e){
+            if ($(this).hasClass('in'))
+                Agenda_reload();
+        });
     });
     PopUp_addCloseListener(function(id) {
         Agenda_unhighlight($('.tab-content').find('.agenda-item.panel#'+id));
@@ -1914,17 +1913,14 @@ function Cal_init() {
 
     $("#calendarui").fullCalendar(Cal_options);
     CAL_INIT = true;
-    $(".tab-pane").each(function(index){
-        if (this.id == "calendar")
-        {
-            $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function(e) {
-                if ($(this).hasClass('in'))
-                {
-                    Cal_render();
-                    Cal_reload();
-                }
-            });
-        }
+    $("#calendar.tab-pane").each(function(index){
+        $(this).on("transitionend", function(e) {
+            if ($(this).hasClass('in'))
+            {
+                Cal_render();
+                Cal_reload();
+            }
+        });
     });
     PopUp_addCloseListener(function(id){
         $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){
@@ -2559,7 +2555,7 @@ function init()
     }
     UR_pullUnapprovedRevisions();
     setInterval(function(){
-        UR_pullUNnapprovedRevisions();
+        UR_pullUnapprovedRevisions();
     }, 5 * 60 * 1000)
     setInterval(function(){
         updatePoints();
@@ -3806,12 +3802,18 @@ function SE_addTypeSegmentedControlWithFilter(heading, filter)
 }
 function SE_checkSimilarEvents(eventDict)
 {
-    $.post('/get/similar-events', {
-        event_dict: JSON.stringify(eventDict),
-    }, function(data){
-        if (data.length > 0)
-            SE_showSimilarEventsNotification(eventDict.event_id, data);
-    }, 'json');
+    $.ajax('/get/similar-events', {
+        data: {
+            event_dict: JSON.stringify(eventDict),
+        },
+        dataType: 'json',
+        type: 'POST',
+        loadingIndicator: false,
+        success: function(data){
+            if (data.length > 0)
+                SE_showSimilarEventsNotification(eventDict.event_id, data);
+        },
+    });
 }
 function SE_showSimilarEventsNotification(eventID, similarEvents)
 {
@@ -3970,6 +3972,7 @@ function UR_pullUnapprovedRevisions()
     $.ajax('/get/unapproved', {
         async: true,
         dataType: 'json',
+        loadingIndicator: false,
         success: function(data){
             if (data && data.length > 0)
             {
@@ -4069,4 +4072,5 @@ function UR_close(ep)
     SB_unfill();
     SB_hide();
     LO_showTemporaryMessage('Thanks for voting!', LO_TYPES.SUCCESS);
+    EventsMan_verifyLocalStorage();
 }

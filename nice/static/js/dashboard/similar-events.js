@@ -1,11 +1,17 @@
 function SE_checkSimilarEvents(eventDict)
 {
-    $.post('/get/similar-events', {
-        event_dict: JSON.stringify(eventDict),
-    }, function(data){
-        if (data.length > 0)
-            SE_showSimilarEventsNotification(eventDict.event_id, data);
-    }, 'json');
+    $.ajax('/get/similar-events', {
+        data: {
+            event_dict: JSON.stringify(eventDict),
+        },
+        dataType: 'json',
+        type: 'POST',
+        loadingIndicator: false,
+        success: function(data){
+            if (data.length > 0)
+                SE_showSimilarEventsNotification(eventDict.event_id, data);
+        },
+    });
 }
 function SE_showSimilarEventsNotification(eventID, similarEvents)
 {

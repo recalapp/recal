@@ -25,14 +25,11 @@ function Agenda_init() {
     });
 
 
-    $(".tab-pane").each(function(index){
-        if (this.id == "agenda")
-        {
-            $(this).bind("webkitTransitionEnd transitionend otransitionend oTransitionEnd", function (e){
-                if ($(this).hasClass('in'))
-                    Agenda_reload();
-            });
-        }
+    $("#agenda.tab-pane").each(function(index){
+        $(this).on("transitionend", function (e){
+            if ($(this).hasClass('in'))
+                Agenda_reload();
+        });
     });
     PopUp_addCloseListener(function(id) {
         Agenda_unhighlight($('.tab-content').find('.agenda-item.panel#'+id));

@@ -3,6 +3,7 @@ function UR_pullUnapprovedRevisions()
     $.ajax('/get/unapproved', {
         async: true,
         dataType: 'json',
+        loadingIndicator: false,
         success: function(data){
             if (data && data.length > 0)
             {
@@ -102,4 +103,5 @@ function UR_close(ep)
     SB_unfill();
     SB_hide();
     LO_showTemporaryMessage('Thanks for voting!', LO_TYPES.SUCCESS);
+    EventsMan_verifyLocalStorage();
 }

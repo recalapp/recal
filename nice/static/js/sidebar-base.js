@@ -77,6 +77,7 @@ function SB_pop(content)
 }
 function SB_setMainContent(content)
 {
+    $('.sb-full-content').remove();
     content = $(content).addClass('sb-full-content')[0];
     $('#sb-full-container').append(content);
     setTimeout("$('#sb-full-container').find('.sb-full-content').addClass('in')", 10);
@@ -89,6 +90,7 @@ function SB_fill()
 function SB_unfill()
 {
     $('#sidebar').removeClass('full');
+    SB_pop($('.sb-full-content'));
     enableAllInteractions();
 }
 function SB_toggle()
