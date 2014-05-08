@@ -16,6 +16,11 @@ function UR_pullUnapprovedRevisions()
     });
 }
 
+function UR_hasUnapprovedRevisions()
+{
+    return NO_hasNotificationID('unapproved-rev');
+}
+
 function UR_showUnapprovedRevisions(unapprovedRevs)
 {
     var choices = [];

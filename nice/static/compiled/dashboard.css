@@ -383,7 +383,16 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     text-align: center;
 }
 #add_button{
-    width: 100%;
+    /*width: 100%;*/
+    padding: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+#add_button > *{
+    margin: 0;
+    display: inline-block;
 }
 .popup-container{
     width: 300px;

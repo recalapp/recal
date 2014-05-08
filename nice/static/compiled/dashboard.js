@@ -2,7 +2,7 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
 {
     var $content = $('<div>');
     $.each(choices, function(index){
-        var $button = $('<a>').addClass('white-link-btn').addClass('prompt-btn').attr('id', index).text(this.text);
+        var $button = $('<a>').addClass('white-link-btn').addClass('prompt-btn theme').attr('id', index).text(this.text);
         if (this.important) {
             $button = $button.addClass('no');
         } else {
@@ -15,7 +15,10 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
         });
         $content.append($button);
     });
-    //$(element).attr('tabindex', 0); // allows focus
+    if (THEME == 'w')
+        $content.find('.theme').removeClass('dark');
+    else
+        $content.find('.theme').addClass('dark');
     $(element).popover({
         title: title,
         placement: 'bottom',
@@ -268,6 +271,10 @@ function EP_init(heading, choices)
         });
         $ep.find('#ep-container').append($pickerItem);
    });
+   if (THEME == 'w')
+       $ep.find('.theme').removeClass('dark');
+   else
+       $ep.find('.theme').addClass('dark');
    $ep.find('#cancel_button').on('click', function(ev){
        ev.preventDefault();
        $ep.trigger('ep.cancel');
@@ -1073,6 +1080,10 @@ function PopUp_insertPopUp(isMain)
         PopUp_initialize_deferred(popUp);
     }, 300) // doesn't block
     $(popUp).find('.withtooltip').tooltip({});
+    if (THEME == 'w')
+        $(popUp).find('.theme').removeClass('dark');
+    else
+        $(popUp).find('.theme').addClass('dark');
     return popUp;
 }
 
@@ -3989,6 +4000,11 @@ function UR_pullUnapprovedRevisions()
             }
         },
     });
+}
+
+function UR_hasUnapprovedRevisions()
+{
+    return NO_hasNotificationID('unapproved-rev');
 }
 
 function UR_showUnapprovedRevisions(unapprovedRevs)
