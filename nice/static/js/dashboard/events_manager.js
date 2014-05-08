@@ -85,6 +85,11 @@ function EventsMan_init()
                     eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
                 var eventDict = eventsManager.uncommitted[id];
 
+                var start = moment.unix(eventDict.event_start);
+                var day = (start.tz(MAIN_TIMEZONE).day() - 1) % 7;
+
+                if (!value.contains(day))
+                    value.push(day);
                 value.sort();
                 eventDict['recurrence_days'] = value;
                 if (!('recurrence_interval' in eventDict))

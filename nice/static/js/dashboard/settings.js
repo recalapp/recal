@@ -3,9 +3,9 @@ function SE_init()
 {
     $('#' + SE_id).on('show.bs.modal', function(){
         // set up
-        var agenda_scm = SE_addTypeSegmentedControlWithFilter('Agenda', AGENDA_FILTER);
+        var agenda_scm = SE_addTypeSegmentedControlWithFilter('Visible in agenda:', AGENDA_FILTER);
         $(this).find('#agenda_options').append(agenda_scm);
-        var calendar_scm = SE_addTypeSegmentedControlWithFilter('Calendar', CAL_FILTER);
+        var calendar_scm = SE_addTypeSegmentedControlWithFilter('Visible in calendar:', CAL_FILTER);
         $(this).find('#calendar_options').append(calendar_scm);
         var theme_sc = SC_initWithChoices('Theme', [
             {
@@ -62,7 +62,7 @@ function SE_init()
                 selected: !(key in COURSE_FILTER_BLACKLIST),
             });
         });
-        var course_scm = SCM_initWithChoices('Filter courses', choices);
+        var course_scm = SCM_initWithChoices('Visible courses:', choices);
         $(course_scm).on('select', function(ev, choices){
             $.each(choices, function(key, selected){
                 if (selected)
