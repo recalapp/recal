@@ -421,6 +421,36 @@ def modify_user(request):
 def get_user_point_count(request):
     return HttpResponse(content=request.user.profile.get_point_count(), status=200)
 
+@login_required
+@require_POST
+def local_storage_verify(request):
+    """Local storage flushing mechanism.
+
+    Once every 10 minutes, you send me a list of all your revision IDs in local storage.
+
+    Then on the server, I loop through the revision IDs array.
+    For each, I look up the associated revision, grab its event, compute what I think should be the best revision, and then see if they match.
+    If they don't, then I send you back a new event dict with the revision you should actually be showing.
+
+    Returns: dictionary that maps old revision IDs to new event dicts with the proper event details and best revision.
+    """
+    try:
+        revision_ids = json.loads(request.POST['revision_IDs'])
+    except:
+        return HttpResponse(content="fail", status=500)
+    mappings = {}
+    for r_id in revision_ids:
+        try:
+            rev = Event_Revision.objects.get(pk=r_id)
+        except:
+            continue
+        event = rev.event
+        best_rev = event.best_revision(netid=request.user.username)
+        if best_rev and r_id != best_rev.pk:
+            event_dict = queries.construct_event_dict(event, netid=request.user.username, best_rev=best_rev)
+            mappings[r_id] = event_dict
+    return HttpResponse(json.dumps(mappings), content_type='application/javascript', status=200)
+
 
 def state_restoration(request):
     netid = request.user.username
