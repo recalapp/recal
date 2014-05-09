@@ -24,7 +24,7 @@ function CourseMan_init()
         CourseMan_cacheEnrolledCourses();
     }); 
     setInterval(function(){
-        //CourseMan_pushChanges(true);
+        CourseMan_pushChanges(true);
     }, 10 * 1000); 
     CourseMan_addUpdateListener(function(){
         CourseMan_pushChanges(true);
@@ -196,15 +196,19 @@ function CourseMan_pushChanges(async)
         return;
     }
     courseManager.isIdle = false;
+    var dataSent = JSON.stringify(courseManager.courseSectionsMap)
     $.ajax('/put/sections', {
         async: async,
         type: 'POST',
         data: {
-            sections: JSON.stringify(courseManager.courseSectionsMap),
+            sections: dataSent,
         },
         success: function(data){
             courseManager.isIdle = true;
-            courseManager.modified = false;
+            if (dataSent == JSON.stringify(courseManager.courseSectionsMap))
+            {
+                courseManager.modified = false;
+            }
             CourseMan_handleQueue();
             LO_showTemporaryMessage('Saved', LO_TYPES.SUCCESS);
         },

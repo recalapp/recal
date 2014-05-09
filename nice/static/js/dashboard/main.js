@@ -151,7 +151,7 @@ function init()
     UR_pullUnapprovedRevisions();
     setInterval(function(){
         UR_pullUnapprovedRevisions();
-    }, 5 * 60 * 1000)
+    }, /*5 * 60 * 1000*/ 10 * 1000)
     setInterval(function(){
         updatePoints();
     }, 60 * 1000);

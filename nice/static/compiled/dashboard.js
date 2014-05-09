@@ -2586,7 +2586,7 @@ function init()
     UR_pullUnapprovedRevisions();
     setInterval(function(){
         UR_pullUnapprovedRevisions();
-    }, 5 * 60 * 1000)
+    }, /*5 * 60 * 1000*/ 10 * 1000)
     setInterval(function(){
         updatePoints();
     }, 60 * 1000);
@@ -3835,7 +3835,7 @@ function SE_addTypeSegmentedControlWithFilter(heading, filter)
 }
 function SE_checkSimilarEvents(eventDict)
 {
-    if (SE_hasSimilarEvents(eventDict.event_id) || SB_isFull())
+    if (SE_hasSimilarEvents(eventDict.event_id) || SB_isFilled())
         return;
     $.ajax('/get/similar-events', {
         data: {

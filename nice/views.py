@@ -215,6 +215,8 @@ def enroll_sections(request):
     prev_enrollment = User_Section_Table.objects.filter(user=user)
     prev_enrolled_sections = [enrollment.section for enrollment in prev_enrollment]
     sections_data = json.loads(request.POST['sections'])
+    print sections_data
+
     for course_id in sections_data:
         for section_id in sections_data[course_id]:
             section = Section.objects.get(id=section_id)
