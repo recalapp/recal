@@ -45,7 +45,7 @@ function LO_hideLoading(id, alsoHideErrorIfExists)
         if (LO_idMap.error.isEmpty())
         {
             LO_remove($('#error.active'));
-            LO_showTemporaryMessage('Connected', LO_TYPES.SUCCESS);
+            LO_showTemporaryMessage('Connected :)', LO_TYPES.SUCCESS);
         }
     }
 }
