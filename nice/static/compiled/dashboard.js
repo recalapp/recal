@@ -1753,27 +1753,14 @@ function Agenda_loadEvents(eventIDs)
         // }
 
         // set colors in the agenda
-        _Agenda_setColors(agenda, eventDict, EventsMan_eventIsHidden(this));
+        _Agenda_setColors(agenda, eventDict, EventsMan_eventIsHidden(this), THEME);
 
         if (UI_isPinned(agenda.id))
             Agenda_highlight(agenda);
         if (UI_isMain(agenda.id))
             Agenda_highlight(agenda);
-        // if (EventsMan_eventIsHidden(this))
-        // {
-        //     $(agenda).css('border-style', 'dashed');
-        //     // TODO(Dyland) change appearance of hidden agendas
-        //     // var hidColor = $(agenda).data('hidden-color');
-        //     // $(agenda).find('#agenda-section').css('color', hidColor);
-        //     // $(agenda).find('#agenda-title').css('color', hidColor);
-        //     // $(agenda).parent().find('.agenda-tag').css('background-color', hidColor);
-        // }
-        // else
-        // {
-        //     $(agenda).css('border-style', 'solid');
-        //     // TODO(Dyland) change appearance of non-hidden agendas
-        // }
     });
+
     if (window.innerWidth <= 400)
     {
         $('.agenda-container').children('.col-xs-4').removeClass('col-xs-4 col-xs-offset-1').addClass('col-xs-12');
@@ -1784,22 +1771,25 @@ function Agenda_loadEvents(eventIDs)
         $('.theme').addClass('dark');
 }
 
-function _Agenda_setColors(agenda, eventDict, isHidden)
+function _Agenda_setColors(agenda, eventDict, isHidden, theme)
 {
     var agendaColorClass = 'course-color-' + eventDict.course_id;
     var courseColor = SECTION_COLOR_MAP[eventDict.section_id]['color'];
-    var defaultColor = THEME == 'w' ? '#000000' : '#ffffff';
-    // var hidColor = colorLuminance(courseColor, 0.3);
     $(agenda).parent().find('.agenda-tag').addClass(agendaColorClass).css('background-color', courseColor);
     $(agenda).data('course-color', courseColor);
-    $(agenda).data('default-color', defaultColor);
-    // $(agenda).data('hidden-color', hidColor);
-    // $(agenda).find('#agenda-section').closest('panel').addClass(agendaColorClass).css('border-color', '#A1B2C3');
 
     var oldColor = $(agenda).css('border-color');
     $(agenda).data('default-border-color', oldColor);
-    $(agenda).find('#agenda-section').addClass(agendaColorClass).css('color', oldColor);
-    $(agenda).find('#agenda-title').addClass(agendaColorClass).css('color', oldColor);
+
+    var darkerColor;
+    if (theme == 'w')
+        darkerColor = 'rgba(0,0,0,0.4)';
+    else
+        darkerColor = 'rgba(255,255,255,0.5)';
+
+    $(agenda).data('default-text-color', darkerColor);
+    $(agenda).find('#agenda-section').addClass(agendaColorClass).css('color', darkerColor);
+    $(agenda).find('#agenda-title').addClass(agendaColorClass).css('color', darkerColor);
 
     if (isHidden)
         $(agenda).css('border-style', 'dashed');
@@ -1866,14 +1856,15 @@ function Agenda_highlight(agenda)
 }
 function Agenda_unhighlight(agenda)
 {
-    var oldColor = $(agenda).data('default-border-color');
+    var borderColor = $(agenda).data('default-border-color');
+    var defaultTextColor = $(agenda).data('default-text-color');
     // var defaultColor = $(agenda).data('default-color');
     $(agenda).addClass("panel-default").removeClass("panel-primary").css({
-        'border-color': oldColor,
+        'border-color': borderColor,
     });;
-    $(agenda).find('#agenda-section').css('color', oldColor);
-    $(agenda).find('#agenda-title').css('color', oldColor);
-
+    $(agenda).find('#agenda-section').css('color', borderColor);
+    $(agenda).find('#agenda-title').css('color', defaultTextColor);
+    $(agenda).find('#agenda-section').css('color', defaultTextColor);
 }
 function Agenda_isHighlighted(agenda)
 {
