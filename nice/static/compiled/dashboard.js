@@ -4008,7 +4008,7 @@ function SR_callDidLoadListeners()
 }
 function UR_pullUnapprovedRevisions()
 {
-    if (UR_hasUNapprovedRevisions() || SB_isFilled())
+    if (UR_hasUnapprovedRevisions() || SB_isFilled())
         return;
     $.ajax('/get/unapproved', {
         async: true,

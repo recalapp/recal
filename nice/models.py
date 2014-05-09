@@ -94,6 +94,7 @@ class Section(models.Model):
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
+    TYPE_STUDIO = "STU"
     TYPE_CHOICES = (
         (TYPE_ALL, "all students"),
         (TYPE_CLA, "class"),
@@ -101,6 +102,7 @@ class Section(models.Model):
         (TYPE_LAB, "lab"),
         (TYPE_LECTURE, "lecture"),
         (TYPE_PRECEPT, "precept"),
+        (TYPE_STUDIO, "studio"),
     )
 
     # relationships

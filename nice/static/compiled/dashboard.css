@@ -447,7 +447,7 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 }
 .popup-text-container{
     background-color: white;
-    padding: 5px;
+    padding: 3px;
     padding-left: 15px;
     padding-right: 15px;
     margin-top: 5px;
@@ -457,8 +457,8 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     border-bottom: solid 1px rgba(0, 0, 0, 0.1); 
 }
 .popup-text-container > h5 {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 .popup-text-container.dark{
     background-color: rgb(30,30,30);

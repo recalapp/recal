@@ -652,7 +652,7 @@ def get_course_by_id(course_id):
 def construct_course_dict(course):
     sections_group = {}
     for section in course.section_set.all():
-        sections_array = sections_group.setdefault(section.section_type, [])
+        sections_array = sections_group.setdefault(section.get_section_type_display(), [])
         sections_array.append(construct_section_dict(section))
     return {
         'course_id': course.id,
