@@ -257,6 +257,9 @@ function EP_init(heading, choices)
             });
             $pickerItem.find('#ep-item-controls').append($button);
         });
+        $pickerItem.css({
+            height: window.innerHeight * 0.55,
+        });
         $ep.find('#ep-container').append($pickerItem);
    });
    if (THEME == 'w')
@@ -4047,6 +4050,7 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         });
     });
     var ep = EP_init('Does this change look correct?', choices);
+    $(ep).data('voted', false);
     SB_setMainContent(ep);
     SB_fill();
     EP_adjustPopUpSize(ep);
@@ -4059,6 +4063,7 @@ function UR_showUnapprovedRevisions(unapprovedRevs)
         UR_close(this);
     });
     $(ep).on('ep.select', function(ev, meta){
+        $(this).data('voted', true);
         $.ajax('/put/votes', {
             data: {
                     'votes': JSON.stringify([
@@ -4113,6 +4118,7 @@ function UR_close(ep)
     SB_pop(ep);
     SB_unfill();
     SB_hide();
-    LO_showTemporaryMessage('Thanks for voting!', LO_TYPES.SUCCESS);
+    if ($(this).data('voted'))
+        LO_showTemporaryMessage('Thanks for voting!', LO_TYPES.SUCCESS);
     EventsMan_verifyLocalStorage();
 }

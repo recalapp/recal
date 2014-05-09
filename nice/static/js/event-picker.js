@@ -54,6 +54,9 @@ function EP_init(heading, choices)
             });
             $pickerItem.find('#ep-item-controls').append($button);
         });
+        $pickerItem.css({
+            height: window.innerHeight * 0.55,
+        });
         $ep.find('#ep-container').append($pickerItem);
    });
    if (THEME == 'w')
