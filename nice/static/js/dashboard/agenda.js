@@ -158,20 +158,26 @@ function Agenda_loadEvents(eventIDs)
         // }
 
         // set colors in the agenda
-        _Agenda_setColors(agenda, eventDict);
+        _Agenda_setColors(agenda, eventDict, EventsMan_eventIsHidden(this));
 
         if (UI_isPinned(agenda.id))
             Agenda_highlight(agenda);
         if (UI_isMain(agenda.id))
             Agenda_highlight(agenda);
-        if (EventsMan_eventIsHidden(this))
-        {
-            // TODO(Dyland) change appearance of hidden agendas
-        }
-        else
-        {
-            // TODO(Dyland) change appearance of non-hidden agendas
-        }
+        // if (EventsMan_eventIsHidden(this))
+        // {
+        //     $(agenda).css('border-style', 'dashed');
+        //     // TODO(Dyland) change appearance of hidden agendas
+        //     // var hidColor = $(agenda).data('hidden-color');
+        //     // $(agenda).find('#agenda-section').css('color', hidColor);
+        //     // $(agenda).find('#agenda-title').css('color', hidColor);
+        //     // $(agenda).parent().find('.agenda-tag').css('background-color', hidColor);
+        // }
+        // else
+        // {
+        //     $(agenda).css('border-style', 'solid');
+        //     // TODO(Dyland) change appearance of non-hidden agendas
+        // }
     });
     if (THEME == 'w')
         $('.theme').removeClass('dark');
@@ -179,20 +185,23 @@ function Agenda_loadEvents(eventIDs)
         $('.theme').addClass('dark');
 }
 
-function _Agenda_setColors(agenda, eventDict)
+function _Agenda_setColors(agenda, eventDict, isHidden)
 {
     var agendaColorClass = 'course-color-' + eventDict.course_id;
     var courseColor = SECTION_COLOR_MAP[eventDict.section_id]['color'];
+    // var hidColor = colorLuminance(courseColor, 0.3);
     $(agenda).find('#agenda-section').addClass(agendaColorClass).css('color', courseColor);
     $(agenda).find('#agenda-title').addClass(agendaColorClass).css('color', courseColor);
     $(agenda).parent().find('.agenda-tag').addClass(agendaColorClass).css('background-color', courseColor);
     $(agenda).data('new-color', courseColor);
+    // $(agenda).data('hidden-color', hidColor);
     // $(agenda).find('#agenda-section').closest('panel').addClass(agendaColorClass).css('border-color', '#A1B2C3');
-
-    // $(agenda).data('new-color', '#334499');
 
     var oldColor = $(agenda).css('border-color');
     $(agenda).data('default-color', oldColor);
+
+    if (isHidden)
+        $(agenda).css('border-style', 'dashed');
 }
 function Agenda_insertHeader(text)
 {

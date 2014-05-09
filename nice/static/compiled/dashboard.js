@@ -123,22 +123,22 @@ function Cal_unhighlightEvent(calEvent, update)
 
 function colorLuminance(hex, lum) 
 {
-	// validate hex string
-	hex = String(hex).replace(/[^0-9a-f]/gi, '');
-	if (hex.length < 6) {
-		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-	}
-	lum = lum || 0;
+    // validate hex string
+    hex = String(hex).replace(/[^0-9a-f]/gi, '');
+    if (hex.length < 6) {
+        hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    }
+    lum = lum || 0;
 
-	// convert to decimal and change luminosity
-	var rgb = "#", c, i;
-	for (i = 0; i < 3; i++) {
-		c = parseInt(hex.substr(i*2,2), 16);
-		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-		rgb += ("00"+c).substr(c.length);
-	}
+    // convert to decimal and change luminosity
+    var rgb = "#", c, i;
+    for (i = 0; i < 3; i++) {
+        c = parseInt(hex.substr(i*2,2), 16);
+        c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+        rgb += ("00"+c).substr(c.length);
+    }
 
-	return rgb;
+    return rgb;
 }
 
 function luminanceToRgb(lum)
@@ -154,44 +154,32 @@ function rgbToRgba(rgb, trans)
     return "rgba(" + rgb[0] + ", " + rgb[1] + ", " + rgb[2] + ", " + trans + ")";
 }
 
-/*
-function rgbaToHex(rgba)
-{
-    var start;
-    var r, g, b;
-    for (i = 0; i < rgba.length; i++)
-    {
-        if (rgba[i] == '(')
-            start = i;
-        if (rgba[i] == ',')
-            break;
+// got this from stackoverflow:
+// http://stackoverflow.com/questions/6672374/convert-rgb-rgba?rq=1
+//
+// gives a calculated alpha
+function RGBtoRGBA(r, g, b){
+
+    if((g==void 0) && (typeof r == 'string')){
+        r = r.replace(/^\s*#|\s*$/g, '');
+        if(r.length == 3){
+            r = r.replace(/(.)/g, '$1$1');
+        }
+        g = parseInt(r.substr(2, 2), 16);
+        b = parseInt(r.substr(4, 2), 16);
+        r = parseInt(r.substr(0, 2), 16);
     }
 
-    r = rgba.substring(start + 1, i).toString(16);
+    var min, a = ( 255 - (min = Math.min(r, g, b)) ) / 255;
 
-    for (; i < rgba.length; i++)
-    {
-        if (rgba[i] == ' ')
-            start = i;
-        if (rgba[i] == ',')
-            break;
-    }
-
-    g = rgba.substring(start + 1, i).toString(16);
-
-    for (; i < rgba.length; i++)
-    {
-        if (rgba[i] == ' ')
-            start = i;
-        if (rgba[i] == ',')
-            break;
-    }
-
-    b = rgba.substring(start + 1, i).toString(16);
-
-    return "#" + r + g + b;
+    return {
+        r: r = 0|( r - min ) / a,
+        g: g = 0|( g - min ) / a,
+        b: b = 0|( b - min ) / a,
+        a: a = (0|1000*a)/1000,
+        rgba: 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
+    };
 }
-*/
 
 // hack to set the opacity for rgba string 
 // example:
@@ -1750,20 +1738,26 @@ function Agenda_loadEvents(eventIDs)
         // }
 
         // set colors in the agenda
-        _Agenda_setColors(agenda, eventDict);
+        _Agenda_setColors(agenda, eventDict, EventsMan_eventIsHidden(this));
 
         if (UI_isPinned(agenda.id))
             Agenda_highlight(agenda);
         if (UI_isMain(agenda.id))
             Agenda_highlight(agenda);
-        if (EventsMan_eventIsHidden(this))
-        {
-            // TODO(Dyland) change appearance of hidden agendas
-        }
-        else
-        {
-            // TODO(Dyland) change appearance of non-hidden agendas
-        }
+        // if (EventsMan_eventIsHidden(this))
+        // {
+        //     $(agenda).css('border-style', 'dashed');
+        //     // TODO(Dyland) change appearance of hidden agendas
+        //     // var hidColor = $(agenda).data('hidden-color');
+        //     // $(agenda).find('#agenda-section').css('color', hidColor);
+        //     // $(agenda).find('#agenda-title').css('color', hidColor);
+        //     // $(agenda).parent().find('.agenda-tag').css('background-color', hidColor);
+        // }
+        // else
+        // {
+        //     $(agenda).css('border-style', 'solid');
+        //     // TODO(Dyland) change appearance of non-hidden agendas
+        // }
     });
     if (THEME == 'w')
         $('.theme').removeClass('dark');
@@ -1771,20 +1765,23 @@ function Agenda_loadEvents(eventIDs)
         $('.theme').addClass('dark');
 }
 
-function _Agenda_setColors(agenda, eventDict)
+function _Agenda_setColors(agenda, eventDict, isHidden)
 {
     var agendaColorClass = 'course-color-' + eventDict.course_id;
     var courseColor = SECTION_COLOR_MAP[eventDict.section_id]['color'];
+    // var hidColor = colorLuminance(courseColor, 0.3);
     $(agenda).find('#agenda-section').addClass(agendaColorClass).css('color', courseColor);
     $(agenda).find('#agenda-title').addClass(agendaColorClass).css('color', courseColor);
     $(agenda).parent().find('.agenda-tag').addClass(agendaColorClass).css('background-color', courseColor);
     $(agenda).data('new-color', courseColor);
+    // $(agenda).data('hidden-color', hidColor);
     // $(agenda).find('#agenda-section').closest('panel').addClass(agendaColorClass).css('border-color', '#A1B2C3');
-
-    // $(agenda).data('new-color', '#334499');
 
     var oldColor = $(agenda).css('border-color');
     $(agenda).data('default-color', oldColor);
+
+    if (isHidden)
+        $(agenda).css('border-style', 'dashed');
 }
 function Agenda_insertHeader(text)
 {
