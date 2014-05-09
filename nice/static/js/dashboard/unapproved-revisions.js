@@ -1,5 +1,7 @@
 function UR_pullUnapprovedRevisions()
 {
+    if (UR_hasUNapprovedRevisions() || SB_isFilled())
+        return;
     $.ajax('/get/unapproved', {
         async: true,
         dataType: 'json',

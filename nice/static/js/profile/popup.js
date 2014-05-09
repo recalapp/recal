@@ -75,7 +75,8 @@ function PopUp_setToCourseID(popUp, courseID)
         var segmented = SC_initWithChoices(sectionType, choices);
         if (!enrolled)
             CourseMan_enrollSectionID(courseID, choices[0].value);
-        $(popUp).find('#popup-title').after(segmented);
+        //$(popUp).find('#popup-title').after(segmented);
+        $(popUp).find('#sections-container').append(segmented);
         $(segmented).on('select', function(ev, choices){
             $.each(choices, function(sectionID, enroll){
                 if (enroll)

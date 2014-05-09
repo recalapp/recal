@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col-xs-6">
             <h2>Preview:</h2>
-            <div id="calendarui"></div>
+            <div id="calendarui" class="theme"></div>
         </div>
         <div class="col-xs-3" >
             <h2>Enrolled:</h2>
@@ -125,6 +125,7 @@ var USER = {
     first_name: '{{ user.first_name }}',
     last_name: '{{ user.last_name }}',
 }
+var THEME = '{{ theme }}';
 </script>
 
 {% endblock %}

@@ -60,17 +60,26 @@ function init()
             }
             if (settings.loadingIndicator == false)
                 return;
-            LO_showLoading(settings.url);
+            var loadingID = settings.loadingID;
+            if (typeof loadingID == 'undefined')
+                loadingID = settings.url;
+            LO_showLoading(loadingID);
         }
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        LO_hideLoading(settings.url);
+        var loadingID = settings.loadingID;
+        if (typeof loadingID == 'undefined')
+            loadingID = settings.url;
+        LO_hideLoading(loadingID);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        LO_hideLoading(settings.url, false);
+        var loadingID = settings.loadingID;
+        if (typeof loadingID == 'undefined')
+            loadingID = settings.url;
+        LO_hideLoading(loadingID, false);
         if (settings.loadingIndicator == false)
             return;
-        LO_showError(settings.url);
+        LO_showError(loadingID);
     });
     CacheMan_init();
 

@@ -41,6 +41,10 @@ function CL_reload()
         
         CL_setColors($courseItem, courseDict);
     });
+    if (THEME == 'w')
+        $('.theme').removeClass('dark');
+    else
+        $('.theme').addClass('dark');
     CL_LOADING = false;
 }
 

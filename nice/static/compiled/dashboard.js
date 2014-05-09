@@ -1584,6 +1584,10 @@ function SB_unfill()
     SB_pop($('.sb-full-content'));
     enableAllInteractions();
 }
+function SB_isFilled()
+{
+    return $('#sidebar').hasClass('full');
+}
 function SB_toggle()
 {
     if (SB_isShown())
@@ -2495,17 +2499,26 @@ function init()
             }
             if (settings.loadingIndicator == false)
                 return;
-            LO_showLoading(settings.url);
+            var loadingID = settings.loadingID;
+            if (typeof loadingID == 'undefined')
+                loadingID = settings.url;
+            LO_showLoading(loadingID);
         }
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        LO_hideLoading(settings.url);
+        var loadingID = settings.loadingID;
+        if (typeof loadingID == 'undefined')
+            loadingID = settings.url;
+        LO_hideLoading(loadingID);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        LO_hideLoading(settings.url, false);
+        var loadingID = settings.loadingID;
+        if (typeof loadingID == 'undefined')
+            loadingID = settings.url;
+        LO_hideLoading(loadingID, false);
         if (settings.loadingIndicator == false)
             return;
-        LO_showError(settings.url);
+        LO_showError(loadingID);
     });
     CacheMan_init();
 
@@ -3826,6 +3839,8 @@ function SE_addTypeSegmentedControlWithFilter(heading, filter)
 }
 function SE_checkSimilarEvents(eventDict)
 {
+    if (SE_hasSimilarEvents(eventDict.event_id) || SB_isFull())
+        return;
     $.ajax('/get/similar-events', {
         data: {
             event_dict: JSON.stringify(eventDict),
@@ -3993,6 +4008,8 @@ function SR_callDidLoadListeners()
 }
 function UR_pullUnapprovedRevisions()
 {
+    if (UR_hasUNapprovedRevisions() || SB_isFilled())
+        return;
     $.ajax('/get/unapproved', {
         async: true,
         dataType: 'json',
