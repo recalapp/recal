@@ -114,7 +114,7 @@ class Section(models.Model):
     section_type = models.CharField(max_length=3, choices=TYPE_CHOICES)
 
     def __unicode__(self):
-        return unicode(self.course) + ' - ' + self.name
+        return self.course.primary_listing() + ' - ' + self.name
         
     class Meta:
         ordering = ['course', 'name']
