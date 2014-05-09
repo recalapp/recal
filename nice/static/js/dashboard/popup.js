@@ -799,7 +799,7 @@ function PopUp_clickedUnhide(popUpAnchor)
     var eventDict = EventsMan_getEventByID(event_id);
     if ('recurrence_days' in eventDict)
     {
-        AS_showActionSheetFromElement(popUpAnchor, popUp, null, [
+        AS_showActionSheetFromElement(popUpAnchor, popUp, 'Unhide these events?', [
                 {important: false, text:'Only this event'},
                 {important: true, text:'All future events'}
             ], function(index){
