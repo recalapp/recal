@@ -329,6 +329,12 @@ function PopUp_setColor(popUp, color)
     // TODO: bad idea to hardwire the default color?
     var defaultBorder = '#DDDDDD';
     var defaultHeader = '#F5F5F5';
+    if (THEME != 'w')
+    {
+        defaultBorder = '#282828';
+        defaultHeader = '#3C3C3C';
+    }
+
     $(popUp).find('.panel').data('default-border', defaultBorder);
     $(popUp).find('.panel').data('default-header', defaultHeader);
     if (PopUp_hasFocus(popUp))
