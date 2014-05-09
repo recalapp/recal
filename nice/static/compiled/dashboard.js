@@ -3482,6 +3482,15 @@ function _PopUp_Form_enforceStartDate(popUp)
     var startDate = moment('Dec 31, 1899 ' + time);
     $(popUp).find('#popup-time-end-form').find('.withtimepicker').datetimepicker('setStartDate', new Date(startDate.unix() * 1000));
     $(popUp).find('#popup-time-end-form').find('input').not('.withtimepicker').attr('min', startDate.format('HH:mm:ss'));
+    var endTime = $(popUp).find('#popup-time-end').text();
+    endTime = moment('Dec 31, 1899 ' + endTime);
+    if (endTime.unix() <= startDate.unix())
+    {
+        endTime = moment.unix(startDate.unix());
+        endTime.hour(endTime.hour() + 1);
+        $(popUp).find('#popup-time-end').text();
+        PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.tz(MAIN_TIMEZONE).format('h:mm A')); 
+    }
 }
 function PopUp_clickedSaveElement(form)
 {
