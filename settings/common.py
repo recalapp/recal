@@ -143,8 +143,8 @@ CURR_TERM = 1144 # Use helper method nice.models.get_cur_semester() to get curre
 ### Reputation system
 
 ## For handling individual votes:
-THRESHOLD_APPROVE = 4 #Threshold to approve a revision: +4
-THRESHOLD_REJECT = -4 #Threshold to reject a revision: -4
+THRESHOLD_APPROVE = 1 #4 #Threshold to approve a revision: +4
+THRESHOLD_REJECT = -1 #-4 #Threshold to reject a revision: -4
 REWARD_FOR_UPVOTING = 1 #For upvoting a revision: +1 -- regardless of what happens to this revision later
 REWARD_FOR_DOWNVOTING = -1 # For downvoting a revision: -1 (this is why we don't tell them the voting scheme and only update their points count once a day).
 # After each vote, we'll check for whether either threshold has been reached. If so, we approve or reject the revision.
