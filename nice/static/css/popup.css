@@ -21,19 +21,23 @@
 }
 .popup-container > .popup-ctrl{
     position: absolute;
-    right: -15px;
-    top: -15px;
+    /*right: -15px;
+    top: -15px;*/
+    right: 10px;
+    top: 10px;
     z-index: 1000;
     margin: 0px;
 }
 .popup-container > .popup-ctrl > a{
-    color: rgb(30, 30, 30);
+    /*color: rgb(30, 30, 30);*/
+    color: white;
 }
 .popup-container > .popup-ctrl > a:hover{
     color: gray;
 }
 .popup-container > .popup-ctrl.dark > a{
-    color: lightgray;
+    /*color: lightgray;*/
+    color: white;
 }
 .popup-container > .popup-ctrl.dark > a:hover{
     color: gray;
