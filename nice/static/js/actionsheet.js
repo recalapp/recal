@@ -2,7 +2,7 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
 {
     var $content = $('<div>');
     $.each(choices, function(index){
-        var $button = $('<a>').addClass('white-link-btn').addClass('prompt-btn').attr('id', index).text(this.text);
+        var $button = $('<a>').addClass('white-link-btn').addClass('prompt-btn theme').attr('id', index).text(this.text);
         if (this.important) {
             $button = $button.addClass('no');
         } else {
@@ -15,7 +15,10 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
         });
         $content.append($button);
     });
-    //$(element).attr('tabindex', 0); // allows focus
+    if (THEME == 'w')
+        $content.find('.theme').removeClass('dark');
+    else
+        $content.find('.theme').addClass('dark');
     $(element).popover({
         title: title,
         placement: 'bottom',

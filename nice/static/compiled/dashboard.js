@@ -2,7 +2,7 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
 {
     var $content = $('<div>');
     $.each(choices, function(index){
-        var $button = $('<a>').addClass('white-link-btn').addClass('prompt-btn').attr('id', index).text(this.text);
+        var $button = $('<a>').addClass('white-link-btn').addClass('prompt-btn theme').attr('id', index).text(this.text);
         if (this.important) {
             $button = $button.addClass('no');
         } else {
@@ -15,7 +15,10 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
         });
         $content.append($button);
     });
-    //$(element).attr('tabindex', 0); // allows focus
+    if (THEME == 'w')
+        $content.find('.theme').removeClass('dark');
+    else
+        $content.find('.theme').addClass('dark');
     $(element).popover({
         title: title,
         placement: 'bottom',
@@ -256,6 +259,10 @@ function EP_init(heading, choices)
         });
         $ep.find('#ep-container').append($pickerItem);
    });
+   if (THEME == 'w')
+       $ep.find('.theme').removeClass('dark');
+   else
+       $ep.find('.theme').addClass('dark');
    $ep.find('#cancel_button').on('click', function(ev){
        ev.preventDefault();
        $ep.trigger('ep.cancel');
@@ -1061,6 +1068,10 @@ function PopUp_insertPopUp(isMain)
         PopUp_initialize_deferred(popUp);
     }, 300) // doesn't block
     $(popUp).find('.withtooltip').tooltip({});
+    if (THEME == 'w')
+        $(popUp).find('.theme').removeClass('dark');
+    else
+        $(popUp).find('.theme').addClass('dark');
     return popUp;
 }
 
@@ -1561,6 +1572,10 @@ function SB_unfill()
     SB_pop($('.sb-full-content'));
     enableAllInteractions();
 }
+function SB_isFilled()
+{
+    return $('#sidebar').hasClass('full');
+}
 function SB_toggle()
 {
     if (SB_isShown())
@@ -1759,6 +1774,10 @@ function Agenda_loadEvents(eventIDs)
         //     // TODO(Dyland) change appearance of non-hidden agendas
         // }
     });
+    if (window.innerWidth <= 400)
+    {
+        $('.agenda-container').children('.col-xs-4').removeClass('col-xs-4 col-xs-offset-1').addClass('col-xs-12');
+    }
     if (THEME == 'w')
         $('.theme').removeClass('dark');
     else
@@ -2477,17 +2496,26 @@ function init()
             }
             if (settings.loadingIndicator == false)
                 return;
-            LO_showLoading(settings.url);
+            var loadingID = settings.loadingID;
+            if (typeof loadingID == 'undefined')
+                loadingID = settings.url;
+            LO_showLoading(loadingID);
         }
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        LO_hideLoading(settings.url);
+        var loadingID = settings.loadingID;
+        if (typeof loadingID == 'undefined')
+            loadingID = settings.url;
+        LO_hideLoading(loadingID);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        LO_hideLoading(settings.url, false);
+        var loadingID = settings.loadingID;
+        if (typeof loadingID == 'undefined')
+            loadingID = settings.url;
+        LO_hideLoading(loadingID, false);
         if (settings.loadingIndicator == false)
             return;
-        LO_showError(settings.url);
+        LO_showError(loadingID);
     });
     CacheMan_init();
 
@@ -2583,6 +2611,9 @@ function adaptSize()
     {
         $('#sb-left-container').removeClass('col-xs-4 col-xs-12 col-xs-8');
         $('#sb-left-container').addClass('col-xs-12');
+        $('.agenda-container').children('.col-xs-4').removeClass('col-xs-4 col-xs-offset-1').addClass('col-xs-12');
+    } else {
+        $('.agenda-container').children('.col-xs-12').addClass('col-xs-4 col-xs-offset-1').removeClass('col-xs-12');
     }
 }
 
@@ -3805,6 +3836,8 @@ function SE_addTypeSegmentedControlWithFilter(heading, filter)
 }
 function SE_checkSimilarEvents(eventDict)
 {
+    if (SE_hasSimilarEvents(eventDict.event_id) || SB_isFull())
+        return;
     $.ajax('/get/similar-events', {
         data: {
             event_dict: JSON.stringify(eventDict),
@@ -3972,6 +4005,8 @@ function SR_callDidLoadListeners()
 }
 function UR_pullUnapprovedRevisions()
 {
+    if (UR_hasUnapprovedRevisions() || SB_isFilled())
+        return;
     $.ajax('/get/unapproved', {
         async: true,
         dataType: 'json',
@@ -3986,6 +4021,11 @@ function UR_pullUnapprovedRevisions()
             }
         },
     });
+}
+
+function UR_hasUnapprovedRevisions()
+{
+    return NO_hasNotificationID('unapproved-rev');
 }
 
 function UR_showUnapprovedRevisions(unapprovedRevs)

@@ -1,7 +1,14 @@
 <div id="popup-main123" class="popup-container popup popup-course">
+    <!--
     <a href="#" id="close_button" onclick="PopUp_clickedClose(this); return false;" class="popup-ctrl">
         <span class="glyphicon glyphicon-remove"></span>
-    </a> 
+    </a>
+    -->
+    <h2 class="popup-ctrl theme">
+        <a href="#" id="close_button" class="popup-ctrl theme" onclick="PopUp_clickedClose(this); return false;">
+            <i class="fa fa-times-circle"></i>
+        </a>
+    </h2>
     <div class="panel panel-default panel-clipped">
         <div class="panel-heading panel-heading-handle">
             <h3 class="panel-title">
@@ -11,10 +18,17 @@
                 </a>
             </h3>
         </div>
-        <div class="panel-body panel-body-scroll">
-            <h4 id="popup-title">Advanced Programming Techniques</h4>
-            <p id="popup-desc">Add description here. <br> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.            
-            </p> 
+        <div class="panel-body panel-body-scroll theme">
+            
+            <div class="popup-text-container theme">
+                <h4 id="popup-title">Advanced Programming Techniques</h4>
+            </div>
+            <div id="sections-container" class="popup-text-container theme">
+            </div>
+            <div class="popup-text-container theme">
+                <p id="popup-desc">Add description here. <br> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.     
+                </p> 
+            </div>
         </div>
     </div>
 </div>

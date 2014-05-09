@@ -92,7 +92,7 @@ function CourseMan_enrollInCourseID(courseID)
         return;
     var course = CourseMan_getCourseByID(courseID);
     // enroll in All Students
-    var allStudentsID = course.sections.ALL[0];
+    var allStudentsID = course.sections['all students'][0];
     courseManager.courseSectionsMap[courseID] = [allStudentsID];
     courseManager.modified = true;
     CourseMan_callUpdateListeners();

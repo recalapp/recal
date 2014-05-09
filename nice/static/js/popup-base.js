@@ -119,6 +119,10 @@ function PopUp_insertPopUp(isMain)
         PopUp_initialize_deferred(popUp);
     }, 300) // doesn't block
     $(popUp).find('.withtooltip').tooltip({});
+    if (THEME == 'w')
+        $(popUp).find('.theme').removeClass('dark');
+    else
+        $(popUp).find('.theme').addClass('dark');
     return popUp;
 }
 

@@ -60,17 +60,26 @@ function init()
             }
             if (settings.loadingIndicator == false)
                 return;
-            LO_showLoading(settings.url);
+            var loadingID = settings.loadingID;
+            if (typeof loadingID == 'undefined')
+                loadingID = settings.url;
+            LO_showLoading(loadingID);
         }
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
-        LO_hideLoading(settings.url);
+        var loadingID = settings.loadingID;
+        if (typeof loadingID == 'undefined')
+            loadingID = settings.url;
+        LO_hideLoading(loadingID);
     });
     $(document).ajaxError(function(event, xhr, settings){
-        LO_hideLoading(settings.url, false);
+        var loadingID = settings.loadingID;
+        if (typeof loadingID == 'undefined')
+            loadingID = settings.url;
+        LO_hideLoading(loadingID, false);
         if (settings.loadingIndicator == false)
             return;
-        LO_showError(settings.url);
+        LO_showError(loadingID);
     });
     CacheMan_init();
 
@@ -166,6 +175,9 @@ function adaptSize()
     {
         $('#sb-left-container').removeClass('col-xs-4 col-xs-12 col-xs-8');
         $('#sb-left-container').addClass('col-xs-12');
+        $('.agenda-container').children('.col-xs-4').removeClass('col-xs-4 col-xs-offset-1').addClass('col-xs-12');
+    } else {
+        $('.agenda-container').children('.col-xs-12').addClass('col-xs-4 col-xs-offset-1').removeClass('col-xs-12');
     }
 }
 

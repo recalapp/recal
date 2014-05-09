@@ -93,6 +93,10 @@ function SB_unfill()
     SB_pop($('.sb-full-content'));
     enableAllInteractions();
 }
+function SB_isFilled()
+{
+    return $('#sidebar').hasClass('full');
+}
 function SB_toggle()
 {
     if (SB_isShown())

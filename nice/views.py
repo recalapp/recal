@@ -194,6 +194,9 @@ def edit_profile(request):
     profile = request.user.profile
 
     cur_sem = get_cur_semester()
+    theme = 'w'
+    if request.user.profile.ui_pref:
+        theme = json.loads(request.user.profile.ui_pref)['theme']
     return render(request, "main/edit-profile-autocomplete.html", {
         'formatted_name': unicode(request.user.profile),
         'cur_sem': {
@@ -203,6 +206,7 @@ def edit_profile(request):
         },
         'is_mobile': request.mobile,
         'user': request.user,
+        'theme': theme,
     })
 
 @login_required

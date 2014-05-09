@@ -88,6 +88,10 @@ function init()
     DEFAULT_SECTION_COLORS = JSON.parse(CacheMan_load('/get/default-section-colors'));
     courseColorMap_init();
     usableColor_init();
+    if (THEME == 'w')
+        loadWhiteTheme();
+    else
+        loadDarkTheme();
 }
 
 function enableAllInteractions()

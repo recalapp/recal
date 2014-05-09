@@ -1,5 +1,7 @@
 function UR_pullUnapprovedRevisions()
 {
+    if (UR_hasUnapprovedRevisions() || SB_isFilled())
+        return;
     $.ajax('/get/unapproved', {
         async: true,
         dataType: 'json',
@@ -14,6 +16,11 @@ function UR_pullUnapprovedRevisions()
             }
         },
     });
+}
+
+function UR_hasUnapprovedRevisions()
+{
+    return NO_hasNotificationID('unapproved-rev');
 }
 
 function UR_showUnapprovedRevisions(unapprovedRevs)

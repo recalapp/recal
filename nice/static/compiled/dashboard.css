@@ -102,7 +102,7 @@
 body {
     
     /*background-color: #f5faff;*/
-    padding-top: 110px;
+    padding-top: 130px;
     /*background: -webkit-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Safari 5.1 to 6.0 */
     /*background: -o-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px); /* For Opera 11.1 to 12.0 */
     /*background: -moz-repeating-linear-gradient(3deg, white, white  100px, rgba(250, 250, 250, 1) 100px, rgba(250, 250, 250, 1) 250px);/* For Firefox 3.6 to 15 */
@@ -383,7 +383,20 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     text-align: center;
 }
 #add_button{
-    width: 100%;
+    /*width: 100%;*/
+    padding: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+#add_button > *{
+    margin: 0;
+    display: inline-block;
+}
+
+.main-nav-link{
+    border-bottom-width: 0px !important;
 }
 .popup-container{
     width: 300px;
@@ -434,12 +447,18 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 }
 .popup-text-container{
     background-color: white;
-    padding: 15px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    padding: 3px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 
     border-top: solid 1px rgba(0, 0, 0, 0.1); 
     border-bottom: solid 1px rgba(0, 0, 0, 0.1); 
+}
+.popup-text-container > h5 {
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 .popup-text-container.dark{
     background-color: rgb(30,30,30);

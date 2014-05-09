@@ -56,6 +56,10 @@ function EP_init(heading, choices)
         });
         $ep.find('#ep-container').append($pickerItem);
    });
+   if (THEME == 'w')
+       $ep.find('.theme').removeClass('dark');
+   else
+       $ep.find('.theme').addClass('dark');
    $ep.find('#cancel_button').on('click', function(ev){
        ev.preventDefault();
        $ep.trigger('ep.cancel');
