@@ -10,22 +10,29 @@ from datetime import *
 import settings.common as settings
 
 
-# TODO(Naphat, Maxim): Should we switch netid parameter inputs to User object inputs from request.user? May save a database call.
+# TODO(Maxim): ensure we're consistently using netid or profile
+
+############################################################
+############################################################
+
+### User event interaction: read and write ###
 
 def get_events(netid, **kwargs):
+    """
+    Fetches events this user should see. Returns a list of their compressed event dictionaries.
+
+    """
     try:
         user = User.objects.get(username=netid).profile
     except Exception, e:
         return []
+    
     last_updated = kwargs.pop('last_updated', None)
     start_date = kwargs.pop('start_date', None)
     end_date = kwargs.pop('end_date', None)
     all_sections = user.sections.all()
-    hidden_events = user.hidden_events
-    if hidden_events:
-        hidden_events = json.loads(hidden_events)
-    else:
-        hidden_events = []
+    # Note that hidden event filtering happens on the client-side, so we want to pass them back.
+
     filtered = Event.objects.filter(group__section__in = all_sections)
     survived = []
     for event in filtered:
@@ -39,13 +46,15 @@ def get_events(netid, **kwargs):
             continue
         if last_updated and best_rev.modified_time < last_updated:
             continue
-        #if event.id in hidden_events:
-        #    continue
-        # if we made it to here, then the event is good
+
+        # Since we made it to here, the event is good
         survived.append(construct_event_dict(event, netid=netid, best_rev=best_rev))
     return survived
 
 def get_events_by_course_ids(course_ids, **kwargs):
+    """
+    TODO(MAXIM): what is this used for? Write a description
+    """
     courses = Course.objects.filter(id__in=course_ids)
     last_updated = kwargs.pop('last_updated', None)
     start_date = kwargs.pop('start_date', None)
@@ -316,6 +325,12 @@ def modify_events(netid, events, auto_approve=False):
         
     return changed_ids, deleted_ids
 
+
+############################################################
+############################################################
+
+### User Visibility Setting Configuration ###
+
 def hide_events(netid, event_IDs):
     """
     Adds events to user's hidden event list.
@@ -389,6 +404,11 @@ def get_state_restoration(netid):
         return user.ui_state_restoration 
     except Exception, e:
         return None
+
+############################################################
+############################################################
+
+### Transfer Protocols: Event Dictionary parsing and creation ###
 
 def construct_event_dict(event, netid=None, best_rev=None):
     """
@@ -491,6 +511,10 @@ def parse_json_event_dict(jsdict):
     return event_dict
     
 
+############################################################
+############################################################
+
+### Duplicate Event Detection Methods ###
     
 import difflib # https://docs.python.org/2/library/difflib.html
 import heapq
@@ -576,6 +600,11 @@ def get_similar_events(event_dict):
     
     return revisions # return what survived
 
+
+############################################################
+############################################################
+
+### Course Identification and Selection Methods ###
 
 def get_sections(netid):
     """
@@ -716,6 +745,12 @@ def search_classes(query):
         results.append(construct_course_dict(c))
         #results.append({'id': c.id, 'value': c.course_listings(), 'label': c.course_listings(), 'desc': c.title}) # the format jQuery UI autocomplete likes
     return sorted(results, key=lambda r: r['course_listings']) # alphabetical sort
+
+
+############################################################
+############################################################
+
+### Content Moderation System ###
 
 
 def get_unapproved_revisions(netid, count=3):

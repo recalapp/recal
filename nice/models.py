@@ -3,21 +3,13 @@ from django.db.models import Q
 from django.db.models.signals import post_save
 from colorfield.fields import ColorField
 from django.core.cache import cache
+import datetime
 
 # Create your models here.
-# To start using the database: python manage.py syncdb
-# Run python manage.py sql nice to see SQL for our models.
-# To apply a model: python manage.py syncdb again. (This changes in later versions of Django, beware!)
-
-# Relationships note: 
-# use foreign key for many to one rel
-# use OneToOneField for one to one rel
-
-import datetime
 
 def get_current_utc():
     '''
-    Returns current time in UTC, perfect for database storage.
+    (Helper method) Returns current time in UTC, perfect for database storage.
     '''
     from django.utils.timezone import utc
     return datetime.datetime.utcnow().replace(tzinfo=utc)

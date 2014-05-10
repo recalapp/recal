@@ -8,26 +8,24 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import * # require_GET, etc.
 from django.utils import timezone
 from django.db.models import Q
+from django.views.decorators.clickjacking import xframe_options_exempt
+from view_cache_utils import cache_page_with_prefix
+import hashlib
 
 from nice.models import *
-from nice.forms import * 
 from nice import queries
+
 from datetime import datetime
-
-from django.views.decorators.clickjacking import xframe_options_exempt
-
 import json
 
 # Views go here.
 
-'''
-A good way to find out fields a model has: return HttpResponse(repr(request.user._meta.get_all_field_names()))
-
-To restrict a method to staff members only, decorate with @staff_member_required
-Alternatives: @user_passes_test(lambda u: u.is_staff) or @permission_required('is_superuser')
-'''
-
 def gather_dashboard(request):
+    """
+    Collect information for dashboard page, and return the rendered view.
+
+    This method is called by a few views that point to the dashboard page in different circumstances.
+    """
     user = request.user.profile
     page = 0
     if user.ui_state_restoration:
@@ -71,7 +69,7 @@ def gather_dashboard(request):
 
 def index(request):
     """
-    Home page
+    Home page. Show landing page, edit profile page, or dashboard, depending on user's state.
     """
     if not request.user.is_authenticated():
         return redirect('landing')
@@ -83,6 +81,13 @@ def index(request):
 
 @xframe_options_exempt # can load in Chrome extension
 def chromeframe(request):
+    """
+    Custom home page for the Chrome extension.
+
+    Shows a custom log in page if the user is not ready to see their dashboard, so that we don't bust out of the New Tab page into a CAS login screen.
+
+    Decorator @xframe_options_exempt is required for this to work in an iframe.
+    """
     if not request.user.is_authenticated():
         return redirect('embedded_not_logged_in')
     if not user_profile_filled_out(request.user):
@@ -92,11 +97,17 @@ def chromeframe(request):
 
 @xframe_options_exempt
 def embedded_not_logged_in(request):
+    """
+    This is the custom log in page the Chrome Extension home page will show if necessary.
+    """
     return render(request, 'embedded/not-logged-in.html', None)
 
 @login_required
 def point_award_history(request):
-    """Fetches point award history"""
+    """
+    Fetches point award history, i.e. a log of reputation changes.
+
+    """
     pointChanges = PointChange.objects.filter(user=request.user.profile).order_by('-when').all()
     results = []
     for p in pointChanges:
@@ -108,6 +119,9 @@ def point_award_history(request):
 
 
 def landing(request):
+    """
+    Displays the landing page.
+    """
     if request.user.is_authenticated():
         return redirect('index')
     if request.mobile:
@@ -115,80 +129,49 @@ def landing(request):
     return render(request, 'landing/index.html', None)
 
 def logout(request):
+    """
+    Cleans up after the user and logs them out.
+
+    """
     user = request.user.profile
     user.ui_state_restoration = None;
     user.save()
     return redirect('cas_logout')
 
-def verify(request):
-    if request.user.is_authenticated():
-        return HttpResponse('1')
-    else:
-        return HttpResponse('0')
 
-# loading templates
+
+# Loading Templates
+@login_required
 def popup(request):
     return render(request, 'main/popup.html', None)
+
+@login_required
 def popup_course(request):
     return render(request, 'main/popup-course.html', None)
+
+@login_required
 def agenda(request):
     return render(request, 'main/agenda.html', None)
+
+@login_required
 def event_picker(request):
     return render(request, 'main/event-picker.html', None)
+
+@login_required
 def event_picker_item(request):
     return render(request, 'main/event-picker-item.html', None)
+
+@login_required
 def course(request):
     return render(request, 'main/course.html', None)
 
-@login_required
-def edit_profile_manual(request):
-    '''
-    Change which courses you are enrolled in, and edit your name.
-    '''
-    user_profile_filled_out(request.user) # create profile if not already create
-    profile = request.user.profile
 
-    # Compile list of options
-    enrolled = [s.course for s in profile.sections.all()]
-    not_enrolled = [c for c in Course.objects.all() if c not in enrolled]
-    all = [(c.id, str(c), True) for c in enrolled] # course ID, course title, and whether enrolled already
-    all.extend([(c.id, str(c), False) for c in not_enrolled])
-
-    form = EnrollCoursesForm(request.POST or None, extra=all, initial_first = request.user.first_name, initial_last = request.user.last_name)
-    if form.is_valid(): # runs validation and confirms that there are no validation errors
-        # Process Register Courses form.
-        chosen_courses = list(form.extra_courses())
-        for c in chosen_courses:
-            if c not in all: # This version is different from the previous states of the records (found in all)
-                # Course enrollment change.
-                the_course = Course.objects.get(pk=c[0])
-                if c[2] == True:
-                    # Enroll user in course, i.e. add to default "All Students" section(s)
-                    for default_section in the_course.section_set.filter(isDefault=True):
-                        user_in_section = User_Section_Table(user = profile, section=default_section, add_date = get_current_utc())
-                        user_in_section.save()
-                        user_in_section.color = user_in_section.get_usable_color()
-                        user_in_section.save()
-                else:
-                    # Remove user from class, i.e. remove from all sections matching this course ID
-                    User_Section_Table.objects.filter(section__course_id=the_course.id).filter(user=profile).delete()
-        
-        # Process name fields.
-        request.user.first_name = form.cleaned_data['first_name']
-        request.user.last_name = form.cleaned_data['last_name']
-        request.user.save()
-        
-        # Done processing, redirect to edit-sections form.
-        return redirect('nice.views.edit_sections')
-    
-    return render(request, "main/edit-profile.html", {'courses_form':form, 'formatted_name': unicode(profile)})
-    
 
 @login_required
 def edit_profile(request):
     '''
     Change which courses you are enrolled in, and edit your name.
-    TODO: enable name editing.
+    
     '''
     user_profile_filled_out(request.user) # create profile if not already create
     profile = request.user.profile
@@ -209,13 +192,70 @@ def edit_profile(request):
         'theme': theme,
     })
 
+	
+@staff_member_required
+def tester_login(request):
+    '''
+    This is for COS 333 tester use only. Lets you log in with a non-CAS account.
+    Since each tester only has one netid, they can use this to log in as a second user and test the unapproved content moderation features.
+    The tester accounts are: _tester1/tester1 and _tester2/tester2. See fixtures/initial_data.json.
+
+    How this works:
+    For debugging purposes, lets you log in as superuser. Run this after creating a superuser through manage.py.
+    This just presents the admin login screen rather than CAS.
+    Don't forget to visit /logout to logout before using this.
+    To generate passwords for the fixtures file, use: http://stackoverflow.com/a/5096323
+    '''
+    return redirect('/') # Send to home page
+    
+
+############################################################
+############################################################
+
+### AJAX API Calls ###
+
+def verify(request):
+    """
+    Checks whether a user is logged in.
+    """
+    if request.user.is_authenticated():
+        return HttpResponse('1')
+    else:
+        return HttpResponse('0')
+
 @login_required
+@require_GET
+@cache_page_with_prefix(60*60*5, lambda request: hashlib.md5(request.GET.get('term', '')).hexdigest())
+def get_classes(request):
+    """
+    Returns list of classes for an autocomplete query.
+
+    Used on profile (class and section enrollment) page.
+    Cached for 5 hours by ?term.
+    """
+    if request.is_ajax():
+        q = request.GET.get('term', '') # TODO(Maxim, Naphat): switch this to a parameter
+        results = queries.search_classes(q)
+        data = json.dumps(results) 
+        status = 200 # OK
+    else:
+        data = 'fail'
+        status = 400 # Bad Request (need to use AJAX)
+    return HttpResponse(data, 'application/json', status=status)
+
+@login_required
+@require_POST
 def enroll_sections(request):
+    """
+    Update user's section enrollment with form data.
+    """
     user = request.user.profile
     prev_enrollment = User_Section_Table.objects.filter(user=user)
     prev_enrolled_sections = [enrollment.section for enrollment in prev_enrollment]
-    sections_data = json.loads(request.POST['sections'])
-    print sections_data
+    try:
+        sections_data = json.loads(request.POST['sections'])
+    except:
+        return HttpResponse('fail', status=400) # bad request
 
     for course_id in sections_data:
         for section_id in sections_data[course_id]:
@@ -229,83 +269,12 @@ def enroll_sections(request):
                 enrollment.save()
     for enrollment in prev_enrollment:
         enrollment.delete()
-    return HttpResponse('')
-
     
+    return HttpResponse('', status=200) # success
+
+
 @login_required
-def get_classes(request):
-    """
-    Returns list of classes for an autocomplete query. Used on profile (class and section enrollment) page.
-
-    TODO(Maxim): cache by ?term.
-    """
-    if request.is_ajax():
-        q = request.GET.get('term', '') # autocomplete query
-        results = queries.search_classes(q)
-        data = json.dumps(results) 
-        status = 200 # OK
-    else:
-        data = 'fail'
-        status = 400 # Bad Request (need to use AJAX)
-    return HttpResponse(data, 'application/json', status=status)
-
-    
-@login_required
-def edit_sections(request):
-    '''
-    For the courses you're enrolled in, choose sections (precepts, labs, etc.) to join.
-    '''
-    # If no profile created yet, or no sections chosen, then redirect to choose courses page.
-    if not user_profile_filled_out(request.user):
-        return redirect('nice.views.edit_profile')
-    profile = request.user.profile
-
-    # Compile list of options
-    my_current_sections = profile.sections.all()
-    enrolled_classes = set([s.course for s in my_current_sections]) # convert to set to remove duplicates
-    
-    class_list = []
-    
-    for c in enrolled_classes: # for each class the user is enrolled in
-        all_sections = c.section_set.exclude(isDefault=True) # all sections other than the default All Students section
-        seclist = [(s.id, str(s), True) for s in all_sections if s in my_current_sections] # section ID, course title, section name, and whether enrolled already
-        seclist.extend([(s.id, str(s), False) for s in all_sections if s not in my_current_sections])
-        class_obj = (c.id, str(c), seclist) # class ID, class title, sections list
-        class_list.append(class_obj)
-    
-    form = ChooseSectionsForm(request.POST or None, extra=class_list)
-    if form.is_valid(): # runs validation and confirms that there are no validation errors
-        # Process Choose Sections form.
-        chosen_sections = list(form.extra_sections())
-        for s_id, c_id, enrolled in chosen_sections:
-            s = Section.objects.get(pk=s_id)
-            if not s:
-                continue
-            if enrolled and s not in my_current_sections: # This section has been changed to enrolled status
-                # Enrolling in new section.
-                user_in_section = User_Section_Table(user = profile, section=s, add_date = get_current_utc())
-                user_in_section.color = user_in_section.get_usable_color()
-                user_in_section.save()
-            elif not enrolled and s in my_current_sections and not s.isDefault: # This section has been changed to not-enrolled status (and isn't a default section, i.e. enrollment isn't mandatory)
-                # Unenrolling in a section
-                User_Section_Table.objects.get(section_id=s_id, user=profile).delete()
-        
-        # Done processing, redirect to dashboard.
-        return redirect("/")
-    
-    return render(request, "main/edit-sections.html", {'sections_form':form, 'formatted_name': unicode(profile)})
-    
-	
-@staff_member_required # this is why this works
-def login_admin(request):
-    '''
-    For debugging purposes, log in as superuser. Run this after creating a superuser through manage.py.
-    This just presents the admin login screen rather than CAS.
-    Don't forget to visit /logout to logout before using this.
-    '''
-    return redirect('/admin/') # send to admin panel once the staff member has logged in
-    
-# for AJAX
+@require_GET
 def events_json(request, start_date=None, end_date=None, last_updated=None):
     try:
         netid = request.user.username
@@ -325,13 +294,14 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
             'events': events,
             'hidden_events': hidden_events,
         }), content_type='application/javascript')
-        #return render(request, 'main/event-json-test.html')
     except Exception, e:
         raise e
         return HttpResponse(status=500)
 
+@login_required
+@require_GET
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
-    course_ids = json.loads(request.GET['courseIDs'])
+    course_ids = json.loads(request.GET['courseIDs']) # TODO(Maxim, Naphat): switch this to a parameter
     if start_date:
         start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
     if end_date:
@@ -341,25 +311,35 @@ def events_by_course_json(request, last_updated=0, start_date=None, end_date=Non
     return HttpResponse(json.dumps(events), content_type='application/javascript')
     
 
+@login_required
+@require_GET
 def sections_json(request):
     netid = request.user.username
     ret = queries.get_sections(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+@login_required
+@require_GET
 def default_section_colors_json(request):
     netid = request.user.username
     ret = queries.get_default_colors(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+@login_required
+@require_GET
 def section_colors_json(request):
     netid = request.user.username
     ret = queries.get_section_colors(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+@login_required
+@require_GET
 def course_json(request, course_id):
     ret = queries.get_course_by_id(course_id)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+@login_required
+@require_GET
 def user_json(request):
     user = request.user
     ret = {
@@ -369,14 +349,21 @@ def user_json(request):
     }
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
+@login_required
+@require_GET
 def unapproved_revisions_json(request, event_id=None):
     unapproved = queries.get_unapproved_revisions(request.user.username)
     return HttpResponse(json.dumps(unapproved), content_type='application/javascript')
 
+@login_required
+@require_POST
 def process_votes(request):
     votes = json.loads(request.POST['votes'])
     for vote in votes:
-        queries.process_vote_on_revision(request.user.username, vote['is_positive'], vote['revision_id'])
+        try:
+            queries.process_vote_on_revision(request.user.username, vote['is_positive'], vote['revision_id'])
+        except:
+            pass # something failed about this vote, so discard it
     return HttpResponse('')
 
 @login_required
@@ -394,27 +381,23 @@ def modify_events(request):
                 'deleted_ids': deleted
             }
         except Exception, e:
-            print 'Modifying events error: ', e
-            return HttpResponse(status=500) # 500 Internal Server Error
+            return HttpResponse('fail', status=500) # 500 Internal Server Error
         
         
     if 'hidden' in request.POST:
         user = request.user.profile
-        hidden = json.loads(request.POST['hidden'])
-        hidden = [event_id for event_id in hidden if Event.objects.filter(id=event_id).exists()]
-        user.hidden_events = json.dumps(hidden)
-        user.save()
-        """try:
-            to_hide = json.loads(request.POST['hide'])
-            queries.hide_events(netid, to_hide)
+        try:
+            hidden = json.loads(request.POST['hidden'])
+            hidden = [event_id for event_id in hidden if Event.objects.filter(id=event_id).exists()]
+            user.hidden_events = json.dumps(hidden)
+            user.save()
         except Exception, e:
-            print 'Modifying events error 2: ', e
-            return HttpResponse(status=500) # 500 Internal Server Error
-        """
-        
+            return HttpResponse('fail', status=500) # 500 Internal Server Error        
+    
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created
 
 @login_required
+@require_POST
 def modify_user(request):
     user_dict = json.loads(request.POST['user'])
     user = request.user
@@ -424,6 +407,7 @@ def modify_user(request):
     return HttpResponse(content='1', status=200)
 
 @login_required
+@require_GET
 def get_user_point_count(request):
     return HttpResponse(content=request.user.profile.get_point_count(), status=200)
 
@@ -440,6 +424,7 @@ def local_storage_verify(request):
 
     Returns: dictionary that maps old revision IDs to new event dicts with the proper event details and best revision.
     """
+    # TODO(Maxim, Naphat): are we using this, or did we go with /get/0?
     print request.POST
     try:
         revision_ids = json.loads(request.POST['revision_IDs'])
@@ -459,6 +444,8 @@ def local_storage_verify(request):
     return HttpResponse(json.dumps(mappings), content_type='application/javascript', status=200)
 
 
+@login_required
+@require_GET
 def state_restoration(request):
     netid = request.user.username
     state_restoration = queries.get_state_restoration(netid=netid)
@@ -467,10 +454,16 @@ def state_restoration(request):
     else:
         return HttpResponse('')
 
+@login_required
+@require_POST
 def save_state_restoration(request):
     netid = request.user.username
     state_restoration = request.POST['state_restoration']
     return HttpResponse(str(int(queries.save_state_restoration(netid=netid, state_restoration=state_restoration))))
+
+
+@login_required
+@require_POST
 def save_ui_pref(request):
     user = request.user.profile
     user.ui_agenda_pref = request.POST['agenda_pref']
@@ -479,12 +472,16 @@ def save_ui_pref(request):
     user.save()
     return HttpResponse('')
 
+@login_required
+@require_GET
 def all_sections(request):
     all_sections = {}
     for section in request.user.profile.sections.all():
         all_sections[section.id] = unicode(section)
     return HttpResponse(json.dumps(all_sections), content_type='application/javascript')
 
+@login_required
+@require_GET
 def all_courses(request):
     all_courses = {}
     for section in request.user.profile.sections.all():
@@ -494,11 +491,14 @@ def all_courses(request):
             'course_sections_map': queries.get_sections(netid=request.user.username),
         }), content_type='application/javascript')
 
+@login_required
+@require_GET
 def hidden_events(request):
     netid = request.user.username
     hidden_events = queries.get_hidden_events(netid)
     return HttpResponse(json.dumps(hidden_events), content_type='application/javascript')
     
+@login_required
 @require_POST
 def similar_events(request):
     netid = request.user.username
@@ -510,7 +510,11 @@ def similar_events(request):
     return HttpResponse(json.dumps(filtered_edicts), content_type='application/javascript')
     
 
-# Helper methods
+############################################################
+############################################################
+
+### Helper Methods ###
+
 def user_profile_filled_out(user):
     '''
     Checks for whether the user profile has been filled out.
@@ -522,28 +526,4 @@ def user_profile_filled_out(user):
         profile = User_Profile.objects.create(user=user, lastActivityTime=get_current_utc())
         return False # just created, but not filled out yet
         
-  
-        
-# test
-def contact_us(req):
-    if req.method == 'POST':
-        form = ContactForm(req.POST) # bind the form to the passed-in data dict
-        if form.is_valid(): # this runs all validation and cleaning methods
-            # No validation errors.
-            print 'succeeded form' # or read from form.cleaned_data
-            pass # should redirect somewhere upon success
-    else:
-        form = ContactForm() # no associated data, so don't validate
-    return render(req, "main/test-form-verbose.html", {'form':form}) # or main/test-form.html
 
-def form_test_two(request):
-    #sections = range(1,6) # our "sections"
-    sections = (('1', 'Option 1'),('2', 'Option 2'),('3', 'Option 3'),)
-    form = AnotherFormExample(request.POST or None, extra=sections)
-    form.fields['max_number'].choices = [(1,1),(2,2),(3,3)]
-    form.fields['max_number'].initial = [3]
-    if form.is_valid():
-        # No validation errors.
-        print 'succeeded form' 
-        # use form.cleaned_data
-        return redirect("/")
