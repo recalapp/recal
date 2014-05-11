@@ -10,9 +10,6 @@ from nice.models import *
 from datetime import *
 import settings.common as settings
 
-
-# TODO(Maxim): ensure we're consistently using netid or profile
-
 ############################################################
 ############################################################
 
