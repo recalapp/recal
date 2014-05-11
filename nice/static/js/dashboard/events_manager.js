@@ -154,11 +154,17 @@ function EventsMan_init()
         EventsMan_save();
     });
 
-    window.setInterval(function(){
+    RF_addRecurringFunction(function(isInterval){
+        if (isInterval)
+            EventsMan_verifyLocalData();
+        EventsMan_pushToServer(true); 
+        EventsMan_pullFromServer();
+    }, 60 * 5 * 1000);
+    /*window.setInterval(function(){
         EVENTSMAN_COUNT++ ; // every 5 min. -> 30 * 10s = 300s = 5min
         if (!eventsManager.active && (EVENTSMAN_COUNT % 30) != 0)
             return;
-        if ((EVENTSMAN_COUNT % 30) == 0) // -1 so that it does this on first load
+        if ((EVENTSMAN_COUNT % 30) == 0) 
             EventsMan_verifyLocalData();
         EventsMan_pushToServer(true); 
         EventsMan_pullFromServer();
@@ -173,7 +179,7 @@ function EventsMan_init()
         timeoutIDs.push(window.setTimeout(function(){
             eventsManager.active = false;
         }, 30*1000));
-    });
+    });*/
 }
 
 /***************************************************
