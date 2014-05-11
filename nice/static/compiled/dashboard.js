@@ -1289,18 +1289,13 @@ function PopUp_setColor(popUp, color)
 
     $(popUp).find('.panel').data('default-border', defaultBorder);
     $(popUp).find('.panel').data('default-header', defaultHeader);
-    // if (PopUp_hasFocus(popUp))
-    // {
-        $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
-        $(popUp).find('.panel').css('border-color', color);
+    $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
+    $(popUp).find('.panel').css('border-color', color);
+    if (!PopUp_hasFocus(popUp))
+    {
         $(popUp).find(".panel-clipped").addClass("panel-clipped-faded-out");
         $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
-    // }
-    // else
-    // {
-    //     $(popUp).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-    //     $(popUp).find('.panel').css('border-color', defaultBorder);
-    // }
+    }
 }
 var RF_ACTIVE = true;
 var RF_timeoutIDs = [];
@@ -2555,11 +2550,6 @@ function init()
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
             // xhr.setRequestHeader('term_code', CUR_SEM.term_code);
-            if (typeof settings.data == 'undefined')
-                settings.data = {};
-            settings.data.term_code = CUR_SEM.term_code;
-            settings.data = $.param(settings.data);
-
             if (settings.loadingIndicator == false)
                 return;
             var loadingID = settings.loadingID;
@@ -3110,8 +3100,6 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setColor(popUp, myColor);
 
     // give focus to PopUp if should be highlighted
-    if (UI_isPinned(id) || UI_isMain(id))
-        PopUp_giveFocus(popUp);
 
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');

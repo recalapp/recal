@@ -228,8 +228,6 @@ function PopUp_setToEventID(popUp, id)
     PopUp_setColor(popUp, myColor);
 
     // give focus to PopUp if should be highlighted
-    if (UI_isPinned(id) || UI_isMain(id))
-        PopUp_giveFocus(popUp);
 
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
