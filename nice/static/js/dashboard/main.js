@@ -59,7 +59,7 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
-            xhr.setRequestHeader('term_code', CUR_SEM.term_code);
+            // xhr.setRequestHeader('term_code', CUR_SEM.term_code);
             if (settings.loadingIndicator == false)
                 return;
             var loadingID = settings.loadingID;
