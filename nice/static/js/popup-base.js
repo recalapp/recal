@@ -337,16 +337,11 @@ function PopUp_setColor(popUp, color)
 
     $(popUp).find('.panel').data('default-border', defaultBorder);
     $(popUp).find('.panel').data('default-header', defaultHeader);
-    // if (PopUp_hasFocus(popUp))
-    // {
-        $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
-        $(popUp).find('.panel').css('border-color', color);
+    $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
+    $(popUp).find('.panel').css('border-color', color);
+    if (!PopUp_hasFocus(popUp))
+    {
         $(popUp).find(".panel-clipped").addClass("panel-clipped-faded-out");
         $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
-    // }
-    // else
-    // {
-    //     $(popUp).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-    //     $(popUp).find('.panel').css('border-color', defaultBorder);
-    // }
+    }
 }
