@@ -111,6 +111,23 @@
     text-align: center; 
 }
 
+.popup-last-edited-container{
+    padding: 0;
+    padding-left: 15px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.popup-last-edited {
+    display: block;
+    margin: 0;
+    color: gray;
+}
+
+.popup-last-edited.center{
+    text-align: center; 
+}
+
 .panel-clipped-faded-out  { /* add this class to div.panel-clipped via JS */
 	opacity: .7;
 	border: none;

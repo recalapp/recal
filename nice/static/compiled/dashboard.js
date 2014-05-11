@@ -1143,8 +1143,9 @@ function PopUp_setID(popUp, id)
 function _PopUp_setBodyHeight(popUp)
 {
     var headHeight = $(popUp).find(".panel-heading").css("height");
+    var footerHeight = $(popUp).find(".panel-footer").css("height");
     var height = $(popUp).css("height");
-    $(popUp).find(".panel-body").css("height", (parseInt(height) - parseInt(headHeight)) + "px");
+    $(popUp).find(".panel-body").css("height", (parseInt(height) - parseInt(headHeight)) - parseInt(footerHeight) + "px");
 }
 /***************************************************
  * Appearance
