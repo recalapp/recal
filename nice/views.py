@@ -51,7 +51,7 @@ def gather_dashboard(request):
     return render(request, "main/index.html", {
         'username': request.user.username, 
         'formatted_name': unicode(request.user.profile),
-        'point_count': request.user.profile.get_point_count(),
+        'point_count': request.user.profile.pprint_point_count(),
         'nav_page': page,
         'is_mobile': request.mobile,
         'agenda_pref': agenda_pref,
@@ -409,7 +409,7 @@ def modify_user(request):
 @login_required
 @require_GET
 def get_user_point_count(request):
-    return HttpResponse(content=request.user.profile.get_point_count(), status=200)
+    return HttpResponse(content=request.user.profile.pprint_point_count(), status=200)
 
 @login_required
 @require_POST
