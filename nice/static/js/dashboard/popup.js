@@ -531,6 +531,11 @@ function PopUp_makeIDDraggable(id)
     var popUp = PopUp_getPopUpByID(id);
     $(popUp).draggable('enable');
 }
+function PopUp_giveEditingFocus(popUp)
+{
+    var titleElement = $(popUp).find('#popup-title')[0];
+    PopUp_clickedElement(titleElement);
+}
 
 /***************************************************
  * forms for editing

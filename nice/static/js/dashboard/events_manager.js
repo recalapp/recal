@@ -372,6 +372,7 @@ function EventsMan_clickAddEvent()
     PopUp_markAsUnsaved(popUp);
     
     PopUp_giveFocus(popUp);
+    PopUp_giveEditingFocus(popUp);
     //_EventsMan_callUpdateListeners();
 }
 
