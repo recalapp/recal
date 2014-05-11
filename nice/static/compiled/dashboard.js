@@ -1161,8 +1161,7 @@ function PopUp_giveFocus(popUp)
     $(popUp).css("z-index", "200");
     var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
-    //$(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color).css('opacity', 1);
-    $(popUp).find(".popup-title").parent().parent().css('opacity', 1);
+    $(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color);
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
@@ -1173,8 +1172,7 @@ function PopUp_loseFocus($popUps)
         var defaultBorder = $(this).find('.panel').data('default-border');
         var defaultHeader = $(this).find('.panel').data('default-header');
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
-        // $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-        $(this).find('.popup-title').parent().parent().css('opacity', 0.3);
+        $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
     });
 }
 
@@ -1291,16 +1289,16 @@ function PopUp_setColor(popUp, color)
 
     $(popUp).find('.panel').data('default-border', defaultBorder);
     $(popUp).find('.panel').data('default-header', defaultHeader);
-    // if (PopUp_hasFocus(popUp))
-    // {
+    if (PopUp_hasFocus(popUp))
+    {
         $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
         $(popUp).find('.panel').css('border-color', color);
-    // }
-    // else
-    // {
-    //     $(popUp).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-    //     $(popUp).find('.panel').css('border-color', defaultBorder);
-    // }
+    }
+    else
+    {
+        $(popUp).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
+        $(popUp).find('.panel').css('border-color', defaultBorder);
+    }
 }
 var RF_ACTIVE = true;
 var RF_timeoutIDs = [];
@@ -2342,6 +2340,7 @@ function EventsMan_pullFromServer(complete, showLoading)
     $.ajax(url, {
         dataType: 'json',
         loadingIndicator: showLoading,
+        loadingID: '/get',
         success: function(data){
             var changed = EventsMan_processDownloadedEvents(data);
 
@@ -2354,7 +2353,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         },
         error: function(data){
             eventsManager.isIdle = true;
-            LO_showError(url);
+            LO_showError('/get');
         },
     });
 }
@@ -2553,13 +2552,14 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
+            xhr.setRequestHeader('term_code', CUR_SEM.term_code);
             if (settings.loadingIndicator == false)
                 return;
             var loadingID = settings.loadingID;
             if (typeof loadingID == 'undefined')
                 loadingID = settings.url;
             LO_showLoading(loadingID);
-        }
+        },
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
         var loadingID = settings.loadingID;
@@ -3292,7 +3292,7 @@ function PopUp_setToEventID(popUp, id)
 
 function PopUp_setTitle(popUp, title)
 {
-    popUp.querySelector(".popup-title").innerHTML = title;
+    $(popUp).find("#popup-title").text(title);
 }
 function PopUp_setDescription(popUp, desc)
 {
@@ -3519,7 +3519,7 @@ function PopUp_clickedElement(element)
         $(form).find("textarea").css("height", height + "px");
     }
     _PopUp_showFormForElement(element);
-    _PopUp_Form_setValue(form, element.innerHTML);
+    _PopUp_Form_setValue(form, $(element).text());
     _PopUp_Form_giveFocus(form);
     if (!$(form).hasClass("input-group") && form.notFirstSelected != true)
     {
@@ -3533,7 +3533,7 @@ function PopUp_clickedElement(element)
     {
         $(popUp).find('.popup-ctrl').addClass('hidden');
     }
-    $(form).find('input, textarea').off('keydown').one('keydown', function(ev){
+    $(form).find('input, textarea').off('keydown').on('keydown', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 9) // tab key
         {
@@ -3549,7 +3549,7 @@ function PopUp_clickedElement(element)
                 PopUp_clickedElement($(popUp).find(nextSelector)[0]);
         }
     });
-    $(form).find('input, textarea').off('keyup').one('keyup', function(ev){
+    $(form).find('input').off('keyup').on('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {
