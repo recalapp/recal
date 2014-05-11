@@ -21,18 +21,20 @@ function RF_init()
         RF_callRecurringFunctions(RF_COUNT);
     }, RF_INTERVAL);
 }
-function RF_addRecurringFunction(recurringFunction, idleInterval)
+function RF_addRecurringFunction(recurringFunction, defaultInterval, idleInterval)
 {
     RF_FUNCTIONS.push({
         recurringFunction: recurringFunction,
+        defaultInterval: parseInt(defaultInterval / RF_INTERVAL),
         idleInterval: parseInt(idleInterval / RF_INTERVAL),
     });
 }
 function RF_callRecurringFunctions(count)
 {
     $.each(RF_FUNCTIONS, function(index, functionDict){
-        if (!RF_ACTIVE && (count % functionDict.idleInterval) != 0)
-            return;
-        functionDict.recurringFunction((count % functionDict.idleInterval) == 0);
+        if (!RF_ACTIVE && (count % functionDict.idleInterval) == 0)
+            functionDict.recurringFunction();
+        else if ((count % functionDict.defaultInterval) == 0)
+            functionDict.recurringFunction();
     });
 }

@@ -154,12 +154,13 @@ function EventsMan_init()
         EventsMan_save();
     });
 
-    RF_addRecurringFunction(function(isInterval){
-        if (isInterval)
-            EventsMan_verifyLocalData();
+    RF_addRecurringFunction(function(){
+        EventsMan_verifyLocalData();
+    }, 4.5 * 60 * 1000, 10 * 60 * 1000);
+    RF_addRecurringFunction(function(){
         EventsMan_pushToServer(true); 
         EventsMan_pullFromServer();
-    }, 60 * 5 * 1000);
+    }, 10 * 1000, 60 * 5 * 1000);
     /*window.setInterval(function(){
         EVENTSMAN_COUNT++ ; // every 5 min. -> 30 * 10s = 300s = 5min
         if (!eventsManager.active && (EVENTSMAN_COUNT % 30) != 0)

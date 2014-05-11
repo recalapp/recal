@@ -158,10 +158,10 @@ function init()
     }, 60 * 1000);*/
     RF_addRecurringFunction(function(isInterval){
         updatePoints();
-    }, 5 * 60 * 1000);
+    }, 10 * 1000, 5 * 60 * 1000);
     RF_addRecurringFunction(function(isInterval){
         UR_pullUnapprovedRevisions();
-    }, 5 * 60 * 1000);
+    }, 10 * 1000, 5 * 60 * 1000);
 }
 function adaptSize()
 {
