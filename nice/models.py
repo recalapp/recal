@@ -18,7 +18,7 @@ def get_current_utc():
 
 class Semester(models.Model):
     # fields
-    start_date = models.DateField() #TODO should this be datetime instead of date?
+    start_date = models.DateField()
     end_date = models.DateField()
     """ term_code = 1xxy, where xx is the year in which the school year ends,
         and y is the semester code. y = 2 for the fall term, y = 4 for the spring
@@ -53,10 +53,9 @@ class Course(models.Model):
 
     course_listings.admin_order_field = 'course_listings'
 
-    # TODO: test this function
     def primary_listing(self):
         """
-        returns a string
+        Returns the best course department and number string.
         """
         return unicode(self.course_listing_set.all().get(is_primary=True))
 
@@ -180,7 +179,6 @@ class Event_Group(models.Model):
         return 'Event group %d: no approved revision' % (self.id) +  ' in ' + unicode(self.section)
 
     def best_revision(self):
-        # TODO(Maxim): show different revisions for different users?
         if self.event_group_revision_set.all():
             return self.event_group_revision_set.filter(approved=True).latest('modified_time')
         return None;
@@ -194,11 +192,11 @@ class Event_Group_Revision(models.Model):
     end_date = models.DateField() # stores end date of recurring series
     modified_user = models.ForeignKey('User_Profile')
     modified_time = models.DateTimeField()
-    approved = models.BooleanField(default=True) # TODO: change default value	
+    approved = models.BooleanField(default=True)
     
     # recurrence fields
     '''
-    * How recurrence fields work, for our prototype:
+    How recurrence fields work:
     * Days of the week are 0-6, with 0 = sunday and 6 = saturday
     * Field recurrenceDays is a list of integers: the digits of the days when the event reoccurs. This list is JSON serialized to be stored in the database.
     * Field reccurenceInterval = 1 or 2, i.e. repeat every week or repeat every other week
@@ -284,7 +282,7 @@ class Event_Revision(models.Model):
     approved = models.CharField(max_length=4, choices=STATUS_CHOICES, default=STATUS_PENDING)
     
     def __unicode__(self):
-        return self.event_title # TODO: improve the way that revisions appear in admin panel by changing this.
+        return self.event_title
 
     # Compare to another revision. (Based on https://djangosnippets.org/snippets/2281/)
     def compare(self, obj):
@@ -484,19 +482,6 @@ def get_community_user():
     The Community User is meant to own imported/scraped events.
     """
     return User.objects.get(pk=0)
-    
-def clear_all_data():
-    # TODO: add other tables
-    Section.objects.all().delete()
-    Course.objects.all().delete()
-    Semester.objects.all().delete()
-
-def clear_events():
-    Event_Revision.objects.all().delete()
-    Event.objects.all().delete()
-    Event_Group_Revision.objects.all().delete()
-    Event_Group.objects.all().delete()
-
     
 def get_cur_semester():
     import settings.common as settings

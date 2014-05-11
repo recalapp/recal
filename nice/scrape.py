@@ -198,7 +198,7 @@ def create_or_update_events(section, section_object):
         return
 
     # now we check if there is already an event for this section
-    # TODO: try to prevent creating duplicate events
+    # TODO(Dyland): try to prevent creating duplicate events
     section_registrar_id = section.find('class_number')
 
     section_type = section.find('type_name').text
@@ -266,7 +266,7 @@ def create_or_update_events(section, section_object):
             'event_end' : end_date_time,
             'event_title': event_title,
             'event_description': 'Add a description...',
-            # TODO: figure out how to pass the real type
+            # TODO(Dyland): figure out how to pass the real type
             'event_type': event_type,
             # -1 for new event
             'event_id': -1,

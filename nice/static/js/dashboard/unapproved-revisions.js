@@ -9,7 +9,7 @@ function UR_pullUnapprovedRevisions()
         success: function(data){
             if (data && data.length > 0)
             {
-                var $noti = NO_showNotification('unapproved-rev', 'There are unapproved changes', NO_TYPES.INFO, null);
+                var $noti = NO_showNotification('unapproved-rev', 'There are unapproved changes. Review them to earn points.', NO_TYPES.INFO, null);
                 $noti.on('noti.click', function(ev){
                     UR_showUnapprovedRevisions(data);
                 });

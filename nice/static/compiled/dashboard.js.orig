@@ -1132,19 +1132,22 @@ function PopUp_setID(popUp, id)
     $(popUp).find(".panel")[0].id = id;
     if (popUp.id == 'popup-main')
     {
-        UI_setMain(id)
+        UI_setMain(id);
     }
     else 
     {
         UI_unpin(oldId);
-        UI_pin(id)
+        UI_pin(id);
     }
 }
 function _PopUp_setBodyHeight(popUp)
 {
     var headHeight = $(popUp).find(".panel-heading").css("height");
+    var footerHeight = $(popUp).find(".panel-footer").not('.hide-footer').css("height");
+    if (typeof footerHeight == "undefined")
+        footerHeight = 0;
     var height = $(popUp).css("height");
-    $(popUp).find(".panel-body").css("height", (parseInt(height) - parseInt(headHeight)) + "px");
+    $(popUp).find(".panel-body").css("height", (parseInt(height) - parseInt(headHeight)) - parseInt(footerHeight) + "px");
 }
 /***************************************************
  * Appearance
@@ -1161,12 +1164,17 @@ function PopUp_giveFocus(popUp)
     $(popUp).css("z-index", "200");
     var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
-<<<<<<< HEAD
     //$(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color).css('opacity', 1);
-    $(popUp).removeClass("panel-clipped-faded-out");
-    $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
+<<<<<<< HEAD
+    $(popUp).find(".popup-title").parent().parent().css('opacity', 1);
+    // $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
+    // $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
+    //$(popUp).find(".panel-footer").removeClass("hide-footer");
+    _PopUp_setBodyHeight(popUp);
 =======
-    $(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color);
+    $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
+    $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
+    $(document.activeElement).blur();
 >>>>>>> master
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
@@ -1178,14 +1186,12 @@ function PopUp_loseFocus($popUps)
         var defaultBorder = $(this).find('.panel').data('default-border');
         var defaultHeader = $(this).find('.panel').data('default-header');
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
-<<<<<<< HEAD
         // $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-        // $(this).find('.popup-title').parent().parent().css('opacity', 0.3);
-        $(this).addClass("panel-clipped-faded-out");
-        $(this).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
-=======
-        $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
->>>>>>> master
+        $(this).find('.popup-title').parent().parent().css('opacity', 0.6);
+        // $(this).find(".panel-clipped").addClass("panel-clipped-faded-out");
+        // $(this).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
+        //$(this).find(".panel-footer").addClass("hide-footer");
+        _PopUp_setBodyHeight($(this));
     });
 }
 
@@ -1297,27 +1303,14 @@ function PopUp_setColor(popUp, color)
 
     $(popUp).find('.panel').data('default-border', defaultBorder);
     $(popUp).find('.panel').data('default-header', defaultHeader);
-    if (PopUp_hasFocus(popUp))
+    $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
+    //$(popUp).find('.panel').css('border-color', color);
+    if (!PopUp_hasFocus(popUp))
     {
-        $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
-        $(popUp).find('.panel').css('border-color', color);
-<<<<<<< HEAD
-        $(popUp).addClass("panel-clipped-faded-out");
-        $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
-    // }
-    // else
-    // {
-    //     $(popUp).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-    //     $(popUp).find('.panel').css('border-color', defaultBorder);
-    // }
-=======
+        $(popUp).find('.popup-title').parent().parent().css('opacity', 0.6);
+        // $(popUp).find(".panel-clipped").addClass("panel-clipped-faded-out");
+        // $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
     }
-    else
-    {
-        $(popUp).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-        $(popUp).find('.panel').css('border-color', defaultBorder);
-    }
->>>>>>> master
 }
 var RF_ACTIVE = true;
 var RF_timeoutIDs = [];
@@ -2571,7 +2564,7 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
-            xhr.setRequestHeader('term_code', CUR_SEM.term_code);
+            // xhr.setRequestHeader('term_code', CUR_SEM.term_code);
             if (settings.loadingIndicator == false)
                 return;
             var loadingID = settings.loadingID;
@@ -3121,6 +3114,8 @@ function PopUp_setToEventID(popUp, id)
         myColor = myColor['color'];
     PopUp_setColor(popUp, myColor);
 
+    // give focus to PopUp if should be highlighted
+
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
     $(popUp).find('#popup-repeat-pattern').off('select');
@@ -3604,7 +3599,6 @@ function _PopUp_Form_enforceStartDate(popUp)
     {
         endTime = moment.unix(startDate.unix());
         endTime.hour(endTime.hour() + 1);
-        $(popUp).find('#popup-time-end').text();
         PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.tz(MAIN_TIMEZONE).format('h:mm A')); 
     }
 }
@@ -3647,12 +3641,12 @@ function PopUp_clickedSaveElement(form)
     if ($(text).html() == nl2br(safe))
         return; // no saving needed
     $(text).html(nl2br(safe));
-    if (text_id == 'popup-time-start')
+    PopUp_markAsUnsaved(popUp);
+    PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
+    if (text_id == 'popup-time-start' || text_id == 'popup-time-end')
     {
         _PopUp_Form_enforceStartDate(popUp);
     }
-    PopUp_markAsUnsaved(popUp);
-    PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
 }
 function PopUp_clickedClose(popUpAnchor)
 {
@@ -3980,7 +3974,17 @@ function SE_checkSimilarEvents(eventDict)
 }
 function SE_showSimilarEventsNotification(eventID, similarEvents)
 {
-    var $noti = NO_showNotification(eventID, 'A similar event already exists', NO_TYPES.WARNING, null);
+    var count = similarEvents.length;
+    var text;
+    if (count == 1)
+    {
+        text = "Found 1 similar event. Click here to view it first."
+    }
+    else
+    {
+        text = "Found " + count + " similar events. Click here to view them first."
+    }
+    var $noti = NO_showNotification(eventID, text, NO_TYPES.WARNING, null);
     $noti.on('noti.click', function(ev){
         SE_showSimilarEvents(eventID, similarEvents);
     });
@@ -4141,7 +4145,7 @@ function UR_pullUnapprovedRevisions()
         success: function(data){
             if (data && data.length > 0)
             {
-                var $noti = NO_showNotification('unapproved-rev', 'There are unapproved changes', NO_TYPES.INFO, null);
+                var $noti = NO_showNotification('unapproved-rev', 'There are unapproved changes. Review them to earn points.', NO_TYPES.INFO, null);
                 $noti.on('noti.click', function(ev){
                     UR_showUnapprovedRevisions(data);
                 });
