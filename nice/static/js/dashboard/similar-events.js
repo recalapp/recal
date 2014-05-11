@@ -17,7 +17,17 @@ function SE_checkSimilarEvents(eventDict)
 }
 function SE_showSimilarEventsNotification(eventID, similarEvents)
 {
-    var $noti = NO_showNotification(eventID, 'A similar event already exists', NO_TYPES.WARNING, null);
+    var count = similarEvents.length;
+    var text;
+    if (count == 1)
+    {
+        text = "Found 1 similar event. Click here to view it first."
+    }
+    else
+    {
+        text = "Found " + count + " similar events. Click here to view them first."
+    }
+    var $noti = NO_showNotification(eventID, text, NO_TYPES.WARNING, null);
     $noti.on('noti.click', function(ev){
         SE_showSimilarEvents(eventID, similarEvents);
     });

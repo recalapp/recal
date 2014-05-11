@@ -158,6 +158,11 @@ def modify_events(netid, events, auto_approve=False):
             # If we made it here, then event already exists.
             event_group = event.group;
             section = Section.objects.get(id=event_dict['section_id'])
+
+            # Check to see if this user is allowed to add Events to this Section.
+            if section not in user.section_set:
+                continue # User isn't in this Section, so skip to next event dict
+
             event_group.section = section;
             event_group.save();
 
@@ -194,8 +199,12 @@ def modify_events(netid, events, auto_approve=False):
             # create a new event group to hold the event
             section = Section.objects.get(id=event_dict['section_id'])
 
+            # Check to see if this user is allowed to add Events to this Section.
+            if section not in user.section_set:
+                continue # User isn't in this Section, so skip to next event dict
+
             ## pass it a registrar id as well
-            # TODO TODO TODO: Dyland: fix this
+            # TODO(Dyland): fix this
             event_group = Event_Group(section=section)
         
             if 'event_group_registrar_id' in event_dict:
@@ -212,7 +221,7 @@ def modify_events(netid, events, auto_approve=False):
             changed_ids[event_dict['event_id']] = [event.pk, event_group.pk] # mark down new event ID and its event group ID
         
         
-        # TODO: Dyland. Test if this breaks anything
+        # TODO(Dyland): Test if this breaks anything
         curr_section = Section.objects.get(id=event_dict['section_id'])
         try:
             user_section_table = User_Section_Table.filter(
