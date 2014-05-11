@@ -223,7 +223,7 @@ def tester_login(request):
 @require_ajax
 def verify(request):
     """
-    Checks whether a user is logged in.
+    Checks whether a user is logged in -- used in mobile app.
     """
     if request.user.is_authenticated():
         return HttpResponse('1')
@@ -241,7 +241,7 @@ def get_classes(request):
     Used on profile (class and section enrollment) page.
     Cached for 5 hours by ?term.
     """
-    q = request.GET.get('term', '') # TODO(Maxim, Naphat): switch this to a parameter
+    q = request.GET.get('term', '')
     results = queries.search_classes(q)
     data = json.dumps(results) 
     return HttpResponse(data, 'application/json', status=200)
@@ -281,6 +281,10 @@ def enroll_sections(request):
 @require_GET
 @require_ajax
 def events_json(request, start_date=None, end_date=None, last_updated=None):
+    """
+    Get events for a user -- returns event dictionaries.
+    Used in dashboard.
+    """
     try:
         print request.GET
         term_code = request.META.get('HTTP_TERM_CODE',get_cur_semester().term_code)
@@ -309,7 +313,11 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
 @require_GET
 @require_ajax
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
-    course_ids = json.loads(request.GET['courseIDs']) # TODO(Maxim, Naphat): switch this to a parameter
+    """
+    Get events for a course -- returns event dictionaries.
+    Used in profile page and in mobile.
+    """
+    course_ids = json.loads(request.GET['courseIDs'])
     if start_date:
         start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
     if end_date:
@@ -323,6 +331,10 @@ def events_by_course_json(request, last_updated=0, start_date=None, end_date=Non
 @require_GET
 @require_ajax
 def sections_json(request):
+    """
+    Mapping from course ID to section ID -- what you're enrolled in
+    Used in profile page
+    """
     netid = request.user.username
     ret = queries.get_sections(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
@@ -331,6 +343,9 @@ def sections_json(request):
 @require_GET
 @require_ajax
 def default_section_colors_json(request):
+    """
+    TODO(Dyland): write the doc for this
+    """
     netid = request.user.username
     ret = queries.get_default_colors(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
@@ -339,6 +354,9 @@ def default_section_colors_json(request):
 @require_GET
 @require_ajax
 def section_colors_json(request):
+    """
+    TODO(Dyland): write the doc for this
+    """
     netid = request.user.username
     ret = queries.get_section_colors(netid)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
@@ -347,6 +365,9 @@ def section_colors_json(request):
 @require_GET
 @require_ajax
 def course_json(request, course_id):
+    """
+    Returns course information dictionary for profile page.
+    """
     ret = queries.get_course_by_id(course_id)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
@@ -354,6 +375,9 @@ def course_json(request, course_id):
 @require_GET
 @require_ajax
 def user_json(request):
+    """
+    Get user information -- used in mobile app.
+    """
     user = request.user
     ret = {
         'netid': user.username,
@@ -366,6 +390,9 @@ def user_json(request):
 @require_GET
 @require_ajax
 def unapproved_revisions_json(request, event_id=None):
+    """
+    Get unapproved revisions.
+    """
     unapproved = queries.get_unapproved_revisions(request.user.username)
     return HttpResponse(json.dumps(unapproved), content_type='application/javascript')
 
@@ -373,6 +400,9 @@ def unapproved_revisions_json(request, event_id=None):
 @require_POST
 @require_ajax
 def process_votes(request):
+    """
+    Handle submitted votes.
+    """
     votes = json.loads(request.POST['votes'])
     for vote in votes:
         try:
@@ -385,6 +415,9 @@ def process_votes(request):
 @require_POST
 @require_ajax
 def modify_events(request):
+    """
+    Handle submitted changes to events and requests to hide events.
+    """
     netid = request.user.username
     ret = ''
     if 'events' in request.POST:
@@ -417,6 +450,9 @@ def modify_events(request):
 @require_POST
 @require_ajax
 def modify_user(request):
+    """
+    Save user details.
+    """
     user_dict = json.loads(request.POST['user'])
     user = request.user
     user.first_name = user_dict['first_name']
@@ -428,12 +464,18 @@ def modify_user(request):
 @require_GET
 @require_ajax
 def get_user_point_count(request):
+    """
+    Returns real-time point count.
+    """
     return HttpResponse(content=request.user.profile.pprint_point_count(), status=200)
 
 @login_required
 @require_GET
 @require_ajax
 def state_restoration(request):
+    """
+    Returns last-saved user's page state to restore the page to what it looked like before the user navigated away.
+    """
     netid = request.user.username
     state_restoration = queries.get_state_restoration(netid=netid)
     if state_restoration:
@@ -445,6 +487,9 @@ def state_restoration(request):
 @require_POST
 @require_ajax
 def save_state_restoration(request):
+    """
+    Save page state.
+    """
     netid = request.user.username
     state_restoration = request.POST['state_restoration']
     return HttpResponse(str(int(queries.save_state_restoration(netid=netid, state_restoration=state_restoration))))
@@ -454,6 +499,9 @@ def save_state_restoration(request):
 @require_POST
 @require_ajax
 def save_ui_pref(request):
+    """
+    Save user's dashboard settings.
+    """
     user = request.user.profile
     user.ui_agenda_pref = request.POST['agenda_pref']
     user.ui_calendar_pref = request.POST['calendar_pref']
@@ -465,6 +513,9 @@ def save_ui_pref(request):
 @require_GET
 @require_ajax
 def all_sections(request):
+    """
+    Get a user's sections.
+    """
     all_sections = {}
     for section in request.user.profile.sections.all():
         all_sections[section.id] = unicode(section)
@@ -474,6 +525,9 @@ def all_sections(request):
 @require_GET
 @require_ajax
 def all_courses(request):
+    """
+    Get a user's courses and course->section map.
+    """
     all_courses = {}
     for section in request.user.profile.sections.all():
         all_courses[section.course.id] = unicode(section.course)
@@ -486,6 +540,9 @@ def all_courses(request):
 @require_GET
 @require_ajax
 def hidden_events(request):
+    """
+    Get a user's hidden events.
+    """
     netid = request.user.username
     hidden_events = queries.get_hidden_events(netid)
     return HttpResponse(json.dumps(hidden_events), content_type='application/javascript')
@@ -493,7 +550,11 @@ def hidden_events(request):
 @login_required
 @require_POST
 @require_ajax
-def similar_events(request):    
+def similar_events(request):
+    """
+    Fetch events similar to supplied event dictionary. Used to prevent duplicate submissions.
+    """
+
     if 'event_dict' not in request.POST:
         return HttpResponse('fail', status=400) # Bad Request
     
