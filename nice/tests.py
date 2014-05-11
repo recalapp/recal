@@ -52,8 +52,13 @@ def make_sample_events(uname):
 	return event, event_rev, event_rev2
 
 def clean_up():
+	# clear enrollment
 	User_Section_Table.objects.all().delete()
-	clear_events()
+	# clear events
+ 	Event_Revision.objects.all().delete()
+ 	Event.objects.all().delete()
+ 	Event_Group_Revision.objects.all().delete()
+ 	Event_Group.objects.all().delete()
 
 
 class NewiceTestCase(TestCase):
@@ -67,27 +72,99 @@ class NewiceTestCase(TestCase):
 		clean_up()
 
 class EventMethodTests(NewiceTestCase):
-    def test_best_revision_behavior(self):
-    	"""
-    	Test these cases:
+	"""
+	Test best revision behavior.
+	"""
 
-    	* A user made a new revision since the last globally-approved revision
-    		Expected: the user sees this one, but other users see the globally-approved revision.
-    	* A user voted on an unapproved revision since the last globally-approved revision
-    		Expected: the user sees the one they voted on, but other users see the globally-approved revision.
-    	* A user voted on an unapproved revision before the last globally-approved revision
-    		Expected: all users see the globally-approved revision.
-		* Since the last globally-approved revision, there are new unapproved revision that the user hasn't interacted with (yet).
-			Expected: all users see the globally-approved revision.
-		* There are no approved revisions or user-created revisions or user-voted-upon revisions for this event.
-			Expected: return None.
+	def test_best_revision_behavior_when_user_hasnt_touched_unapproved_revisions(self):
+		"""
+		Since the last globally-approved revision, there are new unapproved revision that the user hasn't interacted with (yet).
+		Expected: all users see the globally-approved revision.
+		"""
+		event, approved_rev, unapproved_rev = self.pre_run()
+		approved_rev.modified_user = get_community_user().profile 
+		approved_rev.save()
+		unapproved_rev.modified_user = get_community_user().profile 
+		unapproved_rev.save()
+
+		# Community user owns the two revisions.
+		# bob is so far unaffiliated.
+		self.assertEqual(event.best_revision(netid=self.usernames[0]), approved_rev)
+
+	def test_best_revision_behavior_when_user_made_new_revision_since_last_approved_revision(self):
+		"""
+		A user made a new revision since the last globally-approved revision
+		Expected: the user sees this one, but other users see the globally-approved revision.
+		"""
+
+		event, approved_rev, unapproved_rev = self.pre_run()
+		approved_rev.modified_user = get_community_user().profile 
+		approved_rev.save()
+		unapproved_rev.modified_user = get_community_user().profile 
+		unapproved_rev.save()
+
+		# Community user owns the two revisions.
+		# bob is so far unaffiliated.
+		self.assertEqual(event.best_revision(netid=self.usernames[0]), approved_rev)
+		self.assertEqual(event.best_revision(netid=get_community_user().username), unapproved_rev)
+
+	def test_best_revision_behavior_when_user_votes_on_new_unapproved_revision_since_last_approved_revision(self):
+		"""
+		A user voted on an unapproved revision since the last globally-approved revision
+		Expected: the user sees the one they voted on, but other users see the globally-approved revision.
+		"""
+		event, approved_rev, unapproved_rev = self.pre_run()
+		approved_rev.modified_user = get_community_user().profile 
+		approved_rev.save()
+		unapproved_rev.modified_user = get_community_user().profile 
+		unapproved_rev.save()
+
+		# Community user owns the two revisions.
+		# bob is so far unaffiliated.
+		
+		# Now bob votes on the revision.
+		process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk)
+
+		# Should now see the unapproved revision.
+		self.assertEqual(event.best_revision(netid=self.usernames[0]), unapproved_rev)
+
+	def test_best_revision_behavior_when_votes_on_old_unapproved_revision_before_last_approved_revision(self):
+		"""
+		A user voted on an unapproved revision before the last globally-approved revision
+		Expected: all users see the globally-approved revision.
+		"""
+		event, approved_rev, unapproved_rev = self.pre_run()
+		approved_rev.modified_user = get_community_user().profile 
+		unapproved_rev.modified_user = get_community_user().profile 
+		unapproved_rev.modified_time = unapproved_rev.modified_time - timedelta(1,0,0)
+		approved_rev.save()
+		unapproved_rev.save()
+
+		# Community user owns the two revisions.
+		# bob is so far unaffiliated.
+		
+		# Now bob votes on the revision.
+		process_vote_on_revision(netid=self.usernames[0], isPositive=True, revision_id=unapproved_rev.pk)
+
+		# Should still see the approved revision.
+		self.assertEqual(event.best_revision(netid=self.usernames[0]), approved_rev)
 
 
+	def test_best_revision_behavior_for_event_with_no_affiliated_revisions(self):
+		"""
+		There are no approved revisions or user-created revisions or user-voted-upon revisions for this event.
+		Expected: return None.
+		"""
+		event, approved_rev, unapproved_rev = self.pre_run()
+		approved_rev.delete()
+		unapproved_rev.modified_user = get_community_user().profile 
+		unapproved_rev.save()
 
-    	"""
-    	pass
+		# Community user owns the two revisions.
+		# bob is so far unaffiliated.
 
-
+		# bob should not see any revisions.
+		self.assertEqual(event.best_revision(netid=self.usernames[0]), None)
 
 class EnrollmentMethodTests(NewiceTestCase):
 	""" Handles testing for methods we use for class enrollment.
