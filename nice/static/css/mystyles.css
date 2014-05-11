@@ -268,6 +268,7 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 #nav_controls{
     display: block;
     margin-top: 0;
+    margin-bottom: 0;
 }
 #user_name{
     display: block;
