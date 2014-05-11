@@ -1162,7 +1162,7 @@ function PopUp_giveFocus(popUp)
     var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
     //$(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color).css('opacity', 1);
-    $(popUp).removeClass("panel-clipped-faded-out");
+    $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
     $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
@@ -1176,7 +1176,7 @@ function PopUp_loseFocus($popUps)
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
         // $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
         // $(this).find('.popup-title').parent().parent().css('opacity', 0.3);
-        $(this).addClass("panel-clipped-faded-out");
+        $(this).find(".panel-clipped").addClass("panel-clipped-faded-out");
         $(this).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
     });
 }
@@ -1293,7 +1293,7 @@ function PopUp_setColor(popUp, color)
     // {
         $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
         $(popUp).find('.panel').css('border-color', color);
-        $(popUp).addClass("panel-clipped-faded-out");
+        $(popUp).find(".panel-clipped").addClass("panel-clipped-faded-out");
         $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
     // }
     // else
@@ -3103,6 +3103,10 @@ function PopUp_setToEventID(popUp, id)
     else
         myColor = myColor['color'];
     PopUp_setColor(popUp, myColor);
+
+    // give focus to PopUp if should be highlighted
+    if (UI_isPinned(id) || UI_isMain(id))
+        PopUp_giveFocus(popUp);
 
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
