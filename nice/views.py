@@ -9,6 +9,7 @@ from django.views.decorators.http import * # require_GET, etc.
 from django.utils import timezone
 from django.db.models import Q
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie # send regardless of whether Django thinks we should
 from view_cache_utils import cache_page_with_prefix
 import hashlib
 from security.views import *
@@ -68,6 +69,7 @@ def gather_dashboard(request):
         })
 
 
+@ensure_csrf_cookie
 def index(request):
     """
     Home page. Show landing page, edit profile page, or dashboard, depending on user's state.
@@ -81,6 +83,7 @@ def index(request):
 
 
 @xframe_options_exempt # can load in Chrome extension
+@ensure_csrf_cookie
 def chromeframe(request):
     """
     Custom home page for the Chrome extension.
@@ -169,6 +172,7 @@ def course(request):
 
 
 @login_required
+@ensure_csrf_cookie
 def edit_profile(request):
     '''
     Change which courses you are enrolled in, and edit your name.
