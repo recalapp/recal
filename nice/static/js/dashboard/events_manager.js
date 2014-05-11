@@ -275,6 +275,7 @@ function EventsMan_pullFromServer(complete, showLoading)
     $.ajax(url, {
         dataType: 'json',
         loadingIndicator: showLoading,
+        loadingID: '/get',
         success: function(data){
             var changed = EventsMan_processDownloadedEvents(data);
 
@@ -287,7 +288,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         },
         error: function(data){
             eventsManager.isIdle = true;
-            LO_showError(url);
+            LO_showError('/get');
         },
     });
 }

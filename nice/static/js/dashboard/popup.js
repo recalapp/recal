@@ -658,7 +658,7 @@ function PopUp_clickedElement(element)
     {
         $(popUp).find('.popup-ctrl').addClass('hidden');
     }
-    $(form).find('input, textarea').off('keydown').one('keydown', function(ev){
+    $(form).find('input, textarea').off('keydown').on('keydown', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 9) // tab key
         {
@@ -674,7 +674,7 @@ function PopUp_clickedElement(element)
                 PopUp_clickedElement($(popUp).find(nextSelector)[0]);
         }
     });
-    $(form).find('input, textarea').off('keyup').one('keyup', function(ev){
+    $(form).find('input, textarea').off('keyup').on('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {

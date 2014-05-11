@@ -2340,6 +2340,7 @@ function EventsMan_pullFromServer(complete, showLoading)
     $.ajax(url, {
         dataType: 'json',
         loadingIndicator: showLoading,
+        loadingID: '/get',
         success: function(data){
             var changed = EventsMan_processDownloadedEvents(data);
 
@@ -2352,7 +2353,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         },
         error: function(data){
             eventsManager.isIdle = true;
-            LO_showError(url);
+            LO_showError('/get');
         },
     });
 }
@@ -2551,13 +2552,14 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
+            xhr.setRequestHeader('term_code', CUR_SEM.term_code);
             if (settings.loadingIndicator == false)
                 return;
             var loadingID = settings.loadingID;
             if (typeof loadingID == 'undefined')
                 loadingID = settings.url;
             LO_showLoading(loadingID);
-        }
+        },
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
         var loadingID = settings.loadingID;
@@ -3531,7 +3533,7 @@ function PopUp_clickedElement(element)
     {
         $(popUp).find('.popup-ctrl').addClass('hidden');
     }
-    $(form).find('input, textarea').off('keydown').one('keydown', function(ev){
+    $(form).find('input, textarea').off('keydown').on('keydown', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 9) // tab key
         {
@@ -3547,7 +3549,7 @@ function PopUp_clickedElement(element)
                 PopUp_clickedElement($(popUp).find(nextSelector)[0]);
         }
     });
-    $(form).find('input, textarea').off('keyup').one('keyup', function(ev){
+    $(form).find('input, textarea').off('keyup').on('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {
