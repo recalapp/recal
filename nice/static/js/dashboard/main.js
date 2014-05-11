@@ -49,6 +49,7 @@ function init()
     });
 
     LO_init();
+    RF_init();
     
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
@@ -149,12 +150,18 @@ function init()
         localStorage.setItem('user', USER_NETID);
     }
     UR_pullUnapprovedRevisions();
-    setInterval(function(){
+    /*setInterval(function(){
         UR_pullUnapprovedRevisions();
-    }, /*5 * 60 * 1000*/ 10 * 1000)
+    }, 10 * 1000)
     setInterval(function(){
         updatePoints();
-    }, 60 * 1000);
+    }, 60 * 1000);*/
+    RF_addRecurringFunction(function(isInterval){
+        updatePoints();
+    }, 10 * 1000, 5 * 60 * 1000);
+    RF_addRecurringFunction(function(isInterval){
+        UR_pullUnapprovedRevisions();
+    }, 10 * 1000, 5 * 60 * 1000);
 }
 function adaptSize()
 {

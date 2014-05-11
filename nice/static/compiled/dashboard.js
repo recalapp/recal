@@ -1300,6 +1300,46 @@ function PopUp_setColor(popUp, color)
         $(popUp).find('.panel').css('border-color', defaultBorder);
     }
 }
+var RF_ACTIVE = true;
+var RF_timeoutIDs = [];
+var RF_INTERVAL = 10 * 1000;
+var RF_FUNCTIONS = [];
+var RF_MAX = 1000000;
+var RF_COUNT = 0;
+function RF_init()
+{
+    $(window).on('mousemove click', function(){
+        $.each(RF_timeoutIDs, function(index){
+            window.clearTimeout(this);
+        });
+        RF_timeoutIDs = [];
+        RF_ACTIVE = true;
+        RF_timeoutIDs.push(window.setTimeout(function(){
+            RF_ACTIVE = false;
+        }, 30*1000));
+    });
+    window.setInterval(function(){
+        RF_COUNT = (RF_COUNT + 1) % RF_MAX;
+        RF_callRecurringFunctions(RF_COUNT);
+    }, RF_INTERVAL);
+}
+function RF_addRecurringFunction(recurringFunction, defaultInterval, idleInterval)
+{
+    RF_FUNCTIONS.push({
+        recurringFunction: recurringFunction,
+        defaultInterval: parseInt(defaultInterval / RF_INTERVAL),
+        idleInterval: parseInt(idleInterval / RF_INTERVAL),
+    });
+}
+function RF_callRecurringFunctions(count)
+{
+    $.each(RF_FUNCTIONS, function(index, functionDict){
+        if (!RF_ACTIVE && (count % functionDict.idleInterval) == 0)
+            functionDict.recurringFunction();
+        else if ((count % functionDict.defaultInterval) == 0)
+            functionDict.recurringFunction();
+    });
+}
 /*
  * choices = [
  *  {
@@ -2179,11 +2219,18 @@ function EventsMan_init()
         EventsMan_save();
     });
 
-    window.setInterval(function(){
+    RF_addRecurringFunction(function(){
+        EventsMan_verifyLocalData();
+    }, 4.5 * 60 * 1000, 10 * 60 * 1000);
+    RF_addRecurringFunction(function(){
+        EventsMan_pushToServer(true); 
+        EventsMan_pullFromServer();
+    }, 10 * 1000, 60 * 5 * 1000);
+    /*window.setInterval(function(){
         EVENTSMAN_COUNT++ ; // every 5 min. -> 30 * 10s = 300s = 5min
         if (!eventsManager.active && (EVENTSMAN_COUNT % 30) != 0)
             return;
-        if ((EVENTSMAN_COUNT % 30) == 0) // -1 so that it does this on first load
+        if ((EVENTSMAN_COUNT % 30) == 0) 
             EventsMan_verifyLocalData();
         EventsMan_pushToServer(true); 
         EventsMan_pullFromServer();
@@ -2198,7 +2245,7 @@ function EventsMan_init()
         timeoutIDs.push(window.setTimeout(function(){
             eventsManager.active = false;
         }, 30*1000));
-    });
+    });*/
 }
 
 /***************************************************
@@ -2494,6 +2541,7 @@ function init()
     });
 
     LO_init();
+    RF_init();
     
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
@@ -2594,12 +2642,18 @@ function init()
         localStorage.setItem('user', USER_NETID);
     }
     UR_pullUnapprovedRevisions();
-    setInterval(function(){
+    /*setInterval(function(){
         UR_pullUnapprovedRevisions();
-    }, /*5 * 60 * 1000*/ 10 * 1000)
+    }, 10 * 1000)
     setInterval(function(){
         updatePoints();
-    }, 60 * 1000);
+    }, 60 * 1000);*/
+    RF_addRecurringFunction(function(isInterval){
+        updatePoints();
+    }, 10 * 1000, 5 * 60 * 1000);
+    RF_addRecurringFunction(function(isInterval){
+        UR_pullUnapprovedRevisions();
+    }, 10 * 1000, 5 * 60 * 1000);
 }
 function adaptSize()
 {
