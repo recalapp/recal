@@ -510,6 +510,15 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 .popup-help-text.center{
     text-align: center; 
 }
+
+.panel-clipped-faded-out  { /* add this class to div.panel-clipped via JS */
+	opacity: .7;
+	border: none;
+}
+.panel-heading-faded-out { /* add this class to div.panel-heading via JS */
+	border: none;
+	/* opacity: .4; */
+}
 #sidebar {
     width: 80%;
     height: 100%;

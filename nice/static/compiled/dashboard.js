@@ -1162,7 +1162,8 @@ function PopUp_giveFocus(popUp)
     var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
     //$(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color).css('opacity', 1);
-    $(popUp).find(".popup-title").parent().parent().css('opacity', 1);
+    $(popUp).removeClass("panel-clipped-faded-out");
+    $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
@@ -1174,7 +1175,9 @@ function PopUp_loseFocus($popUps)
         var defaultHeader = $(this).find('.panel').data('default-header');
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
         // $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-        $(this).find('.popup-title').parent().parent().css('opacity', 0.3);
+        // $(this).find('.popup-title').parent().parent().css('opacity', 0.3);
+        $(this).addClass("panel-clipped-faded-out");
+        $(this).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
     });
 }
 
@@ -1273,12 +1276,7 @@ function PopUp_map(apply)
 
 function PopUp_setColor(popUp, color)
 {
-    //if (!($(popUp).find('.panel').data('my-color')))
-    //{
     $(popUp).find('.panel').data('my-color', color);
-    //}
-
-    // color = $(popUp).find('.panel').data('my-color');
 
     // TODO: bad idea to hardwire the default color?
     var defaultBorder = '#DDDDDD';
@@ -1295,6 +1293,8 @@ function PopUp_setColor(popUp, color)
     // {
         $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
         $(popUp).find('.panel').css('border-color', color);
+        $(popUp).addClass("panel-clipped-faded-out");
+        $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
     // }
     // else
     // {
