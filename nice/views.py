@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie # send regardless of whether Django thinks we should
 from view_cache_utils import cache_page_with_prefix
+from django.template import Template, Context
 import hashlib
 from security.views import *
 
@@ -429,40 +430,6 @@ def get_user_point_count(request):
     return HttpResponse(content=request.user.profile.pprint_point_count(), status=200)
 
 @login_required
-@require_POST
-@require_ajax
-def local_storage_verify(request):
-    """Local storage flushing mechanism.
-
-    Once every 10 minutes, you send me a list of all your revision IDs in local storage.
-
-    Then on the server, I loop through the revision IDs array.
-    For each, I look up the associated revision, grab its event, compute what I think should be the best revision, and then see if they match.
-    If they don't, then I send you back a new event dict with the revision you should actually be showing.
-
-    Returns: dictionary that maps old revision IDs to new event dicts with the proper event details and best revision.
-    """
-    # TODO(Maxim, Naphat): are we using this, or did we go with /get/0?
-    print request.POST
-    try:
-        revision_ids = json.loads(request.POST['revision_IDs'])
-    except:
-        return HttpResponse(content="fail", status=500)
-    mappings = {}
-    for r_id in revision_ids:
-        try:
-            rev = Event_Revision.objects.get(pk=r_id)
-        except:
-            continue
-        event = rev.event
-        best_rev = event.best_revision(netid=request.user.username)
-        if best_rev and r_id != best_rev.pk:
-            event_dict = queries.construct_event_dict(event, netid=request.user.username, best_rev=best_rev)
-            mappings[r_id] = event_dict
-    return HttpResponse(json.dumps(mappings), content_type='application/javascript', status=200)
-
-
-@login_required
 @require_GET
 @require_ajax
 def state_restoration(request):
@@ -525,13 +492,16 @@ def hidden_events(request):
 @login_required
 @require_POST
 @require_ajax
-def similar_events(request):
-    netid = request.user.username
+def similar_events(request):    
+    if 'event_dict' not in request.POST:
+        return HttpResponse('fail', status=400) # Bad Request
+    
     json_dict = request.POST['event_dict']
     ed = queries.parse_json_event_dict(json_dict)
     results = queries.get_similar_events(ed) # these are revisions
     event_dicts = [queries.construct_event_dict(r.event) for r in results]
     filtered_edicts = [fed for fed in event_dicts if fed is not None] # will have None for events without any approved revisions
+
     return HttpResponse(json.dumps(filtered_edicts), content_type='application/javascript')
     
 
