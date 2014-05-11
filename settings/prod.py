@@ -4,7 +4,7 @@ from os import environ
 ########## DEBUG CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
 #DEBUG = bool(environ.get('DJANGO_DEBUG', ''))
-DEBUG = True #TODO CHANGE THIS BACK TO FALSE
+DEBUG = False
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
 TEMPLATE_DEBUG = DEBUG
@@ -15,12 +15,17 @@ TEMPLATE_DEBUG = DEBUG
 import dj_database_url
 DATABASES['default'] =  dj_database_url.config()
 
+########## END DATABASE CONFIGURATION
+
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Allow all host headers
-ALLOWED_HOSTS = ['*']
-########## END DATABASE CONFIGURATION
+# Limit Host and Referrer headers for security purposes
+# See https://docs.djangoproject.com/en/1.6/ref/settings/#std:setting-ALLOWED_HOSTS
+ALLOWED_HOSTS = [
+    '.recal.io', # Allow domain and subdomains
+    '.recal.io.', # Also allow FQDN and subdomains
+]
 
 SECRET_KEY = environ.get('DJANGO_SECRET_KEY', '')
 

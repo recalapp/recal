@@ -1789,7 +1789,7 @@ function Agenda_loadEvents(eventIDs)
         var agenda = agendaContainer.find("#agenda123")[0];
         agenda.id = this;
         
-        $(agenda).find(".panel-body").find('h4').text(eventDict.event_title);
+        $(agenda).find(".panel-body").find('h4').html(eventDict.event_title); // Already escaped by server so ok to display as html. That way, normal characters like ' render fine.
         $(agenda).find('#agenda-section').text(SECTION_MAP[eventDict.section_id]);
         
         var start = moment.unix(eventDict.event_start);
@@ -2040,7 +2040,7 @@ function Cal_reload()
 
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
-                    title: eventDict.event_title,
+                    title: $("<div/>").html(eventDict.event_title).text(), // hack to render this HTML (OK because escaped on server)
                     start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
                     end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
                     highlighted: shouldHighlight,
@@ -2769,7 +2769,7 @@ function updatePoints()
         dataType: 'json',
         success: function(data){
             POINT_COUNT = data;
-            $('#point_count').text(POINT_COUNT + ' points');
+            $('#point_count').text(POINT_COUNT);
         }
     });
 }

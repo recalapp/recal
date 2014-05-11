@@ -75,7 +75,7 @@
 <script src="{% static 'js/dashboard/global.js' %}"></script>-->
 <script>
 var USER_NETID = '{{ username }}';
-var POINT_COUNT = {{point_count}};
+var POINT_COUNT = '{{point_count}}';
 var CACHEMAN_PRELOAD = {
     /* '{% url 'nice.views.all_sections' %}', */ // executed way too early
     '/all-sections' : '{% autoescape off %}{{ all_sections }}{% endautoescape %}',

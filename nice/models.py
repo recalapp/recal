@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.db.models.signals import post_save
 from colorfield.fields import ColorField
 from django.core.cache import cache
+from django.template import Template, Context
 import datetime
 
 # Create your models here.
@@ -368,6 +369,19 @@ class User_Profile(models.Model):
             points = self.current_points
             cache.set(cache_key, points, 60*10) # caches for 10 minutes
         return points
+
+    def pprint_point_count(self):
+        """
+        Pretty print a user's point count
+        """
+        cache_key = 'pprint_points_%s' % self.user.username
+        pprint_points = cache.get(cache_key)
+        if not pprint_points:
+            c = Template('{{ num_points }} point{{ num_points|pluralize }}')
+            pprint_points = c.render(Context({'num_points': self.get_point_count()}))
+            cache.set(cache_key, pprint_points, 60*10) # caches for 10 minutes
+        return pprint_points
+
     
     def award_points(self, score, reward_type, when=get_current_utc(), why=None):
         """Safely awards [score] points to this user."""
@@ -381,6 +395,7 @@ class User_Profile(models.Model):
 
         # Invalidate cache entry
         cache.delete('points_%s' % self.user.username)
+        cache.delete('pprint_points_%s' % self.user.username)
 
     def recalculate_points(self):
         from django.db.models import Sum
@@ -390,6 +405,7 @@ class User_Profile(models.Model):
 
         # Invalidate cache entry
         cache.delete('points_%s' % self.user.username)
+        cache.delete('pprint_points_%s' % self.user.username)
 
 		
 # create user profile as soon as a user is added
