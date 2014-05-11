@@ -78,7 +78,7 @@ function Cal_reload()
         if (!color)
             color = getUsableColor(eventDict.course_id);
 
-        var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
+        var shouldHighlight = UI_isPinned(eventDict.course_id) || UI_isMain(eventDict.course_id);
         color = colorLuminance(color, FACTOR_LUM);
         var rgba;
         if (shouldHighlight)
