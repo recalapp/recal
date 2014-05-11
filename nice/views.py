@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.views.decorators.clickjacking import xframe_options_exempt
 from view_cache_utils import cache_page_with_prefix
 import hashlib
+from security.views import *
 
 from nice.models import *
 from nice import queries
@@ -389,6 +390,7 @@ def modify_events(request):
                 'deleted_ids': deleted
             }
         except Exception, e:
+            print 'Modify events error: ', e
             return HttpResponse('fail', status=500) # 500 Internal Server Error
         
         
@@ -400,6 +402,7 @@ def modify_events(request):
             user.hidden_events = json.dumps(hidden)
             user.save()
         except Exception, e:
+            print 'Hide events error: ', e
             return HttpResponse('fail', status=500) # 500 Internal Server Error        
     
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created

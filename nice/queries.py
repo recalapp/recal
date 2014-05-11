@@ -1,6 +1,7 @@
 from random import randrange
 from django.utils.dateformat import format
 from django.utils import timezone
+from django.utils.html import escape
 
 import json
 import re
@@ -17,7 +18,7 @@ import settings.common as settings
 
 ### User event interaction: read and write ###
 
-def get_events(netid, **kwargs):
+def get_events(netid, escape=True, **kwargs):
     """
     Fetches events this user should see. Returns a list of their compressed event dictionaries.
 
@@ -48,7 +49,7 @@ def get_events(netid, **kwargs):
             continue
 
         # Since we made it to here, the event is good
-        survived.append(construct_event_dict(event, netid=netid, best_rev=best_rev))
+        survived.append(construct_event_dict(event, netid=netid, best_rev=best_rev, escape=escape))
     return survived
 
 def get_events_by_course_ids(course_ids, **kwargs):
@@ -410,7 +411,7 @@ def get_state_restoration(netid):
 
 ### Transfer Protocols: Event Dictionary parsing and creation ###
 
-def construct_event_dict(event, netid=None, best_rev=None):
+def construct_event_dict(event, netid=None, best_rev=None, escape=True):
     """
     Selects the best revision, then converts it into a dict for client-side rendering.
     """
@@ -423,10 +424,15 @@ def construct_event_dict(event, netid=None, best_rev=None):
     assert group != None and group_rev != None
     if not rev:
         return None
-    return __construct_revision_dict(rev, group, group_rev, netid)
+    return __construct_revision_dict(rev, group, group_rev, netid, escape=escape)
     
-    
-def __construct_revision_dict(rev, group, group_rev, netid):
+ 
+def __output_escape(what, doEscape=True):
+    """Escape [what] if requested"""
+    return escape(what) if doEscape else what
+
+
+def __construct_revision_dict(rev, group, group_rev, netid, escape=True):
     """
     Serializes a specific revision into a dict that can be passed to the client for rendering.
 
@@ -444,16 +450,16 @@ def __construct_revision_dict(rev, group, group_rev, netid):
     results = {
         'event_id': rev.event.id,
         'event_group_id': rev.event.group.id,
-        'event_title': rev.event_title,
+        'event_title': __output_escape(rev.event_title, escape),
         'event_type': rev.event_type, # pretty = get_event_type_display()
         'event_start': format(rev.event_start, 'U'),
         'event_end': format(rev.event_end, 'U'),
-        'event_description': rev.event_description,
-        'event_location': rev.event_location,
+        'event_description': __output_escape(rev.event_description, escape),
+        'event_location': __output_escape(rev.event_location, escape),
         'section_color': section_color,
         'course_id': rev.event.group.section.course.id,
         'section_id': rev.event.group.section.id,
-        'modified_user': rev.modified_user.user.username,
+        'modified_user': __output_escape(rev.modified_user.user.username, escape),
         'modified_time': format(rev.modified_time, 'U'),
         'revision_id': rev.pk
     }
