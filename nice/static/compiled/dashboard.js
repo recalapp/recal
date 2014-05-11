@@ -1164,6 +1164,7 @@ function PopUp_giveFocus(popUp)
     //$(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color).css('opacity', 1);
     $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
     $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
+    $(document.activeElement).blur();
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
