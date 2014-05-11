@@ -119,7 +119,7 @@ function Cal_reload()
 
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
-                    title: eventDict.event_title,
+                    title: $("<div/>").html(eventDict.event_title).text(), // hack to render this HTML (OK because escaped on server)
                     start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
                     end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
                     highlighted: shouldHighlight,

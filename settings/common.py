@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'south',
+    'security',
     'cas',
     'colorfield',
     'nice'
@@ -59,6 +60,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'security.middleware.XssProtectMiddleware',
     'cas.middleware.CASMiddleware',
     'minidetector.Middleware',
     'django.middleware.gzip.GZipMiddleware'
