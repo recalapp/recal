@@ -1132,12 +1132,12 @@ function PopUp_setID(popUp, id)
     $(popUp).find(".panel")[0].id = id;
     if (popUp.id == 'popup-main')
     {
-        UI_setMain(id)
+        UI_setMain(id);
     }
     else 
     {
         UI_unpin(oldId);
-        UI_pin(id)
+        UI_pin(id);
     }
 }
 function _PopUp_setBodyHeight(popUp)
