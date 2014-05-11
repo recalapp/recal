@@ -1143,7 +1143,9 @@ function PopUp_setID(popUp, id)
 function _PopUp_setBodyHeight(popUp)
 {
     var headHeight = $(popUp).find(".panel-heading").css("height");
-    var footerHeight = $(popUp).find(".panel-footer").css("height");
+    var footerHeight = $(popUp).find(".panel-footer").not('.hide-footer').css("height");
+    if (typeof footerHeight == "undefined")
+        footerHeight = 0;
     var height = $(popUp).css("height");
     $(popUp).find(".panel-body").css("height", (parseInt(height) - parseInt(headHeight)) - parseInt(footerHeight) + "px");
 }
@@ -1163,8 +1165,11 @@ function PopUp_giveFocus(popUp)
     var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
     //$(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color).css('opacity', 1);
-    $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
-    $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
+    $(popUp).find(".popup-title").parent().parent().css('opacity', 1);
+    // $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
+    // $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
+    $(popUp).find(".panel-footer").removeClass("hide-footer");
+    _PopUp_setBodyHeight(popUp);
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
@@ -1176,9 +1181,11 @@ function PopUp_loseFocus($popUps)
         var defaultHeader = $(this).find('.panel').data('default-header');
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
         // $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-        // $(this).find('.popup-title').parent().parent().css('opacity', 0.3);
-        $(this).find(".panel-clipped").addClass("panel-clipped-faded-out");
-        $(this).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
+        $(this).find('.popup-title').parent().parent().css('opacity', 0.6);
+        // $(this).find(".panel-clipped").addClass("panel-clipped-faded-out");
+        // $(this).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
+        $(this).find(".panel-footer").addClass("hide-footer");
+        _PopUp_setBodyHeight($(this));
     });
 }
 
@@ -1294,8 +1301,9 @@ function PopUp_setColor(popUp, color)
     $(popUp).find('.panel').css('border-color', color);
     if (!PopUp_hasFocus(popUp))
     {
-        $(popUp).find(".panel-clipped").addClass("panel-clipped-faded-out");
-        $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
+        $(popUp).find('.popup-title').parent().parent().css('opacity', 0.6);
+        // $(popUp).find(".panel-clipped").addClass("panel-clipped-faded-out");
+        // $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
     }
 }
 var RF_ACTIVE = true;

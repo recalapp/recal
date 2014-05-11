@@ -497,6 +497,10 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 .hide{
     visibility: hidden; 
 }
+
+.hide-footer{
+    opacity: 0;
+}
 .unsaved{
     background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
     color: black;
