@@ -61,6 +61,10 @@ function Cal_init() {
     EventsMan_addUpdateListener(function(){
         Cal_reload();
     });
+
+    PopUp_addCloseListener(function() {
+        Cal_reload();
+    });
 }
 
 function Cal_reload()
