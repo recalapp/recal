@@ -216,7 +216,7 @@ function PopUp_giveFocus(popUp)
     $(popUp).find(".popup-title").parent().parent().css('opacity', 1);
     // $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
     // $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
-    $(popUp).find(".panel-footer").removeClass("hide-footer");
+    //$(popUp).find(".panel-footer").removeClass("hide-footer");
     _PopUp_setBodyHeight(popUp);
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
@@ -232,7 +232,7 @@ function PopUp_loseFocus($popUps)
         $(this).find('.popup-title').parent().parent().css('opacity', 0.6);
         // $(this).find(".panel-clipped").addClass("panel-clipped-faded-out");
         // $(this).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
-        $(this).find(".panel-footer").addClass("hide-footer");
+        //$(this).find(".panel-footer").addClass("hide-footer");
         _PopUp_setBodyHeight($(this));
     });
 }
@@ -346,7 +346,7 @@ function PopUp_setColor(popUp, color)
     $(popUp).find('.panel').data('default-border', defaultBorder);
     $(popUp).find('.panel').data('default-header', defaultHeader);
     $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
-    $(popUp).find('.panel').css('border-color', color);
+    //$(popUp).find('.panel').css('border-color', color);
     if (!PopUp_hasFocus(popUp))
     {
         $(popUp).find('.popup-title').parent().parent().css('opacity', 0.6);
