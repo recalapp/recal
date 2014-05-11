@@ -2554,7 +2554,12 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
-            xhr.setRequestHeader('term_code', CUR_SEM.term_code);
+            // xhr.setRequestHeader('term_code', CUR_SEM.term_code);
+            if (typeof settings.data == 'undefined')
+                settings.data = {};
+            settings.data.term_code = CUR_SEM.term_code;
+            settings.data = $.param(settings.data);
+
             if (settings.loadingIndicator == false)
                 return;
             var loadingID = settings.loadingID;
@@ -3963,7 +3968,17 @@ function SE_checkSimilarEvents(eventDict)
 }
 function SE_showSimilarEventsNotification(eventID, similarEvents)
 {
-    var $noti = NO_showNotification(eventID, 'A similar event already exists', NO_TYPES.WARNING, null);
+    var count = similarEvents.length;
+    var text;
+    if (count == 1)
+    {
+        text = "Found 1 similar event. Click here to view it first."
+    }
+    else
+    {
+        text = "Found " + count + " similar events. Click here to view them first."
+    }
+    var $noti = NO_showNotification(eventID, text, NO_TYPES.WARNING, null);
     $noti.on('noti.click', function(ev){
         SE_showSimilarEvents(eventID, similarEvents);
     });
