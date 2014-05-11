@@ -710,7 +710,6 @@ function _PopUp_Form_enforceStartDate(popUp)
     {
         endTime = moment.unix(startDate.unix());
         endTime.hour(endTime.hour() + 1);
-        $(popUp).find('#popup-time-end').text();
         PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.tz(MAIN_TIMEZONE).format('h:mm A')); 
     }
 }
@@ -753,12 +752,12 @@ function PopUp_clickedSaveElement(form)
     if ($(text).html() == nl2br(safe))
         return; // no saving needed
     $(text).html(nl2br(safe));
-    if (text_id == 'popup-time-start')
+    PopUp_markAsUnsaved(popUp);
+    PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
+    if (text_id == 'popup-time-start' || text_id == 'popup-time-end')
     {
         _PopUp_Form_enforceStartDate(popUp);
     }
-    PopUp_markAsUnsaved(popUp);
-    PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
 }
 function PopUp_clickedClose(popUpAnchor)
 {

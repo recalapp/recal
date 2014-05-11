@@ -2555,11 +2555,6 @@ function init()
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
             // xhr.setRequestHeader('term_code', CUR_SEM.term_code);
-            if (typeof settings.data == 'undefined')
-                settings.data = {};
-            settings.data.term_code = CUR_SEM.term_code;
-            settings.data = $.param(settings.data);
-
             if (settings.loadingIndicator == false)
                 return;
             var loadingID = settings.loadingID;
@@ -3592,7 +3587,6 @@ function _PopUp_Form_enforceStartDate(popUp)
     {
         endTime = moment.unix(startDate.unix());
         endTime.hour(endTime.hour() + 1);
-        $(popUp).find('#popup-time-end').text();
         PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.tz(MAIN_TIMEZONE).format('h:mm A')); 
     }
 }
@@ -3635,12 +3629,12 @@ function PopUp_clickedSaveElement(form)
     if ($(text).html() == nl2br(safe))
         return; // no saving needed
     $(text).html(nl2br(safe));
-    if (text_id == 'popup-time-start')
+    PopUp_markAsUnsaved(popUp);
+    PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
+    if (text_id == 'popup-time-start' || text_id == 'popup-time-end')
     {
         _PopUp_Form_enforceStartDate(popUp);
     }
-    PopUp_markAsUnsaved(popUp);
-    PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
 }
 function PopUp_clickedClose(popUpAnchor)
 {
@@ -4139,7 +4133,7 @@ function UR_pullUnapprovedRevisions()
         success: function(data){
             if (data && data.length > 0)
             {
-                var $noti = NO_showNotification('unapproved-rev', 'There are unapproved changes', NO_TYPES.INFO, null);
+                var $noti = NO_showNotification('unapproved-rev', 'There are unapproved changes. Review them to earn points.', NO_TYPES.INFO, null);
                 $noti.on('noti.click', function(ev){
                     UR_showUnapprovedRevisions(data);
                 });
