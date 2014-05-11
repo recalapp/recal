@@ -2397,6 +2397,7 @@ function EventsMan_clickAddEvent()
     PopUp_markAsUnsaved(popUp);
     
     PopUp_giveFocus(popUp);
+    PopUp_giveEditingFocus(popUp);
     //_EventsMan_callUpdateListeners();
 }
 
@@ -3349,6 +3350,11 @@ function PopUp_makeIDDraggable(id)
     var popUp = PopUp_getPopUpByID(id);
     $(popUp).draggable('enable');
 }
+function PopUp_giveEditingFocus(popUp)
+{
+    var titleElement = $(popUp).find('#popup-title')[0];
+    PopUp_clickedElement(titleElement);
+}
 
 /***************************************************
  * forms for editing
@@ -3431,9 +3437,18 @@ function _PopUp_Form_addOnBlurListener(form, listener)
  * Click Event Listeners
  **************************************************/
 
+var POPUP_FORM_NEXT = {
+    '#popup-title': '#popup-date',
+    '#popup-date': '#popup-time-start',
+    '#popup-time-start': '#popup-time-end',
+    '#popup-time-end': '#popup-loc',
+    '#popup-loc': '#popup-section',
+    '#popup-section': '#popup-type',
+    '#popup-type': '#popup-desc',
+}
+
 function PopUp_clickedElement(element)
 {
-    //return;
     var popUp = _PopUp_getPopUp(element);
     if (PopUp_isEditing(popUp))
         return;
@@ -3462,20 +3477,40 @@ function PopUp_clickedElement(element)
     {
         $(popUp).find('.popup-ctrl').addClass('hidden');
     }
-    $(form).find('input').off('keyup').on('keyup', function(ev){
+    $(form).find('input, textarea').off('keydown').one('keydown', function(ev){
+        var keyCode = ev.keyCode || ev.which;
+        if (keyCode == 9) // tab key
+        {
+            if (this.type == 'date' || this.type == 'time')
+                return;
+            ev.preventDefault();
+            $(this).blur();
+            if ($(this).hasClass('withtimepicker') || $(this).hasClass('withdatepicker'))
+                $(this).datetimepicker('hide');
+            PopUp_clickedSaveElement(form);
+            var nextSelector = POPUP_FORM_NEXT['#' + text_id];
+            if (nextSelector)
+                PopUp_clickedElement($(popUp).find(nextSelector)[0]);
+        }
+    });
+    $(form).find('input, textarea').off('keyup').one('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {
+            $(this).blur();
+            if ($(this).hasClass('withtimepicker') || $(this).hasClass('withdatepicker'))
+                $(this).datetimepicker('hide');
+            
             PopUp_clickedSaveElement(form);
-        }
+        }   
     });
-    $(form).find('.withtimepicker').off('keyup').off('keydown').on('keydown', function(ev){
+    $(form).find('.withtimepicker').on('keydown', function(ev){
         ev.preventDefault();
     });
-    $(form).find('.withdatepicker').off('keyup').off('keydown').on('keydown', function(ev){
+    $(form).find('.withdatepicker').on('keydown', function(ev){
         ev.preventDefault();
     });
-    $(form).find('.withcustompicker').off('keyup').off('keydown').on('keydown', function(ev){
+    $(form).find('.withcustompicker').on('keydown', function(ev){
         ev.preventDefault();
     });
 
