@@ -417,7 +417,7 @@ function PopUp_setToEventID(popUp, id)
 
 function PopUp_setTitle(popUp, title)
 {
-    popUp.querySelector(".popup-title").innerHTML = title;
+    $(popUp).find("#popup-title").text(title);
 }
 function PopUp_setDescription(popUp, desc)
 {
@@ -644,7 +644,7 @@ function PopUp_clickedElement(element)
         $(form).find("textarea").css("height", height + "px");
     }
     _PopUp_showFormForElement(element);
-    _PopUp_Form_setValue(form, element.innerHTML);
+    _PopUp_Form_setValue(form, $(element).text());
     _PopUp_Form_giveFocus(form);
     if (!$(form).hasClass("input-group") && form.notFirstSelected != true)
     {
@@ -674,7 +674,7 @@ function PopUp_clickedElement(element)
                 PopUp_clickedElement($(popUp).find(nextSelector)[0]);
         }
     });
-    $(form).find('input, textarea').off('keyup').on('keyup', function(ev){
+    $(form).find('input').off('keyup').on('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {
