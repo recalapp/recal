@@ -180,12 +180,12 @@ function PopUp_setID(popUp, id)
     $(popUp).find(".panel")[0].id = id;
     if (popUp.id == 'popup-main')
     {
-        UI_setMain(id)
+        UI_setMain(id);
     }
     else 
     {
         UI_unpin(oldId);
-        UI_pin(id)
+        UI_pin(id);
     }
 }
 function _PopUp_setBodyHeight(popUp)
@@ -209,7 +209,9 @@ function PopUp_giveFocus(popUp)
     $(popUp).css("z-index", "200");
     var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
-    $(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color);
+    //$(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color).css('opacity', 1);
+    $(popUp).removeClass("panel-clipped-faded-out");
+    $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
@@ -220,7 +222,10 @@ function PopUp_loseFocus($popUps)
         var defaultBorder = $(this).find('.panel').data('default-border');
         var defaultHeader = $(this).find('.panel').data('default-header');
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
-        $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
+        // $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
+        // $(this).find('.popup-title').parent().parent().css('opacity', 0.3);
+        $(this).addClass("panel-clipped-faded-out");
+        $(this).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
     });
 }
 
@@ -319,12 +324,7 @@ function PopUp_map(apply)
 
 function PopUp_setColor(popUp, color)
 {
-    //if (!($(popUp).find('.panel').data('my-color')))
-    //{
     $(popUp).find('.panel').data('my-color', color);
-    //}
-
-    // color = $(popUp).find('.panel').data('my-color');
 
     // TODO: bad idea to hardwire the default color?
     var defaultBorder = '#DDDDDD';
@@ -337,14 +337,16 @@ function PopUp_setColor(popUp, color)
 
     $(popUp).find('.panel').data('default-border', defaultBorder);
     $(popUp).find('.panel').data('default-header', defaultHeader);
-    if (PopUp_hasFocus(popUp))
-    {
+    // if (PopUp_hasFocus(popUp))
+    // {
         $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
         $(popUp).find('.panel').css('border-color', color);
-    }
-    else
-    {
-        $(popUp).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
-        $(popUp).find('.panel').css('border-color', defaultBorder);
-    }
+        $(popUp).addClass("panel-clipped-faded-out");
+        $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
+    // }
+    // else
+    // {
+    //     $(popUp).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
+    //     $(popUp).find('.panel').css('border-color', defaultBorder);
+    // }
 }

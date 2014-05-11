@@ -66,7 +66,7 @@ def gather_dashboard(request):
         'theme': theme,
         'base_url': request.build_absolute_uri(),
         'all_sections': json.dumps(all_sections),
-        })
+    })
 
 
 @ensure_csrf_cookie
@@ -281,6 +281,7 @@ def enroll_sections(request):
 @require_ajax
 def events_json(request, start_date=None, end_date=None, last_updated=None):
     try:
+        term_code = request.META.get('HTTP_TERM_CODE',get_cur_semester().term_code)
         netid = request.user.username
         if start_date:
             start_date = timezone.make_aware(datetime.fromtimestamp(float(start_date)), timezone.get_default_timezone())
@@ -288,7 +289,7 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
             end_date = timezone.make_aware(datetime.fromtimestamp(float(end_date)), timezone.get_default_timezone())
         if last_updated:
             last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
-        events = queries.get_events(netid, start_date=start_date, end_date=end_date, last_updated=last_updated)
+        events = queries.get_events(netid, start_date=start_date, end_date=end_date, last_updated=last_updated, term_code=term_code)
         hidden_events = request.user.profile.hidden_events
         if hidden_events:
             hidden_events = json.loads(hidden_events)
@@ -384,7 +385,6 @@ def process_votes(request):
 def modify_events(request):
     netid = request.user.username
     ret = ''
-    
     if 'events' in request.POST:
         try:
             events = json.loads(request.POST['events'])

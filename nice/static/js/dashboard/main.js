@@ -59,13 +59,14 @@ function init()
                 // Using the CSRFToken value acquired earlier
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
+            xhr.setRequestHeader('term_code', CUR_SEM.term_code);
             if (settings.loadingIndicator == false)
                 return;
             var loadingID = settings.loadingID;
             if (typeof loadingID == 'undefined')
                 loadingID = settings.url;
             LO_showLoading(loadingID);
-        }
+        },
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
         var loadingID = settings.loadingID;

@@ -31,7 +31,8 @@ def get_events(netid, escape=True, **kwargs):
     last_updated = kwargs.pop('last_updated', None)
     start_date = kwargs.pop('start_date', None)
     end_date = kwargs.pop('end_date', None)
-    all_sections = user.sections.all()
+    term_code = kwargs.pop('term_code', get_cur_semester().term_code)
+    all_sections = user.sections.filter(course__semester__term_code = term_code)
     # Note that hidden event filtering happens on the client-side, so we want to pass them back.
 
     filtered = Event.objects.filter(group__section__in = all_sections)
