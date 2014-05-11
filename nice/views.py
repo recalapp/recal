@@ -9,8 +9,10 @@ from django.views.decorators.http import * # require_GET, etc.
 from django.utils import timezone
 from django.db.models import Q
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie # send regardless of whether Django thinks we should
 from view_cache_utils import cache_page_with_prefix
 import hashlib
+from security.views import *
 
 from nice.models import *
 from nice import queries
@@ -67,6 +69,7 @@ def gather_dashboard(request):
         })
 
 
+@ensure_csrf_cookie
 def index(request):
     """
     Home page. Show landing page, edit profile page, or dashboard, depending on user's state.
@@ -80,6 +83,7 @@ def index(request):
 
 
 @xframe_options_exempt # can load in Chrome extension
+@ensure_csrf_cookie
 def chromeframe(request):
     """
     Custom home page for the Chrome extension.
@@ -168,6 +172,7 @@ def course(request):
 
 
 @login_required
+@ensure_csrf_cookie
 def edit_profile(request):
     '''
     Change which courses you are enrolled in, and edit your name.
@@ -214,6 +219,7 @@ def tester_login(request):
 
 ### AJAX API Calls ###
 
+@require_ajax
 def verify(request):
     """
     Checks whether a user is logged in.
@@ -225,6 +231,7 @@ def verify(request):
 
 @login_required
 @require_GET
+@require_ajax
 @cache_page_with_prefix(60*60*5, lambda request: hashlib.md5(request.GET.get('term', '')).hexdigest())
 def get_classes(request):
     """
@@ -233,18 +240,14 @@ def get_classes(request):
     Used on profile (class and section enrollment) page.
     Cached for 5 hours by ?term.
     """
-    if request.is_ajax():
-        q = request.GET.get('term', '') # TODO(Maxim, Naphat): switch this to a parameter
-        results = queries.search_classes(q)
-        data = json.dumps(results) 
-        status = 200 # OK
-    else:
-        data = 'fail'
-        status = 400 # Bad Request (need to use AJAX)
-    return HttpResponse(data, 'application/json', status=status)
+    q = request.GET.get('term', '') # TODO(Maxim, Naphat): switch this to a parameter
+    results = queries.search_classes(q)
+    data = json.dumps(results) 
+    return HttpResponse(data, 'application/json', status=200)
 
 @login_required
 @require_POST
+@require_ajax
 def enroll_sections(request):
     """
     Update user's section enrollment with form data.
@@ -275,6 +278,7 @@ def enroll_sections(request):
 
 @login_required
 @require_GET
+@require_ajax
 def events_json(request, start_date=None, end_date=None, last_updated=None):
     try:
         netid = request.user.username
@@ -300,6 +304,7 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
 
 @login_required
 @require_GET
+@require_ajax
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     course_ids = json.loads(request.GET['courseIDs']) # TODO(Maxim, Naphat): switch this to a parameter
     if start_date:
@@ -313,6 +318,7 @@ def events_by_course_json(request, last_updated=0, start_date=None, end_date=Non
 
 @login_required
 @require_GET
+@require_ajax
 def sections_json(request):
     netid = request.user.username
     ret = queries.get_sections(netid)
@@ -320,6 +326,7 @@ def sections_json(request):
 
 @login_required
 @require_GET
+@require_ajax
 def default_section_colors_json(request):
     netid = request.user.username
     ret = queries.get_default_colors(netid)
@@ -327,6 +334,7 @@ def default_section_colors_json(request):
 
 @login_required
 @require_GET
+@require_ajax
 def section_colors_json(request):
     netid = request.user.username
     ret = queries.get_section_colors(netid)
@@ -334,12 +342,14 @@ def section_colors_json(request):
 
 @login_required
 @require_GET
+@require_ajax
 def course_json(request, course_id):
     ret = queries.get_course_by_id(course_id)
     return HttpResponse(json.dumps(ret), content_type='application/javascript')
 
 @login_required
 @require_GET
+@require_ajax
 def user_json(request):
     user = request.user
     ret = {
@@ -351,12 +361,14 @@ def user_json(request):
 
 @login_required
 @require_GET
+@require_ajax
 def unapproved_revisions_json(request, event_id=None):
     unapproved = queries.get_unapproved_revisions(request.user.username)
     return HttpResponse(json.dumps(unapproved), content_type='application/javascript')
 
 @login_required
 @require_POST
+@require_ajax
 def process_votes(request):
     votes = json.loads(request.POST['votes'])
     for vote in votes:
@@ -368,6 +380,7 @@ def process_votes(request):
 
 @login_required
 @require_POST
+@require_ajax
 def modify_events(request):
     netid = request.user.username
     ret = ''
@@ -381,6 +394,7 @@ def modify_events(request):
                 'deleted_ids': deleted
             }
         except Exception, e:
+            print 'Modify events error: ', e
             return HttpResponse('fail', status=500) # 500 Internal Server Error
         
         
@@ -392,12 +406,14 @@ def modify_events(request):
             user.hidden_events = json.dumps(hidden)
             user.save()
         except Exception, e:
+            print 'Hide events error: ', e
             return HttpResponse('fail', status=500) # 500 Internal Server Error        
     
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created
 
 @login_required
 @require_POST
+@require_ajax
 def modify_user(request):
     user_dict = json.loads(request.POST['user'])
     user = request.user
@@ -408,11 +424,13 @@ def modify_user(request):
 
 @login_required
 @require_GET
+@require_ajax
 def get_user_point_count(request):
     return HttpResponse(content=request.user.profile.pprint_point_count(), status=200)
 
 @login_required
 @require_POST
+@require_ajax
 def local_storage_verify(request):
     """Local storage flushing mechanism.
 
@@ -446,6 +464,7 @@ def local_storage_verify(request):
 
 @login_required
 @require_GET
+@require_ajax
 def state_restoration(request):
     netid = request.user.username
     state_restoration = queries.get_state_restoration(netid=netid)
@@ -456,6 +475,7 @@ def state_restoration(request):
 
 @login_required
 @require_POST
+@require_ajax
 def save_state_restoration(request):
     netid = request.user.username
     state_restoration = request.POST['state_restoration']
@@ -464,6 +484,7 @@ def save_state_restoration(request):
 
 @login_required
 @require_POST
+@require_ajax
 def save_ui_pref(request):
     user = request.user.profile
     user.ui_agenda_pref = request.POST['agenda_pref']
@@ -474,6 +495,7 @@ def save_ui_pref(request):
 
 @login_required
 @require_GET
+@require_ajax
 def all_sections(request):
     all_sections = {}
     for section in request.user.profile.sections.all():
@@ -482,6 +504,7 @@ def all_sections(request):
 
 @login_required
 @require_GET
+@require_ajax
 def all_courses(request):
     all_courses = {}
     for section in request.user.profile.sections.all():
@@ -493,6 +516,7 @@ def all_courses(request):
 
 @login_required
 @require_GET
+@require_ajax
 def hidden_events(request):
     netid = request.user.username
     hidden_events = queries.get_hidden_events(netid)
@@ -500,6 +524,7 @@ def hidden_events(request):
     
 @login_required
 @require_POST
+@require_ajax
 def similar_events(request):
     netid = request.user.username
     json_dict = request.POST['event_dict']
