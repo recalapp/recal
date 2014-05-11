@@ -55,7 +55,7 @@ def get_events(netid, escape=True, **kwargs):
 
 def get_events_by_course_ids(course_ids, **kwargs):
     """
-    TODO(MAXIM): what is this used for? Write a description
+    Get event dictionaries for a course.
     """
     courses = Course.objects.filter(id__in=course_ids)
     last_updated = kwargs.pop('last_updated', None)
@@ -74,7 +74,7 @@ def get_events_by_course_ids(course_ids, **kwargs):
 
     survived = []
     for event in filtered:
-        best_rev = event.best_revision() # TODO(Naphat): why no netid here?
+        best_rev = event.best_revision() # no netid here because not filtered to a particular user -- meant to be for a course in general
         # conditions we don't want are below -- if any are matched, continue to the next event
         if not best_rev or best_rev is None:
             continue
@@ -580,21 +580,17 @@ def get_similar_events(event_dict):
     When adding a new event, this fetches similar events that may be the one the user is trying to add now.
     
     Accepts: event_dict (dict as defined in construct_event_dict
-    
-    TODO(Maxim): make a similar function that creates event_dict from an existing revision and then uses this function to compare and merge revisions.
-    
+        
     How it works:
 
     - must match: section_id, event_type
     - must be similar (use a distance function): event_title, event_description, event_location -- on the lowercase version of string
     - must be within X minutes: event_start, event_end
-    
-    TODO(Maxim): enforce that returned stuff has different event ID; AND DEBUG
-    
+        
     """
     
-    # Match section_id
-    matched_section_events = Event.objects.filter(group__section_id = event_dict['section_id']) 
+    # Match section_id, and enforce that matched events have different event IDs.
+    matched_section_events = Event.objects.filter(group__section_id = event_dict['section_id']).exclude(pk=event_dict['event_id'])
     
     # Match event type
     revisions = Event_Revision.objects.filter(event__in = matched_section_events).filter(event_type = event_dict['event_type']) 
@@ -731,7 +727,6 @@ def search_classes(query):
     * COS ELE
     """
     q = query.lower()
-    # TODO(Maxim): escape the query before searching for classes
     filtered = Course.objects
 
     # First, search input string for any one, two, three, or four digit numbers. Use results to filter by course number.
