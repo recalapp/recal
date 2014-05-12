@@ -251,8 +251,6 @@ class Event_Revision(models.Model):
     TYPE_CHOICES = (
         (TYPE_ASSIGNMENT, "assignment"),
         (TYPE_EXAM, "exam"),
-        (TYPE_LAB, "lab"),
-        (TYPE_LECTURE, "lecture"),
         (TYPE_OFFICE_HOURS, "office hours"),
         (TYPE_PRECEPT, "precept"),
         (TYPE_REVIEW_SESSION, "review session")
@@ -312,7 +310,7 @@ class Event_Revision(models.Model):
             setattr(self, attr, value)
 
 
-class NetID_Name(models.Model):
+class NetID_Name_Table(models.Model):
     """ table for netid--name lookups """
     netid = models.CharField(max_length=20, primary_key=True)
     first_name = models.CharField(max_length=20)

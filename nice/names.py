@@ -1,11 +1,21 @@
-from nice.models import NetID_Name_Table
+import os
+import nice
+from nice.models import *
+import settings.common as settings
+import sys
 
-source_name = 'netids.txt'
+def construct_netid_map(self):
+    path = os.path.dirname(nice.__file__)
+    source_name = path + '/netids.txt'
+    print source_name
 
-def construct_netid_map():
     count = 0
-    with open(source_name) as f:
-        content = f.read().splitlines()
+    try:
+        with open(source_name) as f:
+            content = f.read().splitlines()
+    except:
+        print 'getnetids failed: could not open file'
+        return
 
     list_length = len(content)
     for x in xrange(0, list_length, 4):
@@ -24,3 +34,6 @@ def construct_netid_map():
 
     print "number of netids found: " + (list_length / 4)
     print "new netids added: " + count
+
+def main(self):
+    construct_netid_map()
