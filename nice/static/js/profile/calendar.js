@@ -60,6 +60,9 @@ function Cal_init() {
     }
 
     $('#calendarui').fullCalendar(Cal_options);
+
+    Cal_reload();
+
     EventsMan_addUpdateListener(function(){
         Cal_reload();
     });
