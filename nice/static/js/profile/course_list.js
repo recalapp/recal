@@ -119,6 +119,7 @@ function CL_highlight(course)
         return;
     // var newColor = $(course).data('new-color');
     $(course).addClass('panel-primary').removeClass('panel-default');
+    $(course).css('border-color', $(course).data('course-color'));
     // $(course).css('background-color', newColor);
 }
 
@@ -127,6 +128,7 @@ function CL_unhighlight(course)
     if (!CL_isHighlighted(course))
         return;
     $(course).addClass('panel-default').removeClass('panel-primary');
+    $(course).css('border-color', $(course).data('default-border'));
 }
 
 function CL_isHighlighted(course)
@@ -136,9 +138,11 @@ function CL_isHighlighted(course)
 
 function CL_setColors(course, courseDict)
 {
-    var courseColorClass = 'course-color-' + courseDict.course_id;
     var courseColor = COURSE_COLOR_MAP[courseDict.course_id];
-    $(course).data('new-color', courseColor);
+    var defaultBorder = $(course).find('.panel').css('border-color');
+    // $(course).data('new-color', courseColor);
     // $(course).find('.panel-default').addClass(courseColorClass).css('border-color', courseColor);
-    $(course).find('.course-title').addClass(courseColorClass).css('color', courseColor);
+    $(course).find('.course-title').css('color', courseColor);
+    $(course).find('.panel').data('default-border', defaultBorder);
+    $(course).find('.panel').data('course-color', courseColor);
 }

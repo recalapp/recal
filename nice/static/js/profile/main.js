@@ -75,7 +75,7 @@ function init()
             return;
         LO_showError(settings.url);
     });
-    SB_init();
+    SB_profile_init();
     CacheMan_init();
     CourseMan_init();
     EventsMan_init();
