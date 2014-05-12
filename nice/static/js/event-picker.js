@@ -1,3 +1,8 @@
+/***********************************************************
+ * This module gives a Bootstrap-Carousel-based interface
+ * for choosing between events. It is meant to be used
+ * in the sidebar, but does not need to be so.
+ **********************************************************/
 /*
  * [
  *  {

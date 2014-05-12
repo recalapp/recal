@@ -1,3 +1,8 @@
+/***********************************************************
+ * Segmented Control in bootstrap popover.
+ * Meant to be used with forms.
+ **********************************************************/
+
 function SCP_initOnElement(element, container, heading, choices)
 {
     if ($(element).data('scp'))

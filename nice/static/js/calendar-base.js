@@ -1,11 +1,14 @@
+// REQUIRES FullCalendar plugin
 var CAL_LOADING = false;
 var FACTOR_LUM = 0.2;
 var FACTOR_TRANS = 0.7;
 
 CAL_INIT = false;
+// event source for FullCalendar
 Cal_eventSource = {
     events:[],
 }
+// default options
 Cal_options = {
     defaultView: "agendaWeek",
     slotMinutes: 45,

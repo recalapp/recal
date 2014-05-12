@@ -4,7 +4,11 @@ var csrftoken = $.cookie('csrftoken');
 var COURSE_COLOR_MAP;
 var SECTION_COLOR_MAP;
 
-// pinned and main
+/***********************************************************
+ * UI Module. An ID is main if its popup is in the sidebar.
+ * An ID is pinned if its popup has been dragged away from
+ * the sidebar.
+ **********************************************************/
 function UI_pin(id)
 {
     if (UI_isMain(id))
@@ -33,6 +37,31 @@ function UI_unsetMain()
 {
     mainID = null;
 }
+
+/***********************************************************
+ * Themes
+ **********************************************************/
+
+function loadWhiteTheme()
+{
+    $('.theme').removeClass('dark');
+    $('#theme_css').attr('href','/static/cosmo/bootstrap.css');
+}
+function loadDarkTheme()
+{
+    $('.theme').addClass('dark');
+    //if (document.createStyleSheet) {
+    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
+    //}
+    //else {
+    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
+    //}
+    $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
+}
+
+/***********************************************************
+ * CSRF methods
+ **********************************************************/
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -51,7 +80,11 @@ function sameOrigin(url) {
         !(/^(\/\/|http:|https:).*/.test(url));
 }
 
+/***********************************************************
+ * Useful codes
+ **********************************************************/
 /**
+ * Auto-capitalizes words.
  * Code taken from Stackoverflow, http://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript/196991#196991
  */
 function toTitleCase(str)
@@ -66,21 +99,4 @@ function br2nl(text)
 function nl2br(text)
 {
     return text.replace(/(\n|\r)/g, "<br>");
-}
-
-function loadWhiteTheme()
-{
-    $('.theme').removeClass('dark');
-    $('#theme_css').attr('href','/static/cosmo/bootstrap.css');
-}
-function loadDarkTheme()
-{
-    $('.theme').addClass('dark');
-    //if (document.createStyleSheet) {
-    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
-    //}
-    //else {
-    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
-    //}
-    $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
 }

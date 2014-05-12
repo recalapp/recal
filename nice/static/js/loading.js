@@ -1,3 +1,11 @@
+/***********************************************************
+ * This module gives an indicator on the bottom right
+ * corner of the screen. It is meant to be used only
+ * for displaying information. If user interaction is
+ * needed, use notificaitons.js.
+ **********************************************************/
+
+// add as needed
 var LO_TYPES = {
     SUCCESS: 'alert-success',
 }
