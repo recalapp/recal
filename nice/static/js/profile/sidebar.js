@@ -12,7 +12,7 @@ function SB_profile_init()
             $(popUp).detach().appendTo('#sb-left-container').css({
                 //position: 'relative',
                 width: '100%',
-                height: '450px',
+                height: '550px',
                 left: 'auto',
                 top: 'auto',
             });

@@ -6,13 +6,16 @@ var EVENTS_INIT = false;
 var EVENTS_READY = false;
 
 function EventsMan_init(){};
+
+/**
+ * return a new events manager object
+ */
 function _EventsMan_new()
 {
     this.events = {};
     this.order = []; // {start: "start", id: "id"}, keep sorted
     this.lastSyncedTime = 0; // will be set when populating
     this.addedCount = 0;
-    //this.deletedIDs = [];
     this.updatedIDs = new Set(); // if it is in updatedIDs, it'll be pushed on the next connection
     this.uncommitted = {}; // copies of events dict with uncommitted changes, once saved, the event dict is copied to eventsManager.events, and its ID is added to updatedIDs
     this.hiddenIDs = new Set();
@@ -21,6 +24,7 @@ function _EventsMan_new()
     this.showHidden = false;
     return this;
 }
+
 function EventsMan_constructOrderArray()
 {
     eventsManager.order = [];
@@ -38,6 +42,16 @@ function EventsMan_constructOrderArray()
  * the server.
  **************************************************/
 
+/**
+ * this function can be called in two ways.
+ *
+ * EventsMan_showHidden() returns a boolean indicating if hidden
+ * events should be shown.
+ *
+ * EventsMan_showHidden(boolean) tells the events manager whether
+ * or not it should show hidden events. Also returns the same
+ * boolean for consistency.
+ */
 function EventsMan_showHidden(hide)
 {
     if (typeof hide != 'undefined')
@@ -47,7 +61,7 @@ function EventsMan_showHidden(hide)
     }
     return eventsManager.showHidden;
 }
- //{
+//{
 //    'event_group_id': event.group.id,
 //    'event_title': rev.event_title,
 //    'event_type': rev.get_event_type_display(), 
@@ -127,11 +141,6 @@ function EventsMan_addEvent()
         modified_time: moment().unix()
     }
     eventsManager.uncommitted[id] = eventDict;
-    //eventsManager.order.push({event_id: id, event_start: eventDict.event_start});
-    //eventsManager.order.sort(function(a,b){
-    //    return parseInt(a.event_start) - parseInt(b.event_start);
-    //});
-
     return id;
 }
 
@@ -140,9 +149,6 @@ function EventsMan_deleteEvent(id, silent)
     silent = silent || false;
     if (id in eventsManager.events)
     {
-        //eventsManager.events[id] = null;
-        //delete eventsManager.events[id];
-        //eventsManager.deletedIDs.push(id);
         eventsManager.hiddenIDs.add(id);
         eventsManager.changed = true;
     }
@@ -176,9 +182,6 @@ function EventsMan_unhideEvent(id, silent)
     silent = silent || false;
     if (id in eventsManager.events)
     {
-        //eventsManager.events[id] = null;
-        //delete eventsManager.events[id];
-        //eventsManager.deletedIDs.push(id);
         eventsManager.hiddenIDs.remove(id);
         eventsManager.changed = true;
     }
@@ -206,11 +209,18 @@ function EventsMan_eventShouldBeShown(id)
 {
     return !EventsMan_eventIsHidden(id) || EventsMan_showHidden();
 }
-
+/**
+ * indicates whether or not the events manager is ready. If it has pulled at least once,
+ * it is ready
+ */
 function EventsMan_ready()
 {
     return EVENTS_READY;
 }
+
+/**
+ * commit the uncommitted changes
+ */
 function EventsMan_commitChanges(id)
 {
     var oldEventDict = eventsManager.events[id];
@@ -276,6 +286,10 @@ function EventsMan_replaceUncommittedEventIDWithEvent(id, eventDict)
     EventsMan_callEventIDsChangeListener(id, eventDict.event_id);
     _EventsMan_callUpdateListeners();
 }
+/**
+ * replace the current event dictionary corresponding to eventID
+ * with the given event dict.
+ */
 function EventsMan_replaceEventIDWithEvent(id, eventDict)
 {
     // first replace it in the main events array
@@ -292,8 +306,8 @@ function EventsMan_replaceEventIDWithEvent(id, eventDict)
 /***************************************************
  * Server code
  **************************************************/
-function EventsMan_pushToServer(async){};
-function EventsMan_pullFromServer(complete){};
+function EventsMan_pushToServer(async){}; // to be implemented by submodule
+function EventsMan_pullFromServer(complete){}; // to be implemented by submodule
 
 /***************************************************
  * Client Event Listeners
@@ -341,12 +355,18 @@ function EventsMan_callEventIDsChangeListener(oldID, newID)
  * Miscellaneous
  **************************************************/
 
+/**
+ * creates a deep copy of the event dict
+ */
 function EventsMan_cloneEventDict(eventDict)
 {
     var newDict = JSON.parse(JSON.stringify(eventDict)) // hack for cloning
     return newDict;
 }
 
+/** 
+ * save events to local storage
+ */
 function EventsMan_save()
 {
     if ('localStorage' in window && window['localStorage'] !== null)
@@ -357,6 +377,9 @@ function EventsMan_save()
     }
 }
 
+/**
+ * try to load from local storage
+ */
 function EventsMan_load()
 {
     if (!('localStorage' in window && window['localStorage'] !== null))

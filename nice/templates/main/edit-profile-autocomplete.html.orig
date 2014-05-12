@@ -82,12 +82,15 @@
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
 <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'css/popup.css' %}">
+<<<<<<< HEAD
 <link rel="stylesheet" href="{% static 'css/profile/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'css/profile/profile.css' %}">
-<link rel="stylesheet" href="{% static 'css/popup.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile/popup.css' %}">
+=======
 -->
 <link rel="stylesheet" href="{% static 'compiled/profile.min.css' %}">
 <!--
+>>>>>>> master
 <script src="{% static 'js/global.js' %}"></script>
 -->
 

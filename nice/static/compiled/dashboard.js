@@ -1,3 +1,7 @@
+/**
+ * An ActionSheet module, inspired by UIActionSheet in the iOS SDK.
+ * Shows a popover with prompt.
+ */
 function AS_showActionSheetFromElement(element, container, title, choices, clickListener)
 {
     var $content = $('<div>');
@@ -335,13 +339,16 @@ var EVENTS_INIT = false;
 var EVENTS_READY = false;
 
 function EventsMan_init(){};
+
+/**
+ * return a new events manager object
+ */
 function _EventsMan_new()
 {
     this.events = {};
     this.order = []; // {start: "start", id: "id"}, keep sorted
     this.lastSyncedTime = 0; // will be set when populating
     this.addedCount = 0;
-    //this.deletedIDs = [];
     this.updatedIDs = new Set(); // if it is in updatedIDs, it'll be pushed on the next connection
     this.uncommitted = {}; // copies of events dict with uncommitted changes, once saved, the event dict is copied to eventsManager.events, and its ID is added to updatedIDs
     this.hiddenIDs = new Set();
@@ -350,6 +357,7 @@ function _EventsMan_new()
     this.showHidden = false;
     return this;
 }
+
 function EventsMan_constructOrderArray()
 {
     eventsManager.order = [];
@@ -367,6 +375,16 @@ function EventsMan_constructOrderArray()
  * the server.
  **************************************************/
 
+/**
+ * this function can be called in two ways.
+ *
+ * EventsMan_showHidden() returns a boolean indicating if hidden
+ * events should be shown.
+ *
+ * EventsMan_showHidden(boolean) tells the events manager whether
+ * or not it should show hidden events. Also returns the same
+ * boolean for consistency.
+ */
 function EventsMan_showHidden(hide)
 {
     if (typeof hide != 'undefined')
@@ -376,7 +394,7 @@ function EventsMan_showHidden(hide)
     }
     return eventsManager.showHidden;
 }
- //{
+//{
 //    'event_group_id': event.group.id,
 //    'event_title': rev.event_title,
 //    'event_type': rev.get_event_type_display(), 
@@ -456,11 +474,6 @@ function EventsMan_addEvent()
         modified_time: moment().unix()
     }
     eventsManager.uncommitted[id] = eventDict;
-    //eventsManager.order.push({event_id: id, event_start: eventDict.event_start});
-    //eventsManager.order.sort(function(a,b){
-    //    return parseInt(a.event_start) - parseInt(b.event_start);
-    //});
-
     return id;
 }
 
@@ -469,9 +482,6 @@ function EventsMan_deleteEvent(id, silent)
     silent = silent || false;
     if (id in eventsManager.events)
     {
-        //eventsManager.events[id] = null;
-        //delete eventsManager.events[id];
-        //eventsManager.deletedIDs.push(id);
         eventsManager.hiddenIDs.add(id);
         eventsManager.changed = true;
     }
@@ -505,9 +515,6 @@ function EventsMan_unhideEvent(id, silent)
     silent = silent || false;
     if (id in eventsManager.events)
     {
-        //eventsManager.events[id] = null;
-        //delete eventsManager.events[id];
-        //eventsManager.deletedIDs.push(id);
         eventsManager.hiddenIDs.remove(id);
         eventsManager.changed = true;
     }
@@ -535,11 +542,18 @@ function EventsMan_eventShouldBeShown(id)
 {
     return !EventsMan_eventIsHidden(id) || EventsMan_showHidden();
 }
-
+/**
+ * indicates whether or not the events manager is ready. If it has pulled at least once,
+ * it is ready
+ */
 function EventsMan_ready()
 {
     return EVENTS_READY;
 }
+
+/**
+ * commit the uncommitted changes
+ */
 function EventsMan_commitChanges(id)
 {
     var oldEventDict = eventsManager.events[id];
@@ -605,6 +619,10 @@ function EventsMan_replaceUncommittedEventIDWithEvent(id, eventDict)
     EventsMan_callEventIDsChangeListener(id, eventDict.event_id);
     _EventsMan_callUpdateListeners();
 }
+/**
+ * replace the current event dictionary corresponding to eventID
+ * with the given event dict.
+ */
 function EventsMan_replaceEventIDWithEvent(id, eventDict)
 {
     // first replace it in the main events array
@@ -621,8 +639,8 @@ function EventsMan_replaceEventIDWithEvent(id, eventDict)
 /***************************************************
  * Server code
  **************************************************/
-function EventsMan_pushToServer(async){};
-function EventsMan_pullFromServer(complete){};
+function EventsMan_pushToServer(async){}; // to be implemented by submodule
+function EventsMan_pullFromServer(complete){}; // to be implemented by submodule
 
 /***************************************************
  * Client Event Listeners
@@ -670,12 +688,18 @@ function EventsMan_callEventIDsChangeListener(oldID, newID)
  * Miscellaneous
  **************************************************/
 
+/**
+ * creates a deep copy of the event dict
+ */
 function EventsMan_cloneEventDict(eventDict)
 {
     var newDict = JSON.parse(JSON.stringify(eventDict)) // hack for cloning
     return newDict;
 }
 
+/** 
+ * save events to local storage
+ */
 function EventsMan_save()
 {
     if ('localStorage' in window && window['localStorage'] !== null)
@@ -686,6 +710,9 @@ function EventsMan_save()
     }
 }
 
+/**
+ * try to load from local storage
+ */
 function EventsMan_load()
 {
     if (!('localStorage' in window && window['localStorage'] !== null))
@@ -2078,13 +2105,15 @@ function EventsMan_init()
         return;
     EVENTS_INIT = true;
     eventsManager = new _EventsMan_new();
+
+    // try to load from local storage. If it exists, use it, otherwise,
+    // load from server and show loading indicator
     if (EventsMan_load())
     {
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
         _EventsMan_callUpdateListeners();
         EventsMan_verifyLocalData();
-        //EventsMan_pullFromServer();
     }
     else
     {
@@ -2093,6 +2122,8 @@ function EventsMan_init()
             EventsMan_callOnReadyListeners();
         }, true);
     }
+
+    // this gets called whenever the user edits an event
     PopUp_addEditListener(function(id, field, value) {
         if (field == 'event_type')
         {
@@ -2207,52 +2238,32 @@ function EventsMan_init()
         {
             // display notifications if similar events exist.
             SE_checkSimilarEvents(eventsManager.uncommitted[id]);
-            //$.post('get/similar-events', {
-            //    event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
-            //}, function (data){
-            //    NO_showSimilarEventsNotification(id, data);
-            //}, 'json')
         }
         _EventsMan_callUpdateListeners()
     });
 
     $(window).on('beforeunload', function(ev) {
+        // first check if the user has uncommitted changes
         if (Object.getOwnPropertyNames(eventsManager.uncommitted).length > 0)
         {
             ev.preventDefault()
             return 'Your changes have not been saved. Are you sure you want to leave?';
         }
+        // push committed any changes (the user thinks it's already pushed)
         EventsMan_pushToServer(false);
+        // save events in local storage
         EventsMan_save();
     });
 
+    // verify local data every 4.5 min if the user is active (10 if not active).
     RF_addRecurringFunction(function(){
         EventsMan_verifyLocalData();
     }, 4.5 * 60 * 1000, 10 * 60 * 1000);
+    // push/pull every 10 seconds if the user is active (5 min if not active).
     RF_addRecurringFunction(function(){
         EventsMan_pushToServer(true); 
         EventsMan_pullFromServer();
     }, 10 * 1000, 60 * 5 * 1000);
-    /*window.setInterval(function(){
-        EVENTSMAN_COUNT++ ; // every 5 min. -> 30 * 10s = 300s = 5min
-        if (!eventsManager.active && (EVENTSMAN_COUNT % 30) != 0)
-            return;
-        if ((EVENTSMAN_COUNT % 30) == 0) 
-            EventsMan_verifyLocalData();
-        EventsMan_pushToServer(true); 
-        EventsMan_pullFromServer();
-        EVENTSMAN_COUNT %= 30; // can use a bigger number here, just need to prevent overflow
-    }, 10 * 1000);
-    $(window).on('mousemove click', function(){
-        $.each(timeoutIDs, function(index){
-            window.clearTimeout(this);
-        });
-        timeoutIDs = [];
-        eventsManager.active = true;
-        timeoutIDs.push(window.setTimeout(function(){
-            eventsManager.active = false;
-        }, 30*1000));
-    });*/
 }
 
 /***************************************************
@@ -2268,8 +2279,7 @@ function EventsMan_pushToServer(async)
     $.each(eventsManager.updatedIDs.toArray(), function(index){
         updated.push(eventsManager.events[this]);
     });
-   
-    //var deleted = eventsManager.deletedIDs;
+    // check if there are any changes to be pushed
     if (updated.length > 0 || eventsManager.changed)
     {
         $.ajax('/put', {
@@ -2282,6 +2292,7 @@ function EventsMan_pushToServer(async)
             success: function(data){
                 var changedIDs = data.changed_ids;
                 $.each(changedIDs, function(oldID, idArray){
+                    // handle eventIDs changes
                     var newID = idArray[0];
                     var newGroupID = idArray[1];
                     if (oldID in eventsManager.events) {
@@ -2291,13 +2302,6 @@ function EventsMan_pushToServer(async)
                         eventDict.event_group_id = newGroupID;
                         eventsManager.events[newID] = eventDict;
                     }
-                    //$.each(eventsManager.order, function(index){
-                    //    if (this.event_id == oldID)
-                    //    {
-                    //        this.event_id = newID;
-                    //        return false;
-                    //    }
-                    //});
                     if (oldID in eventsManager.uncommitted) {
                         var eventDict = eventsManager.uncommitted[oldID];
                         delete eventsManager.uncommitted[oldID];
@@ -2307,23 +2311,31 @@ function EventsMan_pushToServer(async)
                     }
                     EventsMan_callEventIDsChangeListener(oldID, newID);
                 });
+
+                // events have changed. Construct a new order array
                 EventsMan_constructOrderArray();
+
+                // now check for event IDs that have since been deleted
+                // this is mostly for recurring events
                 var deletedIDs = data.deleted_ids;
+                var haveDeletedID = false;
                 $.each(deletedIDs, function(index){
-                    // TODO what if the id was already opened? this code doesn't handle that
                     if (this in eventsManager.events) {
                         delete eventsManager.events[this];
+                        haveDeletedID = true;
                     }
                     if (this in eventsManager.uncommitted){
                         delete eventsManager.uncommitted[this];
+                        haveDeletedID = true;
                     }
                 });
+                if (haveDeletedID)
+                    _EventsMan_callUpdateListeners();
+
+                // reset the state of the events manager, then pull
                 eventsManager.isIdle = true;
-                //eventsManager.addedCount = 0; // not gonna overflow, no need to set to 0. Safer, so IDs don't ever crash
-                //eventsManager.deletedIDs = [];
                 eventsManager.updatedIDs = new Set();
                 eventsManager.changed = false;
-
                 EventsMan_pullFromServer(null, true);
             },
             async: async,
@@ -2341,7 +2353,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         return;
     if (eventsManager.updatedIDs.size > 0 || eventsManager.changed)
         return; // don't pull until changes are pushed
-    showLoading = typeof showLoading != 'undefined' ? showLoading : false;
+    showLoading = typeof showLoading != 'undefined' ? showLoading : false; // default value = false
     eventsManager.isIdle = false;
     var url = '/get/' + eventsManager.lastSyncedTime;
     $.ajax(url, {
@@ -2365,11 +2377,16 @@ function EventsMan_pullFromServer(complete, showLoading)
     });
 }
 
+/**
+ * process data downloaded from pull. Return a boolean
+ * indicating whether the events manager has changed in
+ * any way (so that update listeners can be notified)
+ */
 function EventsMan_processDownloadedEvents(data)
 {
-    //var eventsArray = JSON.parse(data);
     var changed = false;
     var eventsArray = data.events;
+    // go through the array of events
     for (var i = 0; i < eventsArray.length; i++)
     {
         var eventsDict = eventsArray[i];
@@ -2386,60 +2403,39 @@ function EventsMan_processDownloadedEvents(data)
         }
         changed = true;
     }
+
+    // handle hidden events
     var hiddenIDs = Set.prototype.fromArray(data.hidden_events);
     if (!hiddenIDs.equals(eventsManager.hiddenIDs) && !eventsManager.changed)
     {
         eventsManager.hiddenIDs = hiddenIDs; // NOTE ok, since we don't pull until all changes are pushed
         changed = true;
     }
+
+    // events have changed. reconstruct order array
     EventsMan_constructOrderArray();
     eventsManager.addedCount = 0;
     eventsManager.lastSyncedTime = moment().unix();
     return changed;
 }
 
+/**
+ * Verify local storage. In this implementation, just pull
+ * everything again
+ */
 function EventsMan_verifyLocalData()
 {
     eventsManager.lastSyncedTime = 0;
     EventsMan_pullFromServer();
-    /*if (!eventsManager.isIdle)
-        return;
-    if (eventsManager.updatedIDs.size > 0 || eventsManager.changed)
-        return;
-    eventsManager.isIdle = false;
-
-    var revisionIDs = [];
-    var revIDToEventID = {};
-    $.each(eventsManager.events, function(eventID, eventDict){
-        revisionIDs.push(eventDict.revision_id);
-        revIDToEventID[eventDict.revision_id] = eventID;
-    });
-    $.ajax('/api/localstorage/verify', {
-        type: 'POST',
-        data: {
-            revision_IDs: JSON.stringify(revisionIDs),
-        },
-        dataType: 'json',
-        loadingIndicator: false,
-        success: function(data){
-            $.each(data, function(revID, eventDict){
-                var eventID = revIDToEventID[revID];
-                eventsManager.events[eventID] = eventDict;
-            });
-            EventsMan_constructOrderArray();
-            eventsManager.isIdle = true;
-            _EventsMan_callUpdateListeners();
-        },
-        error: function(){
-            eventsManager.isIdle = true;
-        },
-    });*/
 }
 
 /***************************************************
  * Event Listeners
  **************************************************/
 
+/**
+ * called when user click on the add event button
+ */
 function EventsMan_clickAddEvent()
 {
     var popUp = PopUp_getMainPopUp();
@@ -2453,15 +2449,6 @@ function EventsMan_clickAddEvent()
     
     PopUp_giveFocus(popUp);
     PopUp_giveEditingFocus(popUp);
-    //_EventsMan_callUpdateListeners();
-}
-
-function EventsMan_clickSync()
-{
-    EventsMan_pushToServer();
-    SR_save();
-    //var $syncButton = $('#sync-button').find('span');
-    //$syncButton.addClass('icon-refresh-animate')
 }
 var KEY_UP = 38;
 var KEY_DOWN = 40;
