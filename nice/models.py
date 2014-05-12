@@ -320,9 +320,9 @@ class Event_Revision(models.Model):
 
 class NetID_Name_Table(models.Model):
     """ table for netid--name lookups """
-    netid = models.CharField(max_length=20, primary_key=True)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
+    netid = models.CharField(max_length=100, primary_key=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
 
     def __unicode__(self):
         if first_name and last_name:

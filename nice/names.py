@@ -33,8 +33,8 @@ def construct_netid_map():
         if created:
             count += 1
 
-    print "number of netids found: " + (list_length / 4)
-    print "new netids added: " + count
+    print "number of netids found: " + str(list_length / 4)
+    print "new netids added: " + str(count)
 
 def main(self):
     construct_netid_map()
