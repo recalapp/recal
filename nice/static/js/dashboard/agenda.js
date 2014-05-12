@@ -230,15 +230,24 @@ function selectAgenda(agendaAnchor)
         PopUp_giveFocus(popUp);
         return;
     }
+    var popUp = PopUp_getMainPopUp();
+    var $panel = $(panel);
+    var success = PopUp_setToEventID(popUp, panel.id, function(){
+        // retry
+        PopUp_giveFocus(popUp);
+        Agenda_unhighlight($(".agenda-item.panel-primary").filter(function(){
+            return !UI_isPinned(this.id);
+        }));
+        Agenda_highlight($('#' + panel.id + '.agenda-item'));
+    });
+    if (!success)
+        return;
+    PopUp_giveFocus(popUp);
     
     Agenda_unhighlight($(".agenda-item.panel-primary").filter(function(){
         return !UI_isPinned(this.id);
     }));
-    Agenda_highlight(panel);
-
-    var popUp = PopUp_getMainPopUp();
-    PopUp_setToEventID(popUp, panel.id);
-    PopUp_giveFocus(popUp);
+    Agenda_highlight($panel);
 }
 
 /***************************************************
