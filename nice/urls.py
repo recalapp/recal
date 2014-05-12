@@ -7,6 +7,7 @@ import nice, cas
 from nice import views
 urlpatterns = patterns('',
     
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', include(admin.site.urls)),
 
@@ -60,6 +61,9 @@ urlpatterns = patterns('',
     
 )
 
+"""Debug toolbar url
+
+"""
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += patterns('',

@@ -191,6 +191,9 @@ def create_or_update_listings(course, subject, course_object):
         )
         
 def create_or_update_sections(course, course_object):
+    """ Given a course, create or, if already exists, update all sections
+
+    """
     global new_section_count
     global section_count
     # add sections
@@ -213,6 +216,9 @@ def create_or_update_sections(course, course_object):
 # section is the class Node in the xml tree, 
 # section_object is a section django object
 def create_or_update_events(section, section_object):
+    """ Create all events for a given section
+
+    """
     global new_event_count
 
     # check if this section has a schedule attached to it
@@ -300,7 +306,9 @@ def create_or_update_events(section, section_object):
         new_event_count += 1
 
 def remove_namespace(doc, namespace):
-    """Hack to remove namespace in the document in place."""
+    """Hack to remove namespace in the document in place.
+    
+    """
     ns = u'{%s}' % namespace
     nsl = len(ns)
     for elem in doc.getiterator():
