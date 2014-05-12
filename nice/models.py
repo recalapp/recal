@@ -311,6 +311,19 @@ class Event_Revision(models.Model):
         for attr, value in new_values.iteritems(): # http://stackoverflow.com/a/7535133/130164
             setattr(self, attr, value)
 
+
+class NetID_Name(models.Model):
+    """ table for netid--name lookups """
+    netid = models.CharField(max_length=20, primary_key=True)
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        if first_name and last_name:
+            return '%s %s' % (first_name, last_name)
+        else:
+            return netid
+
 # Extend django.contrib.auth User table with custom user profile information.
 
 from django.contrib.auth.models import User
