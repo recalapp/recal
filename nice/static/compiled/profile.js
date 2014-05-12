@@ -1683,7 +1683,7 @@ function Cal_init() {
     var height = '410';//window.innerHeight * 0.6;
     Cal_options.height = height;
     Cal_options.header = false;
-    // Cal_options.theme = true;
+    /* Cal_options.theme = true; */
     Cal_options.weekends = false;
     Cal_options.columnFormat = {
         month: 'ddd',    // Mon
