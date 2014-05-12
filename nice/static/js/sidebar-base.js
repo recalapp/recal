@@ -1,3 +1,12 @@
+/***********************************************************
+ * Sidebar singleton.
+ * Works with popup module, as well as notifications
+ * An element is considered in the sidebar if it has class "in"
+ * The sidebar by default isn't filled. That means it only
+ * shows 1/3 of its width and does not fill the screen.
+ * Call SB_fill to fill the screen.
+ **********************************************************/
+
 var SB_willCloseListeners = [];
 function SB_init()
 {
@@ -73,7 +82,6 @@ function SB_pop(content)
     $(content).removeClass('in').on('transitionend', function(){
         $(content).remove();
     });
-    //SB_hideIfEmpty();
 }
 function SB_setMainContent(content)
 {

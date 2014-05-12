@@ -1,12 +1,17 @@
 var cacheManager = null;
 var CACHE_INIT = false;
 
+/**
+ * This module first checks if a url has been loaded before. If it has,
+ * give the saved result
+ */
 function CacheMan_init()
 {
     if (CACHE_INIT)
         return;
     CACHE_INIT = true;
     cacheManager = new _CacheMan();
+
     if (typeof CACHEMAN_PRELOAD != 'undefined')
     {
         $.each(CACHEMAN_PRELOAD, function(key, value){

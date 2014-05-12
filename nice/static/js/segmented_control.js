@@ -1,3 +1,9 @@
+/***********************************************************
+ * Inspired by UISegmentedControl in the iOS SDK.
+ * Segmented Controls are button groups in which only
+ * one button may be selected.
+ **********************************************************/
+
 /*
  * choices = [
  *  {

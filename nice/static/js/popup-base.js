@@ -49,6 +49,10 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
  * Creating/removing
  **************************************************/
 
+/**
+ * Create and return a new popup. isMain tells it if this popup
+ * is going to be the main popup (meaning, it is in the sidebar)
+ */
 function PopUp_insertPopUp(isMain)
 {
     var popUpHTML;
@@ -61,21 +65,15 @@ function PopUp_insertPopUp(isMain)
     else
         $("body").append(popUpHTML);
     var popUp = $("#popup-main123");
+
+    // set first drag listener
     var firstDragStart = function(){
         POPUP_MAIN_FIRSTDRAG(popUp);
         if (popUp.space)
             PopUp_freedSpace.push(popUp.space);
-        //if (isMain)
-        //{
-        //            }
-        //else
-        //{
-        //    PopUp_freedSpace.push(popUp.space);
-        //    delete popUp.space;
-        //}
     };
-   
 
+    // make popup draggable using jquery ui
     popUp.draggable({
         handle:'.panel > .panel-heading', 
         containment:"#content_bounds", 
@@ -87,10 +85,10 @@ function PopUp_insertPopUp(isMain)
         zIndex: 2000,
     })
     popUp = popUp[0];
-    //$(popUp).css("height", $(popUp).find(".panel").css("height"));
     popUp.id = "popup-main";
     if (!isMain)
     {
+        // popup is not main. must stack so they don't completely overlap
         var space;
         if (PopUp_freedSpace.length == 0)
             space = ++PopUp_space;
@@ -98,31 +96,37 @@ function PopUp_insertPopUp(isMain)
             space = PopUp_freedSpace.sort(function(a,b){return b-a}).pop();
         popUp.id = "";
         PopUp_makeResizable(popUp);
-        //$(popUp).css({
-        //    position: 'fixed',
-        //});
-        
-        //PopUp_showClose(popUp);
         leftPos = parseInt($(popUp).css("left"));
         topPos = parseInt($(popUp).css("top"));
         $(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
         popUp.space = space;
     }
+
+    // give focus when clicking
     popUp.onmousedown = function(){
         PopUp_giveFocus(this);
     };
-    maxHeight = window.innerHeight - $(".navbar").height() - 100;
+
+    // set the max height so it doesn't exceed screen height
+    var maxHeight = window.innerHeight - $(".navbar").height() - 100;
     $(popUp).css("max-height", maxHeight+"px");
     _PopUp_setBodyHeight(popUp); 
+
+    // custom initialization codes, to be implemented by submodules
     PopUp_initialize(popUp);
     setTimeout(function(){
         PopUp_initialize_deferred(popUp);
     }, 300) // doesn't block
+
+    // activate tooltip
     $(popUp).find('.withtooltip').tooltip({});
+
+    // set theme
     if (THEME == 'w')
         $(popUp).find('.theme').removeClass('dark');
     else
         $(popUp).find('.theme').addClass('dark');
+
     return popUp;
 }
 
@@ -159,6 +163,11 @@ function PopUp_getMainPopUp()
         main = PopUp_insertPopUp(true);
     return main;
 }
+
+/**
+ * find the popup with the id and return it. Returns null
+ * if does not exist
+ */
 function PopUp_getPopUpByID(id)
 {
     if ($('.' + POPUP_CLASS).find("#"+id).length > 0)
@@ -166,6 +175,9 @@ function PopUp_getPopUpByID(id)
     else
         return null;
 }
+/**
+ * Get the id of the popup
+ */
 function PopUp_getID(popUp)
 {
     if (!popUp)
@@ -174,6 +186,9 @@ function PopUp_getID(popUp)
         return null;
     return $(popUp).find(".panel")[0].id;
 }
+/**
+ * set the id of the popup
+ */
 function PopUp_setID(popUp, id)
 {
     var oldId = $(popUp).find(".panel")[0].id;
@@ -184,10 +199,15 @@ function PopUp_setID(popUp, id)
     }
     else 
     {
+        // clean up, unpin old id
         UI_unpin(oldId);
         UI_pin(id);
     }
 }
+
+/**
+ * set the height of panel-body
+ */
 function _PopUp_setBodyHeight(popUp)
 {
     var headHeight = $(popUp).find(".panel-heading").css("height");
