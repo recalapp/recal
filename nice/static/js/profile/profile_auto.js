@@ -13,7 +13,8 @@ $(function() {
                         desc: this.course_title,
                     });
                 });
-                response(ret);
+                AR_reloadWithData(data, term);
+                //response(ret);
                 /* data should be like 
                  * [{
                  * value: "jquery",
@@ -21,9 +22,6 @@ $(function() {
                  * desc: "the write less, do more, JavaScript library"
                  * },] */
             });
-            //$.getJSON( "/api/classlist", request, function( data, status, xhr ) {
-            //    //response( data );
-            //});
         },
         select: function( event, ui ) {
             var courseID = ui.item.id;

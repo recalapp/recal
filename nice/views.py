@@ -170,6 +170,10 @@ def event_picker_item(request):
 def course(request):
     return render(request, 'main/course.html', None)
 
+@login_required
+def auto(request):
+    return render(request, 'main/auto_result.html', None)
+
 
 
 @login_required

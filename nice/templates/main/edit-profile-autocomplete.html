@@ -41,11 +41,13 @@
         </div>
         <div class="col-xs-7">
             <input id="class" class="form-control" placeholder="e.g. 'COS', 'PHY 105', 'Introduction to Metaphysics'">
-            <input type="hidden" id="class-id">
-            <p id="class-description"></p>
+            <div id="auto-results">
+
+            </div>
         </div>
     </div>
 
+    <!--
     <div id="userinfo" class="theme row">
         <div class="col-xs-9">
             <div class="row">
@@ -64,6 +66,7 @@
             </div>
         </div>
     </div>
+    -->
 
 
 </div> <!-- /#container -->
@@ -78,18 +81,8 @@
 <!--<link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">-->
 <link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
 <link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
-<!--
-<link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
-<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
-<link rel="stylesheet" href="{% static 'css/popup.css' %}">
-<link rel="stylesheet" href="{% static 'css/profile/sidebar.css' %}">
-<link rel="stylesheet" href="{% static 'css/profile/profile.css' %}">
-<link rel="stylesheet" href="{% static 'css/popup.css' %}">
--->
+
 <link rel="stylesheet" href="{% static 'compiled/profile.min.css' %}">
-<!--
-<script src="{% static 'js/global.js' %}"></script>
--->
 
 <script>
 var CACHEMAN_PRELOAD = [
@@ -119,35 +112,5 @@ var THEME = '{{ theme }}';
 <script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
 <script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 
-<!--
-<script src="{% static 'js/set.js' %}"></script>
-<script src="{% static 'js/loading.js' %}"></script>
-<script src="{% static 'js/segmented_control.js' %}"></script>
-<script src="{% static 'js/profile/keymap.js' %}"></script>
-<script src="{% static 'js/profile/profile_auto.js' %}"></script>
-
-<script src="{% static 'js/calendar-base.js' %}"></script>
-<script src="{% static 'js/profile/calendar.js' %}"></script>
-
-<script src="{% static 'js/sidebar-base.js' %}"></script>
-
-<script src="{% static 'js/color.js' %}"></script>
-<script src="{% static 'js/profile/course_manager.js' %}"></script>
-
-<script src="{% static 'js/events_manager-base.js' %}"></script>
-<script src="{% static 'js/profile/events_manager.js' %}"></script>
-
-<script src="{% static 'js/profile/course_list.js' %}"></script>
-
-<script src="{% static 'js/cache_manager.js' %}"></script>
-
-<script src="{% static 'js/popup-base.js' %}"></script>
-<script src="{% static 'js/profile/popup.js' %}"></script>
-
-<script src="{% static 'js/profile/user_profile.js' %}"></script>
-
-<script src="{% static 'js/main-base.js' %}"></script>
-<script src="{% static 'js/profile/main.js' %}"></script>
--->
-<script src="{% static 'compiled/profile.min.js' %}"></script>
+<script src="{% static 'compiled/profile.js' %}"></script>
 {% endblock %}
