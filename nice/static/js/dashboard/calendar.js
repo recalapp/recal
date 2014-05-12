@@ -104,7 +104,6 @@ function Cal_reload()
                     return;
                 var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
                 var isHidden = EventsMan_eventIsHidden(this);
-                // TODO(Dyland) distinguish between hidden and non-hidden events
                 color = SECTION_COLOR_MAP[eventDict.section_id]['color'];
                 color = colorLuminance(color, FACTOR_LUM);
                 var rgba;

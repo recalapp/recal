@@ -1,10 +1,11 @@
 import os
 import nice
 from nice.models import *
+from django.conf import settings
 import settings.common as settings
 import sys
 
-def construct_netid_map(self):
+def construct_netid_map():
     path = os.path.dirname(nice.__file__)
     source_name = path + '/netids.txt'
     print source_name

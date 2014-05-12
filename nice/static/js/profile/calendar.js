@@ -9,7 +9,7 @@ function Cal_init() {
     Cal_options.weekends = false;
     Cal_options.columnFormat = {
         month: 'ddd',    // Mon
-        week: 'ddd', // Mon
+        week: 'dddd', // Mon
         day: 'dddd M/d'  // Monday 9/7
     }
 

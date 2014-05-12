@@ -9,9 +9,9 @@ import datetime
 # Create your models here.
 
 def get_current_utc():
-    '''
+    """
     (Helper method) Returns current time in UTC, perfect for database storage.
-    '''
+    """
     from django.utils.timezone import utc
     return datetime.datetime.utcnow().replace(tzinfo=utc)
 
@@ -39,6 +39,10 @@ class Semester(models.Model):
 
 
 class Course(models.Model):
+    """
+    Each Course has a set of listings (COS126, EGR126) and a set of
+    sections (L01, P01, P02, etc.)
+    """
     # relationships
     semester = models.ForeignKey(Semester)
 
@@ -81,20 +85,22 @@ class Course_Listing(models.Model):
 
 class Section(models.Model):
     TYPE_ALL = "ALL"
-    TYPE_CLA = "CLA"
-    TYPE_DRI = "DRI"
+    TYPE_CLASS = "CLA"
+    TYPE_DRILL = "DRI"
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
+    TYPE_SEMINAR = "SEM"
     TYPE_STUDIO = "STU"
     TYPE_CHOICES = (
         (TYPE_ALL, "all students"),
-        (TYPE_CLA, "class"),
-        (TYPE_DRI, "drill"),
+        (TYPE_CLASS, "class"),
+        (TYPE_DRILL, "drill"),
         (TYPE_LAB, "lab"),
         (TYPE_LECTURE, "lecture"),
         (TYPE_PRECEPT, "precept"),
-        (TYPE_STUDIO, "studio"),
+        (TYPE_SEMINAR, "seminar"),
+        (TYPE_STUDIO, "studio")
     )
 
     # relationships
@@ -241,6 +247,7 @@ class Event(models.Model):
 
 class Event_Revision(models.Model):
     # constants
+    # TODO:(Naphat) why are there types that are not in type_choices?
     TYPE_ASSIGNMENT = "AS"
     TYPE_EXAM = "EX"
     TYPE_LAB = "LA"
@@ -248,12 +255,13 @@ class Event_Revision(models.Model):
     TYPE_OFFICE_HOURS = "OH"
     TYPE_PRECEPT = "PR"
     TYPE_REVIEW_SESSION = "RS"
+    TYPE_STUDIO = "ST"
     TYPE_CHOICES = (
         (TYPE_ASSIGNMENT, "assignment"),
         (TYPE_EXAM, "exam"),
         (TYPE_OFFICE_HOURS, "office hours"),
         (TYPE_PRECEPT, "precept"),
-        (TYPE_REVIEW_SESSION, "review session")
+        (TYPE_REVIEW_SESSION, "review session"),
     )
 
     STATUS_APPROVED = "S_AP"
