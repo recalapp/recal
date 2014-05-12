@@ -9,9 +9,9 @@ import datetime
 # Create your models here.
 
 def get_current_utc():
-    '''
+    """
     (Helper method) Returns current time in UTC, perfect for database storage.
-    '''
+    """
     from django.utils.timezone import utc
     return datetime.datetime.utcnow().replace(tzinfo=utc)
 
@@ -39,6 +39,10 @@ class Semester(models.Model):
 
 
 class Course(models.Model):
+    """
+    Each Course has a set of listings (COS126, EGR126) and a set of
+    sections (L01, P01, P02, etc.)
+    """
     # relationships
     semester = models.ForeignKey(Semester)
 
@@ -81,20 +85,22 @@ class Course_Listing(models.Model):
 
 class Section(models.Model):
     TYPE_ALL = "ALL"
-    TYPE_CLA = "CLA"
-    TYPE_DRI = "DRI"
+    TYPE_CLASS = "CLA"
+    TYPE_DRILL = "DRI"
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
+    TYPE_SEMINAR = "SEM"
     TYPE_STUDIO = "STU"
     TYPE_CHOICES = (
         (TYPE_ALL, "all students"),
-        (TYPE_CLA, "class"),
-        (TYPE_DRI, "drill"),
+        (TYPE_CLASS, "class"),
+        (TYPE_DRILL, "drill"),
         (TYPE_LAB, "lab"),
         (TYPE_LECTURE, "lecture"),
         (TYPE_PRECEPT, "precept"),
-        (TYPE_STUDIO, "studio"),
+        (TYPE_SEMINAR, "seminar"),
+        (TYPE_STUDIO, "studio")
     )
 
     # relationships
@@ -241,6 +247,7 @@ class Event(models.Model):
 
 class Event_Revision(models.Model):
     # constants
+    # TODO:(Naphat) why are there types that are not in type_choices?
     TYPE_ASSIGNMENT = "AS"
     TYPE_EXAM = "EX"
     TYPE_LAB = "LA"
@@ -248,14 +255,13 @@ class Event_Revision(models.Model):
     TYPE_OFFICE_HOURS = "OH"
     TYPE_PRECEPT = "PR"
     TYPE_REVIEW_SESSION = "RS"
+    TYPE_STUDIO = "ST"
     TYPE_CHOICES = (
         (TYPE_ASSIGNMENT, "assignment"),
         (TYPE_EXAM, "exam"),
-        (TYPE_LAB, "lab"),
-        (TYPE_LECTURE, "lecture"),
         (TYPE_OFFICE_HOURS, "office hours"),
         (TYPE_PRECEPT, "precept"),
-        (TYPE_REVIEW_SESSION, "review session")
+        (TYPE_REVIEW_SESSION, "review session"),
     )
 
     STATUS_APPROVED = "S_AP"
@@ -310,6 +316,19 @@ class Event_Revision(models.Model):
         """
         for attr, value in new_values.iteritems(): # http://stackoverflow.com/a/7535133/130164
             setattr(self, attr, value)
+
+
+class NetID_Name_Table(models.Model):
+    """ table for netid--name lookups """
+    netid = models.CharField(max_length=20, primary_key=True)
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        if first_name and last_name:
+            return '%s %s' % (first_name, last_name)
+        else:
+            return netid
 
 # Extend django.contrib.auth User table with custom user profile information.
 

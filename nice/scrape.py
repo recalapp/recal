@@ -18,14 +18,26 @@ import urllib2
 from bs4 import BeautifulSoup
 import re
 from datetime import datetime
+from datetime import timedelta
 import settings.common as settings
 
-#TERM_CODE = 1144  # spring 2014
+# This term code should be updated by the admin of the app
+# TERM_CODE = 1134 -->spring 2013
+# TERM_CODE = 1142 -->fall 2013
+# TERM_CODE = 1144 -->spring 2014
+# TERM_CODE = 1152 -->fall 2014
 TERM_CODE = settings.CURR_TERM
+
 COURSE_OFFERINGS = "http://registrar.princeton.edu/course-offerings/"
 FEED_PREFIX = "http://etcweb.princeton.edu/webfeeds/courseofferings/"
+
+# Could also use 'current' instead of str(TERM_CODE), which automatically
+# gets the current semester. caveat: cannot get next semester's schedule
+# ahead of time
 TERM_PREFIX = FEED_PREFIX + "?term=" + str(TERM_CODE)
 DEP_PREFIX = TERM_PREFIX + "&subject="
+
+# for now hardwire the namespaces--too annoying
 PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
 
 CURRENT_SEMESTER = ''
@@ -40,6 +52,9 @@ section_count = 0
 new_event_count = 0
 
 def get_current_semester():
+    """ get semester according to TERM_CODE
+
+    """
     global CURRENT_SEMESTER
     if not CURRENT_SEMESTER:
         try:
@@ -61,16 +76,21 @@ def get_current_semester():
             CURRENT_SEMESTER = curr_sem
     return CURRENT_SEMESTER
 
-# Seed page should be
-# "http://registrar.princeton.edu/course-offerings/"
-# Automatically gets the courses for the current term
 def get_department_list(seed_page):
+    """ get list of departments
+
+    Parses seed_page and returns a list of the departments' names.
+    Seed page should be "http://registrar.princeton.edu/course-offerings/"
+    Automatically gets the courses for the current term.
+    """
     soup = BeautifulSoup(seed_page)
     links = soup('a', href=re.compile(r'subject'))
     return [tag.string for tag in links]
 
-# for each department, scrape all course listings from the webfeed
 def scrape_all():
+    """ scrape all events from Princeton's course webfeed
+
+    """
     global course_count
     global section_count
     seed_page = urllib2.urlopen(COURSE_OFFERINGS)
@@ -86,12 +106,14 @@ def scrape_all():
 
 # goes through the listings for this department
 def scrape(department):
+    """ Scrape all events listed under department
+
+    """
     parser = etree.XMLParser(ns_clean=True)
     link = DEP_PREFIX + department
     xmldoc = urllib2.urlopen(link)
     tree = etree.parse(xmldoc, parser)
     dep_courses = tree.getroot()
-    """ for now hardwire the namespaces--too annoying"""
     remove_namespace(dep_courses, PTON_NAMESPACE)
     for term in dep_courses:
         for subjects in term:
@@ -104,8 +126,9 @@ def scrape(department):
 ## If the course with this ID exists in the database, we update the course
 ## Otherwise, create new course with the information
 def parse_course(course, subject):
-    """ create a course with the basic information. """
-
+    """ create a course with basic information. 
+    
+    """
     global new_course_count
     global course_count
     h = HTMLParser.HTMLParser()
@@ -141,6 +164,9 @@ def parse_course(course, subject):
     create_or_update_sections(course, course_object)
 
 def create_or_update_listings(course, subject, course_object):
+    """ Create or, if already exists, update a course
+
+    """
     sub = subject.find('code').text
     catalog = course.find('catalog_number').text
     new_listing, created = Course_Listing.objects.get_or_create(
@@ -198,9 +224,7 @@ def create_or_update_events(section, section_object):
         return
 
     # now we check if there is already an event for this section
-    # TODO(Dyland): try to prevent creating duplicate events
     section_registrar_id = section.find('class_number')
-
     section_type = section.find('type_name').text
 
     # the dates are in the format:
@@ -208,16 +232,11 @@ def create_or_update_events(section, section_object):
     str_start_date = schedule.find('start_date').text
     str_end_date = schedule.find('end_date').text
     end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
-
-
-
-    # count the occurrences of this event
-    # so the titles can be: 'Lecture 1', 'Lecture 2', and so on
-    event_count = 0
+    # FOR PROJECT SUBMISSION, POSTPONE end_date so that there are events
+    # in agenda/calendar for grading
+    end_date = end_date + timedelta(weeks=1)
 
     for meeting in meetings:
-        event_count += 1
-
         days = []
         for day in meeting.find('days'):
             days.append(DAYS[day.text])
@@ -243,7 +262,6 @@ def create_or_update_events(section, section_object):
             location = ''
 
         # create event_group
-
         event_type = section_object.section_type[0:2]
         type_is_valid = False
         for choice in Event_Revision.TYPE_CHOICES:
@@ -266,7 +284,6 @@ def create_or_update_events(section, section_object):
             'event_end' : end_date_time,
             'event_title': event_title,
             'event_description': 'Add a description...',
-            # TODO(Dyland): figure out how to pass the real type
             'event_type': event_type,
             # -1 for new event
             'event_id': -1,
