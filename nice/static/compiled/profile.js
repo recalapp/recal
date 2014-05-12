@@ -36,12 +36,17 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
 var cacheManager = null;
 var CACHE_INIT = false;
 
+/**
+ * This module first checks if a url has been loaded before. If it has,
+ * give the saved result
+ */
 function CacheMan_init()
 {
     if (CACHE_INIT)
         return;
     CACHE_INIT = true;
     cacheManager = new _CacheMan();
+
     if (typeof CACHEMAN_PRELOAD != 'undefined')
     {
         $.each(CACHEMAN_PRELOAD, function(key, value){
@@ -76,14 +81,17 @@ function _CacheMan_cacheURL(url, async)
         }
     });
 }
+// REQUIRES FullCalendar plugin
 var CAL_LOADING = false;
 var FACTOR_LUM = 0.2;
 var FACTOR_TRANS = 0.7;
 
 CAL_INIT = false;
+// event source for FullCalendar
 Cal_eventSource = {
     events:[],
 }
+// default options
 Cal_options = {
     defaultView: "agendaWeek",
     slotMinutes: 45,
@@ -205,6 +213,11 @@ function setOpacity(rgba, opacity)
     var newColor = rgba.substring(0, i + 1) + opacity + ")";
     return newColor;
 }
+/***********************************************************
+ * This module gives a Bootstrap-Carousel-based interface
+ * for choosing between events. It is meant to be used
+ * in the sidebar, but does not need to be so.
+ **********************************************************/
 /*
  * [
  *  {
@@ -788,6 +801,14 @@ Array.prototype.equals = function(a){
     }
     return i == a.length;
 }
+/***********************************************************
+ * This module gives an indicator on the bottom right
+ * corner of the screen. It is meant to be used only
+ * for displaying information. If user interaction is
+ * needed, use notificaitons.js.
+ **********************************************************/
+
+// add as needed
 var LO_TYPES = {
     SUCCESS: 'alert-success',
 }
@@ -897,7 +918,11 @@ var csrftoken = $.cookie('csrftoken');
 var COURSE_COLOR_MAP;
 var SECTION_COLOR_MAP;
 
-// pinned and main
+/***********************************************************
+ * UI Module. An ID is main if its popup is in the sidebar.
+ * An ID is pinned if its popup has been dragged away from
+ * the sidebar.
+ **********************************************************/
 function UI_pin(id)
 {
     if (UI_isMain(id))
@@ -926,6 +951,31 @@ function UI_unsetMain()
 {
     mainID = null;
 }
+
+/***********************************************************
+ * Themes
+ **********************************************************/
+
+function loadWhiteTheme()
+{
+    $('.theme').removeClass('dark');
+    $('#theme_css').attr('href','/static/cosmo/bootstrap.css');
+}
+function loadDarkTheme()
+{
+    $('.theme').addClass('dark');
+    //if (document.createStyleSheet) {
+    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
+    //}
+    //else {
+    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
+    //}
+    $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
+}
+
+/***********************************************************
+ * CSRF methods
+ **********************************************************/
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -944,7 +994,11 @@ function sameOrigin(url) {
         !(/^(\/\/|http:|https:).*/.test(url));
 }
 
+/***********************************************************
+ * Useful codes
+ **********************************************************/
 /**
+ * Auto-capitalizes words.
  * Code taken from Stackoverflow, http://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript/196991#196991
  */
 function toTitleCase(str)
@@ -959,23 +1013,6 @@ function br2nl(text)
 function nl2br(text)
 {
     return text.replace(/(\n|\r)/g, "<br>");
-}
-
-function loadWhiteTheme()
-{
-    $('.theme').removeClass('dark');
-    $('#theme_css').attr('href','/static/cosmo/bootstrap.css');
-}
-function loadDarkTheme()
-{
-    $('.theme').addClass('dark');
-    //if (document.createStyleSheet) {
-    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
-    //}
-    //else {
-    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
-    //}
-    $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
 }
 // REQUIRES UI module - isMain, isPinned, etc.
 // REQUIRES SB module
@@ -1028,6 +1065,10 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
  * Creating/removing
  **************************************************/
 
+/**
+ * Create and return a new popup. isMain tells it if this popup
+ * is going to be the main popup (meaning, it is in the sidebar)
+ */
 function PopUp_insertPopUp(isMain)
 {
     var popUpHTML;
@@ -1040,21 +1081,15 @@ function PopUp_insertPopUp(isMain)
     else
         $("body").append(popUpHTML);
     var popUp = $("#popup-main123");
+
+    // set first drag listener
     var firstDragStart = function(){
         POPUP_MAIN_FIRSTDRAG(popUp);
         if (popUp.space)
             PopUp_freedSpace.push(popUp.space);
-        //if (isMain)
-        //{
-        //            }
-        //else
-        //{
-        //    PopUp_freedSpace.push(popUp.space);
-        //    delete popUp.space;
-        //}
     };
-   
 
+    // make popup draggable using jquery ui
     popUp.draggable({
         handle:'.panel > .panel-heading', 
         containment:"#content_bounds", 
@@ -1066,10 +1101,10 @@ function PopUp_insertPopUp(isMain)
         zIndex: 2000,
     })
     popUp = popUp[0];
-    //$(popUp).css("height", $(popUp).find(".panel").css("height"));
     popUp.id = "popup-main";
     if (!isMain)
     {
+        // popup is not main. must stack so they don't completely overlap
         var space;
         if (PopUp_freedSpace.length == 0)
             space = ++PopUp_space;
@@ -1077,31 +1112,37 @@ function PopUp_insertPopUp(isMain)
             space = PopUp_freedSpace.sort(function(a,b){return b-a}).pop();
         popUp.id = "";
         PopUp_makeResizable(popUp);
-        //$(popUp).css({
-        //    position: 'fixed',
-        //});
-        
-        //PopUp_showClose(popUp);
         leftPos = parseInt($(popUp).css("left"));
         topPos = parseInt($(popUp).css("top"));
         $(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
         popUp.space = space;
     }
+
+    // give focus when clicking
     popUp.onmousedown = function(){
         PopUp_giveFocus(this);
     };
-    maxHeight = window.innerHeight - $(".navbar").height() - 100;
+
+    // set the max height so it doesn't exceed screen height
+    var maxHeight = window.innerHeight - $(".navbar").height() - 100;
     $(popUp).css("max-height", maxHeight+"px");
     _PopUp_setBodyHeight(popUp); 
+
+    // custom initialization codes, to be implemented by submodules
     PopUp_initialize(popUp);
     setTimeout(function(){
         PopUp_initialize_deferred(popUp);
     }, 300) // doesn't block
+
+    // activate tooltip
     $(popUp).find('.withtooltip').tooltip({});
+
+    // set theme
     if (THEME == 'w')
         $(popUp).find('.theme').removeClass('dark');
     else
         $(popUp).find('.theme').addClass('dark');
+
     return popUp;
 }
 
@@ -1138,6 +1179,11 @@ function PopUp_getMainPopUp()
         main = PopUp_insertPopUp(true);
     return main;
 }
+
+/**
+ * find the popup with the id and return it. Returns null
+ * if does not exist
+ */
 function PopUp_getPopUpByID(id)
 {
     if ($('.' + POPUP_CLASS).find("#"+id).length > 0)
@@ -1145,6 +1191,9 @@ function PopUp_getPopUpByID(id)
     else
         return null;
 }
+/**
+ * Get the id of the popup
+ */
 function PopUp_getID(popUp)
 {
     if (!popUp)
@@ -1153,6 +1202,9 @@ function PopUp_getID(popUp)
         return null;
     return $(popUp).find(".panel")[0].id;
 }
+/**
+ * set the id of the popup
+ */
 function PopUp_setID(popUp, id)
 {
     var oldId = $(popUp).find(".panel")[0].id;
@@ -1163,10 +1215,15 @@ function PopUp_setID(popUp, id)
     }
     else 
     {
+        // clean up, unpin old id
         UI_unpin(oldId);
         UI_pin(id);
     }
 }
+
+/**
+ * set the height of panel-body
+ */
 function _PopUp_setBodyHeight(popUp)
 {
     var headHeight = $(popUp).find(".panel-heading").css("height");
@@ -1334,6 +1391,12 @@ function PopUp_setColor(popUp, color)
         // $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
     }
 }
+/***********************************************************
+ * This module provides an easy interface for calling functions
+ * at regular intervals. Also have support for switching
+ * to a longer interval if the user is inactive. Intervals
+ * are assumed to be factors of 10 seconds.
+ **********************************************************/
 var RF_ACTIVE = true;
 var RF_timeoutIDs = [];
 var RF_INTERVAL = 10 * 1000;
@@ -1374,6 +1437,12 @@ function RF_callRecurringFunctions(count)
             functionDict.recurringFunction();
     });
 }
+/***********************************************************
+ * Inspired by UISegmentedControl in the iOS SDK.
+ * Segmented Controls are button groups in which only
+ * one button may be selected.
+ **********************************************************/
+
 /*
  * choices = [
  *  {
@@ -1446,6 +1515,11 @@ function SC_isHighlighted(button)
 {
     return $(button).hasClass('btn-primary');
 }
+/***********************************************************
+ * Segmented control with support for multiple selections
+ * Requires Segmented Control module
+ **********************************************************/
+
 function SCM_initWithChoices(heading, choices)
 {
     var sc = SC_initWithChoices(heading, choices);
@@ -1495,6 +1569,11 @@ function SCM_setToChoices(scm, choices)
         };
     });
 }
+/***********************************************************
+ * Segmented Control in bootstrap popover.
+ * Meant to be used with forms.
+ **********************************************************/
+
 function SCP_initOnElement(element, container, heading, choices)
 {
     if ($(element).data('scp'))
@@ -1516,6 +1595,10 @@ function SCP_initOnElement(element, container, heading, choices)
     $(element).data('scp', sc);
     return sc;
 }
+/***********************************************************
+ * A generic set data structure
+ **********************************************************/
+
 var Set = function()
 { 
 }
@@ -1560,6 +1643,15 @@ Set.prototype.equals = function(a){
 Set.prototype.isEmpty = function(a){
     return this.size <= 0;
 }
+/***********************************************************
+ * Sidebar singleton.
+ * Works with popup module, as well as notifications
+ * An element is considered in the sidebar if it has class "in"
+ * The sidebar by default isn't filled. That means it only
+ * shows 1/3 of its width and does not fill the screen.
+ * Call SB_fill to fill the screen.
+ **********************************************************/
+
 var SB_willCloseListeners = [];
 function SB_init()
 {
@@ -1635,7 +1727,6 @@ function SB_pop(content)
     $(content).removeClass('in').on('transitionend', function(){
         $(content).remove();
     });
-    //SB_hideIfEmpty();
 }
 function SB_setMainContent(content)
 {
