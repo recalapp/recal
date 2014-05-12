@@ -164,8 +164,40 @@ function PopUp_initialize(popUp)
  * Getters and Setters
  **************************************************/
 
-function PopUp_setToEventID(popUp, id)
+function PopUp_setToEventID(popUp, id, retryListener)
 {
+    var oldID = PopUp_getID(popUp);
+    if (oldID && oldID != id)
+    {
+        if (EventsMan_hasUncommitted(oldID))
+        {
+            AS_showActionSheetFromElement($(popUp).find('#close_button')[0], popUp, 'Save changes?',[
+                    {
+                        important: false,
+                        text: 'Save',
+                    },
+                    {
+                        important: true,
+                        text: 'Don\'t save',
+                    }
+                ],
+                function(index){
+                    if (index == 0) {
+                        PopUp_clickedSavePopUp(popUp, false);
+                    }
+                    else{
+                        PopUp_clickedUndo(popUp);
+                    }
+                    if (retryListener)
+                    {
+                        PopUp_setToEventID(popUp, id);
+                        retryListener();
+                    }
+                }
+            );
+            return false;
+        }
+    }
     PopUp_setID(popUp, id);
     var eventDict;
     $(popUp).find('.unsaved').removeClass('unsaved');
@@ -415,6 +447,7 @@ function PopUp_setToEventID(popUp, id)
         $(this).trigger('value_set');
     });
 
+    return true;
 }
 
 function PopUp_setTitle(popUp, title)

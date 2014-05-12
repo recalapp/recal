@@ -39,6 +39,20 @@ function Cal_init() {
             PopUp_giveFocus(popUp);
             return;
         }
+        var popUp = PopUp_getMainPopUp();
+
+        var success = PopUp_setToEventID(popUp, calEvent.id, function(){
+            PopUp_giveFocus(popUp);
+            $($("#calendarui").fullCalendar("clientEvents", function(calEvent) {
+                return !UI_isPinned(calEvent.id)
+            })).each( function(index) {
+                Cal_unhighlightEvent(this, false);
+            });
+            Cal_highlightEvent(calEvent, true);
+        });
+        if (!success)
+            return;
+        PopUp_giveFocus(popUp);
 
         $($("#calendarui").fullCalendar("clientEvents", function(calEvent) {
             return !UI_isPinned(calEvent.id)
@@ -47,10 +61,6 @@ function Cal_init() {
         });
         Cal_highlightEvent(calEvent, true);
 
-        var popUp = PopUp_getMainPopUp();
-
-        PopUp_setToEventID(popUp, calEvent.id);
-        PopUp_giveFocus(popUp);
     }
     Cal_options.windowResize = function(view){
         Cal_adjustHeight();

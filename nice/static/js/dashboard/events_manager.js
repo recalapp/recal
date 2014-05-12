@@ -345,7 +345,12 @@ function EventsMan_clickAddEvent()
 
     // set new ID
     var id = EventsMan_addEvent();
-    PopUp_setToEventID(popUp, id);
+    var success = PopUp_setToEventID(popUp, id);
+    if (!success)
+    {
+        EventsMan_cancelChanges(id);
+        return;
+    }
     PopUp_markAsUnsaved(popUp);
     
     PopUp_giveFocus(popUp);

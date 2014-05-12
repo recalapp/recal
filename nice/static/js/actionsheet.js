@@ -23,6 +23,7 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
         $content.find('.theme').removeClass('dark');
     else
         $content.find('.theme').addClass('dark');
+    $(element).popover('destroy');
     $(element).popover({
         title: title,
         placement: 'bottom',
