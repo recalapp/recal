@@ -78,12 +78,16 @@
 <!--<link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">-->
 <link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
 <link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
+<!--
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
 <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'css/profile/profile.css' %}">
 <link rel="stylesheet" href="{% static 'css/popup.css' %}">
+-->
+<link rel="stylesheet" href="{% static 'compiled/profile.min.css' %}">
+<!--
 <script src="{% static 'js/global.js' %}"></script>
-
+-->
 
 <style>
   #class-label {
@@ -139,6 +143,7 @@ var THEME = '{{ theme }}';
 <script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
 <script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 
+<!--
 <script src="{% static 'js/set.js' %}"></script>
 <script src="{% static 'js/loading.js' %}"></script>
 <script src="{% static 'js/segmented_control.js' %}"></script>
@@ -167,4 +172,6 @@ var THEME = '{{ theme }}';
 
 <script src="{% static 'js/main-base.js' %}"></script>
 <script src="{% static 'js/profile/main.js' %}"></script>
+-->
+<script src="{% static 'compiled/profile.min.js' %}"></script>
 {% endblock %}

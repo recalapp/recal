@@ -1,3 +1,7 @@
+/**
+ * An ActionSheet module, inspired by UIActionSheet in the iOS SDK.
+ * Shows a popover with prompt.
+ */
 function AS_showActionSheetFromElement(element, container, title, choices, clickListener)
 {
     var $content = $('<div>');
