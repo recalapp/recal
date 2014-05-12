@@ -47,6 +47,7 @@ urlpatterns = patterns('',
     url(r'^popup-course-template$', views.popup_course, name="popup-course"),
     url(r'^agenda-template$', views.agenda, name="agenda"),
     url(r'^course-template$', views.course, name="course"),
+    url(r'^auto-template$', views.auto, name="auto"),
 
     url(r'^api/classlist', views.get_classes, name="ajax_class_list"),
     url(r'^api/point_history', views.point_award_history, name="point_award_history"),

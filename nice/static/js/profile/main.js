@@ -83,6 +83,7 @@ function init()
     PopUp_init();
     CL_init();
     UP_init();
+    AR_init();
 
     SECTION_COLOR_MAP = JSON.parse(CacheMan_load('/get/section-colors'));
     DEFAULT_SECTION_COLORS = JSON.parse(CacheMan_load('/get/default-section-colors'));

@@ -55,18 +55,25 @@ body{
 }
 
 .ui-autocomplete {
-    max-height: 150px;
+    visibility: hidden;
+    max-height: 0;
     overflow-y: auto;
     /* prevent horizontal scrollbar */
     overflow-x: hidden;
     width: 58.333333333%;
 }
-
-/* IE 6 doesn't support max-height
- * we use height instead, but this forces the menu to always be this tall
- */
-    /** html .ui-autocomplete {
-    height: 100px;
-    }*/
-
-
+.auto-item{
+    margin-bottom: 0;
+    margin-top: 0;
+}
+.auto-item > .panel-body{
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+.auto-text{
+    margin: 0;
+}
+#auto-results{
+    overflow: hidden;
+    overflow-y: auto;
+}
