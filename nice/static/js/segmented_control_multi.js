@@ -1,3 +1,8 @@
+/***********************************************************
+ * Segmented control with support for multiple selections
+ * Requires Segmented Control module
+ **********************************************************/
+
 function SCM_initWithChoices(heading, choices)
 {
     var sc = SC_initWithChoices(heading, choices);

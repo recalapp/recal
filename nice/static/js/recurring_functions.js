@@ -1,3 +1,9 @@
+/***********************************************************
+ * This module provides an easy interface for calling functions
+ * at regular intervals. Also have support for switching
+ * to a longer interval if the user is inactive. Intervals
+ * are assumed to be factors of 10 seconds.
+ **********************************************************/
 var RF_ACTIVE = true;
 var RF_timeoutIDs = [];
 var RF_INTERVAL = 10 * 1000;
