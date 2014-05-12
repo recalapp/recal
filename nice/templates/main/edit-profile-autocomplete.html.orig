@@ -82,15 +82,44 @@
 <link rel="stylesheet" href="{% static 'css/mystyles.css' %}">
 <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'css/popup.css' %}">
+<<<<<<< HEAD
 <link rel="stylesheet" href="{% static 'css/profile/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'css/profile/profile.css' %}">
-<link rel="stylesheet" href="{% static 'css/popup.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile/popup.css' %}">
+=======
 -->
 <link rel="stylesheet" href="{% static 'compiled/profile.min.css' %}">
 <!--
+>>>>>>> master
 <script src="{% static 'js/global.js' %}"></script>
 -->
 
+<style>
+  #class-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 1em;
+  }
+  #class-description {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .ui-autocomplete {
+    max-height: 150px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+    width: 58.333333333%;
+  }
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  /** html .ui-autocomplete {
+    height: 100px;
+  }*/
+  
+  </style>
 <script>
 var CACHEMAN_PRELOAD = [
     '{% url 'nice.views.popup_course' %}', 
