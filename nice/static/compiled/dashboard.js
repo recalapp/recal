@@ -1165,14 +1165,12 @@ function PopUp_giveFocus(popUp)
     var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
     //$(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color).css('opacity', 1);
-    $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
-    $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
-    $(document.activeElement).blur();
     $(popUp).find(".popup-title").parent().parent().css('opacity', 1);
     // $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
     // $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
     //$(popUp).find(".panel-footer").removeClass("hide-footer");
     _PopUp_setBodyHeight(popUp);
+    $(document.activeElement).blur();
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
