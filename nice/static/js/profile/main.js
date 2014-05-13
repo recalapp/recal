@@ -1,4 +1,5 @@
 var DEFAULT_SECTION_COLORS;
+var DEFAULT_COLOR_IDX = 0;
 var COURSE_COLOR_MAP = {};
 var USABLE_COLORS = [];
 
@@ -143,7 +144,10 @@ function getUsableColor(course_id) {
     var color = USABLE_COLORS.shift();
     if (!color)
     {
-        color = DEFAULT_SECTION_COLORS[0];
+        color = DEFAULT_SECTION_COLORS[DEFAULT_COLOR_IDX];
+        DEFAULT_COLOR_IDX++;
+        if (DEFAULT_COLOR_IDX == DEFAULT_SECTION_COLORS.length)
+            DEFAULT_COLOR_IDX = 0;
     }
 
     // if (!COURSE_COLOR_MAP[course_id])

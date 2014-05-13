@@ -113,6 +113,7 @@ function Cal_reload()
             end: eventEndTZ.toISOString(),
             myColor: COURSE_COLOR_MAP[eventDict.course_id],
             textColor: shouldHighlight ? '#ffffff' : color,
+            highlighted: shouldHighlight,
             backgroundColor: rgba,
             borderColor: '#ffffff' //color //'#123456' 
         });

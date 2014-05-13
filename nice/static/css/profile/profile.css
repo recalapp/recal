@@ -4,7 +4,7 @@ body{
 #course-list{
     overflow-x: hidden;
     overflow-y: auto;
-    height: 410px;
+    height: 500px;
 }
 #search{
     min-height: 100px;
