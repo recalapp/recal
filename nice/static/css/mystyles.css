@@ -71,9 +71,13 @@ body.dark{
 #calendarui {
     background-color: rgba(255, 255, 255, 0.8);
 }
+
+/*
 #calendarui.dark{
     background-color: rgba(100, 100, 100, 0.30);
 }
+*/
+
 .user_label>h2{
     margin-top:0;
     margin-bottom:10px;

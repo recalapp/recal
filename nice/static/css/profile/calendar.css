@@ -14,3 +14,7 @@
     width: 45px !important;
     line-height: 15px !important;
 }
+
+#calendarui.dark {
+    background-color: rgba(100, 100, 100, 0);
+}
