@@ -11,7 +11,7 @@ Cal_eventSource = {
 // default options
 Cal_options = {
     defaultView: "agendaWeek",
-    slotMinutes: 45,
+    slotMinutes: 30,
     firstHour: 8,
     minTime: 8,
     maxTime: 23,
