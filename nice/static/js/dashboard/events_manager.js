@@ -359,8 +359,10 @@ function EventsMan_clickAddEvent()
         EventsMan_cancelChanges(id);
         return;
     }
-    PopUp_markAsUnsaved(popUp);
     
     PopUp_giveFocus(popUp);
-    PopUp_giveEditingFocus(popUp);
+    PopUp_markAsUnsaved(popUp);
+    setTimeout(function(){
+        PopUp_giveEditingFocus(popUp);
+    }, 300);
 }

@@ -2621,10 +2621,12 @@ function EventsMan_clickAddEvent()
         EventsMan_cancelChanges(id);
         return;
     }
-    PopUp_markAsUnsaved(popUp);
     
     PopUp_giveFocus(popUp);
-    PopUp_giveEditingFocus(popUp);
+    PopUp_markAsUnsaved(popUp);
+    setTimeout(function(){
+        PopUp_giveEditingFocus(popUp);
+    }, 300);
 }
 var KEY_UP = 38;
 var KEY_DOWN = 40;
@@ -4182,15 +4184,15 @@ function SE_init()
             });
         });
         $(this).find('#course_options').append(course_scm);
-        var tz_sc = SC_initWithChoices('Use Princeton\'s timezone:', [
+        var tz_sc = SC_initWithChoices('Timezone:', [
                 {
                     value: 1,
-                    pretty: 'Yes',
+                    pretty: 'Princeton\'s timezone',
                     selected: MAIN_TIMEZONE != null,
                 },
                 {
                     value: 0,
-                    pretty: 'No',
+                    pretty: 'Local timezone',
                     selected: MAIN_TIMEZONE == null,
                 }
             ]);
