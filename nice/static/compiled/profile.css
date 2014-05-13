@@ -347,6 +347,13 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 #settingsModal{
     z-index: 200000;
 }
+#tutorial1 p {
+    margin-bottom: 1em;
+}
+div.modal-footer p.copy {
+    color: #666;
+    font-size: .8em;
+}
 .modal-backdrop {
     z-index: 1040;
 }
@@ -643,6 +650,20 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     #sidebar.in{
         right: 0;
     }
+}
+.fc-event {
+     font-size: 12px !important;
+     text-align: center !important;
+}
+
+.fc-agenda-slots td div {
+    height: 10px !important;
+} 
+
+.fc-agenda-axis{
+    font-size: 8px !important;
+    height: 15px !important;
+    line-height: 15px !important;
 }
 #sb-left-container > .popup-container {
     height: 550px;

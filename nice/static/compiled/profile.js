@@ -95,7 +95,7 @@ Cal_eventSource = {
 // default options
 Cal_options = {
     defaultView: "agendaWeek",
-    slotMinutes: 45,
+    slotMinutes: 30,
     firstHour: 8,
     minTime: 8,
     maxTime: 23,
@@ -1853,11 +1853,13 @@ function Cal_init() {
         day: 'dddd M/d'  // Monday 9/7
     }
 
+    Cal_options.timeFormat = {
+        agenda: ''
+    }
+
     Cal_options.eventClick = function(calEvent, jsEvent, view) {
         if (calEvent.highlighted == true)
         {
-            // TODO: fix this function. PopUp_giveFocusToID does not seem to work
-            // PopUp_giveFocusToID(calEvent.id);
             return;
         }
 
@@ -1941,9 +1943,12 @@ function Cal_reload()
         var eventEndTZ =  moment.unix(eventDict.event_end);
         if (MAIN_TIMEZONE)
             eventEndTZ = eventEndTZ.tz(MAIN_TIMEZONE); 
+        
+        var event_course = CourseMan_getCourseByID(eventDict.course_id).course_primary_listing;
+        var event_section = CourseMan_getSectionByID(eventDict.section_id).section_name;
         Cal_eventSource.events.push({
             id: eventDict.event_id,
-            title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
+            title: event_course + " - " + event_section,
             start: eventStartTZ.toISOString(),
             end: eventEndTZ.toISOString(),
             myColor: COURSE_COLOR_MAP[eventDict.course_id],

@@ -142,6 +142,7 @@ function init()
     Agenda_init();
     Cal_init();
     SE_init();
+    Tutorial_Setup();
 
     // state restoration
     SR_addWillSaveListener(function (){
