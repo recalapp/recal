@@ -663,6 +663,7 @@ div.modal-footer p.copy {
 .fc-agenda-axis{
     font-size: 8px !important;
     height: 15px !important;
+    width: 40px !important;
     line-height: 15px !important;
 }
 #sb-left-container > .popup-container {
