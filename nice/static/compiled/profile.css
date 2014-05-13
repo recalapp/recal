@@ -726,6 +726,7 @@ body{
 }
 #sidebar {
     width: 65%;
+    right: -65%;
 }
 
 #sidebar.in{
