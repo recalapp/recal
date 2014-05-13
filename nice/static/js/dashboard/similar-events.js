@@ -46,7 +46,7 @@ function SE_showSimilarEvents(eventID, similarEvents)
             buttons: [
                 {
                     value: 'c',
-                    pretty: 'Choose',
+                    pretty: 'View Event',
                 }
             ],
         });
