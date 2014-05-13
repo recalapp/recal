@@ -13,11 +13,13 @@ function Cal_init() {
         day: 'dddd M/d'  // Monday 9/7
     }
 
+    Cal_options.timeFormat = {
+        agenda: ''
+    }
+
     Cal_options.eventClick = function(calEvent, jsEvent, view) {
         if (calEvent.highlighted == true)
         {
-            // TODO: fix this function. PopUp_giveFocusToID does not seem to work
-            // PopUp_giveFocusToID(calEvent.id);
             return;
         }
 

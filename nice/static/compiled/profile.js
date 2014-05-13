@@ -95,7 +95,7 @@ Cal_eventSource = {
 // default options
 Cal_options = {
     defaultView: "agendaWeek",
-    slotMinutes: 45,
+    slotMinutes: 30,
     firstHour: 8,
     minTime: 8,
     maxTime: 23,
@@ -808,13 +808,18 @@ Array.prototype.equals = function(a){
  * corner of the screen. It is meant to be used only
  * for displaying information. If user interaction is
  * needed, use notificaitons.js.
+ *
+ * Works similarly to memory management - every id added to loading
+ * must be released, otherwise the indicator stays.
  **********************************************************/
 
 // add as needed
 var LO_TYPES = {
     SUCCESS: 'alert-success',
 }
-var LO_idMap = null;
+
+var LO_idMap = null; // can't initalize until the set data structure is loaded
+
 function LO_init()
 {
     LO_idMap = {
@@ -1843,11 +1848,13 @@ function Cal_init() {
         day: 'dddd M/d'  // Monday 9/7
     }
 
+    Cal_options.timeFormat = {
+        agenda: ''
+    }
+
     Cal_options.eventClick = function(calEvent, jsEvent, view) {
         if (calEvent.highlighted == true)
         {
-            // TODO: fix this function. PopUp_giveFocusToID does not seem to work
-            // PopUp_giveFocusToID(calEvent.id);
             return;
         }
 
