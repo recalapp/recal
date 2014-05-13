@@ -137,6 +137,7 @@ a {
 }
 
 .indicator{
+    pointer-events: none;
     -webkit-transition: bottom 0.2s ease-in-out, opacity 0.2s ease-out;
     transition: bottom 0.2s ease-in-out, opacity 0.2s ease-out;
     opacity: 0;
@@ -153,6 +154,7 @@ a {
     animation: rotateIcon 1s infinite linear;
 }
 #indicators-container{
+    pointer-events: none;
     position: fixed;
     bottom: 10px;
     right: 20px;
