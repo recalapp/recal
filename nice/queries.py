@@ -15,7 +15,7 @@ import settings.common as settings
 
 ### User event interaction: read and write ###
 
-def get_events(netid, escape=True, **kwargs):
+def get_events(netid, escape=False, **kwargs):
     """
     Fetches events this user should see. Returns a list of their compressed event dictionaries.
 
@@ -414,7 +414,7 @@ def get_state_restoration(netid):
 
 ### Transfer Protocols: Event Dictionary parsing and creation ###
 
-def construct_event_dict(event, netid=None, best_rev=None, escape=True):
+def construct_event_dict(event, netid=None, best_rev=None, escape=False):
     """
     Selects the best revision, then converts it into a dict for client-side rendering.
     """
@@ -435,7 +435,7 @@ def __output_escape(what, doEscape=True):
     return escape(what) if doEscape else what
 
 
-def __construct_revision_dict(rev, group, group_rev, netid, escape=True):
+def __construct_revision_dict(rev, group, group_rev, netid, escape=False):
     """
     Serializes a specific revision into a dict that can be passed to the client for rendering.
 
