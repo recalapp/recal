@@ -142,9 +142,12 @@ function init()
     Agenda_init();
     Cal_init();
     SE_init();
-    Tutorial_Setup();
+<<<<<<< HEAD
 
     // state restoration
+=======
+    Tutorial_Setup();
+>>>>>>> e7d74a2bf2b5a385086542bbb934ef70f8dd9dd3
     SR_addWillSaveListener(function (){
         Nav_save();
         UI_save();

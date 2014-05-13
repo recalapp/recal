@@ -4,9 +4,12 @@ function PopUp_init()
     if (POPUP_INIT)
         return;
     POPUP_INIT = true;
+
+    // get html template and remove from dom
     POPUP_HTML = $('#popup-template').html();
     $('#popup-template').remove();
     
+    // modify jQuery draggable to have a before drag callback
     var oldMouseStart = $.ui.draggable.prototype._mouseStart;
     $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
         this._trigger("beforeStart", event, this._uiHash());
@@ -23,10 +26,10 @@ function PopUp_init()
         $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
     });
 
+    // event listeners
     EventsMan_addOnReadyListener(function(){
         PopUp_load();
     });
-
     SR_addWillSaveListener(function (){
         PopUp_save();
     })
@@ -54,6 +57,10 @@ function PopUp_init()
  * Creating/removing
  **************************************************/
 
+/**
+ * Initialize the pickers. This can be deferred as the delay is
+ * too small for the user to begin editing before the pickers are ready
+ */
 function PopUp_initialize_deferred(popUp)
 {
     if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker on mobile
@@ -86,46 +93,12 @@ function PopUp_initialize_deferred(popUp)
     } else {
         $(popUp).find('.withtimepicker').removeClass('withtimepicker');
     }
-    //var htmlcontent = CacheMan_load("type-picker")
-    //$(popUp).find(".withtypepicker").popover({
-    //    placement: "left auto",
-    //    trigger: "focus",
-    //    html: true,
-    //    content: htmlcontent,
-    //    container: 'body'
-    //})
-    //var input = $(popUp).find(".withtypepicker")[0];
-    //$(input).on("shown.bs.popover", function(){
-    //    var tp = $("#type-picker123")[0];
-    //    tp.id = "";
-    //    this.tp = tp;
-    //    var type = $(this).val();
-    //    TP_select(this.tp, type);
-    //    var inputField = this;
-    //    TP_setSelectListener(function(tp, selectedType){
-    //        $(inputField).val(selectedType);
-    //    });
-    //});
-    
-
-    //$(popUp).find('.withsectionpicker').popover({
-    //    placement: 'left auto',
-    //    trigger: 'focus', 
-    //    html: true,
-    //    content: CacheMan_load('section-picker'),
-    //    container: 'body'
-    //}).on('shown.bs.popover', function(){
-    //    var sp = $('#section-picker123')[0];
-    //    sp.id = '';
-    //    this.sp = sp;
-    //    var section = $(this).val();
-    //    SP_select(this.sp, section);
-    //    var inputField = this;
-    //    SP_setSelectListener(function(sp, selectedSection){
-    //        $(inputField).val(selectedSection);
-    //    });
-    //});
 }
+
+/**
+ * initialize the things at are part of the popup itself, such as
+ * recurrence segmented control.
+ */
 function PopUp_initialize(popUp)
 {
     var choices = [];
@@ -164,6 +137,13 @@ function PopUp_initialize(popUp)
  * Getters and Setters
  **************************************************/
 
+/**
+ * Set the popup to the specified event id.
+ * If the popup has uncommitted changes, it refuses
+ * to change, and return false. If a retry listener
+ * is given, it tries to change it again after the user
+ * saves
+ */
 function PopUp_setToEventID(popUp, id, retryListener)
 {
     var oldID = PopUp_getID(popUp);
@@ -201,13 +181,13 @@ function PopUp_setToEventID(popUp, id, retryListener)
     PopUp_setID(popUp, id);
     var eventDict;
     $(popUp).find('.unsaved').removeClass('unsaved');
-    //$(popUp).find('.withcustompicker').off('hidden.bs.popover');
-    //$(popUp).find('.withcustompicker').popover('destroy');
     if (EventsMan_hasUncommitted(id))
     {
+        // not actually needed anymore, as we won't ever change
+        // the popups with unapproved changes
+        // but can keep the functions here, in case we want it later
         eventDict = EventsMan_getUncommitted(id);
         PopUp_markAsUnsaved(popUp);
-        // TODO find out what is the unsaved changes
         var savedEventDict = EventsMan_getEventByID(id);
         if (savedEventDict)
         {
@@ -260,8 +240,9 @@ function PopUp_setToEventID(popUp, id, retryListener)
         myColor = myColor['color'];
     PopUp_setColor(popUp, myColor);
 
-    // give focus to PopUp if should be highlighted
+    // NOTE: give focus to PopUp if should be highlighted
 
+    // set up recurrence ui
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
     $(popUp).find('#popup-repeat-pattern').off('select');
@@ -390,6 +371,7 @@ function PopUp_setToEventID(popUp, id, retryListener)
         });
     });
 
+    // set the ui appropriately depending on whether the event is hidden
     if (EventsMan_eventIsHidden(id))
     {
         $(popUp).find('#unhide_button').removeClass('hide');
@@ -401,6 +383,7 @@ function PopUp_setToEventID(popUp, id, retryListener)
         $(popUp).find('#hide_button').removeClass('hide');
     }
 
+    // set the ui for type and section pickers
     var choices = [];
     $.each(TYPE_MAP, function(key, value){
         choices.push({
@@ -457,7 +440,7 @@ function PopUp_setTitle(popUp, title)
 }
 function PopUp_setDescription(popUp, desc)
 {
-    $(popUp).find("#popup-desc").html(nl2br(desc));
+    $(popUp).find("#popup-desc").text(desc);
 }
 function PopUp_setLocation(popUp, loc)
 {
@@ -587,6 +570,9 @@ function PopUp_giveEditingFocus(popUp)
 
 /***************************************************
  * forms for editing
+ * element = html element, like a h4
+ * form = the corresponding form to be shown when
+ * the element is clicked
  **************************************************/
 
 function _PopUp_showFormForElement(element)
@@ -651,15 +637,15 @@ function _PopUp_Form_getFormIDForElement(element)
 function _PopUp_Form_addOnBlurListener(form, listener)
 {
     if ($(form).find(".withdatepicker").length > 0)
-        $(form).find(".withdatepicker").datetimepicker().on("hide", listener);
+        $(form).find(".withdatepicker").datetimepicker().one("hide", listener);
     else if ($(form).find(".withtimepicker").length > 0)
-        $(form).find(".withtimepicker").datetimepicker().on("hide", listener);
+        $(form).find(".withtimepicker").datetimepicker().one("hide", listener);
     else if ($(form).find(".withcustompicker").length > 0)
-        $(form).find(".withcustompicker").on('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
+        $(form).find(".withcustompicker").one('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
     else if ($(form).find("input").length > 0)
-        $(form).find("input").on("blur", listener);
+        $(form).find("input").one("blur", listener);
     else if ($(form).find("textarea").length > 0)
-        $(form).find("textarea").on("blur", listener);
+        $(form).find("textarea").one("blur", listener);
 }
 
 /***************************************************
@@ -683,13 +669,20 @@ $.each(POPUP_FORM_NEXT, function(key, value){
 function PopUp_clickedElement(element)
 {
     var popUp = _PopUp_getPopUp(element);
+    // if the popup is in edit mode, don't show another form
     if (PopUp_isEditing(popUp))
         return;
+
+    // enforce start date
     _PopUp_Form_enforceStartDate(popUp);
+
+    // mark as editing
     PopUp_markAsEditing(popUp);
+
+    // show the corresponding form for element
     var form_id = _PopUp_Form_getFormIDForElement(element);
     var form = $(popUp).find("#"+form_id)[0];
-    // make the corresponding form visible and hide the element
+    // gives textarea the correct height
     if ($(form).find("textarea").length > 0)
     {
         height = parseInt($(element).css("height")) + 20;
@@ -698,18 +691,18 @@ function PopUp_clickedElement(element)
     _PopUp_showFormForElement(element);
     _PopUp_Form_setValue(form, $(element).text());
     _PopUp_Form_giveFocus(form);
-    if (!$(form).hasClass("input-group") && form.notFirstSelected != true)
-    {
-        form.notFirstSelected = true;
-        _PopUp_Form_addOnBlurListener(form, function(){
-            PopUp_clickedSaveElement(form);
-        });
-    }
+    // add on blur listeners once
+    _PopUp_Form_addOnBlurListener(form, function(){
+        PopUp_clickedSaveElement(form);
+    });
     var text_id = _PopUp_Form_getElementIDForForm(form);
     if (text_id == 'popup-title')
     {
+        // if title is editing, hide the other controls - no room
         $(popUp).find('.popup-ctrl').addClass('hidden');
     }
+
+    // do tabbing shortcuts
     $(form).find('input, textarea').off('keydown').on('keydown', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 9) // tab key
@@ -720,7 +713,7 @@ function PopUp_clickedElement(element)
             $(this).blur();
             if ($(this).hasClass('withtimepicker') || $(this).hasClass('withdatepicker'))
                 $(this).datetimepicker('hide');
-            PopUp_clickedSaveElement(form);
+            //PopUp_clickedSaveElement(form); // bluring saves the element automatically
             var nextSelector;
             if (SHIFT_PRESSED)
                 nextSelector = POPUP_FORM_PREV['#' + text_id];
@@ -730,7 +723,9 @@ function PopUp_clickedElement(element)
                 PopUp_clickedElement($(popUp).find(nextSelector)[0]);
         }
     });
-    $(form).find('input').off('keyup').on('keyup', function(ev){
+
+    // do entering shortcuts
+    $(form).find('input, textarea').off('keyup').on('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {
@@ -738,9 +733,11 @@ function PopUp_clickedElement(element)
             if ($(this).hasClass('withtimepicker') || $(this).hasClass('withdatepicker'))
                 $(this).datetimepicker('hide');
             
-            PopUp_clickedSaveElement(form);
+            //PopUp_clickedSaveElement(form); // bluring saves the element automatically
         }   
     });
+
+    // prevent typing in pickers
     $(form).find('.withtimepicker').on('keydown', function(ev){
         ev.preventDefault();
     });
@@ -750,10 +747,10 @@ function PopUp_clickedElement(element)
     $(form).find('.withcustompicker').on('keydown', function(ev){
         ev.preventDefault();
     });
-
-    //$(form).find("input").data("datetimepicker");
-    //$(form).find("input").datetimepicker();
 }
+/**
+ * Make sure that the end date for the popup is after the start date
+ */
 function _PopUp_Form_enforceStartDate(popUp)
 {
     var time = $(popUp).find('#popup-time-start').text();
@@ -771,28 +768,28 @@ function _PopUp_Form_enforceStartDate(popUp)
         PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.format('h:mm A')); 
     }
 }
+
+var POPUP_CAN_BE_EMPTY = {
+    'popup-desc': true,
+    'popup-loc': true,
+}
+
+/**
+ * save the popup form for this element
+ */
 function PopUp_clickedSaveElement(form)
 {
-    if (!/\S/.test(_PopUp_Form_getValue(form)))
+    // check if empty and if empty fields are allowed
+    var text_id = _PopUp_Form_getElementIDForForm(form);
+    if (!/\S/.test(_PopUp_Form_getValue(form)) && !(text_id in POPUP_CAN_BE_EMPTY))
     {
         _PopUp_Form_giveFocus(form);
         return;
     }
-    //if ($(form).find("input").hasClass("withtypepicker") && !TP_validateType(_PopUp_Form_getValue(form)))
-    //{
-    //    _PopUp_Form_giveFocus(form);
-    //    return;
-    //}
-    //if ($(form).find('input').hasClass('withsectionpicker') && !SP_validateSection(_PopUp_Form_getValue(form)))
-    //{
-    //    _PopUp_Form_giveFocus(form);
-    //    return;
-    //}
     var popUp = _PopUp_getPopUp(form);
     PopUp_markAsNotEditing(popUp);
     // hide the form and unhide the text
     _PopUp_hideFormForElement(form);
-    var text_id = _PopUp_Form_getElementIDForForm(form);
     if (text_id == 'popup-title')
     {
         $(popUp).find('.popup-ctrl').removeClass('hidden');
@@ -800,9 +797,10 @@ function PopUp_clickedSaveElement(form)
             $(popUp).find('.poup-ctrl-right').addClass('hidden');
     }
 
-    //actual saving
+    // actual saving
     var text = $(popUp).find("#"+text_id)[0];
-    var safe = _PopUp_Form_getValue(form).escapeHTML();
+    var safe = _PopUp_Form_getValue(form);
+    // set the values properly if it's a datetime field
     if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'date')
     {
         var safeTZ = moment(safe);
@@ -817,9 +815,9 @@ function PopUp_clickedSaveElement(form)
             safeTZ = safeTZ.tz(MAIN_TIMEZONE);
         safe = safeTZ.format('h:mm A');
     }
-    if ($(text).html() == nl2br(safe))
+    if ($(text).text() == safe)
         return; // no saving needed
-    $(text).html(nl2br(safe));
+    $(text).text(safe);
     PopUp_markAsUnsaved(popUp);
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
     if (text_id == 'popup-time-start' || text_id == 'popup-time-end')
@@ -827,6 +825,10 @@ function PopUp_clickedSaveElement(form)
         _PopUp_Form_enforceStartDate(popUp);
     }
 }
+
+/**
+ * event listener for clicking on close
+ */
 function PopUp_clickedClose(popUpAnchor)
 {
     var popUp = popUpAnchor;
@@ -850,10 +852,11 @@ function PopUp_clickedClose(popUpAnchor)
             ],
             function(index){
                 if (index == 0) {
+                    // save
                     PopUp_clickedSavePopUp(popUp, true);
-                    //PopUp_clickedClose(popUp);
                 }
                 else{
+                    // don't save
                     PopUp_clickedUndo(popUp);
                     PopUp_clickedClose(popUp);
                 }
@@ -866,6 +869,10 @@ function PopUp_clickedClose(popUpAnchor)
         PopUp_callCloseListeners(PopUp_getID(popUp));
     PopUp_close(popUp);
 }
+
+/**
+ * event listener for clicking on hide
+ */
 function PopUp_clickedDelete(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
@@ -873,6 +880,8 @@ function PopUp_clickedDelete(popUpAnchor)
         return;
     var event_id = PopUp_getID(popUp);
     var eventDict = EventsMan_getEventByID(event_id);
+
+    // check if this is recurring
     if (eventDict && 'recurrence_days' in eventDict)
     {
         AS_showActionSheetFromElement(popUpAnchor, popUp, "Done with this event? Click to hide from your agenda and calendar.", [ 
@@ -900,6 +909,9 @@ function PopUp_clickedDelete(popUpAnchor)
     if (!EventsMan_eventShouldBeShown(event_id))
         PopUp_close(popUp);
 }
+/**
+ * event listener for clicking on unhide
+ */
 function PopUp_clickedUnhide(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
@@ -907,6 +919,7 @@ function PopUp_clickedUnhide(popUpAnchor)
         return;
     var event_id = PopUp_getID(popUp);
     var eventDict = EventsMan_getEventByID(event_id);
+    // check if recurring
     if ('recurrence_days' in eventDict)
     {
         AS_showActionSheetFromElement(popUpAnchor, popUp, 'Unhide these events?', [
@@ -928,6 +941,9 @@ function PopUp_clickedUnhide(popUpAnchor)
     }
     EventsMan_unhideEvent(event_id);
 }
+/**
+ * event listener for clicking on save
+ */
 function PopUp_clickedSavePopUp(anchor, shouldClose)
 {
     var popUp = _PopUp_getPopUp(anchor);
@@ -1008,6 +1024,11 @@ function PopUp_clickedSavePopUp(anchor, shouldClose)
     if (shouldClose)
         PopUp_clickedClose(popUp);
 }
+
+/**
+ * event listener for clicking on undo - doesn't exist anymore, but
+ * function is still used
+ */
 function PopUp_clickedUndo(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
