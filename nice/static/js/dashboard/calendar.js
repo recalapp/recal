@@ -115,6 +115,8 @@ function Cal_reload()
     CAL_LOADING = true;
     var eventIDs = EventsMan_getAllEventIDs();
     Cal_eventSource.events = [];
+
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     setTimeout(function(){
         LO_showLoading('cal loading');
         // NOTE: try statement because the plugin has errors sometimes
@@ -138,7 +140,7 @@ function Cal_reload()
                 }
                 else
                 {
-                    rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
+                    rgba = rgbToRgba(luminanceToRgb(color), factor_trans);
                 }
                 var eventStartTZ = moment.unix(eventDict.event_start);
                 if (MAIN_TIMEZONE)
@@ -174,8 +176,5 @@ function Cal_render() {
     // customize cell height
     // 16 hours, each hour 2 cells
     var cellHeight = Math.floor(height / (2 * 16));
-    console.log(cellHeight);
-    console.log($('.fc-agenda-slots td div'));
-    console.log($('.fc-agenda-slots td div').css('height'));
     $('.fc-agenda-slots td div').css('height', cellHeight + 'px');
 }

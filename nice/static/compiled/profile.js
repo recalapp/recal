@@ -86,6 +86,7 @@ function _CacheMan_cacheURL(url, async)
 var CAL_LOADING = false;
 var FACTOR_LUM = 0.2;
 var FACTOR_TRANS = 0.7;
+var FACTOR_TRANS_DARK = 1;
 
 CAL_INIT = false;
 // event source for FullCalendar
@@ -125,12 +126,12 @@ function Cal_highlightEvent(calEvent, update)
 }
 function Cal_unhighlightEvent(calEvent, update)
 {
-    // delete calEvent["backgroundColor"];
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     if (calEvent.highlighted)
     {
         calEvent.textColor = calEvent.myColor;
-        calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, FACTOR_TRANS);
     }
+    calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, factor_trans);
     calEvent.highlighted = false;
     if (update)
         $("#calendarui").fullCalendar("updateEvent", calEvent);
@@ -1902,7 +1903,6 @@ function Cal_init() {
         CL_selectID(course_id);
 
         var popUp = PopUp_getMainPopUp();
-        console.log(popUp);
 
         // PopUp_setToEventID(popUp, calEvent.id);
         PopUp_giveFocus(popUp);
@@ -1926,6 +1926,7 @@ function Cal_reload()
     LO_showLoading('cal loading');
     var eventIDs = EventsMan_getEnrolledEvents();
     Cal_eventSource.events = [];
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     $.each(eventIDs, function(index){
         eventDict = EventsMan_getEventByID(this);
         var color = COURSE_COLOR_MAP[eventDict.course_id];
@@ -1939,9 +1940,9 @@ function Cal_reload()
         {
             rgba = rgbToRgba(luminanceToRgb(color), 1.0);
         }
-            else
+        else
         {
-            rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
+            rgba = rgbToRgba(luminanceToRgb(color), factor_trans);
         }
 
         var eventStartTZ = moment.unix(eventDict.event_start);
@@ -1962,7 +1963,7 @@ function Cal_reload()
             textColor: shouldHighlight ? '#ffffff' : color,
             highlighted: shouldHighlight,
             backgroundColor: rgba,
-            borderColor: '#ffffff' //color //'#123456' 
+            borderColor: rgba //color //'#123456' 
         });
     });
     var start = moment.unix(CUR_SEM.start_date);

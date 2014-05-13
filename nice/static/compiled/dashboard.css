@@ -40,7 +40,8 @@
     z-index: 10000;
 }
 .fc-event {
-     font-size: 10px !important;
+     font-size: 12px !important;
+     font-weight: bold !important;
      /* text-align: center !important; */
 }
 
@@ -56,12 +57,13 @@
     line-height: 15px !important;
 }
 
-.fc-state-highlight.dark {
-    background-color: gray;
-}
 
 #calendarui.dark {
     background-color: rgba(100, 100, 100, 0);
+}
+
+#calendarui.dark > * > * > * > * > * > .fc-state-highlight {
+    background-color: gray;
 }
 .event-picker-item{
 }

@@ -86,6 +86,7 @@ function _CacheMan_cacheURL(url, async)
 var CAL_LOADING = false;
 var FACTOR_LUM = 0.2;
 var FACTOR_TRANS = 0.7;
+var FACTOR_TRANS_DARK = 1;
 
 CAL_INIT = false;
 // event source for FullCalendar
@@ -125,12 +126,12 @@ function Cal_highlightEvent(calEvent, update)
 }
 function Cal_unhighlightEvent(calEvent, update)
 {
-    // delete calEvent["backgroundColor"];
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     if (calEvent.highlighted)
     {
         calEvent.textColor = calEvent.myColor;
-        calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, FACTOR_TRANS);
     }
+    calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, factor_trans);
     calEvent.highlighted = false;
     if (update)
         $("#calendarui").fullCalendar("updateEvent", calEvent);
@@ -2196,6 +2197,8 @@ function Cal_reload()
     CAL_LOADING = true;
     var eventIDs = EventsMan_getAllEventIDs();
     Cal_eventSource.events = [];
+
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     setTimeout(function(){
         LO_showLoading('cal loading');
         // NOTE: try statement because the plugin has errors sometimes
@@ -2219,7 +2222,7 @@ function Cal_reload()
                 }
                 else
                 {
-                    rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
+                    rgba = rgbToRgba(luminanceToRgb(color), factor_trans);
                 }
                 var eventStartTZ = moment.unix(eventDict.event_start);
                 if (MAIN_TIMEZONE)
@@ -2255,9 +2258,6 @@ function Cal_render() {
     // customize cell height
     // 16 hours, each hour 2 cells
     var cellHeight = Math.floor(height / (2 * 16));
-    console.log(cellHeight);
-    console.log($('.fc-agenda-slots td div'));
-    console.log($('.fc-agenda-slots td div').css('height'));
     $('.fc-agenda-slots td div').css('height', cellHeight + 'px');
 }
 var timeoutIDs = [];
