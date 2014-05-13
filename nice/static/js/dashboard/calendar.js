@@ -22,10 +22,9 @@ function Cal_init() {
     if (CAL_INIT)
         return;
 
-
-
     // customizing options
     var height = window.innerHeight - $(".navbar").height() - 50;
+
     Cal_options.height = height;
     Cal_options.eventClick = function(calEvent, jsEvent, view) {
         if (calEvent.highlighted == true)
@@ -98,6 +97,7 @@ function Cal_init() {
     });
     if (Cal_active())
         Cal_reload();
+
 }
 function Cal_adjustHeight()
 {
@@ -169,4 +169,13 @@ function Cal_reload()
 
 function Cal_render() {
     $("#calendarui").fullCalendar("render");
+
+    var height = window.innerHeight - $(".navbar").height() - 50;
+    // customize cell height
+    // 16 hours, each hour 2 cells
+    var cellHeight = Math.floor(height / (2 * 16));
+    console.log(cellHeight);
+    console.log($('.fc-agenda-slots td div'));
+    console.log($('.fc-agenda-slots td div').css('height'));
+    $('.fc-agenda-slots td div').css('height', cellHeight + 'px');
 }

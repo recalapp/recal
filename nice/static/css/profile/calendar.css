@@ -5,6 +5,7 @@
 
 .fc-agenda-slots td div {
     height: 8px !important;
+    min-height: 5px !important;
 } 
 
 .fc-agenda-axis{

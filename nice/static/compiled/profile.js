@@ -1067,6 +1067,11 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
     }
 };
 
+var defaultBorderW = '#DDDDDD';
+// var defaultHeaderW = '#F5F5F5';
+var defaultBorderB = '#323232';
+// var defaultHeaderB = '#F5F5F5';
+
 /***************************************************
  * Creating/removing
  **************************************************/
@@ -1269,8 +1274,13 @@ function PopUp_giveFocus(popUp)
 function PopUp_loseFocus($popUps)
 {
     $popUps.each(function(index) {
-        var defaultBorder = $(this).find('.panel').data('default-border');
-        var defaultHeader = $(this).find('.panel').data('default-header');
+        var defaultBorder;
+        if (THEME == 'w') {
+            defaultBorder = defaultBorderW;
+        } else {
+            defaultBorder = defaultBorderB;
+        }
+        // var defaultHeader = $(this).find('.panel').data('default-header');
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
         // $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
         $(this).find('.popup-title').parent().parent().css('opacity', 0.6);
@@ -1378,17 +1388,14 @@ function PopUp_setColor(popUp, color)
 {
     $(popUp).find('.panel').data('my-color', color);
 
-    // TODO: bad idea to hardwire the default color?
-    var defaultBorder = '#DDDDDD';
-    var defaultHeader = '#F5F5F5';
     // if (THEME != 'w')
     // {
     //     defaultBorder = '#282828';
     //     defaultHeader = '#3C3C3C';
     // }
 
-    $(popUp).find('.panel').data('default-border', defaultBorder);
-    $(popUp).find('.panel').data('default-header', defaultHeader);
+    // $(popUp).find('.panel').data('default-border', defaultBorder);
+    // $(popUp).find('.panel').data('default-header', defaultHeader);
     $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
     //$(popUp).find('.panel').css('border-color', color);
     if (!PopUp_hasFocus(popUp))
