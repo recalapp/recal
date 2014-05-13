@@ -1980,10 +1980,10 @@ function CL_reload()
             ev.preventDefault();
             CL_clickCourse(this);
         });
+        CL_setColors($courseItem, courseDict);
+
         if (UI_isMain(this) || UI_isPinned(this))
             CL_highlight($courseItem.find('.panel'));
-        
-        CL_setColors($courseItem, courseDict);
     });
     if (THEME == 'w')
         $('.theme').removeClass('dark');

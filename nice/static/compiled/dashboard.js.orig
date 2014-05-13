@@ -1,7 +1,3 @@
-/**
- * An ActionSheet module, inspired by UIActionSheet in the iOS SDK.
- * Shows a popover with prompt.
- */
 function AS_showActionSheetFromElement(element, container, title, choices, clickListener)
 {
     var $content = $('<div>');
@@ -23,7 +19,6 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
         $content.find('.theme').removeClass('dark');
     else
         $content.find('.theme').addClass('dark');
-    $(element).popover('destroy');
     $(element).popover({
         title: title,
         placement: 'bottom',
@@ -37,17 +32,12 @@ function AS_showActionSheetFromElement(element, container, title, choices, click
 var cacheManager = null;
 var CACHE_INIT = false;
 
-/**
- * This module first checks if a url has been loaded before. If it has,
- * give the saved result
- */
 function CacheMan_init()
 {
     if (CACHE_INIT)
         return;
     CACHE_INIT = true;
     cacheManager = new _CacheMan();
-
     if (typeof CACHEMAN_PRELOAD != 'undefined')
     {
         $.each(CACHEMAN_PRELOAD, function(key, value){
@@ -82,17 +72,14 @@ function _CacheMan_cacheURL(url, async)
         }
     });
 }
-// REQUIRES FullCalendar plugin
 var CAL_LOADING = false;
 var FACTOR_LUM = 0.2;
 var FACTOR_TRANS = 0.7;
 
 CAL_INIT = false;
-// event source for FullCalendar
 Cal_eventSource = {
     events:[],
 }
-// default options
 Cal_options = {
     defaultView: "agendaWeek",
     slotMinutes: 45,
@@ -214,11 +201,6 @@ function setOpacity(rgba, opacity)
     var newColor = rgba.substring(0, i + 1) + opacity + ")";
     return newColor;
 }
-/***********************************************************
- * This module gives a Bootstrap-Carousel-based interface
- * for choosing between events. It is meant to be used
- * in the sidebar, but does not need to be so.
- **********************************************************/
 /*
  * [
  *  {
@@ -353,16 +335,13 @@ var EVENTS_INIT = false;
 var EVENTS_READY = false;
 
 function EventsMan_init(){};
-
-/**
- * return a new events manager object
- */
 function _EventsMan_new()
 {
     this.events = {};
     this.order = []; // {start: "start", id: "id"}, keep sorted
     this.lastSyncedTime = 0; // will be set when populating
     this.addedCount = 0;
+    //this.deletedIDs = [];
     this.updatedIDs = new Set(); // if it is in updatedIDs, it'll be pushed on the next connection
     this.uncommitted = {}; // copies of events dict with uncommitted changes, once saved, the event dict is copied to eventsManager.events, and its ID is added to updatedIDs
     this.hiddenIDs = new Set();
@@ -371,7 +350,6 @@ function _EventsMan_new()
     this.showHidden = false;
     return this;
 }
-
 function EventsMan_constructOrderArray()
 {
     eventsManager.order = [];
@@ -389,16 +367,6 @@ function EventsMan_constructOrderArray()
  * the server.
  **************************************************/
 
-/**
- * this function can be called in two ways.
- *
- * EventsMan_showHidden() returns a boolean indicating if hidden
- * events should be shown.
- *
- * EventsMan_showHidden(boolean) tells the events manager whether
- * or not it should show hidden events. Also returns the same
- * boolean for consistency.
- */
 function EventsMan_showHidden(hide)
 {
     if (typeof hide != 'undefined')
@@ -408,7 +376,7 @@ function EventsMan_showHidden(hide)
     }
     return eventsManager.showHidden;
 }
-//{
+ //{
 //    'event_group_id': event.group.id,
 //    'event_title': rev.event_title,
 //    'event_type': rev.get_event_type_display(), 
@@ -488,6 +456,11 @@ function EventsMan_addEvent()
         modified_time: moment().unix()
     }
     eventsManager.uncommitted[id] = eventDict;
+    //eventsManager.order.push({event_id: id, event_start: eventDict.event_start});
+    //eventsManager.order.sort(function(a,b){
+    //    return parseInt(a.event_start) - parseInt(b.event_start);
+    //});
+
     return id;
 }
 
@@ -496,6 +469,9 @@ function EventsMan_deleteEvent(id, silent)
     silent = silent || false;
     if (id in eventsManager.events)
     {
+        //eventsManager.events[id] = null;
+        //delete eventsManager.events[id];
+        //eventsManager.deletedIDs.push(id);
         eventsManager.hiddenIDs.add(id);
         eventsManager.changed = true;
     }
@@ -529,6 +505,9 @@ function EventsMan_unhideEvent(id, silent)
     silent = silent || false;
     if (id in eventsManager.events)
     {
+        //eventsManager.events[id] = null;
+        //delete eventsManager.events[id];
+        //eventsManager.deletedIDs.push(id);
         eventsManager.hiddenIDs.remove(id);
         eventsManager.changed = true;
     }
@@ -556,18 +535,11 @@ function EventsMan_eventShouldBeShown(id)
 {
     return !EventsMan_eventIsHidden(id) || EventsMan_showHidden();
 }
-/**
- * indicates whether or not the events manager is ready. If it has pulled at least once,
- * it is ready
- */
+
 function EventsMan_ready()
 {
     return EVENTS_READY;
 }
-
-/**
- * commit the uncommitted changes
- */
 function EventsMan_commitChanges(id)
 {
     var oldEventDict = eventsManager.events[id];
@@ -633,10 +605,6 @@ function EventsMan_replaceUncommittedEventIDWithEvent(id, eventDict)
     EventsMan_callEventIDsChangeListener(id, eventDict.event_id);
     _EventsMan_callUpdateListeners();
 }
-/**
- * replace the current event dictionary corresponding to eventID
- * with the given event dict.
- */
 function EventsMan_replaceEventIDWithEvent(id, eventDict)
 {
     // first replace it in the main events array
@@ -653,8 +621,8 @@ function EventsMan_replaceEventIDWithEvent(id, eventDict)
 /***************************************************
  * Server code
  **************************************************/
-function EventsMan_pushToServer(async){}; // to be implemented by submodule
-function EventsMan_pullFromServer(complete){}; // to be implemented by submodule
+function EventsMan_pushToServer(async){};
+function EventsMan_pullFromServer(complete){};
 
 /***************************************************
  * Client Event Listeners
@@ -702,18 +670,12 @@ function EventsMan_callEventIDsChangeListener(oldID, newID)
  * Miscellaneous
  **************************************************/
 
-/**
- * creates a deep copy of the event dict
- */
 function EventsMan_cloneEventDict(eventDict)
 {
     var newDict = JSON.parse(JSON.stringify(eventDict)) // hack for cloning
     return newDict;
 }
 
-/** 
- * save events to local storage
- */
 function EventsMan_save()
 {
     if ('localStorage' in window && window['localStorage'] !== null)
@@ -724,9 +686,6 @@ function EventsMan_save()
     }
 }
 
-/**
- * try to load from local storage
- */
 function EventsMan_load()
 {
     if (!('localStorage' in window && window['localStorage'] !== null))
@@ -802,14 +761,6 @@ Array.prototype.equals = function(a){
     }
     return i == a.length;
 }
-/***********************************************************
- * This module gives an indicator on the bottom right
- * corner of the screen. It is meant to be used only
- * for displaying information. If user interaction is
- * needed, use notificaitons.js.
- **********************************************************/
-
-// add as needed
 var LO_TYPES = {
     SUCCESS: 'alert-success',
 }
@@ -919,11 +870,7 @@ var csrftoken = $.cookie('csrftoken');
 var COURSE_COLOR_MAP;
 var SECTION_COLOR_MAP;
 
-/***********************************************************
- * UI Module. An ID is main if its popup is in the sidebar.
- * An ID is pinned if its popup has been dragged away from
- * the sidebar.
- **********************************************************/
+// pinned and main
 function UI_pin(id)
 {
     if (UI_isMain(id))
@@ -952,31 +899,6 @@ function UI_unsetMain()
 {
     mainID = null;
 }
-
-/***********************************************************
- * Themes
- **********************************************************/
-
-function loadWhiteTheme()
-{
-    $('.theme').removeClass('dark');
-    $('#theme_css').attr('href','/static/cosmo/bootstrap.css');
-}
-function loadDarkTheme()
-{
-    $('.theme').addClass('dark');
-    //if (document.createStyleSheet) {
-    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
-    //}
-    //else {
-    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
-    //}
-    $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
-}
-
-/***********************************************************
- * CSRF methods
- **********************************************************/
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -995,11 +917,7 @@ function sameOrigin(url) {
         !(/^(\/\/|http:|https:).*/.test(url));
 }
 
-/***********************************************************
- * Useful codes
- **********************************************************/
 /**
- * Auto-capitalizes words.
  * Code taken from Stackoverflow, http://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript/196991#196991
  */
 function toTitleCase(str)
@@ -1014,6 +932,23 @@ function br2nl(text)
 function nl2br(text)
 {
     return text.replace(/(\n|\r)/g, "<br>");
+}
+
+function loadWhiteTheme()
+{
+    $('.theme').removeClass('dark');
+    $('#theme_css').attr('href','/static/cosmo/bootstrap.css');
+}
+function loadDarkTheme()
+{
+    $('.theme').addClass('dark');
+    //if (document.createStyleSheet) {
+    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
+    //}
+    //else {
+    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
+    //}
+    $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
 }
 // REQUIRES UI module - isMain, isPinned, etc.
 // REQUIRES SB module
@@ -1066,10 +1001,6 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
  * Creating/removing
  **************************************************/
 
-/**
- * Create and return a new popup. isMain tells it if this popup
- * is going to be the main popup (meaning, it is in the sidebar)
- */
 function PopUp_insertPopUp(isMain)
 {
     var popUpHTML;
@@ -1082,15 +1013,21 @@ function PopUp_insertPopUp(isMain)
     else
         $("body").append(popUpHTML);
     var popUp = $("#popup-main123");
-
-    // set first drag listener
     var firstDragStart = function(){
         POPUP_MAIN_FIRSTDRAG(popUp);
         if (popUp.space)
             PopUp_freedSpace.push(popUp.space);
+        //if (isMain)
+        //{
+        //            }
+        //else
+        //{
+        //    PopUp_freedSpace.push(popUp.space);
+        //    delete popUp.space;
+        //}
     };
+   
 
-    // make popup draggable using jquery ui
     popUp.draggable({
         handle:'.panel > .panel-heading', 
         containment:"#content_bounds", 
@@ -1102,10 +1039,10 @@ function PopUp_insertPopUp(isMain)
         zIndex: 2000,
     })
     popUp = popUp[0];
+    //$(popUp).css("height", $(popUp).find(".panel").css("height"));
     popUp.id = "popup-main";
     if (!isMain)
     {
-        // popup is not main. must stack so they don't completely overlap
         var space;
         if (PopUp_freedSpace.length == 0)
             space = ++PopUp_space;
@@ -1113,37 +1050,31 @@ function PopUp_insertPopUp(isMain)
             space = PopUp_freedSpace.sort(function(a,b){return b-a}).pop();
         popUp.id = "";
         PopUp_makeResizable(popUp);
+        //$(popUp).css({
+        //    position: 'fixed',
+        //});
+        
+        //PopUp_showClose(popUp);
         leftPos = parseInt($(popUp).css("left"));
         topPos = parseInt($(popUp).css("top"));
         $(popUp).css("left", (leftPos + 20*space) + "px").css("top", (topPos + 20*space) + "px");
         popUp.space = space;
     }
-
-    // give focus when clicking
     popUp.onmousedown = function(){
         PopUp_giveFocus(this);
     };
-
-    // set the max height so it doesn't exceed screen height
-    var maxHeight = window.innerHeight - $(".navbar").height() - 100;
+    maxHeight = window.innerHeight - $(".navbar").height() - 100;
     $(popUp).css("max-height", maxHeight+"px");
     _PopUp_setBodyHeight(popUp); 
-
-    // custom initialization codes, to be implemented by submodules
     PopUp_initialize(popUp);
     setTimeout(function(){
         PopUp_initialize_deferred(popUp);
     }, 300) // doesn't block
-
-    // activate tooltip
     $(popUp).find('.withtooltip').tooltip({});
-
-    // set theme
     if (THEME == 'w')
         $(popUp).find('.theme').removeClass('dark');
     else
         $(popUp).find('.theme').addClass('dark');
-
     return popUp;
 }
 
@@ -1180,11 +1111,6 @@ function PopUp_getMainPopUp()
         main = PopUp_insertPopUp(true);
     return main;
 }
-
-/**
- * find the popup with the id and return it. Returns null
- * if does not exist
- */
 function PopUp_getPopUpByID(id)
 {
     if ($('.' + POPUP_CLASS).find("#"+id).length > 0)
@@ -1192,9 +1118,6 @@ function PopUp_getPopUpByID(id)
     else
         return null;
 }
-/**
- * Get the id of the popup
- */
 function PopUp_getID(popUp)
 {
     if (!popUp)
@@ -1203,9 +1126,6 @@ function PopUp_getID(popUp)
         return null;
     return $(popUp).find(".panel")[0].id;
 }
-/**
- * set the id of the popup
- */
 function PopUp_setID(popUp, id)
 {
     var oldId = $(popUp).find(".panel")[0].id;
@@ -1216,15 +1136,10 @@ function PopUp_setID(popUp, id)
     }
     else 
     {
-        // clean up, unpin old id
         UI_unpin(oldId);
         UI_pin(id);
     }
 }
-
-/**
- * set the height of panel-body
- */
 function _PopUp_setBodyHeight(popUp)
 {
     var headHeight = $(popUp).find(".panel-heading").css("height");
@@ -1250,12 +1165,17 @@ function PopUp_giveFocus(popUp)
     var color = $(popUp).find('.panel').data('my-color');
     $(popUp).find(".panel").addClass("panel-primary").removeClass("panel-default").css('border-color', color);
     //$(popUp).find(".popup-title").parent().parent().css('background-color', color).css('border-color', color).css('opacity', 1);
+<<<<<<< HEAD
     $(popUp).find(".popup-title").parent().parent().css('opacity', 1);
     // $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
     // $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
     //$(popUp).find(".panel-footer").removeClass("hide-footer");
     _PopUp_setBodyHeight(popUp);
+=======
+    $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
+    $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
     $(document.activeElement).blur();
+>>>>>>> master
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
@@ -1392,12 +1312,6 @@ function PopUp_setColor(popUp, color)
         // $(popUp).find(".popup-title").parent().parent().addClass("panel-heading-faded-out");
     }
 }
-/***********************************************************
- * This module provides an easy interface for calling functions
- * at regular intervals. Also have support for switching
- * to a longer interval if the user is inactive. Intervals
- * are assumed to be factors of 10 seconds.
- **********************************************************/
 var RF_ACTIVE = true;
 var RF_timeoutIDs = [];
 var RF_INTERVAL = 10 * 1000;
@@ -1438,12 +1352,6 @@ function RF_callRecurringFunctions(count)
             functionDict.recurringFunction();
     });
 }
-/***********************************************************
- * Inspired by UISegmentedControl in the iOS SDK.
- * Segmented Controls are button groups in which only
- * one button may be selected.
- **********************************************************/
-
 /*
  * choices = [
  *  {
@@ -1516,11 +1424,6 @@ function SC_isHighlighted(button)
 {
     return $(button).hasClass('btn-primary');
 }
-/***********************************************************
- * Segmented control with support for multiple selections
- * Requires Segmented Control module
- **********************************************************/
-
 function SCM_initWithChoices(heading, choices)
 {
     var sc = SC_initWithChoices(heading, choices);
@@ -1570,11 +1473,6 @@ function SCM_setToChoices(scm, choices)
         };
     });
 }
-/***********************************************************
- * Segmented Control in bootstrap popover.
- * Meant to be used with forms.
- **********************************************************/
-
 function SCP_initOnElement(element, container, heading, choices)
 {
     if ($(element).data('scp'))
@@ -1596,10 +1494,6 @@ function SCP_initOnElement(element, container, heading, choices)
     $(element).data('scp', sc);
     return sc;
 }
-/***********************************************************
- * A generic set data structure
- **********************************************************/
-
 var Set = function()
 { 
 }
@@ -1644,15 +1538,6 @@ Set.prototype.equals = function(a){
 Set.prototype.isEmpty = function(a){
     return this.size <= 0;
 }
-/***********************************************************
- * Sidebar singleton.
- * Works with popup module, as well as notifications
- * An element is considered in the sidebar if it has class "in"
- * The sidebar by default isn't filled. That means it only
- * shows 1/3 of its width and does not fill the screen.
- * Call SB_fill to fill the screen.
- **********************************************************/
-
 var SB_willCloseListeners = [];
 function SB_init()
 {
@@ -1728,6 +1613,7 @@ function SB_pop(content)
     $(content).removeClass('in').on('transitionend', function(){
         $(content).remove();
     });
+    //SB_hideIfEmpty();
 }
 function SB_setMainContent(content)
 {
@@ -2000,24 +1886,15 @@ function selectAgenda(agendaAnchor)
         PopUp_giveFocus(popUp);
         return;
     }
-    var popUp = PopUp_getMainPopUp();
-    var $panel = $(panel);
-    var success = PopUp_setToEventID(popUp, panel.id, function(){
-        // retry
-        PopUp_giveFocus(popUp);
-        Agenda_unhighlight($(".agenda-item.panel-primary").filter(function(){
-            return !UI_isPinned(this.id);
-        }));
-        Agenda_highlight($('#' + panel.id + '.agenda-item'));
-    });
-    if (!success)
-        return;
-    PopUp_giveFocus(popUp);
     
     Agenda_unhighlight($(".agenda-item.panel-primary").filter(function(){
         return !UI_isPinned(this.id);
     }));
-    Agenda_highlight($panel);
+    Agenda_highlight(panel);
+
+    var popUp = PopUp_getMainPopUp();
+    PopUp_setToEventID(popUp, panel.id);
+    PopUp_giveFocus(popUp);
 }
 
 /***************************************************
@@ -2095,20 +1972,6 @@ function Cal_init() {
             PopUp_giveFocus(popUp);
             return;
         }
-        var popUp = PopUp_getMainPopUp();
-
-        var success = PopUp_setToEventID(popUp, calEvent.id, function(){
-            PopUp_giveFocus(popUp);
-            $($("#calendarui").fullCalendar("clientEvents", function(calEvent) {
-                return !UI_isPinned(calEvent.id)
-            })).each( function(index) {
-                Cal_unhighlightEvent(this, false);
-            });
-            Cal_highlightEvent(calEvent, true);
-        });
-        if (!success)
-            return;
-        PopUp_giveFocus(popUp);
 
         $($("#calendarui").fullCalendar("clientEvents", function(calEvent) {
             return !UI_isPinned(calEvent.id)
@@ -2117,6 +1980,10 @@ function Cal_init() {
         });
         Cal_highlightEvent(calEvent, true);
 
+        var popUp = PopUp_getMainPopUp();
+
+        PopUp_setToEventID(popUp, calEvent.id);
+        PopUp_giveFocus(popUp);
     }
     Cal_options.windowResize = function(view){
         Cal_adjustHeight();
@@ -2170,6 +2037,7 @@ function Cal_reload()
                     return;
                 var shouldHighlight = UI_isPinned(this) || UI_isMain(this);
                 var isHidden = EventsMan_eventIsHidden(this);
+                // TODO(Dyland) distinguish between hidden and non-hidden events
                 color = SECTION_COLOR_MAP[eventDict.section_id]['color'];
                 color = colorLuminance(color, FACTOR_LUM);
                 var rgba;
@@ -2215,15 +2083,13 @@ function EventsMan_init()
         return;
     EVENTS_INIT = true;
     eventsManager = new _EventsMan_new();
-
-    // try to load from local storage. If it exists, use it, otherwise,
-    // load from server and show loading indicator
     if (EventsMan_load())
     {
         EVENTS_READY = true;
         EventsMan_callOnReadyListeners();
         _EventsMan_callUpdateListeners();
         EventsMan_verifyLocalData();
+        //EventsMan_pullFromServer();
     }
     else
     {
@@ -2232,8 +2098,6 @@ function EventsMan_init()
             EventsMan_callOnReadyListeners();
         }, true);
     }
-
-    // this gets called whenever the user edits an event
     PopUp_addEditListener(function(id, field, value) {
         if (field == 'event_type')
         {
@@ -2348,32 +2212,52 @@ function EventsMan_init()
         {
             // display notifications if similar events exist.
             SE_checkSimilarEvents(eventsManager.uncommitted[id]);
+            //$.post('get/similar-events', {
+            //    event_dict: JSON.stringify(eventsManager.uncommitted[id]), 
+            //}, function (data){
+            //    NO_showSimilarEventsNotification(id, data);
+            //}, 'json')
         }
         _EventsMan_callUpdateListeners()
     });
 
     $(window).on('beforeunload', function(ev) {
-        // first check if the user has uncommitted changes
         if (Object.getOwnPropertyNames(eventsManager.uncommitted).length > 0)
         {
             ev.preventDefault()
             return 'Your changes have not been saved. Are you sure you want to leave?';
         }
-        // push committed any changes (the user thinks it's already pushed)
         EventsMan_pushToServer(false);
-        // save events in local storage
         EventsMan_save();
     });
 
-    // verify local data every 4.5 min if the user is active (10 if not active).
     RF_addRecurringFunction(function(){
         EventsMan_verifyLocalData();
     }, 4.5 * 60 * 1000, 10 * 60 * 1000);
-    // push/pull every 10 seconds if the user is active (5 min if not active).
     RF_addRecurringFunction(function(){
         EventsMan_pushToServer(true); 
         EventsMan_pullFromServer();
     }, 10 * 1000, 60 * 5 * 1000);
+    /*window.setInterval(function(){
+        EVENTSMAN_COUNT++ ; // every 5 min. -> 30 * 10s = 300s = 5min
+        if (!eventsManager.active && (EVENTSMAN_COUNT % 30) != 0)
+            return;
+        if ((EVENTSMAN_COUNT % 30) == 0) 
+            EventsMan_verifyLocalData();
+        EventsMan_pushToServer(true); 
+        EventsMan_pullFromServer();
+        EVENTSMAN_COUNT %= 30; // can use a bigger number here, just need to prevent overflow
+    }, 10 * 1000);
+    $(window).on('mousemove click', function(){
+        $.each(timeoutIDs, function(index){
+            window.clearTimeout(this);
+        });
+        timeoutIDs = [];
+        eventsManager.active = true;
+        timeoutIDs.push(window.setTimeout(function(){
+            eventsManager.active = false;
+        }, 30*1000));
+    });*/
 }
 
 /***************************************************
@@ -2389,7 +2273,8 @@ function EventsMan_pushToServer(async)
     $.each(eventsManager.updatedIDs.toArray(), function(index){
         updated.push(eventsManager.events[this]);
     });
-    // check if there are any changes to be pushed
+   
+    //var deleted = eventsManager.deletedIDs;
     if (updated.length > 0 || eventsManager.changed)
     {
         $.ajax('/put', {
@@ -2402,7 +2287,6 @@ function EventsMan_pushToServer(async)
             success: function(data){
                 var changedIDs = data.changed_ids;
                 $.each(changedIDs, function(oldID, idArray){
-                    // handle eventIDs changes
                     var newID = idArray[0];
                     var newGroupID = idArray[1];
                     if (oldID in eventsManager.events) {
@@ -2412,6 +2296,13 @@ function EventsMan_pushToServer(async)
                         eventDict.event_group_id = newGroupID;
                         eventsManager.events[newID] = eventDict;
                     }
+                    //$.each(eventsManager.order, function(index){
+                    //    if (this.event_id == oldID)
+                    //    {
+                    //        this.event_id = newID;
+                    //        return false;
+                    //    }
+                    //});
                     if (oldID in eventsManager.uncommitted) {
                         var eventDict = eventsManager.uncommitted[oldID];
                         delete eventsManager.uncommitted[oldID];
@@ -2421,31 +2312,23 @@ function EventsMan_pushToServer(async)
                     }
                     EventsMan_callEventIDsChangeListener(oldID, newID);
                 });
-
-                // events have changed. Construct a new order array
                 EventsMan_constructOrderArray();
-
-                // now check for event IDs that have since been deleted
-                // this is mostly for recurring events
                 var deletedIDs = data.deleted_ids;
-                var haveDeletedID = false;
                 $.each(deletedIDs, function(index){
+                    // TODO what if the id was already opened? this code doesn't handle that
                     if (this in eventsManager.events) {
                         delete eventsManager.events[this];
-                        haveDeletedID = true;
                     }
                     if (this in eventsManager.uncommitted){
                         delete eventsManager.uncommitted[this];
-                        haveDeletedID = true;
                     }
                 });
-                if (haveDeletedID)
-                    _EventsMan_callUpdateListeners();
-
-                // reset the state of the events manager, then pull
                 eventsManager.isIdle = true;
+                //eventsManager.addedCount = 0; // not gonna overflow, no need to set to 0. Safer, so IDs don't ever crash
+                //eventsManager.deletedIDs = [];
                 eventsManager.updatedIDs = new Set();
                 eventsManager.changed = false;
+
                 EventsMan_pullFromServer(null, true);
             },
             async: async,
@@ -2463,7 +2346,7 @@ function EventsMan_pullFromServer(complete, showLoading)
         return;
     if (eventsManager.updatedIDs.size > 0 || eventsManager.changed)
         return; // don't pull until changes are pushed
-    showLoading = typeof showLoading != 'undefined' ? showLoading : false; // default value = false
+    showLoading = typeof showLoading != 'undefined' ? showLoading : false;
     eventsManager.isIdle = false;
     var url = '/get/' + eventsManager.lastSyncedTime;
     $.ajax(url, {
@@ -2487,16 +2370,11 @@ function EventsMan_pullFromServer(complete, showLoading)
     });
 }
 
-/**
- * process data downloaded from pull. Return a boolean
- * indicating whether the events manager has changed in
- * any way (so that update listeners can be notified)
- */
 function EventsMan_processDownloadedEvents(data)
 {
+    //var eventsArray = JSON.parse(data);
     var changed = false;
     var eventsArray = data.events;
-    // go through the array of events
     for (var i = 0; i < eventsArray.length; i++)
     {
         var eventsDict = eventsArray[i];
@@ -2513,39 +2391,60 @@ function EventsMan_processDownloadedEvents(data)
         }
         changed = true;
     }
-
-    // handle hidden events
     var hiddenIDs = Set.prototype.fromArray(data.hidden_events);
     if (!hiddenIDs.equals(eventsManager.hiddenIDs) && !eventsManager.changed)
     {
         eventsManager.hiddenIDs = hiddenIDs; // NOTE ok, since we don't pull until all changes are pushed
         changed = true;
     }
-
-    // events have changed. reconstruct order array
     EventsMan_constructOrderArray();
     eventsManager.addedCount = 0;
     eventsManager.lastSyncedTime = moment().unix();
     return changed;
 }
 
-/**
- * Verify local storage. In this implementation, just pull
- * everything again
- */
 function EventsMan_verifyLocalData()
 {
     eventsManager.lastSyncedTime = 0;
     EventsMan_pullFromServer();
+    /*if (!eventsManager.isIdle)
+        return;
+    if (eventsManager.updatedIDs.size > 0 || eventsManager.changed)
+        return;
+    eventsManager.isIdle = false;
+
+    var revisionIDs = [];
+    var revIDToEventID = {};
+    $.each(eventsManager.events, function(eventID, eventDict){
+        revisionIDs.push(eventDict.revision_id);
+        revIDToEventID[eventDict.revision_id] = eventID;
+    });
+    $.ajax('/api/localstorage/verify', {
+        type: 'POST',
+        data: {
+            revision_IDs: JSON.stringify(revisionIDs),
+        },
+        dataType: 'json',
+        loadingIndicator: false,
+        success: function(data){
+            $.each(data, function(revID, eventDict){
+                var eventID = revIDToEventID[revID];
+                eventsManager.events[eventID] = eventDict;
+            });
+            EventsMan_constructOrderArray();
+            eventsManager.isIdle = true;
+            _EventsMan_callUpdateListeners();
+        },
+        error: function(){
+            eventsManager.isIdle = true;
+        },
+    });*/
 }
 
 /***************************************************
  * Event Listeners
  **************************************************/
 
-/**
- * called when user click on the add event button
- */
 function EventsMan_clickAddEvent()
 {
     var popUp = PopUp_getMainPopUp();
@@ -2554,16 +2453,20 @@ function EventsMan_clickAddEvent()
 
     // set new ID
     var id = EventsMan_addEvent();
-    var success = PopUp_setToEventID(popUp, id);
-    if (!success)
-    {
-        EventsMan_cancelChanges(id);
-        return;
-    }
+    PopUp_setToEventID(popUp, id);
     PopUp_markAsUnsaved(popUp);
     
     PopUp_giveFocus(popUp);
     PopUp_giveEditingFocus(popUp);
+    //_EventsMan_callUpdateListeners();
+}
+
+function EventsMan_clickSync()
+{
+    EventsMan_pushToServer();
+    SR_save();
+    //var $syncButton = $('#sync-button').find('span');
+    //$syncButton.addClass('icon-refresh-animate')
 }
 var KEY_UP = 38;
 var KEY_DOWN = 40;
@@ -3148,40 +3051,8 @@ function PopUp_initialize(popUp)
  * Getters and Setters
  **************************************************/
 
-function PopUp_setToEventID(popUp, id, retryListener)
+function PopUp_setToEventID(popUp, id)
 {
-    var oldID = PopUp_getID(popUp);
-    if (oldID && oldID != id)
-    {
-        if (EventsMan_hasUncommitted(oldID))
-        {
-            AS_showActionSheetFromElement($(popUp).find('#close_button')[0], popUp, 'Save changes?',[
-                    {
-                        important: false,
-                        text: 'Save',
-                    },
-                    {
-                        important: true,
-                        text: 'Don\'t save',
-                    }
-                ],
-                function(index){
-                    if (index == 0) {
-                        PopUp_clickedSavePopUp(popUp, false);
-                    }
-                    else{
-                        PopUp_clickedUndo(popUp);
-                    }
-                    if (retryListener)
-                    {
-                        PopUp_setToEventID(popUp, id);
-                        retryListener();
-                    }
-                }
-            );
-            return false;
-        }
-    }
     PopUp_setID(popUp, id);
     var eventDict;
     $(popUp).find('.unsaved').removeClass('unsaved');
@@ -3236,7 +3107,6 @@ function PopUp_setToEventID(popUp, id, retryListener)
     PopUp_setDate(popUp, eventDict.event_start);
     PopUp_setStartTime(popUp, eventDict.event_start);
     PopUp_setEndTime(popUp, eventDict.event_end);
-    PopUp_setLastEditedTime(popUp, eventDict.modified_time);
     var myColor = SECTION_COLOR_MAP[eventDict.section_id];
     if (!myColor)
         myColor = '#555555';
@@ -3432,7 +3302,6 @@ function PopUp_setToEventID(popUp, id, retryListener)
         $(this).trigger('value_set');
     });
 
-    return true;
 }
 
 function PopUp_setTitle(popUp, title)
@@ -3471,11 +3340,7 @@ function PopUp_setEndTime(popUp, unixTime)
     var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-end').text(time.format("h:mm A"));
 }
-function PopUp_setLastEditedTime(popUp, unixTime)
-{
-    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
-    $(popUp).find('#popup-last-edited-time').text(time.format("MM/DD/YYYY"));
-}
+
 /***************************************************
  * State Restoration
  **************************************************/
