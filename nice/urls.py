@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^login/$', cas.views.login, name='cas_login'),
     url(r'^logout/$', cas.views.logout, name='cas_logout'),
     url(r'^user-logout$', views.logout, name='user_logout'),
+    url(r'^mobile_logged_in$', views.mobile_logged_in, name='mobile_logged_in'),
 
     url(r'^$', views.index, name="index"),
     url(r'^landing$', views.landing, name="landing"),

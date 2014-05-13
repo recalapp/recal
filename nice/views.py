@@ -105,7 +105,22 @@ def embedded_not_logged_in(request):
     """
     This is the custom log in page the Chrome Extension home page will show if necessary.
     """
+    if request.user.is_authenticated():
+        return redirect('chrome_frame')
     return render(request, 'embedded/not-logged-in.html', None)
+
+@login_required
+def mobile_logged_in(request):
+    """Custom log in page handler for iOS app.
+
+    If logged in (i.e. on the way back from CAS), returns username.
+    The way to use this is to go to /login?next=mobile_logged_in
+    
+    The mobile app detects that we're logged in as soon as the URL changes to /mobile_logged_in.
+    At that point it stops and grabs the username from the displayed page.
+    """
+    return HttpResponse(request.user.username)
+
 
 @login_required
 def point_award_history(request):
