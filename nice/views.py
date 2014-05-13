@@ -236,7 +236,7 @@ def tester_login(request):
     '''
     This is for COS 333 tester use only. Lets you log in with a non-CAS account.
     Since each tester only has one netid, they can use this to log in as a second user and test the unapproved content moderation features.
-    The tester accounts are: _tester1/tester1 and _tester2/tester2. See fixtures/initial_data.json.
+    The tester accounts are: _tester1/tester1, _tester2/tester2, and _tester3/tester3. See fixtures/initial_data.json.
 
     How this works:
     For debugging purposes, lets you log in as superuser. Run this after creating a superuser through manage.py.
