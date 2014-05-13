@@ -153,7 +153,7 @@ function Agenda_loadEvents(eventIDs)
         var agenda = agendaContainer.find("#agenda123")[0];
         agenda.id = this;
         
-        $(agenda).find(".panel-body").find('h4').html(eventDict.event_title); // Already escaped by server so ok to display as html. That way, normal characters like ' render fine.
+        $(agenda).find(".panel-body").find('h4').text(eventDict.event_title); 
         $(agenda).find('#agenda-section').text(SECTION_MAP[eventDict.section_id]);
         
         var start = moment.unix(eventDict.event_start);

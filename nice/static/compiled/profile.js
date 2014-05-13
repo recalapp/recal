@@ -808,13 +808,18 @@ Array.prototype.equals = function(a){
  * corner of the screen. It is meant to be used only
  * for displaying information. If user interaction is
  * needed, use notificaitons.js.
+ *
+ * Works similarly to memory management - every id added to loading
+ * must be released, otherwise the indicator stays.
  **********************************************************/
 
 // add as needed
 var LO_TYPES = {
     SUCCESS: 'alert-success',
 }
-var LO_idMap = null;
+
+var LO_idMap = null; // can't initalize until the set data structure is loaded
+
 function LO_init()
 {
     LO_idMap = {
@@ -823,13 +828,17 @@ function LO_init()
     };
 }
 
+/***************************************************
+ * Client Methods
+ **************************************************/
+
 function LO_showLoading(id)
 {
     if (typeof id == 'undefined')
         return;
     if (id in LO_idMap.loading)
     {
-        // TODO should do anything here?
+        // TODO id already exists. should do anything here?
         return;
     }
     LO_idMap.loading.add(id);
@@ -873,10 +882,6 @@ function LO_showError(id)
     if ($('#error.active').length > 0)
         return;
 
-    /*if ($('#loading.error').length > 0)
-        return;
-    if ($('#loading').not('.error').length > 0)
-        $('#loading').not('.error').remove();*/
     var $loadingError = LO_getLoadingHTML();
     $loadingError.attr('id', 'error');
     $loadingError.removeClass('alert-info').addClass('alert-danger');
@@ -893,6 +898,11 @@ function LO_showTemporaryMessage(message, type)
         LO_remove($loading);
     }, 1.5*1000);
 }
+
+/***************************************************
+ * Helper functions
+ **************************************************/
+
 function LO_remove($loading)
 {
     $loading.on('transitionend', function(ev){

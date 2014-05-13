@@ -1,3 +1,13 @@
+/***************************************************
+ * Calendar Module
+ * requires: Calendar-base module
+ *           UI module (UI_isPinned, UI_isMain),
+ *           PopUp module
+ *           Events Manager module
+ **************************************************/
+
+
+// sample event source:
 //eventSources: [{
 //    events: [{
 //            id: "1",
@@ -11,17 +21,11 @@
 function Cal_init() {
     if (CAL_INIT)
         return;
+
+
+
+    // customizing options
     var height = window.innerHeight - $(".navbar").height() - 50;
-
-    EventsMan_addUpdateListener(function(){
-        if (Cal_active())
-            Cal_reload();
-    });
-    $('#'+SE_id).on('close', function(ev){
-        //if (Cal_active())
-        Cal_reload();
-    });
-
     Cal_options.height = height;
     Cal_options.eventClick = function(calEvent, jsEvent, view) {
         if (calEvent.highlighted == true)
@@ -68,6 +72,21 @@ function Cal_init() {
 
     $("#calendarui").fullCalendar(Cal_options);
     CAL_INIT = true;
+    // unhightlight when closing events
+    PopUp_addCloseListener(function(id){
+        $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){
+            Cal_unhighlightEvent(this, true);
+        });
+    });
+    // reload before displaying
+    EventsMan_addUpdateListener(function(){
+        if (Cal_active())
+            Cal_reload();
+    });
+    $('#'+SE_id).on('close', function(ev){
+        if (Cal_active())
+            Cal_reload();
+    });
     $("#calendar.tab-pane").each(function(index){
         $(this).on("transitionend", function(e) {
             if ($(this).hasClass('in'))
@@ -75,11 +94,6 @@ function Cal_init() {
                 Cal_render();
                 Cal_reload();
             }
-        });
-    });
-    PopUp_addCloseListener(function(id){
-        $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){
-            Cal_unhighlightEvent(this, true);
         });
     });
     if (Cal_active())
@@ -103,6 +117,7 @@ function Cal_reload()
     Cal_eventSource.events = [];
     setTimeout(function(){
         LO_showLoading('cal loading');
+        // NOTE: try statement because the plugin has errors sometimes
         try {
             $.each(eventIDs, function(index){
                 eventDict = EventsMan_getEventByID(this);
@@ -133,7 +148,7 @@ function Cal_reload()
                     eventEndTZ = eventEndTZ.tz(MAIN_TIMEZONE);
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
-                    title: $("<div/>").html(eventDict.event_title).text(), // hack to render this HTML (OK because escaped on server)
+                    title: eventDict.event_title,
                     start: eventStartTZ.toISOString(),
                     end: eventEndTZ.toISOString(),
                     highlighted: shouldHighlight,
@@ -144,11 +159,10 @@ function Cal_reload()
                 });
             });
             $("#calendarui").fullCalendar("refetchEvents");
-            CAL_LOADING = false;
         }
         catch(err){
-            CAL_LOADING = false;
         }
+        CAL_LOADING = false;
         LO_hideLoading('cal loading');
     }, 10);
 }

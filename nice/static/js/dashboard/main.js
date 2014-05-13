@@ -1,3 +1,8 @@
+/***************************************************
+ * Main Module
+ * Think of this module as the main() function. 
+ * It is the first thing that gets called
+ **************************************************/
 $(init)
 var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
@@ -10,6 +15,8 @@ var COURSE_FILTER_BLACKLIST;
 function init()
 {
     pinnedIDs = new Set();
+
+    // time zone
     moment.tz.add({
         "zones": {
             "America/New_York": [
@@ -48,9 +55,11 @@ function init()
         "links": {}
     });
 
+    // initializing
     LO_init();
     RF_init();
     
+    // set up ajax, so it shows loading indicator and send csrf properly
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
@@ -83,8 +92,11 @@ function init()
             return;
         LO_showError(loadingID);
     });
+
+    // more inits
     CacheMan_init();
 
+    // get section info
     SECTION_MAP = JSON.parse(CacheMan_load('/all-sections'));
     SECTION_MAP_INVERSE = {};
     $.each(SECTION_MAP, function (key, value) {
@@ -109,8 +121,19 @@ function init()
                 clearLocalStorage();
         }
         localStorage.setItem('sectionsmap', CacheMan_load('/get/sections'));
+        var user = localStorage.getItem('user');
+        if (!user)
+            clearLocalStorage();
+        else
+        {
+            if (user != USER_NETID)
+                clearLocalStorage();
+        }
+        localStorage.setItem('user', USER_NETID);
     }
+   
     
+    // more inits
     SB_init();
     SR_init();
     EventsMan_init();
@@ -119,6 +142,8 @@ function init()
     Agenda_init();
     Cal_init();
     SE_init();
+
+    // state restoration
     SR_addWillSaveListener(function (){
         Nav_save();
         UI_save();
@@ -127,6 +152,8 @@ function init()
         Nav_load();
         UI_load();
     });
+
+    // if event id changes, manage the ui module accordingly
     EventsMan_addEventIDsChangeListener(function(oldID, newID){
         if (UI_isMain(oldID))
             UI_setMain(newID);
@@ -136,27 +163,26 @@ function init()
             UI_pin(newID);
         }
     });
+
+    // load the correct theme
     if (THEME == 'w')
         loadWhiteTheme();
     else
         loadDarkTheme();
 
+    // initialize tooltip
     $('.withtooltip').tooltip({});
+
+    // handle resize
     $(window).on('resize', function(ev){
         adaptSize();
     });
     adaptSize();
-    if ('localStorage' in window && window['localStorage'] !== null)
-    {
-        localStorage.setItem('user', USER_NETID);
-    }
+
+    // check for unapproved revisions
     UR_pullUnapprovedRevisions();
-    /*setInterval(function(){
-        UR_pullUnapprovedRevisions();
-    }, 10 * 1000)
-    setInterval(function(){
-        updatePoints();
-    }, 60 * 1000);*/
+
+    // check for unapproved revisions at 10 seconds interval
     RF_addRecurringFunction(function(isInterval){
         updatePoints();
     }, 10 * 1000, 5 * 60 * 1000);
@@ -164,6 +190,10 @@ function init()
         UR_pullUnapprovedRevisions();
     }, 10 * 1000, 5 * 60 * 1000);
 }
+
+/**
+ * This is how we are responsive
+ */
 function adaptSize()
 {
     if (window.innerWidth <= 768)
@@ -189,6 +219,9 @@ function adaptSize()
     }
 }
 
+/***************************************************
+ * State restoration for nav and popup
+ **************************************************/
 function Nav_save()
 {
     var id = $("#maintab").find(".active").find("a")[0].id;
@@ -200,10 +233,6 @@ function Nav_load()
     if (index == null)
         return;
     $("#maintab #"+NAV_ID[index]).tab("show");
-    //$("#maintab li").removeClass("active");
-    //$("#maintab #"+NAV_ID[index]).parent().addClass("active");
-    //$(".tab-pane").removeClass("in");
-    //$("#"+TAB_ID[index]).addClass("in");
 }
 
 
@@ -231,7 +260,12 @@ function UI_load()
         //$.removeCookie('main_ID')
     }
 }
-
+/***************************************************
+ * Miscellaneous
+ **************************************************/
+/**
+ * A helpful method to disable all user interactions
+ */
 function disableAllInteractions()
 {
     var disabler = $('<div id="disabler"></div>');
@@ -250,6 +284,10 @@ function enableAllInteractions()
 {
     $('#disabler').remove();
 }
+
+/**
+ * Toggle tutorial
+ */
 function toggleInfo()
 {
     $('.main-content').toggleClass('main-hidden');
@@ -259,6 +297,7 @@ function onLogOut()
 {
     clearLocalStorage();
 }
+
 function clearLocalStorage()
 {
     if ('localStorage' in window && window['localStorage'] !== null)

@@ -449,6 +449,8 @@ div.nav_controls a:hover, div.nav_controls a:focus {
     min-height: 150px;
 }
 #popup-loc{
+    min-width: 70%;
+    min-height: 15px;
     display: inline-block;
 }
 .popup-text-container{
