@@ -157,7 +157,7 @@ def modify_events(netid, events, auto_approve=False):
             section = Section.objects.get(id=event_dict['section_id'])
 
             # Check to see if this user is allowed to add Events to this Section.
-            if section not in user.sections:
+            if section not in user.sections.all():
                 continue # User isn't in this Section, so skip to next event dict
 
             event_group.section = section;
@@ -197,7 +197,7 @@ def modify_events(netid, events, auto_approve=False):
             section = Section.objects.get(id=event_dict['section_id'])
 
             # Check to see if this user is allowed to add Events to this Section.
-            if section not in user.sections:
+            if section not in user.sections.all():
                 continue # User isn't in this Section, so skip to next event dict
 
             event_group = Event_Group(section=section)
