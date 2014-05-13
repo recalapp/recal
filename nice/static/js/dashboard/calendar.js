@@ -170,7 +170,7 @@ function Cal_reload()
 function Cal_render() {
     $("#calendarui").fullCalendar("render");
 
-    var height = window.innerHeight - $(".navbar").height() - 50;
+    var height = Cal_options.height;
     // customize cell height
     // 16 hours, each hour 2 cells
     var cellHeight = Math.floor(height / (2 * 16));
