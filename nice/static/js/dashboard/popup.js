@@ -725,7 +725,7 @@ function PopUp_clickedElement(element)
     });
 
     // do entering shortcuts
-    $(form).find('input').off('keyup').on('keyup', function(ev){
+    $(form).find('input, textarea').off('keyup').on('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {

@@ -1929,7 +1929,7 @@ function Agenda_loadEvents(eventIDs)
         var agenda = agendaContainer.find("#agenda123")[0];
         agenda.id = this;
         
-        $(agenda).find(".panel-body").find('h4').html(eventDict.event_title); // Already escaped by server so ok to display as html. That way, normal characters like ' render fine.
+        $(agenda).find(".panel-body").find('h4').text(eventDict.event_title); 
         $(agenda).find('#agenda-section').text(SECTION_MAP[eventDict.section_id]);
         
         var start = moment.unix(eventDict.event_start);
@@ -2217,7 +2217,7 @@ function Cal_reload()
                     eventEndTZ = eventEndTZ.tz(MAIN_TIMEZONE);
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
-                    title: $("<div/>").html(eventDict.event_title).text(), // hack to render this HTML (OK because escaped on server)
+                    title: eventDict.event_title,
                     start: eventStartTZ.toISOString(),
                     end: eventEndTZ.toISOString(),
                     highlighted: shouldHighlight,
@@ -3476,7 +3476,7 @@ function PopUp_setTitle(popUp, title)
 }
 function PopUp_setDescription(popUp, desc)
 {
-    $(popUp).find("#popup-desc").html(nl2br(desc));
+    $(popUp).find("#popup-desc").text(desc);
 }
 function PopUp_setLocation(popUp, loc)
 {
@@ -3761,7 +3761,7 @@ function PopUp_clickedElement(element)
     });
 
     // do entering shortcuts
-    $(form).find('input').off('keyup').on('keyup', function(ev){
+    $(form).find('input, textarea').off('keyup').on('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {
@@ -3815,7 +3815,7 @@ var POPUP_CAN_BE_EMPTY = {
  */
 function PopUp_clickedSaveElement(form)
 {
-    // check if empty
+    // check if empty and if empty fields are allowed
     var text_id = _PopUp_Form_getElementIDForForm(form);
     if (!/\S/.test(_PopUp_Form_getValue(form)) && !(text_id in POPUP_CAN_BE_EMPTY))
     {
@@ -3826,7 +3826,6 @@ function PopUp_clickedSaveElement(form)
     PopUp_markAsNotEditing(popUp);
     // hide the form and unhide the text
     _PopUp_hideFormForElement(form);
-    
     if (text_id == 'popup-title')
     {
         $(popUp).find('.popup-ctrl').removeClass('hidden');
@@ -3834,9 +3833,10 @@ function PopUp_clickedSaveElement(form)
             $(popUp).find('.poup-ctrl-right').addClass('hidden');
     }
 
-    //actual saving
+    // actual saving
     var text = $(popUp).find("#"+text_id)[0];
-    var safe = _PopUp_Form_getValue(form).escapeHTML();
+    var safe = _PopUp_Form_getValue(form);
+    // set the values properly if it's a datetime field
     if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'date')
     {
         var safeTZ = moment(safe);
@@ -3851,9 +3851,9 @@ function PopUp_clickedSaveElement(form)
             safeTZ = safeTZ.tz(MAIN_TIMEZONE);
         safe = safeTZ.format('h:mm A');
     }
-    if ($(text).html() == nl2br(safe))
+    if ($(text).text() == safe)
         return; // no saving needed
-    $(text).html(nl2br(safe));
+    $(text).text(safe);
     PopUp_markAsUnsaved(popUp);
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
     if (text_id == 'popup-time-start' || text_id == 'popup-time-end')
@@ -3861,6 +3861,10 @@ function PopUp_clickedSaveElement(form)
         _PopUp_Form_enforceStartDate(popUp);
     }
 }
+
+/**
+ * event listener for clicking on close
+ */
 function PopUp_clickedClose(popUpAnchor)
 {
     var popUp = popUpAnchor;
@@ -3884,10 +3888,11 @@ function PopUp_clickedClose(popUpAnchor)
             ],
             function(index){
                 if (index == 0) {
+                    // save
                     PopUp_clickedSavePopUp(popUp, true);
-                    //PopUp_clickedClose(popUp);
                 }
                 else{
+                    // don't save
                     PopUp_clickedUndo(popUp);
                     PopUp_clickedClose(popUp);
                 }
@@ -3900,6 +3905,10 @@ function PopUp_clickedClose(popUpAnchor)
         PopUp_callCloseListeners(PopUp_getID(popUp));
     PopUp_close(popUp);
 }
+
+/**
+ * event listener for clicking on hide
+ */
 function PopUp_clickedDelete(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
@@ -3907,6 +3916,8 @@ function PopUp_clickedDelete(popUpAnchor)
         return;
     var event_id = PopUp_getID(popUp);
     var eventDict = EventsMan_getEventByID(event_id);
+
+    // check if this is recurring
     if (eventDict && 'recurrence_days' in eventDict)
     {
         AS_showActionSheetFromElement(popUpAnchor, popUp, "Done with this event? Click to hide from your agenda and calendar.", [ 
@@ -3934,6 +3945,9 @@ function PopUp_clickedDelete(popUpAnchor)
     if (!EventsMan_eventShouldBeShown(event_id))
         PopUp_close(popUp);
 }
+/**
+ * event listener for clicking on unhide
+ */
 function PopUp_clickedUnhide(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
@@ -3941,6 +3955,7 @@ function PopUp_clickedUnhide(popUpAnchor)
         return;
     var event_id = PopUp_getID(popUp);
     var eventDict = EventsMan_getEventByID(event_id);
+    // check if recurring
     if ('recurrence_days' in eventDict)
     {
         AS_showActionSheetFromElement(popUpAnchor, popUp, 'Unhide these events?', [
@@ -3962,6 +3977,9 @@ function PopUp_clickedUnhide(popUpAnchor)
     }
     EventsMan_unhideEvent(event_id);
 }
+/**
+ * event listener for clicking on save
+ */
 function PopUp_clickedSavePopUp(anchor, shouldClose)
 {
     var popUp = _PopUp_getPopUp(anchor);
@@ -4042,6 +4060,11 @@ function PopUp_clickedSavePopUp(anchor, shouldClose)
     if (shouldClose)
         PopUp_clickedClose(popUp);
 }
+
+/**
+ * event listener for clicking on undo - doesn't exist anymore, but
+ * function is still used
+ */
 function PopUp_clickedUndo(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
