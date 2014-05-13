@@ -149,7 +149,10 @@ function Agenda_loadEvents(eventIDs)
         $(agenda).find('#agenda-section').text(SECTION_MAP[eventDict.section_id]);
         
         var start = moment.unix(eventDict.event_start);
-        var timeText = start.tz(MAIN_TIMEZONE).calendar();
+        var startTZ = start;
+        if (MAIN_TIMEZONE)
+            startTZ = start.tz(MAIN_TIMEZONE);
+        var timeText = startTZ.calendar();
         $(agenda).find('#agenda-time').text(timeText);
         // TODO: add overdue field when creating new event
         // if (eventDict['overdue'])

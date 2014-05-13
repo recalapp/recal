@@ -747,7 +747,8 @@ function EventsMan_load()
     EventsMan_constructOrderArray();
     return true;
 }
-var MAIN_TIMEZONE = 'America/New_York';
+var PRINCETON_TIMEZONE = 'America/New_York';
+var MAIN_TIMEZONE = PRINCETON_TIMEZONE;
 var DAYS_DICT = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'S'];
 var TYPE_MAP_INVERSE = {
     "assignment":"AS",
@@ -1248,8 +1249,9 @@ function PopUp_giveFocus(popUp)
     // $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
     // $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
     //$(popUp).find(".panel-footer").removeClass("hide-footer");
-    _PopUp_setBodyHeight(popUp);
-    $(document.activeElement).blur();
+    // _PopUp_setBodyHeight(popUp);
+    if ($(popUp).find(document.activeElement).length == 0)
+        $(document.activeElement).blur();
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
@@ -1923,11 +1925,17 @@ function Cal_reload()
             rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
         }
 
+        var eventStartTZ = moment.unix(eventDict.event_start);
+        if (MAIN_TIMEZONE)
+            eventStartTZ = eventStartTZ.tz(MAIN_TIMEZONE);
+        var eventEndTZ =  moment.unix(eventDict.event_end);
+        if (MAIN_TIMEZONE)
+            eventEndTZ = eventEndTZ.tz(MAIN_TIMEZONE); 
         Cal_eventSource.events.push({
             id: eventDict.event_id,
             title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
-            start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
-            end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
+            start: eventStartTZ.toISOString(),
+            end: eventEndTZ.toISOString(),
             myColor: COURSE_COLOR_MAP[eventDict.course_id],
             textColor: shouldHighlight ? '#ffffff' : color,
             backgroundColor: rgba,
@@ -2477,8 +2485,14 @@ $(document).keydown(function(e){
             break;
     }
 });
-$(document).keyup(function(){
-    SHIFT_PRESSED = false;
+$(document).keyup(function(e){
+    var keyCode = e.keyCode || e.which;
+    switch (keyCode)
+    {
+        case KEY_SHIFT:
+            SHIFT_PRESSED = false;
+            break;
+    }
 });
 var DEFAULT_SECTION_COLORS;
 var COURSE_COLOR_MAP = {};
@@ -2819,24 +2833,24 @@ function SB_profile_init()
         },
     });
 }
-function UP_init()
-{
-    $('#first_name_box').val(USER.first_name);
-    $('#last_name_box').val(USER.last_name);
-    $('#first_name_box').on('change', function(ev){
-        USER.first_name = $(this).val();
-    });
-    $('#last_name_box').on('change', function(ev){
-        USER.last_name = $(this).val();
-    });
-    $(window).on('beforeunload', function(ev){
-        $.ajax('/put/user', {
-            async: false,
-            dataType: 'json',
-            type: 'POST',
-            data: {
-                user: JSON.stringify(USER)
-            },
-        });
-    });
-}
+// function UP_init()
+// {
+//     $('#first_name_box').val(USER.first_name);
+//     $('#last_name_box').val(USER.last_name);
+//     $('#first_name_box').on('change', function(ev){
+//         USER.first_name = $(this).val();
+//     });
+//     $('#last_name_box').on('change', function(ev){
+//         USER.last_name = $(this).val();
+//     });
+//     $(window).on('beforeunload', function(ev){
+//         $.ajax('/put/user', {
+//             async: false,
+//             dataType: 'json',
+//             type: 'POST',
+//             data: {
+//                 user: JSON.stringify(USER)
+//             },
+//         });
+//     });
+// }

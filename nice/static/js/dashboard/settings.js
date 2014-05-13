@@ -72,6 +72,36 @@ function SE_init()
             });
         });
         $(this).find('#course_options').append(course_scm);
+        var tz_sc = SC_initWithChoices('Use Princeton\'s timezone:', [
+                {
+                    value: 1,
+                    pretty: 'Yes',
+                    selected: MAIN_TIMEZONE != null,
+                },
+                {
+                    value: 0,
+                    pretty: 'No',
+                    selected: MAIN_TIMEZONE == null,
+                }
+            ]);
+        $(tz_sc).on('select', function(ev, choices){
+            $.each(choices, function(key, selected){
+                if (selected)
+                {
+                    if (key == 1)
+                    {
+                        // princeton
+                        MAIN_TIMEZONE = PRINCETON_TIMEZONE;
+                    }
+                    else
+                    {
+                        // local
+                        MAIN_TIMEZONE = null;
+                    }
+                }
+            });
+        });
+        $(this).find('#timezone_options').append(tz_sc);
     });
     $('#' + SE_id).on('hide.bs.modal', function(){
         // save

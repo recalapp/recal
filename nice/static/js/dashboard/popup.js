@@ -56,7 +56,7 @@ function PopUp_init()
 
 function PopUp_initialize_deferred(popUp)
 {
-    if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker
+    if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker on mobile
     {
         $(popUp).find(".withdatepicker").datetimepicker({
             format: "MM d, yyyy",
@@ -67,7 +67,7 @@ function PopUp_initialize_deferred(popUp)
     } else {
         $(popUp).find('.withdatepicker').removeClass('withdatepicker');
     }
-    if ($(popUp).find(".withtimepicker")[0].type == 'text')// defaults to browser's builtin date picker
+    if ($(popUp).find(".withtimepicker")[0].type == 'text')// defaults to browser's builtin date picker on mobile
     {   
         $(popUp).find(".withtimepicker").datetimepicker({
             format: "H:ii P",
@@ -474,22 +474,30 @@ function PopUp_setType(popUp, typeKey)
 }
 function PopUp_setDate(popUp, unixTime)
 {
-    var date = moment.unix(unixTime).tz(MAIN_TIMEZONE);
+    var date = moment.unix(unixTime);
+    if (MAIN_TIMEZONE)
+        date = date.tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-date').text(date.format("MMMM D, YYYY"));
 }
 function PopUp_setStartTime(popUp, unixTime)
 {
-    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
+    var time = moment.unix(unixTime);
+    if (MAIN_TIMEZONE)
+        time = time.tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-start').text(time.format("h:mm A"));
 }
 function PopUp_setEndTime(popUp, unixTime)
 {
-    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
+    var time = moment.unix(unixTime);
+    if (MAIN_TIMEZONE)
+        time = time.tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-end').text(time.format("h:mm A"));
 }
 function PopUp_setLastEditedTime(popUp, unixTime)
 {
-    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
+    var time = moment.unix(unixTime);
+    if (MAIN_TIMEZONE)
+        time = time.tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-last-edited-time').text(time.format("MM/DD/YYYY"));
 }
 /***************************************************
@@ -667,6 +675,10 @@ var POPUP_FORM_NEXT = {
     '#popup-section': '#popup-type',
     '#popup-type': '#popup-desc',
 }
+var POPUP_FORM_PREV = {};
+$.each(POPUP_FORM_NEXT, function(key, value){
+    POPUP_FORM_PREV[value] = key;
+});
 
 function PopUp_clickedElement(element)
 {
@@ -709,7 +721,11 @@ function PopUp_clickedElement(element)
             if ($(this).hasClass('withtimepicker') || $(this).hasClass('withdatepicker'))
                 $(this).datetimepicker('hide');
             PopUp_clickedSaveElement(form);
-            var nextSelector = POPUP_FORM_NEXT['#' + text_id];
+            var nextSelector;
+            if (SHIFT_PRESSED)
+                nextSelector = POPUP_FORM_PREV['#' + text_id];
+            else
+                nextSelector = POPUP_FORM_NEXT['#' + text_id];
             if (nextSelector)
                 PopUp_clickedElement($(popUp).find(nextSelector)[0]);
         }
@@ -750,7 +766,9 @@ function _PopUp_Form_enforceStartDate(popUp)
     {
         endTime = moment.unix(startDate.unix());
         endTime.hour(endTime.hour() + 1);
-        PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.tz(MAIN_TIMEZONE).format('h:mm A')); 
+        if (MAIN_TIMEZONE)
+            endTime = endTime.tz(MAIN_TIMEZONE);
+        PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.format('h:mm A')); 
     }
 }
 function PopUp_clickedSaveElement(form)
@@ -786,9 +804,19 @@ function PopUp_clickedSaveElement(form)
     var text = $(popUp).find("#"+text_id)[0];
     var safe = _PopUp_Form_getValue(form).escapeHTML();
     if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'date')
-        safe = moment(safe).tz(MAIN_TIMEZONE).format("MMMM D, YYYY");
+    {
+        var safeTZ = moment(safe);
+        if (MAIN_TIMEZONE)
+            safeTZ = safeTZ.tz(MAIN_TIMEZONE);
+        safe = safeTZ.format("MMMM D, YYYY");
+    }
     else if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'time')
-        safe = moment('April 25, 2014 ' + safe).tz(MAIN_TIMEZONE).format('h:mm A');
+    {
+        var safeTZ = moment('April 25, 2014 ' + safe);
+        if (MAIN_TIMEZONE)
+            safeTZ = safeTZ.tz(MAIN_TIMEZONE);
+        safe = safeTZ.format('h:mm A');
+    }
     if ($(text).html() == nl2br(safe))
         return; // no saving needed
     $(text).html(nl2br(safe));

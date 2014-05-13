@@ -747,7 +747,8 @@ function EventsMan_load()
     EventsMan_constructOrderArray();
     return true;
 }
-var MAIN_TIMEZONE = 'America/New_York';
+var PRINCETON_TIMEZONE = 'America/New_York';
+var MAIN_TIMEZONE = PRINCETON_TIMEZONE;
 var DAYS_DICT = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'S'];
 var TYPE_MAP_INVERSE = {
     "assignment":"AS",
@@ -1248,8 +1249,9 @@ function PopUp_giveFocus(popUp)
     // $(popUp).find(".panel-clipped").removeClass("panel-clipped-faded-out");
     // $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
     //$(popUp).find(".panel-footer").removeClass("hide-footer");
-    _PopUp_setBodyHeight(popUp);
-    $(document.activeElement).blur();
+    // _PopUp_setBodyHeight(popUp);
+    if ($(popUp).find(document.activeElement).length == 0)
+        $(document.activeElement).blur();
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
@@ -1913,7 +1915,10 @@ function Agenda_loadEvents(eventIDs)
         $(agenda).find('#agenda-section').text(SECTION_MAP[eventDict.section_id]);
         
         var start = moment.unix(eventDict.event_start);
-        var timeText = start.tz(MAIN_TIMEZONE).calendar();
+        var startTZ = start;
+        if (MAIN_TIMEZONE)
+            startTZ = start.tz(MAIN_TIMEZONE);
+        var timeText = startTZ.calendar();
         $(agenda).find('#agenda-time').text(timeText);
         // TODO: add overdue field when creating new event
         // if (eventDict['overdue'])
@@ -2175,12 +2180,17 @@ function Cal_reload()
                 {
                     rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
                 }
-
+                var eventStartTZ = moment.unix(eventDict.event_start);
+                if (MAIN_TIMEZONE)
+                    eventStartTZ = eventStartTZ.tz(MAIN_TIMEZONE);
+                var eventEndTZ =  moment.unix(eventDict.event_end);
+                if (MAIN_TIMEZONE)
+                    eventEndTZ = eventEndTZ.tz(MAIN_TIMEZONE);
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
                     title: $("<div/>").html(eventDict.event_title).text(), // hack to render this HTML (OK because escaped on server)
-                    start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
-                    end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
+                    start: eventStartTZ.toISOString(),
+                    end: eventEndTZ.toISOString(),
                     highlighted: shouldHighlight,
                     myColor: SECTION_COLOR_MAP[eventDict.section_id]['color'],
                     textColor: shouldHighlight ? '#ffffff' : SECTION_COLOR_MAP[eventDict.section_id]['color'],
@@ -2294,7 +2304,9 @@ function EventsMan_init()
                 var eventDict = eventsManager.uncommitted[id];
 
                 var start = moment.unix(eventDict.event_start);
-                var day = (start.tz(MAIN_TIMEZONE).day() - 1) % 7;
+                if (MAIN_TIMEZONE)
+                    start = start.tz(MAIN_TIMEZONE);
+                var day = (start.day() - 1) % 7;
 
                 if (!value.contains(day))
                     value.push(day);
@@ -2591,8 +2603,14 @@ $(document).keydown(function(e){
             break;
     }
 });
-$(document).keyup(function(){
-    SHIFT_PRESSED = false;
+$(document).keyup(function(e){
+    var keyCode = e.keyCode || e.which;
+    switch (keyCode)
+    {
+        case KEY_SHIFT:
+            SHIFT_PRESSED = false;
+            break;
+    }
 });
 $(init)
 var NAV_ID = ["agendatab", "calendartab"];
@@ -3034,7 +3052,7 @@ function PopUp_init()
 
 function PopUp_initialize_deferred(popUp)
 {
-    if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker
+    if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker on mobile
     {
         $(popUp).find(".withdatepicker").datetimepicker({
             format: "MM d, yyyy",
@@ -3045,7 +3063,7 @@ function PopUp_initialize_deferred(popUp)
     } else {
         $(popUp).find('.withdatepicker').removeClass('withdatepicker');
     }
-    if ($(popUp).find(".withtimepicker")[0].type == 'text')// defaults to browser's builtin date picker
+    if ($(popUp).find(".withtimepicker")[0].type == 'text')// defaults to browser's builtin date picker on mobile
     {   
         $(popUp).find(".withtimepicker").datetimepicker({
             format: "H:ii P",
@@ -3452,22 +3470,30 @@ function PopUp_setType(popUp, typeKey)
 }
 function PopUp_setDate(popUp, unixTime)
 {
-    var date = moment.unix(unixTime).tz(MAIN_TIMEZONE);
+    var date = moment.unix(unixTime);
+    if (MAIN_TIMEZONE)
+        date = date.tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-date').text(date.format("MMMM D, YYYY"));
 }
 function PopUp_setStartTime(popUp, unixTime)
 {
-    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
+    var time = moment.unix(unixTime);
+    if (MAIN_TIMEZONE)
+        time = time.tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-start').text(time.format("h:mm A"));
 }
 function PopUp_setEndTime(popUp, unixTime)
 {
-    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
+    var time = moment.unix(unixTime);
+    if (MAIN_TIMEZONE)
+        time = time.tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-end').text(time.format("h:mm A"));
 }
 function PopUp_setLastEditedTime(popUp, unixTime)
 {
-    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
+    var time = moment.unix(unixTime);
+    if (MAIN_TIMEZONE)
+        time = time.tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-last-edited-time').text(time.format("MM/DD/YYYY"));
 }
 /***************************************************
@@ -3645,6 +3671,10 @@ var POPUP_FORM_NEXT = {
     '#popup-section': '#popup-type',
     '#popup-type': '#popup-desc',
 }
+var POPUP_FORM_PREV = {};
+$.each(POPUP_FORM_NEXT, function(key, value){
+    POPUP_FORM_PREV[value] = key;
+});
 
 function PopUp_clickedElement(element)
 {
@@ -3687,7 +3717,11 @@ function PopUp_clickedElement(element)
             if ($(this).hasClass('withtimepicker') || $(this).hasClass('withdatepicker'))
                 $(this).datetimepicker('hide');
             PopUp_clickedSaveElement(form);
-            var nextSelector = POPUP_FORM_NEXT['#' + text_id];
+            var nextSelector;
+            if (SHIFT_PRESSED)
+                nextSelector = POPUP_FORM_PREV['#' + text_id];
+            else
+                nextSelector = POPUP_FORM_NEXT['#' + text_id];
             if (nextSelector)
                 PopUp_clickedElement($(popUp).find(nextSelector)[0]);
         }
@@ -3728,7 +3762,9 @@ function _PopUp_Form_enforceStartDate(popUp)
     {
         endTime = moment.unix(startDate.unix());
         endTime.hour(endTime.hour() + 1);
-        PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.tz(MAIN_TIMEZONE).format('h:mm A')); 
+        if (MAIN_TIMEZONE)
+            endTime = endTime.tz(MAIN_TIMEZONE);
+        PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.format('h:mm A')); 
     }
 }
 function PopUp_clickedSaveElement(form)
@@ -3764,9 +3800,19 @@ function PopUp_clickedSaveElement(form)
     var text = $(popUp).find("#"+text_id)[0];
     var safe = _PopUp_Form_getValue(form).escapeHTML();
     if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'date')
-        safe = moment(safe).tz(MAIN_TIMEZONE).format("MMMM D, YYYY");
+    {
+        var safeTZ = moment(safe);
+        if (MAIN_TIMEZONE)
+            safeTZ = safeTZ.tz(MAIN_TIMEZONE);
+        safe = safeTZ.format("MMMM D, YYYY");
+    }
     else if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'time')
-        safe = moment('April 25, 2014 ' + safe).tz(MAIN_TIMEZONE).format('h:mm A');
+    {
+        var safeTZ = moment('April 25, 2014 ' + safe);
+        if (MAIN_TIMEZONE)
+            safeTZ = safeTZ.tz(MAIN_TIMEZONE);
+        safe = safeTZ.format('h:mm A');
+    }
     if ($(text).html() == nl2br(safe))
         return; // no saving needed
     $(text).html(nl2br(safe));
@@ -4043,6 +4089,36 @@ function SE_init()
             });
         });
         $(this).find('#course_options').append(course_scm);
+        var tz_sc = SC_initWithChoices('Use Princeton\'s timezone:', [
+                {
+                    value: 1,
+                    pretty: 'Yes',
+                    selected: MAIN_TIMEZONE != null,
+                },
+                {
+                    value: 0,
+                    pretty: 'No',
+                    selected: MAIN_TIMEZONE == null,
+                }
+            ]);
+        $(tz_sc).on('select', function(ev, choices){
+            $.each(choices, function(key, selected){
+                if (selected)
+                {
+                    if (key == 1)
+                    {
+                        // princeton
+                        MAIN_TIMEZONE = PRINCETON_TIMEZONE;
+                    }
+                    else
+                    {
+                        // local
+                        MAIN_TIMEZONE = null;
+                    }
+                }
+            });
+        });
+        $(this).find('#timezone_options').append(tz_sc);
     });
     $('#' + SE_id).on('hide.bs.modal', function(){
         // save
