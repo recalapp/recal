@@ -3008,6 +3008,7 @@ function NO_showNotification(id, text, type, meta)
             $noti.trigger('noti.click');
             SB_pop($noti);
         });
+        $noti.find('#noti-content').empty();
         $noti.find('#noti-content').append($text);
         $noti.addClass(type);
         $noti.find('#close_button').on('click', function(ev){
