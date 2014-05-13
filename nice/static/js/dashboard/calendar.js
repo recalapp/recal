@@ -22,10 +22,9 @@ function Cal_init() {
     if (CAL_INIT)
         return;
 
-
-
     // customizing options
     var height = window.innerHeight - $(".navbar").height() - 50;
+
     Cal_options.height = height;
     Cal_options.eventClick = function(calEvent, jsEvent, view) {
         if (calEvent.highlighted == true)
@@ -98,6 +97,7 @@ function Cal_init() {
     });
     if (Cal_active())
         Cal_reload();
+
 }
 function Cal_adjustHeight()
 {
@@ -115,6 +115,8 @@ function Cal_reload()
     CAL_LOADING = true;
     var eventIDs = EventsMan_getAllEventIDs();
     Cal_eventSource.events = [];
+
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     setTimeout(function(){
         LO_showLoading('cal loading');
         // NOTE: try statement because the plugin has errors sometimes
@@ -138,7 +140,7 @@ function Cal_reload()
                 }
                 else
                 {
-                    rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
+                    rgba = rgbToRgba(luminanceToRgb(color), factor_trans);
                 }
                 var eventStartTZ = moment.unix(eventDict.event_start);
                 if (MAIN_TIMEZONE)
@@ -155,7 +157,7 @@ function Cal_reload()
                     myColor: SECTION_COLOR_MAP[eventDict.section_id]['color'],
                     textColor: shouldHighlight ? '#ffffff' : SECTION_COLOR_MAP[eventDict.section_id]['color'],
                     backgroundColor: rgba,
-                    borderColor: '#ffffff'
+                    borderColor: rgba
                 });
             });
             $("#calendarui").fullCalendar("refetchEvents");
@@ -169,4 +171,10 @@ function Cal_reload()
 
 function Cal_render() {
     $("#calendarui").fullCalendar("render");
+
+    var height = Cal_options.height;
+    // customize cell height
+    // 16 hours, each hour 2 cells
+    var cellHeight = Math.floor(height / (2 * 16));
+    $('.fc-agenda-slots td div').css('height', cellHeight + 'px');
 }

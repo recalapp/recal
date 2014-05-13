@@ -250,7 +250,6 @@ def tester_login(request):
 
 ### AJAX API Calls ###
 
-@require_ajax
 def verify(request):
     """
     Checks whether a user is logged in -- used in mobile app.
@@ -262,7 +261,6 @@ def verify(request):
 
 @login_required
 @require_GET
-@require_ajax
 @cache_page_with_prefix(60*60*5, lambda request: hashlib.md5(request.GET.get('term', '')).hexdigest())
 def get_classes(request):
     """
@@ -278,7 +276,6 @@ def get_classes(request):
 
 @login_required
 @require_POST
-@require_ajax
 def enroll_sections(request):
     """
     Update user's section enrollment with form data.
@@ -309,7 +306,6 @@ def enroll_sections(request):
 
 @login_required
 @require_GET
-@require_ajax
 def events_json(request, start_date=None, end_date=None, last_updated=None):
     """
     Get events for a user -- returns event dictionaries.
@@ -341,7 +337,6 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
 
 @login_required
 @require_GET
-@require_ajax
 def events_by_course_json(request, last_updated=0, start_date=None, end_date=None):
     """
     Get events for a course -- returns event dictionaries.
@@ -359,7 +354,6 @@ def events_by_course_json(request, last_updated=0, start_date=None, end_date=Non
 
 @login_required
 @require_GET
-@require_ajax
 def sections_json(request):
     """
     Mapping from course ID to section ID -- what you're enrolled in
@@ -371,7 +365,6 @@ def sections_json(request):
 
 @login_required
 @require_GET
-@require_ajax
 def default_section_colors_json(request):
     """
     TODO(Dyland): write the doc for this
@@ -382,7 +375,6 @@ def default_section_colors_json(request):
 
 @login_required
 @require_GET
-@require_ajax
 def section_colors_json(request):
     """
     TODO(Dyland): write the doc for this
@@ -393,7 +385,6 @@ def section_colors_json(request):
 
 @login_required
 @require_GET
-@require_ajax
 def course_json(request, course_id):
     """
     Returns course information dictionary for profile page.
@@ -403,7 +394,6 @@ def course_json(request, course_id):
 
 @login_required
 @require_GET
-@require_ajax
 def user_json(request):
     """
     Get user information -- used in mobile app.
@@ -418,7 +408,6 @@ def user_json(request):
 
 @login_required
 @require_GET
-@require_ajax
 def unapproved_revisions_json(request, event_id=None):
     """
     Get unapproved revisions.
@@ -428,7 +417,6 @@ def unapproved_revisions_json(request, event_id=None):
 
 @login_required
 @require_POST
-@require_ajax
 def process_votes(request):
     """
     Handle submitted votes.
@@ -443,7 +431,6 @@ def process_votes(request):
 
 @login_required
 @require_POST
-@require_ajax
 def modify_events(request):
     """
     Handle submitted changes to events and requests to hide events.
@@ -478,7 +465,6 @@ def modify_events(request):
 
 @login_required
 @require_POST
-@require_ajax
 def modify_user(request):
     """
     Save user details.
@@ -492,7 +478,6 @@ def modify_user(request):
 
 @login_required
 @require_GET
-@require_ajax
 def get_user_point_count(request):
     """
     Returns real-time point count.
@@ -501,7 +486,6 @@ def get_user_point_count(request):
 
 @login_required
 @require_GET
-@require_ajax
 def state_restoration(request):
     """
     Returns last-saved user's page state to restore the page to what it looked like before the user navigated away.
@@ -515,7 +499,6 @@ def state_restoration(request):
 
 @login_required
 @require_POST
-@require_ajax
 def save_state_restoration(request):
     """
     Save page state.
@@ -527,7 +510,6 @@ def save_state_restoration(request):
 
 @login_required
 @require_POST
-@require_ajax
 def save_ui_pref(request):
     """
     Save user's dashboard settings.
@@ -541,7 +523,6 @@ def save_ui_pref(request):
 
 @login_required
 @require_GET
-@require_ajax
 def all_sections(request):
     """
     Get a user's sections.
@@ -553,7 +534,6 @@ def all_sections(request):
 
 @login_required
 @require_GET
-@require_ajax
 def all_courses(request):
     """
     Get a user's courses and course->section map.
@@ -568,7 +548,6 @@ def all_courses(request):
 
 @login_required
 @require_GET
-@require_ajax
 def hidden_events(request):
     """
     Get a user's hidden events.
@@ -579,7 +558,6 @@ def hidden_events(request):
     
 @login_required
 @require_POST
-@require_ajax
 def similar_events(request):
     """
     Fetch events similar to supplied event dictionary. Used to prevent duplicate submissions.

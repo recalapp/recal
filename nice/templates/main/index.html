@@ -15,11 +15,6 @@
     </div>
 </div>
 <div id="content_bounds"></div>
-<div id="about-content" class="about-hidden">
-    <h1 id="about-close-button"><a onclick="toggleInfo(); return false;"><i class="fa fa-times-circle"></a></i></h1> 
-    {% include 'landing/content.html' %}
-</div>
-
 <div id="indicators-container">
 </div>
 
@@ -161,7 +156,7 @@ IS_MOBILE = true;
 <script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
 <script src="{% static 'bower_components/moment-timezone/min/moment-timezone.min.js' %}"></script>
-<script src="{% static 'compiled/dashboard.js' %}"></script>
+<script src="{% static 'compiled/dashboard.min.js' %}"></script>
 {% endblock %}
 
 

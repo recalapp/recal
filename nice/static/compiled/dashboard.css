@@ -40,12 +40,14 @@
     z-index: 10000;
 }
 .fc-event {
-     font-size: 10px !important;
+     font-size: 12px !important;
+     font-weight: bold !important;
      /* text-align: center !important; */
 }
 
 .fc-agenda-slots td div {
-    height: 18px !important;
+    height: 15px; 
+    min-height: 15px !important;
 }
 
 .fc-agenda-axis{
@@ -53,6 +55,15 @@
     height: 15px !important;
     width: 45px !important;
     line-height: 15px !important;
+}
+
+
+#calendarui.dark {
+    background-color: rgba(100, 100, 100, 0);
+}
+
+#calendarui.dark > * > * > * > * > * > .fc-state-highlight {
+    background-color: gray;
 }
 .event-picker-item{
 }
@@ -169,9 +180,13 @@ body.dark{
 #calendarui {
     background-color: rgba(255, 255, 255, 0.8);
 }
+
+/*
 #calendarui.dark{
     background-color: rgba(100, 100, 100, 0.30);
 }
+*/
+
 .user_label>h2{
     margin-top:0;
     margin-bottom:10px;

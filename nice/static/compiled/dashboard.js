@@ -86,6 +86,7 @@ function _CacheMan_cacheURL(url, async)
 var CAL_LOADING = false;
 var FACTOR_LUM = 0.2;
 var FACTOR_TRANS = 0.7;
+var FACTOR_TRANS_DARK = 1;
 
 CAL_INIT = false;
 // event source for FullCalendar
@@ -125,12 +126,12 @@ function Cal_highlightEvent(calEvent, update)
 }
 function Cal_unhighlightEvent(calEvent, update)
 {
-    // delete calEvent["backgroundColor"];
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     if (calEvent.highlighted)
     {
         calEvent.textColor = calEvent.myColor;
-        calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, FACTOR_TRANS);
     }
+    calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, factor_trans);
     calEvent.highlighted = false;
     if (update)
         $("#calendarui").fullCalendar("updateEvent", calEvent);
@@ -576,7 +577,7 @@ function EventsMan_commitChanges(id)
     delete eventsManager.uncommitted[id];
     eventsManager.updatedIDs.add(id);
     EventsMan_constructOrderArray();
-    if ('recurrence_days' in oldEventDict 
+    if (oldEventDict && 'recurrence_days' in oldEventDict 
             && (!oldEventDict.recurrence_days.equals(newEventDict.recurrence_days)
                     || oldEventDict.recurrence_interval != newEventDict.recurrence_interval))
     {
@@ -1067,6 +1068,11 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
     }
 };
 
+var defaultBorderW = '#DDDDDD';
+// var defaultHeaderW = '#F5F5F5';
+var defaultBorderB = '#323232';
+// var defaultHeaderB = '#F5F5F5';
+
 /***************************************************
  * Creating/removing
  **************************************************/
@@ -1269,8 +1275,13 @@ function PopUp_giveFocus(popUp)
 function PopUp_loseFocus($popUps)
 {
     $popUps.each(function(index) {
-        var defaultBorder = $(this).find('.panel').data('default-border');
-        var defaultHeader = $(this).find('.panel').data('default-header');
+        var defaultBorder;
+        if (THEME == 'w') {
+            defaultBorder = defaultBorderW;
+        } else {
+            defaultBorder = defaultBorderB;
+        }
+        // var defaultHeader = $(this).find('.panel').data('default-header');
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
         // $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
         $(this).find('.popup-title').parent().parent().css('opacity', 0.6);
@@ -1378,17 +1389,14 @@ function PopUp_setColor(popUp, color)
 {
     $(popUp).find('.panel').data('my-color', color);
 
-    // TODO: bad idea to hardwire the default color?
-    var defaultBorder = '#DDDDDD';
-    var defaultHeader = '#F5F5F5';
     // if (THEME != 'w')
     // {
     //     defaultBorder = '#282828';
     //     defaultHeader = '#3C3C3C';
     // }
 
-    $(popUp).find('.panel').data('default-border', defaultBorder);
-    $(popUp).find('.panel').data('default-header', defaultHeader);
+    // $(popUp).find('.panel').data('default-border', defaultBorder);
+    // $(popUp).find('.panel').data('default-header', defaultHeader);
     $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
     //$(popUp).find('.panel').css('border-color', color);
     if (!PopUp_hasFocus(popUp))
@@ -1781,7 +1789,8 @@ function SB_callWillCloseListeners()
  *           Events Manager module
  **************************************************/
 
-AGENDA_INIT = false;
+var AGENDA_INIT = false;
+var AGENDA_LOADING = false;
 var AGENDA_HTML = null;
 
 /***************************************************
@@ -1837,6 +1846,9 @@ function Agenda_active()
  */
 function Agenda_reload()
 {
+    if (AGENDA_LOADING)
+        return;
+    AGENDA_LOADING = true;
     LO_showLoading('agenda loading');
     var agendaContainer = $("#agenda")
     var added = false;
@@ -1895,6 +1907,7 @@ function Agenda_reload()
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
     LO_hideLoading('agenda loading');
+    AGENDA_LOADING = false;
 }
 
 /**
@@ -2091,10 +2104,9 @@ function Cal_init() {
     if (CAL_INIT)
         return;
 
-
-
     // customizing options
     var height = window.innerHeight - $(".navbar").height() - 50;
+
     Cal_options.height = height;
     Cal_options.eventClick = function(calEvent, jsEvent, view) {
         if (calEvent.highlighted == true)
@@ -2167,6 +2179,7 @@ function Cal_init() {
     });
     if (Cal_active())
         Cal_reload();
+
 }
 function Cal_adjustHeight()
 {
@@ -2184,6 +2197,8 @@ function Cal_reload()
     CAL_LOADING = true;
     var eventIDs = EventsMan_getAllEventIDs();
     Cal_eventSource.events = [];
+
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     setTimeout(function(){
         LO_showLoading('cal loading');
         // NOTE: try statement because the plugin has errors sometimes
@@ -2207,7 +2222,7 @@ function Cal_reload()
                 }
                 else
                 {
-                    rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
+                    rgba = rgbToRgba(luminanceToRgb(color), factor_trans);
                 }
                 var eventStartTZ = moment.unix(eventDict.event_start);
                 if (MAIN_TIMEZONE)
@@ -2224,7 +2239,7 @@ function Cal_reload()
                     myColor: SECTION_COLOR_MAP[eventDict.section_id]['color'],
                     textColor: shouldHighlight ? '#ffffff' : SECTION_COLOR_MAP[eventDict.section_id]['color'],
                     backgroundColor: rgba,
-                    borderColor: '#ffffff'
+                    borderColor: rgba
                 });
             });
             $("#calendarui").fullCalendar("refetchEvents");
@@ -2238,6 +2253,12 @@ function Cal_reload()
 
 function Cal_render() {
     $("#calendarui").fullCalendar("render");
+
+    var height = Cal_options.height;
+    // customize cell height
+    // 16 hours, each hour 2 cells
+    var cellHeight = Math.floor(height / (2 * 16));
+    $('.fc-agenda-slots td div').css('height', cellHeight + 'px');
 }
 var timeoutIDs = [];
 var EVENTSMAN_COUNT = 0;
@@ -2529,6 +2550,11 @@ function EventsMan_pullFromServer(complete, showLoading)
  */
 function EventsMan_processDownloadedEvents(data)
 {
+    if (eventsManager.lastSyncedTime == 0)
+    {
+        // clear out all the old events
+        eventsManager.events = {};
+    }
     var changed = false;
     var eventsArray = data.events;
     // go through the array of events
@@ -2595,10 +2621,10 @@ function EventsMan_clickAddEvent()
         EventsMan_cancelChanges(id);
         return;
     }
-    PopUp_markAsUnsaved(popUp);
     
     PopUp_giveFocus(popUp);
-    PopUp_giveEditingFocus(popUp);
+    PopUp_markAsUnsaved(popUp);
+        PopUp_giveEditingFocus(popUp);
 }
 var KEY_UP = 38;
 var KEY_DOWN = 40;
@@ -3110,6 +3136,7 @@ function PopUp_initialize_deferred(popUp)
             minView: 2,
             maxView: 3
         });
+        $(popUp).find('.withdatepicker').data('initialized', true);
     } else {
         $(popUp).find('.withdatepicker').removeClass('withdatepicker');
     }
@@ -3129,6 +3156,7 @@ function PopUp_initialize_deferred(popUp)
             startDate: new Date(moment('Dec 31, 1899 12:00 AM').unix() * 1000),
             endDate: new Date(moment('Jan 1, 1900 12:00 AM').unix() * 1000),
         });
+        $(popUp).find('.withtimepicker').data('initialized', true)
     } else {
         $(popUp).find('.withtimepicker').removeClass('withtimepicker');
     }
@@ -3675,16 +3703,16 @@ function _PopUp_Form_getFormIDForElement(element)
 }
 function _PopUp_Form_addOnBlurListener(form, listener)
 {
-    if ($(form).find(".withdatepicker").length > 0)
-        $(form).find(".withdatepicker").datetimepicker().one("hide", listener);
-    else if ($(form).find(".withtimepicker").length > 0)
-        $(form).find(".withtimepicker").datetimepicker().one("hide", listener);
+    if ($(form).find(".withdatepicker").length > 0 && $(form).find('.withdatepicker').data('initialized'))
+        $(form).find(".withdatepicker").datetimepicker().off('hide').on("hide", listener);
+    else if ($(form).find(".withtimepicker").length > 0 && $(form).find('.withtimepicker').data('initialized'))
+        $(form).find(".withtimepicker").datetimepicker().off('hide').on("hide", listener);
     else if ($(form).find(".withcustompicker").length > 0)
-        $(form).find(".withcustompicker").one('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
+        $(form).find(".withcustompicker").off('value_set').on('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
     else if ($(form).find("input").length > 0)
-        $(form).find("input").one("blur", listener);
+        $(form).find("input").off('blur').on("blur", listener);
     else if ($(form).find("textarea").length > 0)
-        $(form).find("textarea").one("blur", listener);
+        $(form).find("textarea").off('blur').on("blur", listener);
 }
 
 /***************************************************
@@ -3792,6 +3820,8 @@ function PopUp_clickedElement(element)
  */
 function _PopUp_Form_enforceStartDate(popUp)
 {
+    if ($(popUp).find('.withtimepicker').data('initialized') != true)
+        return;
     var time = $(popUp).find('#popup-time-start').text();
     var startDate = moment('Dec 31, 1899 ' + time);
     $(popUp).find('#popup-time-end-form').find('.withtimepicker').datetimepicker('setStartDate', new Date(startDate.unix() * 1000));
@@ -4156,15 +4186,15 @@ function SE_init()
             });
         });
         $(this).find('#course_options').append(course_scm);
-        var tz_sc = SC_initWithChoices('Use Princeton\'s timezone:', [
+        var tz_sc = SC_initWithChoices('Timezone:', [
                 {
                     value: 1,
-                    pretty: 'Yes',
+                    pretty: 'Princeton\'s timezone',
                     selected: MAIN_TIMEZONE != null,
                 },
                 {
                     value: 0,
-                    pretty: 'No',
+                    pretty: 'Local timezone',
                     selected: MAIN_TIMEZONE == null,
                 }
             ]);

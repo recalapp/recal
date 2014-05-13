@@ -55,7 +55,6 @@ function Cal_init() {
         CL_selectID(course_id);
 
         var popUp = PopUp_getMainPopUp();
-        console.log(popUp);
 
         // PopUp_setToEventID(popUp, calEvent.id);
         PopUp_giveFocus(popUp);
@@ -79,6 +78,7 @@ function Cal_reload()
     LO_showLoading('cal loading');
     var eventIDs = EventsMan_getEnrolledEvents();
     Cal_eventSource.events = [];
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     $.each(eventIDs, function(index){
         eventDict = EventsMan_getEventByID(this);
         var color = COURSE_COLOR_MAP[eventDict.course_id];
@@ -92,9 +92,9 @@ function Cal_reload()
         {
             rgba = rgbToRgba(luminanceToRgb(color), 1.0);
         }
-            else
+        else
         {
-            rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
+            rgba = rgbToRgba(luminanceToRgb(color), factor_trans);
         }
 
         var eventStartTZ = moment.unix(eventDict.event_start);
@@ -115,7 +115,7 @@ function Cal_reload()
             textColor: shouldHighlight ? '#ffffff' : color,
             highlighted: shouldHighlight,
             backgroundColor: rgba,
-            borderColor: '#ffffff' //color //'#123456' 
+            borderColor: rgba //color //'#123456' 
         });
     });
     var start = moment.unix(CUR_SEM.start_date);

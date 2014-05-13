@@ -86,6 +86,7 @@ function _CacheMan_cacheURL(url, async)
 var CAL_LOADING = false;
 var FACTOR_LUM = 0.2;
 var FACTOR_TRANS = 0.7;
+var FACTOR_TRANS_DARK = 1;
 
 CAL_INIT = false;
 // event source for FullCalendar
@@ -125,12 +126,12 @@ function Cal_highlightEvent(calEvent, update)
 }
 function Cal_unhighlightEvent(calEvent, update)
 {
-    // delete calEvent["backgroundColor"];
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     if (calEvent.highlighted)
     {
         calEvent.textColor = calEvent.myColor;
-        calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, FACTOR_TRANS);
     }
+    calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, factor_trans);
     calEvent.highlighted = false;
     if (update)
         $("#calendarui").fullCalendar("updateEvent", calEvent);
@@ -576,7 +577,7 @@ function EventsMan_commitChanges(id)
     delete eventsManager.uncommitted[id];
     eventsManager.updatedIDs.add(id);
     EventsMan_constructOrderArray();
-    if ('recurrence_days' in oldEventDict 
+    if (oldEventDict && 'recurrence_days' in oldEventDict 
             && (!oldEventDict.recurrence_days.equals(newEventDict.recurrence_days)
                     || oldEventDict.recurrence_interval != newEventDict.recurrence_interval))
     {
@@ -1067,6 +1068,11 @@ var POPUP_MAIN_FIRSTDRAG = function(popUp){
     }
 };
 
+var defaultBorderW = '#DDDDDD';
+// var defaultHeaderW = '#F5F5F5';
+var defaultBorderB = '#323232';
+// var defaultHeaderB = '#F5F5F5';
+
 /***************************************************
  * Creating/removing
  **************************************************/
@@ -1269,8 +1275,13 @@ function PopUp_giveFocus(popUp)
 function PopUp_loseFocus($popUps)
 {
     $popUps.each(function(index) {
-        var defaultBorder = $(this).find('.panel').data('default-border');
-        var defaultHeader = $(this).find('.panel').data('default-header');
+        var defaultBorder;
+        if (THEME == 'w') {
+            defaultBorder = defaultBorderW;
+        } else {
+            defaultBorder = defaultBorderB;
+        }
+        // var defaultHeader = $(this).find('.panel').data('default-header');
         $(this).css("z-index", "100").find(".panel").addClass("panel-default").removeClass("panel-primary").css('border-color', defaultBorder);
         // $(this).find('.popup-title').parent().parent().css('background-color', defaultHeader).css('border-color', defaultBorder);
         $(this).find('.popup-title').parent().parent().css('opacity', 0.6);
@@ -1378,17 +1389,14 @@ function PopUp_setColor(popUp, color)
 {
     $(popUp).find('.panel').data('my-color', color);
 
-    // TODO: bad idea to hardwire the default color?
-    var defaultBorder = '#DDDDDD';
-    var defaultHeader = '#F5F5F5';
     // if (THEME != 'w')
     // {
     //     defaultBorder = '#282828';
     //     defaultHeader = '#3C3C3C';
     // }
 
-    $(popUp).find('.panel').data('default-border', defaultBorder);
-    $(popUp).find('.panel').data('default-header', defaultHeader);
+    // $(popUp).find('.panel').data('default-border', defaultBorder);
+    // $(popUp).find('.panel').data('default-header', defaultHeader);
     $(popUp).find('.popup-title').parent().parent().css('background-color', color).css('border-color', color);
     //$(popUp).find('.panel').css('border-color', color);
     if (!PopUp_hasFocus(popUp))
@@ -1895,7 +1903,6 @@ function Cal_init() {
         CL_selectID(course_id);
 
         var popUp = PopUp_getMainPopUp();
-        console.log(popUp);
 
         // PopUp_setToEventID(popUp, calEvent.id);
         PopUp_giveFocus(popUp);
@@ -1919,6 +1926,7 @@ function Cal_reload()
     LO_showLoading('cal loading');
     var eventIDs = EventsMan_getEnrolledEvents();
     Cal_eventSource.events = [];
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     $.each(eventIDs, function(index){
         eventDict = EventsMan_getEventByID(this);
         var color = COURSE_COLOR_MAP[eventDict.course_id];
@@ -1932,9 +1940,9 @@ function Cal_reload()
         {
             rgba = rgbToRgba(luminanceToRgb(color), 1.0);
         }
-            else
+        else
         {
-            rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
+            rgba = rgbToRgba(luminanceToRgb(color), factor_trans);
         }
 
         var eventStartTZ = moment.unix(eventDict.event_start);
@@ -1955,7 +1963,7 @@ function Cal_reload()
             textColor: shouldHighlight ? '#ffffff' : color,
             highlighted: shouldHighlight,
             backgroundColor: rgba,
-            borderColor: '#ffffff' //color //'#123456' 
+            borderColor: rgba //color //'#123456' 
         });
     });
     var start = moment.unix(CUR_SEM.start_date);
@@ -2087,10 +2095,11 @@ function CL_highlight(course)
 
 function CL_unhighlight(course)
 {
+    var defaultBorder = (THEME == 'w') ? defaultBorderW : defaultBorderB;
     if (!CL_isHighlighted(course))
         return;
     $(course).addClass('panel-default').removeClass('panel-primary');
-    $(course).css('border-color', $(course).data('default-border'));
+    $(course).css('border-color', defaultBorder);
 }
 
 function CL_isHighlighted(course)

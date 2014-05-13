@@ -2,6 +2,7 @@
 var CAL_LOADING = false;
 var FACTOR_LUM = 0.2;
 var FACTOR_TRANS = 0.7;
+var FACTOR_TRANS_DARK = 1;
 
 CAL_INIT = false;
 // event source for FullCalendar
@@ -41,12 +42,12 @@ function Cal_highlightEvent(calEvent, update)
 }
 function Cal_unhighlightEvent(calEvent, update)
 {
-    // delete calEvent["backgroundColor"];
+    var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
     if (calEvent.highlighted)
     {
         calEvent.textColor = calEvent.myColor;
-        calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, FACTOR_TRANS);
     }
+    calEvent.backgroundColor = setOpacity(calEvent.backgroundColor, factor_trans);
     calEvent.highlighted = false;
     if (update)
         $("#calendarui").fullCalendar("updateEvent", calEvent);

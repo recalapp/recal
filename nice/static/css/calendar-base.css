@@ -1,10 +1,12 @@
 .fc-event {
-     font-size: 10px !important;
+     font-size: 12px !important;
+     font-weight: bold !important;
      /* text-align: center !important; */
 }
 
 .fc-agenda-slots td div {
-    height: 18px !important;
+    height: 15px; 
+    min-height: 15px !important;
 }
 
 .fc-agenda-axis{
@@ -12,4 +14,13 @@
     height: 15px !important;
     width: 45px !important;
     line-height: 15px !important;
+}
+
+
+#calendarui.dark {
+    background-color: rgba(100, 100, 100, 0);
+}
+
+#calendarui.dark > * > * > * > * > * > .fc-state-highlight {
+    background-color: gray;
 }

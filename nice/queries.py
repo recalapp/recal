@@ -674,6 +674,7 @@ def get_course_by_id(course_id):
             section_type:[
                 section_id:
                 section_name:
+                section_type_code:
             ]
         }
     }
@@ -702,6 +703,7 @@ def construct_section_dict(section):
     return {
         'section_id': section.id,
         'section_name': section.name,
+        'section_type_code': section.section_type,
     }
 
 
