@@ -965,12 +965,6 @@ function loadWhiteTheme()
 function loadDarkTheme()
 {
     $('.theme').addClass('dark');
-    //if (document.createStyleSheet) {
-    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
-    //}
-    //else {
-    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
-    //}
     $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
 }
 
@@ -1826,7 +1820,11 @@ function AR_select($resultItem)
     CourseMan_enrollInCourseID(courseID);
     CL_selectID(courseID);
     $('#class').val('');
+    $( "#class" ).autocomplete('destroy');
     $('#auto-results').html('');
+    setTimeout(function(){
+        createAuto();
+    }, 10);
 }
 function Cal_init() {
     if (CAL_INIT)
@@ -2748,6 +2746,10 @@ function PopUp_clickedClose(popUpAnchor)
     PopUp_close(popUp);
 }
 $(function() {
+    createAuto();
+});
+function createAuto()
+{
     $( "#class" ).autocomplete({
         minLength: 2,
         source: function( request, response ) {
@@ -2763,7 +2765,7 @@ $(function() {
                     });
                 });
                 AR_reloadWithData(data, term);
-                //response(ret);
+                response(ret);
                 /* data should be like 
                  * [{
                  * value: "jquery",
@@ -2778,11 +2780,10 @@ $(function() {
             $('#class').val('');
             CL_selectID(courseID);
             return false;
-        }
-    }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-        return $( "<li>" ).append( "<a>" + item.label + "<br>" + item.desc + "</a>" ).appendTo( ul );
-    };
-});
+        },
+        autoFocus: true,
+    });
+}
 function SB_profile_init()
 {
     $('#sidebar').droppable({

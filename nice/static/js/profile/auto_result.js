@@ -56,5 +56,9 @@ function AR_select($resultItem)
     CourseMan_enrollInCourseID(courseID);
     CL_selectID(courseID);
     $('#class').val('');
+    $( "#class" ).autocomplete('destroy');
     $('#auto-results').html('');
+    setTimeout(function(){
+        createAuto();
+    }, 10);
 }
