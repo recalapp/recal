@@ -252,6 +252,7 @@ function PopUp_setToEventID(popUp, id, retryListener)
     PopUp_setDate(popUp, eventDict.event_start);
     PopUp_setStartTime(popUp, eventDict.event_start);
     PopUp_setEndTime(popUp, eventDict.event_end);
+    PopUp_setLastEditedTime(popUp, eventDict.modified_time);
     var myColor = SECTION_COLOR_MAP[eventDict.section_id];
     if (!myColor)
         myColor = '#555555';
@@ -486,7 +487,11 @@ function PopUp_setEndTime(popUp, unixTime)
     var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
     $(popUp).find('#popup-time-end').text(time.format("h:mm A"));
 }
-
+function PopUp_setLastEditedTime(popUp, unixTime)
+{
+    var time = moment.unix(unixTime).tz(MAIN_TIMEZONE);
+    $(popUp).find('#popup-last-edited-time').text(time.format("MM/DD/YYYY"));
+}
 /***************************************************
  * State Restoration
  **************************************************/
