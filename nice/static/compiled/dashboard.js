@@ -2828,7 +2828,7 @@ function init()
     // check for unapproved revisions at 10 seconds interval
     RF_addRecurringFunction(function(isInterval){
         updatePoints();
-    }, 10 * 1000, 5 * 60 * 1000);
+    }, 5 * 1000, 2 * 60 * 1000);
     RF_addRecurringFunction(function(isInterval){
         UR_pullUnapprovedRevisions();
     }, 10 * 1000, 5 * 60 * 1000);
@@ -3003,18 +3003,19 @@ function NO_showNotification(id, text, type, meta)
         $('<span id="noti-content">').appendTo($noti);
         $noti.attr('id', id);
         SB_push($noti);
+        $text = $('<a>').addClass('alert-link').text(text).on('click', function(ev){
+            ev.preventDefault();
+            $noti.trigger('noti.click');
+            SB_pop($noti);
+        });
+        $noti.find('#noti-content').append($text);
+        $noti.addClass(type);
+        $noti.find('#close_button').on('click', function(ev){
+            ev.preventDefault();
+            NO_removeNotificationID($noti.attr('id'));
+        });
     }
-    $noti.addClass(type);
-    $text = $('<a>').addClass('alert-link').text(text).on('click', function(ev){
-        ev.preventDefault();
-        $noti.trigger('noti.click');
-        SB_pop($noti);
-    });
-    $noti.find('#close_button').on('click', function(ev){
-        ev.preventDefault();
-        NO_removeNotificationID($noti.attr('id'));
-    });
-    $noti.find('#noti-content').append($text);
+    
     if (meta)
     {
         $.each(meta, function(key, value){
@@ -4294,7 +4295,7 @@ function SE_showSimilarEvents(eventID, similarEvents)
             buttons: [
                 {
                     value: 'c',
-                    pretty: 'Choose',
+                    pretty: 'View Event',
                 }
             ],
         });
@@ -4539,5 +4540,5 @@ function UR_close(ep)
     SB_hide();
     if ($(this).data('voted'))
         LO_showTemporaryMessage('Thanks for voting!', LO_TYPES.SUCCESS);
-    EventsMan_verifyLocalStorage();
+    EventsMan_verifyLocalData();
 }

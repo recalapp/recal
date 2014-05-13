@@ -37,18 +37,19 @@ function NO_showNotification(id, text, type, meta)
         $('<span id="noti-content">').appendTo($noti);
         $noti.attr('id', id);
         SB_push($noti);
+        $text = $('<a>').addClass('alert-link').text(text).on('click', function(ev){
+            ev.preventDefault();
+            $noti.trigger('noti.click');
+            SB_pop($noti);
+        });
+        $noti.find('#noti-content').append($text);
+        $noti.addClass(type);
+        $noti.find('#close_button').on('click', function(ev){
+            ev.preventDefault();
+            NO_removeNotificationID($noti.attr('id'));
+        });
     }
-    $noti.addClass(type);
-    $text = $('<a>').addClass('alert-link').text(text).on('click', function(ev){
-        ev.preventDefault();
-        $noti.trigger('noti.click');
-        SB_pop($noti);
-    });
-    $noti.find('#close_button').on('click', function(ev){
-        ev.preventDefault();
-        NO_removeNotificationID($noti.attr('id'));
-    });
-    $noti.find('#noti-content').append($text);
+    
     if (meta)
     {
         $.each(meta, function(key, value){
