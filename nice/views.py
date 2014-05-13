@@ -202,14 +202,17 @@ def edit_profile(request):
     profile = request.user.profile
     my_user = profile.user
     if (my_user.first_name is None or len(my_user.first_name) == 0) and (my_user.last_name is None or len(my_user.last_name) == 0):
-        name_table = NetID_Name_Table.objects.get(netid=profile.user.username)
-        first_name = name_table.first_name
-        last_name = name_table.last_name
-        my_user.first_name = first_name
-        my_user.last_name = last_name
-        my_user.save()
-        profile.save()
-
+        try:
+            name_table = NetID_Name_Table.objects.get(netid=profile.user.username)
+            first_name = name_table.first_name
+            last_name = name_table.last_name
+            my_user.first_name = first_name
+            my_user.last_name = last_name
+            my_user.save()
+            profile.save()
+        except Exception, e:
+            pass
+        
     cur_sem = get_cur_semester()
     theme = 'w'
     if request.user.profile.ui_pref:
