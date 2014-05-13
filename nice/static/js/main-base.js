@@ -50,12 +50,6 @@ function loadWhiteTheme()
 function loadDarkTheme()
 {
     $('.theme').addClass('dark');
-    //if (document.createStyleSheet) {
-    //    document.createStyleSheet('/static/cyborg/bootstrap.min.css');
-    //}
-    //else {
-    //    $('#white_theme_css').after($("<link rel='stylesheet' id=\"dark_theme_css\" href='/static/cyborg/bootstrap.css'/>"));
-    //}
     $('#theme_css').attr('href','/static/cyborg/bootstrap.css');
 }
 

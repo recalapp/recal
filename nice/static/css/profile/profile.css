@@ -66,6 +66,9 @@ body{
     margin-bottom: 0;
     margin-top: 0;
 }
+.auto-item:hover{
+    background-color: lightgray;
+}
 .auto-item > .panel-body{
     padding-top: 3px;
     padding-bottom: 3px;
