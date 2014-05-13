@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 {% load staticfiles %}
 
-{% block title %}Edit Profile{% endblock %}
+{% block title %}Your Classes and Profile{% endblock %}
 
 {% block main_content %}
 {% include 'main/sidebar.html' %}
@@ -11,7 +11,7 @@
         <div class="col-xs-9">
             <div class="row">
                 <div class="col-xs-6">
-                    <h3>Your Classes and Profile</h3>
+                    <h3> Hi {{ user.first_name }}!</h3>
                 </div>
                 <div class="col-xs-6" id="profile-control">
                     <a href="/" class="white-link-btn theme">
@@ -22,6 +22,7 @@
             </div>
         </div>
     </div>
+    <!--
     <div id="userinfo" class="theme row">
         <div class="col-xs-9">
             <div class="row">
@@ -40,6 +41,7 @@
             </div>
         </div>
     </div>
+    -->
     <div class="row">
         <div class="col-xs-7">
             <h2>Preview:</h2>
