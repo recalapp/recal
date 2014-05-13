@@ -71,7 +71,6 @@ function SE_showSimilarEvents(eventID, similarEvents)
 
 
     // set event listeners
-    // TODO doesn't handle if the user clicks on the hide sidebar button
     $(ep).on('ep.cancel ep.select', function(ev){
         PopUp_markAsNotEditing(popUp);
         $(popUp).draggable('enable');
