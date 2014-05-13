@@ -186,7 +186,7 @@ function init()
     // check for unapproved revisions at 10 seconds interval
     RF_addRecurringFunction(function(isInterval){
         updatePoints();
-    }, 10 * 1000, 5 * 60 * 1000);
+    }, 5 * 1000, 2 * 60 * 1000);
     RF_addRecurringFunction(function(isInterval){
         UR_pullUnapprovedRevisions();
     }, 10 * 1000, 5 * 60 * 1000);

@@ -75,6 +75,7 @@ function EventsMan_init()
                 return; // TODO this creates a new revision even if no changes were made
             oldTime.hour(newTime.hour());
             oldTime.minute(newTime.minute());
+            oldTime.second(0);
             eventDict[field] = oldTime.unix();
         }
         else if (field == 'event_recurrence')

@@ -1,3 +1,6 @@
+/***************************************************
+ * Similar Events Module
+ **************************************************/
 function SE_checkSimilarEvents(eventDict)
 {
     if (SE_hasSimilarEvents(eventDict.event_id) || SB_isFilled())
