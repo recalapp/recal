@@ -4,12 +4,12 @@
 }
 
 .fc-agenda-slots td div {
-    height: 10px !important;
+    height: 8px !important;
 } 
 
 .fc-agenda-axis{
     font-size: 8px !important;
     height: 15px !important;
-    width: 40px !important;
+    width: 45px !important;
     line-height: 15px !important;
 }
