@@ -683,6 +683,10 @@ div.modal-footer p.copy {
     width: 45px !important;
     line-height: 15px !important;
 }
+
+#calendarui.dark {
+    background-color: rgba(100, 100, 100, 0);
+}
 #sb-left-container > .popup-container {
     height: 550px;
 }
