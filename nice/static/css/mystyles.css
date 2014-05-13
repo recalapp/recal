@@ -264,6 +264,13 @@ div.nav_controls a:hover, div.nav_controls a:focus {
 #settingsModal{
     z-index: 200000;
 }
+#tutorial1 p {
+    margin-bottom: 1em;
+}
+div.modal-footer p.copy {
+    color: #666;
+    font-size: .8em;
+}
 .modal-backdrop {
     z-index: 1040;
 }

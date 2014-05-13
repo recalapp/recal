@@ -119,6 +119,7 @@ function init()
     Agenda_init();
     Cal_init();
     SE_init();
+    Tutorial_Setup();
     SR_addWillSaveListener(function (){
         Nav_save();
         UI_save();
