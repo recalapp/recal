@@ -2095,10 +2095,11 @@ function CL_highlight(course)
 
 function CL_unhighlight(course)
 {
+    var defaultBorder = (THEME == 'w') ? defaultBorderW : defaultBorderB;
     if (!CL_isHighlighted(course))
         return;
     $(course).addClass('panel-default').removeClass('panel-primary');
-    $(course).css('border-color', $(course).data('default-border'));
+    $(course).css('border-color', defaultBorder);
 }
 
 function CL_isHighlighted(course)
