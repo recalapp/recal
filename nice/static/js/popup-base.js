@@ -238,7 +238,8 @@ function PopUp_giveFocus(popUp)
     // $(popUp).find(".popup-title").parent().parent().removeClass("panel-heading-faded-out");
     //$(popUp).find(".panel-footer").removeClass("hide-footer");
     _PopUp_setBodyHeight(popUp);
-    $(document.activeElement).blur();
+    if ($(popUp).find(document.activeElement).length == 0)
+        $(document.activeElement).blur();
     if (UI_isMain(PopUp_getID(popUp)))
         SB_show();
 }
