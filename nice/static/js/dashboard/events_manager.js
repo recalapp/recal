@@ -288,6 +288,11 @@ function EventsMan_pullFromServer(complete, showLoading)
  */
 function EventsMan_processDownloadedEvents(data)
 {
+    if (eventsManager.lastSyncedTime == 0)
+    {
+        // clear out all the old events
+        eventsManager.events = {};
+    }
     var changed = false;
     var eventsArray = data.events;
     // go through the array of events

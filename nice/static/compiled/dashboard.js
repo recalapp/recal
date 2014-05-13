@@ -576,7 +576,7 @@ function EventsMan_commitChanges(id)
     delete eventsManager.uncommitted[id];
     eventsManager.updatedIDs.add(id);
     EventsMan_constructOrderArray();
-    if ('recurrence_days' in oldEventDict 
+    if (oldEventDict && 'recurrence_days' in oldEventDict 
             && (!oldEventDict.recurrence_days.equals(newEventDict.recurrence_days)
                     || oldEventDict.recurrence_interval != newEventDict.recurrence_interval))
     {
@@ -1781,7 +1781,8 @@ function SB_callWillCloseListeners()
  *           Events Manager module
  **************************************************/
 
-AGENDA_INIT = false;
+var AGENDA_INIT = false;
+var AGENDA_LOADING = false;
 var AGENDA_HTML = null;
 
 /***************************************************
@@ -1837,6 +1838,9 @@ function Agenda_active()
  */
 function Agenda_reload()
 {
+    if (AGENDA_LOADING)
+        return;
+    AGENDA_LOADING = true;
     LO_showLoading('agenda loading');
     var agendaContainer = $("#agenda")
     var added = false;
@@ -1895,6 +1899,7 @@ function Agenda_reload()
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
     LO_hideLoading('agenda loading');
+    AGENDA_LOADING = false;
 }
 
 /**
@@ -2529,6 +2534,11 @@ function EventsMan_pullFromServer(complete, showLoading)
  */
 function EventsMan_processDownloadedEvents(data)
 {
+    if (eventsManager.lastSyncedTime == 0)
+    {
+        // clear out all the old events
+        eventsManager.events = {};
+    }
     var changed = false;
     var eventsArray = data.events;
     // go through the array of events

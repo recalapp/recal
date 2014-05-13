@@ -576,7 +576,7 @@ function EventsMan_commitChanges(id)
     delete eventsManager.uncommitted[id];
     eventsManager.updatedIDs.add(id);
     EventsMan_constructOrderArray();
-    if ('recurrence_days' in oldEventDict 
+    if (oldEventDict && 'recurrence_days' in oldEventDict 
             && (!oldEventDict.recurrence_days.equals(newEventDict.recurrence_days)
                     || oldEventDict.recurrence_interval != newEventDict.recurrence_interval))
     {

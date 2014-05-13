@@ -5,7 +5,8 @@
  *           Events Manager module
  **************************************************/
 
-AGENDA_INIT = false;
+var AGENDA_INIT = false;
+var AGENDA_LOADING = false;
 var AGENDA_HTML = null;
 
 /***************************************************
@@ -61,6 +62,9 @@ function Agenda_active()
  */
 function Agenda_reload()
 {
+    if (AGENDA_LOADING)
+        return;
+    AGENDA_LOADING = true;
     LO_showLoading('agenda loading');
     var agendaContainer = $("#agenda")
     var added = false;
@@ -119,6 +123,7 @@ function Agenda_reload()
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
     LO_hideLoading('agenda loading');
+    AGENDA_LOADING = false;
 }
 
 /**
