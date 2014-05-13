@@ -576,7 +576,7 @@ function EventsMan_commitChanges(id)
     delete eventsManager.uncommitted[id];
     eventsManager.updatedIDs.add(id);
     EventsMan_constructOrderArray();
-    if ('recurrence_days' in oldEventDict 
+    if (oldEventDict && 'recurrence_days' in oldEventDict 
             && (!oldEventDict.recurrence_days.equals(newEventDict.recurrence_days)
                     || oldEventDict.recurrence_interval != newEventDict.recurrence_interval))
     {
@@ -1788,7 +1788,8 @@ function SB_callWillCloseListeners()
  *           Events Manager module
  **************************************************/
 
-AGENDA_INIT = false;
+var AGENDA_INIT = false;
+var AGENDA_LOADING = false;
 var AGENDA_HTML = null;
 
 /***************************************************
@@ -1844,6 +1845,9 @@ function Agenda_active()
  */
 function Agenda_reload()
 {
+    if (AGENDA_LOADING)
+        return;
+    AGENDA_LOADING = true;
     LO_showLoading('agenda loading');
     var agendaContainer = $("#agenda")
     var added = false;
@@ -1902,6 +1906,7 @@ function Agenda_reload()
         Agenda_insertHeader('Congrats! You have nothing on your agenda!');
     }
     LO_hideLoading('agenda loading');
+    AGENDA_LOADING = false;
 }
 
 /**
@@ -2545,6 +2550,11 @@ function EventsMan_pullFromServer(complete, showLoading)
  */
 function EventsMan_processDownloadedEvents(data)
 {
+    if (eventsManager.lastSyncedTime == 0)
+    {
+        // clear out all the old events
+        eventsManager.events = {};
+    }
     var changed = false;
     var eventsArray = data.events;
     // go through the array of events
@@ -3692,15 +3702,15 @@ function _PopUp_Form_getFormIDForElement(element)
 function _PopUp_Form_addOnBlurListener(form, listener)
 {
     if ($(form).find(".withdatepicker").length > 0)
-        $(form).find(".withdatepicker").datetimepicker().one("hide", listener);
+        $(form).find(".withdatepicker").datetimepicker().off('hide').on("hide", listener);
     else if ($(form).find(".withtimepicker").length > 0)
-        $(form).find(".withtimepicker").datetimepicker().one("hide", listener);
+        $(form).find(".withtimepicker").datetimepicker().off('hide').on("hide", listener);
     else if ($(form).find(".withcustompicker").length > 0)
-        $(form).find(".withcustompicker").one('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
+        $(form).find(".withcustompicker").off('value_set').on('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
     else if ($(form).find("input").length > 0)
-        $(form).find("input").one("blur", listener);
+        $(form).find("input").off('blur').on("blur", listener);
     else if ($(form).find("textarea").length > 0)
-        $(form).find("textarea").one("blur", listener);
+        $(form).find("textarea").off('blur').on("blur", listener);
 }
 
 /***************************************************
