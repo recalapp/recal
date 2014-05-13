@@ -125,12 +125,17 @@ function Cal_reload()
                 {
                     rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
                 }
-
+                var eventStartTZ = moment.unix(eventDict.event_start);
+                if (MAIN_TIMEZONE)
+                    eventStartTZ = eventStartTZ.tz(MAIN_TIMEZONE);
+                var eventEndTZ =  moment.unix(eventDict.event_end);
+                if (MAIN_TIMEZONE)
+                    eventEndTZ = eventEndTZ.tz(MAIN_TIMEZONE);
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
                     title: $("<div/>").html(eventDict.event_title).text(), // hack to render this HTML (OK because escaped on server)
-                    start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
-                    end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
+                    start: eventStartTZ.toISOString(),
+                    end: eventEndTZ.toISOString(),
                     highlighted: shouldHighlight,
                     myColor: SECTION_COLOR_MAP[eventDict.section_id]['color'],
                     textColor: shouldHighlight ? '#ffffff' : SECTION_COLOR_MAP[eventDict.section_id]['color'],

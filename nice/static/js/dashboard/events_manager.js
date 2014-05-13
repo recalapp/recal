@@ -91,7 +91,9 @@ function EventsMan_init()
                 var eventDict = eventsManager.uncommitted[id];
 
                 var start = moment.unix(eventDict.event_start);
-                var day = (start.tz(MAIN_TIMEZONE).day() - 1) % 7;
+                if (MAIN_TIMEZONE)
+                    start = start.tz(MAIN_TIMEZONE);
+                var day = (start.day() - 1) % 7;
 
                 if (!value.contains(day))
                     value.push(day);

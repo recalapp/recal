@@ -1,4 +1,5 @@
-var MAIN_TIMEZONE = 'America/New_York';
+var PRINCETON_TIMEZONE = 'America/New_York';
+var MAIN_TIMEZONE = PRINCETON_TIMEZONE;
 var DAYS_DICT = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'S'];
 var TYPE_MAP_INVERSE = {
     "assignment":"AS",

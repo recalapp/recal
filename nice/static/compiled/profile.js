@@ -747,7 +747,8 @@ function EventsMan_load()
     EventsMan_constructOrderArray();
     return true;
 }
-var MAIN_TIMEZONE = 'America/New_York';
+var PRINCETON_TIMEZONE = 'America/New_York';
+var MAIN_TIMEZONE = PRINCETON_TIMEZONE;
 var DAYS_DICT = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'S'];
 var TYPE_MAP_INVERSE = {
     "assignment":"AS",
@@ -1923,11 +1924,17 @@ function Cal_reload()
             rgba = rgbToRgba(luminanceToRgb(color), FACTOR_TRANS);
         }
 
+        var eventStartTZ = moment.unix(eventDict.event_start);
+        if (MAIN_TIMEZONE)
+            eventStartTZ = eventStartTZ.tz(MAIN_TIMEZONE);
+        var eventEndTZ =  moment.unix(eventDict.event_end);
+        if (MAIN_TIMEZONE)
+            eventEndTZ = eventEndTZ.tz(MAIN_TIMEZONE); 
         Cal_eventSource.events.push({
             id: eventDict.event_id,
             title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
-            start: moment.unix(eventDict.event_start).tz(MAIN_TIMEZONE).toISOString(),
-            end: moment.unix(eventDict.event_end).tz(MAIN_TIMEZONE).toISOString(),
+            start: eventStartTZ.toISOString(),
+            end: eventEndTZ.toISOString(),
             myColor: COURSE_COLOR_MAP[eventDict.course_id],
             textColor: shouldHighlight ? '#ffffff' : color,
             backgroundColor: rgba,
