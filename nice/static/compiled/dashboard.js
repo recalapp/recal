@@ -2603,8 +2603,14 @@ $(document).keydown(function(e){
             break;
     }
 });
-$(document).keyup(function(){
-    SHIFT_PRESSED = false;
+$(document).keyup(function(e){
+    var keyCode = e.keyCode || e.which;
+    switch (keyCode)
+    {
+        case KEY_SHIFT:
+            SHIFT_PRESSED = false;
+            break;
+    }
 });
 $(init)
 var NAV_ID = ["agendatab", "calendartab"];

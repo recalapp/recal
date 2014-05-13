@@ -2485,7 +2485,7 @@ $(document).keydown(function(e){
             break;
     }
 });
-$(document).keyup(function(){
+$(document).keyup(function(e){
     var keyCode = e.keyCode || e.which;
     switch (keyCode)
     {
