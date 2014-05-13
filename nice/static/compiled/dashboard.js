@@ -2239,7 +2239,7 @@ function Cal_reload()
                     myColor: SECTION_COLOR_MAP[eventDict.section_id]['color'],
                     textColor: shouldHighlight ? '#ffffff' : SECTION_COLOR_MAP[eventDict.section_id]['color'],
                     backgroundColor: rgba,
-                    borderColor: '#ffffff'
+                    borderColor: rgba
                 });
             });
             $("#calendarui").fullCalendar("refetchEvents");
