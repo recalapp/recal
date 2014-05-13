@@ -2624,9 +2624,7 @@ function EventsMan_clickAddEvent()
     
     PopUp_giveFocus(popUp);
     PopUp_markAsUnsaved(popUp);
-    setTimeout(function(){
         PopUp_giveEditingFocus(popUp);
-    }, 300);
 }
 var KEY_UP = 38;
 var KEY_DOWN = 40;
@@ -3138,6 +3136,7 @@ function PopUp_initialize_deferred(popUp)
             minView: 2,
             maxView: 3
         });
+        $(popUp).find('.withdatepicker').data('initialized', true);
     } else {
         $(popUp).find('.withdatepicker').removeClass('withdatepicker');
     }
@@ -3157,6 +3156,7 @@ function PopUp_initialize_deferred(popUp)
             startDate: new Date(moment('Dec 31, 1899 12:00 AM').unix() * 1000),
             endDate: new Date(moment('Jan 1, 1900 12:00 AM').unix() * 1000),
         });
+        $(popUp).find('.withtimepicker').data('initialized', true)
     } else {
         $(popUp).find('.withtimepicker').removeClass('withtimepicker');
     }
@@ -3703,9 +3703,9 @@ function _PopUp_Form_getFormIDForElement(element)
 }
 function _PopUp_Form_addOnBlurListener(form, listener)
 {
-    if ($(form).find(".withdatepicker").length > 0)
+    if ($(form).find(".withdatepicker").length > 0 && $(form).find('.withdatepicker').data('initialized'))
         $(form).find(".withdatepicker").datetimepicker().off('hide').on("hide", listener);
-    else if ($(form).find(".withtimepicker").length > 0)
+    else if ($(form).find(".withtimepicker").length > 0 && $(form).find('.withtimepicker').data('initialized'))
         $(form).find(".withtimepicker").datetimepicker().off('hide').on("hide", listener);
     else if ($(form).find(".withcustompicker").length > 0)
         $(form).find(".withcustompicker").off('value_set').on('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
@@ -3820,6 +3820,8 @@ function PopUp_clickedElement(element)
  */
 function _PopUp_Form_enforceStartDate(popUp)
 {
+    if ($(popUp).find('.withtimepicker').data('initialized') != true)
+        return;
     var time = $(popUp).find('#popup-time-start').text();
     var startDate = moment('Dec 31, 1899 ' + time);
     $(popUp).find('#popup-time-end-form').find('.withtimepicker').datetimepicker('setStartDate', new Date(startDate.unix() * 1000));

@@ -362,7 +362,5 @@ function EventsMan_clickAddEvent()
     
     PopUp_giveFocus(popUp);
     PopUp_markAsUnsaved(popUp);
-    setTimeout(function(){
         PopUp_giveEditingFocus(popUp);
-    }, 300);
 }
