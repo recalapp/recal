@@ -142,8 +142,6 @@ def landing(request):
     """
     Displays the landing page.
     """
-    if request.user.is_authenticated():
-        return redirect('index')
     if request.mobile:
         return render(request, 'landing/mobile.html', None) 
     return render(request, 'landing/index.html', None)
