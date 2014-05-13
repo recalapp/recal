@@ -3676,15 +3676,15 @@ function _PopUp_Form_getFormIDForElement(element)
 function _PopUp_Form_addOnBlurListener(form, listener)
 {
     if ($(form).find(".withdatepicker").length > 0)
-        $(form).find(".withdatepicker").datetimepicker().one("hide", listener);
+        $(form).find(".withdatepicker").datetimepicker().off('hide').on("hide", listener);
     else if ($(form).find(".withtimepicker").length > 0)
-        $(form).find(".withtimepicker").datetimepicker().one("hide", listener);
+        $(form).find(".withtimepicker").datetimepicker().off('hide').on("hide", listener);
     else if ($(form).find(".withcustompicker").length > 0)
-        $(form).find(".withcustompicker").one('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
+        $(form).find(".withcustompicker").off('value_set').on('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
     else if ($(form).find("input").length > 0)
-        $(form).find("input").one("blur", listener);
+        $(form).find("input").off('blur').on("blur", listener);
     else if ($(form).find("textarea").length > 0)
-        $(form).find("textarea").one("blur", listener);
+        $(form).find("textarea").off('blur').on("blur", listener);
 }
 
 /***************************************************
