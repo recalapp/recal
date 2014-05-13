@@ -113,5 +113,5 @@ function UR_close(ep)
     SB_hide();
     if ($(this).data('voted'))
         LO_showTemporaryMessage('Thanks for voting!', LO_TYPES.SUCCESS);
-    EventsMan_verifyLocalStorage();
+    EventsMan_verifyLocalData();
 }

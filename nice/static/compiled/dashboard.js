@@ -2316,6 +2316,7 @@ function EventsMan_init()
                 return; // TODO this creates a new revision even if no changes were made
             oldTime.hour(newTime.hour());
             oldTime.minute(newTime.minute());
+            oldTime.second(0);
             eventDict[field] = oldTime.unix();
         }
         else if (field == 'event_recurrence')
@@ -2827,7 +2828,7 @@ function init()
     // check for unapproved revisions at 10 seconds interval
     RF_addRecurringFunction(function(isInterval){
         updatePoints();
-    }, 10 * 1000, 5 * 60 * 1000);
+    }, 5 * 1000, 2 * 60 * 1000);
     RF_addRecurringFunction(function(isInterval){
         UR_pullUnapprovedRevisions();
     }, 10 * 1000, 5 * 60 * 1000);
@@ -2998,22 +2999,24 @@ function NO_showNotification(id, text, type, meta)
     } else 
     {
         $noti = $('<div>').addClass('alert').addClass('alert-dismissible');
+        SB_push($noti);
         $noti.append('<button id="close_button" type="button" class="close" aria-hidden="true">&times;</button>');
         $('<span id="noti-content">').appendTo($noti);
         $noti.attr('id', id);
-        SB_push($noti);
+        $text = $('<a>').addClass('alert-link').text(text).on('click', function(ev){
+            ev.preventDefault();
+            $noti.trigger('noti.click');
+            SB_pop($noti);
+        });
+        $noti.find('#noti-content').empty();
+        $noti.find('#noti-content').append($text);
+        $noti.addClass(type);
+        $noti.find('#close_button').on('click', function(ev){
+            ev.preventDefault();
+            NO_removeNotificationID($noti.attr('id'));
+        });
     }
-    $noti.addClass(type);
-    $text = $('<a>').addClass('alert-link').text(text).on('click', function(ev){
-        ev.preventDefault();
-        $noti.trigger('noti.click');
-        SB_pop($noti);
-    });
-    $noti.find('#close_button').on('click', function(ev){
-        ev.preventDefault();
-        NO_removeNotificationID($noti.attr('id'));
-    });
-    $noti.find('#noti-content').append($text);
+    
     if (meta)
     {
         $.each(meta, function(key, value){
@@ -4076,6 +4079,9 @@ function PopUp_clickedUndo(anchor)
     $(popUp).find('.unsaved').removeClass('unsaved');
     EventsMan_cancelChanges(id);
 }
+/***************************************************
+ * Settings Module
+ **************************************************/
 var SE_id = 'settingsModal';
 function SE_init()
 {
@@ -4238,7 +4244,11 @@ function Tutorial_Setup() {
         $('#tutorialModal').modal('show');
         $.cookie('tutorial_msg', 'str');
     }
-}function SE_checkSimilarEvents(eventDict)
+}
+/***************************************************
+ * Similar Events Module
+ **************************************************/
+function SE_checkSimilarEvents(eventDict)
 {
     if (SE_hasSimilarEvents(eventDict.event_id) || SB_isFilled())
         return;
@@ -4286,7 +4296,7 @@ function SE_showSimilarEvents(eventID, similarEvents)
             buttons: [
                 {
                     value: 'c',
-                    pretty: 'Choose',
+                    pretty: 'View Event',
                 }
             ],
         });
@@ -4311,7 +4321,6 @@ function SE_showSimilarEvents(eventID, similarEvents)
 
 
     // set event listeners
-    // TODO doesn't handle if the user clicks on the hide sidebar button
     $(ep).on('ep.cancel ep.select', function(ev){
         PopUp_markAsNotEditing(popUp);
         $(popUp).draggable('enable');
@@ -4532,5 +4541,5 @@ function UR_close(ep)
     SB_hide();
     if ($(this).data('voted'))
         LO_showTemporaryMessage('Thanks for voting!', LO_TYPES.SUCCESS);
-    EventsMan_verifyLocalStorage();
+    EventsMan_verifyLocalData();
 }
