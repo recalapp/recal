@@ -1,0 +1,20 @@
+/*{
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "_tester1",
+      "password": "pbkdf2_sha256$12000$gBiegwC5jc5F$KFv9j0nbff31G6E38a+nh7hsfgQVxC6bqVK8DmOPyYs=",
+      "is_superuser": true,
+      "is_staff": true
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "_tester2",
+      "password": "pbkdf2_sha256$12000$iAFDxg1eHz79$6vAq1alA0yPnQwmmol75tf+uZxNhiBZKlDo1hCRJgoY=",
+      "is_superuser": true,
+      "is_staff": true
+    }
+  }*/

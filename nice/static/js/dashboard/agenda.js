@@ -1,3 +1,10 @@
+/***************************************************
+ * Agenda Module
+ * requires: UI module (UI_isPinned, UI_isMain),
+ *           PopUp module
+ *           Events Manager module
+ **************************************************/
+
 AGENDA_INIT = false;
 var AGENDA_HTML = null;
 
@@ -10,9 +17,11 @@ function Agenda_init() {
         return;
     AGENDA_INIT = true;
 
+    // save html template and remove it from dom tree
     AGENDA_HTML = $('#agenda-template').html();
     $('#agenda-template').remove();
 
+    // reload before displaying
     EventsMan_addUpdateListener(function(){
         if (!Agenda_active())
             return;
@@ -23,25 +32,33 @@ function Agenda_init() {
             return;
         Agenda_reload();
     });
-
-
     $("#agenda.tab-pane").each(function(index){
         $(this).on("transitionend", function (e){
             if ($(this).hasClass('in'))
                 Agenda_reload();
         });
     });
+
+    // unhighlight closed events
     PopUp_addCloseListener(function(id) {
         Agenda_unhighlight($('.tab-content').find('.agenda-item.panel#'+id));
     });
+
+    // reload
     Agenda_reload();
 } 
 
+/**
+ * returns true if the agenda view is active
+ */
 function Agenda_active()
 {
     return $('#agenda').hasClass('active');
 }
 
+/**
+ * assumption: reloading is cheap
+ */
 function Agenda_reload()
 {
     LO_showLoading('agenda loading');
@@ -104,6 +121,9 @@ function Agenda_reload()
     LO_hideLoading('agenda loading');
 }
 
+/**
+ * filter using course and event types
+ */
 function Agenda_filterEvents(eventIDs)
 {
     var ret = [];
@@ -118,20 +138,9 @@ function Agenda_filterEvents(eventIDs)
     return ret;
 }
 
-// function Agenda_loadEventsWithTime(eventIDs, time)
-// {
-//     if (time == 'yesterday')
-//     {
-//         $.each(eventIDs, function(index) {
-//             var eventDict = EventsMan_getEventById(this);
-//             if (eventDict['event_type'] == "AS")
-//             {
-//                 eventDict['overdue'] = 'true';
-//             }
-//         });
-//     }
-// }
-
+/**
+ * load all the event in eventIDs into the agenda view
+ */
 function Agenda_loadEvents(eventIDs)
 {
     var agendaContainer = $("#agenda");
@@ -140,7 +149,6 @@ function Agenda_loadEvents(eventIDs)
         var eventDict = EventsMan_getEventByID(this);
         if (!eventDict)
             return;
-        //agendaContainer.append(CacheMan_load("agenda-template"));
         agendaContainer.append($(AGENDA_HTML));
         var agenda = agendaContainer.find("#agenda123")[0];
         agenda.id = this;
@@ -262,9 +270,6 @@ function Agenda_highlight(agenda)
     if (Agenda_isHighlighted(agenda))
         return;
     var courseColor = $(agenda).data('course-color');
-    //var newColor = '#123456';
-    // var oldColor = $(agenda).css('border-color');
-    // $(agenda).data('default-color', oldColor);
     $(agenda).find('#agenda-section').css('color', courseColor);
     $(agenda).find('#agenda-title').css('color', courseColor);
     $(agenda).addClass("panel-primary").removeClass("panel-default").css({
@@ -275,7 +280,6 @@ function Agenda_unhighlight(agenda)
 {
     var borderColor = $(agenda).data('default-border-color');
     var defaultTextColor = $(agenda).data('default-text-color');
-    // var defaultColor = $(agenda).data('default-color');
     $(agenda).addClass("panel-default").removeClass("panel-primary").css({
         'border-color': borderColor,
     });;

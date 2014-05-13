@@ -3,13 +3,18 @@
  * corner of the screen. It is meant to be used only
  * for displaying information. If user interaction is
  * needed, use notificaitons.js.
+ *
+ * Works similarly to memory management - every id added to loading
+ * must be released, otherwise the indicator stays.
  **********************************************************/
 
 // add as needed
 var LO_TYPES = {
     SUCCESS: 'alert-success',
 }
-var LO_idMap = null;
+
+var LO_idMap = null; // can't initalize until the set data structure is loaded
+
 function LO_init()
 {
     LO_idMap = {
