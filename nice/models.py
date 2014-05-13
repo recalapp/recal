@@ -434,13 +434,16 @@ def make_blank_profile(sender, instance, created, **kwargs):
         if created:  
             profile, created = User_Profile.objects.get_or_create(user=instance,lastActivityTime=get_current_utc()) 
             if created:
-                name_table = NetID_Name_Table.objects.get(netid=profile.user.username)
-                first_name = name_table.first_name
-                last_name = name_table.last_name
-                profile.user.first_name = first_name
-                profile.user.last_name = last_name
-                profile.user.save()
-                profile.save()
+                try:
+                    name_table = NetID_Name_Table.objects.get(netid=profile.user.username)
+                    first_name = name_table.first_name
+                    last_name = name_table.last_name
+                    profile.user.first_name = first_name
+                    profile.user.last_name = last_name
+                    profile.user.save()
+                    profile.save()
+                except Exception, e:
+                    pass
     except Exception, e:
         pass
      
