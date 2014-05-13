@@ -20,7 +20,6 @@ $(document).keydown(function(e){
             break;
         case KEY_SQ_BRACE_R:
             $("#calendartab").tab('show');
-            //Cal_init();
             break;
         case KEY_SQ_BRACE_L:
             $("#agendatab").tab('show');

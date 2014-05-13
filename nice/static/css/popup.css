@@ -47,6 +47,8 @@
     min-height: 150px;
 }
 #popup-loc{
+    min-width: 70%;
+    min-height: 15px;
     display: inline-block;
 }
 .popup-text-container{

@@ -828,13 +828,17 @@ function LO_init()
     };
 }
 
+/***************************************************
+ * Client Methods
+ **************************************************/
+
 function LO_showLoading(id)
 {
     if (typeof id == 'undefined')
         return;
     if (id in LO_idMap.loading)
     {
-        // TODO should do anything here?
+        // TODO id already exists. should do anything here?
         return;
     }
     LO_idMap.loading.add(id);
@@ -878,10 +882,6 @@ function LO_showError(id)
     if ($('#error.active').length > 0)
         return;
 
-    /*if ($('#loading.error').length > 0)
-        return;
-    if ($('#loading').not('.error').length > 0)
-        $('#loading').not('.error').remove();*/
     var $loadingError = LO_getLoadingHTML();
     $loadingError.attr('id', 'error');
     $loadingError.removeClass('alert-info').addClass('alert-danger');
@@ -898,6 +898,11 @@ function LO_showTemporaryMessage(message, type)
         LO_remove($loading);
     }, 1.5*1000);
 }
+
+/***************************************************
+ * Helper functions
+ **************************************************/
+
 function LO_remove($loading)
 {
     $loading.on('transitionend', function(ev){
@@ -1924,7 +1929,7 @@ function Agenda_loadEvents(eventIDs)
         var agenda = agendaContainer.find("#agenda123")[0];
         agenda.id = this;
         
-        $(agenda).find(".panel-body").find('h4').html(eventDict.event_title); // Already escaped by server so ok to display as html. That way, normal characters like ' render fine.
+        $(agenda).find(".panel-body").find('h4').text(eventDict.event_title); 
         $(agenda).find('#agenda-section').text(SECTION_MAP[eventDict.section_id]);
         
         var start = moment.unix(eventDict.event_start);
@@ -2062,6 +2067,16 @@ function Agenda_isHighlighted(agenda)
 {
     return $(agenda).hasClass("panel-primary");
 }
+/***************************************************
+ * Calendar Module
+ * requires: Calendar-base module
+ *           UI module (UI_isPinned, UI_isMain),
+ *           PopUp module
+ *           Events Manager module
+ **************************************************/
+
+
+// sample event source:
 //eventSources: [{
 //    events: [{
 //            id: "1",
@@ -2075,17 +2090,11 @@ function Agenda_isHighlighted(agenda)
 function Cal_init() {
     if (CAL_INIT)
         return;
+
+
+
+    // customizing options
     var height = window.innerHeight - $(".navbar").height() - 50;
-
-    EventsMan_addUpdateListener(function(){
-        if (Cal_active())
-            Cal_reload();
-    });
-    $('#'+SE_id).on('close', function(ev){
-        //if (Cal_active())
-        Cal_reload();
-    });
-
     Cal_options.height = height;
     Cal_options.eventClick = function(calEvent, jsEvent, view) {
         if (calEvent.highlighted == true)
@@ -2132,6 +2141,21 @@ function Cal_init() {
 
     $("#calendarui").fullCalendar(Cal_options);
     CAL_INIT = true;
+    // unhightlight when closing events
+    PopUp_addCloseListener(function(id){
+        $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){
+            Cal_unhighlightEvent(this, true);
+        });
+    });
+    // reload before displaying
+    EventsMan_addUpdateListener(function(){
+        if (Cal_active())
+            Cal_reload();
+    });
+    $('#'+SE_id).on('close', function(ev){
+        if (Cal_active())
+            Cal_reload();
+    });
     $("#calendar.tab-pane").each(function(index){
         $(this).on("transitionend", function(e) {
             if ($(this).hasClass('in'))
@@ -2139,11 +2163,6 @@ function Cal_init() {
                 Cal_render();
                 Cal_reload();
             }
-        });
-    });
-    PopUp_addCloseListener(function(id){
-        $($("#calendarui").fullCalendar("clientEvents", id)).each(function (index){
-            Cal_unhighlightEvent(this, true);
         });
     });
     if (Cal_active())
@@ -2167,6 +2186,7 @@ function Cal_reload()
     Cal_eventSource.events = [];
     setTimeout(function(){
         LO_showLoading('cal loading');
+        // NOTE: try statement because the plugin has errors sometimes
         try {
             $.each(eventIDs, function(index){
                 eventDict = EventsMan_getEventByID(this);
@@ -2197,7 +2217,7 @@ function Cal_reload()
                     eventEndTZ = eventEndTZ.tz(MAIN_TIMEZONE);
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
-                    title: $("<div/>").html(eventDict.event_title).text(), // hack to render this HTML (OK because escaped on server)
+                    title: eventDict.event_title,
                     start: eventStartTZ.toISOString(),
                     end: eventEndTZ.toISOString(),
                     highlighted: shouldHighlight,
@@ -2208,11 +2228,10 @@ function Cal_reload()
                 });
             });
             $("#calendarui").fullCalendar("refetchEvents");
-            CAL_LOADING = false;
         }
         catch(err){
-            CAL_LOADING = false;
         }
+        CAL_LOADING = false;
         LO_hideLoading('cal loading');
     }, 10);
 }
@@ -2602,7 +2621,6 @@ $(document).keydown(function(e){
             break;
         case KEY_SQ_BRACE_R:
             $("#calendartab").tab('show');
-            //Cal_init();
             break;
         case KEY_SQ_BRACE_L:
             $("#agendatab").tab('show');
@@ -2621,6 +2639,11 @@ $(document).keyup(function(e){
             break;
     }
 });
+/***************************************************
+ * Main Module
+ * Think of this module as the main() function. 
+ * It is the first thing that gets called
+ **************************************************/
 $(init)
 var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
@@ -2633,6 +2656,8 @@ var COURSE_FILTER_BLACKLIST;
 function init()
 {
     pinnedIDs = new Set();
+
+    // time zone
     moment.tz.add({
         "zones": {
             "America/New_York": [
@@ -2671,9 +2696,11 @@ function init()
         "links": {}
     });
 
+    // initializing
     LO_init();
     RF_init();
     
+    // set up ajax, so it shows loading indicator and send csrf properly
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
@@ -2706,8 +2733,11 @@ function init()
             return;
         LO_showError(loadingID);
     });
+
+    // more inits
     CacheMan_init();
 
+    // get section info
     SECTION_MAP = JSON.parse(CacheMan_load('/all-sections'));
     SECTION_MAP_INVERSE = {};
     $.each(SECTION_MAP, function (key, value) {
@@ -2732,8 +2762,19 @@ function init()
                 clearLocalStorage();
         }
         localStorage.setItem('sectionsmap', CacheMan_load('/get/sections'));
+        var user = localStorage.getItem('user');
+        if (!user)
+            clearLocalStorage();
+        else
+        {
+            if (user != USER_NETID)
+                clearLocalStorage();
+        }
+        localStorage.setItem('user', USER_NETID);
     }
+   
     
+    // more inits
     SB_init();
     SR_init();
     EventsMan_init();
@@ -2743,6 +2784,8 @@ function init()
     Cal_init();
     SE_init();
     Tutorial_Setup();
+
+    // state restoration
     SR_addWillSaveListener(function (){
         Nav_save();
         UI_save();
@@ -2751,6 +2794,8 @@ function init()
         Nav_load();
         UI_load();
     });
+
+    // if event id changes, manage the ui module accordingly
     EventsMan_addEventIDsChangeListener(function(oldID, newID){
         if (UI_isMain(oldID))
             UI_setMain(newID);
@@ -2760,27 +2805,26 @@ function init()
             UI_pin(newID);
         }
     });
+
+    // load the correct theme
     if (THEME == 'w')
         loadWhiteTheme();
     else
         loadDarkTheme();
 
+    // initialize tooltip
     $('.withtooltip').tooltip({});
+
+    // handle resize
     $(window).on('resize', function(ev){
         adaptSize();
     });
     adaptSize();
-    if ('localStorage' in window && window['localStorage'] !== null)
-    {
-        localStorage.setItem('user', USER_NETID);
-    }
+
+    // check for unapproved revisions
     UR_pullUnapprovedRevisions();
-    /*setInterval(function(){
-        UR_pullUnapprovedRevisions();
-    }, 10 * 1000)
-    setInterval(function(){
-        updatePoints();
-    }, 60 * 1000);*/
+
+    // check for unapproved revisions at 10 seconds interval
     RF_addRecurringFunction(function(isInterval){
         updatePoints();
     }, 10 * 1000, 5 * 60 * 1000);
@@ -2788,6 +2832,10 @@ function init()
         UR_pullUnapprovedRevisions();
     }, 10 * 1000, 5 * 60 * 1000);
 }
+
+/**
+ * This is how we are responsive
+ */
 function adaptSize()
 {
     if (window.innerWidth <= 768)
@@ -2813,6 +2861,9 @@ function adaptSize()
     }
 }
 
+/***************************************************
+ * State restoration for nav and popup
+ **************************************************/
 function Nav_save()
 {
     var id = $("#maintab").find(".active").find("a")[0].id;
@@ -2824,10 +2875,6 @@ function Nav_load()
     if (index == null)
         return;
     $("#maintab #"+NAV_ID[index]).tab("show");
-    //$("#maintab li").removeClass("active");
-    //$("#maintab #"+NAV_ID[index]).parent().addClass("active");
-    //$(".tab-pane").removeClass("in");
-    //$("#"+TAB_ID[index]).addClass("in");
 }
 
 
@@ -2855,7 +2902,12 @@ function UI_load()
         //$.removeCookie('main_ID')
     }
 }
-
+/***************************************************
+ * Miscellaneous
+ **************************************************/
+/**
+ * A helpful method to disable all user interactions
+ */
 function disableAllInteractions()
 {
     var disabler = $('<div id="disabler"></div>');
@@ -2874,6 +2926,10 @@ function enableAllInteractions()
 {
     $('#disabler').remove();
 }
+
+/**
+ * Toggle tutorial
+ */
 function toggleInfo()
 {
     $('.main-content').toggleClass('main-hidden');
@@ -2883,6 +2939,7 @@ function onLogOut()
 {
     clearLocalStorage();
 }
+
 function clearLocalStorage()
 {
     if ('localStorage' in window && window['localStorage'] !== null)
@@ -2906,10 +2963,21 @@ function updatePoints()
         }
     });
 }
+/***************************************************
+ * Notifications Module
+ * Requires: Sidebar Module
+ * Unlike the indicators module, this notifications
+ * module is meant to have interactions with user.
+ * The user can click on the notifications
+ **************************************************/
+
+// add as needed
 var NO_TYPES = {
     WARNING: 'alert-warning',
     INFO: 'alert-info',
 }
+
+
 function NO_init()
 {
     PopUp_addCloseListener(function(id){
@@ -2917,6 +2985,10 @@ function NO_init()
     });
 }
 
+/**
+ * Show a new notification. Optionally pass along a metadata dictionary
+ * to be stored with the notification
+ */
 function NO_showNotification(id, text, type, meta)
 {
     var $noti;
@@ -2942,7 +3014,6 @@ function NO_showNotification(id, text, type, meta)
         NO_removeNotificationID($noti.attr('id'));
     });
     $noti.find('#noti-content').append($text);
-    //$(noti).data('events', similarEvents);
     if (meta)
     {
         $.each(meta, function(key, value){
@@ -2963,56 +3034,18 @@ function NO_removeNotificationID(id)
     SB_pop($('#' + id + '.alert.in')[0]);
     SB_hideIfEmpty();
 }
-
-//function NO_showSimilarEventsNotification(event_id, similarEvents)
-//{
-//    if ($('#' + event_id + '.alert').length > 0)
-//    {
-//        // notification already shown
-//        var noti = $('#' + event_id + '.alert')[0];
-//        if (similarEvents.length == 0)
-//        {
-//            // not similar anymore. remove
-//            SB_pop(noti);
-//            SB_hideIfEmpty();
-//        }
-//        else
-//        {
-//            $(noti).data('events', similarEvents);
-//        }
-//        return;
-//    }
-//    if (similarEvents.length == 0)
-//        return;
-//    var htmlContent = CacheMan_load('notifications-template');
-//    SB_push(htmlContent);
-//    var noti = $('#noti-123')[0];
-//    noti.id = event_id;
-//    $(noti).addClass('alert-warning');
-//    $(noti).find('#noti-content').html('<a href="#" class="alert-link" onclick="">A similar event</a> already exists.');
-//    $(noti).data('events', similarEvents);
-//    $(noti).find('#noti-content').on('click', function(ev){
-//        ev.preventDefault();
-//        SE_showSimilarEvents(event_id, $(noti).data('events'));
-//        SB_pop(noti);
-//        //NO_showSimilarEvents(event_id);
-//        //return false;
-//    });
-//    $(noti).find('button').on('click', function(){
-//        SB_pop(noti);
-//        //$(noti).remove();
-//        SB_hideIfEmpty();
-//    });
-//}
 POPUP_CLASS = 'popup-event';
 function PopUp_init()
 {
     if (POPUP_INIT)
         return;
     POPUP_INIT = true;
+
+    // get html template and remove from dom
     POPUP_HTML = $('#popup-template').html();
     $('#popup-template').remove();
     
+    // modify jQuery draggable to have a before drag callback
     var oldMouseStart = $.ui.draggable.prototype._mouseStart;
     $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
         this._trigger("beforeStart", event, this._uiHash());
@@ -3029,10 +3062,10 @@ function PopUp_init()
         $("#content_bounds").css("top",topPos + "px").css("height", height).css("left", "-20%").css("width", "140%");
     });
 
+    // event listeners
     EventsMan_addOnReadyListener(function(){
         PopUp_load();
     });
-
     SR_addWillSaveListener(function (){
         PopUp_save();
     })
@@ -3060,6 +3093,10 @@ function PopUp_init()
  * Creating/removing
  **************************************************/
 
+/**
+ * Initialize the pickers. This can be deferred as the delay is
+ * too small for the user to begin editing before the pickers are ready
+ */
 function PopUp_initialize_deferred(popUp)
 {
     if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker on mobile
@@ -3092,46 +3129,12 @@ function PopUp_initialize_deferred(popUp)
     } else {
         $(popUp).find('.withtimepicker').removeClass('withtimepicker');
     }
-    //var htmlcontent = CacheMan_load("type-picker")
-    //$(popUp).find(".withtypepicker").popover({
-    //    placement: "left auto",
-    //    trigger: "focus",
-    //    html: true,
-    //    content: htmlcontent,
-    //    container: 'body'
-    //})
-    //var input = $(popUp).find(".withtypepicker")[0];
-    //$(input).on("shown.bs.popover", function(){
-    //    var tp = $("#type-picker123")[0];
-    //    tp.id = "";
-    //    this.tp = tp;
-    //    var type = $(this).val();
-    //    TP_select(this.tp, type);
-    //    var inputField = this;
-    //    TP_setSelectListener(function(tp, selectedType){
-    //        $(inputField).val(selectedType);
-    //    });
-    //});
-    
-
-    //$(popUp).find('.withsectionpicker').popover({
-    //    placement: 'left auto',
-    //    trigger: 'focus', 
-    //    html: true,
-    //    content: CacheMan_load('section-picker'),
-    //    container: 'body'
-    //}).on('shown.bs.popover', function(){
-    //    var sp = $('#section-picker123')[0];
-    //    sp.id = '';
-    //    this.sp = sp;
-    //    var section = $(this).val();
-    //    SP_select(this.sp, section);
-    //    var inputField = this;
-    //    SP_setSelectListener(function(sp, selectedSection){
-    //        $(inputField).val(selectedSection);
-    //    });
-    //});
 }
+
+/**
+ * initialize the things at are part of the popup itself, such as
+ * recurrence segmented control.
+ */
 function PopUp_initialize(popUp)
 {
     var choices = [];
@@ -3170,6 +3173,13 @@ function PopUp_initialize(popUp)
  * Getters and Setters
  **************************************************/
 
+/**
+ * Set the popup to the specified event id.
+ * If the popup has uncommitted changes, it refuses
+ * to change, and return false. If a retry listener
+ * is given, it tries to change it again after the user
+ * saves
+ */
 function PopUp_setToEventID(popUp, id, retryListener)
 {
     var oldID = PopUp_getID(popUp);
@@ -3207,13 +3217,13 @@ function PopUp_setToEventID(popUp, id, retryListener)
     PopUp_setID(popUp, id);
     var eventDict;
     $(popUp).find('.unsaved').removeClass('unsaved');
-    //$(popUp).find('.withcustompicker').off('hidden.bs.popover');
-    //$(popUp).find('.withcustompicker').popover('destroy');
     if (EventsMan_hasUncommitted(id))
     {
+        // not actually needed anymore, as we won't ever change
+        // the popups with unapproved changes
+        // but can keep the functions here, in case we want it later
         eventDict = EventsMan_getUncommitted(id);
         PopUp_markAsUnsaved(popUp);
-        // TODO find out what is the unsaved changes
         var savedEventDict = EventsMan_getEventByID(id);
         if (savedEventDict)
         {
@@ -3266,8 +3276,9 @@ function PopUp_setToEventID(popUp, id, retryListener)
         myColor = myColor['color'];
     PopUp_setColor(popUp, myColor);
 
-    // give focus to PopUp if should be highlighted
+    // NOTE: give focus to PopUp if should be highlighted
 
+    // set up recurrence ui
     $(popUp).find('#popup-repeat')[0].checked = ('recurrence_days' in eventDict);
     $(popUp).find('#popup-repeat').off('change');
     $(popUp).find('#popup-repeat-pattern').off('select');
@@ -3396,6 +3407,7 @@ function PopUp_setToEventID(popUp, id, retryListener)
         });
     });
 
+    // set the ui appropriately depending on whether the event is hidden
     if (EventsMan_eventIsHidden(id))
     {
         $(popUp).find('#unhide_button').removeClass('hide');
@@ -3407,6 +3419,7 @@ function PopUp_setToEventID(popUp, id, retryListener)
         $(popUp).find('#hide_button').removeClass('hide');
     }
 
+    // set the ui for type and section pickers
     var choices = [];
     $.each(TYPE_MAP, function(key, value){
         choices.push({
@@ -3463,7 +3476,7 @@ function PopUp_setTitle(popUp, title)
 }
 function PopUp_setDescription(popUp, desc)
 {
-    $(popUp).find("#popup-desc").html(nl2br(desc));
+    $(popUp).find("#popup-desc").text(desc);
 }
 function PopUp_setLocation(popUp, loc)
 {
@@ -3593,6 +3606,9 @@ function PopUp_giveEditingFocus(popUp)
 
 /***************************************************
  * forms for editing
+ * element = html element, like a h4
+ * form = the corresponding form to be shown when
+ * the element is clicked
  **************************************************/
 
 function _PopUp_showFormForElement(element)
@@ -3657,15 +3673,15 @@ function _PopUp_Form_getFormIDForElement(element)
 function _PopUp_Form_addOnBlurListener(form, listener)
 {
     if ($(form).find(".withdatepicker").length > 0)
-        $(form).find(".withdatepicker").datetimepicker().on("hide", listener);
+        $(form).find(".withdatepicker").datetimepicker().one("hide", listener);
     else if ($(form).find(".withtimepicker").length > 0)
-        $(form).find(".withtimepicker").datetimepicker().on("hide", listener);
+        $(form).find(".withtimepicker").datetimepicker().one("hide", listener);
     else if ($(form).find(".withcustompicker").length > 0)
-        $(form).find(".withcustompicker").on('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
+        $(form).find(".withcustompicker").one('value_set', listener); // must be hidden, not hide, otherwise timing doesn't work out
     else if ($(form).find("input").length > 0)
-        $(form).find("input").on("blur", listener);
+        $(form).find("input").one("blur", listener);
     else if ($(form).find("textarea").length > 0)
-        $(form).find("textarea").on("blur", listener);
+        $(form).find("textarea").one("blur", listener);
 }
 
 /***************************************************
@@ -3689,13 +3705,20 @@ $.each(POPUP_FORM_NEXT, function(key, value){
 function PopUp_clickedElement(element)
 {
     var popUp = _PopUp_getPopUp(element);
+    // if the popup is in edit mode, don't show another form
     if (PopUp_isEditing(popUp))
         return;
+
+    // enforce start date
     _PopUp_Form_enforceStartDate(popUp);
+
+    // mark as editing
     PopUp_markAsEditing(popUp);
+
+    // show the corresponding form for element
     var form_id = _PopUp_Form_getFormIDForElement(element);
     var form = $(popUp).find("#"+form_id)[0];
-    // make the corresponding form visible and hide the element
+    // gives textarea the correct height
     if ($(form).find("textarea").length > 0)
     {
         height = parseInt($(element).css("height")) + 20;
@@ -3704,18 +3727,18 @@ function PopUp_clickedElement(element)
     _PopUp_showFormForElement(element);
     _PopUp_Form_setValue(form, $(element).text());
     _PopUp_Form_giveFocus(form);
-    if (!$(form).hasClass("input-group") && form.notFirstSelected != true)
-    {
-        form.notFirstSelected = true;
-        _PopUp_Form_addOnBlurListener(form, function(){
-            PopUp_clickedSaveElement(form);
-        });
-    }
+    // add on blur listeners once
+    _PopUp_Form_addOnBlurListener(form, function(){
+        PopUp_clickedSaveElement(form);
+    });
     var text_id = _PopUp_Form_getElementIDForForm(form);
     if (text_id == 'popup-title')
     {
+        // if title is editing, hide the other controls - no room
         $(popUp).find('.popup-ctrl').addClass('hidden');
     }
+
+    // do tabbing shortcuts
     $(form).find('input, textarea').off('keydown').on('keydown', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 9) // tab key
@@ -3726,7 +3749,7 @@ function PopUp_clickedElement(element)
             $(this).blur();
             if ($(this).hasClass('withtimepicker') || $(this).hasClass('withdatepicker'))
                 $(this).datetimepicker('hide');
-            PopUp_clickedSaveElement(form);
+            //PopUp_clickedSaveElement(form); // bluring saves the element automatically
             var nextSelector;
             if (SHIFT_PRESSED)
                 nextSelector = POPUP_FORM_PREV['#' + text_id];
@@ -3736,7 +3759,9 @@ function PopUp_clickedElement(element)
                 PopUp_clickedElement($(popUp).find(nextSelector)[0]);
         }
     });
-    $(form).find('input').off('keyup').on('keyup', function(ev){
+
+    // do entering shortcuts
+    $(form).find('input, textarea').off('keyup').on('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {
@@ -3744,9 +3769,11 @@ function PopUp_clickedElement(element)
             if ($(this).hasClass('withtimepicker') || $(this).hasClass('withdatepicker'))
                 $(this).datetimepicker('hide');
             
-            PopUp_clickedSaveElement(form);
+            //PopUp_clickedSaveElement(form); // bluring saves the element automatically
         }   
     });
+
+    // prevent typing in pickers
     $(form).find('.withtimepicker').on('keydown', function(ev){
         ev.preventDefault();
     });
@@ -3756,10 +3783,10 @@ function PopUp_clickedElement(element)
     $(form).find('.withcustompicker').on('keydown', function(ev){
         ev.preventDefault();
     });
-
-    //$(form).find("input").data("datetimepicker");
-    //$(form).find("input").datetimepicker();
 }
+/**
+ * Make sure that the end date for the popup is after the start date
+ */
 function _PopUp_Form_enforceStartDate(popUp)
 {
     var time = $(popUp).find('#popup-time-start').text();
@@ -3777,28 +3804,28 @@ function _PopUp_Form_enforceStartDate(popUp)
         PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT['popup-time-end'], endTime.format('h:mm A')); 
     }
 }
+
+var POPUP_CAN_BE_EMPTY = {
+    'popup-desc': true,
+    'popup-loc': true,
+}
+
+/**
+ * save the popup form for this element
+ */
 function PopUp_clickedSaveElement(form)
 {
-    if (!/\S/.test(_PopUp_Form_getValue(form)))
+    // check if empty and if empty fields are allowed
+    var text_id = _PopUp_Form_getElementIDForForm(form);
+    if (!/\S/.test(_PopUp_Form_getValue(form)) && !(text_id in POPUP_CAN_BE_EMPTY))
     {
         _PopUp_Form_giveFocus(form);
         return;
     }
-    //if ($(form).find("input").hasClass("withtypepicker") && !TP_validateType(_PopUp_Form_getValue(form)))
-    //{
-    //    _PopUp_Form_giveFocus(form);
-    //    return;
-    //}
-    //if ($(form).find('input').hasClass('withsectionpicker') && !SP_validateSection(_PopUp_Form_getValue(form)))
-    //{
-    //    _PopUp_Form_giveFocus(form);
-    //    return;
-    //}
     var popUp = _PopUp_getPopUp(form);
     PopUp_markAsNotEditing(popUp);
     // hide the form and unhide the text
     _PopUp_hideFormForElement(form);
-    var text_id = _PopUp_Form_getElementIDForForm(form);
     if (text_id == 'popup-title')
     {
         $(popUp).find('.popup-ctrl').removeClass('hidden');
@@ -3806,9 +3833,10 @@ function PopUp_clickedSaveElement(form)
             $(popUp).find('.poup-ctrl-right').addClass('hidden');
     }
 
-    //actual saving
+    // actual saving
     var text = $(popUp).find("#"+text_id)[0];
-    var safe = _PopUp_Form_getValue(form).escapeHTML();
+    var safe = _PopUp_Form_getValue(form);
+    // set the values properly if it's a datetime field
     if ($(form).find('input').length > 0 && $(form).find('input')[0].type == 'date')
     {
         var safeTZ = moment(safe);
@@ -3823,9 +3851,9 @@ function PopUp_clickedSaveElement(form)
             safeTZ = safeTZ.tz(MAIN_TIMEZONE);
         safe = safeTZ.format('h:mm A');
     }
-    if ($(text).html() == nl2br(safe))
+    if ($(text).text() == safe)
         return; // no saving needed
-    $(text).html(nl2br(safe));
+    $(text).text(safe);
     PopUp_markAsUnsaved(popUp);
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
     if (text_id == 'popup-time-start' || text_id == 'popup-time-end')
@@ -3833,6 +3861,10 @@ function PopUp_clickedSaveElement(form)
         _PopUp_Form_enforceStartDate(popUp);
     }
 }
+
+/**
+ * event listener for clicking on close
+ */
 function PopUp_clickedClose(popUpAnchor)
 {
     var popUp = popUpAnchor;
@@ -3856,10 +3888,11 @@ function PopUp_clickedClose(popUpAnchor)
             ],
             function(index){
                 if (index == 0) {
+                    // save
                     PopUp_clickedSavePopUp(popUp, true);
-                    //PopUp_clickedClose(popUp);
                 }
                 else{
+                    // don't save
                     PopUp_clickedUndo(popUp);
                     PopUp_clickedClose(popUp);
                 }
@@ -3872,6 +3905,10 @@ function PopUp_clickedClose(popUpAnchor)
         PopUp_callCloseListeners(PopUp_getID(popUp));
     PopUp_close(popUp);
 }
+
+/**
+ * event listener for clicking on hide
+ */
 function PopUp_clickedDelete(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
@@ -3879,6 +3916,8 @@ function PopUp_clickedDelete(popUpAnchor)
         return;
     var event_id = PopUp_getID(popUp);
     var eventDict = EventsMan_getEventByID(event_id);
+
+    // check if this is recurring
     if (eventDict && 'recurrence_days' in eventDict)
     {
         AS_showActionSheetFromElement(popUpAnchor, popUp, "Done with this event? Click to hide from your agenda and calendar.", [ 
@@ -3906,6 +3945,9 @@ function PopUp_clickedDelete(popUpAnchor)
     if (!EventsMan_eventShouldBeShown(event_id))
         PopUp_close(popUp);
 }
+/**
+ * event listener for clicking on unhide
+ */
 function PopUp_clickedUnhide(popUpAnchor)
 {
     var popUp = _PopUp_getPopUp(popUpAnchor);
@@ -3913,6 +3955,7 @@ function PopUp_clickedUnhide(popUpAnchor)
         return;
     var event_id = PopUp_getID(popUp);
     var eventDict = EventsMan_getEventByID(event_id);
+    // check if recurring
     if ('recurrence_days' in eventDict)
     {
         AS_showActionSheetFromElement(popUpAnchor, popUp, 'Unhide these events?', [
@@ -3934,6 +3977,9 @@ function PopUp_clickedUnhide(popUpAnchor)
     }
     EventsMan_unhideEvent(event_id);
 }
+/**
+ * event listener for clicking on save
+ */
 function PopUp_clickedSavePopUp(anchor, shouldClose)
 {
     var popUp = _PopUp_getPopUp(anchor);
@@ -4014,6 +4060,11 @@ function PopUp_clickedSavePopUp(anchor, shouldClose)
     if (shouldClose)
         PopUp_clickedClose(popUp);
 }
+
+/**
+ * event listener for clicking on undo - doesn't exist anymore, but
+ * function is still used
+ */
 function PopUp_clickedUndo(anchor)
 {
     var popUp = _PopUp_getPopUp(anchor);
@@ -4025,6 +4076,9 @@ function PopUp_clickedUndo(anchor)
     $(popUp).find('.unsaved').removeClass('unsaved');
     EventsMan_cancelChanges(id);
 }
+/***************************************************
+ * Settings Module
+ **************************************************/
 var SE_id = 'settingsModal';
 function SE_init()
 {
@@ -4187,7 +4241,8 @@ function Tutorial_Setup() {
         $('#tutorialModal').modal('show');
         $.cookie('tutorial_msg', 'str');
     }
-}function SE_checkSimilarEvents(eventDict)
+}
+function SE_checkSimilarEvents(eventDict)
 {
     if (SE_hasSimilarEvents(eventDict.event_id) || SB_isFilled())
         return;
@@ -4260,7 +4315,6 @@ function SE_showSimilarEvents(eventID, similarEvents)
 
 
     // set event listeners
-    // TODO doesn't handle if the user clicks on the hide sidebar button
     $(ep).on('ep.cancel ep.select', function(ev){
         PopUp_markAsNotEditing(popUp);
         $(popUp).draggable('enable');

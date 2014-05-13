@@ -1,7 +1,18 @@
+/***************************************************
+ * Notifications Module
+ * Requires: Sidebar Module
+ * Unlike the indicators module, this notifications
+ * module is meant to have interactions with user.
+ * The user can click on the notifications
+ **************************************************/
+
+// add as needed
 var NO_TYPES = {
     WARNING: 'alert-warning',
     INFO: 'alert-info',
 }
+
+
 function NO_init()
 {
     PopUp_addCloseListener(function(id){
@@ -9,6 +20,10 @@ function NO_init()
     });
 }
 
+/**
+ * Show a new notification. Optionally pass along a metadata dictionary
+ * to be stored with the notification
+ */
 function NO_showNotification(id, text, type, meta)
 {
     var $noti;
@@ -34,7 +49,6 @@ function NO_showNotification(id, text, type, meta)
         NO_removeNotificationID($noti.attr('id'));
     });
     $noti.find('#noti-content').append($text);
-    //$(noti).data('events', similarEvents);
     if (meta)
     {
         $.each(meta, function(key, value){
@@ -55,44 +69,3 @@ function NO_removeNotificationID(id)
     SB_pop($('#' + id + '.alert.in')[0]);
     SB_hideIfEmpty();
 }
-
-//function NO_showSimilarEventsNotification(event_id, similarEvents)
-//{
-//    if ($('#' + event_id + '.alert').length > 0)
-//    {
-//        // notification already shown
-//        var noti = $('#' + event_id + '.alert')[0];
-//        if (similarEvents.length == 0)
-//        {
-//            // not similar anymore. remove
-//            SB_pop(noti);
-//            SB_hideIfEmpty();
-//        }
-//        else
-//        {
-//            $(noti).data('events', similarEvents);
-//        }
-//        return;
-//    }
-//    if (similarEvents.length == 0)
-//        return;
-//    var htmlContent = CacheMan_load('notifications-template');
-//    SB_push(htmlContent);
-//    var noti = $('#noti-123')[0];
-//    noti.id = event_id;
-//    $(noti).addClass('alert-warning');
-//    $(noti).find('#noti-content').html('<a href="#" class="alert-link" onclick="">A similar event</a> already exists.');
-//    $(noti).data('events', similarEvents);
-//    $(noti).find('#noti-content').on('click', function(ev){
-//        ev.preventDefault();
-//        SE_showSimilarEvents(event_id, $(noti).data('events'));
-//        SB_pop(noti);
-//        //NO_showSimilarEvents(event_id);
-//        //return false;
-//    });
-//    $(noti).find('button').on('click', function(){
-//        SB_pop(noti);
-//        //$(noti).remove();
-//        SB_hideIfEmpty();
-//    });
-//}
