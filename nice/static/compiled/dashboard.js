@@ -2999,15 +2999,16 @@ function NO_showNotification(id, text, type, meta)
     } else 
     {
         $noti = $('<div>').addClass('alert').addClass('alert-dismissible');
+        SB_push($noti);
         $noti.append('<button id="close_button" type="button" class="close" aria-hidden="true">&times;</button>');
         $('<span id="noti-content">').appendTo($noti);
         $noti.attr('id', id);
-        SB_push($noti);
         $text = $('<a>').addClass('alert-link').text(text).on('click', function(ev){
             ev.preventDefault();
             $noti.trigger('noti.click');
             SB_pop($noti);
         });
+        $noti.find('#noti-content').empty();
         $noti.find('#noti-content').append($text);
         $noti.addClass(type);
         $noti.find('#close_button').on('click', function(ev){

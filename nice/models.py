@@ -127,27 +127,25 @@ def make_default_table(sender, instance, created, **kwargs):
 post_save.connect(make_default_table, sender=Course)
 
 class User_Section_Table(models.Model):
-    """
-    only 8 default colors
-    """
+    """ 8 default colors! """
     COLOR_1 = '#8441A5'
     COLOR_2 = '#306278'
-    COLOR_3 = '#F29D08'
+    COLOR_3 = '#696969'
     COLOR_4 = '#339213'
     COLOR_5 = '#D60030'
     COLOR_6 = '#6B2119'
     COLOR_7 = '#01939A'
-    COLOR_8 = '#FFB000'
+    COLOR_8 = '#000066'
 
     COLOR_CHOICES = (
         (COLOR_1, 'purple'),
         (COLOR_2, 'light blue'),
-        (COLOR_3, 'orange'),
+        (COLOR_3, 'darkgray'),
         (COLOR_4, 'green'),
         (COLOR_5, 'red'),
         (COLOR_6, 'persian plum'),
         (COLOR_7, "Naphat's color"),
-        (COLOR_8, "Weird yellow"),
+        (COLOR_8, "dark blue"),
     )
     # relationships
     user = models.ForeignKey('User_Profile')

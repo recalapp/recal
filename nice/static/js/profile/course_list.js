@@ -62,12 +62,10 @@ function CL_clickCourse(anchor)
             if (eventDict.course_id != myCourseID)
             {
                 Cal_unhighlightEvent(this, true);
-                console.log('unhighlight ' + eventDict.course_id);
             }
             else
             {
                 Cal_highlightEvent(this, true);
-                console.log('highlight ' + eventDict.course_id);
             }
         });    
         return;
@@ -94,12 +92,10 @@ function CL_clickCourse(anchor)
         if (eventDict.course_id != myCourseID)
         {
             Cal_unhighlightEvent(this, true);
-            console.log('unhighlight ' + eventDict.course_id);
         }
         else
         {
             Cal_highlightEvent(this, true);
-            console.log('highlight ' + eventDict.course_id);
         }
     });
 }

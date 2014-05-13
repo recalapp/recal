@@ -1842,7 +1842,7 @@ function Cal_init() {
     if (CAL_INIT)
         return;
     CAL_INIT = true;
-    var height = '410';//window.innerHeight * 0.6;
+    var height = '500';//window.innerHeight * 0.6;
     Cal_options.height = height;
     Cal_options.header = false;
     /* Cal_options.theme = true; */
@@ -1953,6 +1953,7 @@ function Cal_reload()
             end: eventEndTZ.toISOString(),
             myColor: COURSE_COLOR_MAP[eventDict.course_id],
             textColor: shouldHighlight ? '#ffffff' : color,
+            highlighted: shouldHighlight,
             backgroundColor: rgba,
             borderColor: '#ffffff' //color //'#123456' 
         });
@@ -2027,12 +2028,10 @@ function CL_clickCourse(anchor)
             if (eventDict.course_id != myCourseID)
             {
                 Cal_unhighlightEvent(this, true);
-                console.log('unhighlight ' + eventDict.course_id);
             }
             else
             {
                 Cal_highlightEvent(this, true);
-                console.log('highlight ' + eventDict.course_id);
             }
         });    
         return;
@@ -2059,12 +2058,10 @@ function CL_clickCourse(anchor)
         if (eventDict.course_id != myCourseID)
         {
             Cal_unhighlightEvent(this, true);
-            console.log('unhighlight ' + eventDict.course_id);
         }
         else
         {
             Cal_highlightEvent(this, true);
-            console.log('highlight ' + eventDict.course_id);
         }
     });
 }
@@ -2510,6 +2507,7 @@ $(document).keyup(function(e){
     }
 });
 var DEFAULT_SECTION_COLORS;
+var DEFAULT_COLOR_IDX = 0;
 var COURSE_COLOR_MAP = {};
 var USABLE_COLORS = [];
 
@@ -2654,7 +2652,10 @@ function getUsableColor(course_id) {
     var color = USABLE_COLORS.shift();
     if (!color)
     {
-        color = DEFAULT_SECTION_COLORS[0];
+        color = DEFAULT_SECTION_COLORS[DEFAULT_COLOR_IDX];
+        DEFAULT_COLOR_IDX++;
+        if (DEFAULT_COLOR_IDX == DEFAULT_SECTION_COLORS.length)
+            DEFAULT_COLOR_IDX = 0;
     }
 
     // if (!COURSE_COLOR_MAP[course_id])

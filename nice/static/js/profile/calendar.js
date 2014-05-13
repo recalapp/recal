@@ -2,7 +2,7 @@ function Cal_init() {
     if (CAL_INIT)
         return;
     CAL_INIT = true;
-    var height = '410';//window.innerHeight * 0.6;
+    var height = '500';//window.innerHeight * 0.6;
     Cal_options.height = height;
     Cal_options.header = false;
     /* Cal_options.theme = true; */
@@ -113,6 +113,7 @@ function Cal_reload()
             end: eventEndTZ.toISOString(),
             myColor: COURSE_COLOR_MAP[eventDict.course_id],
             textColor: shouldHighlight ? '#ffffff' : color,
+            highlighted: shouldHighlight,
             backgroundColor: rgba,
             borderColor: '#ffffff' //color //'#123456' 
         });

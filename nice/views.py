@@ -38,7 +38,7 @@ def gather_dashboard(request):
     agenda_pref = ['AS', 'RS', 'EX', 'LE', 'LA', 'OH', 'PR']
     if user.ui_agenda_pref:
         agenda_pref = json.loads(user.ui_agenda_pref)
-    calendar_pref = ['RS', 'EX', 'LE', 'LA', 'OH', 'PR']
+    calendar_pref = ['AS', 'RS', 'EX', 'LE', 'LA', 'OH', 'PR']
     if user.ui_calendar_pref:
         calendar_pref = json.loads(user.ui_calendar_pref)
     theme = 'w'
