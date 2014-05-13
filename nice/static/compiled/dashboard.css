@@ -221,8 +221,8 @@ a {
 
 .indicator{
     pointer-events: none;
-    -webkit-transition: bottom 0.2s ease-in-out, opacity 0.2s ease-out;
-    transition: bottom 0.2s ease-in-out, opacity 0.2s ease-out;
+    -webkit-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
     opacity: 0;
     position: relative;
     bottom: -100px;
