@@ -16,5 +16,11 @@ $(document).keydown(function(e){
     }
 });
 $(document).keyup(function(){
-    SHIFT_PRESSED = false;
+    var keyCode = e.keyCode || e.which;
+    switch (keyCode)
+    {
+        case KEY_SHIFT:
+            SHIFT_PRESSED = false;
+            break;
+    }
 });

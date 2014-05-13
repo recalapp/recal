@@ -675,6 +675,10 @@ var POPUP_FORM_NEXT = {
     '#popup-section': '#popup-type',
     '#popup-type': '#popup-desc',
 }
+var POPUP_FORM_PREV = {};
+$.each(POPUP_FORM_NEXT, function(key, value){
+    POPUP_FORM_PREV[value] = key;
+});
 
 function PopUp_clickedElement(element)
 {
@@ -717,7 +721,11 @@ function PopUp_clickedElement(element)
             if ($(this).hasClass('withtimepicker') || $(this).hasClass('withdatepicker'))
                 $(this).datetimepicker('hide');
             PopUp_clickedSaveElement(form);
-            var nextSelector = POPUP_FORM_NEXT['#' + text_id];
+            var nextSelector;
+            if (SHIFT_PRESSED)
+                nextSelector = POPUP_FORM_PREV['#' + text_id];
+            else
+                nextSelector = POPUP_FORM_NEXT['#' + text_id];
             if (nextSelector)
                 PopUp_clickedElement($(popUp).find(nextSelector)[0]);
         }
