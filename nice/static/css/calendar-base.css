@@ -1,0 +1,15 @@
+.fc-event {
+     font-size: 10px !important;
+     /* text-align: center !important; */
+}
+
+.fc-agenda-slots td div {
+    height: 18px !important;
+}
+
+.fc-agenda-axis{
+    font-size: 8px !important;
+    height: 15px !important;
+    width: 45px !important;
+    line-height: 15px !important;
+}
