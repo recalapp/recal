@@ -2733,6 +2733,7 @@ function init()
     Agenda_init();
     Cal_init();
     SE_init();
+    Tutorial_Setup();
     SR_addWillSaveListener(function (){
         Nav_save();
         UI_save();
@@ -4160,7 +4161,24 @@ function SE_addTypeSegmentedControlWithFilter(heading, filter)
     });
     return scm;
 }
-function SE_checkSimilarEvents(eventDict)
+
+// Tutorial modal
+function Tutorial_Setup() {
+    // Activates tutorial modal on first page load.
+    // Then sets cookie to remember that we've already seen it.
+
+    // IE8-compatible refactor from http://stackoverflow.com/a/13865075/130164
+
+    if($.cookie('tutorial_msg') != null && $.cookie('tutorial_msg') != "")
+    {
+        $("div#tutorialModal.modal, .modal-backdrop").hide();
+    }
+    else
+    {
+        $('#tutorialModal').modal('show');
+        $.cookie('tutorial_msg', 'str');
+    }
+}function SE_checkSimilarEvents(eventDict)
 {
     if (SE_hasSimilarEvents(eventDict.event_id) || SB_isFilled())
         return;

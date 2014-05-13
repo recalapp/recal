@@ -26,7 +26,7 @@
 
 
 <div class="modal fade bs-example-modal-lg" id="tutorialModal" tabindex="-1" role="dialog" aria-labelledby="tutorialModal" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -35,24 +35,28 @@
             <div class="modal-body">
                 <div class="container">
                     <div id="tutorial1" class="row">
-                    <p><b>Here's all you need to know to get started with ReCal:</b></p>
+                    <p><b>Here's all you need to know to get started:</b></p>
 
-                    <p>Click any event in Agenda or Calendar view to see its details.<br/>You can drag and drop the details popup anywhere -- and it will even snap to the sidebar automatically if you drag it towards the right side of the page.</p>
+                    <p><u>Click any event in Agenda or Calendar view to see its details.</u><br/>You can drag and drop the details popup anywhere. </br>It will even snap to the sidebar. Just drag it towards the right side of the page.</p>
 
-                    <p>Done with an assignment, or never want to go to lecture again? Click the Hide button (looks like a half-closed eye) at the top of the event popup.<br/>If you want to get it back, click Settings at the top right and then enable hidden events; click the eye button again to unhide.</p>
+                    <p><u>Done with an assignment, or never want to go to lecture again?</u><br/>Click the Hide button (half-closed eye icon) at the top of the event popup.<br/>If you want to get it back, click Settings at the top right and enable Hidden Events. Click the eye button again to unhide.</p>
 
-                    <p>In the event popup, click any field to edit. Your edits will be highlighted in yellow.<br/>Don't forget to click the Save button at the top of the popup to save your changes!</p>
+                    <p><u>In the event popup, click any field to edit.</u> Your edits will be highlighted in yellow.<br/>Don't forget to click the <i>Save</i> button at the top of the popup to save your changes!</p>
 
-                    <p>Start a new event by clicking the Add Event button at the top right of the page.</p>
+                    <p><u>Start a new event by clicking the Add Event button</u> at the top right of the page.</p>
 
-                    <p>If you need to change the classes you're signed up for, just click the Edit Profile link at the top right. <br/>You can change your display name here, too!</p>
+                    <p>At the top right, <u>click the Edit Profile link to change the classes you're signed up for</u>.<br/>You can change your display name here, too!</p>
 
-                    <p>Last piece of advice to get you up and rolling: If you see a popup that says "There are unapproved changes", click it to see new changes that other users have submitted.<br/>Vote them up or down -- we'll reward you with points for your votes! Your reward's going to be especially big if you vote with the hive-mind...</p>
+                    <p>Last piece of advice to get you up and rolling:<br/>If you see a "There are unapproved changes" popup, click it to see new changes that other users have submitted.<br/><u>Vote unapproved changes up or down &mdash; we'll reward you with points for your votes!</u><br/>Your reward's going to be especially big if you vote with the hive-mind...</p>
 
+                    <p><b>Thanks for joining ReCal!</b></p>
+                    
+                    <p>Run into issues? <u>Click the Info button to see this again.</u></p>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
+            <p class="copy">Copyright &copy; 2014 ReCal. <a href="{% url 'nice.views.landing' %}">Learn more at our info page.</a></p>
             </div>
         </div>
     </div>
