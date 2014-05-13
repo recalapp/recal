@@ -75,15 +75,15 @@ function SE_init()
             });
         });
         $(this).find('#course_options').append(course_scm);
-        var tz_sc = SC_initWithChoices('Use Princeton\'s timezone:', [
+        var tz_sc = SC_initWithChoices('Timezone:', [
                 {
                     value: 1,
-                    pretty: 'Yes',
+                    pretty: 'Princeton\'s timezone',
                     selected: MAIN_TIMEZONE != null,
                 },
                 {
                     value: 0,
-                    pretty: 'No',
+                    pretty: 'Local timezone',
                     selected: MAIN_TIMEZONE == null,
                 }
             ]);
