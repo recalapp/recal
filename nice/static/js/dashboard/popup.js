@@ -56,7 +56,7 @@ function PopUp_init()
 
 function PopUp_initialize_deferred(popUp)
 {
-    if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker
+    if ($(popUp).find(".withdatepicker")[0].type == 'text') // defaults to browser's builtin date picker on mobile
     {
         $(popUp).find(".withdatepicker").datetimepicker({
             format: "MM d, yyyy",
@@ -67,7 +67,7 @@ function PopUp_initialize_deferred(popUp)
     } else {
         $(popUp).find('.withdatepicker').removeClass('withdatepicker');
     }
-    if ($(popUp).find(".withtimepicker")[0].type == 'text')// defaults to browser's builtin date picker
+    if ($(popUp).find(".withtimepicker")[0].type == 'text')// defaults to browser's builtin date picker on mobile
     {   
         $(popUp).find(".withtimepicker").datetimepicker({
             format: "H:ii P",

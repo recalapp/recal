@@ -101,8 +101,10 @@ var CUR_SEM = {
     end_date: '{{ cur_sem.end_date }}',
 }
 var THEME = '{{ theme }}';
+var IS_MOBILE = false;
 {% if is_mobile %}
 AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
+IS_MOBILE = true;
 {% endif %}
 
 
