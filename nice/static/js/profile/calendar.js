@@ -103,9 +103,12 @@ function Cal_reload()
         var eventEndTZ =  moment.unix(eventDict.event_end);
         if (MAIN_TIMEZONE)
             eventEndTZ = eventEndTZ.tz(MAIN_TIMEZONE); 
+        
+        var event_course = CourseMan_getCourseByID(eventDict.course_id).course_primary_listing;
+        var event_section = CourseMan_getSectionByID(eventDict.section_id).section_name;
         Cal_eventSource.events.push({
             id: eventDict.event_id,
-            title: CourseMan_getCourseByID(eventDict.course_id).course_primary_listing,
+            title: event_course + " - " + event_section,
             start: eventStartTZ.toISOString(),
             end: eventEndTZ.toISOString(),
             myColor: COURSE_COLOR_MAP[eventDict.course_id],
