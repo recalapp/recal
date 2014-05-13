@@ -15,7 +15,7 @@
     line-height: 15px !important;
 }
 
-.fc-state-highlight {
+.fc-state-highlight.dark {
     background-color: gray;
 }
 
