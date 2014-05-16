@@ -3507,7 +3507,8 @@ function PopUp_setTitle(popUp, title)
 }
 function PopUp_setDescription(popUp, desc)
 {
-    $(popUp).find("#popup-desc").text(desc);
+    var escaped = $('<div>').text(desc).html();
+    $(popUp).find("#popup-desc").html(nl2br(escaped));
 }
 function PopUp_setLocation(popUp, loc)
 {
@@ -3683,6 +3684,7 @@ function _PopUp_Form_setValue(form, newValue)
     else if ($(form).find("textarea").length > 0)
     {
         var sanitized = br2nl(newValue);
+        sanitized = $('<div>').html(sanitized).text();
         $(form).find("textarea").val(sanitized);
     }
 }
@@ -3755,8 +3757,17 @@ function PopUp_clickedElement(element)
         height = parseInt($(element).css("height")) + 20;
         $(form).find("textarea").css("height", height + "px");
     }
+    var value;
+    if (form_id == 'popup-desc-form')
+    {
+        value = $(element).html();
+    }
+    else
+    {
+        value = $(element).text();
+    }
     _PopUp_showFormForElement(element);
-    _PopUp_Form_setValue(form, $(element).text());
+    _PopUp_Form_setValue(form, value);
     _PopUp_Form_giveFocus(form);
     // add on blur listeners once
     _PopUp_Form_addOnBlurListener(form, function(){
@@ -3792,7 +3803,7 @@ function PopUp_clickedElement(element)
     });
 
     // do entering shortcuts
-    $(form).find('input, textarea').off('keyup').on('keyup', function(ev){
+    $(form).find('input').off('keyup').on('keyup', function(ev){
         var keyCode = ev.keyCode || ev.which;
         if (keyCode == 13) // enter key
         {
@@ -3884,9 +3895,19 @@ function PopUp_clickedSaveElement(form)
             safeTZ = safeTZ.tz(MAIN_TIMEZONE);
         safe = safeTZ.format('h:mm A');
     }
-    if ($(text).text() == safe)
-        return; // no saving needed
-    $(text).text(safe);
+    if (text_id != 'popup-desc')
+    {
+        if ($(text).text() == safe)
+            return; // no saving needed
+        $(text).text(safe);
+    }
+    else
+    {
+        safe = $('<div>').text(safe).html();
+        if ($(text).html() == safe)
+            return; // no saving needed
+        $(text).html(safe);
+    }
     PopUp_markAsUnsaved(popUp);
     PopUp_callEditListeners(PopUp_getID(popUp), POPUP_EDITDICT[text_id], _PopUp_Form_getValue(form));
     if (text_id == 'popup-time-start' || text_id == 'popup-time-end')
