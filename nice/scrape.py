@@ -240,7 +240,7 @@ def create_or_update_events(section, section_object):
     end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
     # FOR PROJECT SUBMISSION, POSTPONE end_date so that there are events
     # in agenda/calendar for grading
-    end_date = end_date + timedelta(weeks=1)
+    end_date = end_date + timedelta(weeks=30)
 
     for meeting in meetings:
         days = []
