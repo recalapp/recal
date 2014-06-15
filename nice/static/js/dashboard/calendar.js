@@ -151,8 +151,8 @@ function Cal_reload()
                 Cal_eventSource.events.push({
                     id: eventDict.event_id,
                     title: eventDict.event_title,
-                    start: eventStartTZ.toISOString(),
-                    end: eventEndTZ.toISOString(),
+                    start: eventStartTZ.format(),
+                    end: eventEndTZ.format(),
                     highlighted: shouldHighlight,
                     myColor: SECTION_COLOR_MAP[eventDict.section_id]['color'],
                     textColor: shouldHighlight ? '#ffffff' : SECTION_COLOR_MAP[eventDict.section_id]['color'],

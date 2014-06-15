@@ -106,7 +106,7 @@ Cal_options = {
     eventBorderColor: "#428bca",
     allDayDefault: false,
     eventSources: [Cal_eventSource],
-    ignoreTimezone: false,
+    ignoreTimezone: true,
     allDaySlot: false,
     slotEventOverlap: true,
 };
