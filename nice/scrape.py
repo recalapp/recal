@@ -67,6 +67,8 @@ def get_current_semester():
             term = tree.getroot().find('term')
             start_date = term.find('start_date').text
             end_date = term.find('end_date').text
+            end_date = datetime.strptime(end_date, "%Y-%m-%d")
+            end_date += timedelta(weeks=30)
             curr_sem = Semester(
                 start_date = start_date, 
                 end_date = end_date, 
