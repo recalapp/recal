@@ -33,5 +33,6 @@ define(["require", "exports"], function(require, exports) {
         };
         return Dictionary;
     })();
-    exports.Dictionary = Dictionary;
+    
+    return Dictionary;
 });

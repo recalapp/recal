@@ -1,0 +1,19 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Test Page{% endblock %}
+
+{% block main_content %}
+<div id="content"></div>
+{% endblock %}
+
+{% block link_or_script_nonblocking %}
+<base href="{{ base_url }}">
+<script src="{% static 'bower_components/requirejs/require.js' %}" data-main="{% static 'ts/testpage/main-built' %}"></script>
+<script src="{% static 'ts/testpage/rawjavascript.js' %}"></script>
+<script>
+</script>
+{% endblock %}
+
+
+

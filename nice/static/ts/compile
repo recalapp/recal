@@ -1,3 +1,3 @@
 #!/bin/bash
 
-tsc -t ES5 -m AMD sampleclient.ts
+tsc -t ES5 -m AMD $@

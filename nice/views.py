@@ -69,6 +69,8 @@ def gather_dashboard(request):
         'all_sections': json.dumps(all_sections),
     })
 
+def testpage(request):
+    return render(request, 'testpage/index.html', {})
 
 @ensure_csrf_cookie
 def index(request):
