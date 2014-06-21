@@ -1,31 +1,28 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import $ = require('jquery');
+import InvalidActionException = require('../Core/InvalidActionException');
+import Set = require('../DataStructures/Set');
 
 class View 
 {
+    private static JQUERY_DATA_KEY = 'view_object';
+    private static _viewCount = 0; // Used to make sure toString() is unique
+    private _viewNumber: number;
+    _$el: JQuery = null;
+    _parentView: View = null;
+    _children: Set<View> = new Set<View>();
     /******************************************************************
       Properties
       ****************************************************************/
-    _$el: JQuery;
 
-    _parentView: View;
     get parentView(): View
     {
         return this._parentView;
     }
-    set parentView(newValue: View)
-    {
-        this._parentView = newValue;
-    }
 
-    _children: Array<View> = new Array<View>();
     get children(): Array<View>
     {
-        return this._children;
-    }
-    set children(newValue: Array<View>)
-    {
-        this._children = newValue;
+        return this._children.toArray();
     }
 
     get width(): number
@@ -51,16 +48,51 @@ class View
       ****************************************************************/
     constructor($element: JQuery)
     {
+        if ($element.data(View.JQUERY_DATA_KEY) instanceof View)
+        {
+            throw new InvalidActionException('View is already initialized.');
+        }
+        this._viewNumber = View._viewCount++;
         this._$el = $element;
+        this._$el.data(View.JQUERY_DATA_KEY, this);
+    }
+
+    static fromJQuery($element: JQuery) : View
+    {
+        if ($element.data(View.JQUERY_DATA_KEY) instanceof View)
+        {
+            return $element.data(View.JQUERY_DATA_KEY);
+        }
+        return new View($element);
     }
 
     append(childView: View) : void 
     {
-        // TODO(naphatkrit) check if childView is already a child
-        // TODO(naphatkrit) handle if childView already has a parent
+        if (this._children.contains(childView))
+        {
+            throw new InvalidActionException('Cannot add a child view twice.');
+        }
+        if (childView._parentView != null)
+        {
+            throw new InvalidActionException('A view can only have one parent.');
+        }
         this._$el.append(childView._$el);
-        this.children.push(childView);
+        this._children.add(childView);
         childView.parentView = this;
+    }
+    removeFromParent() : void
+    {
+        if (this._parentView !== null)
+        {
+            throw new InvalidActionException('Cannot call removeFromParent() on a view that does not have a parent.');
+        }
+        this._$el.detach();
+        this._parentView._children.remove(this);
+        this._parentView = null;
+    }
+    toString() : string
+    {
+        return 'View no. ' + this._viewNumber;
     }
 }
 export = View;
