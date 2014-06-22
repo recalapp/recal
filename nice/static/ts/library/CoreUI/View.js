@@ -71,7 +71,7 @@ define(["require", "exports", '../Core/InvalidActionException', '../DataStructur
             }
             this._$el.append(childView._$el);
             this._children.add(childView);
-            childView.parentView = this;
+            childView._parentView = this;
         };
         View.prototype.removeFromParent = function () {
             if (this._parentView !== null) {

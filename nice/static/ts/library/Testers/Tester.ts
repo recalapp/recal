@@ -1,3 +1,4 @@
+import InvalidActionException = require('../Core/InvalidActionException');
 import TestFailureException = require('../Core/TestFailureException');
 class Tester
 {
@@ -9,6 +10,28 @@ class Tester
     run() 
     {
         
+    }
+    tryInvalidCommand(command : () => void) : Boolean
+    {
+        try
+        {
+            command();
+        }
+        catch(err)
+        {
+            if (err instanceof InvalidActionException)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    assert(condition : Boolean, message : String)
+    {
+        if (!condition)
+        {
+            this.fails(message);
+        }
     }
     fails(message : String)
     {

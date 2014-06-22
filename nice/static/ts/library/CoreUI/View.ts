@@ -78,7 +78,7 @@ class View
         }
         this._$el.append(childView._$el);
         this._children.add(childView);
-        childView.parentView = this;
+        childView._parentView = this;
     }
     removeFromParent() : void
     {
