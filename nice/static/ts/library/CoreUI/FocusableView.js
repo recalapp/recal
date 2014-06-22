@@ -9,7 +9,16 @@ define(["require", "exports", './View'], function(require, exports, View) {
         __extends(FocusableView, _super);
         function FocusableView() {
             _super.apply(this, arguments);
+            this._hasFocus = false;
         }
+        Object.defineProperty(FocusableView.prototype, "hasFocus", {
+            get: function () {
+                return this._hasFocus;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         FocusableView.prototype.focusView = function () {
             this._$el.focus();
         };

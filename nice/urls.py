@@ -62,6 +62,7 @@ urlpatterns = patterns('',
     url(r'^hidden_events$', views.hidden_events, name='hidden-events'),
     
     url(r'^testpage$', views.testpage, name='testpage'),
+    url(r'^unittests$', views.unit_tests, name='unit_tests'),
 )
 
 """Debug toolbar url

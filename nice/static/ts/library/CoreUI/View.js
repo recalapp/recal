@@ -81,6 +81,9 @@ define(["require", "exports", '../Core/InvalidActionException', '../DataStructur
             this._parentView._children.remove(this);
             this._parentView = null;
         };
+        View.prototype.addEventListener = function (events, listener) {
+            this._$el.on(events, listener);
+        };
         View.prototype.toString = function () {
             return 'View no. ' + this._viewNumber;
         };

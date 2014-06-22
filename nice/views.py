@@ -72,6 +72,9 @@ def gather_dashboard(request):
 def testpage(request):
     return render(request, 'testpage/index.html', {})
 
+def unit_tests(request):
+    return render(request, 'unittests/index.html', {})
+
 @ensure_csrf_cookie
 def index(request):
     """

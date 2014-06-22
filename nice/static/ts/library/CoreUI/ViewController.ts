@@ -7,7 +7,7 @@ import View = require('./View');
 class ViewController
 {
     private static _viewControllerCount = 0; // Used to make sure toString() is unique
-    private _viewControllerNumber: number;
+    private _viewControllerNumber: Number;
     _view: View = null;
     _parentViewController : ViewController = null;
     _childViewControllers : Set<ViewController> = new Set<ViewController>();

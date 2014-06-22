@@ -11,6 +11,7 @@ class Set<T> implements Equalable
     }
 
     constructor();
+    constructor(initialItems : Array<T>);
     constructor(initialItems? : Array<T>)
     {
         if (initialItems)

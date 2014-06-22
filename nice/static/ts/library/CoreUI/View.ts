@@ -90,6 +90,10 @@ class View
         this._parentView._children.remove(this);
         this._parentView = null;
     }
+    addEventListener(events : string, listener : any) : void
+    {
+        this._$el.on(events, listener);
+    }
     toString() : string
     {
         return 'View no. ' + this._viewNumber;
