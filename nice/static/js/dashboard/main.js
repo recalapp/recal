@@ -113,23 +113,13 @@ function init()
     if ('localStorage' in window && window['localStorage'] !== null)
     {
         var sectionsMap = localStorage.getItem('sectionsmap');
-        if (!sectionsMap)
-            clearLocalStorage();
-        else
-        {
-            if (sectionsMap != CacheMan_load('/get/sections'))
-                clearLocalStorage();
-        }
-        localStorage.setItem('sectionsmap', CacheMan_load('/get/sections'));
         var user = localStorage.getItem('user');
-        if (!user)
-            clearLocalStorage();
-        else
+        if (!sectionsMap || sectionsMap != CacheMan_load('/get/sections') || !user || user != USER_NETID)
         {
-            if (user != USER_NETID)
-                clearLocalStorage();
+            clearLocalStorage();
+            localStorage.setItem('sectionsmap', CacheMan_load('/get/sections'));
+            localStorage.setItem('user', USER_NETID);
         }
-        localStorage.setItem('user', USER_NETID);
     }
    
     

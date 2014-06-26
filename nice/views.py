@@ -317,7 +317,6 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
     Used in dashboard.
     """
     try:
-        print request.GET
         term_code = request.META.get('HTTP_TERM_CODE',get_cur_semester().term_code)
         netid = request.user.username
         if start_date:

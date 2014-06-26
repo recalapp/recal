@@ -2298,6 +2298,9 @@ function CourseMan_pullCourseByID(courseID, async)
         success: function(data){
             CourseMan_saveCourseDict(data);
             CourseMan_callUpdateListeners();
+        },
+        error: function(data){
+            CourseMan_pullCourseByID(courseID, async);
         }
     });
 }
