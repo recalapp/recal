@@ -13,6 +13,9 @@
     },
     "jqueryui/jqueryui.d.ts": {
       "commit": "1653954824cefb75a2a0030a639bf99664620508"
+    },
+    "jasmine/jasmine.d.ts": {
+      "commit": "87fba9fea20927ca5c74ec0437b4d627239d2bd8"
     }
   }
 }

@@ -1,7 +1,8 @@
 /// <reference path="../typings/tsd.d.ts" />
 require.config({
+    baseUrl: '../../bower_components',
     paths: {
-        jquery: '../../bower_components/jquery/dist/jquery'
+        jquery: 'jquery/dist/jquery'
     }
 });
 
