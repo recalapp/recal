@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', './PopUpView', '../CoreUI/ViewController'], function(require, exports, $, BrowserEvents, PopUpView, ViewController) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', './PopUpCommon', './PopUpView', '../CoreUI/ViewController'], function(require, exports, $, BrowserEvents, PopUpCommon, PopUpView, ViewController) {
     var PopUpType;
     (function (PopUpType) {
         PopUpType[PopUpType["main"] = 0] = "main";
@@ -17,7 +17,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', './PopUpView', 
         function PopUpContainerViewController(view) {
             var _this = this;
             _super.call(this, view);
-            this.view.attachEventHandler(2 /* mouseDown */, '.popup', function (ev) {
+            this.view.attachEventHandler(1 /* mouseDown */, PopUpCommon.CssSelector, function (ev) {
                 ev.preventDefault();
                 var popUpView = PopUpView.fromJQuery($(ev.target));
                 _this.giveFocus(popUpView);
@@ -26,8 +26,31 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', './PopUpView', 
         /**
         * Give focus to its PopUpView and cause all other PopUps to lose focus
         */
-        PopUpContainerViewController.prototype.giveFocus = function (popUpView) {
+        PopUpContainerViewController.prototype.giveFocus = function (toBeFocused) {
             // find a way to get all popups
+            this.map(function (popUpView) {
+                popUpView === toBeFocused ? popUpView.focusView() : popUpView.blurView();
+            });
+        };
+
+        PopUpContainerViewController.prototype.map = function (apply) {
+            // TODO must be overridden to support sidebar
+            $.each(this.view.children, function (index, childView) {
+                if (childView instanceof PopUpView) {
+                    return apply(childView);
+                }
+            });
+        };
+
+        PopUpContainerViewController.prototype.getPopUpById = function (popUpId) {
+            var ret = null;
+            this.map(function (popUpView) {
+                if (popUpView.popUpId === popUpId) {
+                    ret = popUpView;
+                    return false;
+                }
+            });
+            return ret;
         };
         return PopUpContainerViewController;
     })(ViewController);

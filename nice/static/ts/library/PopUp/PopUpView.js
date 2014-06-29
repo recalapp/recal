@@ -4,7 +4,10 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../CoreUI/FocusableView'], function(require, exports, FocusableView) {
+define(["require", "exports", '../CoreUI/FocusableView', './PopUpCommon'], function(require, exports, FocusableView, PopUpCommon) {
+    // aliases
+    var PopUpType = PopUpCommon.PopUpType;
+
     var PopUpView = (function (_super) {
         __extends(PopUpView, _super);
         function PopUpView(view) {
@@ -17,8 +20,40 @@ define(["require", "exports", '../CoreUI/FocusableView'], function(require, expo
             // TODO max height (maybe should be in css? or some other location)
             // TODO initialize as needed
             // TODO activate tool tip - separate module
+            // TODO theme - separate module
             // NOTE extra initialization can be done by overriding the constructor
         }
+        Object.defineProperty(PopUpView.prototype, "popUpId", {
+            get: function () {
+                return this._popUpId;
+            },
+            set: function (newValue) {
+                this._popUpId = newValue;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(PopUpView.prototype, "color", {
+            get: function () {
+                return this._color;
+            },
+            set: function (newValue) {
+                this._color = newValue;
+                this._updateColor();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(PopUpView.prototype, "isMain", {
+            get: function () {
+                return this._type === 0 /* main */;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         PopUpView.prototype._makeResizable = function () {
             // TODO PopUp_makeResizable
         };
@@ -36,7 +71,7 @@ define(["require", "exports", '../CoreUI/FocusableView'], function(require, expo
             // TODO PopUp_loseFocus()
         };
 
-        PopUpView.prototype.setColor = function (color) {
+        PopUpView.prototype._updateColor = function () {
             // TODO make color a class
             // TODO PopUp_setColor
         };
