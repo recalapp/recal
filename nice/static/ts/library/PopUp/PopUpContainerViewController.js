@@ -4,25 +4,33 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', './PopUpCommon', './PopUpView', '../CoreUI/ViewController'], function(require, exports, $, BrowserEvents, PopUpCommon, PopUpView, ViewController) {
-    var PopUpType;
-    (function (PopUpType) {
-        PopUpType[PopUpType["main"] = 0] = "main";
-        PopUpType[PopUpType["detached"] = 1] = "detached";
-    })(PopUpType || (PopUpType = {}));
-    ;
-
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/GlobalBrowserEventsManager', './PopUpCommon', './PopUpView', '../CoreUI/ViewController'], function(require, exports, $, BrowserEvents, GlobalBrowserEventsManager, PopUpCommon, PopUpView, ViewController) {
     var PopUpContainerViewController = (function (_super) {
         __extends(PopUpContainerViewController, _super);
         function PopUpContainerViewController(view) {
             var _this = this;
             _super.call(this, view);
-            this.view.attachEventHandler(1 /* mouseDown */, PopUpCommon.CssSelector, function (ev) {
+            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(1 /* mouseDown */, PopUpCommon.CssSelector, function (ev) {
                 ev.preventDefault();
                 var popUpView = PopUpView.fromJQuery($(ev.target));
                 _this.giveFocus(popUpView);
             });
         }
+        PopUpContainerViewController.prototype._tryGetMainPopUp = function () {
+            var ret = null;
+            this.map(function (popUpView) {
+                if (popUpView.isMain) {
+                    ret = popUpView;
+                    return false;
+                }
+            });
+            return ret;
+        };
+
+        PopUpContainerViewController.prototype.hasMain = function () {
+            return this._tryGetMainPopUp() !== null;
+        };
+
         /**
         * Give focus to its PopUpView and cause all other PopUps to lose focus
         */

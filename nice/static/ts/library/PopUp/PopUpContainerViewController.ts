@@ -1,24 +1,41 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import $ = require('jquery');
 import BrowserEvents = require('../Core/BrowserEvents');
+import GlobalBrowserEventsManager = require('../Core/GlobalBrowserEventsManager');
 import PopUpCommon = require('./PopUpCommon');
 import PopUpView = require('./PopUpView');
 import View = require('../CoreUI/View');
 import ViewController = require('../CoreUI/ViewController');
-
-enum PopUpType { main, detached };
 
 class PopUpContainerViewController extends ViewController
 {
     constructor(view)
     {
         super(view);
-        this.view.attachEventHandler(BrowserEvents.Events.mouseDown, PopUpCommon.CssSelector, (ev: JQueryEventObject) =>
+        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.Events.mouseDown, PopUpCommon.CssSelector, (ev: JQueryEventObject) =>
                 {
                     ev.preventDefault();
                     var popUpView : PopUpView = <PopUpView> PopUpView.fromJQuery($(ev.target));
                     this.giveFocus(popUpView);
                 });
+    }
+
+    private _tryGetMainPopUp() : PopUpView
+    {
+        var ret = null;
+        this.map((popUpView : PopUpView) => {
+            if (popUpView.isMain)
+            {
+                ret = popUpView;
+                return false;
+            }
+        });
+        return ret;
+    }
+
+    public hasMain() : Boolean
+    {
+        return this._tryGetMainPopUp() !== null;
     }
 
     /**
