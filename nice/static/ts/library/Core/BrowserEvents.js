@@ -3,10 +3,12 @@ define(["require", "exports", './NotImplementedException'], function(require, ex
         switch (ev) {
             case 0 /* click */:
                 return 'click';
-            case 1 /* viewWasAppended */:
-                return 'viewWasAppended';
-            case 2 /* mouseDown */:
+            case 1 /* mouseDown */:
                 return 'mousedown';
+            case 2 /* viewWasAppended */:
+                return 'viewWasAppended';
+            case 3 /* viewWasRemoved */:
+                return 'viewWasRemoved';
             default:
                 throw new NotImplementedException(ev + ' is not supported');
         }
@@ -14,8 +16,9 @@ define(["require", "exports", './NotImplementedException'], function(require, ex
     exports.getEventName = getEventName;
     (function (Events) {
         Events[Events["click"] = 0] = "click";
-        Events[Events["viewWasAppended"] = 1] = "viewWasAppended";
-        Events[Events["mouseDown"] = 2] = "mouseDown";
+        Events[Events["mouseDown"] = 1] = "mouseDown";
+        Events[Events["viewWasAppended"] = 2] = "viewWasAppended";
+        Events[Events["viewWasRemoved"] = 3] = "viewWasRemoved";
     })(exports.Events || (exports.Events = {}));
     var Events = exports.Events;
 });

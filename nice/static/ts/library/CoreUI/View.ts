@@ -110,6 +110,10 @@ class View
         this._$el.append(childView._$el);
         this._children.add(childView);
         childView._parentView = this;
+        this.triggerEvent(BrowserEvents.Events.viewWasAppended, {
+            childView: childView,
+            parentView: this,
+        });
     }
 
     /**
@@ -118,13 +122,18 @@ class View
       */
     public removeFromParent() : void
     {
-        if (this._parentView !== null)
+        var parentView = this._parentView;
+        if (parentView !== null)
         {
             throw new InvalidActionException('Cannot call removeFromParent() on a view that does not have a parent.');
         }
         this._$el.detach();
-        this._parentView._children.remove(this);
+        parentView._children.remove(this);
         this._parentView = null;
+        parentView.triggerEvent(BrowserEvents.Events.viewWasRemoved, {
+            childView: this,
+            parentView: parentView,
+        });
     }
 
     /**
@@ -152,6 +161,14 @@ class View
         {
             throw new InvalidArgumentException("The second argument must either be a string or a function.");
         }
+    }
+
+    public triggerEvent(ev: BrowserEvents.Events);
+    public triggerEvent(ev: BrowserEvents.Events, extraParameter : any);
+    public triggerEvent(ev: BrowserEvents.Events, extraParameter? : any)
+    {
+        var eventName = BrowserEvents.getEventName(ev);
+        this._$el.trigger(<string> eventName, extraParameter);
     }
 
     /**

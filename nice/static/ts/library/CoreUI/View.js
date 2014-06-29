@@ -99,6 +99,10 @@ define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionExc
             this._$el.append(childView._$el);
             this._children.add(childView);
             childView._parentView = this;
+            this.triggerEvent(2 /* viewWasAppended */, {
+                childView: childView,
+                parentView: this
+            });
         };
 
         /**
@@ -106,12 +110,17 @@ define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionExc
         * does not have a parent.
         */
         View.prototype.removeFromParent = function () {
-            if (this._parentView !== null) {
+            var parentView = this._parentView;
+            if (parentView !== null) {
                 throw new InvalidActionException('Cannot call removeFromParent() on a view that does not have a parent.');
             }
             this._$el.detach();
-            this._parentView._children.remove(this);
+            parentView._children.remove(this);
             this._parentView = null;
+            parentView.triggerEvent(3 /* viewWasRemoved */, {
+                childView: this,
+                parentView: parentView
+            });
         };
 
         View.prototype.attachEventHandler = function (ev, argumentThree, handler) {
@@ -127,6 +136,11 @@ define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionExc
             } else {
                 throw new InvalidArgumentException("The second argument must either be a string or a function.");
             }
+        };
+
+        View.prototype.triggerEvent = function (ev, extraParameter) {
+            var eventName = BrowserEvents.getEventName(ev);
+            this._$el.trigger(eventName, extraParameter);
         };
 
         /**

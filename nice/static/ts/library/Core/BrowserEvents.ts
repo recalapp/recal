@@ -5,16 +5,19 @@ export function getEventName(ev : Events) : String
     {
         case Events.click:
             return 'click';
-        case Events.viewWasAppended:
-            return 'viewWasAppended';
         case Events.mouseDown:
             return 'mousedown';
+        case Events.viewWasAppended:
+            return 'viewWasAppended';
+        case Events.viewWasRemoved:
+            return 'viewWasRemoved';
         default:
             throw new NotImplementedException(ev + ' is not supported');
     }
 }
 export enum Events {
     click,
-    viewWasAppended,
     mouseDown,
+    viewWasAppended,
+    viewWasRemoved,
 }
