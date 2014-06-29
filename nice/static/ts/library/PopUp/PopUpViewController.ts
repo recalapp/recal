@@ -1,5 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import $ = require('jquery');
+import BrowserEvents = require('../Core/BrowserEvents');
 import ViewController = require('../CoreUI/ViewController');
 import PopUpView = require('PopUpView');
 
@@ -33,7 +34,7 @@ class PopUpViewController extends ViewController
     {
         super(view);
         // TODO theme - separate module
-        this.view.addEventListener('mousedown', (ev: JQueryEventObject) =>
+        this.view.attachEventHandler(BrowserEvents.Events.mouseDown, (ev: JQueryEventObject) =>
                 {
                     this.giveFocus();
                 });
@@ -42,7 +43,7 @@ class PopUpViewController extends ViewController
     /**
      * Give focus to its PopUpView and cause all other PopUps to lose focus
      */
-    giveFocus() : void
+    public giveFocus() : void
     {
         (<PopUpView> this.view).focusView();
         // find a way to get all popups

@@ -1,4 +1,4 @@
-define(["require", "exports", 'jquery', '../library/DataStructures/Set'], function(require, exports, $, Set) {
+define(["require", "exports", 'jquery', '../library/DataStructures/Set', '../library/PopUp/PopUpView'], function(require, exports, $, Set, PopUpView) {
     $('#content').append('sample');
     var testSet = new Set();
     console.log(testSet.contains(1));
@@ -9,4 +9,5 @@ define(["require", "exports", 'jquery', '../library/DataStructures/Set'], functi
     console.log(testSet.contains(1));
     testSet.remove(1);
     console.log(testSet.contains(1));
+    var test = PopUpView.fromJQuery($('<div>'));
 });

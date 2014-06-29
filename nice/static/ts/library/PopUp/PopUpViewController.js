@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../CoreUI/ViewController'], function(require, exports, ViewController) {
+define(["require", "exports", '../Core/BrowserEvents', '../CoreUI/ViewController'], function(require, exports, BrowserEvents, ViewController) {
     var PopUpType;
     (function (PopUpType) {
         PopUpType[PopUpType["main"] = 0] = "main";
@@ -21,7 +21,7 @@ define(["require", "exports", '../CoreUI/ViewController'], function(require, exp
             this._popUpId = null;
 
             // TODO theme - separate module
-            this.view.addEventListener('mousedown', function (ev) {
+            this.view.attachEventHandler(2 /* mouseDown */, function (ev) {
                 _this.giveFocus();
             });
         }

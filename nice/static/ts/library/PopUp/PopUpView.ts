@@ -4,7 +4,6 @@ import FocusableView = require('../CoreUI/FocusableView');
 
 class PopUpView extends FocusableView
 {
-    
     constructor(view : JQuery)
     {
         super(view);
@@ -24,23 +23,23 @@ class PopUpView extends FocusableView
         // TODO PopUp_makeResizable
     }
 
-    removeFromParent() : void
+    public removeFromParent() : void
     {
         super.removeFromParent();
         // TODO handle PopUp_close() logic
     }
 
-    focusView() : void
+    public focusView() : void
     {
         // TODO handle focus (appearance only, not logic)
     }
 
-    blurView() : void
+    public blurView() : void
     {
         // TODO PopUp_loseFocus()
     }
 
-    setColor(color : string) : void
+    public setColor(color : string) : void
     {
         // TODO make color a class
         // TODO PopUp_setColor

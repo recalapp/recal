@@ -1,6 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import $ = require('jquery');
+import BrowserEvents = require("../Core/BrowserEvents");
 import InvalidActionException = require('../Core/InvalidActionException');
+import InvalidArgumentException = require("../Core/InvalidArgumentException");
 import Set = require('../DataStructures/Set');
 
 class View 
@@ -15,16 +17,25 @@ class View
       Properties
       ****************************************************************/
 
+    /**
+      * The parent view of the view, if exists. Null if no parent
+      */
     get parentView(): View
     {
         return this._parentView;
     }
 
+    /**
+      * Immutable array of child views
+      */
     get children(): Array<View>
     {
         return this._children.toArray();
     }
 
+    /**
+      * Physical width of the view
+      */
     get width(): number
     {
         return this._$el.width();
@@ -34,6 +45,9 @@ class View
         this._$el.width(newValue);
     }
 
+    /**
+      * Physical height of the view
+      */
     get height(): number
     {
         return this._$el.height();
@@ -46,8 +60,18 @@ class View
     /******************************************************************
       Methods
       ****************************************************************/
+    
+    /**
+      * Initialize a new View object from the JQuery element.
+      * Throws an error if the JQuery element already belongs to another
+      * View object.
+      */
     constructor($element: JQuery)
     {
+        if ($element === null)
+        {
+            throw new InvalidArgumentException('A JQuery element must be specified');
+        }
         if ($element.data(View.JQUERY_DATA_KEY) instanceof View)
         {
             throw new InvalidActionException('View is already initialized.');
@@ -57,16 +81,23 @@ class View
         this._$el.data(View.JQUERY_DATA_KEY, this);
     }
 
-    static fromJQuery($element: JQuery) : View
+    /**
+      * Initialize a new View object from the JQuery element, or return
+      * an existing one.
+      */
+    public static fromJQuery($element: JQuery) : View
     {
         if ($element.data(View.JQUERY_DATA_KEY) instanceof View)
         {
             return $element.data(View.JQUERY_DATA_KEY);
         }
-        return new View($element);
+        return new this($element);
     }
 
-    append(childView: View) : void 
+    /**
+      * Append childView to this view. childView cannot already have a parent
+      */
+    public append(childView: View) : void 
     {
         if (this._children.contains(childView))
         {
@@ -80,7 +111,12 @@ class View
         this._children.add(childView);
         childView._parentView = this;
     }
-    removeFromParent() : void
+
+    /**
+      * Remove this view from its parent. Cannot be called if this view 
+      * does not have a parent.
+      */
+    public removeFromParent() : void
     {
         if (this._parentView !== null)
         {
@@ -90,11 +126,38 @@ class View
         this._parentView._children.remove(this);
         this._parentView = null;
     }
-    addEventListener(events : string, listener : any) : void
+
+    /**
+      * Attach an event handler to the view
+      */
+    public attachEventHandler(ev : BrowserEvents.Events, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachEventHandler(ev : BrowserEvents.Events, selector: String, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachEventHandler(ev : BrowserEvents.Events, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
     {
-        this._$el.on(events, listener);
+        var eventName = BrowserEvents.getEventName(ev);
+        var $element = this._$el;
+        if (typeof argumentThree === 'string' || argumentThree instanceof String || argumentThree.constructor === String)
+        {
+            if (handler === undefined)
+            {
+                throw new InvalidArgumentException("No handler provided.");
+            }
+            $element.on(<string> eventName, <string> argumentThree, handler);
+        }
+        else if (typeof argumentThree === 'function')
+        {
+            $element.on(<string> eventName, argumentThree);
+        }
+        else
+        {
+            throw new InvalidArgumentException("The second argument must either be a string or a function.");
+        }
     }
-    toString() : string
+
+    /**
+      * Unique
+      */
+    public toString() : string
     {
         return 'View no. ' + this._viewNumber;
     }
