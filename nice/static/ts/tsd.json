@@ -6,13 +6,16 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "jquery/jquery.d.ts": {
-      "commit": "1653954824cefb75a2a0030a639bf99664620508"
+      "commit": "39a4a0f60a7516b33e982426000b5f5194cea95f"
     },
     "requirejs/require.d.ts": {
       "commit": "4cf10109b729a39130cb13bb3d4a069e6a2c2eb1"
     },
     "jqueryui/jqueryui.d.ts": {
-      "commit": "1653954824cefb75a2a0030a639bf99664620508"
+      "commit": "39a4a0f60a7516b33e982426000b5f5194cea95f"
+    },
+    "bootstrap/bootstrap.d.ts": {
+      "commit": "39a4a0f60a7516b33e982426000b5f5194cea95f"
     }
   }
 }

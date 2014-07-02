@@ -140,6 +140,10 @@ define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionExc
 
         View.prototype.triggerEvent = function (ev, extraParameter) {
             var eventName = BrowserEvents.getEventName(ev);
+            if (extraParameter === undefined || extraParameter === null) {
+                extraParameter = {};
+            }
+            extraParameter.view = this;
             this._$el.trigger(eventName, extraParameter);
         };
 

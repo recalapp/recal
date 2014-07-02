@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './View'], function(require, exports, View) {
+define(["require", "exports", '../Core/BrowserEvents', './View'], function(require, exports, BrowserEvents, View) {
     var FocusableView = (function (_super) {
         __extends(FocusableView, _super);
         function FocusableView() {
@@ -20,10 +20,14 @@ define(["require", "exports", './View'], function(require, exports, View) {
         });
 
         FocusableView.prototype.focusView = function () {
+            this.triggerEvent(4 /* viewWillFocus */);
             this._$el.focus();
+            this.triggerEvent(5 /* viewDidFocus */);
         };
         FocusableView.prototype.blurView = function () {
+            this.triggerEvent(6 /* viewWillBlur */);
             this._$el.blur();
+            this.triggerEvent(7 /* viewDidBlur */);
         };
         return FocusableView;
     })(View);

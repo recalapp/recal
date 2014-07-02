@@ -16,6 +16,10 @@ define(["require", "exports", "jquery", "../CoreUI/View", "./Singleton"], functi
             this._instance = new GlobalBrowserEventsManager();
         };
 
+        GlobalBrowserEventsManager.instance = function () {
+            return _super.prototype.instance.call(this);
+        };
+
         GlobalBrowserEventsManager.prototype.attachGlobalEventHandler = function (ev, argumentTwo, handler) {
             this._$globalParent.attachEventHandler(ev, argumentTwo, handler);
         };

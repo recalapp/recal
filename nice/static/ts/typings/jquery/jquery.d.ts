@@ -167,7 +167,16 @@ interface JQueryXHR extends XMLHttpRequest, JQueryPromise<any> {
      * The .overrideMimeType() method may be used in the beforeSend() callback function, for example, to modify the response content-type header. As of jQuery 1.5.1, the jqXHR object also contains the overrideMimeType() method (it was available in jQuery 1.4.x, as well, but was temporarily removed in jQuery 1.5). 
      */
     overrideMimeType(mimeType: string): any;
+    /**
+     * Cancel the request. 
+     *
+     * @param statusText A string passed as the textStatus parameter for the done callback. Default value: "canceled"
+     */
     abort(statusText?: string): void;
+    /**
+     * Incorporates the functionality of the .done() and .fail() methods, allowing (as of jQuery 1.8) the underlying Promise to be manipulated. Refer to deferred.then() for implementation details.
+     */
+    then(doneCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => void, failCallback: (jqXHR: JQueryXHR, textStatus: string, errorThrown: any) => void): JQueryPromise<any>;
     /**
      * Property containing the parsed response if the response Content-Type is json
      */
@@ -354,6 +363,11 @@ interface JQueryPromise<T> {
      * @param progressCallbacks A function, or array of functions, to be called when the Deferred generates progress notifications.
      */
     progress(...progressCallbacks: any[]): JQueryPromise<T>;
+
+    /**
+     * Determine the current state of a Deferred object.
+     */
+    state(): string;
 
     // Deprecated - given no typings
     pipe(doneFilter?: (x: any) => any, failFilter?: (x: any) => any, progressFilter?: (x: any) => any): JQueryPromise<any>;
@@ -2434,6 +2448,7 @@ interface JQuery {
     dblclick(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
 
     delegate(selector: any, eventType: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    delegate(selector: any, eventType: string, eventData: any, handler: (eventObject: JQueryEventObject) => any): JQuery;
 
     /**
      * Trigger the "focus" event on an element.

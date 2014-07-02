@@ -168,6 +168,11 @@ class View
     public triggerEvent(ev: BrowserEvents.Events, extraParameter? : any)
     {
         var eventName = BrowserEvents.getEventName(ev);
+        if (extraParameter === undefined || extraParameter === null)
+        {
+            extraParameter = {};
+        }
+        extraParameter.view = this;
         this._$el.trigger(<string> eventName, extraParameter);
     }
 
