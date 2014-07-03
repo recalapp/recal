@@ -3,6 +3,7 @@
 import $ = require('jquery');
 // TODO handle jqueryui import
 import BootStrap = require('bootstrap');
+import JQueryUI = require('jqueryui');
 
 import BrowserEvents = require('../Core/BrowserEvents');
 import FocusableView = require('../CoreUI/FocusableView');

@@ -26,13 +26,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
                     if (_this.isMain) {
                         // TODO handle main/pinned
                         // TODO WONTFIX see if bounding rect logic is needed - do that in a subclass
-                        _this.triggerEvent(4 /* popUpWillDetach */);
+                        _this.triggerEvent(8 /* popUpWillDetach */);
                         // needed because when first move, we move to a different
                         // parent. maybe should expose as an event
                     }
                 }
             });
-            this.attachEventHandler(4 /* popUpWillDetach */, function (ev, eventData) {
+            this.attachEventHandler(8 /* popUpWillDetach */, function (ev, eventData) {
                 var popUpView = eventData.view;
                 popUpView._makeResizable();
             });

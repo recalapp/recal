@@ -1759,3 +1759,6 @@ interface JQueryStatic {
     widget: JQueryUI.Widget;
     Widget: JQueryUI.Widget;
 }
+declare module "jqueryui" {
+    // NOTE(naphatkrit) needed to make compiler happy
+}
