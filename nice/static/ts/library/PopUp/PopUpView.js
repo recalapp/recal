@@ -5,39 +5,30 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/FocusableView', './PopUpCommon'], function(require, exports, $, BrowserEvents, FocusableView, PopUpCommon) {
+    require(['bootstrap', 'jqueryui']);
+
     // aliases
     var PopUpType = PopUpCommon.PopUpType;
+
+    var oldMouseStart = $.ui.draggable.prototype._mouseStart;
+    $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
+        this._trigger("beforeStart", event, this._uiHash());
+        oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
+    };
 
     var PopUpView = (function (_super) {
         __extends(PopUpView, _super);
         function PopUpView(view) {
-            var _this = this;
             _super.call(this, view);
+            this._type = 0 /* main */;
 
             // TODO handle main/not main difference
-            // TODO make draggable
-            this._$el.draggable({
-                handle: '.panel > .panel-heading',
-                containment: '#content_bounds',
-                scroll: false,
-                appendTo: 'body',
-                zIndex: 2000,
-                beforeSend: function (ev, ui) {
-                    if (_this.isMain) {
-                        // TODO handle main/pinned
-                        // TODO WONTFIX see if bounding rect logic is needed - do that in a subclass
-                        _this.triggerEvent(8 /* popUpWillDetach */);
-                        // needed because when first move, we move to a different
-                        // parent. maybe should expose as an event
-                    }
-                }
-            });
+            this._makeDraggable();
             this.attachEventHandler(8 /* popUpWillDetach */, function (ev, eventData) {
                 var popUpView = eventData.view;
                 popUpView._makeResizable();
             });
 
-            // TODO handle mousedown (should be in view controller?)
             // TODO support for shift-click
             // TODO WONTFIX max height - in subclass
             // TODO initialize as needed
@@ -77,12 +68,33 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             configurable: true
         });
 
+        PopUpView.prototype._makeDraggable = function () {
+            var _this = this;
+            this._$el.draggable({
+                handle: '.panel > .panel-heading',
+                containment: '#content_bounds',
+                scroll: false,
+                appendTo: 'body',
+                zIndex: 2000,
+                beforeStart: function (ev, ui) {
+                    if (_this.isMain) {
+                        _this._type = 1 /* detached */;
+
+                        // TODO handle main/pinned
+                        // TODO WONTFIX see if bounding rect logic is needed - do that in a subclass
+                        _this.triggerEvent(8 /* popUpWillDetach */);
+                        // needed because when first move, we move to a different
+                        // parent. maybe should expose as an event
+                    }
+                }
+            });
+        };
         PopUpView.prototype._makeResizable = function () {
             var _this = this;
             this._$el.find(PopUpCommon.PanelCssSelector).resizable({
                 stop: function (ev, ui) {
-                    _this._$el.css("height", $(ui).css('height'));
-                    _this._$el.css('width', $(ui).css('width'));
+                    _this._$el.css("height", ui.size.height);
+                    _this._$el.css('width', ui.size.width);
                     // TODO setbodywidth
                 }
             });
@@ -110,7 +122,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
 
         PopUpView.prototype._updateColor = function () {
             // TODO make color a class
-            // TODO PopUp_setColor
+            var $heading = this._$el.find(PopUpCommon.HeadingCssSelector);
+            var opacity = this.hasFocus ? PopUpCommon.FocusOpacity : PopUpCommon.BlurOpacity;
+            $heading.css({
+                'background-color': this.color,
+                'border-color': this.color,
+                opacity: opacity
+            });
         };
         return PopUpView;
     })(FocusableView);

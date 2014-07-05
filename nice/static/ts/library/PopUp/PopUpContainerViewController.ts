@@ -12,10 +12,11 @@ class PopUpContainerViewController extends ViewController
     constructor(view)
     {
         super(view);
-        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.Events.mouseDown, PopUpCommon.CssSelector, (ev: JQueryEventObject) =>
+        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.Events.mouseDown, PopUpCommon.AllDescendentsSelector, (ev: JQueryEventObject) =>
                 {
                     ev.preventDefault();
-                    var popUpView : PopUpView = <PopUpView> PopUpView.fromJQuery($(ev.target));
+                    var $popUpElement = PopUpCommon.findPopUpFromChild($(ev.target));
+                    var popUpView : PopUpView = <PopUpView> PopUpView.fromJQuery($popUpElement);
                     this.giveFocus(popUpView);
                 });
     }
@@ -73,3 +74,4 @@ class PopUpContainerViewController extends ViewController
         return ret;
     }
 }
+export = PopUpContainerViewController;

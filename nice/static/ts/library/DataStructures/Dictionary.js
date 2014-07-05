@@ -1,4 +1,11 @@
 define(["require", "exports"], function(require, exports) {
+    var Wrapper = (function () {
+        function Wrapper(key, value) {
+            this.key = key;
+            this.value = value;
+        }
+        return Wrapper;
+    })();
     var Dictionary = (function () {
         function Dictionary() {
             this._dict = {};
@@ -12,7 +19,7 @@ define(["require", "exports"], function(require, exports) {
             if (this.contains(key)) {
                 ret = this.get(key);
             }
-            this._dict[key.toString()] = value;
+            this._dict[key.toString()] = new Wrapper(key, value);
             return ret;
         };
 
@@ -21,13 +28,13 @@ define(["require", "exports"], function(require, exports) {
         };
 
         Dictionary.prototype.get = function (key) {
-            return this.contains(key) ? this._dict[key.toString()] : null;
+            return this.contains(key) ? this._dict[key.toString()].value : null;
         };
 
         Dictionary.prototype.allKeys = function () {
             var ret = Array();
-            for (var key in this._dict) {
-                ret.push(key);
+            for (var hash in this._dict) {
+                ret.push(this._dict[hash].key);
             }
             return ret;
         };

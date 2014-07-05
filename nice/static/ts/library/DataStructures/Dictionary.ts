@@ -1,3 +1,9 @@
+class Wrapper<K, V> 
+{
+    constructor(public key: K, public value: V)
+    {
+    }
+}
 class Dictionary<K, V>
 {
     private _dict = {};
@@ -13,7 +19,7 @@ class Dictionary<K, V>
         {
             ret = this.get(key);
         }
-        this._dict[key.toString()] = value;
+        this._dict[key.toString()] = new Wrapper<K, V>(key, value);
         return ret;
     }
 
@@ -24,15 +30,15 @@ class Dictionary<K, V>
 
     get(key : K)
     {
-        return this.contains(key) ? this._dict[key.toString()] : null;
+        return this.contains(key) ? this._dict[key.toString()].value : null;
     }
 
     allKeys() : Array<K>
     {
         var ret = Array<K>();
-        for (var key in this._dict)
+        for (var hash in this._dict)
         {
-            ret.push(key);
+            ret.push(this._dict[hash].key);
         }
         return ret;
     }

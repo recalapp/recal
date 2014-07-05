@@ -2,21 +2,15 @@
 import $ = require("jquery");
 import BrowserEvents = require("./BrowserEvents");
 import View = require("../CoreUI/View");
-import Singleton = require("./Singleton");
 
-class GlobalBrowserEventsManager extends Singleton
+class GlobalBrowserEventsManager 
 {
-    private _$globalParent = View.fromJQuery($(window));
-
-    public static initialize() : void 
-    {
-        super.initialize();
-        this._instance = new GlobalBrowserEventsManager();
-    }
+    private static _instance = new GlobalBrowserEventsManager();
+    private _$globalParent = View.fromJQuery($(document));
 
     public static instance() : GlobalBrowserEventsManager
     {
-        return <GlobalBrowserEventsManager>super.instance();
+        return this._instance;
     }
 
     public attachGlobalEventHandler(ev : BrowserEvents.Events, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);

@@ -10,9 +10,10 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
         function PopUpContainerViewController(view) {
             var _this = this;
             _super.call(this, view);
-            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(1 /* mouseDown */, PopUpCommon.CssSelector, function (ev) {
+            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(1 /* mouseDown */, PopUpCommon.AllDescendentsSelector, function (ev) {
                 ev.preventDefault();
-                var popUpView = PopUpView.fromJQuery($(ev.target));
+                var $popUpElement = PopUpCommon.findPopUpFromChild($(ev.target));
+                var popUpView = PopUpView.fromJQuery($popUpElement);
                 _this.giveFocus(popUpView);
             });
         }
@@ -62,4 +63,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
         };
         return PopUpContainerViewController;
     })(ViewController);
+    
+    return PopUpContainerViewController;
 });
