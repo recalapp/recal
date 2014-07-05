@@ -82,16 +82,38 @@ class View
     }
 
     /**
+      * Returns true if the view associated with the jQuery element has
+      * been initialized.
+      */
+    static _viewIsInitialized($element: JQuery) : Boolean
+    {
+        return $element.data(View.JQUERY_DATA_KEY) instanceof View;
+    }
+
+    /**
       * Initialize a new View object from the JQuery element, or return
       * an existing one.
+      * NOTE: initialization must happen top-down. That is, once a view is
+      * initialized, all its ancestors (parent, grandparent, etc.) must
+      * either already be initialized, or they can be initialized as a 
+      * generic view class.
       */
     public static fromJQuery($element: JQuery) : View
     {
-        if ($element.data(View.JQUERY_DATA_KEY) instanceof View)
+        if (this._viewIsInitialized($element))
         {
             return $element.data(View.JQUERY_DATA_KEY);
         }
-        return new this($element);
+        // because the view has not been initalized, it will not belong to
+        // the parent's children list yet. We can safely add it
+        var view = new this($element);
+        if ($element.parent().length > 0)
+        {
+            // parent exists
+            var parentView = View.fromJQuery($element.parent()); // use View instead of 'this' so we assume that parent is a generic view
+            parentView._children.add(view)
+        }
+        return view;
     }
 
     /**

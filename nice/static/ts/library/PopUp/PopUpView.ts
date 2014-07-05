@@ -3,7 +3,6 @@
 /// <amd-dependency path="jqueryui" />
 // imports
 import $ = require('jquery');
-//require(['bootstrap', 'jqueryui']);
 import BrowserEvents = require('../Core/BrowserEvents');
 import FocusableView = require('../CoreUI/FocusableView');
 import PopUpCommon = require('./PopUpCommon');
