@@ -4,9 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/FocusableView', './PopUpCommon'], function(require, exports, $, BrowserEvents, FocusableView, PopUpCommon) {
-    require(['bootstrap', 'jqueryui']);
-
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/FocusableView', './PopUpCommon', "bootstrap", "jqueryui"], function(require, exports, $, BrowserEvents, FocusableView, PopUpCommon) {
     // aliases
     var PopUpType = PopUpCommon.PopUpType;
 

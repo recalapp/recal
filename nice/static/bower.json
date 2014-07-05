@@ -1,0 +1,23 @@
+{
+  "name": "ReCal",
+  "version": "0.9.0",
+  "homepage": "https://github.com/maximz/newice",
+  "authors": [
+    "naphatkrit <naphat.krit@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "~3.1.1",
+    "fontawesome": "~4.0.3",
+    "fullcalendar": "~1.6.4",
+    "holderjs": "~2.3.2",
+    "jquery-ui": "~1.11.0",
+    "jquery.cookie": "carhartl/jquery-cookie#~1.4.0",
+    "jquery": "~2.1.1",
+    "moment-timezone": "~0.0.3",
+    "momentjs": "~2.5.1",
+    "requirejs": "~2.1.14",
+    "smalot-bootstrap-datetimepicker": "~2.2.0"
+  }
+}

@@ -14,7 +14,7 @@ require.config({
     paths: {
         jquery: bowerPath('jquery/dist/jquery'),
         bootstrap: bowerPath('bootstrap/dist/js/bootstrap'),
-        jqueryui: bowerPath('jqueryui/ui/jquery-ui'),
+        jqueryui: bowerPath('jquery-ui/jquery-ui'),
     },
     shim: {
         jquery: {
