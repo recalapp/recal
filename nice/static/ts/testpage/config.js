@@ -9,16 +9,17 @@ function bowerPath(path) {
 
 require.config({
     paths: {
-        jquery: bowerPath('jquery/dist/jquery'),
         bootstrap: bowerPath('bootstrap/dist/js/bootstrap'),
+        jeditable: bowerPath('jquery_jeditable/jquery.jeditable'),
+        jquery: bowerPath('jquery/dist/jquery'),
         jqueryui: bowerPath('jquery-ui/jquery-ui')
     },
     shim: {
-        jquery: {
-            exports: '$'
-        },
         bootstrap: {
             deps: ['jquery']
+        },
+        jquery: {
+            exports: '$'
         },
         jqueryui: {
             deps: ['jquery'],

@@ -13,7 +13,7 @@ function bowerPath(path: String): String
 require.config({
     paths: {
         bootstrap: bowerPath('bootstrap/dist/js/bootstrap'),
-        jeditable: bowerPath('jquery_jeditable/jquery.jeditable.js'),
+        jeditable: bowerPath('jquery_jeditable/jquery.jeditable'),
         jquery: bowerPath('jquery/dist/jquery'),
         jqueryui: bowerPath('jquery-ui/jquery-ui'),
     },

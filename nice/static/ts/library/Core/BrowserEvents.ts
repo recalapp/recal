@@ -21,6 +21,8 @@ export function getEventName(ev : Events) : String
             return 'viewDidBlur';
         case Events.popUpWillDetach:
             return 'popUp_willDetach';
+        case Events.clickToEditComplete:
+            return 'clickToEditComplete';
         default:
             throw new NotImplementedException(ev + ' is not supported');
     }
@@ -39,4 +41,7 @@ export enum Events {
 
     // PopUp
     popUpWillDetach,
+
+    // ClickToEdit
+    clickToEditComplete,
 }

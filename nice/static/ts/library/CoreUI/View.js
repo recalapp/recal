@@ -18,6 +18,9 @@ define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionExc
             if ($element.data(View.JQUERY_DATA_KEY) instanceof View) {
                 throw new InvalidActionException('View is already initialized.');
             }
+            if ($element.length != 1) {
+                throw new InvalidArgumentException('The JQuery element must have exactly one html DOM object.');
+            }
             this._viewNumber = View._viewCount++;
             this._$el = $element;
             this._$el.data(View.JQUERY_DATA_KEY, this);

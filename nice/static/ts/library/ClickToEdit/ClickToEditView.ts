@@ -1,7 +1,10 @@
 /// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../typings-manual/typings.d.ts" />
+/// <amd-dependency path="jeditable" />
 
 import $ = require('jquery');
 
+import BrowserEvents = require("../Core/BrowserEvents");
 import ClickToEditType = require('./ClickToEditType');
 import FocusableView = require('../CoreUI/FocusableView');
 import InvalidArgumentException = require('../Core/InvalidArgumentException');
@@ -10,7 +13,6 @@ class ClickToEditView extends FocusableView
 {
     private _type: ClickToEditType = ClickToEditType.input;
     // TODO handle focus/blur
-    // TODO initialize
     constructor($element: JQuery)
     {
         super($element);
@@ -23,17 +25,22 @@ class ClickToEditView extends FocusableView
 
     private _initializeClickToEdit()
     {
+        this._$el.editable((value: string, settings: any)=>{
+            this.triggerEvent(BrowserEvents.Events.clickToEditComplete, {
+                value: value,
+            });
+            return value;
+        }, {
+            cssclass: 'inherit',
+        });
     }
-    // TODO update value
     get value() : String
     {
         return this._$el.text();
     }
-    // TODO get value
     set value(text: String)
     {
         this._$el.text(<string>text);
     }
-    // TODO notify when update
 }
 export = ClickToEditView;

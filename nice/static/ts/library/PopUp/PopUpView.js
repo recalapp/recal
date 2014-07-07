@@ -30,7 +30,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             // TODO support for shift-click
             // TODO WONTFIX max height - in subclass
             // TODO initialize as needed
-            // TODO tool tip - separate module
+            // TODO tool tip - separate module - maybe in View base
             this._$el.find('.withtooltip').tooltip({});
             // TODO theme - separate module
             // NOTE extra initialization can be done by overriding the constructor

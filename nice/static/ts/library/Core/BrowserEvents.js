@@ -19,6 +19,8 @@ define(["require", "exports", './NotImplementedException'], function(require, ex
                 return 'viewDidBlur';
             case 8 /* popUpWillDetach */:
                 return 'popUp_willDetach';
+            case 9 /* clickToEditComplete */:
+                return 'clickToEditComplete';
             default:
                 throw new NotImplementedException(ev + ' is not supported');
         }
@@ -38,6 +40,9 @@ define(["require", "exports", './NotImplementedException'], function(require, ex
 
         // PopUp
         Events[Events["popUpWillDetach"] = 8] = "popUpWillDetach";
+
+        // ClickToEdit
+        Events[Events["clickToEditComplete"] = 9] = "clickToEditComplete";
     })(exports.Events || (exports.Events = {}));
     var Events = exports.Events;
 });
