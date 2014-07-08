@@ -9,6 +9,21 @@ import ClickToEditType = require('./ClickToEditType');
 import FocusableView = require('../CoreUI/FocusableView');
 import InvalidArgumentException = require('../Core/InvalidArgumentException');
 
+$.editable.addInputType('RCText', {
+    element: function(settings, original){
+        var $input = $('<input>').addClass('form-control');
+        $(this).append($input);
+        return $input;
+    },
+});
+$.editable.addInputType('RCTextArea', {
+    element: function(settings, original){
+        var $input = $('<textarea>').addClass('form-control');
+        $(this).append($input);
+        return $input;
+    },
+});
+
 class ClickToEditView extends FocusableView
 {
     private _type: ClickToEditType = ClickToEditType.input;
@@ -31,7 +46,7 @@ class ClickToEditView extends FocusableView
             });
             return value;
         }, {
-            cssclass: 'inherit',
+            type: 'RCText',
         });
     }
     get value() : String

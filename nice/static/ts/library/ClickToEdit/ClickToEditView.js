@@ -7,7 +7,22 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", "../Core/BrowserEvents", './ClickToEditType', '../CoreUI/FocusableView', '../Core/InvalidArgumentException', "jeditable"], function(require, exports, BrowserEvents, ClickToEditType, FocusableView, InvalidArgumentException) {
+define(["require", "exports", 'jquery', "../Core/BrowserEvents", './ClickToEditType', '../CoreUI/FocusableView', '../Core/InvalidArgumentException', "jeditable"], function(require, exports, $, BrowserEvents, ClickToEditType, FocusableView, InvalidArgumentException) {
+    $.editable.addInputType('RCText', {
+        element: function (settings, original) {
+            var $input = $('<input>').addClass('form-control');
+            $(this).append($input);
+            return $input;
+        }
+    });
+    $.editable.addInputType('RCTextArea', {
+        element: function (settings, original) {
+            var $input = $('<textarea>').addClass('form-control');
+            $(this).append($input);
+            return $input;
+        }
+    });
+
     var ClickToEditView = (function (_super) {
         __extends(ClickToEditView, _super);
         // TODO handle focus/blur
@@ -27,7 +42,7 @@ define(["require", "exports", "../Core/BrowserEvents", './ClickToEditType', '../
                 });
                 return value;
             }, {
-                cssclass: 'inherit'
+                type: 'RCText'
             });
         };
         Object.defineProperty(ClickToEditView.prototype, "value", {
