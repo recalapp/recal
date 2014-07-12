@@ -7,30 +7,18 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', "../Core/BrowserEvents", './ClickToEditType', '../CoreUI/FocusableView', '../Core/InvalidArgumentException', "jeditable"], function(require, exports, $, BrowserEvents, ClickToEditType, FocusableView, InvalidArgumentException) {
-    $.editable.addInputType('RCText', {
-        element: function (settings, original) {
-            var $input = $('<input>').addClass('form-control');
-            $(this).append($input);
-            return $input;
-        }
-    });
-    $.editable.addInputType('RCTextArea', {
-        element: function (settings, original) {
-            var $input = $('<textarea>').addClass('form-control');
-            $(this).append($input);
-            return $input;
-        }
-    });
-
+define(["require", "exports", "../Core/BrowserEvents", './ClickToEditCommon', './ClickToEditType', './ClickToEditTypeProvider', '../CoreUI/FocusableView', '../Core/InvalidArgumentException', "jeditable"], function(require, exports, BrowserEvents, ClickToEditCommon, ClickToEditType, ClickToEditTypeProvider, FocusableView, InvalidArgumentException) {
     var ClickToEditView = (function (_super) {
         __extends(ClickToEditView, _super);
-        // TODO handle focus/blur
         function ClickToEditView($element) {
             _super.call(this, $element);
-            this._type = 0 /* input */;
+            this._type = 0 /* text */;
             if (!this._$el.is('p, h1, h2, h3, h4, h5, h6')) {
                 throw new InvalidArgumentException('ClickToEdit must be p, h1, h2, h3, h4, h5, or h6');
+            }
+            var type = this._$el.data(ClickToEditCommon.DataType);
+            if (type !== null && type !== undefined) {
+                this._type = parseInt(type);
             }
             this._initializeClickToEdit();
         }
@@ -42,7 +30,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", './ClickToEditT
                 });
                 return value;
             }, {
-                type: 'RCText',
+                type: ClickToEditTypeProvider.instance().getTypeString(this._type),
                 event: BrowserEvents.clickToEditShouldBegin
             });
             this.attachEventHandler(BrowserEvents.click, function () {
@@ -62,8 +50,6 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", './ClickToEditT
 
         ClickToEditView.prototype.focusView = function () {
             _super.prototype.focusView.call(this);
-
-            //this._$el.editable('enable');
             this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
         };
         return ClickToEditView;

@@ -1,5 +1,5 @@
 enum ClickToEditType {
-    input,
+    text,
     select,
     textArea,
 }
