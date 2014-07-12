@@ -12,7 +12,7 @@ class PopUpContainerViewController extends ViewController
     constructor(view)
     {
         super(view);
-        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.Events.mouseDown, PopUpCommon.AllDescendentsSelector, (ev: JQueryEventObject) =>
+        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.AllDescendentsSelector, (ev: JQueryEventObject) =>
                 {
                     ev.preventDefault();
                     var $popUpElement = PopUpCommon.findPopUpFromChild($(ev.target));

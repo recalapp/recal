@@ -22,7 +22,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
 
             // TODO handle main/not main difference
             this._makeDraggable();
-            this.attachEventHandler(8 /* popUpWillDetach */, function (ev, eventData) {
+            this.attachEventHandler(BrowserEvents.popUpWillDetach, function (ev, eventData) {
                 var popUpView = eventData.view;
                 popUpView._makeResizable();
             });
@@ -80,7 +80,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
 
                         // TODO handle main/pinned
                         // TODO WONTFIX see if bounding rect logic is needed - do that in a subclass
-                        _this.triggerEvent(8 /* popUpWillDetach */);
+                        _this.triggerEvent(BrowserEvents.popUpWillDetach);
                         // needed because when first move, we move to a different
                         // parent. maybe should expose as an event
                     }

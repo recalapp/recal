@@ -136,7 +136,7 @@ class View
         this._$el.append(childView._$el);
         this._children.add(childView);
         childView._parentView = this;
-        this.triggerEvent(BrowserEvents.Events.viewWasAppended, {
+        this.triggerEvent(BrowserEvents.viewWasAppended, {
             childView: childView,
             parentView: this,
         });
@@ -156,7 +156,7 @@ class View
         this._$el.detach();
         parentView._children.remove(this);
         this._parentView = null;
-        parentView.triggerEvent(BrowserEvents.Events.viewWasRemoved, {
+        parentView.triggerEvent(BrowserEvents.viewWasRemoved, {
             childView: this,
             parentView: parentView,
         });
@@ -165,11 +165,11 @@ class View
     /**
       * Attach an event handler to the view
       */
-    public attachEventHandler(ev : BrowserEvents.Events, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachEventHandler(ev : BrowserEvents.Events, selector: String, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachEventHandler(ev : BrowserEvents.Events, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
+    public attachEventHandler(ev : String, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachEventHandler(ev : String, selector: String, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachEventHandler(ev : String, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
     {
-        var eventName = BrowserEvents.getEventName(ev);
+        var eventName = ev;
         var $element = this._$el;
         if (typeof argumentThree === 'string' || argumentThree instanceof String || argumentThree.constructor === String)
         {
@@ -189,17 +189,26 @@ class View
         }
     }
 
-    public triggerEvent(ev: BrowserEvents.Events);
-    public triggerEvent(ev: BrowserEvents.Events, extraParameter : any);
-    public triggerEvent(ev: BrowserEvents.Events, extraParameter? : any)
+    public triggerEvent(ev: String);
+    public triggerEvent(ev: String, extraParameter : any);
+    public triggerEvent(ev: String, extraParameter? : any)
     {
-        var eventName = BrowserEvents.getEventName(ev);
+        var eventName = ev;
         if (extraParameter === undefined || extraParameter === null)
         {
             extraParameter = {};
         }
         extraParameter.view = this;
         this._$el.trigger(<string> eventName, extraParameter);
+    }
+
+    /**
+      * Returns true if $element is the view itself
+      * or is a descendent of the view.
+      */
+    public containsJQueryElement($element : JQuery)
+    {
+        return this._$el.is($element) || this._$el.find($element).length != 0;
     }
 
     /**

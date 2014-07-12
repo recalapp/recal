@@ -18,6 +18,9 @@ require.config({
         bootstrap: {
             deps: ['jquery']
         },
+        jeditable: {
+            deps: ['jquery']
+        },
         jquery: {
             exports: '$'
         },

@@ -4,12 +4,24 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../Core/BrowserEvents', './View'], function(require, exports, BrowserEvents, View) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', './View'], function(require, exports, $, BrowserEvents, View) {
     var FocusableView = (function (_super) {
         __extends(FocusableView, _super);
-        function FocusableView() {
-            _super.apply(this, arguments);
+        function FocusableView($element) {
+            var _this = this;
+            _super.call(this, $element);
             this._hasFocus = false;
+            this._$el.attr('tabindex', 0);
+            this.attachEventHandler(BrowserEvents.focusIn, function (ev) {
+                if (_this.containsJQueryElement($(document.activeElement))) {
+                    _this.focusView();
+                }
+            });
+            this.attachEventHandler(BrowserEvents.focusOut, function (ev) {
+                if (!_this.containsJQueryElement($(document.activeElement))) {
+                    _this.blurView();
+                }
+            });
         }
         Object.defineProperty(FocusableView.prototype, "hasFocus", {
             get: function () {
@@ -20,14 +32,10 @@ define(["require", "exports", '../Core/BrowserEvents', './View'], function(requi
         });
 
         FocusableView.prototype.focusView = function () {
-            this.triggerEvent(4 /* viewWillFocus */);
-            this._$el.focus();
-            this.triggerEvent(5 /* viewDidFocus */);
+            this._hasFocus = true;
         };
         FocusableView.prototype.blurView = function () {
-            this.triggerEvent(6 /* viewWillBlur */);
-            this._$el.blur();
-            this.triggerEvent(7 /* viewDidBlur */);
+            this._hasFocus = false;
         };
         return FocusableView;
     })(View);

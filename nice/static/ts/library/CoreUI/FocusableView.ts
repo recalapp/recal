@@ -6,23 +6,35 @@ import View = require('./View');
 class FocusableView extends View
 {
     _hasFocus : Boolean = false;
-
+    constructor($element: JQuery)
+    {
+        super($element);
+        this._$el.attr('tabindex', 0);
+        this.attachEventHandler(BrowserEvents.focusIn, (ev : JQueryEventObject) => {
+            if (this.containsJQueryElement($(document.activeElement)))
+            {
+                this.focusView();
+            }
+        });
+        this.attachEventHandler(BrowserEvents.focusOut, (ev : JQueryEventObject) => {
+            if (!this.containsJQueryElement($(document.activeElement)))
+            {
+                this.blurView();
+            }
+        });
+    }
     get hasFocus() : Boolean
     {
         return this._hasFocus;
     }
 
-    focusView() : void
+    public focusView() : void
     {
-        this.triggerEvent(BrowserEvents.Events.viewWillFocus);
-        this._$el.focus();
-        this.triggerEvent(BrowserEvents.Events.viewDidFocus);
+        this._hasFocus = true;
     }
-    blurView() : void
+    public blurView() : void
     {
-        this.triggerEvent(BrowserEvents.Events.viewWillBlur);
-        this._$el.blur();
-        this.triggerEvent(BrowserEvents.Events.viewDidBlur);
+        this._hasFocus = false;
     }
 }
 export = FocusableView;

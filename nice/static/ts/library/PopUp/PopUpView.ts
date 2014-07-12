@@ -37,7 +37,7 @@ class PopUpView extends FocusableView
         super(view);
         // TODO handle main/not main difference
         this._makeDraggable();
-        this.attachEventHandler(BrowserEvents.Events.popUpWillDetach, (ev, eventData) =>
+        this.attachEventHandler(BrowserEvents.popUpWillDetach, (ev, eventData) =>
                 {
                     var popUpView = <PopUpView> eventData.view;
                     popUpView._makeResizable();
@@ -65,7 +65,7 @@ class PopUpView extends FocusableView
                     this._type = PopUpType.detached;
                     // TODO handle main/pinned
                     // TODO WONTFIX see if bounding rect logic is needed - do that in a subclass
-                    this.triggerEvent(BrowserEvents.Events.popUpWillDetach);
+                    this.triggerEvent(BrowserEvents.popUpWillDetach);
                     // needed because when first move, we move to a different
                     // parent. maybe should expose as an event
                 }

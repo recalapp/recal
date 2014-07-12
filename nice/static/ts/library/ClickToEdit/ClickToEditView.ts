@@ -41,12 +41,16 @@ class ClickToEditView extends FocusableView
     private _initializeClickToEdit()
     {
         this._$el.editable((value: string, settings: any)=>{
-            this.triggerEvent(BrowserEvents.Events.clickToEditComplete, {
+            this.triggerEvent(BrowserEvents.clickToEditComplete, {
                 value: value,
             });
             return value;
         }, {
             type: 'RCText',
+            event: BrowserEvents.clickToEditShouldBegin,
+        });
+        this.attachEventHandler(BrowserEvents.click, () => {
+            this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
         });
     }
     get value() : String
@@ -56,6 +60,13 @@ class ClickToEditView extends FocusableView
     set value(text: String)
     {
         this._$el.text(<string>text);
+    }
+
+    focusView() : void
+    {
+        super.focusView();
+        //this._$el.editable('enable');
+        this.triggerEvent(BrowserEvents.clickToEditShouldBegin); 
     }
 }
 export = ClickToEditView;

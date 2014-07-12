@@ -123,7 +123,7 @@ define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionExc
             this._$el.append(childView._$el);
             this._children.add(childView);
             childView._parentView = this;
-            this.triggerEvent(2 /* viewWasAppended */, {
+            this.triggerEvent(BrowserEvents.viewWasAppended, {
                 childView: childView,
                 parentView: this
             });
@@ -141,14 +141,14 @@ define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionExc
             this._$el.detach();
             parentView._children.remove(this);
             this._parentView = null;
-            parentView.triggerEvent(3 /* viewWasRemoved */, {
+            parentView.triggerEvent(BrowserEvents.viewWasRemoved, {
                 childView: this,
                 parentView: parentView
             });
         };
 
         View.prototype.attachEventHandler = function (ev, argumentThree, handler) {
-            var eventName = BrowserEvents.getEventName(ev);
+            var eventName = ev;
             var $element = this._$el;
             if (typeof argumentThree === 'string' || argumentThree instanceof String || argumentThree.constructor === String) {
                 if (handler === undefined) {
@@ -163,12 +163,20 @@ define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionExc
         };
 
         View.prototype.triggerEvent = function (ev, extraParameter) {
-            var eventName = BrowserEvents.getEventName(ev);
+            var eventName = ev;
             if (extraParameter === undefined || extraParameter === null) {
                 extraParameter = {};
             }
             extraParameter.view = this;
             this._$el.trigger(eventName, extraParameter);
+        };
+
+        /**
+        * Returns true if $element is the view itself
+        * or is a descendent of the view.
+        */
+        View.prototype.containsJQueryElement = function ($element) {
+            return this._$el.is($element) || this._$el.find($element).length != 0;
         };
 
         /**

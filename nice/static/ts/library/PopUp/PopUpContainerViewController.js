@@ -10,7 +10,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
         function PopUpContainerViewController(view) {
             var _this = this;
             _super.call(this, view);
-            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(1 /* mouseDown */, PopUpCommon.AllDescendentsSelector, function (ev) {
+            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.AllDescendentsSelector, function (ev) {
                 ev.preventDefault();
                 var $popUpElement = PopUpCommon.findPopUpFromChild($(ev.target));
                 var popUpView = PopUpView.fromJQuery($popUpElement);

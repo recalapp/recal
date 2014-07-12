@@ -1,47 +1,17 @@
-import NotImplementedException = require('./NotImplementedException');
-export function getEventName(ev : Events) : String
-{
-    switch(ev)
-    {
-        case Events.click:
-            return 'click';
-        case Events.mouseDown:
-            return 'mousedown';
-        case Events.viewWasAppended:
-            return 'viewWasAppended';
-        case Events.viewWasRemoved:
-            return 'viewWasRemoved';
-        case Events.viewWillFocus:
-            return 'viewWillFocus';
-        case Events.viewDidFocus:
-            return 'viewDidFocus';
-        case Events.viewWillBlur:
-            return 'viewWillBlur';
-        case Events.viewDidBlur:
-            return 'viewDidBlur';
-        case Events.popUpWillDetach:
-            return 'popUp_willDetach';
-        case Events.clickToEditComplete:
-            return 'clickToEditComplete';
-        default:
-            throw new NotImplementedException(ev + ' is not supported');
-    }
+class BrowserEvents {
+    static blur = 'blur'; // does not bubble up
+    static click = 'click';
+    static focus = 'focus'; // does not bubble up
+    static focusIn = 'focusin'; // bubbles up
+    static focusOut = 'focusout'; // bubbles up
+    static mouseDown = 'mousedown';
+    
+    static viewWasAppended = 'viewWasAppended';
+    static viewWasRemoved = 'viewWasRemoved';
+    
+    static popUpWillDetach = 'popUpWillDetach';
+    
+    static clickToEditComplete = 'clickToEditComplete';
+    static clickToEditShouldBegin = 'clickToEditShouldBegin';
 }
-export enum Events {
-    click,
-    mouseDown,
-
-    // View
-    viewWasAppended,
-    viewWasRemoved,
-    viewWillFocus,
-    viewDidFocus,
-    viewWillBlur,
-    viewDidBlur,
-
-    // PopUp
-    popUpWillDetach,
-
-    // ClickToEdit
-    clickToEditComplete,
-}
+export = BrowserEvents;

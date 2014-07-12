@@ -37,12 +37,16 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", './ClickToEditT
         ClickToEditView.prototype._initializeClickToEdit = function () {
             var _this = this;
             this._$el.editable(function (value, settings) {
-                _this.triggerEvent(9 /* clickToEditComplete */, {
+                _this.triggerEvent(BrowserEvents.clickToEditComplete, {
                     value: value
                 });
                 return value;
             }, {
-                type: 'RCText'
+                type: 'RCText',
+                event: BrowserEvents.clickToEditShouldBegin
+            });
+            this.attachEventHandler(BrowserEvents.click, function () {
+                _this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
             });
         };
         Object.defineProperty(ClickToEditView.prototype, "value", {
@@ -55,6 +59,13 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", './ClickToEditT
             enumerable: true,
             configurable: true
         });
+
+        ClickToEditView.prototype.focusView = function () {
+            _super.prototype.focusView.call(this);
+
+            //this._$el.editable('enable');
+            this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
+        };
         return ClickToEditView;
     })(FocusableView);
     
