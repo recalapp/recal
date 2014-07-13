@@ -10,4 +10,6 @@ define(["require", "exports", 'jquery', '../library/PopUp/PopUpContainerViewCont
     var $popUpTemplateContainer = $('#popup-template');
     var popUpString = $popUpTemplateContainer.children()[0];
     $popUpTemplateContainer.remove();
+
+    window.addPopUp();
 });

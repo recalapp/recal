@@ -1,6 +1,6 @@
 enum ClickToEditType {
-    text,
-    select,
-    textArea,
+    text = 0,
+    textArea = 1,
+    select = 2,
 }
 export = ClickToEditType;

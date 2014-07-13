@@ -169,10 +169,11 @@ jQuery.fn.editable = function(target, options, callback) {
 
         /* set input content via POST, GET, given data or existing value */
         if (settings.loadurl) {
+            // NOTE(naphatkrit) original timeout value = 100
             var t = setTimeout(function() {
                 i.disabled = true;
                 content.apply(f, [settings.loadtext, settings, self]);
-            }, 100);
+            }, 0);
                 
             var loaddata = {};
             loaddata[settings.id] = self.id;

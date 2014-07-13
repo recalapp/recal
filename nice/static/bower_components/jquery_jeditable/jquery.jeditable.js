@@ -269,16 +269,18 @@
                 if ('cancel' == settings.onblur) {
                     input.blur(function(e) {
                         /* Prevent canceling if submit was clicked. */
+                        // NOTE(naphatkrit) original timeout value = 500
                         t = setTimeout(function() {
                             reset.apply(form, [settings, self]);
-                        }, 500);
+                        }, 0);
                     });
                 } else if ('submit' == settings.onblur) {
                     input.blur(function(e) {
                         /* Prevent double submit if submit was clicked. */
+                        // NOTE(naphatkrit) original timeout value = 200
                         t = setTimeout(function() {
                             form.submit();
-                        }, 200);
+                        }, 0);
                     });
                 } else if ($.isFunction(settings.onblur)) {
                     input.blur(function(e) {

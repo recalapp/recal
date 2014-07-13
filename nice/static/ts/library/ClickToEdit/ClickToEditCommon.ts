@@ -1,1 +1,1 @@
-export var DataType = 'CTE_type';
+export var DataType = 'cte_type';

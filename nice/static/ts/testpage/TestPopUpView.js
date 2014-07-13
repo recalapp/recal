@@ -5,14 +5,14 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../library/ClickToEdit/ClickToEditView', '../library/PopUp/PopUpView'], function(require, exports, $, ClickToEditView, PopUpView) {
+define(["require", "exports", 'jquery', '../library/ClickToEdit/ClickToEditViewFactory', '../library/PopUp/PopUpView'], function(require, exports, $, ClickToEditViewFactory, PopUpView) {
     var TestPopUpView = (function (_super) {
         __extends(TestPopUpView, _super);
         function TestPopUpView(view) {
             _super.call(this, view);
             this._$el.find('.clickToEdit').each(function (index, element) {
                 var $element = $(element);
-                var clickToEditView = ClickToEditView.fromJQuery($element);
+                var clickToEditView = ClickToEditViewFactory.instance().fromJQuery($element);
             });
         }
         return TestPopUpView;

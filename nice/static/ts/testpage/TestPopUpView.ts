@@ -2,7 +2,7 @@
 
 import $ = require('jquery');
 
-import ClickToEditView = require('../library/ClickToEdit/ClickToEditView');
+import ClickToEditViewFactory = require('../library/ClickToEdit/ClickToEditViewFactory');
 import PopUpView = require('../library/PopUp/PopUpView');
 
 class TestPopUpView extends PopUpView
@@ -13,7 +13,7 @@ class TestPopUpView extends PopUpView
         this._$el.find('.clickToEdit').each((index: number, element) =>
                 {
                     var $element = $(element);
-                    var clickToEditView = ClickToEditView.fromJQuery($element);
+                    var clickToEditView = ClickToEditViewFactory.instance().fromJQuery($element);
                 });
     }
 }
