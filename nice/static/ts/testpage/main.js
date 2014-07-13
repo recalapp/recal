@@ -8,7 +8,7 @@ define(["require", "exports", 'jquery', '../library/PopUp/PopUpContainerViewCont
     };
 
     var $popUpTemplateContainer = $('#popup-template');
-    var popUpString = $popUpTemplateContainer.children()[0];
+    var popUpString = $popUpTemplateContainer.html();
     $popUpTemplateContainer.remove();
 
     window.addPopUp();

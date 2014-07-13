@@ -10,6 +10,7 @@ class BrowserEvents {
     static viewWasRemoved = 'viewWasRemoved';
     
     static popUpWillDetach = 'popUpWillDetach';
+    static popUpRequestFocus = 'popUpRequestFocus';
     
     static clickToEditComplete = 'clickToEditComplete';
     static clickToEditShouldBegin = 'clickToEditShouldBegin';

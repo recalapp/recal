@@ -10,6 +10,7 @@ class TableViewController extends ViewController implements TableViewDataSource
     constructor(view : TableView)
     {
         super(view);
+        this.view.dataSource = this;
     }
 
     get view() : TableView

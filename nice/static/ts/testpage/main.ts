@@ -15,7 +15,7 @@ var containerVC = new PopUpContainerViewController(containerView);
 }
 
 var $popUpTemplateContainer = $('#popup-template');
-var popUpString = $popUpTemplateContainer.children()[0];
+var popUpString = $popUpTemplateContainer.html();
 $popUpTemplateContainer.remove();
 
 (<any>window).addPopUp();

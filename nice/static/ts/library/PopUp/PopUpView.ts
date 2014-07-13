@@ -91,6 +91,18 @@ class PopUpView extends FocusableView
 
     public focusView() : void
     {
+        super.focusView();
+        this.triggerEvent(BrowserEvents.popUpRequestFocus);
+    }
+
+    public blurView() : void
+    {
+        super.blurView();
+        this.unhighlight();
+    }
+
+    public highlight() : void
+    {
         this._$el.css('z-index', '200');
 
         var $panel = this._$el.find(PopUpCommon.PanelCssSelector);
@@ -98,12 +110,13 @@ class PopUpView extends FocusableView
         // TODO color and opacity
     }
 
-    public blurView() : void
+    public unhighlight() : void
     {
         // TODO PopUp_loseFocus()
         this._$el.css('z-index', '100');
         var $panel = this._$el.find(PopUpCommon.PanelCssSelector);
         $panel.addClass(PopUpCommon.BlurClass).removeClass(PopUpCommon.FocusClass);
+
     }
 
     private _updateColor() : void

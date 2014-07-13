@@ -17,6 +17,11 @@ export function findPopUpFromChild($child: JQuery) : JQuery
 {
     while (!$child.hasClass(CssClass))
     {
+        if ($child.length === 0)
+        {
+            // not found
+            return null;
+        }
         $child = $child.parent();
     }
     return $child;

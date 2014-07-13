@@ -18,6 +18,10 @@ define(["require", "exports"], function(require, exports) {
 
     function findPopUpFromChild($child) {
         while (!$child.hasClass(exports.CssClass)) {
+            if ($child.length === 0) {
+                // not found
+                return null;
+            }
             $child = $child.parent();
         }
         return $child;

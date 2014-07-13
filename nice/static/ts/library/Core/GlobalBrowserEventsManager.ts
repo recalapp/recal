@@ -13,9 +13,9 @@ class GlobalBrowserEventsManager
         return this._instance;
     }
 
-    public attachGlobalEventHandler(ev : String, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachGlobalEventHandler(ev : String, selector: String, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachGlobalEventHandler(ev : String, argumentTwo: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
+    public attachGlobalEventHandler(ev : string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachGlobalEventHandler(ev : string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachGlobalEventHandler(ev : string, argumentTwo: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
     {
         this._$globalParent.attachEventHandler(ev, argumentTwo, handler);
     }

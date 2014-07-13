@@ -8,16 +8,20 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", '../DataStructures/Dictionary', '../Core/IndexPath', '../CoreUI/View'], function(require, exports, Dictionary, IndexPath, View) {
     var TableView = (function (_super) {
         __extends(TableView, _super);
-        function TableView($element, dataSource) {
-            _super.call(this, $element);
+        function TableView() {
+            _super.apply(this, arguments);
             this._cellDict = new Dictionary();
             this._dataSource = null;
-            this._dataSource = dataSource;
-            this.refresh();
         }
         Object.defineProperty(TableView.prototype, "dataSource", {
             get: function () {
                 return this._dataSource;
+            },
+            set: function (value) {
+                if (value != this._dataSource) {
+                    this._dataSource = value;
+                    this.refresh();
+                }
             },
             enumerable: true,
             configurable: true
@@ -32,6 +36,7 @@ define(["require", "exports", '../DataStructures/Dictionary', '../Core/IndexPath
                     var identifier = this.dataSource.identifierForCellAtIndexPath(indexPath);
                     var cell = this.dataSource.createCell(identifier);
                     cell.indexPath = indexPath;
+                    cell = this.dataSource.decorateCell(cell);
                     this._cellDict.set(indexPath, cell);
                     this.append(cell);
                 }

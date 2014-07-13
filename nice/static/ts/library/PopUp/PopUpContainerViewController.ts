@@ -12,10 +12,15 @@ class PopUpContainerViewController extends ViewController
     constructor(view)
     {
         super(view);
-        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.AllDescendentsSelector, (ev: JQueryEventObject) =>
+        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown + ' ' + BrowserEvents.popUpRequestFocus, (ev: JQueryEventObject) =>
                 {
-                    ev.preventDefault();
+                    // don't prevent default, otherwise click to edit will not blur on click
                     var $popUpElement = PopUpCommon.findPopUpFromChild($(ev.target));
+                    if ($popUpElement === null)
+                    {
+                        this.giveFocus(null);
+                        return;
+                    }
                     var popUpView : PopUpView = <PopUpView> PopUpView.fromJQuery($popUpElement);
                     this.giveFocus(popUpView);
                 });
@@ -46,7 +51,7 @@ class PopUpContainerViewController extends ViewController
     {
         // find a way to get all popups
         this.map((popUpView : PopUpView) => {
-            popUpView === toBeFocused ? popUpView.focusView() : popUpView.blurView();
+            popUpView === toBeFocused ? popUpView.highlight() : popUpView.unhighlight();
         });
     }
 

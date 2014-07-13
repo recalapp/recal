@@ -104,6 +104,16 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
         };
 
         PopUpView.prototype.focusView = function () {
+            _super.prototype.focusView.call(this);
+            this.triggerEvent(BrowserEvents.popUpRequestFocus);
+        };
+
+        PopUpView.prototype.blurView = function () {
+            _super.prototype.blurView.call(this);
+            this.unhighlight();
+        };
+
+        PopUpView.prototype.highlight = function () {
             this._$el.css('z-index', '200');
 
             var $panel = this._$el.find(PopUpCommon.PanelCssSelector);
@@ -111,7 +121,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             // TODO color and opacity
         };
 
-        PopUpView.prototype.blurView = function () {
+        PopUpView.prototype.unhighlight = function () {
             // TODO PopUp_loseFocus()
             this._$el.css('z-index', '100');
             var $panel = this._$el.find(PopUpCommon.PanelCssSelector);

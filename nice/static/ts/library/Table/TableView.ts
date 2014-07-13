@@ -17,14 +17,15 @@ class TableView extends View
     {
         return this._dataSource;
     }
-    
-    constructor($element: JQuery, dataSource: TableViewDataSource)
+    set dataSource(value: TableViewDataSource)
     {
-        super($element);
-        this._dataSource = dataSource;
-        this.refresh();
+        if (value != this._dataSource)
+        {
+            this._dataSource = value;
+            this.refresh();
+        }
     }
-
+    
     public refresh() : void
     {
         this._cellDict = new Dictionary<IndexPath, TableViewCell>();
@@ -37,6 +38,7 @@ class TableView extends View
                 var identifier: string = this.dataSource.identifierForCellAtIndexPath(indexPath);
                 var cell: TableViewCell = this.dataSource.createCell(identifier);
                 cell.indexPath = indexPath;
+                cell = this.dataSource.decorateCell(cell);
                 this._cellDict.set(indexPath, cell);
                 this.append(cell);
             }

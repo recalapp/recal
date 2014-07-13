@@ -10,9 +10,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
         function PopUpContainerViewController(view) {
             var _this = this;
             _super.call(this, view);
-            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.AllDescendentsSelector, function (ev) {
-                ev.preventDefault();
+            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown + ' ' + BrowserEvents.popUpRequestFocus, function (ev) {
+                // don't prevent default, otherwise click to edit will not blur on click
                 var $popUpElement = PopUpCommon.findPopUpFromChild($(ev.target));
+                if ($popUpElement === null) {
+                    _this.giveFocus(null);
+                    return;
+                }
                 var popUpView = PopUpView.fromJQuery($popUpElement);
                 _this.giveFocus(popUpView);
             });
@@ -38,7 +42,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
         PopUpContainerViewController.prototype.giveFocus = function (toBeFocused) {
             // find a way to get all popups
             this.map(function (popUpView) {
-                popUpView === toBeFocused ? popUpView.focusView() : popUpView.blurView();
+                popUpView === toBeFocused ? popUpView.highlight() : popUpView.unhighlight();
             });
         };
 
