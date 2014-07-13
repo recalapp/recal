@@ -49,17 +49,17 @@ class ClickToEditBaseView extends FocusableView
                 },
             });
         }
+        var options = this.options();
+        options.type = this.inputType();
+        options.event = BrowserEvents.clickToEditShouldBegin;
+        options.onblur = 'submit';
         this._$el.editable((value: string, settings: any)=>{
             var processed = this.processFormValue(value, settings);
             this.triggerEvent(BrowserEvents.clickToEditComplete, {
                 value: processed,
             });
             return processed;
-        }, {
-            type: this.inputType(),
-            event: BrowserEvents.clickToEditShouldBegin,
-            onblur: 'submit',
-        });
+        }, options);
         this.attachEventHandler(BrowserEvents.click, () => {
             this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
         });
@@ -86,6 +86,11 @@ class ClickToEditBaseView extends FocusableView
     {
         super.blurView();
         this._$el.attr('tabindex', 0);
+    }
+
+    public options() : any
+    {
+        return {};
     }
 
     /**

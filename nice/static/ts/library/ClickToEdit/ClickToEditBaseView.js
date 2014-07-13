@@ -41,17 +41,17 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
                     }
                 });
             }
+            var options = this.options();
+            options.type = this.inputType();
+            options.event = BrowserEvents.clickToEditShouldBegin;
+            options.onblur = 'submit';
             this._$el.editable(function (value, settings) {
                 var processed = _this.processFormValue(value, settings);
                 _this.triggerEvent(BrowserEvents.clickToEditComplete, {
                     value: processed
                 });
                 return processed;
-            }, {
-                type: this.inputType(),
-                event: BrowserEvents.clickToEditShouldBegin,
-                onblur: 'submit'
-            });
+            }, options);
             this.attachEventHandler(BrowserEvents.click, function () {
                 _this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
             });
@@ -79,6 +79,10 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         ClickToEditBaseView.prototype.blurView = function () {
             _super.prototype.blurView.call(this);
             this._$el.attr('tabindex', 0);
+        };
+
+        ClickToEditBaseView.prototype.options = function () {
+            return {};
         };
 
         /**
