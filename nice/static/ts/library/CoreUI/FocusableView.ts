@@ -5,7 +5,7 @@ import View = require('./View');
 
 class FocusableView extends View
 {
-    _hasFocus : Boolean = false;
+    private _hasFocus = false;
     constructor($element: JQuery)
     {
         super($element);
@@ -23,7 +23,7 @@ class FocusableView extends View
             }
         });
     }
-    get hasFocus() : Boolean
+    get hasFocus() : boolean
     {
         return this._hasFocus;
     }

@@ -70,6 +70,15 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         ClickToEditBaseView.prototype.focusView = function () {
             _super.prototype.focusView.call(this);
             this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
+
+            // don't allow itself to be tabbed when focused, since the form
+            // will receive the tab
+            this._$el.attr('tabindex', -1);
+        };
+
+        ClickToEditBaseView.prototype.blurView = function () {
+            _super.prototype.blurView.call(this);
+            this._$el.attr('tabindex', 0);
         };
 
         /**
