@@ -28,7 +28,7 @@ class View
     /**
       * Immutable array of child views
       */
-    get children(): Array<View>
+    get children(): View[]
     {
         return this._children.toArray();
     }
@@ -89,7 +89,7 @@ class View
       * Returns true if the view associated with the jQuery element has
       * been initialized.
       */
-    static _viewIsInitialized($element: JQuery) : Boolean
+    static _viewIsInitialized($element: JQuery) : boolean
     {
         return $element.data(View.JQUERY_DATA_KEY) instanceof View;
     }
@@ -165,9 +165,9 @@ class View
     /**
       * Attach an event handler to the view
       */
-    public attachEventHandler(ev : String, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachEventHandler(ev : String, selector: String, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachEventHandler(ev : String, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
+    public attachEventHandler(ev : string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachEventHandler(ev : string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachEventHandler(ev : string, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
     {
         var eventName = ev;
         var $element = this._$el;
@@ -177,11 +177,11 @@ class View
             {
                 throw new InvalidArgumentException("No handler provided.");
             }
-            $element.on(<string> eventName, <string> argumentThree, handler);
+            $element.on(eventName, <string> argumentThree, handler);
         }
         else if (typeof argumentThree === 'function')
         {
-            $element.on(<string> eventName, argumentThree);
+            $element.on(eventName, argumentThree);
         }
         else
         {
@@ -189,9 +189,9 @@ class View
         }
     }
 
-    public triggerEvent(ev: String);
-    public triggerEvent(ev: String, extraParameter : any);
-    public triggerEvent(ev: String, extraParameter? : any)
+    public triggerEvent(ev: string);
+    public triggerEvent(ev: string, extraParameter : any);
+    public triggerEvent(ev: string, extraParameter? : any)
     {
         var eventName = ev;
         if (extraParameter === undefined || extraParameter === null)
@@ -199,16 +199,25 @@ class View
             extraParameter = {};
         }
         extraParameter.view = this;
-        this._$el.trigger(<string> eventName, extraParameter);
+        this._$el.trigger(eventName, extraParameter);
     }
 
     /**
       * Returns true if $element is the view itself
       * or is a descendent of the view.
       */
-    public containsJQueryElement($element : JQuery)
+    public containsJQueryElement($element : JQuery) : boolean
     {
         return this._$el.is($element) || this._$el.find($element).length != 0;
+    }
+
+    public removeAllChildren() : void
+    {
+        $.each(this.children, (index: number, child: View) =>
+                {
+                    child.removeFromParent();
+                });
+        this._children = new Set<View>();
     }
 
     /**

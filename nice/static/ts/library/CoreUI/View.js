@@ -1,4 +1,4 @@
-define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionException', "../Core/InvalidArgumentException", '../DataStructures/Set'], function(require, exports, BrowserEvents, InvalidActionException, InvalidArgumentException, Set) {
+define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/InvalidActionException', "../Core/InvalidArgumentException", '../DataStructures/Set'], function(require, exports, $, BrowserEvents, InvalidActionException, InvalidArgumentException, Set) {
     var View = (function () {
         /******************************************************************
         Methods
@@ -177,6 +177,13 @@ define(["require", "exports", "../Core/BrowserEvents", '../Core/InvalidActionExc
         */
         View.prototype.containsJQueryElement = function ($element) {
             return this._$el.is($element) || this._$el.find($element).length != 0;
+        };
+
+        View.prototype.removeAllChildren = function () {
+            $.each(this.children, function (index, child) {
+                child.removeFromParent();
+            });
+            this._children = new Set();
         };
 
         /**
