@@ -1,6 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import $ = require('jquery');
 import BrowserEvents = require('../Core/BrowserEvents');
+import ClickToEditBaseView = require('../ClickToEdit/ClickToEditBaseView');
 import GlobalBrowserEventsManager = require('../Core/GlobalBrowserEventsManager');
 import PopUpCommon = require('./PopUpCommon');
 import PopUpView = require('./PopUpView');
@@ -12,17 +13,14 @@ class PopUpContainerViewController extends ViewController
     constructor(view)
     {
         super(view);
-        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown + ' ' + BrowserEvents.popUpRequestFocus, (ev: JQueryEventObject) =>
+        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.AllDescendentsSelector, (ev: JQueryEventObject) =>
                 {
                     // don't prevent default, otherwise click to edit will not blur on click
-                    var $popUpElement = PopUpCommon.findPopUpFromChild($(ev.target));
-                    if ($popUpElement === null)
+                    var targetView = View.fromJQuery($(ev.target));
+                    if (!(targetView instanceof ClickToEditBaseView)) // these should be handled separately, otherwise flickering occurs
                     {
-                        this.giveFocus(null);
-                        return;
+                        $(ev.target).focus();
                     }
-                    var popUpView : PopUpView = <PopUpView> PopUpView.fromJQuery($popUpElement);
-                    this.giveFocus(popUpView);
                 });
     }
 
@@ -50,7 +48,9 @@ class PopUpContainerViewController extends ViewController
     public giveFocus(toBeFocused : PopUpView) : void
     {
         // find a way to get all popups
-        this.map((popUpView : PopUpView) => {
+        // TODO remove - not used anymore
+        this.map((popUpView : PopUpView) => 
+        {
             popUpView === toBeFocused ? popUpView.highlight() : popUpView.unhighlight();
         });
     }

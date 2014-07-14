@@ -92,7 +92,7 @@ class PopUpView extends FocusableView
     public focusView() : void
     {
         super.focusView();
-        this.triggerEvent(BrowserEvents.popUpRequestFocus);
+        this.highlight();
     }
 
     public blurView() : void

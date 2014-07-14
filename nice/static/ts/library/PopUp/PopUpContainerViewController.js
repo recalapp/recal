@@ -4,21 +4,17 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/GlobalBrowserEventsManager', './PopUpCommon', './PopUpView', '../CoreUI/ViewController'], function(require, exports, $, BrowserEvents, GlobalBrowserEventsManager, PopUpCommon, PopUpView, ViewController) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit/ClickToEditBaseView', '../Core/GlobalBrowserEventsManager', './PopUpCommon', './PopUpView', '../CoreUI/View', '../CoreUI/ViewController'], function(require, exports, $, BrowserEvents, ClickToEditBaseView, GlobalBrowserEventsManager, PopUpCommon, PopUpView, View, ViewController) {
     var PopUpContainerViewController = (function (_super) {
         __extends(PopUpContainerViewController, _super);
         function PopUpContainerViewController(view) {
-            var _this = this;
             _super.call(this, view);
-            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown + ' ' + BrowserEvents.popUpRequestFocus, function (ev) {
+            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.AllDescendentsSelector, function (ev) {
                 // don't prevent default, otherwise click to edit will not blur on click
-                var $popUpElement = PopUpCommon.findPopUpFromChild($(ev.target));
-                if ($popUpElement === null) {
-                    _this.giveFocus(null);
-                    return;
+                var targetView = View.fromJQuery($(ev.target));
+                if (!(targetView instanceof ClickToEditBaseView)) {
+                    $(ev.target).focus();
                 }
-                var popUpView = PopUpView.fromJQuery($popUpElement);
-                _this.giveFocus(popUpView);
             });
         }
         PopUpContainerViewController.prototype._tryGetMainPopUp = function () {
@@ -41,6 +37,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
         */
         PopUpContainerViewController.prototype.giveFocus = function (toBeFocused) {
             // find a way to get all popups
+            // TODO remove - not used anymore
             this.map(function (popUpView) {
                 popUpView === toBeFocused ? popUpView.highlight() : popUpView.unhighlight();
             });

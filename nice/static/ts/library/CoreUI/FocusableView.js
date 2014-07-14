@@ -12,6 +12,14 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', './View'], func
             _super.call(this, $element);
             this._hasFocus = false;
             this._$el.attr('tabindex', 0);
+            this._$el.find('*').each(function (index, child) {
+                var $child = $(child);
+                if ($child.attr('tabindex') === undefined || $child.attr('tabindex') === null) {
+                    $child.attr('tabindex', -1); // this allows the child to be focused but not be in the tab order
+                    $child.addClass('invisible_focus');
+                    // TODO add to css: { outline-color: transparent; outline-style: none; }
+                }
+            });
             this.attachEventHandler(BrowserEvents.focusIn, function (ev) {
                 if (_this.containsJQueryElement($(document.activeElement))) {
                     _this.focusView();

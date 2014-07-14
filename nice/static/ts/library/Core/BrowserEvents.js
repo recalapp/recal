@@ -13,7 +13,6 @@ define(["require", "exports"], function(require, exports) {
         BrowserEvents.viewWasRemoved = 'viewWasRemoved';
 
         BrowserEvents.popUpWillDetach = 'popUpWillDetach';
-        BrowserEvents.popUpRequestFocus = 'popUpRequestFocus';
 
         BrowserEvents.clickToEditComplete = 'clickToEditComplete';
         BrowserEvents.clickToEditShouldBegin = 'clickToEditShouldBegin';

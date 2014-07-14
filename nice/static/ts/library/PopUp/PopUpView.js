@@ -105,7 +105,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
 
         PopUpView.prototype.focusView = function () {
             _super.prototype.focusView.call(this);
-            this.triggerEvent(BrowserEvents.popUpRequestFocus);
+            this.highlight();
         };
 
         PopUpView.prototype.blurView = function () {
