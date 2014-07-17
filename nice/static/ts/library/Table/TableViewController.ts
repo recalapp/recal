@@ -3,14 +3,16 @@ import IndexPath = require('../Core/IndexPath');
 import TableView = require('./TableView');
 import TableViewCell = require('./TableViewCell');
 import TableViewDataSource = require('./TableViewDataSource');
+import TableViewDelegate = require('./TableViewDelegate');
 import ViewController = require('../CoreUI/ViewController');
 
-class TableViewController extends ViewController implements TableViewDataSource
+class TableViewController extends ViewController implements TableViewDataSource, TableViewDelegate
 {
     constructor(view : TableView)
     {
         super(view);
         this.view.dataSource = this;
+        
     }
 
     get view() : TableView
@@ -59,6 +61,21 @@ class TableViewController extends ViewController implements TableViewDataSource
     public numberOfItemsInSection(section: number) : number
     {
         throw new AbstractMethodException();
+    }
+
+    /**
+      * Callback for when a table view cell is selected
+      */
+    public didSelectCell(cell: TableViewCell): void
+    {
+        // allowed to be an empty implementation. Just doesn't do anything
+    }
+
+    /**
+      * Callback for when a table view cell is deselected
+      */
+    didDeselectCell(cell: TableViewCell): void
+    {
     }
 }
 

@@ -1,5 +1,6 @@
 import FocusableView = require('../CoreUI/FocusableView');
 import IndexPath = require('../Core/IndexPath');
+import TableViewCommon = require('./TableViewCommon');
 
 class TableViewCell extends FocusableView
 {
@@ -30,6 +31,12 @@ class TableViewCell extends FocusableView
         {
             this.unhighlight();
         }
+    }
+
+    constructor($element: JQuery)
+    {
+        super($element);
+        this._$el.addClass(TableViewCommon.CellCssClass);
     }
 
     public highlight() : void

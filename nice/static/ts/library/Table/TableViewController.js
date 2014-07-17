@@ -56,6 +56,19 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
         TableViewController.prototype.numberOfItemsInSection = function (section) {
             throw new AbstractMethodException();
         };
+
+        /**
+        * Callback for when a table view cell is selected
+        */
+        TableViewController.prototype.didSelectCell = function (cell) {
+            // allowed to be an empty implementation. Just doesn't do anything
+        };
+
+        /**
+        * Callback for when a table view cell is deselected
+        */
+        TableViewController.prototype.didDeselectCell = function (cell) {
+        };
         return TableViewController;
     })(ViewController);
 

@@ -2,16 +2,21 @@
 
 import $ = require('jquery');
 
+import BrowserEvents = require('../Core/BrowserEvents');
 import Dictionary = require('../DataStructures/Dictionary');
 import IndexPath = require('../Core/IndexPath');
+import InvalidActionException = require('../Core/InvalidActionException');
 import TableViewCell = require('./TableViewCell');
+import TableViewCommon = require('./TableViewCommon');
 import TableViewDataSource = require('./TableViewDataSource');
+import TableViewDelegate = require('./TableViewDelegate');
 import View = require('../CoreUI/View');
 
 class TableView extends View
 {
     private _cellDict = new Dictionary<IndexPath, TableViewCell>();
-    private _dataSource = null;
+    private _dataSource: TableViewDataSource = null;
+    private _delegate: TableViewDelegate = null;
 
     get dataSource() : TableViewDataSource
     {
@@ -25,9 +30,36 @@ class TableView extends View
             this.refresh();
         }
     }
+
+    get delegate() : TableViewDelegate
+    {
+        return this._delegate;
+    }
+    set delegate(value: TableViewDelegate)
+    {
+        this._delegate = value;
+    }
     
+    constructor($element: JQuery)
+    {
+        super($element);
+        this.attachEventHandler(BrowserEvents.click, TableViewCommon.CellAllDescendentsSelector, (ev: JQueryEventObject) => 
+        {
+            var cell = TableViewCommon.findCellFromChild($(ev.target));
+            if (cell === null)
+            {
+                return;
+            }
+            cell.selected ? this.deselectCell(cell) : this.selectCell(cell);
+        });
+    }
+
     public refresh() : void
     {
+        if (this.dataSource === null)
+        {
+            return;
+        }
         this._cellDict = new Dictionary<IndexPath, TableViewCell>();
         this.removeAllChildren();
         for (var section = 0; section < this.dataSource.numberOfSections(); section++)
@@ -48,6 +80,44 @@ class TableView extends View
     public cellForIndexPath(indexPath: IndexPath) : TableViewCell
     {
         return this._cellDict.get(indexPath);
+    }
+
+    public selectCellAtIndexPath(indexPath: IndexPath)
+    {
+        var cell = this._cellDict.get(indexPath);
+        if (cell === null)
+        {
+            throw new InvalidActionException('IndexPath ' + indexPath.toString() + ' not in TableView');
+        }
+        this.selectCell(cell);
+    }
+
+    public selectCell(cell: TableViewCell)
+    {
+        cell.selected = true; // TODO(naphatkrit) what if already true?
+        if (this.delegate !== null)
+        {
+            this.delegate.didSelectCell(cell);
+        }
+    }
+
+    public deselectCellAtIndexPath(indexPath: IndexPath)
+    {
+        var cell = this._cellDict.get(indexPath);
+        if (cell === null)
+        {
+            throw new InvalidActionException('IndexPath ' + indexPath.toString() + ' not in TableView');
+        }
+        this.deselectCell(cell);
+    }
+
+    public deselectCell(cell: TableViewCell)
+    {
+        cell.selected = false; // TODO(naphatkrit) what if already false?
+        if (this.delegate !== null)
+        {
+            this.delegate.didDeselectCell(cell);
+        }
     }
 }
 

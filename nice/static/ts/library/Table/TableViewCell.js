@@ -4,13 +4,14 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../CoreUI/FocusableView'], function(require, exports, FocusableView) {
+define(["require", "exports", '../CoreUI/FocusableView', './TableViewCommon'], function(require, exports, FocusableView, TableViewCommon) {
     var TableViewCell = (function (_super) {
         __extends(TableViewCell, _super);
-        function TableViewCell() {
-            _super.apply(this, arguments);
+        function TableViewCell($element) {
+            _super.call(this, $element);
             this._indexPath = null;
             this._selected = false;
+            this._$el.addClass(TableViewCommon.CellCssClass);
         }
         Object.defineProperty(TableViewCell.prototype, "indexPath", {
             get: function () {

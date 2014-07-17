@@ -5,13 +5,22 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../DataStructures/Dictionary', '../Core/IndexPath', '../CoreUI/View'], function(require, exports, Dictionary, IndexPath, View) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Dictionary', '../Core/IndexPath', '../Core/InvalidActionException', './TableViewCommon', '../CoreUI/View'], function(require, exports, $, BrowserEvents, Dictionary, IndexPath, InvalidActionException, TableViewCommon, View) {
     var TableView = (function (_super) {
         __extends(TableView, _super);
-        function TableView() {
-            _super.apply(this, arguments);
+        function TableView($element) {
+            var _this = this;
+            _super.call(this, $element);
             this._cellDict = new Dictionary();
             this._dataSource = null;
+            this._delegate = null;
+            this.attachEventHandler(BrowserEvents.click, TableViewCommon.CellAllDescendentsSelector, function (ev) {
+                var cell = TableViewCommon.findCellFromChild($(ev.target));
+                if (cell === null) {
+                    return;
+                }
+                cell.selected ? _this.deselectCell(cell) : _this.selectCell(cell);
+            });
         }
         Object.defineProperty(TableView.prototype, "dataSource", {
             get: function () {
@@ -27,7 +36,21 @@ define(["require", "exports", '../DataStructures/Dictionary', '../Core/IndexPath
             configurable: true
         });
 
+        Object.defineProperty(TableView.prototype, "delegate", {
+            get: function () {
+                return this._delegate;
+            },
+            set: function (value) {
+                this._delegate = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         TableView.prototype.refresh = function () {
+            if (this.dataSource === null) {
+                return;
+            }
             this._cellDict = new Dictionary();
             this.removeAllChildren();
             for (var section = 0; section < this.dataSource.numberOfSections(); section++) {
@@ -45,6 +68,36 @@ define(["require", "exports", '../DataStructures/Dictionary', '../Core/IndexPath
 
         TableView.prototype.cellForIndexPath = function (indexPath) {
             return this._cellDict.get(indexPath);
+        };
+
+        TableView.prototype.selectCellAtIndexPath = function (indexPath) {
+            var cell = this._cellDict.get(indexPath);
+            if (cell === null) {
+                throw new InvalidActionException('IndexPath ' + indexPath.toString() + ' not in TableView');
+            }
+            this.selectCell(cell);
+        };
+
+        TableView.prototype.selectCell = function (cell) {
+            cell.selected = true; // TODO(naphatkrit) what if already true?
+            if (this.delegate !== null) {
+                this.delegate.didSelectCell(cell);
+            }
+        };
+
+        TableView.prototype.deselectCellAtIndexPath = function (indexPath) {
+            var cell = this._cellDict.get(indexPath);
+            if (cell === null) {
+                throw new InvalidActionException('IndexPath ' + indexPath.toString() + ' not in TableView');
+            }
+            this.deselectCell(cell);
+        };
+
+        TableView.prototype.deselectCell = function (cell) {
+            cell.selected = false; // TODO(naphatkrit) what if already false?
+            if (this.delegate !== null) {
+                this.delegate.didDeselectCell(cell);
+            }
         };
         return TableView;
     })(View);
