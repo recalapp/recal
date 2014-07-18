@@ -10,6 +10,7 @@ import TableViewCell = require('./TableViewCell');
 import TableViewCommon = require('./TableViewCommon');
 import TableViewDataSource = require('./TableViewDataSource');
 import TableViewDelegate = require('./TableViewDelegate');
+import TableViewHeaderCell = require('./TableViewHeaderCell');
 import View = require('../CoreUI/View');
 
 class TableView extends View
@@ -80,6 +81,17 @@ class TableView extends View
         this.removeAllChildren();
         for (var section = 0; section < this.dataSource.numberOfSections(); section++)
         {
+            // TODO(naphatkrit) headers
+            var headerIdentifier: string = this.dataSource.identifierForHeaderCellAtIndexPath(new IndexPath(section, -1));
+            var headerCell: TableViewHeaderCell = this.dataSource.createHeaderCell(headerIdentifier);
+            if (headerCell !== null)
+            {
+                headerCell.indexPath = indexPath;
+                headerCell = this.dataSource.decorateCell(headerCell);
+                this._cellDict.set(indexPath, headerCell);
+                this.append(headerCell);
+            }
+
             for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++)
             {
                 var indexPath = new IndexPath(section, item);
@@ -98,7 +110,7 @@ class TableView extends View
         return this._cellDict.get(indexPath);
     }
 
-    public selectCellAtIndexPath(indexPath: IndexPath)
+    public selectCellAtIndexPath(indexPath: IndexPath) : void
     {
         var cell = this._cellDict.get(indexPath);
         if (cell === null)
@@ -108,12 +120,12 @@ class TableView extends View
         this.selectCell(cell);
     }
 
-    public selectCell(cell: TableViewCell)
+    public selectCell(cell: TableViewCell) : void
     {
-        cell.selected = true; // TODO(naphatkrit) what if already true?
+        cell.selected = true; 
     }
 
-    public deselectCellAtIndexPath(indexPath: IndexPath)
+    public deselectCellAtIndexPath(indexPath: IndexPath) : void
     {
         var cell = this._cellDict.get(indexPath);
         if (cell === null)
@@ -123,9 +135,9 @@ class TableView extends View
         this.deselectCell(cell);
     }
 
-    public deselectCell(cell: TableViewCell)
+    public deselectCell(cell: TableViewCell) : void
     {
-        cell.selected = false; // TODO(naphatkrit) what if already false?
+        cell.selected = false; 
     }
 }
 

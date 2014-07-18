@@ -66,6 +66,16 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             this._cellDict = new Dictionary();
             this.removeAllChildren();
             for (var section = 0; section < this.dataSource.numberOfSections(); section++) {
+                // TODO(naphatkrit) headers
+                var headerIdentifier = this.dataSource.identifierForHeaderCellAtIndexPath(new IndexPath(section, -1));
+                var headerCell = this.dataSource.createHeaderCell(headerIdentifier);
+                if (headerCell !== null) {
+                    headerCell.indexPath = indexPath;
+                    headerCell = this.dataSource.decorateCell(headerCell);
+                    this._cellDict.set(indexPath, headerCell);
+                    this.append(headerCell);
+                }
+
                 for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++) {
                     var indexPath = new IndexPath(section, item);
                     var identifier = this.dataSource.identifierForCellAtIndexPath(indexPath);
@@ -91,7 +101,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         };
 
         TableView.prototype.selectCell = function (cell) {
-            cell.selected = true; // TODO(naphatkrit) what if already true?
+            cell.selected = true;
         };
 
         TableView.prototype.deselectCellAtIndexPath = function (indexPath) {
@@ -103,7 +113,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         };
 
         TableView.prototype.deselectCell = function (cell) {
-            cell.selected = false; // TODO(naphatkrit) what if already false?
+            cell.selected = false;
         };
         return TableView;
     })(View);

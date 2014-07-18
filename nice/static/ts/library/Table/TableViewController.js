@@ -20,6 +20,9 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
             configurable: true
         });
 
+        /*******************************************************************
+        * Table View Data Source
+        *****************************************************************/
         /**
         * Return a unique identifier for cell at the given index path.
         * Useful for when there are more than one types of cells in
@@ -34,6 +37,24 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
         */
         TableViewController.prototype.createCell = function (identifier) {
             throw new AbstractMethodException();
+        };
+
+        /**
+        * Return a unique identifier for the header at the given index path.
+        * Useful for when there are more than one types of header in
+        * a table view
+        */
+        TableViewController.prototype.identifierForHeaderCellAtIndexPath = function (indexPath) {
+            // optional method
+            return null;
+        };
+
+        /**
+        * Create a new table view cell for the given identifier
+        */
+        TableViewController.prototype.createHeaderCell = function (identifier) {
+            // optional method
+            return null;
         };
 
         /**
@@ -58,6 +79,9 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
             throw new AbstractMethodException();
         };
 
+        /*******************************************************************
+        * Table View Delegate
+        *****************************************************************/
         /**
         * Callback for when a table view cell is selected
         */

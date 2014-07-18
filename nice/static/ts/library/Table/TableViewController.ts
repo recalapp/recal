@@ -4,6 +4,7 @@ import TableView = require('./TableView');
 import TableViewCell = require('./TableViewCell');
 import TableViewDataSource = require('./TableViewDataSource');
 import TableViewDelegate = require('./TableViewDelegate');
+import TableViewHeaderCell = require('./TableViewHeaderCell');
 import ViewController = require('../CoreUI/ViewController');
 
 class TableViewController extends ViewController implements TableViewDataSource, TableViewDelegate
@@ -20,6 +21,9 @@ class TableViewController extends ViewController implements TableViewDataSource,
         return <TableView>this._view;
     }
 
+    /*******************************************************************
+      * Table View Data Source
+      *****************************************************************/
     /**
       * Return a unique identifier for cell at the given index path.
       * Useful for when there are more than one types of cells in
@@ -38,6 +42,26 @@ class TableViewController extends ViewController implements TableViewDataSource,
         throw new AbstractMethodException();
     }
     
+    /**
+      * Return a unique identifier for the header at the given index path.
+      * Useful for when there are more than one types of header in
+      * a table view
+      */
+    public identifierForHeaderCellAtIndexPath(indexPath: IndexPath) : string
+    {
+        // optional method
+        return null;
+    }
+
+    /**
+      * Create a new table view cell for the given identifier
+      */
+    public createHeaderCell(identifier: string) : TableViewHeaderCell
+    {
+        // optional method
+        return null;
+    }
+
     /**
       * Make any changes to the cell before it goes on screen.
       * Return (not necessarily the same) cell.
@@ -62,6 +86,10 @@ class TableViewController extends ViewController implements TableViewDataSource,
     {
         throw new AbstractMethodException();
     }
+
+    /*******************************************************************
+      * Table View Delegate
+      *****************************************************************/
 
     /**
       * Callback for when a table view cell is selected
