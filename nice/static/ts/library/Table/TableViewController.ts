@@ -12,7 +12,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
     {
         super(view);
         this.view.dataSource = this;
-        
+        this.view.delegate = this;
     }
 
     get view() : TableView

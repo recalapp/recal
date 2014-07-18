@@ -10,6 +10,7 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
         function TableViewController(view) {
             _super.call(this, view);
             this.view.dataSource = this;
+            this.view.delegate = this;
         }
         Object.defineProperty(TableViewController.prototype, "view", {
             get: function () {

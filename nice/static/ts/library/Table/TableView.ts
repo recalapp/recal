@@ -50,7 +50,23 @@ class TableView extends View
             {
                 return;
             }
-            cell.selected ? this.deselectCell(cell) : this.selectCell(cell);
+            // TODO(naphatkrit) handle single selection. multiple selection supported by default
+            if (cell.selected)
+            {
+                this.deselectCell(cell);
+                if (this.delegate !== null)
+                {
+                    this.delegate.didDeselectCell(cell);
+                }
+            }
+            else
+            {
+                this.selectCell(cell);
+                if (this.delegate !== null)
+                {
+                    this.delegate.didSelectCell(cell);
+                }
+            }
         });
     }
 
@@ -95,10 +111,6 @@ class TableView extends View
     public selectCell(cell: TableViewCell)
     {
         cell.selected = true; // TODO(naphatkrit) what if already true?
-        if (this.delegate !== null)
-        {
-            this.delegate.didSelectCell(cell);
-        }
     }
 
     public deselectCellAtIndexPath(indexPath: IndexPath)
@@ -114,10 +126,6 @@ class TableView extends View
     public deselectCell(cell: TableViewCell)
     {
         cell.selected = false; // TODO(naphatkrit) what if already false?
-        if (this.delegate !== null)
-        {
-            this.delegate.didDeselectCell(cell);
-        }
     }
 }
 

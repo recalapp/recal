@@ -19,7 +19,19 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
                 if (cell === null) {
                     return;
                 }
-                cell.selected ? _this.deselectCell(cell) : _this.selectCell(cell);
+
+                // TODO(naphatkrit) handle single selection. multiple selection supported by default
+                if (cell.selected) {
+                    _this.deselectCell(cell);
+                    if (_this.delegate !== null) {
+                        _this.delegate.didDeselectCell(cell);
+                    }
+                } else {
+                    _this.selectCell(cell);
+                    if (_this.delegate !== null) {
+                        _this.delegate.didSelectCell(cell);
+                    }
+                }
             });
         }
         Object.defineProperty(TableView.prototype, "dataSource", {
@@ -80,9 +92,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
 
         TableView.prototype.selectCell = function (cell) {
             cell.selected = true; // TODO(naphatkrit) what if already true?
-            if (this.delegate !== null) {
-                this.delegate.didSelectCell(cell);
-            }
         };
 
         TableView.prototype.deselectCellAtIndexPath = function (indexPath) {
@@ -95,9 +104,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
 
         TableView.prototype.deselectCell = function (cell) {
             cell.selected = false; // TODO(naphatkrit) what if already false?
-            if (this.delegate !== null) {
-                this.delegate.didDeselectCell(cell);
-            }
         };
         return TableView;
     })(View);
