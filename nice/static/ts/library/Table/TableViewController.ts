@@ -102,7 +102,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
     /**
       * Callback for when a table view cell is deselected
       */
-    didDeselectCell(cell: TableViewCell): void
+    public didDeselectCell(cell: TableViewCell): void
     {
     }
 }

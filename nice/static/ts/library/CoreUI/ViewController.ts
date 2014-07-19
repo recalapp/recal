@@ -7,10 +7,11 @@ import View = require('./View');
 class ViewController
 {
     private static _viewControllerCount = 0; // Used to make sure toString() is unique
-    private _viewControllerNumber: Number;
+    private _viewControllerNumber: number;
     _view: View = null;
-    _parentViewController : ViewController = null;
-    _childViewControllers : Set<ViewController> = new Set<ViewController>();
+    _parentViewController: ViewController = null;
+    _childViewControllers: Set<ViewController> = new Set<ViewController>();
+
     /******************************************************************
       Properties
       ****************************************************************/
@@ -24,7 +25,7 @@ class ViewController
         return this._parentViewController;
     }
 
-    get childViewControllers() : Array<ViewController>
+    get childViewControllers() : ViewController[]
     {
         return this._childViewControllers.toArray();
     }
