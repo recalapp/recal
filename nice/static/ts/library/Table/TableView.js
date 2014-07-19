@@ -14,7 +14,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             this._cellDict = new Dictionary();
             this._dataSource = null;
             this._delegate = null;
-            this.attachEventHandler(BrowserEvents.click, TableViewCommon.CellAllDescendentsSelector, function (ev) {
+            this.attachEventHandler(BrowserEvents.click, TableViewCommon.cellAllDescendentsSelector, function (ev) {
                 var cell = TableViewCommon.findCellFromChild($(ev.target));
                 if (cell === null) {
                     return;

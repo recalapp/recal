@@ -1,28 +1,31 @@
 define(["require", "exports", '../Core/InvalidArgumentException', './TableViewCell'], function(require, exports, InvalidArgumentException, TableViewCell) {
-    exports.CellCssClass = 'tableViewCell';
-    exports.CellSelector = '.' + exports.CellCssClass;
-    exports.CellAllDescendentsSelector = exports.CellSelector + ' *';
-
-    function findCellElementFromChild($child) {
-        if ($child.length !== 1) {
-            throw new InvalidArgumentException('Child jQuery element must have exactly one element');
+    var TableViewCommon = (function () {
+        function TableViewCommon() {
         }
-        while (!$child.is(exports.CellSelector)) {
-            if ($child.length === 0) {
+        TableViewCommon.findCellFromChild = function ($child) {
+            var $cell = TableViewCommon.findCellElementFromChild($child);
+            if ($cell === null) {
                 return null;
             }
-            $child = $child.parent();
-        }
-        return $child;
-    }
-    exports.findCellElementFromChild = findCellElementFromChild;
-
-    function findCellFromChild($child) {
-        var $cell = exports.findCellElementFromChild($child);
-        if ($cell === null) {
-            return null;
-        }
-        return TableViewCell.fromJQuery($cell);
-    }
-    exports.findCellFromChild = findCellFromChild;
+            return TableViewCell.fromJQuery($cell);
+        };
+        TableViewCommon.findCellElementFromChild = function ($child) {
+            if ($child.length !== 1) {
+                throw new InvalidArgumentException('Child jQuery element must have exactly one element');
+            }
+            while (!$child.is(TableViewCommon.cellSelector)) {
+                if ($child.length === 0) {
+                    return null;
+                }
+                $child = $child.parent();
+            }
+            return $child;
+        };
+        TableViewCommon.cellCssClass = 'tableViewCell';
+        TableViewCommon.cellSelector = '.' + TableViewCommon.cellCssClass;
+        TableViewCommon.cellAllDescendentsSelector = TableViewCommon.cellSelector + ' *';
+        return TableViewCommon;
+    })();
+    
+    return TableViewCommon;
 });

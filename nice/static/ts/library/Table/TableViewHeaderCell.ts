@@ -18,7 +18,7 @@ class TableViewHeaderCell extends TableViewCell
     {
         super($element);
         // opt out of the click/selection functionality
-        this._$el.removeClass(TableViewCommon.CellCssClass);
+        this._$el.removeClass(TableViewCommon.cellCssClass);
     }
 }
 export = TableViewHeaderCell;

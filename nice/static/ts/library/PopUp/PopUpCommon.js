@@ -1,14 +1,14 @@
 define(["require", "exports"], function(require, exports) {
-    exports.CssClass = 'popup';
-    exports.CssSelector = '.' + exports.CssClass;
-    exports.AllDescendentsSelector = exports.CssSelector + ' *';
-    exports.HeadingCssSelector = '.panel-heading';
-    exports.PanelCssSelector = '.panel';
+    exports.cssClass = 'popup';
+    exports.cssSelector = '.' + exports.cssClass;
+    exports.allDescendentsSelector = exports.cssSelector + ' *';
+    exports.headingCssSelector = '.panel-heading';
+    exports.panelCssSelector = '.panel';
 
-    exports.FocusOpacity = 1;
-    exports.BlurOpacity = 0.6;
-    exports.FocusClass = 'panel-primary';
-    exports.BlurClass = 'panel-default';
+    exports.focusOpacity = 1;
+    exports.blurOpacity = 0.6;
+    exports.focusClass = 'panel-primary';
+    exports.blurClass = 'panel-default';
     (function (PopUpType) {
         PopUpType[PopUpType["main"] = 0] = "main";
         PopUpType[PopUpType["detached"] = 1] = "detached";
@@ -16,8 +16,8 @@ define(["require", "exports"], function(require, exports) {
     var PopUpType = exports.PopUpType;
     ;
 
-    function findPopUpFromChild($child) {
-        while (!$child.hasClass(exports.CssClass)) {
+    function findPopUpElementFromChild($child) {
+        while (!$child.hasClass(exports.cssClass)) {
             if ($child.length === 0) {
                 // not found
                 return null;
@@ -26,5 +26,5 @@ define(["require", "exports"], function(require, exports) {
         }
         return $child;
     }
-    exports.findPopUpFromChild = findPopUpFromChild;
+    exports.findPopUpElementFromChild = findPopUpElementFromChild;
 });

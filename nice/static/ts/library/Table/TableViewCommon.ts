@@ -4,33 +4,35 @@ import $ = require('jquery');
 import InvalidArgumentException = require('../Core/InvalidArgumentException');
 import TableViewCell = require('./TableViewCell');
 
-export var CellCssClass = 'tableViewCell';
-export var CellSelector = '.' + CellCssClass;
-export var CellAllDescendentsSelector = CellSelector + ' *';
-
-export function findCellElementFromChild($child: JQuery) : JQuery
+class TableViewCommon
 {
-    if ($child.length !== 1)
+    public static cellCssClass = 'tableViewCell';
+    public static cellSelector = '.' + TableViewCommon.cellCssClass;
+    public static cellAllDescendentsSelector = TableViewCommon.cellSelector + ' *';
+    public static findCellFromChild($child: JQuery) : TableViewCell
     {
-        throw new InvalidArgumentException('Child jQuery element must have exactly one element');
-    }
-    while (!$child.is(CellSelector))
-    {
-        if ($child.length === 0)
+        var $cell = TableViewCommon.findCellElementFromChild($child);
+        if ($cell === null)
         {
-            return null; // not found
+            return null;
         }
-        $child = $child.parent();
+        return <TableViewCell> TableViewCell.fromJQuery($cell);
     }
-    return $child;
-}
-
-export function findCellFromChild($child: JQuery) : TableViewCell
-{
-    var $cell = findCellElementFromChild($child);
-    if ($cell === null)
+    public static findCellElementFromChild($child: JQuery) : JQuery
     {
-        return null;
+        if ($child.length !== 1)
+        {
+            throw new InvalidArgumentException('Child jQuery element must have exactly one element');
+        }
+        while (!$child.is(TableViewCommon.cellSelector))
+        {
+            if ($child.length === 0)
+            {
+                return null; // not found
+            }
+            $child = $child.parent();
+        }
+        return $child;
     }
-    return <TableViewCell> TableViewCell.fromJQuery($cell);
 }
+export = TableViewCommon;

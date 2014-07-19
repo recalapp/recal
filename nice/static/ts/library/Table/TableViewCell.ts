@@ -36,7 +36,7 @@ class TableViewCell extends FocusableView
     constructor($element: JQuery)
     {
         super($element);
-        this._$el.addClass(TableViewCommon.CellCssClass);
+        this._$el.addClass(TableViewCommon.cellCssClass);
     }
 
     public highlight() : void

@@ -11,7 +11,7 @@ define(["require", "exports", '../CoreUI/FocusableView', './TableViewCommon'], f
             _super.call(this, $element);
             this._indexPath = null;
             this._selected = false;
-            this._$el.addClass(TableViewCommon.CellCssClass);
+            this._$el.addClass(TableViewCommon.cellCssClass);
         }
         Object.defineProperty(TableViewCell.prototype, "indexPath", {
             get: function () {

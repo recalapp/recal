@@ -13,7 +13,7 @@ class PopUpContainerViewController extends ViewController
     constructor(view)
     {
         super(view);
-        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.AllDescendentsSelector, (ev: JQueryEventObject) =>
+        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.allDescendentsSelector, (ev: JQueryEventObject) =>
                 {
                     // don't prevent default, otherwise click to edit will not blur on click
                     var targetView = View.fromJQuery($(ev.target));

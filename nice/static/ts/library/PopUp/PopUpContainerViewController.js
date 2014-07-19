@@ -9,7 +9,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
         __extends(PopUpContainerViewController, _super);
         function PopUpContainerViewController(view) {
             _super.call(this, view);
-            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.AllDescendentsSelector, function (ev) {
+            GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.allDescendentsSelector, function (ev) {
                 // don't prevent default, otherwise click to edit will not blur on click
                 var targetView = View.fromJQuery($(ev.target));
                 if (!(targetView instanceof ClickToEditBaseView)) {

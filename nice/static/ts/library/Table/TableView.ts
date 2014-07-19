@@ -44,7 +44,7 @@ class TableView extends View
     constructor($element: JQuery)
     {
         super($element);
-        this.attachEventHandler(BrowserEvents.click, TableViewCommon.CellAllDescendentsSelector, (ev: JQueryEventObject) => 
+        this.attachEventHandler(BrowserEvents.click, TableViewCommon.cellAllDescendentsSelector, (ev: JQueryEventObject) => 
         {
             var cell = TableViewCommon.findCellFromChild($(ev.target));
             if (cell === null)

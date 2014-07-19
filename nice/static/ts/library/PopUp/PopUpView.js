@@ -89,7 +89,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
         };
         PopUpView.prototype._makeResizable = function () {
             var _this = this;
-            this._$el.find(PopUpCommon.PanelCssSelector).resizable({
+            this._$el.find(PopUpCommon.panelCssSelector).resizable({
                 stop: function (ev, ui) {
                     _this._$el.css("height", ui.size.height);
                     _this._$el.css('width', ui.size.width);
@@ -116,22 +116,22 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
         PopUpView.prototype.highlight = function () {
             this._$el.css('z-index', '200');
 
-            var $panel = this._$el.find(PopUpCommon.PanelCssSelector);
-            $panel.addClass(PopUpCommon.FocusClass).removeClass(PopUpCommon.BlurClass);
+            var $panel = this._$el.find(PopUpCommon.panelCssSelector);
+            $panel.addClass(PopUpCommon.focusClass).removeClass(PopUpCommon.blurClass);
             // TODO color and opacity
         };
 
         PopUpView.prototype.unhighlight = function () {
             // TODO PopUp_loseFocus()
             this._$el.css('z-index', '100');
-            var $panel = this._$el.find(PopUpCommon.PanelCssSelector);
-            $panel.addClass(PopUpCommon.BlurClass).removeClass(PopUpCommon.FocusClass);
+            var $panel = this._$el.find(PopUpCommon.panelCssSelector);
+            $panel.addClass(PopUpCommon.blurClass).removeClass(PopUpCommon.focusClass);
         };
 
         PopUpView.prototype._updateColor = function () {
             // TODO make color a class
-            var $heading = this._$el.find(PopUpCommon.HeadingCssSelector);
-            var opacity = this.hasFocus ? PopUpCommon.FocusOpacity : PopUpCommon.BlurOpacity;
+            var $heading = this._$el.find(PopUpCommon.headingCssSelector);
+            var opacity = this.hasFocus ? PopUpCommon.focusOpacity : PopUpCommon.blurOpacity;
             $heading.css({
                 'background-color': this.color,
                 'border-color': this.color,
