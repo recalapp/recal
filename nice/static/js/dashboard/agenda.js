@@ -272,6 +272,7 @@ function selectAgenda(agendaAnchor)
 
 function Agenda_highlight(agenda)
 {
+    // NOTE: done
     if (Agenda_isHighlighted(agenda))
         return;
     var courseColor = $(agenda).data('course-color');
@@ -283,6 +284,7 @@ function Agenda_highlight(agenda)
 }
 function Agenda_unhighlight(agenda)
 {
+    // NOTE: done
     var borderColor = $(agenda).data('default-border-color');
     var defaultTextColor = $(agenda).data('default-text-color');
     $(agenda).addClass("panel-default").removeClass("panel-primary").css({
@@ -294,5 +296,6 @@ function Agenda_unhighlight(agenda)
 }
 function Agenda_isHighlighted(agenda)
 {
+    // NOTE: done
     return $(agenda).hasClass("panel-primary");
 }

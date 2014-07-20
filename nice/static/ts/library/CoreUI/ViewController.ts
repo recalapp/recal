@@ -37,9 +37,18 @@ class ViewController
     {
         this._viewControllerNumber = ViewController._viewControllerCount++;
         this._view = view;
+        this.initialize();
     }
 
-    addChildViewController(childVC : ViewController) : void
+    /**
+      * Do any initialization needed. Better than overriding constructor
+      * because this gives the option of not calling super.initialize();
+      */
+    public initialize()
+    {
+    }
+
+    public addChildViewController(childVC : ViewController) : void
     {
         if (this._childViewControllers.contains(childVC))
         {
@@ -52,7 +61,7 @@ class ViewController
         this._childViewControllers.add(childVC);
         childVC._parentViewController = this;
     }
-    removeFromParentViewController() : void
+    public removeFromParentViewController() : void
     {
         if (this._parentViewController === null)
         {
@@ -61,7 +70,7 @@ class ViewController
         this._parentViewController._childViewControllers.remove(this);
         this._parentViewController = null;
     }
-    toString() : string
+    public toString() : string
     {
         return 'View Controller no. ' + this._viewControllerNumber;
     }

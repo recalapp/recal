@@ -13,12 +13,5 @@ class TableViewHeaderCell extends TableViewCell
     {
         return;
     }
-
-    constructor($element: JQuery)
-    {
-        super($element);
-        // opt out of the click/selection functionality
-        this._$el.removeClass(TableViewCommon.cellCssClass);
-    }
 }
 export = TableViewHeaderCell;

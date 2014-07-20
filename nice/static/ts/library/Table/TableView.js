@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Dictionary', '../Core/IndexPath', '../Core/InvalidActionException', './TableViewCommon', '../CoreUI/View'], function(require, exports, $, BrowserEvents, Dictionary, IndexPath, InvalidActionException, TableViewCommon, View) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Dictionary', '../Core/IndexPath', '../Core/InvalidActionException', './TableViewCommon', './TableViewHeaderCell', '../CoreUI/View'], function(require, exports, $, BrowserEvents, Dictionary, IndexPath, InvalidActionException, TableViewCommon, TableViewHeaderCell, View) {
     var TableView = (function (_super) {
         __extends(TableView, _super);
         function TableView($element) {
@@ -16,7 +16,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             this._delegate = null;
             this.attachEventHandler(BrowserEvents.click, TableViewCommon.cellAllDescendentsSelector, function (ev) {
                 var cell = TableViewCommon.findCellFromChild($(ev.target));
-                if (cell === null) {
+                if (cell === null || cell instanceof TableViewHeaderCell) {
                     return;
                 }
 

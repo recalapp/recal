@@ -47,7 +47,7 @@ class TableView extends View
         this.attachEventHandler(BrowserEvents.click, TableViewCommon.cellAllDescendentsSelector, (ev: JQueryEventObject) => 
         {
             var cell = TableViewCommon.findCellFromChild($(ev.target));
-            if (cell === null)
+            if (cell === null || cell instanceof TableViewHeaderCell)
             {
                 return;
             }
