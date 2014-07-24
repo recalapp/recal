@@ -31,3 +31,5 @@ class AgendaTableViewCell extends TableViewCell
         this._$el.find('#agenda-section').css('color', defaultTextColor);
     }
 }
+
+export = AgendaTableViewCell;

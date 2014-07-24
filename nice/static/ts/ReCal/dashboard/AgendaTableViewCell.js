@@ -30,4 +30,7 @@ define(["require", "exports", '../../library/Table/TableViewCell', '../../librar
         AgendaTableViewCell._templateSelector = '#agenda-template';
         return AgendaTableViewCell;
     })(TableViewCell);
+
+    
+    return AgendaTableViewCell;
 });

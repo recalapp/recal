@@ -2,3 +2,4 @@
 /// <reference path="requirejs/require.d.ts" />
 /// <reference path="jqueryui/jqueryui.d.ts" />
 /// <reference path="bootstrap/bootstrap.d.ts" />
+/// <reference path="moment/moment.d.ts" />

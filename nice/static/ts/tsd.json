@@ -16,6 +16,9 @@
     },
     "bootstrap/bootstrap.d.ts": {
       "commit": "39a4a0f60a7516b33e982426000b5f5194cea95f"
+    },
+    "moment/moment.d.ts": {
+      "commit": "006076798bb99261dfa4dc60dcb3f435db5035a6"
     }
   }
 }
