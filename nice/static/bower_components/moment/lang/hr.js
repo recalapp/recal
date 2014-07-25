@@ -1,7 +1,8 @@
 // moment.js language configuration
-// language : serbian (rs)
-// author : Limon Monte : https://github.com/limonte
-// based on (bs) translation by Nedim Cholich
+// language : hrvatski (hr)
+// author : Bojan Marković : https://github.com/bmarkovic
+
+// based on (sl) translation by Robert Sedovšek
 
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
@@ -47,11 +48,11 @@
             return result;
         case 'MM':
             if (number === 1) {
-                result += 'mesec';
+                result += 'mjesec';
             } else if (number === 2 || number === 3 || number === 4) {
-                result += 'meseca';
+                result += 'mjeseca';
             } else {
-                result += 'meseci';
+                result += 'mjeseci';
             }
             return result;
         case 'yy':
@@ -66,11 +67,11 @@
         }
     }
 
-    return moment.lang('rs', {
-        months : "januar_februar_mart_april_maj_jun_jul_avgust_septembar_oktobar_novembar_decembar".split("_"),
-        monthsShort : "jan._feb._mar._apr._maj._jun._jul._avg._sep._okt._nov._dec.".split("_"),
-        weekdays : "nedelja_ponedeljak_utorak_sreda_četvrtak_petak_subota".split("_"),
-        weekdaysShort : "ned._pon._uto._sre._čet._pet._sub.".split("_"),
+    return moment.lang('hr', {
+        months : "sječanj_veljača_ožujak_travanj_svibanj_lipanj_srpanj_kolovoz_rujan_listopad_studeni_prosinac".split("_"),
+        monthsShort : "sje._vel._ožu._tra._svi._lip._srp._kol._ruj._lis._stu._pro.".split("_"),
+        weekdays : "nedjelja_ponedjeljak_utorak_srijeda_četvrtak_petak_subota".split("_"),
+        weekdaysShort : "ned._pon._uto._sri._čet._pet._sub.".split("_"),
         weekdaysMin : "ne_po_ut_sr_če_pe_su".split("_"),
         longDateFormat : {
             LT : "H:mm",
@@ -86,9 +87,9 @@
             nextWeek : function () {
                 switch (this.day()) {
                 case 0:
-                    return '[u] [nedelju] [u] LT';
+                    return '[u] [nedjelju] [u] LT';
                 case 3:
-                    return '[u] [sredu] [u] LT';
+                    return '[u] [srijedu] [u] LT';
                 case 6:
                     return '[u] [subotu] [u] LT';
                 case 1:
@@ -98,7 +99,7 @@
                     return '[u] dddd [u] LT';
                 }
             },
-            lastDay  : '[juče u] LT',
+            lastDay  : '[jučer u] LT',
             lastWeek : function () {
                 switch (this.day()) {
                 case 0:
@@ -117,7 +118,7 @@
         },
         relativeTime : {
             future : "za %s",
-            past   : "pre %s",
+            past   : "prije %s",
             s      : "par sekundi",
             m      : translate,
             mm     : translate,
@@ -125,7 +126,7 @@
             hh     : translate,
             d      : "dan",
             dd     : translate,
-            M      : "mesec",
+            M      : "mjesec",
             MM     : translate,
             y      : "godinu",
             yy     : translate
