@@ -100,7 +100,7 @@
 {% block link_or_script_blocking %}
 <base href="{{ base_url }}">
 <link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
-<link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-darkness/jquery-ui.min.css' %}">
 <!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
 <link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
@@ -148,14 +148,15 @@ IS_MOBILE = true;
 {% endblock %}
 
 {% block link_or_script_nonblocking %}
+<!--<script src="{% static 'bower_components/requirejs/require.js' %}" data-main="{% static 'ts/ReCal/dashboard/config' %}"></script>-->
 <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'bower_components/jqueryui/ui/minified/jquery-ui.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'bower_components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
 <script src="{% static 'bower_components/fullcalendar/fullcalendar.min.js' %}"></script>
 <script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
 <script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
-<script src="{% static 'bower_components/moment-timezone/min/moment-timezone.min.js' %}"></script>
+<script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
 <script src="{% static 'compiled/dashboard.js' %}"></script>
 {% endblock %}
 

@@ -9,9 +9,13 @@ import TableViewCell = require('../../library/Table/TableViewCell');
 import TableViewController = require('../../library/Table/TableViewController');
 
 declare function EventsMan_addUpdateListener(callBack: ()=>void): void;
+declare function EventsMan_getEventByID(id: number): any;
 declare function EventsMan_getEventIDForRange(start: number, end: number): number[];
+declare function LO_hideLoading(message: string): void;
 declare function LO_showLoading(message: string): void;
 declare function PopUp_addCloseListener(callBack: (eventId: number)=>void): void;
+declare function UI_isMain(eventId: number): boolean;
+declare function UI_isPinned(eventId: number): boolean;
 declare var SE_id;
 
 class AgendaTableViewController extends TableViewController
@@ -103,6 +107,9 @@ class AgendaTableViewController extends TableViewController
         {
             this._eventSectionArray.push(new EventSection('This Month', eventIds));
         }
+
+        LO_hideLoading(AgendaTableViewController.LO_MESSAGE);
+        this._loading = false;
     }
 
     /*******************************************************************
@@ -132,6 +139,20 @@ class AgendaTableViewController extends TableViewController
      */
     public decorateCell(cell: TableViewCell) : TableViewCell
     {
+        var agendaCell: AgendaTableViewCell = <AgendaTableViewCell> cell;
+        var indexPath: IndexPath = cell.indexPath;
+        var eventSection: EventSection = this._eventSectionArray[indexPath.section];
+        var eventId: number = eventSection.eventIds[indexPath.item];
+        var eventDict = EventsMan_getEventByID(eventId);
+
+        agendaCell.setToEvent(eventDict);
+
+        // TODO window resizing
+        if (UI_isPinned(eventId) || UI_isMain(eventId))
+        {
+            this.view.selectCell(agendaCell);
+        }
+
         return cell;
     }
 
@@ -140,7 +161,7 @@ class AgendaTableViewController extends TableViewController
      */
     public numberOfSections() : number
     {
-        return 1;
+        return this._eventSectionArray.length;
     }
 
     /**
@@ -148,7 +169,7 @@ class AgendaTableViewController extends TableViewController
      */
     public numberOfItemsInSection(section: number) : number
     {
-        return 10;
+        return this._eventSectionArray[section].eventIds.length;
     }
 }
 

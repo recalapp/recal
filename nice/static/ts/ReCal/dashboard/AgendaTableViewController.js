@@ -90,6 +90,9 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', '../../library/
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('This Month', eventIds));
             }
+
+            LO_hideLoading(AgendaTableViewController.LO_MESSAGE);
+            this._loading = false;
         };
 
         /*******************************************************************
@@ -116,6 +119,19 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', '../../library/
         * Return (not necessarily the same) cell.
         */
         AgendaTableViewController.prototype.decorateCell = function (cell) {
+            var agendaCell = cell;
+            var indexPath = cell.indexPath;
+            var eventSection = this._eventSectionArray[indexPath.section];
+            var eventId = eventSection.eventIds[indexPath.item];
+            var eventDict = EventsMan_getEventByID(eventId);
+
+            agendaCell.setToEvent(eventDict);
+
+            // TODO window resizing
+            if (UI_isPinned(eventId) || UI_isMain(eventId)) {
+                this.view.selectCell(agendaCell);
+            }
+
             return cell;
         };
 
@@ -123,14 +139,14 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', '../../library/
         * The number of sections in this table view.
         */
         AgendaTableViewController.prototype.numberOfSections = function () {
-            return 1;
+            return this._eventSectionArray.length;
         };
 
         /**
         * The number of items in this section.
         */
         AgendaTableViewController.prototype.numberOfItemsInSection = function (section) {
-            return 10;
+            return this._eventSectionArray[section].eventIds.length;
         };
         AgendaTableViewController.LO_MESSAGE = 'agenda loading';
         return AgendaTableViewController;
