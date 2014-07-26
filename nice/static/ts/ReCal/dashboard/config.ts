@@ -9,6 +9,7 @@ function bowerPath(path: String): String
 {
     return staticPath('bower_components/' + path);
 }
+declare function init();
 
 require.config({
     paths: {
@@ -26,7 +27,13 @@ require.config({
     shim: {
         bootstrap: ['jquery'],
         'bootstrap-datepicker': ['bootstrap'],
-        dashboard: ['bootstrap', 'bootstrap-datepicker', 'fullcalendar', 'jquery', 'jqueryui', 'jquery.cookie', 'moment-timezone'],
+        dashboard: 
+        {
+            deps: ['bootstrap', 'bootstrap-datepicker', 'fullcalendar', 'jquery', 'jqueryui', 'jquery.cookie', 'moment-timezone'],
+            init: function() {
+                init();
+            }
+        },
         fullcalendar: ['jqueryui'],
         jeditable: ['jquery'],
     }

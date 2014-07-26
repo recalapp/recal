@@ -135,7 +135,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
         */
         View.prototype.removeFromParent = function () {
             var parentView = this._parentView;
-            if (parentView !== null) {
+            if (parentView === null) {
                 throw new InvalidActionException('Cannot call removeFromParent() on a view that does not have a parent.');
             }
             this._$el.detach();
@@ -183,6 +183,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             $.each(this.children, function (index, child) {
                 child.removeFromParent();
             });
+            this._$el.html('');
             this._children = new Set();
         };
 

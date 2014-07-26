@@ -149,7 +149,7 @@ class View
     public removeFromParent() : void
     {
         var parentView = this._parentView;
-        if (parentView !== null)
+        if (parentView === null)
         {
             throw new InvalidActionException('Cannot call removeFromParent() on a view that does not have a parent.');
         }
@@ -217,6 +217,7 @@ class View
                 {
                     child.removeFromParent();
                 });
+        this._$el.html('') // in case some child views have not been initialized
         this._children = new Set<View>();
     }
 

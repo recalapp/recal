@@ -12,4 +12,6 @@ define(["require", "exports", 'jquery', '../AgendaTableViewController', '../../.
 
     window.Agenda_init = Agenda_init;
     window.Agenda_reload = Agenda_reload;
+
+    Agenda_init();
 });

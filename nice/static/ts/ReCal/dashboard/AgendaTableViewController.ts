@@ -108,6 +108,7 @@ class AgendaTableViewController extends TableViewController
             this._eventSectionArray.push(new EventSection('This Month', eventIds));
         }
 
+        this.view.refresh();
         LO_hideLoading(AgendaTableViewController.LO_MESSAGE);
         this._loading = false;
     }

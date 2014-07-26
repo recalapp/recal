@@ -19,3 +19,5 @@ function Agenda_reload()
 
 (<any>window).Agenda_init = Agenda_init;
 (<any>window).Agenda_reload = Agenda_reload;
+
+Agenda_init();

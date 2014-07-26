@@ -3,7 +3,6 @@
  * Think of this module as the main() function. 
  * It is the first thing that gets called
  **************************************************/
-$(init)
 var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
 var SECTION_MAP;
@@ -90,7 +89,7 @@ function init()
     EventsMan_init();
     PopUp_init();
     NO_init();
-    Agenda_init();
+    //Agenda_init();
     Cal_init();
     SE_init();
     Tutorial_Setup();
