@@ -16,6 +16,8 @@ define(["require", "exports"], function(require, exports) {
 
         BrowserEvents.clickToEditComplete = 'clickToEditComplete';
         BrowserEvents.clickToEditShouldBegin = 'clickToEditShouldBegin';
+
+        BrowserEvents.tableViewCellSelectionChanged = 'tableViewCellSelectionChanged';
         return BrowserEvents;
     })();
     

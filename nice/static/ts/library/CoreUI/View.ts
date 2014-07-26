@@ -72,7 +72,7 @@ class View
         {
             throw new InvalidArgumentException('A JQuery element must be specified');
         }
-        if ($element.data(View.JQUERY_DATA_KEY) instanceof View)
+        if (View._viewIsInitialized($element))
         {
             throw new InvalidActionException('View is already initialized.');
         }
@@ -91,7 +91,9 @@ class View
       */
     static _viewIsInitialized($element: JQuery) : boolean
     {
-        return $element.data(View.JQUERY_DATA_KEY) instanceof View;
+        // NOTE(naphatkrit) cannot do a typecheck as of now. instaceof operator does not respect inheritance
+        var viewObject = $element.data(View.JQUERY_DATA_KEY);
+        return viewObject !== null && viewObject !== undefined;
     }
 
     /**

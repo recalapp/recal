@@ -1,3 +1,6 @@
+/// <reference path="../../typings/tsd.d.ts" />
+
+import BrowserEvents = require('../Core/BrowserEvents');
 import FocusableView = require('../CoreUI/FocusableView');
 import IndexPath = require('../Core/IndexPath');
 import TableViewCommon = require('./TableViewCommon');
@@ -22,8 +25,12 @@ class TableViewCell extends FocusableView
     }
     set selected(value: boolean)
     {
+        if (this._selected === value)
+        {
+            return;
+        }
         this._selected = value;
-        if (this._selected)
+        if (this.selected)
         {
             this.highlight();
         }
@@ -31,12 +38,16 @@ class TableViewCell extends FocusableView
         {
             this.unhighlight();
         }
+        this.triggerEvent(BrowserEvents.tableViewCellSelectionChanged);
     }
 
     constructor($element: JQuery)
     {
         super($element);
         this._$el.addClass(TableViewCommon.cellCssClass);
+        this.attachEventHandler(BrowserEvents.tableViewCellSelectionChanged, (ev: JQueryEventObject) => {
+            
+        });
     }
 
     public highlight() : void

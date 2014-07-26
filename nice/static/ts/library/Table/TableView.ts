@@ -47,10 +47,12 @@ class TableView extends View
         this.attachEventHandler(BrowserEvents.click, TableViewCommon.cellAllDescendentsSelector, (ev: JQueryEventObject) => 
         {
             var cell = TableViewCommon.findCellFromChild($(ev.target));
-            if (cell === null || cell instanceof TableViewHeaderCell)
+            // TODO(naphatkrit) find a way to make sure that cell is not a header cell
+            if (cell === null)
             {
                 return;
             }
+            ev.stopPropagation();
             // TODO(naphatkrit) handle single selection. multiple selection supported by default
             if (cell.selected)
             {

@@ -1,10 +1,11 @@
+/// <reference path="../../typings/tsd.d.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../CoreUI/FocusableView', './TableViewCommon'], function(require, exports, FocusableView, TableViewCommon) {
+define(["require", "exports", '../Core/BrowserEvents', '../CoreUI/FocusableView', './TableViewCommon'], function(require, exports, BrowserEvents, FocusableView, TableViewCommon) {
     var TableViewCell = (function (_super) {
         __extends(TableViewCell, _super);
         function TableViewCell($element) {
@@ -12,6 +13,8 @@ define(["require", "exports", '../CoreUI/FocusableView', './TableViewCommon'], f
             this._indexPath = null;
             this._selected = false;
             this._$el.addClass(TableViewCommon.cellCssClass);
+            this.attachEventHandler(BrowserEvents.tableViewCellSelectionChanged, function (ev) {
+            });
         }
         Object.defineProperty(TableViewCell.prototype, "indexPath", {
             get: function () {
@@ -29,12 +32,16 @@ define(["require", "exports", '../CoreUI/FocusableView', './TableViewCommon'], f
                 return this._selected;
             },
             set: function (value) {
+                if (this._selected === value) {
+                    return;
+                }
                 this._selected = value;
-                if (this._selected) {
+                if (this.selected) {
                     this.highlight();
                 } else {
                     this.unhighlight();
                 }
+                this.triggerEvent(BrowserEvents.tableViewCellSelectionChanged);
             },
             enumerable: true,
             configurable: true

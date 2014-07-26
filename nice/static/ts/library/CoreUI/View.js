@@ -15,7 +15,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             if ($element === null) {
                 throw new InvalidArgumentException('A JQuery element must be specified');
             }
-            if ($element.data(View.JQUERY_DATA_KEY) instanceof View) {
+            if (View._viewIsInitialized($element)) {
                 throw new InvalidActionException('View is already initialized.');
             }
             if ($element.length != 1) {
@@ -83,7 +83,9 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
         * been initialized.
         */
         View._viewIsInitialized = function ($element) {
-            return $element.data(View.JQUERY_DATA_KEY) instanceof View;
+            // NOTE(naphatkrit) cannot do a typecheck as of now. instaceof operator does not respect inheritance
+            var viewObject = $element.data(View.JQUERY_DATA_KEY);
+            return viewObject !== null && viewObject !== undefined;
         };
 
         /**

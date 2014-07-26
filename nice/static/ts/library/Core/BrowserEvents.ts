@@ -6,12 +6,18 @@ class BrowserEvents {
     static focusOut = 'focusout'; // bubbles up
     static mouseDown = 'mousedown';
     
+    // view
     static viewWasAppended = 'viewWasAppended';
     static viewWasRemoved = 'viewWasRemoved';
     
+    // popup
     static popUpWillDetach = 'popUpWillDetach';
     
+    // clickToEdit
     static clickToEditComplete = 'clickToEditComplete';
     static clickToEditShouldBegin = 'clickToEditShouldBegin';
+
+    // table
+    static tableViewCellSelectionChanged = 'tableViewCellSelectionChanged';
 }
 export = BrowserEvents;
