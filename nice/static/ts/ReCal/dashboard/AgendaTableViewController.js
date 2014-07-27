@@ -124,6 +124,10 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', '../../library/
             var indexPath = cell.indexPath;
             var eventSection = this._eventSectionArray[indexPath.section];
             var eventId = eventSection.eventIds[indexPath.item];
+            if (eventId === undefined) {
+                // indexPath was invalid
+                return cell;
+            }
             var eventDict = EventsMan_getEventByID(eventId);
 
             agendaCell.setToEvent(eventDict);

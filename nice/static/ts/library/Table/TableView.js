@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Dictionary', '../Core/IndexPath', '../Core/InvalidActionException', './TableViewCommon', '../CoreUI/View'], function(require, exports, $, BrowserEvents, Dictionary, IndexPath, InvalidActionException, TableViewCommon, View) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Dictionary', '../Core/IndexPath', '../Core/InvalidActionException', '../DataStructures/Set', './TableViewCommon', '../CoreUI/View'], function(require, exports, $, BrowserEvents, Dictionary, IndexPath, InvalidActionException, Set, TableViewCommon, View) {
     var TableView = (function (_super) {
         __extends(TableView, _super);
         function TableView($element) {
@@ -14,6 +14,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             this._cellDict = new Dictionary();
             this._dataSource = null;
             this._delegate = null;
+            this._busy = false;
             this.attachEventHandler(BrowserEvents.click, TableViewCommon.cellAllDescendentsSelector, function (ev) {
                 var cell = TableViewCommon.findCellFromChild($(ev.target));
 
@@ -63,32 +64,96 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         });
 
         TableView.prototype.refresh = function () {
+            var _this = this;
             if (this.dataSource === null) {
                 return;
             }
-            this._cellDict = new Dictionary();
-            this.removeAllChildren();
+            if (this._busy) {
+                return;
+            }
+            this._busy = true;
+
+            // delete old cells
+            var toBeDeleted = new Set(this._cellDict.allKeys());
             for (var section = 0; section < this.dataSource.numberOfSections(); section++) {
-                // TODO(naphatkrit) headers
-                var headerIdentifier = this.dataSource.identifierForHeaderCellAtIndexPath(new IndexPath(section, -1));
-                var headerCell = this.dataSource.createHeaderCell(headerIdentifier);
+                toBeDeleted.remove(new IndexPath(section, -1));
+                for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++) {
+                    toBeDeleted.remove(new IndexPath(section, item));
+                }
+            }
+            $.each(toBeDeleted.toArray(), function (index, indexPath) {
+                var cell = _this._cellDict.unset(indexPath);
+                cell.removeFromParent();
+                // TODO recycle cell
+            });
+
+            // render cells on screen
+            var prevCell = null;
+            for (var section = 0; section < this.dataSource.numberOfSections(); section++) {
+                var headerCell = this._getOrCreateHeaderCellForSection(section);
                 if (headerCell !== null) {
-                    headerCell.indexPath = indexPath;
-                    headerCell = this.dataSource.decorateCell(headerCell);
-                    this._cellDict.set(indexPath, headerCell);
-                    this.append(headerCell);
+                    headerCell = this.dataSource.decorateHeaderCell(headerCell);
+                    if (headerCell.parentView === null) {
+                        if (prevCell !== null) {
+                            headerCell.insertAfter(prevCell);
+                        } else {
+                            this.append(headerCell);
+                        }
+                    }
+                    prevCell = headerCell;
                 }
 
                 for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++) {
                     var indexPath = new IndexPath(section, item);
-                    var identifier = this.dataSource.identifierForCellAtIndexPath(indexPath);
-                    var cell = this.dataSource.createCell(identifier);
-                    cell.indexPath = indexPath;
+                    var cell = this._getOrCreateCellForIndexPath(indexPath);
                     cell = this.dataSource.decorateCell(cell);
-                    this._cellDict.set(indexPath, cell);
-                    this.append(cell);
+                    if (cell.parentView === null) {
+                        if (prevCell !== null) {
+                            cell.insertAfter(prevCell);
+                        } else {
+                            this.append(cell);
+                        }
+                    }
+                    prevCell = cell;
                 }
             }
+            this._busy = false;
+        };
+
+        /**
+        * Does not append to table view
+        */
+        TableView.prototype._getOrCreateCellForIndexPath = function (indexPath) {
+            var cell = this._cellDict.get(indexPath);
+            if (cell !== null && cell !== undefined) {
+                return cell;
+            }
+            var identifier = this.dataSource.identifierForCellAtIndexPath(indexPath);
+            cell = this.dataSource.createCell(identifier);
+            cell.indexPath = indexPath;
+            this._cellDict.set(indexPath, cell);
+
+            return cell;
+        };
+
+        /**
+        * Does not append to table view
+        */
+        TableView.prototype._getOrCreateHeaderCellForSection = function (section) {
+            var indexPath = new IndexPath(section, -1);
+            var cell = this._cellDict.get(indexPath);
+            if (cell !== null && cell !== undefined) {
+                return cell;
+            }
+            var identifier = this.dataSource.identifierForHeaderCellAtIndexPath(indexPath);
+            cell = this.dataSource.createHeaderCell(identifier);
+            if (cell === null || cell === undefined) {
+                return null;
+            }
+            cell.indexPath = indexPath;
+            this._cellDict.set(indexPath, cell);
+
+            return cell;
         };
 
         TableView.prototype.cellForIndexPath = function (indexPath) {

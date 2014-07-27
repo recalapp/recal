@@ -144,6 +144,11 @@ class AgendaTableViewController extends TableViewController
         var indexPath: IndexPath = cell.indexPath;
         var eventSection: EventSection = this._eventSectionArray[indexPath.section];
         var eventId: number = eventSection.eventIds[indexPath.item];
+        if (eventId === undefined)
+        {
+            // indexPath was invalid
+            return cell;
+        }
         var eventDict = EventsMan_getEventByID(eventId);
 
         agendaCell.setToEvent(eventDict);

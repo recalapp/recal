@@ -33,6 +33,12 @@ interface TableViewDataSource
       * Return (not necessarily the same) cell.
       */
     decorateCell(cell: TableViewCell) : TableViewCell;
+
+    /**
+      * Make any changes to the cell before it goes on screen.
+      * Return (not necessarily the same) cell.
+      */
+    decorateHeaderCell(cell: TableViewHeaderCell) : TableViewCell;
     
     /**
       * The number of sections in this table view.

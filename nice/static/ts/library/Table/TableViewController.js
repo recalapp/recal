@@ -66,6 +66,15 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
         };
 
         /**
+        * Make any changes to the cell before it goes on screen.
+        * Return (not necessarily the same) cell.
+        */
+        TableViewController.prototype.decorateHeaderCell = function (cell) {
+            // optional
+            return cell;
+        };
+
+        /**
         * The number of sections in this table view.
         */
         TableViewController.prototype.numberOfSections = function () {

@@ -119,7 +119,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             if (this._children.contains(childView)) {
                 throw new InvalidActionException('Cannot add a child view twice.');
             }
-            if (childView._parentView != null) {
+            if (childView._parentView !== null) {
                 throw new InvalidActionException('A view can only have one parent.');
             }
             this._$el.append(childView._$el);
@@ -128,6 +128,30 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             this.triggerEvent(BrowserEvents.viewWasAppended, {
                 childView: childView,
                 parentView: this
+            });
+        };
+
+        /**
+        * Append this view to the parent view of the parameter siblingView,
+        * in the position right after siblingView.
+        */
+        View.prototype.insertAfter = function (siblingView) {
+            var parentView = siblingView.parentView;
+            if (parentView === null || parentView === undefined) {
+                throw new InvalidActionException('Cannot append after a view that does not have a parent');
+            }
+            if (parentView._children.contains(this)) {
+                throw new InvalidActionException('Cannot add a child view twice.');
+            }
+            if (this.parentView !== null) {
+                throw new InvalidActionException('A view can only have one parent.');
+            }
+            siblingView._$el.after(this._$el);
+            parentView._children.add(this);
+            this._parentView = parentView;
+            parentView.triggerEvent(BrowserEvents.viewWasAppended, {
+                childView: this,
+                parentView: parentView
             });
         };
 

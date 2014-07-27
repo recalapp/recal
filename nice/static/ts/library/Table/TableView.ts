@@ -6,6 +6,7 @@ import BrowserEvents = require('../Core/BrowserEvents');
 import Dictionary = require('../DataStructures/Dictionary');
 import IndexPath = require('../Core/IndexPath');
 import InvalidActionException = require('../Core/InvalidActionException');
+import Set = require('../DataStructures/Set');
 import TableViewCell = require('./TableViewCell');
 import TableViewCommon = require('./TableViewCommon');
 import TableViewDataSource = require('./TableViewDataSource');
@@ -18,6 +19,7 @@ class TableView extends View
     private _cellDict = new Dictionary<IndexPath, TableViewCell>();
     private _dataSource: TableViewDataSource = null;
     private _delegate: TableViewDelegate = null;
+    private _busy = false;
 
     get dataSource() : TableViewDataSource
     {
@@ -79,32 +81,112 @@ class TableView extends View
         {
             return;
         }
-        this._cellDict = new Dictionary<IndexPath, TableViewCell>();
-        this.removeAllChildren();
+        if (this._busy)
+        {
+            return;
+        }
+        this._busy = true;
+
+        // delete old cells
+        var toBeDeleted: Set<IndexPath> = new Set(this._cellDict.allKeys());
         for (var section = 0; section < this.dataSource.numberOfSections(); section++)
         {
-            // TODO(naphatkrit) headers
-            var headerIdentifier: string = this.dataSource.identifierForHeaderCellAtIndexPath(new IndexPath(section, -1));
-            var headerCell: TableViewHeaderCell = this.dataSource.createHeaderCell(headerIdentifier);
+            toBeDeleted.remove(new IndexPath(section, -1));
+            for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++)
+            {
+                toBeDeleted.remove(new IndexPath(section, item));
+            }
+        }
+        $.each(toBeDeleted.toArray(), (index: number, indexPath: IndexPath) =>{
+            var cell = this._cellDict.unset(indexPath);
+            cell.removeFromParent();
+            // TODO recycle cell
+        })
+
+        // render cells on screen
+        var prevCell: TableViewCell = null;
+        for (var section = 0; section < this.dataSource.numberOfSections(); section++)
+        {
+            var headerCell: TableViewHeaderCell = this._getOrCreateHeaderCellForSection(section);
             if (headerCell !== null)
             {
-                headerCell.indexPath = indexPath;
-                headerCell = this.dataSource.decorateCell(headerCell);
-                this._cellDict.set(indexPath, headerCell);
-                this.append(headerCell);
+                headerCell = this.dataSource.decorateHeaderCell(headerCell);
+                if (headerCell.parentView === null)
+                {
+                    if (prevCell !== null)
+                    {
+                        headerCell.insertAfter(prevCell);
+                    }
+                    else
+                    {
+                        this.append(headerCell);
+                    }
+                }
+                prevCell = headerCell;
             }
 
             for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++)
             {
                 var indexPath = new IndexPath(section, item);
-                var identifier: string = this.dataSource.identifierForCellAtIndexPath(indexPath);
-                var cell: TableViewCell = this.dataSource.createCell(identifier);
-                cell.indexPath = indexPath;
+                var cell: TableViewCell = this._getOrCreateCellForIndexPath(indexPath);
                 cell = this.dataSource.decorateCell(cell);
-                this._cellDict.set(indexPath, cell);
-                this.append(cell);
+                if (cell.parentView === null)
+                {
+                    if (prevCell !== null)
+                    {
+                        cell.insertAfter(prevCell);
+                    }
+                    else
+                    {
+                        this.append(cell);
+                    }
+                }
+                prevCell = cell;
             }
         }
+        this._busy = false;
+    }
+
+    /**
+      * Does not append to table view
+      */
+    private _getOrCreateCellForIndexPath(indexPath): TableViewCell
+    {
+        var cell: TableViewCell = this._cellDict.get(indexPath);
+        if (cell !== null && cell !== undefined)
+        {
+            return cell;
+        }
+        var identifier: string = this.dataSource.identifierForCellAtIndexPath(indexPath);
+        cell = this.dataSource.createCell(identifier);
+        cell.indexPath = indexPath;
+        this._cellDict.set(indexPath, cell);
+
+        return cell;
+    }
+
+
+    /**
+      * Does not append to table view
+      */
+    private _getOrCreateHeaderCellForSection(section): TableViewHeaderCell
+    {
+        var indexPath = new IndexPath(section, -1);
+        var cell: TableViewHeaderCell = this._cellDict.get(indexPath);
+        if (cell !== null && cell !== undefined)
+        {
+            return cell;
+        }
+        var identifier: string = this.dataSource.identifierForHeaderCellAtIndexPath(indexPath);
+        cell = this.dataSource.createHeaderCell(identifier);
+        if (cell === null || cell === undefined)
+        {
+            return null;
+        }
+        cell.indexPath = indexPath;
+        this._cellDict.set(indexPath, cell);
+
+        return cell;
     }
 
     public cellForIndexPath(indexPath: IndexPath) : TableViewCell

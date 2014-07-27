@@ -12,9 +12,9 @@ class Dictionary<K, V>
       * Set the value in the dictionary, and return the old value (null
       * no old value)
       */
-    set(key : K, value : V) : Object
+    set(key : K, value : V) : V
     {
-        var ret : Object = null;
+        var ret : V = null;
         if (this.contains(key))
         {
             ret = this.get(key);
@@ -23,12 +23,23 @@ class Dictionary<K, V>
         return ret;
     }
 
+    unset(key: K): V
+    {
+        var ret : V = null;
+        if (this.contains(key))
+        {
+            ret = this.get(key);
+        }
+        delete this._dict[key.toString()];
+        return ret;
+    }
+
     contains(key : K) : boolean
     {
         return key.toString() in this._dict;
     }
 
-    get(key : K)
+    get(key : K): V
     {
         return this.contains(key) ? this._dict[key.toString()].value : null;
     }

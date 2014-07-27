@@ -23,6 +23,15 @@ define(["require", "exports"], function(require, exports) {
             return ret;
         };
 
+        Dictionary.prototype.unset = function (key) {
+            var ret = null;
+            if (this.contains(key)) {
+                ret = this.get(key);
+            }
+            delete this._dict[key.toString()];
+            return ret;
+        };
+
         Dictionary.prototype.contains = function (key) {
             return key.toString() in this._dict;
         };

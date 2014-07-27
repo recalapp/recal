@@ -42,7 +42,7 @@ class Set<T> implements Equalable
             return;
         }
         this._size--;
-        return this._dict.set(a, false);
+        return this._dict.unset(a);
     }
     toArray() : Array<T>
     {

@@ -28,7 +28,7 @@ define(["require", "exports", './Dictionary'], function(require, exports, Dictio
                 return;
             }
             this._size--;
-            return this._dict.set(a, false);
+            return this._dict.unset(a);
         };
         Set.prototype.toArray = function () {
             return this._dict.allKeys();

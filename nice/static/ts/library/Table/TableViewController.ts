@@ -70,6 +70,16 @@ class TableViewController extends ViewController implements TableViewDataSource,
     {
         throw new AbstractMethodException();
     }
+
+    /**
+      * Make any changes to the cell before it goes on screen.
+      * Return (not necessarily the same) cell.
+      */
+    public decorateHeaderCell(cell: TableViewHeaderCell) : TableViewCell
+    {
+        // optional
+        return cell;
+    }
     
     /**
       * The number of sections in this table view.
