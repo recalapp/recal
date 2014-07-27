@@ -44,7 +44,7 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
         * Useful for when there are more than one types of header in
         * a table view
         */
-        TableViewController.prototype.identifierForHeaderCellAtIndexPath = function (indexPath) {
+        TableViewController.prototype.identifierForHeaderViewAtSection = function (section) {
             // optional method
             return null;
         };
@@ -52,7 +52,7 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
         /**
         * Create a new table view cell for the given identifier
         */
-        TableViewController.prototype.createHeaderCell = function (identifier) {
+        TableViewController.prototype.createHeaderView = function (identifier) {
             // optional method
             return null;
         };
@@ -69,9 +69,9 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
         * Make any changes to the cell before it goes on screen.
         * Return (not necessarily the same) cell.
         */
-        TableViewController.prototype.decorateHeaderCell = function (cell) {
+        TableViewController.prototype.decorateHeaderView = function (headerView) {
             // optional
-            return cell;
+            return headerView;
         };
 
         /**

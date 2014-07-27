@@ -1,5 +1,5 @@
 import TableViewCell = require('./TableViewCell');
-import TableViewHeaderCell = require('./TableViewHeaderCell');
+import TableViewHeaderView = require('./TableViewHeaderView');
 import IndexPath = require('../Core/IndexPath');
 
 interface TableViewDataSource
@@ -21,12 +21,12 @@ interface TableViewDataSource
       * Useful for when there are more than one types of header in
       * a table view
       */
-    identifierForHeaderCellAtIndexPath(indexPath: IndexPath) : string;
+    identifierForHeaderViewAtSection(section: number) : string;
 
     /**
-      * Create a new table view cell for the given identifier
+      * Create a new table view header view for the given identifier
       */
-    createHeaderCell(identifier: string) : TableViewHeaderCell;
+    createHeaderView(identifier: string) : TableViewHeaderView;
     
     /**
       * Make any changes to the cell before it goes on screen.
@@ -35,10 +35,10 @@ interface TableViewDataSource
     decorateCell(cell: TableViewCell) : TableViewCell;
 
     /**
-      * Make any changes to the cell before it goes on screen.
-      * Return (not necessarily the same) cell.
+      * Make any changes to the header before it goes on screen.
+      * Return (not necessarily the same) header.
       */
-    decorateHeaderCell(cell: TableViewHeaderCell) : TableViewCell;
+    decorateHeaderView(cell: TableViewHeaderView) : TableViewHeaderView;
     
     /**
       * The number of sections in this table view.

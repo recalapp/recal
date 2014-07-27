@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'moment', './AgendaTableViewCell', '../../library/Table/TableViewController'], function(require, exports, moment, AgendaTableViewCell, TableViewController) {
+define(["require", "exports", 'moment', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../library/Table/TableViewController'], function(require, exports, moment, AgendaTableViewCell, AgendaTableViewHeaderView, TableViewController) {
     var AgendaTableViewController = (function (_super) {
         __extends(AgendaTableViewController, _super);
         function AgendaTableViewController() {
@@ -109,10 +109,26 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', '../../library/
         };
 
         /**
+        * Return a unique identifier for the header at the given index path.
+        * Useful for when there are more than one types of header in
+        * a table view
+        */
+        AgendaTableViewController.prototype.identifierForHeaderViewAtSection = function (section) {
+            return 'agenda-header';
+        };
+
+        /**
         * Create a new table view cell for the given identifier
         */
         AgendaTableViewController.prototype.createCell = function (identifier) {
             return new AgendaTableViewCell();
+        };
+
+        /**
+        * Create a new table view header view for the given identifier
+        */
+        AgendaTableViewController.prototype.createHeaderView = function (identifier) {
+            return new AgendaTableViewHeaderView();
         };
 
         /**
@@ -138,6 +154,17 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', '../../library/
             }
 
             return cell;
+        };
+
+        /**
+        * Make any changes to the cell before it goes on screen.
+        * Return (not necessarily the same) cell.
+        */
+        AgendaTableViewController.prototype.decorateHeaderView = function (headerView) {
+            var agendaHeaderView = headerView;
+            var eventSection = this._eventSectionArray[headerView.section];
+            agendaHeaderView.setTitle(eventSection.sectionName);
+            return agendaHeaderView;
         };
 
         /**

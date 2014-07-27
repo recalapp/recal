@@ -4,7 +4,7 @@ import TableView = require('./TableView');
 import TableViewCell = require('./TableViewCell');
 import TableViewDataSource = require('./TableViewDataSource');
 import TableViewDelegate = require('./TableViewDelegate');
-import TableViewHeaderCell = require('./TableViewHeaderCell');
+import TableViewHeaderView = require('./TableViewHeaderView');
 import ViewController = require('../CoreUI/ViewController');
 
 class TableViewController extends ViewController implements TableViewDataSource, TableViewDelegate
@@ -47,7 +47,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
       * Useful for when there are more than one types of header in
       * a table view
       */
-    public identifierForHeaderCellAtIndexPath(indexPath: IndexPath) : string
+    public identifierForHeaderViewAtSection(section: number) : string
     {
         // optional method
         return null;
@@ -56,7 +56,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
     /**
       * Create a new table view cell for the given identifier
       */
-    public createHeaderCell(identifier: string) : TableViewHeaderCell
+    public createHeaderView(identifier: string) : TableViewHeaderView
     {
         // optional method
         return null;
@@ -75,10 +75,10 @@ class TableViewController extends ViewController implements TableViewDataSource,
       * Make any changes to the cell before it goes on screen.
       * Return (not necessarily the same) cell.
       */
-    public decorateHeaderCell(cell: TableViewHeaderCell) : TableViewCell
+    public decorateHeaderView(headerView: TableViewHeaderView) : TableViewHeaderView
     {
         // optional
-        return cell;
+        return headerView;
     }
     
     /**

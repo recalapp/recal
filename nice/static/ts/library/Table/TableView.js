@@ -12,13 +12,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             var _this = this;
             _super.call(this, $element);
             this._cellDict = new Dictionary();
+            this._headerDict = new Dictionary();
             this._dataSource = null;
             this._delegate = null;
             this._busy = false;
+            this.removeAllChildren();
             this.attachEventHandler(BrowserEvents.click, TableViewCommon.cellAllDescendentsSelector, function (ev) {
                 var cell = TableViewCommon.findCellFromChild($(ev.target));
-
-                // TODO(naphatkrit) find a way to make sure that cell is not a header cell
                 if (cell === null) {
                     return;
                 }
@@ -76,7 +76,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             // delete old cells
             var toBeDeleted = new Set(this._cellDict.allKeys());
             for (var section = 0; section < this.dataSource.numberOfSections(); section++) {
-                toBeDeleted.remove(new IndexPath(section, -1));
                 for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++) {
                     toBeDeleted.remove(new IndexPath(section, item));
                 }
@@ -87,20 +86,32 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
                 // TODO recycle cell
             });
 
+            // delete old headers
+            var toBeDeletedHeader = new Set(this._headerDict.allKeys());
+            for (var section = 0; section < this.dataSource.numberOfSections(); section++) {
+                toBeDeletedHeader.remove(section);
+            }
+            $.each(toBeDeletedHeader.toArray(), function (index, section) {
+                var headerView = _this._headerDict.unset(section);
+                headerView.removeFromParent();
+                // TODO recycle cell
+            });
+
             // render cells on screen
             var prevCell = null;
             for (var section = 0; section < this.dataSource.numberOfSections(); section++) {
-                var headerCell = this._getOrCreateHeaderCellForSection(section);
-                if (headerCell !== null) {
-                    headerCell = this.dataSource.decorateHeaderCell(headerCell);
-                    if (headerCell.parentView === null) {
+                var headerView = this._getOrCreateHeaderViewForSection(section);
+                if (headerView !== null) {
+                    headerView = this.dataSource.decorateHeaderView(headerView);
+                    this._headerDict.set(section, headerView);
+                    if (headerView.parentView === null) {
                         if (prevCell !== null) {
-                            headerCell.insertAfter(prevCell);
+                            headerView.insertAfter(prevCell);
                         } else {
-                            this.append(headerCell);
+                            this.append(headerView);
                         }
                     }
-                    prevCell = headerCell;
+                    prevCell = headerView;
                 }
 
                 for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++) {
@@ -139,21 +150,20 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         /**
         * Does not append to table view
         */
-        TableView.prototype._getOrCreateHeaderCellForSection = function (section) {
-            var indexPath = new IndexPath(section, -1);
-            var cell = this._cellDict.get(indexPath);
-            if (cell !== null && cell !== undefined) {
-                return cell;
+        TableView.prototype._getOrCreateHeaderViewForSection = function (section) {
+            var headerView = this._headerDict.get(section);
+            if (headerView !== null && headerView !== undefined) {
+                return headerView;
             }
-            var identifier = this.dataSource.identifierForHeaderCellAtIndexPath(indexPath);
-            cell = this.dataSource.createHeaderCell(identifier);
-            if (cell === null || cell === undefined) {
+            var identifier = this.dataSource.identifierForHeaderViewAtSection(section);
+            headerView = this.dataSource.createHeaderView(identifier);
+            if (headerView === null || headerView === undefined) {
                 return null;
             }
-            cell.indexPath = indexPath;
-            this._cellDict.set(indexPath, cell);
+            headerView.section = section;
+            this._headerDict.set(section, headerView);
 
-            return cell;
+            return headerView;
         };
 
         TableView.prototype.cellForIndexPath = function (indexPath) {

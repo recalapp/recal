@@ -4,9 +4,11 @@
 import moment = require('moment');
 
 import AgendaTableViewCell = require('./AgendaTableViewCell');
+import AgendaTableViewHeaderView = require('./AgendaTableViewHeaderView');
 import IndexPath = require('../../library/Core/IndexPath');
 import TableViewCell = require('../../library/Table/TableViewCell');
 import TableViewController = require('../../library/Table/TableViewController');
+import TableViewHeaderView = require('../../library/Table/TableViewHeaderView');
 
 declare function EventsMan_addUpdateListener(callBack: ()=>void): void;
 declare function EventsMan_getEventByID(id: number): any;
@@ -127,11 +129,29 @@ class AgendaTableViewController extends TableViewController
     }
 
     /**
+      * Return a unique identifier for the header at the given index path.
+      * Useful for when there are more than one types of header in
+      * a table view
+      */
+    public identifierForHeaderViewAtSection(section: number) : string
+    {
+        return 'agenda-header';
+    }
+
+    /**
      * Create a new table view cell for the given identifier
      */
     public createCell(identifier: string) : TableViewCell
     {
         return new AgendaTableViewCell();
+    }
+
+    /**
+      * Create a new table view header view for the given identifier
+      */
+    public createHeaderView(identifier: string) : TableViewHeaderView
+    {
+        return new AgendaTableViewHeaderView();
     }
 
     /**
@@ -160,6 +180,18 @@ class AgendaTableViewController extends TableViewController
         }
 
         return cell;
+    }
+
+    /**
+      * Make any changes to the cell before it goes on screen.
+      * Return (not necessarily the same) cell.
+      */
+    public decorateHeaderView(headerView: TableViewHeaderView) : TableViewHeaderView
+    {
+        var agendaHeaderView: AgendaTableViewHeaderView = <AgendaTableViewHeaderView> headerView;
+        var eventSection: EventSection = this._eventSectionArray[<number> headerView.section];
+        agendaHeaderView.setTitle(eventSection.sectionName);
+        return agendaHeaderView;
     }
 
     /**

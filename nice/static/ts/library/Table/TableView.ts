@@ -11,12 +11,13 @@ import TableViewCell = require('./TableViewCell');
 import TableViewCommon = require('./TableViewCommon');
 import TableViewDataSource = require('./TableViewDataSource');
 import TableViewDelegate = require('./TableViewDelegate');
-import TableViewHeaderCell = require('./TableViewHeaderCell');
+import TableViewHeaderView = require('./TableViewHeaderView');
 import View = require('../CoreUI/View');
 
 class TableView extends View
 {
     private _cellDict = new Dictionary<IndexPath, TableViewCell>();
+    private _headerDict = new Dictionary<Number, TableViewHeaderView>();
     private _dataSource: TableViewDataSource = null;
     private _delegate: TableViewDelegate = null;
     private _busy = false;
@@ -46,10 +47,10 @@ class TableView extends View
     constructor($element: JQuery)
     {
         super($element);
+        this.removeAllChildren();
         this.attachEventHandler(BrowserEvents.click, TableViewCommon.cellAllDescendentsSelector, (ev: JQueryEventObject) => 
         {
             var cell = TableViewCommon.findCellFromChild($(ev.target));
-            // TODO(naphatkrit) find a way to make sure that cell is not a header cell
             if (cell === null)
             {
                 return;
@@ -91,7 +92,6 @@ class TableView extends View
         var toBeDeleted: Set<IndexPath> = new Set(this._cellDict.allKeys());
         for (var section = 0; section < this.dataSource.numberOfSections(); section++)
         {
-            toBeDeleted.remove(new IndexPath(section, -1));
             for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++)
             {
                 toBeDeleted.remove(new IndexPath(section, item));
@@ -102,27 +102,39 @@ class TableView extends View
             cell.removeFromParent();
             // TODO recycle cell
         })
-
-        // render cells on screen
-        var prevCell: TableViewCell = null;
+        // delete old headers
+        var toBeDeletedHeader: Set<Number> = new Set(this._headerDict.allKeys());
         for (var section = 0; section < this.dataSource.numberOfSections(); section++)
         {
-            var headerCell: TableViewHeaderCell = this._getOrCreateHeaderCellForSection(section);
-            if (headerCell !== null)
+            toBeDeletedHeader.remove(section);
+        }
+        $.each(toBeDeletedHeader.toArray(), (index: number, section: Number) =>{
+            var headerView = this._headerDict.unset(section);
+            headerView.removeFromParent();
+            // TODO recycle cell
+        })
+
+        // render cells on screen
+        var prevCell: View = null;
+        for (var section = 0; section < this.dataSource.numberOfSections(); section++)
+        {
+            var headerView: TableViewHeaderView = this._getOrCreateHeaderViewForSection(section);
+            if (headerView !== null)
             {
-                headerCell = this.dataSource.decorateHeaderCell(headerCell);
-                if (headerCell.parentView === null)
+                headerView = this.dataSource.decorateHeaderView(headerView);
+                this._headerDict.set(section, headerView)
+                if (headerView.parentView === null)
                 {
                     if (prevCell !== null)
                     {
-                        headerCell.insertAfter(prevCell);
+                        headerView.insertAfter(prevCell);
                     }
                     else
                     {
-                        this.append(headerCell);
+                        this.append(headerView);
                     }
                 }
-                prevCell = headerCell;
+                prevCell = headerView;
             }
 
             for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++)
@@ -150,7 +162,7 @@ class TableView extends View
     /**
       * Does not append to table view
       */
-    private _getOrCreateCellForIndexPath(indexPath): TableViewCell
+    private _getOrCreateCellForIndexPath(indexPath: IndexPath): TableViewCell
     {
         var cell: TableViewCell = this._cellDict.get(indexPath);
         if (cell !== null && cell !== undefined)
@@ -169,24 +181,23 @@ class TableView extends View
     /**
       * Does not append to table view
       */
-    private _getOrCreateHeaderCellForSection(section): TableViewHeaderCell
+    private _getOrCreateHeaderViewForSection(section: Number): TableViewHeaderView
     {
-        var indexPath = new IndexPath(section, -1);
-        var cell: TableViewHeaderCell = this._cellDict.get(indexPath);
-        if (cell !== null && cell !== undefined)
+        var headerView: TableViewHeaderView = this._headerDict.get(section);
+        if (headerView !== null && headerView !== undefined)
         {
-            return cell;
+            return headerView;
         }
-        var identifier: string = this.dataSource.identifierForHeaderCellAtIndexPath(indexPath);
-        cell = this.dataSource.createHeaderCell(identifier);
-        if (cell === null || cell === undefined)
+        var identifier: string = this.dataSource.identifierForHeaderViewAtSection(<number> section);
+        headerView = this.dataSource.createHeaderView(identifier);
+        if (headerView === null || headerView === undefined)
         {
             return null;
         }
-        cell.indexPath = indexPath;
-        this._cellDict.set(indexPath, cell);
+        headerView.section = section;
+        this._headerDict.set(section, headerView);
 
-        return cell;
+        return headerView;
     }
 
     public cellForIndexPath(indexPath: IndexPath) : TableViewCell
