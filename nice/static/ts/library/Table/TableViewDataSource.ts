@@ -5,6 +5,12 @@ import IndexPath = require('../Core/IndexPath');
 interface TableViewDataSource
 {
     /**
+      * Returns true if a cell should be deselected
+      * when it is selected and clicked on again.
+      */
+    shouldToggleSelection(): boolean;
+
+    /**
       * Return a unique identifier for cell at the given index path.
       * Useful for when there are more than one types of cells in
       * a table view

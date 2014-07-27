@@ -249,7 +249,7 @@ function selectAgenda(agendaAnchor)
     var popUp = PopUp_getMainPopUp();
     var $panel = $(panel);
     var success = PopUp_setToEventID(popUp, panel.id, function(){
-        // retry
+        // on retry
         PopUp_giveFocus(popUp);
         Agenda_unhighlight($(".agenda-item.panel-primary").filter(function(){
             return !UI_isPinned(this.id);

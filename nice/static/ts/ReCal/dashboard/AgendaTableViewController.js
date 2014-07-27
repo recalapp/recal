@@ -100,6 +100,14 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', './AgendaTableV
         * Table View Data Source
         *****************************************************************/
         /**
+        * Returns true if a cell should be deselected
+        * when it is selected and clicked on again.
+        */
+        AgendaTableViewController.prototype.shouldToggleSelection = function () {
+            return false;
+        };
+
+        /**
         * Return a unique identifier for cell at the given index path.
         * Useful for when there are more than one types of cells in
         * a table view
@@ -151,6 +159,8 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', './AgendaTableV
             // TODO window resizing
             if (UI_isPinned(eventId) || UI_isMain(eventId)) {
                 this.view.selectCell(agendaCell);
+            } else {
+                this.view.deselectCell(agendaCell);
             }
 
             return cell;
@@ -179,6 +189,27 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', './AgendaTableV
         */
         AgendaTableViewController.prototype.numberOfItemsInSection = function (section) {
             return this._eventSectionArray[section].eventIds.length;
+        };
+
+        /*******************************************************************
+        * Table View Delegate
+        *****************************************************************/
+        /**
+        * Callback for when a table view cell is selected
+        */
+        AgendaTableViewController.prototype.didSelectCell = function (cell) {
+            var indexPath = cell.indexPath;
+            var eventId = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+            if (eventId === undefined) {
+                // indexPath was invalid
+                return;
+            }
+
+            var popUp = PopUp_getPopUpByID(eventId);
+            if (popUp === null || popUp === undefined) {
+                // create the popup
+            }
+            PopUp_giveFocus(popUp);
         };
         AgendaTableViewController.LO_MESSAGE = 'agenda loading';
         return AgendaTableViewController;

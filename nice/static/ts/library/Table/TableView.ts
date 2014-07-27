@@ -65,7 +65,7 @@ class TableView extends View
                     this.delegate.didDeselectCell(cell);
                 }
             }
-            else
+            else if (this.dataSource === null || this.dataSource.shouldToggleSelection)
             {
                 this.selectCell(cell);
                 if (this.delegate !== null)

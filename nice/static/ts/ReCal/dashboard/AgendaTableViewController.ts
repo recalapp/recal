@@ -16,6 +16,8 @@ declare function EventsMan_getEventIDForRange(start: number, end: number): numbe
 declare function LO_hideLoading(message: string): void;
 declare function LO_showLoading(message: string): void;
 declare function PopUp_addCloseListener(callBack: (eventId: number)=>void): void;
+declare function PopUp_getPopUpByID(popUpId: number): any;
+declare function PopUp_giveFocus(popUp: any): void;
 declare function UI_isMain(eventId: number): boolean;
 declare function UI_isPinned(eventId: number): boolean;
 declare var SE_id;
@@ -118,6 +120,16 @@ class AgendaTableViewController extends TableViewController
     /*******************************************************************
      * Table View Data Source
      *****************************************************************/
+
+    /**
+      * Returns true if a cell should be deselected
+      * when it is selected and clicked on again.
+      */
+    public shouldToggleSelection(): boolean
+    {
+        return false;
+    }
+
     /**
      * Return a unique identifier for cell at the given index path.
      * Useful for when there are more than one types of cells in
@@ -178,6 +190,10 @@ class AgendaTableViewController extends TableViewController
         {
             this.view.selectCell(agendaCell);
         }
+        else
+        {
+            this.view.deselectCell(agendaCell);
+        }
 
         return cell;
     }
@@ -208,6 +224,30 @@ class AgendaTableViewController extends TableViewController
     public numberOfItemsInSection(section: number) : number
     {
         return this._eventSectionArray[section].eventIds.length;
+    }
+
+    /*******************************************************************
+      * Table View Delegate
+      *****************************************************************/
+    /**
+      * Callback for when a table view cell is selected
+      */
+    public didSelectCell(cell: TableViewCell): void
+    {
+        var indexPath: IndexPath = cell.indexPath;
+        var eventId: number = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+        if (eventId === undefined)
+        {
+            // indexPath was invalid
+            return;
+        }
+        
+        var popUp = PopUp_getPopUpByID(eventId);
+        if (popUp === null || popUp === undefined)
+        {
+            // create the popup
+        }
+        PopUp_giveFocus(popUp);
     }
 }
 

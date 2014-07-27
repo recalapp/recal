@@ -24,6 +24,14 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
         * Table View Data Source
         *****************************************************************/
         /**
+        * Returns true if a cell should be deselected
+        * when it is selected and clicked on again.
+        */
+        TableViewController.prototype.shouldToggleSelection = function () {
+            return true;
+        };
+
+        /**
         * Return a unique identifier for cell at the given index path.
         * Useful for when there are more than one types of cells in
         * a table view

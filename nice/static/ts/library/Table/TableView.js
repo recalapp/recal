@@ -30,7 +30,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
                     if (_this.delegate !== null) {
                         _this.delegate.didDeselectCell(cell);
                     }
-                } else {
+                } else if (_this.dataSource === null || _this.dataSource.shouldToggleSelection) {
                     _this.selectCell(cell);
                     if (_this.delegate !== null) {
                         _this.delegate.didSelectCell(cell);

@@ -24,6 +24,17 @@ class TableViewController extends ViewController implements TableViewDataSource,
     /*******************************************************************
       * Table View Data Source
       *****************************************************************/
+
+    /**
+      * Returns true if a cell should be deselected
+      * when it is selected and clicked on again.
+      */
+    public shouldToggleSelection(): boolean
+    {
+        return true;
+    }
+
+
     /**
       * Return a unique identifier for cell at the given index path.
       * Useful for when there are more than one types of cells in
