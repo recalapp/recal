@@ -247,7 +247,6 @@ a {
 
 .agenda-container {
     margin-bottom: 21px;
-    position: relative;
 }
 
 .indicator{
@@ -313,7 +312,6 @@ a {
 }
 #agenda-time{
     margin-top: 15px;
-    margin-right: 20px; /* account for agenda tag */
     text-align: right;
     color: rgba(0,0,0, 0.4)
 }
