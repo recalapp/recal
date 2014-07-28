@@ -16,8 +16,10 @@ declare function EventsMan_getEventIDForRange(start: number, end: number): numbe
 declare function LO_hideLoading(message: string): void;
 declare function LO_showLoading(message: string): void;
 declare function PopUp_addCloseListener(callBack: (eventId: number)=>void): void;
+declare function PopUp_getMainPopUp(): any;
 declare function PopUp_getPopUpByID(popUpId: number): any;
 declare function PopUp_giveFocus(popUp: any): void;
+declare function PopUp_setToEventID(popUp: any, popUpId: number): void;
 declare function UI_isMain(eventId: number): boolean;
 declare function UI_isPinned(eventId: number): boolean;
 declare var SE_id;
@@ -246,6 +248,9 @@ class AgendaTableViewController extends TableViewController
         if (popUp === null || popUp === undefined)
         {
             // create the popup
+            popUp = PopUp_getMainPopUp();
+            PopUp_setToEventID(popUp, eventId);
+            // TODO handle success/retry logic. was needed for when popup has uncommitted changes
         }
         PopUp_giveFocus(popUp);
     }

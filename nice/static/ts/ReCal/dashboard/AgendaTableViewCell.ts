@@ -33,7 +33,7 @@ class AgendaTableViewCell extends TableViewCell
         }
         this._$el.find('#agenda-section').css('color', courseColor);
         this._$el.find('#agenda-title').css('color', courseColor);
-        this._$el.addClass('panel-primary').removeClass('panel-default').css('border-color', courseColor);
+        this._$el.find('.agenda-item').addClass('panel-primary').removeClass('panel-default').css('border-color', courseColor);
     }
 
     public unhighlight(): void
@@ -43,7 +43,7 @@ class AgendaTableViewCell extends TableViewCell
         if (borderColor === undefined)
         {
         }
-        this._$el.addClass("panel-default").removeClass("panel-primary").css('border-color', borderColor);;
+        this._$el.find('.agenda-item').addClass("panel-default").removeClass("panel-primary").css('border-color', borderColor);;
         this._$el.find('#agenda-section').css('color', borderColor);
         this._$el.find('#agenda-title').css('color', defaultTextColor);
         this._$el.find('#agenda-section').css('color', defaultTextColor);

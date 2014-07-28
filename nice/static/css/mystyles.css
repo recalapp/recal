@@ -138,6 +138,15 @@ a {
 
 .agenda-container {
     margin-bottom: 21px;
+    padding: 0;
+}
+
+.link_effect{
+    cursor: pointer;
+}
+.invisible_focus:focus{
+    outline-color: transparent;
+    outline-style: none;
 }
 
 .indicator{

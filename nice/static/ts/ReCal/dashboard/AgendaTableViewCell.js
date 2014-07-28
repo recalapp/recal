@@ -26,7 +26,7 @@ define(["require", "exports", 'moment', '../../library/Table/TableViewCell', '..
             }
             this._$el.find('#agenda-section').css('color', courseColor);
             this._$el.find('#agenda-title').css('color', courseColor);
-            this._$el.addClass('panel-primary').removeClass('panel-default').css('border-color', courseColor);
+            this._$el.find('.agenda-item').addClass('panel-primary').removeClass('panel-default').css('border-color', courseColor);
         };
 
         AgendaTableViewCell.prototype.unhighlight = function () {
@@ -34,7 +34,7 @@ define(["require", "exports", 'moment', '../../library/Table/TableViewCell', '..
             var defaultTextColor = this._$el.data('default-text-color');
             if (borderColor === undefined) {
             }
-            this._$el.addClass("panel-default").removeClass("panel-primary").css('border-color', borderColor);
+            this._$el.find('.agenda-item').addClass("panel-default").removeClass("panel-primary").css('border-color', borderColor);
             ;
             this._$el.find('#agenda-section').css('color', borderColor);
             this._$el.find('#agenda-title').css('color', defaultTextColor);

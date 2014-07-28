@@ -25,15 +25,15 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
                 ev.stopPropagation();
 
                 // TODO(naphatkrit) handle single selection. multiple selection supported by default
-                if (cell.selected) {
-                    _this.deselectCell(cell);
-                    if (_this.delegate !== null) {
-                        _this.delegate.didDeselectCell(cell);
-                    }
-                } else if (_this.dataSource === null || _this.dataSource.shouldToggleSelection) {
+                if (!cell.selected) {
                     _this.selectCell(cell);
                     if (_this.delegate !== null) {
                         _this.delegate.didSelectCell(cell);
+                    }
+                } else if (_this.dataSource === null || _this.dataSource.shouldToggleSelection()) {
+                    _this.deselectCell(cell);
+                    if (_this.delegate !== null) {
+                        _this.delegate.didDeselectCell(cell);
                     }
                 }
             });

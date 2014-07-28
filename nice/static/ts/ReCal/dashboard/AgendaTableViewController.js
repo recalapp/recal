@@ -208,6 +208,9 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', './AgendaTableV
             var popUp = PopUp_getPopUpByID(eventId);
             if (popUp === null || popUp === undefined) {
                 // create the popup
+                popUp = PopUp_getMainPopUp();
+                PopUp_setToEventID(popUp, eventId);
+                // TODO handle success/retry logic. was needed for when popup has uncommitted changes
             }
             PopUp_giveFocus(popUp);
         };

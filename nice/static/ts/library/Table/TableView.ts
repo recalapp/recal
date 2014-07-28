@@ -57,20 +57,20 @@ class TableView extends View
             }
             ev.stopPropagation();
             // TODO(naphatkrit) handle single selection. multiple selection supported by default
-            if (cell.selected)
-            {
-                this.deselectCell(cell);
-                if (this.delegate !== null)
-                {
-                    this.delegate.didDeselectCell(cell);
-                }
-            }
-            else if (this.dataSource === null || this.dataSource.shouldToggleSelection)
+            if (!cell.selected)
             {
                 this.selectCell(cell);
                 if (this.delegate !== null)
                 {
                     this.delegate.didSelectCell(cell);
+                }
+            }
+            else if (this.dataSource === null || this.dataSource.shouldToggleSelection())
+            {
+                this.deselectCell(cell);
+                if (this.delegate !== null)
+                {
+                    this.delegate.didDeselectCell(cell);
                 }
             }
         });
