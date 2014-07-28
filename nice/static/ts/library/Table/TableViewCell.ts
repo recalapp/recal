@@ -45,9 +45,6 @@ class TableViewCell extends FocusableView
     {
         super($element);
         this._$el.addClass(TableViewCommon.cellCssClass);
-        this.attachEventHandler(BrowserEvents.tableViewCellSelectionChanged, (ev: JQueryEventObject) => {
-            
-        });
     }
 
     public highlight() : void

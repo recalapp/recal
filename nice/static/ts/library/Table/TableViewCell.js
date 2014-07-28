@@ -13,8 +13,6 @@ define(["require", "exports", '../Core/BrowserEvents', '../CoreUI/FocusableView'
             this._indexPath = null;
             this._selected = false;
             this._$el.addClass(TableViewCommon.cellCssClass);
-            this.attachEventHandler(BrowserEvents.tableViewCellSelectionChanged, function (ev) {
-            });
         }
         Object.defineProperty(TableViewCell.prototype, "indexPath", {
             get: function () {
