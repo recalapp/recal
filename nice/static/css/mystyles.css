@@ -138,6 +138,8 @@ a {
 
 .agenda-container {
     margin-bottom: 21px;
+}
+.agenda-container > * {
     padding: 0;
 }
 
@@ -212,6 +214,7 @@ a {
 }
 #agenda-time{
     margin-top: 15px;
+    margin-right: 20px; /* width of the agenda color tag*/
     text-align: right;
     color: rgba(0,0,0, 0.4)
 }

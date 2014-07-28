@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'moment', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../library/Table/TableViewController'], function(require, exports, moment, AgendaTableViewCell, AgendaTableViewHeaderView, TableViewController) {
+define(["require", "exports", 'jquery', 'moment', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../library/Table/TableViewController'], function(require, exports, $, moment, AgendaTableViewCell, AgendaTableViewHeaderView, TableViewController) {
     var AgendaTableViewController = (function (_super) {
         __extends(AgendaTableViewController, _super);
         function AgendaTableViewController() {
@@ -198,6 +198,7 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', './AgendaTableV
         * Callback for when a table view cell is selected
         */
         AgendaTableViewController.prototype.didSelectCell = function (cell) {
+            var _this = this;
             var indexPath = cell.indexPath;
             var eventId = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
             if (eventId === undefined) {
@@ -213,6 +214,14 @@ define(["require", "exports", 'moment', './AgendaTableViewCell', './AgendaTableV
                 // TODO handle success/retry logic. was needed for when popup has uncommitted changes
             }
             PopUp_giveFocus(popUp);
+
+            // update cell selection. deselect any cells no longer relevant
+            $.each(this.view.selectedIndexPaths(), function (index, indexPath) {
+                var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+                if (!UI_isMain(eventId) && !UI_isPinned(eventId)) {
+                    _this.view.deselectCellAtIndexPath(indexPath);
+                }
+            });
         };
         AgendaTableViewController.LO_MESSAGE = 'agenda loading';
         return AgendaTableViewController;

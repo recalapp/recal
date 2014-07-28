@@ -1,6 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
 // TODO(naphatkrit) add moment js to config file
+import $ = require('jquery');
 import moment = require('moment');
 
 import AgendaTableViewCell = require('./AgendaTableViewCell');
@@ -253,6 +254,15 @@ class AgendaTableViewController extends TableViewController
             // TODO handle success/retry logic. was needed for when popup has uncommitted changes
         }
         PopUp_giveFocus(popUp);
+
+        // update cell selection. deselect any cells no longer relevant
+        $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath)=>{
+            var eventId: number = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+            if (!UI_isMain(eventId) && !UI_isPinned(eventId))
+            {
+                this.view.deselectCellAtIndexPath(indexPath);
+            }
+        });
     }
 }
 

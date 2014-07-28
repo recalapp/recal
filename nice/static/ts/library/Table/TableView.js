@@ -30,10 +30,18 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
                     if (_this.delegate !== null) {
                         _this.delegate.didSelectCell(cell);
                     }
-                } else if (_this.dataSource === null || _this.dataSource.shouldToggleSelection()) {
-                    _this.deselectCell(cell);
-                    if (_this.delegate !== null) {
-                        _this.delegate.didDeselectCell(cell);
+                } else {
+                    if (_this.dataSource === null || _this.dataSource.shouldToggleSelection()) {
+                        // toggle selection on - deselect the cell
+                        _this.deselectCell(cell);
+                        if (_this.delegate !== null) {
+                            _this.delegate.didDeselectCell(cell);
+                        }
+                    } else {
+                        // if toggle selection is off, then second click is the same as selecting again
+                        if (_this.delegate !== null) {
+                            _this.delegate.didSelectCell(cell);
+                        }
                     }
                 }
             });
@@ -168,6 +176,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
 
         TableView.prototype.cellForIndexPath = function (indexPath) {
             return this._cellDict.get(indexPath);
+        };
+
+        TableView.prototype.selectedIndexPaths = function () {
+            var _this = this;
+            return $.grep(this._cellDict.allKeys(), function (indexPath, index) {
+                return _this._cellDict.get(indexPath).selected;
+            });
         };
 
         TableView.prototype.selectCellAtIndexPath = function (indexPath) {

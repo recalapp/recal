@@ -65,12 +65,24 @@ class TableView extends View
                     this.delegate.didSelectCell(cell);
                 }
             }
-            else if (this.dataSource === null || this.dataSource.shouldToggleSelection())
+            else 
             {
-                this.deselectCell(cell);
-                if (this.delegate !== null)
+                if (this.dataSource === null || this.dataSource.shouldToggleSelection())
                 {
-                    this.delegate.didDeselectCell(cell);
+                    // toggle selection on - deselect the cell
+                    this.deselectCell(cell);
+                    if (this.delegate !== null)
+                    {
+                        this.delegate.didDeselectCell(cell);
+                    }
+                }
+                else
+                {
+                    // if toggle selection is off, then second click is the same as selecting again
+                    if (this.delegate !== null)
+                    {
+                        this.delegate.didSelectCell(cell);
+                    }
                 }
             }
         });
@@ -203,6 +215,13 @@ class TableView extends View
     public cellForIndexPath(indexPath: IndexPath) : TableViewCell
     {
         return this._cellDict.get(indexPath);
+    }
+
+    public selectedIndexPaths(): Array<IndexPath>
+    {
+        return $.grep(this._cellDict.allKeys(), (indexPath: IndexPath, index: number)=> {
+            return this._cellDict.get(indexPath).selected;
+        });
     }
 
     public selectCellAtIndexPath(indexPath: IndexPath) : void
