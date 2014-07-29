@@ -1,11 +1,10 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-// TODO(naphatkrit) add moment js to config file
 import $ = require('jquery');
-import moment = require('moment');
 
 import AgendaTableViewCell = require('./AgendaTableViewCell');
 import AgendaTableViewHeaderView = require('./AgendaTableViewHeaderView');
+import DateTime = require('../../library/DateTime/DateTime');
 import IndexPath = require('../../library/Core/IndexPath');
 import TableViewCell = require('../../library/Table/TableViewCell');
 import TableViewController = require('../../library/Table/TableViewController');
@@ -56,8 +55,16 @@ class AgendaTableViewController extends TableViewController
         });
 
         // unhighlight closed events
-        PopUp_addCloseListener((eventId: number)=>{
+        PopUp_addCloseListener((closedEventId: number)=>{
             // TODO get cell based on eventId and unhighlight it
+            $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath) =>{
+                var eventId: number = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+                if (eventId == closedEventId)
+                {
+                    this.view.deselectCellAtIndexPath(indexPath);
+                    return false; // breaks
+                }
+            });
         });
 
         // reload
@@ -67,7 +74,6 @@ class AgendaTableViewController extends TableViewController
     public reload() : void
     {
         // TODO handle timezone and separate time logic into a datetime module
-        // TODO don't expose momentjs
         // TODO Agenda_filter
         // TODO EventSectionRangeProvider
         if (this._loading)
@@ -79,10 +85,18 @@ class AgendaTableViewController extends TableViewController
         this._eventSectionArray = new Array<EventSection>();
 
         // yesterday 0:00:00 AM to before midnight
-        var curDate = moment();
-        var startDate = moment().date(curDate.date() - 1).hours(0).minutes(0).seconds(0);
-        var endDate = moment().date(curDate.date()).hours(0).minutes(0).seconds(0);
-        var eventIds: number[] = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+        var curDate = new DateTime();
+        var startDate = new DateTime();
+        startDate.date = curDate.date - 1;
+        startDate.hours = 0;
+        startDate.minutes = 0;
+        startDate.seconds = 0;
+        var endDate = new DateTime();
+        endDate.date = curDate.date;
+        endDate.hours = 0;
+        endDate.minutes = 0;
+        endDate.seconds = 0;
+        var eventIds: number[] = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Yesterday', eventIds));
@@ -90,8 +104,12 @@ class AgendaTableViewController extends TableViewController
 
         // today to midnight
         startDate = endDate;
-        endDate = moment().date(curDate.date() + 1).hours(0).minutes(0).seconds(0);
-        eventIds = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+        endDate = new DateTime();
+        endDate.date = curDate.date + 1;
+        endDate.hours = 0;
+        endDate.minutes = 0;
+        endDate.seconds = 0;
+        eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Today', eventIds));
@@ -99,8 +117,12 @@ class AgendaTableViewController extends TableViewController
 
         // this week
         startDate = endDate;
-        endDate = moment().date(curDate.date() + 7).hours(0).minutes(0).seconds(0);
-        eventIds = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+        endDate = new DateTime();
+        endDate.date = curDate.date + 7;
+        endDate.hours = 0;
+        endDate.minutes = 0;
+        endDate.seconds = 0;
+        eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('This Week', eventIds));
@@ -108,8 +130,13 @@ class AgendaTableViewController extends TableViewController
 
         // this month
         startDate = endDate;
-        endDate = moment().month(curDate.month() + 1).date(0).hours(0).minutes(0).seconds(0);
-        eventIds = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+        endDate = new DateTime();
+        endDate.month = curDate.month + 1;
+        endDate.date = 0;
+        endDate.hours = 0;
+        endDate.minutes = 0;
+        endDate.seconds = 0;
+        eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('This Month', eventIds));

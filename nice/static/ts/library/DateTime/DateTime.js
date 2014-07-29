@@ -15,6 +15,16 @@ define(["require", "exports", 'moment', "moment-timezone"], function(require, ex
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(DateTime.prototype, "date", {
+            get: function () {
+                return this._momentObject.date();
+            },
+            set: function (value) {
+                this._momentObject.date(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(DateTime.prototype, "day", {
             get: function () {
                 return this._momentObject.day();
@@ -58,6 +68,9 @@ define(["require", "exports", 'moment', "moment-timezone"], function(require, ex
         Object.defineProperty(DateTime.prototype, "unix", {
             get: function () {
                 return this._momentObject.unix();
+            },
+            set: function (value) {
+                this._momentObject = moment.unix(value);
             },
             enumerable: true,
             configurable: true

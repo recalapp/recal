@@ -17,6 +17,14 @@ class DateTime
     {
         this._momentObject.month(value);
     }
+    get date(): number
+    {
+        return this._momentObject.date();
+    }
+    set date(value: number)
+    {
+        this._momentObject.date(value);
+    }
     get day(): number
     {
         return this._momentObject.day();
@@ -52,6 +60,10 @@ class DateTime
     get unix(): number
     {
         return this._momentObject.unix();
+    }
+    set unix(value: number)
+    {
+        this._momentObject = moment.unix(value);
     }
 
     constructor()

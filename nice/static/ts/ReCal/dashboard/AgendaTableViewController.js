@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', 'moment', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../library/Table/TableViewController'], function(require, exports, $, moment, AgendaTableViewCell, AgendaTableViewHeaderView, TableViewController) {
+define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../library/DateTime/DateTime', '../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, TableViewController) {
     var AgendaTableViewController = (function (_super) {
         __extends(AgendaTableViewController, _super);
         function AgendaTableViewController() {
@@ -38,8 +38,15 @@ define(["require", "exports", 'jquery', 'moment', './AgendaTableViewCell', './Ag
             });
 
             // unhighlight closed events
-            PopUp_addCloseListener(function (eventId) {
+            PopUp_addCloseListener(function (closedEventId) {
                 // TODO get cell based on eventId and unhighlight it
+                $.each(_this.view.selectedIndexPaths(), function (index, indexPath) {
+                    var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+                    if (eventId == closedEventId) {
+                        _this.view.deselectCellAtIndexPath(indexPath);
+                        return false;
+                    }
+                });
             });
 
             // reload
@@ -48,7 +55,6 @@ define(["require", "exports", 'jquery', 'moment', './AgendaTableViewCell', './Ag
 
         AgendaTableViewController.prototype.reload = function () {
             // TODO handle timezone and separate time logic into a datetime module
-            // TODO don't expose momentjs
             // TODO Agenda_filter
             // TODO EventSectionRangeProvider
             if (this._loading) {
@@ -59,34 +65,55 @@ define(["require", "exports", 'jquery', 'moment', './AgendaTableViewCell', './Ag
             this._eventSectionArray = new Array();
 
             // yesterday 0:00:00 AM to before midnight
-            var curDate = moment();
-            var startDate = moment().date(curDate.date() - 1).hours(0).minutes(0).seconds(0);
-            var endDate = moment().date(curDate.date()).hours(0).minutes(0).seconds(0);
-            var eventIds = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+            var curDate = new DateTime();
+            var startDate = new DateTime();
+            startDate.date = curDate.date - 1;
+            startDate.hours = 0;
+            startDate.minutes = 0;
+            startDate.seconds = 0;
+            var endDate = new DateTime();
+            endDate.date = curDate.date;
+            endDate.hours = 0;
+            endDate.minutes = 0;
+            endDate.seconds = 0;
+            var eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('Yesterday', eventIds));
             }
 
             // today to midnight
             startDate = endDate;
-            endDate = moment().date(curDate.date() + 1).hours(0).minutes(0).seconds(0);
-            eventIds = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+            endDate = new DateTime();
+            endDate.date = curDate.date + 1;
+            endDate.hours = 0;
+            endDate.minutes = 0;
+            endDate.seconds = 0;
+            eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('Today', eventIds));
             }
 
             // this week
             startDate = endDate;
-            endDate = moment().date(curDate.date() + 7).hours(0).minutes(0).seconds(0);
-            eventIds = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+            endDate = new DateTime();
+            endDate.date = curDate.date + 7;
+            endDate.hours = 0;
+            endDate.minutes = 0;
+            endDate.seconds = 0;
+            eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('This Week', eventIds));
             }
 
             // this month
             startDate = endDate;
-            endDate = moment().month(curDate.month() + 1).date(0).hours(0).minutes(0).seconds(0);
-            eventIds = EventsMan_getEventIDForRange(startDate.unix(), endDate.unix());
+            endDate = new DateTime();
+            endDate.month = curDate.month + 1;
+            endDate.date = 0;
+            endDate.hours = 0;
+            endDate.minutes = 0;
+            endDate.seconds = 0;
+            eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('This Month', eventIds));
             }

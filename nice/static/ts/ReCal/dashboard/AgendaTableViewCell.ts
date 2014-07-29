@@ -1,8 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
 import $ = require('jquery');
-import moment = require('moment');
 
+import DateTime = require('../../library/DateTime/DateTime');
 import TableViewCell = require('../../library/Table/TableViewCell');
 import ViewTemplateRetriever = require('../../library/CoreUI/ViewTemplateRetriever');
 
@@ -57,7 +57,8 @@ class AgendaTableViewCell extends TableViewCell
         this._$el.find('.panel-body').find('h4').text(eventDict.event_title);
         this._$el.find('#agenda-section').text(SECTION_MAP[eventDict.section_id]);
 
-        var start = moment.unix(eventDict.event_start);
+        var start = new DateTime();
+        start.unix = eventDict.event_start;
         var timeText = start.calendar();
         this._$el.find('#agenda-time').text(timeText);
 

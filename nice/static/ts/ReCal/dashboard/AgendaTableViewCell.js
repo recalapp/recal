@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'moment', '../../library/Table/TableViewCell', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, moment, TableViewCell, ViewTemplateRetriever) {
+define(["require", "exports", '../../library/DateTime/DateTime', '../../library/Table/TableViewCell', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, DateTime, TableViewCell, ViewTemplateRetriever) {
     var AgendaTableViewCell = (function (_super) {
         __extends(AgendaTableViewCell, _super);
         function AgendaTableViewCell() {
@@ -48,7 +48,8 @@ define(["require", "exports", 'moment', '../../library/Table/TableViewCell', '..
             this._$el.find('.panel-body').find('h4').text(eventDict.event_title);
             this._$el.find('#agenda-section').text(SECTION_MAP[eventDict.section_id]);
 
-            var start = moment.unix(eventDict.event_start);
+            var start = new DateTime();
+            start.unix = eventDict.event_start;
             var timeText = start.calendar();
             this._$el.find('#agenda-time').text(timeText);
 
