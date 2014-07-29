@@ -73,6 +73,11 @@ class DateTime
         }
         return this._momentObject.tz(DateTime._timeZone);
     }
+
+    public calendar(): string
+    {
+        return this._tryMakeTimeZone().calendar();
+    }
 }
 
 export = DateTime;

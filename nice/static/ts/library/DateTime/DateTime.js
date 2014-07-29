@@ -75,6 +75,10 @@ define(["require", "exports", 'moment', "moment-timezone"], function(require, ex
             }
             return this._momentObject.tz(DateTime._timeZone);
         };
+
+        DateTime.prototype.calendar = function () {
+            return this._tryMakeTimeZone().calendar();
+        };
         DateTime._timeZone = null;
         return DateTime;
     })();
