@@ -22,7 +22,7 @@ class TableView extends View
     private _delegate: TableViewDelegate = null;
     private _busy = false;
 
-    get dataSource() : TableViewDataSource
+    get dataSource(): TableViewDataSource
     {
         return this._dataSource;
     }
@@ -35,7 +35,7 @@ class TableView extends View
         }
     }
 
-    get delegate() : TableViewDelegate
+    get delegate(): TableViewDelegate
     {
         return this._delegate;
     }

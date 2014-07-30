@@ -3,3 +3,4 @@
 /// <reference path="jqueryui/jqueryui.d.ts" />
 /// <reference path="bootstrap/bootstrap.d.ts" />
 /// <reference path="moment/moment.d.ts" />
+/// <reference path="fullCalendar/fullCalendar.d.ts" />

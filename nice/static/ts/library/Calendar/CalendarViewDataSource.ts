@@ -1,0 +1,5 @@
+interface CalendarViewDataSource
+{
+    
+}
+export = CalendarViewDataSource;
