@@ -92,6 +92,10 @@ define(["require", "exports", 'moment', "moment-timezone"], function(require, ex
         DateTime.prototype.calendar = function () {
             return this._tryMakeTimeZone().calendar();
         };
+
+        DateTime.prototype.format = function (format) {
+            return this._tryMakeTimeZone().format(format);
+        };
         DateTime._timeZone = null;
         return DateTime;
     })();

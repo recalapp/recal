@@ -5,13 +5,35 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../CoreUI/View', "fullcalendar"], function(require, exports, View) {
+define(["require", "exports", 'jquery', '../CoreUI/View', "fullcalendar"], function(require, exports, $, View) {
     var CalendarView = (function (_super) {
         __extends(CalendarView, _super);
-        function CalendarView() {
-            _super.apply(this, arguments);
+        function CalendarView($element) {
+            var _this = this;
+            _super.call(this, $element);
             this._dataSource = null;
             this._delegate = null;
+            this._eventSource = {};
+            this._defaultOptions = {
+                defaultView: "agendaWeek",
+                slotMinutes: 30,
+                firstHour: 8,
+                minTime: 8,
+                maxTime: 23,
+                eventDurationEditable: false,
+                eventStartEditable: false,
+                eventBackgroundColor: "#74a2ca",
+                eventBorderColor: "#428bca",
+                allDayDefault: false,
+                ignoreTimezone: true,
+                allDaySlot: false,
+                slotEventOverlap: true
+            };
+            this._eventSource['events'] = function () {
+                _this.retrieveCalendarEvents();
+            };
+            this._defaultOptions['eventSources'] = [this._eventSource];
+            this._$el.fullCalendar(this._defaultOptions);
         }
         Object.defineProperty(CalendarView.prototype, "dataSource", {
             get: function () {
@@ -38,26 +60,31 @@ define(["require", "exports", '../CoreUI/View', "fullcalendar"], function(requir
             configurable: true
         });
 
+        CalendarView.prototype.retrieveCalendarEvents = function () {
+            var _this = this;
+            if (this.dataSource === null || this.dataSource === undefined) {
+                return [];
+            }
+            var calendarEventArray = this.dataSource.calendarViewEvents();
+            var results = [];
+            $.each(calendarEventArray, function (index, calendarEvent) {
+                results.push({
+                    uniqueId: calendarEvent.uniqueId,
+                    title: calendarEvent.title,
+                    start: calendarEvent.start.format(),
+                    end: calendarEvent.end.format(),
+                    highlighted: _this.dataSource.eventIsHighlighted(calendarEvent),
+                    sectionColor: calendarEvent.sectionColor,
+                    textColor: calendarEvent.textColor,
+                    backgroundColor: calendarEvent.backgroundColor,
+                    borderColor: calendarEvent.borderColor
+                });
+            });
+            return results;
+        };
+
         CalendarView.prototype.refresh = function () {
-        };
-        CalendarView._eventSource = {
-            events: []
-        };
-        CalendarView._defaultOptions = {
-            defaultView: "agendaWeek",
-            slotMinutes: 30,
-            firstHour: 8,
-            minTime: 8,
-            maxTime: 23,
-            eventDurationEditable: false,
-            eventStartEditable: false,
-            eventBackgroundColor: "#74a2ca",
-            eventBorderColor: "#428bca",
-            allDayDefault: false,
-            eventSources: [CalendarView._eventSource],
-            ignoreTimezone: true,
-            allDaySlot: false,
-            slotEventOverlap: true
+            this._$el.fullCalendar('refetchEvents');
         };
         return CalendarView;
     })(View);

@@ -10,7 +10,32 @@ define(["require", "exports", '../Core/AbstractMethodException', '../../library/
         function CalendarViewController() {
             _super.apply(this, arguments);
         }
-        CalendarViewController.prototype.getCalendarViewEvents = function () {
+        Object.defineProperty(CalendarViewController.prototype, "view", {
+            get: function () {
+                return this._view;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        /**
+        * The array of calendar view events
+        */
+        CalendarViewController.prototype.calendarViewEvents = function () {
+            throw new AbstractMethodException();
+        };
+
+        /**
+        * The height for calendar view. e.g. "250px"
+        */
+        CalendarViewController.prototype.heightForCalendarView = function () {
+            throw new AbstractMethodException();
+        };
+
+        /**
+        * Returns true if the event should be highlighted
+        */
+        CalendarViewController.prototype.eventIsHighlighted = function (calendarViewEvent) {
             throw new AbstractMethodException();
         };
         return CalendarViewController;

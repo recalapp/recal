@@ -90,6 +90,11 @@ class DateTime
     {
         return this._tryMakeTimeZone().calendar();
     }
+
+    public format(format?: string): string
+    {
+        return this._tryMakeTimeZone().format(format);
+    }
 }
 
 export = DateTime;
