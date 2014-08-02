@@ -89,15 +89,15 @@ class PopUpView extends FocusableView
         // TODO WONTFIX handle PopUp_close() logic - subclass
     }
 
-    public focusView() : void
+    public didFocus() : void
     {
-        super.focusView();
+        super.didFocus();
         this.highlight();
     }
 
-    public blurView() : void
+    public didBlur() : void
     {
-        super.blurView();
+        super.didBlur();
         this.unhighlight();
     }
 

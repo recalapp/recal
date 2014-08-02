@@ -3,8 +3,9 @@
 import $ = require('jquery');
 
 import Dictionary = require('../DataStructures/Dictionary');
+import IViewTemplateRetriever = require('./IViewTemplateRetriever');
 
-class ViewTemplateRetriever
+class ViewTemplateRetriever implements IViewTemplateRetriever
 {
     private _cachedTemplates = new Dictionary<string, string>();
     private static _instance = new ViewTemplateRetriever();

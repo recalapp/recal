@@ -1,0 +1,5 @@
+interface ICalendarViewController 
+{
+}
+
+export = ICalendarViewController;

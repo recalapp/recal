@@ -116,15 +116,16 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
         * Append childView to this view. childView cannot already have a parent
         */
         View.prototype.append = function (childView) {
+            var childViewCasted = childView;
             if (this._children.contains(childView)) {
                 throw new InvalidActionException('Cannot add a child view twice.');
             }
-            if (childView._parentView !== null) {
+            if (childViewCasted._parentView !== null) {
                 throw new InvalidActionException('A view can only have one parent.');
             }
-            this._$el.append(childView._$el);
+            this._$el.append(childViewCasted._$el);
             this._children.add(childView);
-            childView._parentView = this;
+            childViewCasted._parentView = this;
             this.triggerEvent(BrowserEvents.viewWasAppended, {
                 childView: childView,
                 parentView: this
@@ -137,6 +138,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
         */
         View.prototype.insertAfter = function (siblingView) {
             var parentView = siblingView.parentView;
+            var siblingViewCasted = siblingView;
             if (parentView === null || parentView === undefined) {
                 throw new InvalidActionException('Cannot append after a view that does not have a parent');
             }
@@ -146,7 +148,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             if (this.parentView !== null) {
                 throw new InvalidActionException('A view can only have one parent.');
             }
-            siblingView._$el.after(this._$el);
+            siblingViewCasted._$el.after(this._$el);
             parentView._children.add(this);
             this._parentView = parentView;
             parentView.triggerEvent(BrowserEvents.viewWasAppended, {
@@ -205,6 +207,9 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             return this._$el.is($element) || this._$el.find($element).length != 0;
         };
 
+        /**
+        * Remove all children from this view, both initialized and uninitialized
+        */
         View.prototype.removeAllChildren = function () {
             $.each(this.children, function (index, child) {
                 child.removeFromParent();

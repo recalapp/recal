@@ -73,18 +73,18 @@ class ClickToEditBaseView extends FocusableView
         this._$el.text(text);
     }
 
-    public focusView() : void
+    public didFocus() : void
     {
-        super.focusView();
+        super.didFocus();
         this.triggerEvent(BrowserEvents.clickToEditShouldBegin); 
         // don't allow itself to be tabbed when focused, since the form
         // will receive the tab
         this._$el.attr('tabindex', -1);
     }
 
-    public blurView() : void
+    public didBlur() : void
     {
-        super.blurView();
+        super.didBlur();
         this._$el.attr('tabindex', 0);
     }
 

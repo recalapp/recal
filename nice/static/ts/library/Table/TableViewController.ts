@@ -1,24 +1,25 @@
 import AbstractMethodException = require('../Core/AbstractMethodException');
-import IndexPath = require('../Core/IndexPath');
-import TableView = require('./TableView');
-import TableViewCell = require('./TableViewCell');
+import IndexPath = require('../DataStructures/IndexPath');
+import ITableViewCell = require('./ITableViewCell');
+import ITableViewHeaderView = require('./ITableViewHeaderView');
+import ITableView = require('./ITableView');
+import ITableViewController = require('./ITableViewController');
 import TableViewDataSource = require('./TableViewDataSource');
 import TableViewDelegate = require('./TableViewDelegate');
-import TableViewHeaderView = require('./TableViewHeaderView');
 import ViewController = require('../CoreUI/ViewController');
 
-class TableViewController extends ViewController implements TableViewDataSource, TableViewDelegate
+class TableViewController extends ViewController implements ITableViewController, TableViewDataSource, TableViewDelegate
 {
-    constructor(view : TableView)
+    constructor(view: ITableView)
     {
         super(view);
         this.view.dataSource = this;
         this.view.delegate = this;
     }
 
-    get view() : TableView
+    get view(): ITableView
     {
-        return <TableView>this._view;
+        return <ITableView>this._view;
     }
 
     /*******************************************************************
@@ -48,7 +49,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
     /**
       * Create a new table view cell for the given identifier
       */
-    public createCell(identifier: string) : TableViewCell
+    public createCell(identifier: string) : ITableViewCell
     {
         throw new AbstractMethodException();
     }
@@ -67,7 +68,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
     /**
       * Create a new table view cell for the given identifier
       */
-    public createHeaderView(identifier: string) : TableViewHeaderView
+    public createHeaderView(identifier: string) : ITableViewHeaderView
     {
         // optional method
         return null;
@@ -77,7 +78,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
       * Make any changes to the cell before it goes on screen.
       * Return (not necessarily the same) cell.
       */
-    public decorateCell(cell: TableViewCell) : TableViewCell
+    public decorateCell(cell: ITableViewCell): ITableViewCell
     {
         throw new AbstractMethodException();
     }
@@ -86,7 +87,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
       * Make any changes to the cell before it goes on screen.
       * Return (not necessarily the same) cell.
       */
-    public decorateHeaderView(headerView: TableViewHeaderView) : TableViewHeaderView
+    public decorateHeaderView(headerView: ITableViewHeaderView) : ITableViewHeaderView
     {
         // optional
         return headerView;
@@ -115,7 +116,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
     /**
       * Callback for when a table view cell is selected
       */
-    public didSelectCell(cell: TableViewCell): void
+    public didSelectCell(cell: ITableViewCell): void
     {
         // allowed to be an empty implementation. Just doesn't do anything
     }
@@ -123,7 +124,7 @@ class TableViewController extends ViewController implements TableViewDataSource,
     /**
       * Callback for when a table view cell is deselected
       */
-    public didDeselectCell(cell: TableViewCell): void
+    public didDeselectCell(cell: ITableViewCell): void
     {
     }
 }

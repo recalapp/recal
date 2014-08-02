@@ -3,16 +3,17 @@ import $ = require('jquery');
 import BrowserEvents = require("../Core/BrowserEvents");
 import InvalidActionException = require('../Core/InvalidActionException');
 import InvalidArgumentException = require("../Core/InvalidArgumentException");
+import IView = require('./IView');
 import Set = require('../DataStructures/Set');
 
-class View 
+class View implements IView
 {
     private static JQUERY_DATA_KEY = 'view_object';
     private static _viewCount = 0; // Used to make sure toString() is unique
     private _viewNumber: number;
     _$el: JQuery = null;
-    _parentView: View = null;
-    _children: Set<View> = new Set<View>();
+    _parentView: IView = null;
+    _children: Set<IView> = new Set<View>();
     /******************************************************************
       Properties
       ****************************************************************/
@@ -20,7 +21,7 @@ class View
     /**
       * The parent view of the view, if exists. Null if no parent
       */
-    get parentView(): View
+    get parentView(): IView
     {
         return this._parentView;
     }
@@ -28,7 +29,7 @@ class View
     /**
       * Immutable array of child views
       */
-    get children(): View[]
+    get children(): IView[]
     {
         return this._children.toArray();
     }
@@ -125,19 +126,20 @@ class View
     /**
       * Append childView to this view. childView cannot already have a parent
       */
-    public append(childView: View) : void 
+    public append(childView: IView) : void 
     {
+        var childViewCasted: View = <View> childView;
         if (this._children.contains(childView))
         {
             throw new InvalidActionException('Cannot add a child view twice.');
         }
-        if (childView._parentView !== null)
+        if (childViewCasted._parentView !== null)
         {
             throw new InvalidActionException('A view can only have one parent.');
         }
-        this._$el.append(childView._$el);
+        this._$el.append(childViewCasted._$el);
         this._children.add(childView);
-        childView._parentView = this;
+        childViewCasted._parentView = this;
         this.triggerEvent(BrowserEvents.viewWasAppended, {
             childView: childView,
             parentView: this,
@@ -148,9 +150,10 @@ class View
       * Append this view to the parent view of the parameter siblingView,
       * in the position right after siblingView.
       */
-    public insertAfter(siblingView: View): void
+    public insertAfter(siblingView: IView): void
     {
-        var parentView = siblingView.parentView;
+        var parentView = <View>siblingView.parentView;
+        var siblingViewCasted: View = <View>siblingView;
         if (parentView === null || parentView === undefined)
         {
             throw new InvalidActionException('Cannot append after a view that does not have a parent');
@@ -163,7 +166,7 @@ class View
         {
             throw new InvalidActionException('A view can only have one parent.');
         }
-        siblingView._$el.after(this._$el);
+        siblingViewCasted._$el.after(this._$el);
         parentView._children.add(this);
         this._parentView = parentView;
         parentView.triggerEvent(BrowserEvents.viewWasAppended, {
@@ -178,7 +181,7 @@ class View
       */
     public removeFromParent() : void
     {
-        var parentView = this._parentView;
+        var parentView = <View>this._parentView;
         if (parentView === null)
         {
             throw new InvalidActionException('Cannot call removeFromParent() on a view that does not have a parent.');
@@ -219,6 +222,9 @@ class View
         }
     }
 
+    /**
+      * Triggers an event on the View.
+      */
     public triggerEvent(ev: string);
     public triggerEvent(ev: string, extraParameter : any);
     public triggerEvent(ev: string, extraParameter? : any)
@@ -241,6 +247,9 @@ class View
         return this._$el.is($element) || this._$el.find($element).length != 0;
     }
 
+    /**
+      * Remove all children from this view, both initialized and uninitialized
+      */
     public removeAllChildren() : void
     {
         $.each(this.children, (index: number, child: View) =>

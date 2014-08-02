@@ -1,6 +1,7 @@
+import ITableViewHeaderView = require('./ITableViewHeaderView');
 import View = require('../CoreUI/View');
 
-class TableViewHeaderView extends View
+class TableViewHeaderView extends View implements ITableViewHeaderView
 {
     private _section: Number = null;
     get section() : Number

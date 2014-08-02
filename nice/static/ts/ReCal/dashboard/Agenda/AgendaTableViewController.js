@@ -1,11 +1,11 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../../typings/tsd.d.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../library/DateTime/DateTime', '../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, TableViewController) {
+define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, TableViewController) {
     var AgendaTableViewController = (function (_super) {
         __extends(AgendaTableViewController, _super);
         function AgendaTableViewController() {

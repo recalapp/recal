@@ -103,13 +103,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             // TODO WONTFIX handle PopUp_close() logic - subclass
         };
 
-        PopUpView.prototype.focusView = function () {
-            _super.prototype.focusView.call(this);
+        PopUpView.prototype.didFocus = function () {
+            _super.prototype.didFocus.call(this);
             this.highlight();
         };
 
-        PopUpView.prototype.blurView = function () {
-            _super.prototype.blurView.call(this);
+        PopUpView.prototype.didBlur = function () {
+            _super.prototype.didBlur.call(this);
             this.unhighlight();
         };
 

@@ -1,6 +1,6 @@
-import TableViewCell = require('./TableViewCell');
-import TableViewHeaderView = require('./TableViewHeaderView');
-import IndexPath = require('../Core/IndexPath');
+import ITableViewCell = require('./ITableViewCell');
+import ITableViewHeaderView = require('./ITableViewHeaderView');
+import IndexPath = require('../DataStructures/IndexPath');
 
 interface TableViewDataSource
 {
@@ -20,7 +20,7 @@ interface TableViewDataSource
     /**
       * Create a new table view cell for the given identifier
       */
-    createCell(identifier: string) : TableViewCell;
+    createCell(identifier: string) : ITableViewCell;
 
     /**
       * Return a unique identifier for the header at the given index path.
@@ -32,19 +32,19 @@ interface TableViewDataSource
     /**
       * Create a new table view header view for the given identifier
       */
-    createHeaderView(identifier: string) : TableViewHeaderView;
+    createHeaderView(identifier: string) : ITableViewHeaderView;
     
     /**
       * Make any changes to the cell before it goes on screen.
       * Return (not necessarily the same) cell.
       */
-    decorateCell(cell: TableViewCell) : TableViewCell;
+    decorateCell(cell: ITableViewCell) : ITableViewCell;
 
     /**
       * Make any changes to the header before it goes on screen.
       * Return (not necessarily the same) header.
       */
-    decorateHeaderView(cell: TableViewHeaderView) : TableViewHeaderView;
+    decorateHeaderView(cell: ITableViewHeaderView) : ITableViewHeaderView;
     
     /**
       * The number of sections in this table view.

@@ -1,27 +1,30 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../../typings/tsd.d.ts" />
 
 import $ = require('jquery');
 
 import AgendaTableViewCell = require('./AgendaTableViewCell');
 import AgendaTableViewHeaderView = require('./AgendaTableViewHeaderView');
-import DateTime = require('../../library/DateTime/DateTime');
-import IndexPath = require('../../library/Core/IndexPath');
-import TableViewCell = require('../../library/Table/TableViewCell');
-import TableViewController = require('../../library/Table/TableViewController');
-import TableViewHeaderView = require('../../library/Table/TableViewHeaderView');
+import DateTime = require('../../../library/DateTime/DateTime');
+import IndexPath = require('../../../library/DataStructures/IndexPath');
+import TableViewController = require('../../../library/Table/TableViewController');
+
+import IAgendaTableViewCell = require('./IAgendaTableViewCell');
+import IAgendaTableViewHeaderView = require('./IAgendaTableViewHeaderView');
+import ITableViewCell = require('../../../library/Table/ITableViewCell');
+import ITableViewHeaderView = require('../../../library/Table/ITableViewHeaderView');
 
 declare function EventsMan_addUpdateListener(callBack: ()=>void): void;
-declare function EventsMan_getEventByID(id: number): any;
-declare function EventsMan_getEventIDForRange(start: number, end: number): number[];
+declare function EventsMan_getEventByID(id: string): any;
+declare function EventsMan_getEventIDForRange(start: number, end: number): string[];
 declare function LO_hideLoading(message: string): void;
 declare function LO_showLoading(message: string): void;
-declare function PopUp_addCloseListener(callBack: (eventId: number)=>void): void;
+declare function PopUp_addCloseListener(callBack: (eventId: string)=>void): void;
 declare function PopUp_getMainPopUp(): any;
-declare function PopUp_getPopUpByID(popUpId: number): any;
+declare function PopUp_getPopUpByID(popUpId: string): any;
 declare function PopUp_giveFocus(popUp: any): void;
-declare function PopUp_setToEventID(popUp: any, popUpId: number): void;
-declare function UI_isMain(eventId: number): boolean;
-declare function UI_isPinned(eventId: number): boolean;
+declare function PopUp_setToEventID(popUp: any, popUpId: string): void;
+declare function UI_isMain(eventId: string): boolean;
+declare function UI_isPinned(eventId: string): boolean;
 declare var SE_id;
 
 class AgendaTableViewController extends TableViewController
@@ -55,10 +58,10 @@ class AgendaTableViewController extends TableViewController
         });
 
         // unhighlight closed events
-        PopUp_addCloseListener((closedEventId: number)=>{
+        PopUp_addCloseListener((closedEventId: string)=>{
             // TODO get cell based on eventId and unhighlight it
             $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath) =>{
-                var eventId: number = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+                var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                 if (eventId == closedEventId)
                 {
                     this.view.deselectCellAtIndexPath(indexPath);
@@ -96,7 +99,7 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        var eventIds: number[] = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
+        var eventIds: string[] = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Yesterday', eventIds));
@@ -183,7 +186,7 @@ class AgendaTableViewController extends TableViewController
     /**
      * Create a new table view cell for the given identifier
      */
-    public createCell(identifier: string) : TableViewCell
+    public createCell(identifier: string) : ITableViewCell
     {
         return new AgendaTableViewCell();
     }
@@ -191,7 +194,7 @@ class AgendaTableViewController extends TableViewController
     /**
       * Create a new table view header view for the given identifier
       */
-    public createHeaderView(identifier: string) : TableViewHeaderView
+    public createHeaderView(identifier: string) : ITableViewHeaderView
     {
         return new AgendaTableViewHeaderView();
     }
@@ -200,12 +203,12 @@ class AgendaTableViewController extends TableViewController
      * Make any changes to the cell before it goes on screen.
      * Return (not necessarily the same) cell.
      */
-    public decorateCell(cell: TableViewCell) : TableViewCell
+    public decorateCell(cell: ITableViewCell): ITableViewCell
     {
-        var agendaCell: AgendaTableViewCell = <AgendaTableViewCell> cell;
+        var agendaCell: IAgendaTableViewCell = <IAgendaTableViewCell> cell;
         var indexPath: IndexPath = cell.indexPath;
         var eventSection: EventSection = this._eventSectionArray[indexPath.section];
-        var eventId: number = eventSection.eventIds[indexPath.item];
+        var eventId: string = eventSection.eventIds[indexPath.item];
         if (eventId === undefined)
         {
             // indexPath was invalid
@@ -232,9 +235,9 @@ class AgendaTableViewController extends TableViewController
       * Make any changes to the cell before it goes on screen.
       * Return (not necessarily the same) cell.
       */
-    public decorateHeaderView(headerView: TableViewHeaderView) : TableViewHeaderView
+    public decorateHeaderView(headerView: ITableViewHeaderView): ITableViewHeaderView
     {
-        var agendaHeaderView: AgendaTableViewHeaderView = <AgendaTableViewHeaderView> headerView;
+        var agendaHeaderView: IAgendaTableViewHeaderView = <IAgendaTableViewHeaderView> headerView;
         var eventSection: EventSection = this._eventSectionArray[<number> headerView.section];
         agendaHeaderView.setTitle(eventSection.sectionName);
         return agendaHeaderView;
@@ -262,10 +265,10 @@ class AgendaTableViewController extends TableViewController
     /**
       * Callback for when a table view cell is selected
       */
-    public didSelectCell(cell: TableViewCell): void
+    public didSelectCell(cell: ITableViewCell): void
     {
         var indexPath: IndexPath = cell.indexPath;
-        var eventId: number = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+        var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
         if (eventId === undefined)
         {
             // indexPath was invalid
@@ -283,8 +286,8 @@ class AgendaTableViewController extends TableViewController
         PopUp_giveFocus(popUp);
 
         // update cell selection. deselect any cells no longer relevant
-        $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath)=>{
-            var eventId: number = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+        $.each(this.view.selectedIndexPaths(), (index: string, indexPath: IndexPath)=>{
+            var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
             if (!UI_isMain(eventId) && !UI_isPinned(eventId))
             {
                 this.view.deselectCellAtIndexPath(indexPath);
@@ -295,7 +298,7 @@ class AgendaTableViewController extends TableViewController
 
 class EventSection
 {
-    constructor(private _sectionName: string, private _eventIds: number[])
+    constructor(private _sectionName: string, private _eventIds: string[])
     {
     }
 
@@ -308,11 +311,11 @@ class EventSection
         this._sectionName = value;
     }
 
-    public get eventIds(): number[]
+    public get eventIds(): string[]
     {
         return this._eventIds;
     }
-    public set eventIds(value: number[])
+    public set eventIds(value: string[])
     {
         this._eventIds = value;
     }

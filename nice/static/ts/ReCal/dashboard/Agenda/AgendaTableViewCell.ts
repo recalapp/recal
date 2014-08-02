@@ -1,15 +1,16 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../../typings/tsd.d.ts" />
 
 import $ = require('jquery');
 
-import DateTime = require('../../library/DateTime/DateTime');
-import TableViewCell = require('../../library/Table/TableViewCell');
-import ViewTemplateRetriever = require('../../library/CoreUI/ViewTemplateRetriever');
+import DateTime = require('../../../library/DateTime/DateTime');
+import IAgendaTableViewCell = require('./IAgendaTableViewCell');
+import TableViewCell = require('../../../library/Table/TableViewCell');
+import ViewTemplateRetriever = require('../../../library/CoreUI/ViewTemplateRetriever');
 
 declare var SECTION_MAP: any;
 declare var SECTION_COLOR_MAP: any;
 
-class AgendaTableViewCell extends TableViewCell
+class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
 {
     private static _templateSelector = '#agenda-template';
     private _eventId: number;

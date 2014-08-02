@@ -1,5 +1,5 @@
 /// <reference path="../../../typings/tsd.d.ts" />
-define(["require", "exports", 'jquery', '../AgendaTableViewController', '../../../library/Table/TableView'], function(require, exports, $, AgendaTableViewController, TableView) {
+define(["require", "exports", 'jquery', '../Agenda/AgendaTableViewController', '../../../library/Table/TableView'], function(require, exports, $, AgendaTableViewController, TableView) {
     var tableView = TableView.fromJQuery($('#agenda'));
     var agendaTableVC;
 

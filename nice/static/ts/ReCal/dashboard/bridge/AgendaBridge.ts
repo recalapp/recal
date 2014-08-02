@@ -2,10 +2,12 @@
 
 import $ = require('jquery');
 
-import AgendaTableViewController = require('../AgendaTableViewController');
+import AgendaTableViewController = require('../Agenda/AgendaTableViewController');
 import TableView = require('../../../library/Table/TableView');
 
-var tableView: TableView = <TableView> TableView.fromJQuery($('#agenda'));
+import ITableView = require('../../../library/Table/ITableView');
+
+var tableView: ITableView = <TableView> TableView.fromJQuery($('#agenda'));
 var agendaTableVC: AgendaTableViewController;
 
 function Agenda_init()

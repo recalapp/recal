@@ -3,9 +3,10 @@ import $ = require('jquery');
 
 import BrowserEvents = require('../Core/BrowserEvents');
 import GlobalCssClass = require('../Core/GlobalCssClass');
+import IFocusableView = require('./IFocusableView');
 import View = require('./View');
 
-class FocusableView extends View
+class FocusableView extends View implements IFocusableView
 {
     private _hasFocus = false;
     constructor($element: JQuery)
@@ -27,14 +28,14 @@ class FocusableView extends View
         {
             if (this.containsJQueryElement($(document.activeElement)))
             {
-                this.focusView();
+                this.didFocus();
             }
         });
         this.attachEventHandler(BrowserEvents.focusOut, (ev : JQueryEventObject) => 
         {
             if (!this.containsJQueryElement($(document.activeElement)))
             {
-                this.blurView();
+                this.didBlur();
             }
         });
     }
@@ -43,11 +44,11 @@ class FocusableView extends View
         return this._hasFocus;
     }
 
-    public focusView() : void
+    public didFocus() : void
     {
         this._hasFocus = true;
     }
-    public blurView() : void
+    public didBlur() : void
     {
         this._hasFocus = false;
     }

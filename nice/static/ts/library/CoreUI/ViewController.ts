@@ -2,20 +2,21 @@
 import $ = require('jquery');
 import InvalidActionException = require('../Core/InvalidActionException');
 import Set = require('../DataStructures/Set');
-import View = require('./View');
+import IView = require('./IView');
+import IViewController = require('./IViewController');
 
-class ViewController
+class ViewController implements IViewController
 {
     private static _viewControllerCount = 0; // Used to make sure toString() is unique
     private _viewControllerNumber: number;
-    _view: View = null;
+    _view: IView = null;
     _parentViewController: ViewController = null;
     _childViewControllers: Set<ViewController> = new Set<ViewController>();
 
     /******************************************************************
       Properties
       ****************************************************************/
-    get view() : View
+    get view() : IView
     {
         return this._view;
     }
@@ -33,7 +34,7 @@ class ViewController
     /******************************************************************
       Methods
       ****************************************************************/
-    constructor(view : View)
+    constructor(view : IView)
     {
         this._viewControllerNumber = ViewController._viewControllerCount++;
         this._view = view;

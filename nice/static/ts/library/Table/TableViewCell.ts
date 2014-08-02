@@ -2,10 +2,11 @@
 
 import BrowserEvents = require('../Core/BrowserEvents');
 import FocusableView = require('../CoreUI/FocusableView');
-import IndexPath = require('../Core/IndexPath');
+import IndexPath = require('../DataStructures/IndexPath');
+import ITableViewCell = require('./ITableViewCell');
 import TableViewCommon = require('./TableViewCommon');
 
-class TableViewCell extends FocusableView
+class TableViewCell extends FocusableView implements ITableViewCell
 {
     private _indexPath: IndexPath = null;
     private _selected = false;

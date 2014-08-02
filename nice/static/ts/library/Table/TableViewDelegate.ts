@@ -1,5 +1,5 @@
-import TableViewCell = require('./TableViewCell');
-import IndexPath = require('../Core/IndexPath');
+import ITableViewCell = require('./ITableViewCell');
+import IndexPath = require('../DataStructures/IndexPath');
 
 interface TableViewDelegate
 {
@@ -7,12 +7,12 @@ interface TableViewDelegate
       * Callback for when a table view cell is deselected
       * Does not get called if the cell is programmatically deselected
       */
-    didDeselectCell(cell: TableViewCell): void;
+    didDeselectCell(cell: ITableViewCell): void;
 
     /**
       * Callback for when a table view cell is selected.
       * Does not get called if the cell is programmatically selected.
       */
-    didSelectCell(cell: TableViewCell): void;
+    didSelectCell(cell: ITableViewCell): void;
 }
 export = TableViewDelegate;

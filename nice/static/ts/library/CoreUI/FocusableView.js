@@ -23,12 +23,12 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
             });
             this.attachEventHandler(BrowserEvents.focusIn, function (ev) {
                 if (_this.containsJQueryElement($(document.activeElement))) {
-                    _this.focusView();
+                    _this.didFocus();
                 }
             });
             this.attachEventHandler(BrowserEvents.focusOut, function (ev) {
                 if (!_this.containsJQueryElement($(document.activeElement))) {
-                    _this.blurView();
+                    _this.didBlur();
                 }
             });
         }
@@ -40,10 +40,10 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
             configurable: true
         });
 
-        FocusableView.prototype.focusView = function () {
+        FocusableView.prototype.didFocus = function () {
             this._hasFocus = true;
         };
-        FocusableView.prototype.blurView = function () {
+        FocusableView.prototype.didBlur = function () {
             this._hasFocus = false;
         };
         return FocusableView;

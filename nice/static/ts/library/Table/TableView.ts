@@ -4,20 +4,22 @@ import $ = require('jquery');
 
 import BrowserEvents = require('../Core/BrowserEvents');
 import Dictionary = require('../DataStructures/Dictionary');
-import IndexPath = require('../Core/IndexPath');
+import IndexPath = require('../DataStructures/IndexPath');
 import InvalidActionException = require('../Core/InvalidActionException');
+import ITableView = require('./ITableView');
+import ITableViewCell = require('./ITableViewCell');
+import ITableViewHeaderView = require('./ITableViewHeaderView');
+import IView = require('../CoreUI/IView');
 import Set = require('../DataStructures/Set');
-import TableViewCell = require('./TableViewCell');
 import TableViewCommon = require('./TableViewCommon');
 import TableViewDataSource = require('./TableViewDataSource');
 import TableViewDelegate = require('./TableViewDelegate');
-import TableViewHeaderView = require('./TableViewHeaderView');
 import View = require('../CoreUI/View');
 
-class TableView extends View
+class TableView extends View implements ITableView
 {
-    private _cellDict = new Dictionary<IndexPath, TableViewCell>();
-    private _headerDict = new Dictionary<Number, TableViewHeaderView>();
+    private _cellDict = new Dictionary<IndexPath, ITableViewCell>();
+    private _headerDict = new Dictionary<Number, ITableViewHeaderView>();
     private _dataSource: TableViewDataSource = null;
     private _delegate: TableViewDelegate = null;
     private _busy = false;
@@ -127,10 +129,10 @@ class TableView extends View
         })
 
         // render cells on screen
-        var prevCell: View = null;
+        var prevCell: IView = null;
         for (var section = 0; section < this.dataSource.numberOfSections(); section++)
         {
-            var headerView: TableViewHeaderView = this._getOrCreateHeaderViewForSection(section);
+            var headerView: ITableViewHeaderView = this._getOrCreateHeaderViewForSection(section);
             if (headerView !== null)
             {
                 headerView = this.dataSource.decorateHeaderView(headerView);
@@ -152,7 +154,7 @@ class TableView extends View
             for (var item = 0; item < this.dataSource.numberOfItemsInSection(section); item++)
             {
                 var indexPath = new IndexPath(section, item);
-                var cell: TableViewCell = this._getOrCreateCellForIndexPath(indexPath);
+                var cell: ITableViewCell = this._getOrCreateCellForIndexPath(indexPath);
                 cell = this.dataSource.decorateCell(cell);
                 if (cell.parentView === null)
                 {
@@ -174,9 +176,9 @@ class TableView extends View
     /**
       * Does not append to table view
       */
-    private _getOrCreateCellForIndexPath(indexPath: IndexPath): TableViewCell
+    private _getOrCreateCellForIndexPath(indexPath: IndexPath): ITableViewCell
     {
-        var cell: TableViewCell = this._cellDict.get(indexPath);
+        var cell: ITableViewCell = this._cellDict.get(indexPath);
         if (cell !== null && cell !== undefined)
         {
             return cell;
@@ -193,9 +195,9 @@ class TableView extends View
     /**
       * Does not append to table view
       */
-    private _getOrCreateHeaderViewForSection(section: Number): TableViewHeaderView
+    private _getOrCreateHeaderViewForSection(section: Number): ITableViewHeaderView
     {
-        var headerView: TableViewHeaderView = this._headerDict.get(section);
+        var headerView: ITableViewHeaderView = this._headerDict.get(section);
         if (headerView !== null && headerView !== undefined)
         {
             return headerView;
@@ -212,7 +214,7 @@ class TableView extends View
         return headerView;
     }
 
-    public cellForIndexPath(indexPath: IndexPath) : TableViewCell
+    public cellForIndexPath(indexPath: IndexPath) : ITableViewCell
     {
         return this._cellDict.get(indexPath);
     }
@@ -234,7 +236,7 @@ class TableView extends View
         this.selectCell(cell);
     }
 
-    public selectCell(cell: TableViewCell) : void
+    public selectCell(cell: ITableViewCell) : void
     {
         cell.selected = true; 
     }
@@ -249,7 +251,7 @@ class TableView extends View
         this.deselectCell(cell);
     }
 
-    public deselectCell(cell: TableViewCell) : void
+    public deselectCell(cell: ITableViewCell) : void
     {
         cell.selected = false; 
     }

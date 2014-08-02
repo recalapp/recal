@@ -1,12 +1,13 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../../typings/tsd.d.ts" />
 
 import $ = require('jquery');
 import moment = require('moment');
 
-import TableViewHeaderView = require('../../library/Table/TableViewHeaderView');
-import ViewTemplateRetriever = require('../../library/CoreUI/ViewTemplateRetriever');
+import IAgendaTableViewHeaderView = require('./IAgendaTableViewHeaderView');
+import TableViewHeaderView = require('../../../library/Table/TableViewHeaderView');
+import ViewTemplateRetriever = require('../../../library/CoreUI/ViewTemplateRetriever');
 
-class AgendaTableViewHeaderView extends TableViewHeaderView
+class AgendaTableViewHeaderView extends TableViewHeaderView implements IAgendaTableViewHeaderView
 {
     private static _templateSelector = '#agenda-header-template';
 

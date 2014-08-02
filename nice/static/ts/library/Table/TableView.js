@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Dictionary', '../Core/IndexPath', '../Core/InvalidActionException', '../DataStructures/Set', './TableViewCommon', '../CoreUI/View'], function(require, exports, $, BrowserEvents, Dictionary, IndexPath, InvalidActionException, Set, TableViewCommon, View) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Dictionary', '../DataStructures/IndexPath', '../Core/InvalidActionException', '../DataStructures/Set', './TableViewCommon', '../CoreUI/View'], function(require, exports, $, BrowserEvents, Dictionary, IndexPath, InvalidActionException, Set, TableViewCommon, View) {
     var TableView = (function (_super) {
         __extends(TableView, _super);
         function TableView($element) {
