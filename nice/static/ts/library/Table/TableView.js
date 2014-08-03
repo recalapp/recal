@@ -25,23 +25,16 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
                 ev.stopPropagation();
 
                 // TODO(naphatkrit) handle single selection. multiple selection supported by default
-                if (!cell.selected) {
+                if (!cell.selected || !_this.dataSource.shouldToggleSelection()) {
                     _this.selectCell(cell);
                     if (_this.delegate !== null) {
                         _this.delegate.didSelectCell(cell);
                     }
                 } else {
-                    if (_this.dataSource === null || _this.dataSource.shouldToggleSelection()) {
-                        // toggle selection on - deselect the cell
-                        _this.deselectCell(cell);
-                        if (_this.delegate !== null) {
-                            _this.delegate.didDeselectCell(cell);
-                        }
-                    } else {
-                        // if toggle selection is off, then second click is the same as selecting again
-                        if (_this.delegate !== null) {
-                            _this.delegate.didSelectCell(cell);
-                        }
+                    // toggle selection on - deselect the cell
+                    _this.deselectCell(cell);
+                    if (_this.delegate !== null) {
+                        _this.delegate.didDeselectCell(cell);
                     }
                 }
             });

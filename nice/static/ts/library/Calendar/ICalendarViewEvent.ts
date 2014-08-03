@@ -6,7 +6,7 @@ interface ICalendarViewEvent
     title: string;
     start: DateTime;
     end: DateTime;
-    highlighted: boolean;
+    selected: boolean;
     sectionColor: string;
     textColor: string;
     backgroundColor: string;

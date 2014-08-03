@@ -7,8 +7,10 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", '../Core/AbstractMethodException', '../../library/CoreUI/ViewController'], function(require, exports, AbstractMethodException, ViewController) {
     var CalendarViewController = (function (_super) {
         __extends(CalendarViewController, _super);
-        function CalendarViewController() {
-            _super.apply(this, arguments);
+        function CalendarViewController(view) {
+            _super.call(this, view);
+            this.view.dataSource = this;
+            this.view.delegate = this;
         }
         Object.defineProperty(CalendarViewController.prototype, "view", {
             get: function () {
@@ -18,25 +20,44 @@ define(["require", "exports", '../Core/AbstractMethodException', '../../library/
             configurable: true
         });
 
+        /********************************************************************
+        Data Source
+        ******************************************************************/
         /**
-        * The array of calendar view events
+        * Returns true if a cell should be deselected
+        * when it is selected and clicked on again.
         */
-        CalendarViewController.prototype.calendarViewEvents = function () {
+        CalendarViewController.prototype.shouldToggleSelection = function () {
+            return true;
+        };
+
+        /**
+        * The array of calendar view events in range
+        */
+        CalendarViewController.prototype.calendarViewEventsForRange = function (start, end) {
             throw new AbstractMethodException();
         };
 
         /**
-        * The height for calendar view. e.g. "250px"
+        * The height for calendar view in pixels
         */
         CalendarViewController.prototype.heightForCalendarView = function () {
             throw new AbstractMethodException();
         };
 
+        /********************************************************************
+        Delegate
+        ******************************************************************/
         /**
-        * Returns true if the event should be highlighted
+        * Callback for when an event is selected
         */
-        CalendarViewController.prototype.eventIsHighlighted = function (calendarViewEvent) {
-            throw new AbstractMethodException();
+        CalendarViewController.prototype.didSelectEvent = function (calendarViewEvent) {
+        };
+
+        /**
+        * Callback for when an event is deselected
+        */
+        CalendarViewController.prototype.didDeselectEvent = function (calendarViewEvent) {
         };
         return CalendarViewController;
     })(ViewController);

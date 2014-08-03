@@ -7,7 +7,7 @@ class CalendarViewEvent implements ICalendarViewEvent
     private _title: string = null;
     private _start: DateTime = null;
     private _end: DateTime = null;
-    private _highlighted: boolean = false;
+    private _selected: boolean = false;
     private _sectionColor: string = null;
     private _textColor: string = null;
     private _backgroundColor: string = null;
@@ -49,13 +49,13 @@ class CalendarViewEvent implements ICalendarViewEvent
         this._end = value;
     }
 
-    get highlighted(): boolean
+    get selected(): boolean
     {
-        return this._highlighted;
+        return this._selected;
     }
-    set highlighted(value: boolean)
+    set selected(value: boolean)
     {
-        this._highlighted = value;
+        this._selected = value;
     }
 
     get sectionColor(): string

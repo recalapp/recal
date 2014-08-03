@@ -1,20 +1,22 @@
+import DateTime = require('../DateTime/DateTime');
 import ICalendarViewEvent = require('./ICalendarViewEvent');
 
 interface CalendarViewDataSource
 {
     /**
-      * The array of calendar view events
+      * Returns true if a cell should be deselected
+      * when it is selected and clicked on again.
       */
-    calendarViewEvents(): ICalendarViewEvent[];
+    shouldToggleSelection(): boolean;
     
     /**
-      * The height for calendar view. e.g. "250px"
+      * The array of calendar view events in range
       */
-    heightForCalendarView(): string;
-
+    calendarViewEventsForRange(start: DateTime, end: DateTime): ICalendarViewEvent[];
+    
     /**
-      * Returns true if the event should be highlighted
+      * The height for calendar view in pixels
       */
-    eventIsHighlighted(calendarViewEvent: ICalendarViewEvent): boolean;
+    heightForCalendarView(): number;
 }
 export = CalendarViewDataSource;

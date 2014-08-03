@@ -5,7 +5,7 @@ define(["require", "exports"], function(require, exports) {
             this._title = null;
             this._start = null;
             this._end = null;
-            this._highlighted = false;
+            this._selected = false;
             this._sectionColor = null;
             this._textColor = null;
             this._backgroundColor = null;
@@ -55,12 +55,12 @@ define(["require", "exports"], function(require, exports) {
             configurable: true
         });
 
-        Object.defineProperty(CalendarViewEvent.prototype, "highlighted", {
+        Object.defineProperty(CalendarViewEvent.prototype, "selected", {
             get: function () {
-                return this._highlighted;
+                return this._selected;
             },
             set: function (value) {
-                this._highlighted = value;
+                this._selected = value;
             },
             enumerable: true,
             configurable: true

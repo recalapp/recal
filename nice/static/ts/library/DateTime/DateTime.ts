@@ -3,11 +3,25 @@
 
 /// <amd-dependency path="moment-timezone" />
 import moment = require('moment');
+import Comparable = require('../Core/Comparable');
+import ComparableResult = require('../Core/ComparableResult');
 
-class DateTime
+class DateTime implements Comparable
 {
     private _momentObject: Moment = moment();
     private static _timeZone: string = null;
+
+    private static _max: DateTime = new DateTime();
+    private static _min: DateTime = new DateTime();
+
+    static get max(): DateTime
+    {
+        return DateTime._max;
+    }
+    static get min(): DateTime
+    {
+        return DateTime._min;
+    }
 
     get month(): number
     {
@@ -66,8 +80,12 @@ class DateTime
         this._momentObject = moment.unix(value);
     }
 
-    constructor()
+    constructor(momentObject?: Moment)
     {
+        if (momentObject)
+        {
+            this._momentObject = momentObject;
+        }
     }
 
     public static fromUnix(unix: number): DateTime
@@ -94,6 +112,37 @@ class DateTime
     public format(format?: string): string
     {
         return this._tryMakeTimeZone().format(format);
+    }
+
+    public toJsDate(): Date
+    {
+        return this._tryMakeTimeZone().toDate();
+    }
+
+    public compareTo(other: DateTime): ComparableResult
+    {
+        if (this === other || this.unix === other.unix)
+        {
+            // catches all cases of equal, including when they are both max or both min
+            return ComparableResult.equal;
+        }
+        if (this === DateTime.max)
+        {
+            return ComparableResult.greater;
+        }
+        if (this === DateTime.min)
+        {
+            return ComparableResult.less;
+        }
+        if (other === DateTime.max)
+        {
+            return ComparableResult.less;
+        }
+        if (other === DateTime.min)
+        {
+            return ComparableResult.greater;
+        }
+        return this.unix - other.unix > 0 ? ComparableResult.greater : ComparableResult.less;
     }
 }
 

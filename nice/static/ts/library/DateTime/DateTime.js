@@ -1,10 +1,28 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings-manual/typings.d.ts" />
-define(["require", "exports", 'moment', "moment-timezone"], function(require, exports, moment) {
+define(["require", "exports", 'moment', '../Core/ComparableResult', "moment-timezone"], function(require, exports, moment, ComparableResult) {
     var DateTime = (function () {
-        function DateTime() {
+        function DateTime(momentObject) {
             this._momentObject = moment();
+            if (momentObject) {
+                this._momentObject = momentObject;
+            }
         }
+        Object.defineProperty(DateTime, "max", {
+            get: function () {
+                return DateTime._max;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(DateTime, "min", {
+            get: function () {
+                return DateTime._min;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(DateTime.prototype, "month", {
             get: function () {
                 return this._momentObject.month();
@@ -96,7 +114,34 @@ define(["require", "exports", 'moment', "moment-timezone"], function(require, ex
         DateTime.prototype.format = function (format) {
             return this._tryMakeTimeZone().format(format);
         };
+
+        DateTime.prototype.toJsDate = function () {
+            return this._tryMakeTimeZone().toDate();
+        };
+
+        DateTime.prototype.compareTo = function (other) {
+            if (this === other || this.unix === other.unix) {
+                // catches all cases of equal, including when they are both max or both min
+                return 0 /* equal */;
+            }
+            if (this === DateTime.max) {
+                return 1 /* greater */;
+            }
+            if (this === DateTime.min) {
+                return -1 /* less */;
+            }
+            if (other === DateTime.max) {
+                return -1 /* less */;
+            }
+            if (other === DateTime.min) {
+                return 1 /* greater */;
+            }
+            return this.unix - other.unix > 0 ? 1 /* greater */ : -1 /* less */;
+        };
         DateTime._timeZone = null;
+
+        DateTime._max = new DateTime();
+        DateTime._min = new DateTime();
         return DateTime;
     })();
 
