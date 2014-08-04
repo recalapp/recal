@@ -77,6 +77,9 @@ class CalendarView extends View implements ICalendarView
         {
             this.handleClick(calEvent, jsEvent, html);
         };
+        this._defaultOptions.windowResize = (view: any)=>{
+            this._$el.fullCalendar('option', 'height', this.dataSource.heightForCalendarView());
+        };
 
         // initialize
         this._$el.fullCalendar(this._defaultOptions);

@@ -70,6 +70,9 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
             this._defaultOptions.eventClick = function (calEvent, jsEvent, html) {
                 _this.handleClick(calEvent, jsEvent, html);
             };
+            this._defaultOptions.windowResize = function (view) {
+                _this._$el.fullCalendar('option', 'height', _this.dataSource.heightForCalendarView());
+            };
 
             // initialize
             this._$el.fullCalendar(this._defaultOptions);

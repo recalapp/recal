@@ -80,11 +80,22 @@ class DateTime implements Comparable
         this._momentObject = moment.unix(value);
     }
 
-    constructor(momentObject?: Moment)
+
+    constructor();
+    constructor(momentObject: Moment);
+    constructor(toParse: Date);
+    constructor(arg?: any)
     {
-        if (momentObject)
+        if (arg)
         {
-            this._momentObject = momentObject;
+            if (arg instanceof Date)
+            {
+                this._momentObject = moment(<Date>arg);
+            }
+            else
+            {
+                this._momentObject = <Moment>arg;
+            }
         }
     }
 

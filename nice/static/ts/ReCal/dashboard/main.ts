@@ -1,3 +1,3 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-require(['./bridge/AgendaBridge']);
+require(['./bridge/AgendaBridge', './bridge/CalendarBridge']);

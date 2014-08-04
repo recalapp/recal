@@ -1,2 +1,3 @@
 /// <reference path="../../typings/tsd.d.ts" />
-require(['./bridge/AgendaBridge']);
+/// <amd-dependency path="dashboard" />
+require(['./bridge/AgendaBridge', './bridge/CalendarBridge']);

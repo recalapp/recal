@@ -8,5 +8,7 @@ interface ICalendarView extends IView
     delegate: CalendarViewDelegate;
 
     refresh(): void;
+    selectCalendarEventsWithId(uniqueId: string): void;
+    deselectCalendarEventsWithId(uniqueId: string): void;
 }
 export = ICalendarView;

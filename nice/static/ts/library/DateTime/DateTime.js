@@ -2,10 +2,14 @@
 /// <reference path="../../typings-manual/typings.d.ts" />
 define(["require", "exports", 'moment', '../Core/ComparableResult', "moment-timezone"], function(require, exports, moment, ComparableResult) {
     var DateTime = (function () {
-        function DateTime(momentObject) {
+        function DateTime(arg) {
             this._momentObject = moment();
-            if (momentObject) {
-                this._momentObject = momentObject;
+            if (arg) {
+                if (arg instanceof Date) {
+                    this._momentObject = moment(arg);
+                } else {
+                    this._momentObject = arg;
+                }
             }
         }
         Object.defineProperty(DateTime, "max", {
