@@ -13,7 +13,7 @@ import View = require('../CoreUI/View');
 
 interface CustomFullCalendarEventObject extends FullCalendar.EventObject
 {
-    calendarViewEvent: ICalendarViewEvent;
+    calendarViewEvent?: ICalendarViewEvent;
 }
 
 class CalendarView extends View implements ICalendarView
@@ -24,8 +24,8 @@ class CalendarView extends View implements ICalendarView
         defaultView: "agendaWeek",
         slotMinutes: 30,
         firstHour: 8,
-        minTime: 8,
-        maxTime: 23,
+        minTime: '08:00:00',
+        maxTime: '23:00:00',
         eventDurationEditable: false,
         eventStartEditable: false,
         //eventBackgroundColor: "#74a2ca",
@@ -46,7 +46,7 @@ class CalendarView extends View implements ICalendarView
         {
             this._dataSource = value;
             this.initializeCalendar();
-            this.refresh();
+            //this.refresh();
         }
     }
 
@@ -83,6 +83,7 @@ class CalendarView extends View implements ICalendarView
 
         // initialize
         this._$el.fullCalendar(this._defaultOptions);
+        //this.render();
     }
 
     private handleClick(calEvent: CustomFullCalendarEventObject, jsEvent: any, html: any)
@@ -105,6 +106,7 @@ class CalendarView extends View implements ICalendarView
                 this.delegate.didDeselectEvent(calEvent.calendarViewEvent);
             }
         }
+        this._$el.fullCalendar('updateEvent', this.updateFullCalendarEventFromCalendarViewEvent(calEvent, calEvent.calendarViewEvent));
     }
 
     private retrieveCalendarEvents(start: DateTime, end: DateTime): CustomFullCalendarEventObject[]
@@ -117,18 +119,30 @@ class CalendarView extends View implements ICalendarView
         var results = new Array<CustomFullCalendarEventObject>();
         $.each(calendarEventArray, (index: number, calendarViewEvent: ICalendarViewEvent)=>{
             // TODO verify timezone
-            results.push({
-                id: calendarViewEvent.uniqueId,
-                title: calendarViewEvent.title,
-                start: calendarViewEvent.start.toJsDate(),
-                end: calendarViewEvent.end.toJsDate(),
-                textColor: calendarViewEvent.textColor,
-                backgroundColor: calendarViewEvent.backgroundColor,
-                borderColor: calendarViewEvent.borderColor,
-                calendarViewEvent: calendarViewEvent
-            });
+            results.push(this.createFullCalendarEventFromCalendarViewEvent(calendarViewEvent));
         });
         return results;
+    }
+
+    private createFullCalendarEventFromCalendarViewEvent(calendarViewEvent: ICalendarViewEvent): CustomFullCalendarEventObject
+    {
+        return this.updateFullCalendarEventFromCalendarViewEvent({
+            title: null,
+            start: null,
+            end: null
+        }, calendarViewEvent);
+    }
+    private updateFullCalendarEventFromCalendarViewEvent(calEvent: CustomFullCalendarEventObject, calendarViewEvent: ICalendarViewEvent): CustomFullCalendarEventObject
+    {
+        calEvent.id = calendarViewEvent.uniqueId;
+        calEvent.title = calendarViewEvent.title;
+        calEvent.start = calendarViewEvent.start.toJsDate();
+        calEvent.end = calendarViewEvent.end.toJsDate();
+        calEvent.textColor = calendarViewEvent.textColor;
+        calEvent.backgroundColor = calendarViewEvent.backgroundColor;
+        calEvent.borderColor = calendarViewEvent.borderColor;
+        calEvent.calendarViewEvent = calendarViewEvent;
+        return calEvent;
     }
 
     public selectCalendarEventsWithId(uniqueId: string): void
@@ -146,6 +160,28 @@ class CalendarView extends View implements ICalendarView
         {
             this.deselectCalendarEvent(calEvent);
         });
+    }
+    public getCalendarViewEventWithId(uniqueId: string): ICalendarViewEvent
+    {
+        var calEvents: CustomFullCalendarEventObject[] = this.getCalendarEventsWithId(uniqueId);
+        if (calEvents.length === 0)
+        {
+            return null;
+        }
+        return calEvents[0].calendarViewEvent;
+    }
+    /**
+      * Update the calendar html element associated with this calendar view event.
+      * The id cannot change
+      */
+    public updateCalendarViewEvent(calendarViewEvent: ICalendarViewEvent): void
+    {
+        var calEvents: CustomFullCalendarEventObject[] = this.getCalendarEventsWithId(calendarViewEvent.uniqueId);
+        if (calEvents.length === 0)
+        {
+            return;
+        }
+        this._$el.fullCalendar('updateEvent', this.updateFullCalendarEventFromCalendarViewEvent(calEvents[0], calendarViewEvent));
     }
 
     private getCalendarEventsWithId(uniqueId: string): CustomFullCalendarEventObject[]
@@ -165,7 +201,27 @@ class CalendarView extends View implements ICalendarView
 
     public refresh(): void
     {
-        this._$el.fullCalendar('refetchEvents');
+        // must use a try because fullCalendar doesn't handle when the view is not yet on screen
+        try {
+            this._$el.fullCalendar('refetchEvents');
+        }
+        catch(error){
+        }
+    }
+    public render(): void
+    {
+        this._$el.fullCalendar('render');
+    }
+    public selectedCalendarViewEvents(): ICalendarViewEvent[]
+    {
+        var calEvents: CustomFullCalendarEventObject[] = <CustomFullCalendarEventObject[]> this._$el.fullCalendar('clientEvents', (calEvent: CustomFullCalendarEventObject)=>{
+            return calEvent.calendarViewEvent.selected;
+        });
+        var result: ICalendarViewEvent[] = new Array<ICalendarViewEvent>();
+        $.each(calEvents, (index: number, calEvent: CustomFullCalendarEventObject)=>{
+            result.push(calEvent.calendarViewEvent)
+        });
+        return result;
     }
 
 }

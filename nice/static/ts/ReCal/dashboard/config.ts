@@ -16,7 +16,7 @@ require.config({
         bootstrap: bowerPath('bootstrap/dist/js/bootstrap'),
         'bootstrap-datepicker': bowerPath('smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker'),
         dashboard: staticPath('compiled/dashboard'),
-        fullcalendar: bowerPath('fullcalendar/fullcalendar'),
+        fullcalendar: bowerPath('fullcalendar/dist/fullcalendar'),
         jeditable: bowerPath('jquery_jeditable/jquery.jeditable'),
         jquery: bowerPath('jquery/dist/jquery'),
         jqueryui: bowerPath('jquery-ui/jquery-ui'),

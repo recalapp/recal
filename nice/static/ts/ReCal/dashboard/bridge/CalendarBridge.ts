@@ -8,7 +8,7 @@ import CalendarView = require('../../../library/Calendar/CalendarView');
 import DashboardCalendarViewController = require('../Calendar/DashboardCalendarViewController');
 import ICalendarView = require('../../../library/Calendar/ICalendarView');
 
-var calendarView: ICalendarView = <CalendarView> CalendarView.fromJQuery($('#calendar'));
+var calendarView: ICalendarView = <CalendarView> CalendarView.fromJQuery($('#calendarui'));
 var calendarVC: DashboardCalendarViewController;
 
 function Cal_init()

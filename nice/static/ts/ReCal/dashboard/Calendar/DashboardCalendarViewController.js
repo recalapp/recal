@@ -16,6 +16,9 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
             // deselect when closing events
             PopUp_addCloseListener(function (eventId) {
                 _this.view.deselectCalendarEventsWithId(eventId);
+                var calEvent = _this.view.getCalendarViewEventWithId(eventId);
+                _this.unhighlightCalendarEvent(calEvent);
+                _this.view.updateCalendarViewEvent(calEvent);
             });
 
             // reload before displaying
@@ -30,6 +33,7 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
                 $(pane).on('transitionend', function (ev) {
                     if ($(pane).hasClass('in')) {
                         // TODO render
+                        _this.view.render();
                         _this.view.refresh();
                     }
                 });
@@ -116,6 +120,7 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
         * Callback for when an event is selected
         */
         DashboardCalendarViewController.prototype.didSelectEvent = function (calendarViewEvent) {
+            var _this = this;
             var eventId = calendarViewEvent.uniqueId;
             var popUp = PopUp_getPopUpByID(eventId);
             if (popUp === null || popUp === undefined) {
@@ -125,8 +130,18 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
                 // TODO handle success/retry logic. was needed for when popup has uncommitted changes
             }
             PopUp_giveFocus(popUp);
-            // TODO update selection. deselect any events no longer relevant
-            // TODO handle highlight logic - decide whether to do that here or in calendar view itself
+
+            // update selection. deselect any events no longer relevant
+            this.highlightCalendarEvent(calendarViewEvent);
+            this.view.updateCalendarViewEvent(calendarViewEvent);
+            $.each(this.view.selectedCalendarViewEvents(), function (index, selectedEvent) {
+                var eventId = selectedEvent.uniqueId;
+                if (!UI_isMain(eventId) && !UI_isPinned(eventId)) {
+                    _this.view.deselectCalendarEventsWithId(eventId);
+                    _this.unhighlightCalendarEvent(selectedEvent);
+                    _this.view.updateCalendarViewEvent(selectedEvent);
+                }
+            });
         };
         return DashboardCalendarViewController;
     })(CalendarViewController);

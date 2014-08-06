@@ -9,16 +9,16 @@
   "private": true,
   "dependencies": {
     "fontawesome": "~4.0.3",
-    "fullcalendar": "~1.6.4",
     "bootstrap": "~3.1.1",
-    "jquery-ui": "~1.11.0",
+    "fullcalendar": "~2.0.2",
     "holderjs": "~2.3.2",
+    "jquery-ui": "~1.11.0",
     "jquery.cookie": "carhartl/jquery-cookie#~1.4.0",
-    "jquery": "~2.1.1",
     "moment-timezone": "~0.2.0",
     "jquery_jeditable": "tuupola/jquery_jeditable#~1.7.3",
-    "momentjs": "~2.7.0",
+    "jquery": "~2.1.1",
     "requirejs": "~2.1.14",
+    "momentjs": "~2.7.0",
     "smalot-bootstrap-datetimepicker": "~2.2.0"
   }
 }

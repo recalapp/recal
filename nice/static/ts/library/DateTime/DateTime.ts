@@ -94,7 +94,7 @@ class DateTime implements Comparable
             }
             else
             {
-                this._momentObject = <Moment>arg;
+                this.unix = (<Moment>arg).unix();
             }
         }
     }

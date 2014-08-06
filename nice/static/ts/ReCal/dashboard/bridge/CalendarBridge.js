@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarView', '../Calendar/DashboardCalendarViewController', "dashboard"], function(require, exports, $, CalendarView, DashboardCalendarViewController) {
-    var calendarView = CalendarView.fromJQuery($('#calendar'));
+    var calendarView = CalendarView.fromJQuery($('#calendarui'));
     var calendarVC;
 
     function Cal_init() {

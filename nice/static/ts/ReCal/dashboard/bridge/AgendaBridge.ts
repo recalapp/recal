@@ -7,7 +7,7 @@ import TableView = require('../../../library/Table/TableView');
 
 import ITableView = require('../../../library/Table/ITableView');
 
-var tableView: ITableView = <TableView> TableView.fromJQuery($('#agenda'));
+var tableView: ITableView = <TableView> TableView.fromJQuery($('#agendaui'));
 var agendaTableVC: AgendaTableViewController;
 
 function Agenda_init()

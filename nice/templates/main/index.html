@@ -7,9 +7,9 @@
 {% include 'main/nav.html' %}
 {% include 'main/sidebar.html' %}
 <div class="main-content tab-content">
-    <div class="tab-pane fade left {% if nav_page == 0 %} active in {% endif %} container-fluid">
+    <div class="tab-pane fade left {% if nav_page == 0 %} active in {% endif %} container-fluid" id="agenda">
         <div class="row">
-            <div class="col-xs-4 col-xs-offset-1 container-fluid" id="agenda">
+            <div class="col-xs-4 col-xs-offset-1 container-fluid" id="agendaui">
                 {% include 'main/agenda-placeholder.html' %}
             </div>
         </div>
@@ -106,7 +106,7 @@
 
 {% block link_or_script_blocking %}
 <base href="{{ base_url }}">
-<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/dist/fullcalendar.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-darkness/jquery-ui.min.css' %}">
 <!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
 <link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">

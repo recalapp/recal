@@ -16,8 +16,8 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
                 defaultView: "agendaWeek",
                 slotMinutes: 30,
                 firstHour: 8,
-                minTime: 8,
-                maxTime: 23,
+                minTime: '08:00:00',
+                maxTime: '23:00:00',
                 eventDurationEditable: false,
                 eventStartEditable: false,
                 //eventBackgroundColor: "#74a2ca",
@@ -36,7 +36,7 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
                 if (value != this._dataSource) {
                     this._dataSource = value;
                     this.initializeCalendar();
-                    this.refresh();
+                    //this.refresh();
                 }
             },
             enumerable: true,
@@ -76,6 +76,7 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
 
             // initialize
             this._$el.fullCalendar(this._defaultOptions);
+            //this.render();
         };
 
         CalendarView.prototype.handleClick = function (calEvent, jsEvent, html) {
@@ -92,9 +93,11 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
                     this.delegate.didDeselectEvent(calEvent.calendarViewEvent);
                 }
             }
+            this._$el.fullCalendar('updateEvent', this.updateFullCalendarEventFromCalendarViewEvent(calEvent, calEvent.calendarViewEvent));
         };
 
         CalendarView.prototype.retrieveCalendarEvents = function (start, end) {
+            var _this = this;
             if (this.dataSource === null || this.dataSource === undefined) {
                 return [];
             }
@@ -102,18 +105,28 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
             var results = new Array();
             $.each(calendarEventArray, function (index, calendarViewEvent) {
                 // TODO verify timezone
-                results.push({
-                    id: calendarViewEvent.uniqueId,
-                    title: calendarViewEvent.title,
-                    start: calendarViewEvent.start.toJsDate(),
-                    end: calendarViewEvent.end.toJsDate(),
-                    textColor: calendarViewEvent.textColor,
-                    backgroundColor: calendarViewEvent.backgroundColor,
-                    borderColor: calendarViewEvent.borderColor,
-                    calendarViewEvent: calendarViewEvent
-                });
+                results.push(_this.createFullCalendarEventFromCalendarViewEvent(calendarViewEvent));
             });
             return results;
+        };
+
+        CalendarView.prototype.createFullCalendarEventFromCalendarViewEvent = function (calendarViewEvent) {
+            return this.updateFullCalendarEventFromCalendarViewEvent({
+                title: null,
+                start: null,
+                end: null
+            }, calendarViewEvent);
+        };
+        CalendarView.prototype.updateFullCalendarEventFromCalendarViewEvent = function (calEvent, calendarViewEvent) {
+            calEvent.id = calendarViewEvent.uniqueId;
+            calEvent.title = calendarViewEvent.title;
+            calEvent.start = calendarViewEvent.start.toJsDate();
+            calEvent.end = calendarViewEvent.end.toJsDate();
+            calEvent.textColor = calendarViewEvent.textColor;
+            calEvent.backgroundColor = calendarViewEvent.backgroundColor;
+            calEvent.borderColor = calendarViewEvent.borderColor;
+            calEvent.calendarViewEvent = calendarViewEvent;
+            return calEvent;
         };
 
         CalendarView.prototype.selectCalendarEventsWithId = function (uniqueId) {
@@ -130,6 +143,25 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
                 _this.deselectCalendarEvent(calEvent);
             });
         };
+        CalendarView.prototype.getCalendarViewEventWithId = function (uniqueId) {
+            var calEvents = this.getCalendarEventsWithId(uniqueId);
+            if (calEvents.length === 0) {
+                return null;
+            }
+            return calEvents[0].calendarViewEvent;
+        };
+
+        /**
+        * Update the calendar html element associated with this calendar view event.
+        * The id cannot change
+        */
+        CalendarView.prototype.updateCalendarViewEvent = function (calendarViewEvent) {
+            var calEvents = this.getCalendarEventsWithId(calendarViewEvent.uniqueId);
+            if (calEvents.length === 0) {
+                return;
+            }
+            this._$el.fullCalendar('updateEvent', this.updateFullCalendarEventFromCalendarViewEvent(calEvents[0], calendarViewEvent));
+        };
 
         CalendarView.prototype.getCalendarEventsWithId = function (uniqueId) {
             return this._$el.fullCalendar('clientEvents', uniqueId);
@@ -144,7 +176,23 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
         };
 
         CalendarView.prototype.refresh = function () {
-            this._$el.fullCalendar('refetchEvents');
+            try  {
+                this._$el.fullCalendar('refetchEvents');
+            } catch (error) {
+            }
+        };
+        CalendarView.prototype.render = function () {
+            this._$el.fullCalendar('render');
+        };
+        CalendarView.prototype.selectedCalendarViewEvents = function () {
+            var calEvents = this._$el.fullCalendar('clientEvents', function (calEvent) {
+                return calEvent.calendarViewEvent.selected;
+            });
+            var result = new Array();
+            $.each(calEvents, function (index, calEvent) {
+                result.push(calEvent.calendarViewEvent);
+            });
+            return result;
         };
         return CalendarView;
     })(View);

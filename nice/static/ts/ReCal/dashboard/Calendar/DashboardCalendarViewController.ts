@@ -39,6 +39,9 @@ class DashboardCalendarViewController extends CalendarViewController
         PopUp_addCloseListener((eventId: string)=>
         {
             this.view.deselectCalendarEventsWithId(eventId);
+            var calEvent: ICalendarViewEvent = this.view.getCalendarViewEventWithId(eventId);
+            this.unhighlightCalendarEvent(calEvent);
+            this.view.updateCalendarViewEvent(calEvent);
         });
         
         // reload before displaying
@@ -56,6 +59,7 @@ class DashboardCalendarViewController extends CalendarViewController
                 if ($(pane).hasClass('in'))
                 {
                     // TODO render
+                    this.view.render();
                     this.view.refresh();
                 }
             });
@@ -163,8 +167,19 @@ class DashboardCalendarViewController extends CalendarViewController
         }
         PopUp_giveFocus(popUp);
 
-        // TODO update selection. deselect any events no longer relevant
-        // TODO handle highlight logic - decide whether to do that here or in calendar view itself
+        // update selection. deselect any events no longer relevant
+        this.highlightCalendarEvent(calendarViewEvent);
+        this.view.updateCalendarViewEvent(calendarViewEvent);
+        $.each(this.view.selectedCalendarViewEvents(), (index: number, selectedEvent: ICalendarViewEvent)=>{
+            var eventId = selectedEvent.uniqueId;
+            if (!UI_isMain(eventId) && !UI_isPinned(eventId))
+            {
+                this.view.deselectCalendarEventsWithId(eventId);
+                this.unhighlightCalendarEvent(selectedEvent);
+                this.view.updateCalendarViewEvent(selectedEvent);
+            }
+        });
+
     }
 }
 
