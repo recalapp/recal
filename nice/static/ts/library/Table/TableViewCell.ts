@@ -41,11 +41,17 @@ class TableViewCell extends FocusableView implements ITableViewCell
         }
         this.triggerEvent(BrowserEvents.tableViewCellSelectionChanged);
     }
+    /**
+      * The unique css class for this class.
+      */
+    public cssClass(): string
+    {
+        return super.cssClass() + ' ' + TableViewCommon.cellCssClass;
+    }
 
     constructor($element: JQuery)
     {
         super($element);
-        this._$el.addClass(TableViewCommon.cellCssClass);
     }
 
     public highlight() : void

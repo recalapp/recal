@@ -16,6 +16,13 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
             }
             this._initializeClickToEdit();
         }
+        /**
+        * The unique css class for this class.
+        */
+        ClickToEditBaseView.prototype.cssClass = function () {
+            return _super.prototype.cssClass.call(this) + ' clickToEdit';
+        };
+
         ClickToEditBaseView.prototype._initializeClickToEdit = function () {
             var _this = this;
             if (!ClickToEditBaseView._customTypes.contains(this.inputType())) {

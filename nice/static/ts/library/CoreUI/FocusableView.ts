@@ -9,6 +9,12 @@ import View = require('./View');
 class FocusableView extends View implements IFocusableView
 {
     private _hasFocus = false;
+    
+    public cssSelector(): string
+    {
+        return super.cssSelector() + ' focusableView';
+    }
+
     constructor($element: JQuery)
     {
         super($element);

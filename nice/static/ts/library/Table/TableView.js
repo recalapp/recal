@@ -64,6 +64,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             configurable: true
         });
 
+        /**
+        * The unique css class for this class.
+        */
+        TableView.prototype.cssClass = function () {
+            return _super.prototype.cssClass.call(this) + ' tableView';
+        };
+
         TableView.prototype.refresh = function () {
             var _this = this;
             if (this.dataSource === null) {

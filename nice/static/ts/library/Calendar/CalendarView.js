@@ -54,6 +54,13 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
             configurable: true
         });
 
+        /**
+        * The unique css class for this class.
+        */
+        CalendarView.prototype.cssClass = function () {
+            return _super.prototype.cssClass.call(this) + ' calendarView';
+        };
+
         CalendarView.prototype.initializeCalendar = function () {
             var _this = this;
             // deinitialize if needed

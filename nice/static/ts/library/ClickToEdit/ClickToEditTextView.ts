@@ -9,6 +9,14 @@ import ClickToEditBaseView = require('./ClickToEditBaseView');
 class ClickToEditTextView extends ClickToEditBaseView
 {
     /**
+      * The unique css class for this class.
+      */
+    public cssClass(): string
+    {
+        return super.cssClass() + ' clickToEditTextView';
+    }
+
+    /**
       * The unique input type identifier associated with this type of input
       */
     public inputType() : string

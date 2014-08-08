@@ -61,7 +61,28 @@ class View implements IView
     /******************************************************************
       Methods
       ****************************************************************/
-    
+    /**
+      * The unique css selector for this class.
+      */
+    public cssSelector(): string
+    {
+        var classes: string[] = this.cssClass().split(/\s+/);
+        for (var i = 0; i < classes.length; i++)
+        {
+            classes[i] = '.' + classes[i];
+        }
+
+        return classes.join('');
+    }
+
+    /**
+      * The unique css class for this class.
+      */
+    public cssClass(): string
+    {
+        return 'view';
+    }
+
     /**
       * Initialize a new View object from the JQuery element.
       * Throws an error if the JQuery element already belongs to another
@@ -84,6 +105,7 @@ class View implements IView
         this._viewNumber = View._viewCount++;
         this._$el = $element;
         this._$el.data(View.JQUERY_DATA_KEY, this);
+        this._$el.addClass(this.cssClass());
     }
 
     /**

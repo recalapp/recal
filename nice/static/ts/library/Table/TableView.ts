@@ -46,6 +46,14 @@ class TableView extends View implements ITableView
         this._delegate = value;
     }
     
+    /**
+      * The unique css class for this class.
+      */
+    public cssClass(): string
+    {
+        return super.cssClass() + ' tableView';
+    }
+
     constructor($element: JQuery)
     {
         super($element);

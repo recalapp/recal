@@ -4,6 +4,15 @@ import View = require('../CoreUI/View');
 class TableViewHeaderView extends View implements ITableViewHeaderView
 {
     private _section: Number = null;
+
+    /**
+      * The unique css class for this class.
+      */
+    public cssClass(): string
+    {
+        return super.cssClass() + ' tableViewHeaderView';
+    }
+
     get section() : Number
     {
         return this._section;

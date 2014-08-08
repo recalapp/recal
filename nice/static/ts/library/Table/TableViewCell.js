@@ -12,7 +12,6 @@ define(["require", "exports", '../Core/BrowserEvents', '../CoreUI/FocusableView'
             _super.call(this, $element);
             this._indexPath = null;
             this._selected = false;
-            this._$el.addClass(TableViewCommon.cellCssClass);
         }
         Object.defineProperty(TableViewCell.prototype, "indexPath", {
             get: function () {
@@ -44,6 +43,13 @@ define(["require", "exports", '../Core/BrowserEvents', '../CoreUI/FocusableView'
             enumerable: true,
             configurable: true
         });
+
+        /**
+        * The unique css class for this class.
+        */
+        TableViewCell.prototype.cssClass = function () {
+            return _super.prototype.cssClass.call(this) + ' ' + TableViewCommon.cellCssClass;
+        };
 
         TableViewCell.prototype.highlight = function () {
         };

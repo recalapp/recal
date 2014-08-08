@@ -66,6 +66,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             configurable: true
         });
 
+        /**
+        * The unique css class for this class.
+        */
+        PopUpView.prototype.cssClass = function () {
+            return _super.prototype.cssClass.call(this) + ' ' + PopUpCommon.cssClass;
+        };
+
         PopUpView.prototype._makeDraggable = function () {
             var _this = this;
             this._$el.draggable({

@@ -13,6 +13,14 @@ class ClickToEditBaseView extends FocusableView
 {
     private static _customTypes = new Set();
 
+    /**
+      * The unique css class for this class.
+      */
+    public cssClass(): string
+    {
+        return super.cssClass() + ' clickToEdit';
+    }
+
     constructor($element: JQuery)
     {
         super($element);

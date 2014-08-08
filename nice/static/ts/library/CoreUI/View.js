@@ -1,8 +1,5 @@
 define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/InvalidActionException', "../Core/InvalidArgumentException", '../DataStructures/Set'], function(require, exports, $, BrowserEvents, InvalidActionException, InvalidArgumentException, Set) {
     var View = (function () {
-        /******************************************************************
-        Methods
-        ****************************************************************/
         /**
         * Initialize a new View object from the JQuery element.
         * Throws an error if the JQuery element already belongs to another
@@ -24,6 +21,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             this._viewNumber = View._viewCount++;
             this._$el = $element;
             this._$el.data(View.JQUERY_DATA_KEY, this);
+            this._$el.addClass(this.cssClass());
         }
         Object.defineProperty(View.prototype, "parentView", {
             /******************************************************************
@@ -77,6 +75,28 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             enumerable: true,
             configurable: true
         });
+
+        /******************************************************************
+        Methods
+        ****************************************************************/
+        /**
+        * The unique css selector for this class.
+        */
+        View.prototype.cssSelector = function () {
+            var classes = this.cssClass().split(/\s+/);
+            for (var i = 0; i < classes.length; i++) {
+                classes[i] = '.' + classes[i];
+            }
+
+            return classes.join('');
+        };
+
+        /**
+        * The unique css class for this class.
+        */
+        View.prototype.cssClass = function () {
+            return 'view';
+        };
 
         /**
         * Returns true if the view associated with the jQuery element has

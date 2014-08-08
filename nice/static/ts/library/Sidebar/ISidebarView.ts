@@ -53,6 +53,8 @@ interface ISidebarView extends IView
     /********************************************************************
       Droppable Behavior
       ******************************************************************/    
+    // TODO figure out if this should be done via "scope" or "accept". 
+    // "accept" means having every view have a unique css selector
 }
 
 export = ISidebarView;

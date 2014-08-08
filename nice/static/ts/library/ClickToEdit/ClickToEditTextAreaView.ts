@@ -8,6 +8,15 @@ import EncodeDecodeProxy = require("../Core/EncodeDecodeProxy");
 
 class ClickToEditTextAreaView extends ClickToEditBaseView
 {
+
+    /**
+      * The unique css class for this class.
+      */
+    public cssClass(): string
+    {
+        return super.cssClass() + ' clickToEditTextAreaView';
+    }
+
     /**
       * The unique input type identifier associated with this type of input
       */

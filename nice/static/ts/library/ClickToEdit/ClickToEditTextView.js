@@ -14,6 +14,13 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', "jeditable"], f
             _super.apply(this, arguments);
         }
         /**
+        * The unique css class for this class.
+        */
+        ClickToEditTextView.prototype.cssClass = function () {
+            return _super.prototype.cssClass.call(this) + ' clickToEditTextView';
+        };
+
+        /**
         * The unique input type identifier associated with this type of input
         */
         ClickToEditTextView.prototype.inputType = function () {

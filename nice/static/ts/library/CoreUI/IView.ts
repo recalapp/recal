@@ -29,6 +29,17 @@ interface IView
     /******************************************************************
       Methods
       ****************************************************************/
+
+    /**
+      * The unique css selector for this class.
+      */
+    cssSelector(): string;
+
+    /**
+      * The unique css class for this class.
+      */
+    cssClass(): string;
+
     /**
       * Append childView to this view. childView cannot already have a parent
       */

@@ -32,6 +32,14 @@ class PopUpView extends FocusableView
         return this._type === PopUpType.main;
     }
 
+    /**
+      * The unique css class for this class.
+      */
+    public cssClass(): string
+    {
+        return super.cssClass() + ' ' + PopUpCommon.cssClass;
+    }
+
     constructor(view : JQuery)
     {
         super(view);

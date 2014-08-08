@@ -59,6 +59,14 @@ class CalendarView extends View implements ICalendarView
         this._delegate = value;
     }
 
+    /**
+      * The unique css class for this class.
+      */
+    public cssClass(): string
+    {
+        return super.cssClass() + ' calendarView';
+    }
+
     private initializeCalendar(): void
     {
         // deinitialize if needed
