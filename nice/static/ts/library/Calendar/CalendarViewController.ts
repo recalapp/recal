@@ -1,11 +1,13 @@
 import AbstractMethodException = require('../Core/AbstractMethodException');
+import Calendar = require('./Calendar');
 import CalendarViewDataSource = require('./CalendarViewDataSource');
 import CalendarViewDelegate = require('./CalendarViewDelegate');
 import DateTime = require('../DateTime/DateTime');
-import ICalendarView = require('./ICalendarView');
-import ICalendarViewController = require('./ICalendarViewController');
-import ICalendarViewEvent = require('./ICalendarViewEvent');
 import ViewController = require('../../library/CoreUI/ViewController');
+
+import ICalendarView = Calendar.ICalendarView;
+import ICalendarViewController = Calendar.ICalendarViewController;
+import ICalendarViewEvent = Calendar.ICalendarViewEvent;
 
 class CalendarViewController extends ViewController implements ICalendarViewController, CalendarViewDataSource, CalendarViewDelegate
 {

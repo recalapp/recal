@@ -2,16 +2,18 @@
 
 import $ = require('jquery');
 
+import Agenda = require('./Agenda');
 import AgendaTableViewCell = require('./AgendaTableViewCell');
 import AgendaTableViewHeaderView = require('./AgendaTableViewHeaderView');
 import DateTime = require('../../../library/DateTime/DateTime');
 import IndexPath = require('../../../library/DataStructures/IndexPath');
+import Table = require('../../../library/Table/Table');
 import TableViewController = require('../../../library/Table/TableViewController');
 
-import IAgendaTableViewCell = require('./IAgendaTableViewCell');
-import IAgendaTableViewHeaderView = require('./IAgendaTableViewHeaderView');
-import ITableViewCell = require('../../../library/Table/ITableViewCell');
-import ITableViewHeaderView = require('../../../library/Table/ITableViewHeaderView');
+import IAgendaTableViewCell = Agenda.IAgendaTableViewCell;
+import IAgendaTableViewHeaderView = Agenda.IAgendaTableViewHeaderView;
+import ITableViewCell = Table.ITableViewCell;
+import ITableViewHeaderView = Table.ITableViewHeaderView;
 
 declare function EventsMan_addUpdateListener(callBack: ()=>void): void;
 declare function EventsMan_getEventByID(id: string): any;

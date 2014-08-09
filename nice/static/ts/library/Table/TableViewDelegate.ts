@@ -1,5 +1,7 @@
-import ITableViewCell = require('./ITableViewCell');
 import IndexPath = require('../DataStructures/IndexPath');
+import Table = require('./Table');
+
+import ITableViewCell = Table.ITableViewCell;
 
 interface TableViewDelegate
 {

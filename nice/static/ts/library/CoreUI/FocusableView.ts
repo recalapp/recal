@@ -3,8 +3,10 @@ import $ = require('jquery');
 
 import BrowserEvents = require('../Core/BrowserEvents');
 import GlobalCssClass = require('../Core/GlobalCssClass');
-import IFocusableView = require('./IFocusableView');
+import CoreUI = require('./CoreUI');
 import View = require('./View');
+
+import IFocusableView = CoreUI.IFocusableView;
 
 class FocusableView extends View implements IFocusableView
 {

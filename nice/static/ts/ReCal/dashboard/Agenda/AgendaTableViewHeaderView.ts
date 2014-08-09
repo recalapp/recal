@@ -3,9 +3,11 @@
 import $ = require('jquery');
 import moment = require('moment');
 
-import IAgendaTableViewHeaderView = require('./IAgendaTableViewHeaderView');
+import Agenda = require('./Agenda');
 import TableViewHeaderView = require('../../../library/Table/TableViewHeaderView');
 import ViewTemplateRetriever = require('../../../library/CoreUI/ViewTemplateRetriever');
+
+import IAgendaTableViewHeaderView = Agenda.IAgendaTableViewHeaderView;
 
 class AgendaTableViewHeaderView extends TableViewHeaderView implements IAgendaTableViewHeaderView
 {

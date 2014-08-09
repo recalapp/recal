@@ -2,10 +2,12 @@
 
 import $ = require('jquery');
 
+import Agenda = require('./Agenda');
 import DateTime = require('../../../library/DateTime/DateTime');
-import IAgendaTableViewCell = require('./IAgendaTableViewCell');
 import TableViewCell = require('../../../library/Table/TableViewCell');
 import ViewTemplateRetriever = require('../../../library/CoreUI/ViewTemplateRetriever');
+
+import IAgendaTableViewCell = Agenda.IAgendaTableViewCell;
 
 declare var SECTION_MAP: any;
 declare var SECTION_COLOR_MAP: any;

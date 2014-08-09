@@ -1,4 +1,6 @@
-import IView = require('../CoreUI/IView');
+import CoreUI = require('../CoreUI/CoreUI');
+
+import IView = CoreUI.IView;
 
 interface ISidebarView extends IView
 {
@@ -58,3 +60,4 @@ interface ISidebarView extends IView
 }
 
 export = ISidebarView;
+

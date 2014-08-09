@@ -1,6 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-interface IView 
+export interface IView 
 {
     /******************************************************************
       Properties
@@ -78,4 +78,43 @@ interface IView
       */
     removeAllChildren(): void
 }
-export = IView;
+
+export interface IFocusableView extends IView
+{
+    hasFocus: boolean;
+
+    didFocus(): void
+    didBlur(): void
+}
+
+export interface IViewController
+{
+    /******************************************************************
+      Properties
+      ****************************************************************/
+    view: IView;
+
+    parentViewController: IViewController;
+    childViewControllers: IViewController[];
+
+    /******************************************************************
+      Methods
+      ****************************************************************/
+    /**
+      * Do any initialization needed. Better than overriding constructor
+      * because this gives the option of not calling super.initialize();
+      */
+    initialize(): void;
+
+    addChildViewController(childVC: IViewController): void;
+    removeFromParentViewController(): void;
+}
+
+export interface IViewTemplateRetriever
+{
+    /**
+      * Retrieve the template belonging to the container selector as a 
+      * jQuery object. Creates a new one every time.
+      */
+    retrieveTemplate(containerSelector: string): JQuery;
+}

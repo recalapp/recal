@@ -1,5 +1,7 @@
+import Calendar = require('./Calendar');
 import DateTime = require('../../library/DateTime/DateTime');
-import ICalendarViewEvent = require('./ICalendarViewEvent');
+
+import ICalendarViewEvent = Calendar.ICalendarViewEvent;
 
 class CalendarViewEvent implements ICalendarViewEvent
 {

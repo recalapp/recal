@@ -1,5 +1,7 @@
-import ITableViewHeaderView = require('./ITableViewHeaderView');
+import Table = require('./Table');
 import View = require('../CoreUI/View');
+
+import ITableViewHeaderView = Table.ITableViewHeaderView;
 
 class TableViewHeaderView extends View implements ITableViewHeaderView
 {

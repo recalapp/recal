@@ -1,12 +1,14 @@
 import AbstractMethodException = require('../Core/AbstractMethodException');
 import IndexPath = require('../DataStructures/IndexPath');
-import ITableViewCell = require('./ITableViewCell');
-import ITableViewHeaderView = require('./ITableViewHeaderView');
-import ITableView = require('./ITableView');
-import ITableViewController = require('./ITableViewController');
+import Table = require('./Table');
 import TableViewDataSource = require('./TableViewDataSource');
 import TableViewDelegate = require('./TableViewDelegate');
 import ViewController = require('../CoreUI/ViewController');
+
+import ITableViewCell = Table.ITableViewCell;
+import ITableViewHeaderView = Table.ITableViewHeaderView;
+import ITableView = Table.ITableView;
+import ITableViewController = Table.ITableViewController;
 
 class TableViewController extends ViewController implements ITableViewController, TableViewDataSource, TableViewDelegate
 {

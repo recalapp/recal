@@ -1,10 +1,12 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import $ = require('jquery');
 import BrowserEvents = require("../Core/BrowserEvents");
+import CoreUI = require('./CoreUI');
 import InvalidActionException = require('../Core/InvalidActionException');
 import InvalidArgumentException = require("../Core/InvalidArgumentException");
-import IView = require('./IView');
 import Set = require('../DataStructures/Set');
+
+import IView = CoreUI.IView;
 
 class View implements IView
 {

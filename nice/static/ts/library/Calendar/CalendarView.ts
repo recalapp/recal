@@ -4,12 +4,14 @@
 import $ = require('jquery');
 import moment = require('moment');
 
+import Calendar = require('./Calendar');
 import CalendarViewDataSource = require('./CalendarViewDataSource');
 import CalendarViewDelegate = require('./CalendarViewDelegate');
 import DateTime = require('../DateTime/DateTime');
-import ICalendarView = require('./ICalendarView');
-import ICalendarViewEvent = require('./ICalendarViewEvent');
 import View = require('../CoreUI/View');
+
+import ICalendarView = Calendar.ICalendarView;
+import ICalendarViewEvent = Calendar.ICalendarViewEvent;
 
 interface CustomFullCalendarEventObject extends FullCalendar.EventObject
 {

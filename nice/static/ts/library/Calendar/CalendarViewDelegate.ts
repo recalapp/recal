@@ -1,4 +1,6 @@
-import ICalendarViewEvent = require('./ICalendarViewEvent');
+import Calendar = require('./Calendar');
+
+import ICalendarViewEvent = Calendar.ICalendarViewEvent;
 
 interface CalendarViewDelegate
 {

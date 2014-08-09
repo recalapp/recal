@@ -1,6 +1,8 @@
-import ITableViewCell = require('./ITableViewCell');
-import ITableViewHeaderView = require('./ITableViewHeaderView');
 import IndexPath = require('../DataStructures/IndexPath');
+import Table = require('./Table');
+
+import ITableViewCell = Table.ITableViewCell;
+import ITableViewHeaderView = Table.ITableViewHeaderView;
 
 interface TableViewDataSource
 {

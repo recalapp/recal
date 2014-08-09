@@ -1,9 +1,11 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import $ = require('jquery');
+import CoreUI = require('./CoreUI');
 import InvalidActionException = require('../Core/InvalidActionException');
 import Set = require('../DataStructures/Set');
-import IView = require('./IView');
-import IViewController = require('./IViewController');
+
+import IView = CoreUI.IView;
+import IViewController = CoreUI.IViewController;
 
 class ViewController implements IViewController
 {

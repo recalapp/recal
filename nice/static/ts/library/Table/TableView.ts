@@ -3,18 +3,21 @@
 import $ = require('jquery');
 
 import BrowserEvents = require('../Core/BrowserEvents');
+import CoreUI = require('../CoreUI/CoreUI');
 import Dictionary = require('../DataStructures/Dictionary');
 import IndexPath = require('../DataStructures/IndexPath');
 import InvalidActionException = require('../Core/InvalidActionException');
-import ITableView = require('./ITableView');
-import ITableViewCell = require('./ITableViewCell');
-import ITableViewHeaderView = require('./ITableViewHeaderView');
-import IView = require('../CoreUI/IView');
 import Set = require('../DataStructures/Set');
+import Table = require('./Table');
 import TableViewCommon = require('./TableViewCommon');
 import TableViewDataSource = require('./TableViewDataSource');
 import TableViewDelegate = require('./TableViewDelegate');
 import View = require('../CoreUI/View');
+
+import ITableView = Table.ITableView;
+import ITableViewCell = Table.ITableViewCell;
+import ITableViewHeaderView = Table.ITableViewHeaderView;
+import IView = CoreUI.IView;
 
 class TableView extends View implements ITableView
 {

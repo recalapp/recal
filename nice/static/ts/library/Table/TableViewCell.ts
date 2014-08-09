@@ -3,8 +3,10 @@
 import BrowserEvents = require('../Core/BrowserEvents');
 import FocusableView = require('../CoreUI/FocusableView');
 import IndexPath = require('../DataStructures/IndexPath');
-import ITableViewCell = require('./ITableViewCell');
+import Table = require('./Table');
 import TableViewCommon = require('./TableViewCommon');
+
+import ITableViewCell = Table.ITableViewCell;
 
 class TableViewCell extends FocusableView implements ITableViewCell
 {

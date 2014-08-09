@@ -2,8 +2,10 @@
 
 import $ = require('jquery');
 
+import CoreUI = require('./CoreUI');
 import Dictionary = require('../DataStructures/Dictionary');
-import IViewTemplateRetriever = require('./IViewTemplateRetriever');
+
+import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
 class ViewTemplateRetriever implements IViewTemplateRetriever
 {

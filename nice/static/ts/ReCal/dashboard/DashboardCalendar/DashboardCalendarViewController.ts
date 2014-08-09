@@ -2,11 +2,12 @@
 
 import $ = require('jquery');
 
+import Calendar = require('../../../library/Calendar/Calendar');
 import CalendarViewController = require('../../../library/Calendar/CalendarViewController');
 import CalendarViewEvent = require('../../../library/Calendar/CalendarViewEvent');
 import DateTime = require('../../../library/DateTime/DateTime');
 
-import ICalendarViewEvent = require('../../../library/Calendar/ICalendarViewEvent');
+import ICalendarViewEvent = Calendar.ICalendarViewEvent;
             
 declare function colorLuminance(color: string, lumFactor: number): string;
 declare function EventsMan_addUpdateListener(listener: ()=>void): void;

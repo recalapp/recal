@@ -3,9 +3,10 @@
 import $ = require('jquery');
 
 import AgendaTableViewController = require('../Agenda/AgendaTableViewController');
+import Table = require('../../../library/Table/Table');
 import TableView = require('../../../library/Table/TableView');
 
-import ITableView = require('../../../library/Table/ITableView');
+import ITableView = Table.ITableView;
 
 var tableView: ITableView = <TableView> TableView.fromJQuery($('#agendaui'));
 var agendaTableVC: AgendaTableViewController;

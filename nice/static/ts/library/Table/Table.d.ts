@@ -1,12 +1,15 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
+import CoreUI = require('../CoreUI/CoreUI');
 import IndexPath = require('../DataStructures/IndexPath');
-import ITableViewCell = require('./ITableViewCell');
 import TableViewDataSource = require('./TableViewDataSource');
 import TableViewDelegate = require('./TableViewDelegate');
-import IView = require('../CoreUI/IView');
 
-interface ITableView extends IView
+import IFocusableView = CoreUI.IFocusableView;
+import IView = CoreUI.IView;
+import IViewController = CoreUI.IViewController;
+
+export interface ITableView extends IView
 {
     dataSource: TableViewDataSource;
     delegate: TableViewDelegate;
@@ -23,4 +26,22 @@ interface ITableView extends IView
     deselectCell(cell: ITableViewCell): void;
 }
 
-export = ITableView;
+export interface ITableViewCell extends IFocusableView
+{
+    indexPath: IndexPath;
+    selected: boolean;
+
+    highlight(): void;
+
+    unhighlight(): void;
+}
+
+export interface ITableViewHeaderView extends IView
+{
+    section: Number;
+}
+
+export interface ITableViewController extends IViewController, TableViewDataSource, TableViewDelegate
+{
+    view: ITableView;
+}
