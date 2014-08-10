@@ -32,8 +32,8 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
                 }
             });
         }
-        FocusableView.prototype.cssSelector = function () {
-            return _super.prototype.cssSelector.call(this) + ' focusableView';
+        FocusableView.prototype.cssClass = function () {
+            return _super.prototype.cssClass.call(this) + ' focusableView';
         };
 
         Object.defineProperty(FocusableView.prototype, "hasFocus", {

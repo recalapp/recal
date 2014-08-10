@@ -247,6 +247,33 @@ class View implements IView
     }
 
     /**
+      * Attach an event handler to the view that only gets triggered once
+      */
+    public attachOneTimeEventHandler(ev : string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachOneTimeEventHandler(ev : string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+    public attachOneTimeEventHandler(ev : string, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
+    {
+        var eventName = ev;
+        var $element = this._$el;
+        if (typeof argumentThree === 'string' || argumentThree instanceof String || argumentThree.constructor === String)
+        {
+            if (handler === undefined)
+            {
+                throw new InvalidArgumentException("No handler provided.");
+            }
+            $element.one(eventName, <string> argumentThree, handler);
+        }
+        else if (typeof argumentThree === 'function')
+        {
+            $element.one(eventName, argumentThree);
+        }
+        else
+        {
+            throw new InvalidArgumentException("The second argument must either be a string or a function.");
+        }
+    }
+
+    /**
       * Triggers an event on the View.
       */
     public triggerEvent(ev: string);

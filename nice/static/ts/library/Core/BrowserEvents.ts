@@ -5,6 +5,7 @@ class BrowserEvents {
     static focusIn = 'focusin'; // bubbles up
     static focusOut = 'focusout'; // bubbles up
     static mouseDown = 'mousedown';
+    static transitionEnd = 'transitionend';
     
     // view
     static viewWasAppended = 'viewWasAppended';

@@ -12,9 +12,9 @@ class FocusableView extends View implements IFocusableView
 {
     private _hasFocus = false;
     
-    public cssSelector(): string
+    public cssClass(): string
     {
-        return super.cssSelector() + ' focusableView';
+        return super.cssClass() + ' focusableView';
     }
 
     constructor($element: JQuery)

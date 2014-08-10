@@ -210,6 +210,21 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             }
         };
 
+        View.prototype.attachOneTimeEventHandler = function (ev, argumentThree, handler) {
+            var eventName = ev;
+            var $element = this._$el;
+            if (typeof argumentThree === 'string' || argumentThree instanceof String || argumentThree.constructor === String) {
+                if (handler === undefined) {
+                    throw new InvalidArgumentException("No handler provided.");
+                }
+                $element.one(eventName, argumentThree, handler);
+            } else if (typeof argumentThree === 'function') {
+                $element.one(eventName, argumentThree);
+            } else {
+                throw new InvalidArgumentException("The second argument must either be a string or a function.");
+            }
+        };
+
         View.prototype.triggerEvent = function (ev, extraParameter) {
             var eventName = ev;
             if (extraParameter === undefined || extraParameter === null) {

@@ -8,6 +8,7 @@ define(["require", "exports"], function(require, exports) {
         BrowserEvents.focusIn = 'focusin';
         BrowserEvents.focusOut = 'focusout';
         BrowserEvents.mouseDown = 'mousedown';
+        BrowserEvents.transitionEnd = 'transitionend';
 
         BrowserEvents.viewWasAppended = 'viewWasAppended';
         BrowserEvents.viewWasRemoved = 'viewWasRemoved';
