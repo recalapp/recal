@@ -5,17 +5,32 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './SidebarFullViewContainer', './SidebarStackViewContainer', '../CoreUI/View'], function(require, exports, SidebarFullViewContainer, SidebarStackViewContainer, View) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Set', './SidebarFullViewContainer', './SidebarStackViewContainer', '../CoreUI/View', "jqueryui"], function(require, exports, $, BrowserEvents, Set, SidebarFullViewContainer, SidebarStackViewContainer, View) {
     var SidebarView = (function (_super) {
         __extends(SidebarView, _super);
         function SidebarView($element) {
+            var _this = this;
             _super.call(this, $element);
             this._fullViewContainer = null;
             this._stackViewContainer = null;
+            this._droppableCssSelectors = new Set();
+            this._$sidebar = null;
+            this._$sidebar = this._$el.find('#sidebar');
             var $stack = this._$el.find('#sb-left-container');
             this.stackViewContainer = SidebarStackViewContainer.fromJQuery($stack);
             var $full = this._$el.find('#sb-full-container');
             this.fullViewContainer = SidebarFullViewContainer.fromJQuery($full);
+
+            // droppable
+            this._$sidebar.droppable({
+                drop: function (ev, ui) {
+                    var $ui = $(ui);
+                    if ($ui.is(_this.droppableCssSelectorsString)) {
+                        View.fromJQuery($ui).triggerEvent(BrowserEvents.sidebarViewDidDrop);
+                    }
+                },
+                hoverClass: 'hover-active'
+            });
         }
         Object.defineProperty(SidebarView.prototype, "fullViewContainer", {
             get: function () {
@@ -40,6 +55,48 @@ define(["require", "exports", './SidebarFullViewContainer', './SidebarStackViewC
             configurable: true
         });
 
+
+        Object.defineProperty(SidebarView.prototype, "droppableCssSelectorsString", {
+            get: function () {
+                return this._droppableCssSelectors.toArray().join();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        SidebarView.prototype.showSidebar = function () {
+            this._$sidebar.addClass('in');
+            this._$el.find('#sb-handle').find('.glyphicon').addClass('glyphicon-chevron-right').removeClass('glyphicon-chevron-left');
+        };
+
+        SidebarView.prototype.showSidebarFull = function () {
+            this.showSidebar();
+            this._$sidebar.addClass('full');
+        };
+        SidebarView.prototype.hideSidebarFull = function () {
+            this._$sidebar.removeClass('full');
+            this.hideSidebarIfEmpty();
+        };
+
+        SidebarView.prototype.hideSidebar = function () {
+            this.triggerEvent(BrowserEvents.sidebarWillHide);
+            this._$sidebar.removeClass('in');
+            this._$el.find('#sb-handle').find('.glyphicon').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-left');
+        };
+
+        SidebarView.prototype.hideSidebarIfEmpty = function () {
+            if (this.isEmpty) {
+                this.hideSidebar();
+            }
+        };
+
+        Object.defineProperty(SidebarView.prototype, "isEmpty", {
+            get: function () {
+                return !this.fullViewContainer.hasView() && this.stackViewContainer.isEmpty;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         /********************************************************************
         Stack View
@@ -116,6 +173,7 @@ define(["require", "exports", './SidebarFullViewContainer', './SidebarStackViewC
         * Registers view with the css selector to receive droppable events
         */
         SidebarView.prototype.registerDroppable = function (cssSelector) {
+            this._droppableCssSelectors.add(cssSelector);
         };
         return SidebarView;
     })(View);

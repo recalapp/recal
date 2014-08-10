@@ -19,6 +19,9 @@ define(["require", "exports"], function(require, exports) {
         BrowserEvents.clickToEditShouldBegin = 'clickToEditShouldBegin';
 
         BrowserEvents.tableViewCellSelectionChanged = 'tableViewCellSelectionChanged';
+
+        BrowserEvents.sidebarViewDidDrop = 'sidebarViewDidDrop';
+        BrowserEvents.sidebarWillHide = 'sidebarWillHide';
         return BrowserEvents;
     })();
     

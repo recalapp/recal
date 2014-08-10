@@ -11,6 +11,19 @@ class SidebarStackViewContainer extends View
 {
     private _viewDict: Dictionary<string, View> = new Dictionary<string, View>();
 
+    public get isEmpty(): boolean
+    {
+        var keys = this._viewDict.allKeys();
+        for (var i = 0; i < keys.length; ++i)
+        {
+            if (this._viewDict.get(keys[i])._$el.hasClass('in'))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     constructor($element: JQuery)
     {
         super($element);

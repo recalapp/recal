@@ -13,6 +13,20 @@ define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictio
             this._viewDict = new Dictionary();
             this.removeAllChildren();
         }
+        Object.defineProperty(SidebarStackViewContainer.prototype, "isEmpty", {
+            get: function () {
+                var keys = this._viewDict.allKeys();
+                for (var i = 0; i < keys.length; ++i) {
+                    if (this._viewDict.get(keys[i])._$el.hasClass('in')) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         SidebarStackViewContainer.prototype.addOrReplaceViewWithIdentifier = function (view, identifier) {
             if (this._viewDict.contains(identifier)) {
                 var oldView = this._viewDict.get(identifier);

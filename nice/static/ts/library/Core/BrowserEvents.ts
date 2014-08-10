@@ -20,5 +20,9 @@ class BrowserEvents {
 
     // table
     static tableViewCellSelectionChanged = 'tableViewCellSelectionChanged';
+
+    // sidebar
+    static sidebarViewDidDrop = 'sidebarViewDidDrop';
+    static sidebarWillHide = 'sidebarWillHide';
 }
 export = BrowserEvents;
