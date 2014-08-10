@@ -50,7 +50,7 @@ export interface ISidebarView extends IView
     /**
       * Unset the full view and return it. null if does not exist.
       */
-    unsetFullView(): IView;
+    unsetFullView(): void;
 
     /********************************************************************
       Droppable Behavior

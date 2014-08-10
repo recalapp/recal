@@ -84,27 +84,29 @@ define(["require", "exports", './SidebarFullViewContainer', './SidebarStackViewC
         * if necessary.
         */
         SidebarView.prototype.setFullView = function (fullView) {
+            this.fullViewContainer.setView(fullView);
         };
 
         /**
         * Returns true if a full view has been set.
         */
         SidebarView.prototype.containsFullView = function () {
-            return false;
+            return this.fullViewContainer.hasView();
         };
 
         /**
         * Retrieves the full view. null if does not exist.
         */
         SidebarView.prototype.getFullView = function () {
-            return null;
+            return this.fullViewContainer.getView();
         };
 
         /**
-        * Unset the full view and return it. null if does not exist.
+        * Unset the full view and return it. null if does not exist. Throws
+        * an exception if none has been set
         */
         SidebarView.prototype.unsetFullView = function () {
-            return null;
+            this.fullViewContainer.unsetView();
         };
 
         /********************************************************************

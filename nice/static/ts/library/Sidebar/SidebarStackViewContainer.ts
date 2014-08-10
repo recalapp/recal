@@ -35,7 +35,7 @@ class SidebarStackViewContainer extends View
 
     public containsViewWithIdentifier(identifier: string): boolean
     {
-        return this._viewDict.contains(identifier);
+        return this._viewDict.contains(identifier) && this._viewDict.get(identifier)._$el.hasClass('in');
     }
 
     public getViewWithIdentifier(identifier: string): View

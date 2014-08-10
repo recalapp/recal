@@ -93,7 +93,7 @@ class SidebarView extends View implements ISidebarView
       */
     public setFullView(fullView: IView): void
     {
-
+        this.fullViewContainer.setView(<View> fullView);
     }
     
     /**
@@ -101,7 +101,7 @@ class SidebarView extends View implements ISidebarView
       */
     public containsFullView(): boolean
     {
-        return false;
+        return this.fullViewContainer.hasView();
     }
 
     /**
@@ -109,15 +109,16 @@ class SidebarView extends View implements ISidebarView
       */
     public getFullView(): IView
     {
-        return null;
+        return this.fullViewContainer.getView();
     }
 
     /**
-      * Unset the full view and return it. null if does not exist.
+      * Unset the full view and return it. null if does not exist. Throws
+      * an exception if none has been set
       */
-    public unsetFullView(): IView
+    public unsetFullView(): void
     {
-        return null;
+        this.fullViewContainer.unsetView();
     }
 
     /********************************************************************

@@ -26,7 +26,7 @@ define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictio
         };
 
         SidebarStackViewContainer.prototype.containsViewWithIdentifier = function (identifier) {
-            return this._viewDict.contains(identifier);
+            return this._viewDict.contains(identifier) && this._viewDict.get(identifier)._$el.hasClass('in');
         };
 
         SidebarStackViewContainer.prototype.getViewWithIdentifier = function (identifier) {
