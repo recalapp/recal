@@ -9,7 +9,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
     var AgendaTableViewCell = (function (_super) {
         __extends(AgendaTableViewCell, _super);
         function AgendaTableViewCell() {
-            _super.call(this, ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewCell._templateSelector));
+            _super.apply(this, arguments);
         }
         Object.defineProperty(AgendaTableViewCell.prototype, "eventId", {
             get: function () {
@@ -18,6 +18,10 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
             enumerable: true,
             configurable: true
         });
+
+        AgendaTableViewCell.fromTemplate = function () {
+            return this.fromJQuery(ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewCell._templateSelector));
+        };
 
         AgendaTableViewCell.prototype.highlight = function () {
             var courseColor = this._$el.data('course-color');

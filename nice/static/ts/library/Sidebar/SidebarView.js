@@ -8,9 +8,9 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Set', './SidebarFullViewContainer', './SidebarStackViewContainer', '../CoreUI/View', "jqueryui"], function(require, exports, $, BrowserEvents, Set, SidebarFullViewContainer, SidebarStackViewContainer, View) {
     var SidebarView = (function (_super) {
         __extends(SidebarView, _super);
-        function SidebarView($element) {
+        function SidebarView($element, cssClass) {
             var _this = this;
-            _super.call(this, $element);
+            _super.call(this, $element, cssClass);
             this._fullViewContainer = null;
             this._stackViewContainer = null;
             this._droppableCssSelectors = new Set();

@@ -10,9 +10,9 @@ class TableViewHeaderView extends View implements ITableViewHeaderView
     /**
       * The unique css class for this class.
       */
-    public cssClass(): string
+    public static get cssClass(): string
     {
-        return super.cssClass() + ' tableViewHeaderView';
+        return View.cssClass + ' tableViewHeaderView';
     }
 
     get section() : Number

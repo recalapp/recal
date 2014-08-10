@@ -8,8 +8,8 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", '../Core/BrowserEvents', '../CoreUI/FocusableView', './TableViewCommon'], function(require, exports, BrowserEvents, FocusableView, TableViewCommon) {
     var TableViewCell = (function (_super) {
         __extends(TableViewCell, _super);
-        function TableViewCell($element) {
-            _super.call(this, $element);
+        function TableViewCell() {
+            _super.apply(this, arguments);
             this._indexPath = null;
             this._selected = false;
         }
@@ -44,12 +44,16 @@ define(["require", "exports", '../Core/BrowserEvents', '../CoreUI/FocusableView'
             configurable: true
         });
 
-        /**
-        * The unique css class for this class.
-        */
-        TableViewCell.prototype.cssClass = function () {
-            return _super.prototype.cssClass.call(this) + ' ' + TableViewCommon.cellCssClass;
-        };
+        Object.defineProperty(TableViewCell, "cssClass", {
+            /**
+            * The unique css class for this class.
+            */
+            get: function () {
+                return FocusableView.cssClass + ' ' + TableViewCommon.cellCssClass;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         TableViewCell.prototype.highlight = function () {
         };

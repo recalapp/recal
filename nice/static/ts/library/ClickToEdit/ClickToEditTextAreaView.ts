@@ -12,9 +12,9 @@ class ClickToEditTextAreaView extends ClickToEditBaseView
     /**
       * The unique css class for this class.
       */
-    public cssClass(): string
+    public static get cssClass(): string
     {
-        return super.cssClass() + ' clickToEditTextAreaView';
+        return ClickToEditBaseView.cssClass + ' clickToEditTextAreaView';
     }
 
     /**

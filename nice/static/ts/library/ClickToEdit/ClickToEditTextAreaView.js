@@ -12,12 +12,16 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', "../Core/Encode
         function ClickToEditTextAreaView() {
             _super.apply(this, arguments);
         }
-        /**
-        * The unique css class for this class.
-        */
-        ClickToEditTextAreaView.prototype.cssClass = function () {
-            return _super.prototype.cssClass.call(this) + ' clickToEditTextAreaView';
-        };
+        Object.defineProperty(ClickToEditTextAreaView, "cssClass", {
+            /**
+            * The unique css class for this class.
+            */
+            get: function () {
+                return ClickToEditBaseView.cssClass + ' clickToEditTextAreaView';
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         /**
         * The unique input type identifier associated with this type of input

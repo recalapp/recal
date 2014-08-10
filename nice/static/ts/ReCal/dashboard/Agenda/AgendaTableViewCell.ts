@@ -22,9 +22,9 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
         return this._eventId;
     }
 
-    constructor()
+    public static fromTemplate(): AgendaTableViewCell
     {
-        super(ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewCell._templateSelector));
+        return <AgendaTableViewCell> this.fromJQuery(ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewCell._templateSelector));
     }
 
     public highlight(): void

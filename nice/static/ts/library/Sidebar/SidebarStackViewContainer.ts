@@ -24,9 +24,9 @@ class SidebarStackViewContainer extends View
         return true;
     }
 
-    constructor($element: JQuery)
+    constructor($element: JQuery, cssClass: string)
     {
-        super($element);
+        super($element, cssClass);
         this.removeAllChildren();
     }
 

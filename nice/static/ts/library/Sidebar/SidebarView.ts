@@ -46,9 +46,9 @@ class SidebarView extends View implements ISidebarView
         return this._droppableCssSelectors.toArray().join();
     }
 
-    constructor($element: JQuery)
+    constructor($element: JQuery, cssClass: string)
     {
-        super($element);
+        super($element, cssClass);
         this._$sidebar = this._$el.find('#sidebar');
         var $stack = this._$el.find('#sb-left-container');
         this.stackViewContainer = <SidebarStackViewContainer> SidebarStackViewContainer.fromJQuery($stack);

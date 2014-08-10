@@ -11,9 +11,9 @@ class ClickToEditTextView extends ClickToEditBaseView
     /**
       * The unique css class for this class.
       */
-    public cssClass(): string
+    public static get cssClass(): string
     {
-        return super.cssClass() + ' clickToEditTextView';
+        return ClickToEditBaseView.cssClass + ' clickToEditTextView';
     }
 
     /**

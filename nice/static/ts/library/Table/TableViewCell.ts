@@ -46,14 +46,9 @@ class TableViewCell extends FocusableView implements ITableViewCell
     /**
       * The unique css class for this class.
       */
-    public cssClass(): string
+    public static get cssClass(): string
     {
-        return super.cssClass() + ' ' + TableViewCommon.cellCssClass;
-    }
-
-    constructor($element: JQuery)
-    {
-        super($element);
+        return FocusableView.cssClass + ' ' + TableViewCommon.cellCssClass;
     }
 
     public highlight() : void

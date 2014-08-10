@@ -9,19 +9,23 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/FocusableView', "../Core/EncodeDecodeProxy", '../Core/InvalidArgumentException', '../DataStructures/Set'], function(require, exports, $, BrowserEvents, FocusableView, EncodeDecodeProxy, InvalidArgumentException, Set) {
     var ClickToEditBaseView = (function (_super) {
         __extends(ClickToEditBaseView, _super);
-        function ClickToEditBaseView($element) {
-            _super.call(this, $element);
+        function ClickToEditBaseView($element, cssClass) {
+            _super.call(this, $element, cssClass);
             if (!this._$el.is('p, h1, h2, h3, h4, h5, h6')) {
                 throw new InvalidArgumentException('ClickToEdit must be p, h1, h2, h3, h4, h5, or h6');
             }
             this._initializeClickToEdit();
         }
-        /**
-        * The unique css class for this class.
-        */
-        ClickToEditBaseView.prototype.cssClass = function () {
-            return _super.prototype.cssClass.call(this) + ' clickToEdit';
-        };
+        Object.defineProperty(ClickToEditBaseView, "cssClass", {
+            /**
+            * The unique css class for this class.
+            */
+            get: function () {
+                return FocusableView.cssClass + ' clickToEdit';
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         ClickToEditBaseView.prototype._initializeClickToEdit = function () {
             var _this = this;

@@ -35,14 +35,14 @@ class PopUpView extends FocusableView
     /**
       * The unique css class for this class.
       */
-    public cssClass(): string
+    public static get cssClass(): string
     {
-        return super.cssClass() + ' ' + PopUpCommon.cssClass;
+        return FocusableView.cssClass + ' ' + PopUpCommon.cssClass;
     }
 
-    constructor(view : JQuery)
+    constructor($element : JQuery, cssClass: string)
     {
-        super(view);
+        super($element, cssClass);
         // TODO handle main/not main difference
         this._makeDraggable();
         this.attachEventHandler(BrowserEvents.popUpWillDetach, (ev, eventData) =>

@@ -7,9 +7,9 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/GlobalCssClass', './View'], function(require, exports, $, BrowserEvents, GlobalCssClass, View) {
     var FocusableView = (function (_super) {
         __extends(FocusableView, _super);
-        function FocusableView($element) {
+        function FocusableView($element, cssClass) {
             var _this = this;
-            _super.call(this, $element);
+            _super.call(this, $element, cssClass);
             this._hasFocus = false;
             this._$el.attr('tabindex', 0);
             this._$el.removeClass(GlobalCssClass.invisibleFocus);
@@ -32,9 +32,16 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
                 }
             });
         }
-        FocusableView.prototype.cssClass = function () {
-            return _super.prototype.cssClass.call(this) + ' focusableView';
-        };
+        Object.defineProperty(FocusableView, "cssClass", {
+            /**
+            * The unique css class for this class.
+            */
+            get: function () {
+                return View.cssClass + ' focusableView';
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         Object.defineProperty(FocusableView.prototype, "hasFocus", {
             get: function () {

@@ -14,9 +14,9 @@ class SidebarFullViewContainer extends View
             return view._$el.hasClass('in');
         });
     }
-    constructor($element: JQuery)
+    constructor($element: JQuery, cssClass: string)
     {
-        super($element);
+        super($element, cssClass);
         this.removeAllChildren();
     }
 

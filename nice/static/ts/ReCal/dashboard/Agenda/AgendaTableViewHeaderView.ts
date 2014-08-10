@@ -13,9 +13,9 @@ class AgendaTableViewHeaderView extends TableViewHeaderView implements IAgendaTa
 {
     private static _templateSelector = '#agenda-header-template';
 
-    constructor()
+    public static fromTemplate(): AgendaTableViewHeaderView
     {
-        super(ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewHeaderView._templateSelector));
+        return <AgendaTableViewHeaderView> this.fromJQuery(ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewHeaderView._templateSelector));
     }
 
     public setTitle(text: string): void

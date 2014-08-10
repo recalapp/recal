@@ -16,8 +16,8 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
 
     var PopUpView = (function (_super) {
         __extends(PopUpView, _super);
-        function PopUpView(view) {
-            _super.call(this, view);
+        function PopUpView($element, cssClass) {
+            _super.call(this, $element, cssClass);
             this._type = 0 /* main */;
 
             // TODO handle main/not main difference
@@ -66,12 +66,16 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             configurable: true
         });
 
-        /**
-        * The unique css class for this class.
-        */
-        PopUpView.prototype.cssClass = function () {
-            return _super.prototype.cssClass.call(this) + ' ' + PopUpCommon.cssClass;
-        };
+        Object.defineProperty(PopUpView, "cssClass", {
+            /**
+            * The unique css class for this class.
+            */
+            get: function () {
+                return FocusableView.cssClass + ' ' + PopUpCommon.cssClass;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         PopUpView.prototype._makeDraggable = function () {
             var _this = this;

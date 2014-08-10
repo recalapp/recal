@@ -66,9 +66,9 @@ class View implements IView
     /**
       * The unique css selector for this class.
       */
-    public cssSelector(): string
+    public static get cssSelector(): string
     {
-        var classes: string[] = this.cssClass().split(/\s+/);
+        var classes: string[] = this.cssClass.split(/\s+/);
         for (var i = 0; i < classes.length; i++)
         {
             classes[i] = '.' + classes[i];
@@ -80,7 +80,7 @@ class View implements IView
     /**
       * The unique css class for this class.
       */
-    public cssClass(): string
+    public static get cssClass(): string
     {
         return 'view';
     }
@@ -90,7 +90,7 @@ class View implements IView
       * Throws an error if the JQuery element already belongs to another
       * View object.
       */
-    constructor($element: JQuery)
+    constructor($element: JQuery, cssClass: string)
     {
         if ($element === null)
         {
@@ -107,7 +107,7 @@ class View implements IView
         this._viewNumber = View._viewCount++;
         this._$el = $element;
         this._$el.data(View.JQUERY_DATA_KEY, this);
-        this._$el.addClass(this.cssClass());
+        this._$el.addClass(cssClass);
     }
 
     /**
@@ -137,7 +137,7 @@ class View implements IView
         }
         // because the view has not been initalized, it will not belong to
         // the parent's children list yet. We can safely add it
-        var view = new this($element);
+        var view = new this($element, this.cssClass);
         if ($element.parent().length > 0)
         {
             // parent exists

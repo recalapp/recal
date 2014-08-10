@@ -12,14 +12,17 @@ class FocusableView extends View implements IFocusableView
 {
     private _hasFocus = false;
     
-    public cssClass(): string
+    /**
+      * The unique css class for this class.
+      */
+    public static get cssClass(): string
     {
-        return super.cssClass() + ' focusableView';
+        return View.cssClass + ' focusableView';
     }
 
-    constructor($element: JQuery)
+    constructor($element: JQuery, cssClass: string)
     {
-        super($element);
+        super($element, cssClass);
         this._$el.attr('tabindex', 0);
         this._$el.removeClass(GlobalCssClass.invisibleFocus);
         this._$el.find('*').each((index: number, child: any) => 

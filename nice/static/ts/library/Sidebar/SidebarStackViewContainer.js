@@ -8,8 +8,8 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictionary', '../Core/InvalidActionException', '../CoreUI/View'], function(require, exports, BrowserEvents, Dictionary, InvalidActionException, View) {
     var SidebarStackViewContainer = (function (_super) {
         __extends(SidebarStackViewContainer, _super);
-        function SidebarStackViewContainer($element) {
-            _super.call(this, $element);
+        function SidebarStackViewContainer($element, cssClass) {
+            _super.call(this, $element, cssClass);
             this._viewDict = new Dictionary();
             this.removeAllChildren();
         }

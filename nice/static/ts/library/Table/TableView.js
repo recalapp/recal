@@ -8,9 +8,9 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Dictionary', '../DataStructures/IndexPath', '../Core/InvalidActionException', '../DataStructures/Set', './TableViewCommon', '../CoreUI/View'], function(require, exports, $, BrowserEvents, Dictionary, IndexPath, InvalidActionException, Set, TableViewCommon, View) {
     var TableView = (function (_super) {
         __extends(TableView, _super);
-        function TableView($element) {
+        function TableView($element, cssClass) {
             var _this = this;
-            _super.call(this, $element);
+            _super.call(this, $element, cssClass);
             this._cellDict = new Dictionary();
             this._headerDict = new Dictionary();
             this._dataSource = null;
@@ -64,12 +64,16 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             configurable: true
         });
 
-        /**
-        * The unique css class for this class.
-        */
-        TableView.prototype.cssClass = function () {
-            return _super.prototype.cssClass.call(this) + ' tableView';
-        };
+        Object.defineProperty(TableView, "cssClass", {
+            /**
+            * The unique css class for this class.
+            */
+            get: function () {
+                return View.cssClass + ' tableView';
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         TableView.prototype.refresh = function () {
             var _this = this;

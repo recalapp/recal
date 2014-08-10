@@ -190,7 +190,7 @@ class AgendaTableViewController extends TableViewController
      */
     public createCell(identifier: string) : ITableViewCell
     {
-        return new AgendaTableViewCell();
+        return AgendaTableViewCell.fromTemplate();
     }
 
     /**
@@ -198,7 +198,7 @@ class AgendaTableViewController extends TableViewController
       */
     public createHeaderView(identifier: string) : ITableViewHeaderView
     {
-        return new AgendaTableViewHeaderView();
+        return AgendaTableViewHeaderView.fromTemplate();
     }
 
     /**

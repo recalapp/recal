@@ -8,8 +8,8 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/InvalidActionException', '../CoreUI/View'], function(require, exports, $, BrowserEvents, InvalidActionException, View) {
     var SidebarFullViewContainer = (function (_super) {
         __extends(SidebarFullViewContainer, _super);
-        function SidebarFullViewContainer($element) {
-            _super.call(this, $element);
+        function SidebarFullViewContainer($element, cssClass) {
+            _super.call(this, $element, cssClass);
             this.removeAllChildren();
         }
         Object.defineProperty(SidebarFullViewContainer.prototype, "childrenWithIn", {

@@ -11,12 +11,16 @@ define(["require", "exports", '../CoreUI/View'], function(require, exports, View
             _super.apply(this, arguments);
             this._section = null;
         }
-        /**
-        * The unique css class for this class.
-        */
-        TableViewHeaderView.prototype.cssClass = function () {
-            return _super.prototype.cssClass.call(this) + ' tableViewHeaderView';
-        };
+        Object.defineProperty(TableViewHeaderView, "cssClass", {
+            /**
+            * The unique css class for this class.
+            */
+            get: function () {
+                return View.cssClass + ' tableViewHeaderView';
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         Object.defineProperty(TableViewHeaderView.prototype, "section", {
             get: function () {

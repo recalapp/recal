@@ -156,14 +156,14 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * Create a new table view cell for the given identifier
         */
         AgendaTableViewController.prototype.createCell = function (identifier) {
-            return new AgendaTableViewCell();
+            return AgendaTableViewCell.fromTemplate();
         };
 
         /**
         * Create a new table view header view for the given identifier
         */
         AgendaTableViewController.prototype.createHeaderView = function (identifier) {
-            return new AgendaTableViewHeaderView();
+            return AgendaTableViewHeaderView.fromTemplate();
         };
 
         /**

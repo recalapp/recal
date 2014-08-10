@@ -16,14 +16,14 @@ class ClickToEditBaseView extends FocusableView
     /**
       * The unique css class for this class.
       */
-    public cssClass(): string
+    public static get cssClass(): string
     {
-        return super.cssClass() + ' clickToEdit';
+        return FocusableView.cssClass + ' clickToEdit';
     }
 
-    constructor($element: JQuery)
+    constructor($element: JQuery, cssClass: string)
     {
-        super($element);
+        super($element, cssClass);
         if (!this._$el.is('p, h1, h2, h3, h4, h5, h6'))
         {
             throw new InvalidArgumentException('ClickToEdit must be p, h1, h2, h3, h4, h5, or h6');
