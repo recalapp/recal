@@ -12,6 +12,14 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Invali
             _super.call(this, $element, cssClass);
             this.removeAllChildren();
         }
+        Object.defineProperty(SidebarFullViewContainer, "cssClass", {
+            get: function () {
+                return View.cssClass + ' sidebarFullViewContainer';
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(SidebarFullViewContainer.prototype, "childrenWithIn", {
             get: function () {
                 return $.grep(this.children, function (view, index) {
@@ -28,6 +36,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Invali
             }
             this.append(view);
             view._$el.addClass('in');
+            view._$el.addClass('sb-full-content');
         };
 
         SidebarFullViewContainer.prototype.hasView = function () {
@@ -47,7 +56,11 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Invali
             }
             var view = this.getView();
             view.attachOneTimeEventHandler(BrowserEvents.transitionEnd, function (ev) {
+                if (view._$el.hasClass('in')) {
+                    return;
+                }
                 view.removeFromParent();
+                view._$el.removeClass('sb-full-content');
             });
             view._$el.removeClass('in');
         };

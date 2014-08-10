@@ -20,6 +20,7 @@ class SidebarView extends View implements ISidebarView
     private _stackViewContainer: SidebarStackViewContainer = null;
     private _droppableCssSelectors: Set<string> = new Set<string>();
     private _$sidebar: JQuery = null;
+    private _droppableCssSelectorsString;
 
     private get fullViewContainer(): SidebarFullViewContainer
     {
@@ -43,7 +44,16 @@ class SidebarView extends View implements ISidebarView
 
     private get droppableCssSelectorsString(): string
     {
-        return this._droppableCssSelectors.toArray().join();
+        if (this._droppableCssSelectorsString === null || this._droppableCssSelectorsString === undefined)
+        {
+            this._droppableCssSelectorsString = this._droppableCssSelectors.toArray().join();
+        }
+        return this._droppableCssSelectorsString;
+    }
+
+    public static get cssClass(): string
+    {
+        return View.cssClass + ' sidebarView';
     }
 
     constructor($element: JQuery, cssClass: string)
@@ -65,6 +75,17 @@ class SidebarView extends View implements ISidebarView
                 }
             },
             hoverClass: 'hover-active'
+        });
+        this._$el.find('#sidebar-target').droppable({
+            over: (ev: JQueryEventObject, ui: Element)=>{
+                if ($(ui).is(this.droppableCssSelectorsString))
+                {
+                    this.showSidebar();
+                }
+            },
+            out: (ev: JQueryEventObject, ui: Element)=>{
+                this.hideSidebarIfEmpty();
+            }
         });
     }
 
@@ -190,6 +211,7 @@ class SidebarView extends View implements ISidebarView
     public registerDroppable(cssSelector: string): void
     {
         this._droppableCssSelectors.add(cssSelector);
+        this._droppableCssSelectorsString = null;
     }
 }
 

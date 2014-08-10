@@ -8,6 +8,11 @@ import View = require('../CoreUI/View');
 
 class SidebarFullViewContainer extends View
 {
+    public static get cssClass(): string
+    {
+        return View.cssClass + ' sidebarFullViewContainer';
+    }
+
     private get childrenWithIn(): View[]
     {
         return <View[]> $.grep(this.children, (view: View, index: number)=>{
@@ -28,6 +33,7 @@ class SidebarFullViewContainer extends View
         }
         this.append(view);
         view._$el.addClass('in');
+        view._$el.addClass('sb-full-content');
     }
 
     public hasView(): boolean
@@ -52,7 +58,12 @@ class SidebarFullViewContainer extends View
         }
         var view = this.getView();
         view.attachOneTimeEventHandler(BrowserEvents.transitionEnd, (ev: JQueryEventObject)=>{
+            if (view._$el.hasClass('in'))
+            {
+                return;
+            }
             view.removeFromParent();
+            view._$el.removeClass('sb-full-content');
         });
         view._$el.removeClass('in');
     }

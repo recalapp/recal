@@ -13,6 +13,14 @@ define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictio
             this._viewDict = new Dictionary();
             this.removeAllChildren();
         }
+        Object.defineProperty(SidebarStackViewContainer, "cssClass", {
+            get: function () {
+                return View.cssClass + ' sidebarStackViewContainer';
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(SidebarStackViewContainer.prototype, "isEmpty", {
             get: function () {
                 var keys = this._viewDict.allKeys();
@@ -35,6 +43,7 @@ define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictio
             } else {
                 this.append(view);
                 this._viewDict.set(identifier, view);
+                view._$el.addClass('sb-left-content');
             }
             view._$el.addClass('in');
         };
@@ -64,6 +73,7 @@ define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictio
                     return;
                 }
                 view.removeFromParent();
+                view._$el.removeClass('sb-left-content');
 
                 // only unset after the view is physically removed
                 // (not just that it does not have the in class), otherwise if

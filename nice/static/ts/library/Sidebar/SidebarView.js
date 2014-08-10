@@ -31,6 +31,16 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
                 },
                 hoverClass: 'hover-active'
             });
+            this._$el.find('#sidebar-target').droppable({
+                over: function (ev, ui) {
+                    if ($(ui).is(_this.droppableCssSelectorsString)) {
+                        _this.showSidebar();
+                    }
+                },
+                out: function (ev, ui) {
+                    _this.hideSidebarIfEmpty();
+                }
+            });
         }
         Object.defineProperty(SidebarView.prototype, "fullViewContainer", {
             get: function () {
@@ -58,7 +68,18 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
 
         Object.defineProperty(SidebarView.prototype, "droppableCssSelectorsString", {
             get: function () {
-                return this._droppableCssSelectors.toArray().join();
+                if (this._droppableCssSelectorsString === null || this._droppableCssSelectorsString === undefined) {
+                    this._droppableCssSelectorsString = this._droppableCssSelectors.toArray().join();
+                }
+                return this._droppableCssSelectorsString;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(SidebarView, "cssClass", {
+            get: function () {
+                return View.cssClass + ' sidebarView';
             },
             enumerable: true,
             configurable: true
@@ -174,6 +195,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         */
         SidebarView.prototype.registerDroppable = function (cssSelector) {
             this._droppableCssSelectors.add(cssSelector);
+            this._droppableCssSelectorsString = null;
         };
         return SidebarView;
     })(View);

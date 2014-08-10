@@ -11,6 +11,11 @@ class SidebarStackViewContainer extends View
 {
     private _viewDict: Dictionary<string, View> = new Dictionary<string, View>();
 
+    public static get cssClass(): string
+    {
+        return View.cssClass + ' sidebarStackViewContainer';
+    }
+
     public get isEmpty(): boolean
     {
         var keys = this._viewDict.allKeys();
@@ -42,6 +47,7 @@ class SidebarStackViewContainer extends View
         {
             this.append(view);
             this._viewDict.set(identifier, view);
+            view._$el.addClass('sb-left-content');
         }
         view._$el.addClass('in');
     }
@@ -76,6 +82,7 @@ class SidebarStackViewContainer extends View
                 return;
             }
             view.removeFromParent();
+            view._$el.removeClass('sb-left-content');
 
             // only unset after the view is physically removed 
             // (not just that it does not have the in class), otherwise if 
