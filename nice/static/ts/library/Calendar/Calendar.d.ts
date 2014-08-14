@@ -4,6 +4,7 @@ import CoreUI = require('../CoreUI/CoreUI');
 import DateTime = require('../DateTime/DateTime');
 
 import IView = CoreUI.IView;
+import IViewController = CoreUI.IViewController;
 
 export interface ICalendarView extends IView
 {
@@ -20,7 +21,7 @@ export interface ICalendarView extends IView
     selectedCalendarViewEvents(): ICalendarViewEvent[];
 }
 
-export interface ICalendarViewController extends CalendarViewDataSource, CalendarViewDelegate
+export interface ICalendarViewController extends IViewController, CalendarViewDataSource, CalendarViewDelegate
 {
     view: ICalendarView;
 }

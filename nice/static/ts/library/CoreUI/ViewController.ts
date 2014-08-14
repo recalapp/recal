@@ -51,18 +51,19 @@ class ViewController implements IViewController
     {
     }
 
-    public addChildViewController(childVC : ViewController) : void
+    public addChildViewController(childVC : IViewController) : void
     {
-        if (this._childViewControllers.contains(childVC))
+        var childVCCasted: ViewController = <ViewController> childVC;
+        if (this._childViewControllers.contains(childVCCasted))
         {
             throw new InvalidActionException('A child view controller can only be added once');
         }
-        if (childVC._parentViewController != null)
+        if (childVCCasted._parentViewController != null)
         {
             throw new InvalidActionException('Child view controller already has a parent');
         }
-        this._childViewControllers.add(childVC);
-        childVC._parentViewController = this;
+        this._childViewControllers.add(childVCCasted);
+        childVCCasted._parentViewController = this;
     }
     public removeFromParentViewController() : void
     {

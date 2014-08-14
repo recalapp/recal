@@ -1,3 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-require(['./bridge/AgendaBridge', './bridge/CalendarBridge']);
+import DashboardInitializer = require('./DashboardInitializer');
+
+var initializer = new DashboardInitializer();
+initializer.initialize();

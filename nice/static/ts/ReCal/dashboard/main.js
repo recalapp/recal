@@ -1,2 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
-require(['./bridge/AgendaBridge', './bridge/CalendarBridge']);
+define(["require", "exports", './DashboardInitializer'], function(require, exports, DashboardInitializer) {
+    var initializer = new DashboardInitializer();
+    initializer.initialize();
+});

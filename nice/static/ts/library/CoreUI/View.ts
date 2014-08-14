@@ -312,6 +312,14 @@ class View implements IView
     }
 
     /**
+      * Return the JQuery element(s) matching the selector in this view.
+      */
+    public findJQuery(cssSelector: string): JQuery
+    {
+        return this._$el.find(cssSelector);
+    }
+
+    /**
       * Unique
       */
     public toString() : string

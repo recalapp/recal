@@ -46,14 +46,15 @@ define(["require", "exports", '../Core/InvalidActionException', '../DataStructur
         };
 
         ViewController.prototype.addChildViewController = function (childVC) {
-            if (this._childViewControllers.contains(childVC)) {
+            var childVCCasted = childVC;
+            if (this._childViewControllers.contains(childVCCasted)) {
                 throw new InvalidActionException('A child view controller can only be added once');
             }
-            if (childVC._parentViewController != null) {
+            if (childVCCasted._parentViewController != null) {
                 throw new InvalidActionException('Child view controller already has a parent');
             }
-            this._childViewControllers.add(childVC);
-            childVC._parentViewController = this;
+            this._childViewControllers.add(childVCCasted);
+            childVCCasted._parentViewController = this;
         };
         ViewController.prototype.removeFromParentViewController = function () {
             if (this._parentViewController === null) {

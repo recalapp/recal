@@ -72,7 +72,12 @@ export interface IView
     /**
       * Remove all children from this view, both initialized and uninitialized
       */
-    removeAllChildren(): void
+    removeAllChildren(): void;
+
+    /**
+      * Return the JQuery element(s) matching the selector in this view.
+      */
+    findJQuery(cssSelector: string): JQuery;
 }
 
 export interface IFocusableView extends IView

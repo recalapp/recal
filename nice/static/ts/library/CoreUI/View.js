@@ -262,6 +262,13 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
         };
 
         /**
+        * Return the JQuery element(s) matching the selector in this view.
+        */
+        View.prototype.findJQuery = function (cssSelector) {
+            return this._$el.find(cssSelector);
+        };
+
+        /**
         * Unique
         */
         View.prototype.toString = function () {
