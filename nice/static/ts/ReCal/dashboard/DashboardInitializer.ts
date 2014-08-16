@@ -6,6 +6,8 @@ import $ = require('jquery');
 
 import CoreUI = require('../../library/CoreUI/CoreUI');
 import DashboardViewController = require('./DashboardViewController');
+import GlobalInstancesManager = require('./GlobalInstancesManager');
+import SidebarNotificationsManager = require('../../library/Notifications/SidebarNotificationsManager');
 import View = require('../../library/CoreUI/View');
 
 import IView = CoreUI.IView;
@@ -26,13 +28,16 @@ class DashboardInitializer
     public initialize(): void
     {
         // set up Dashboard View Controller
-        // set up any global values
         var dashboardView: IView = View.fromJQuery($('body'));
         var dashboardVC: DashboardViewController = new DashboardViewController(dashboardView);
 
         this.rootViewController = dashboardVC;
 
-        // state restoration happens in this class?
+        // initialize global variables
+        var instancesManager: GlobalInstancesManager = GlobalInstancesManager.instance();
+        instancesManager.notificationsManager = new SidebarNotificationsManager();
+
+        // TODO state restoration happens in this class?
     }
 }
 

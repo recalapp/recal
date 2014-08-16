@@ -14,14 +14,14 @@ import ISidebarView = Sidebar.ISidebarView;
 class SidebarNotificationsManager extends NotificationsManager implements ISidebarNotificationsManager
 {
     private _identifierPrefix = "notification "; // so it doesn't conflict with other clients of sidebar view
-    constructor (private _sidebarView: ISidebarView)
-    {
-        super();
-    }
-
-    private get sidebarView(): ISidebarView
+    private _sidebarView: ISidebarView = null;
+    public get sidebarView(): ISidebarView
     {
         return this._sidebarView;
+    }
+    public set sidebarView(value: ISidebarView)
+    {
+        this._sidebarView = value;
     }
 
     /**

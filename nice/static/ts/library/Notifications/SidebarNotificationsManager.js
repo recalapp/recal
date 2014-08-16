@@ -8,14 +8,17 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", './NotificationsManager'], function(require, exports, NotificationsManager) {
     var SidebarNotificationsManager = (function (_super) {
         __extends(SidebarNotificationsManager, _super);
-        function SidebarNotificationsManager(_sidebarView) {
-            _super.call(this);
-            this._sidebarView = _sidebarView;
+        function SidebarNotificationsManager() {
+            _super.apply(this, arguments);
             this._identifierPrefix = "notification ";
+            this._sidebarView = null;
         }
         Object.defineProperty(SidebarNotificationsManager.prototype, "sidebarView", {
             get: function () {
                 return this._sidebarView;
+            },
+            set: function (value) {
+                this._sidebarView = value;
             },
             enumerable: true,
             configurable: true

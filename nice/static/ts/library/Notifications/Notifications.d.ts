@@ -24,4 +24,5 @@ export interface INotificationsManager
 
 export interface ISidebarNotificationsManager extends INotificationsManager
 {
+    sidebarView: ISidebarView;
 }
