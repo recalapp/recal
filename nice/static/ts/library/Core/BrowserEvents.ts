@@ -24,5 +24,9 @@ class BrowserEvents {
     // sidebar
     static sidebarViewDidDrop = 'sidebarViewDidDrop';
     static sidebarWillHide = 'sidebarWillHide';
+
+    // notifications
+    static notificationShouldRemove = 'notificationShouldRemove';
+    static notificationShouldOpen = 'notificationShouldOpen';
 }
 export = BrowserEvents;

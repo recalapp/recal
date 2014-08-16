@@ -22,6 +22,9 @@ define(["require", "exports"], function(require, exports) {
 
         BrowserEvents.sidebarViewDidDrop = 'sidebarViewDidDrop';
         BrowserEvents.sidebarWillHide = 'sidebarWillHide';
+
+        BrowserEvents.notificationShouldRemove = 'notificationShouldRemove';
+        BrowserEvents.notificationShouldOpen = 'notificationShouldOpen';
         return BrowserEvents;
     })();
     
