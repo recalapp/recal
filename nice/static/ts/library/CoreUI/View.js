@@ -1,3 +1,4 @@
+/// <reference path="../../typings/tsd.d.ts" />
 define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/InvalidActionException', "../Core/InvalidArgumentException", '../DataStructures/Set'], function(require, exports, $, BrowserEvents, InvalidActionException, InvalidArgumentException, Set) {
     var View = (function () {
         /**

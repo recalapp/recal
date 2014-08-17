@@ -1,10 +1,12 @@
+/// <reference path="../../typings/tsd.d.ts" />
+/// <amd-dependency path="bootstrap" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/GlobalCssClass', './View'], function(require, exports, $, BrowserEvents, GlobalCssClass, View) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/GlobalCssClass', './View', "bootstrap"], function(require, exports, $, BrowserEvents, GlobalCssClass, View) {
     var FocusableView = (function (_super) {
         __extends(FocusableView, _super);
         function FocusableView($element, cssClass) {
@@ -56,6 +58,23 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
         };
         FocusableView.prototype.didBlur = function () {
             this._hasFocus = false;
+        };
+
+        /**
+        * Shows a view as popover originating from this view
+        */
+        FocusableView.prototype.showViewInPopover = function (childView, placement) {
+            if (typeof placement === "undefined") { placement = 'auto'; }
+            var childViewCasted = childView;
+            this._$el.popover('destroy');
+            this._$el.popover({
+                template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>',
+                placement: placement,
+                html: true,
+                content: childViewCasted._$el[0],
+                trigger: 'focus'
+            });
+            this._$el.focus();
         };
         return FocusableView;
     })(View);

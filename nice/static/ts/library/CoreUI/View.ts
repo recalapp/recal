@@ -1,4 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
+
 import $ = require('jquery');
 import BrowserEvents = require("../Core/BrowserEvents");
 import CoreUI = require('./CoreUI');

@@ -84,8 +84,13 @@ export interface IFocusableView extends IView
 {
     hasFocus: boolean;
 
-    didFocus(): void
-    didBlur(): void
+    didFocus(): void;
+    didBlur(): void;
+
+    /**
+      * Shows a view as popover originating from this view
+      */
+    showViewInPopover(childView: IView): void;
 }
 
 export interface IViewController

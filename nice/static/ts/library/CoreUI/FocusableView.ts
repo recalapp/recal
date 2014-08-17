@@ -1,4 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
+/// <amd-dependency path="bootstrap" />
+
 import $ = require('jquery');
 
 import BrowserEvents = require('../Core/BrowserEvents');
@@ -7,6 +9,7 @@ import CoreUI = require('./CoreUI');
 import View = require('./View');
 
 import IFocusableView = CoreUI.IFocusableView;
+import IView = CoreUI.IView;
 
 class FocusableView extends View implements IFocusableView
 {
@@ -62,6 +65,24 @@ class FocusableView extends View implements IFocusableView
     public didBlur() : void
     {
         this._hasFocus = false;
+    }
+
+    /**
+      * Shows a view as popover originating from this view
+      */
+    public showViewInPopover(childView: IView, placement: string = 'auto'): void
+    {
+        var childViewCasted: View = <View> childView;
+        this._$el.popover('destroy');
+        this._$el.popover({
+            template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>', // gets rid of the default title space
+            placement: placement,
+            html: true,
+            content: childViewCasted._$el[0],
+            trigger: 'focus',
+            // TODO container - needed?
+        });
+        this._$el.focus();
     }
 }
 export = FocusableView;
