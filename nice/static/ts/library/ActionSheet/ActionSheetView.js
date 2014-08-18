@@ -69,7 +69,7 @@ define(["require", "exports", 'jquery', './ActionSheetType', '../CoreUI/Focusabl
             this.append(buttonView);
         };
         return ActionSheetView;
-    })(View);
+    })(FocusableView);
     
     return ActionSheetView;
 });

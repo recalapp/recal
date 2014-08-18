@@ -14,7 +14,7 @@ import IFocusableView = CoreUI.IFocusableView;
 
 
 
-class ActionSheetView extends View implements IActionSheetView
+class ActionSheetView extends FocusableView implements IActionSheetView
 {
     public static get cssClass(): string
     {

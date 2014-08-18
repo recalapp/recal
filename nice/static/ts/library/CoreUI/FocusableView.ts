@@ -4,8 +4,9 @@
 import $ = require('jquery');
 
 import BrowserEvents = require('../Core/BrowserEvents');
-import GlobalCssClass = require('../Core/GlobalCssClass');
 import CoreUI = require('./CoreUI');
+import GlobalCssClass = require('../Core/GlobalCssClass');
+import InvalidActionException = require('../Core/InvalidActionException');
 import View = require('./View');
 
 import IFocusableView = CoreUI.IFocusableView;
@@ -14,7 +15,17 @@ import IView = CoreUI.IView;
 class FocusableView extends View implements IFocusableView
 {
     private _hasFocus = false;
+    private _popoverView: FocusableView = null;
     
+    private get popoverView(): FocusableView
+    {
+        return this._popoverView;
+    }
+    private set popoverView(value: FocusableView)
+    {
+        this._popoverView = value;
+    }
+
     /**
       * The unique css class for this class.
       */
@@ -61,28 +72,87 @@ class FocusableView extends View implements IFocusableView
     public didFocus() : void
     {
         this._hasFocus = true;
+        this.triggerEvent(BrowserEvents.focusableViewDidFocus);
     }
     public didBlur() : void
     {
         this._hasFocus = false;
+        this.triggerEvent(BrowserEvents.focusableViewDidBlur);
+
+        // popover
+        if (this.popoverView !== null && this.popoverView !== undefined)
+        {
+            // TODO right now need setTimeout because
+            // browser first calls blur, then focus. 
+            // so by this time, the popoverView may not
+            // have received focus yet. Figure out a better
+            // way to do this.
+            setTimeout(()=>{
+                
+                if (!this.popoverView.hasFocus)
+                {
+                    // focus lost
+                    this.hidePopover();
+                }
+                else
+                {
+                    // focus lost, but the popover view itself now has focus. we will only call hide when this popover view loses focus
+                    this.popoverView.attachEventHandler(BrowserEvents.focusableViewDidBlur, (ev: JQueryEventObject) =>
+                    {
+                        // timeout handles the case where
+                        // the same element is clicked twice.
+                        setTimeout(()=>{
+                            if (this.popoverView && !this.popoverView.hasFocus)
+                            {
+                                this.hidePopover();
+                            }
+                        }, 300);
+                    });
+                }
+            }, 300);
+        }
     }
 
     /**
       * Shows a view as popover originating from this view
       */
-    public showViewInPopover(childView: IView, placement: string = 'auto'): void
+    public showViewInPopover(childView: IFocusableView, placement: string = 'auto'): void
     {
-        var childViewCasted: View = <View> childView;
-        this._$el.popover('destroy');
+        var childViewCasted: FocusableView = <FocusableView> childView;
+        this.popoverView = childViewCasted;
+        if (this.popoverView !== null && this.popoverView !== undefined)
+        {
+            this._$el.popover('destroy');
+        }
         this._$el.popover({
             template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>', // gets rid of the default title space
             placement: placement,
             html: true,
             content: childViewCasted._$el[0],
-            trigger: 'focus',
+            trigger: 'manual',
             // TODO container - needed?
         });
-        this._$el.focus();
+        this._$el.popover('show');
+        if (!this.hasFocus)
+        {
+            this._$el.focus();
+        }
+    }
+
+    /**
+      * Remove the popover element
+      */
+    public hidePopover(): void
+    {
+        if (this.popoverView === null || this.popoverView === undefined)
+        {
+            throw new InvalidActionException('Cannot call hidePopover when there is no popover shown');
+        }
+        this._$el.popover('hide');
+        this.popoverView = null;
+        this.attachOneTimeEventHandler(BrowserEvents.bootstrapPopoverHidden, (ev: JQueryEventObject)=>{
+            this._$el.popover('destroy');
+        });
     }
 }
 export = FocusableView;

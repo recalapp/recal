@@ -90,7 +90,12 @@ export interface IFocusableView extends IView
     /**
       * Shows a view as popover originating from this view
       */
-    showViewInPopover(childView: IView): void;
+    showViewInPopover(childView: IFocusableView): void;
+
+    /**
+      * Remove the popover element
+      */
+    hidePopover(): void;
 }
 
 export interface IViewController

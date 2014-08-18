@@ -6,13 +6,14 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/GlobalCssClass', './View', "bootstrap"], function(require, exports, $, BrowserEvents, GlobalCssClass, View) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/GlobalCssClass', '../Core/InvalidActionException', './View', "bootstrap"], function(require, exports, $, BrowserEvents, GlobalCssClass, InvalidActionException, View) {
     var FocusableView = (function (_super) {
         __extends(FocusableView, _super);
         function FocusableView($element, cssClass) {
             var _this = this;
             _super.call(this, $element, cssClass);
             this._hasFocus = false;
+            this._popoverView = null;
             this._$el.attr('tabindex', 0);
             this._$el.removeClass(GlobalCssClass.invisibleFocus);
             this._$el.find('*').each(function (index, child) {
@@ -34,6 +35,17 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
                 }
             });
         }
+        Object.defineProperty(FocusableView.prototype, "popoverView", {
+            get: function () {
+                return this._popoverView;
+            },
+            set: function (value) {
+                this._popoverView = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(FocusableView, "cssClass", {
             /**
             * The unique css class for this class.
@@ -55,9 +67,38 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
 
         FocusableView.prototype.didFocus = function () {
             this._hasFocus = true;
+            this.triggerEvent(BrowserEvents.focusableViewDidFocus);
         };
         FocusableView.prototype.didBlur = function () {
+            var _this = this;
             this._hasFocus = false;
+            this.triggerEvent(BrowserEvents.focusableViewDidBlur);
+
+            // popover
+            if (this.popoverView !== null && this.popoverView !== undefined) {
+                // TODO right now need setTimeout because
+                // browser first calls blur, then focus.
+                // so by this time, the popoverView may not
+                // have received focus yet. Figure out a better
+                // way to do this.
+                setTimeout(function () {
+                    if (!_this.popoverView.hasFocus) {
+                        // focus lost
+                        _this.hidePopover();
+                    } else {
+                        // focus lost, but the popover view itself now has focus. we will only call hide when this popover view loses focus
+                        _this.popoverView.attachEventHandler(BrowserEvents.focusableViewDidBlur, function (ev) {
+                            // timeout handles the case where
+                            // the same element is clicked twice.
+                            setTimeout(function () {
+                                if (_this.popoverView && !_this.popoverView.hasFocus) {
+                                    _this.hidePopover();
+                                }
+                            }, 300);
+                        });
+                    }
+                }, 300);
+            }
         };
 
         /**
@@ -66,15 +107,36 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
         FocusableView.prototype.showViewInPopover = function (childView, placement) {
             if (typeof placement === "undefined") { placement = 'auto'; }
             var childViewCasted = childView;
-            this._$el.popover('destroy');
+            this.popoverView = childViewCasted;
+            if (this.popoverView !== null && this.popoverView !== undefined) {
+                this._$el.popover('destroy');
+            }
             this._$el.popover({
                 template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>',
                 placement: placement,
                 html: true,
                 content: childViewCasted._$el[0],
-                trigger: 'focus'
+                trigger: 'manual'
             });
-            this._$el.focus();
+            this._$el.popover('show');
+            if (!this.hasFocus) {
+                this._$el.focus();
+            }
+        };
+
+        /**
+        * Remove the popover element
+        */
+        FocusableView.prototype.hidePopover = function () {
+            var _this = this;
+            if (this.popoverView === null || this.popoverView === undefined) {
+                throw new InvalidActionException('Cannot call hidePopover when there is no popover shown');
+            }
+            this._$el.popover('hide');
+            this.popoverView = null;
+            this.attachOneTimeEventHandler(BrowserEvents.bootstrapPopoverHidden, function (ev) {
+                _this._$el.popover('destroy');
+            });
         };
         return FocusableView;
     })(View);

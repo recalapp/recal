@@ -10,8 +10,13 @@ define(["require", "exports"], function(require, exports) {
         BrowserEvents.mouseDown = 'mousedown';
         BrowserEvents.transitionEnd = 'transitionend';
 
+        BrowserEvents.bootstrapPopoverHidden = 'hidden.bs.popover';
+
         BrowserEvents.viewWasAppended = 'viewWasAppended';
         BrowserEvents.viewWasRemoved = 'viewWasRemoved';
+
+        BrowserEvents.focusableViewDidFocus = 'focusableViewDidFocus';
+        BrowserEvents.focusableViewDidBlur = 'focusableViewDidBlur';
 
         BrowserEvents.popUpWillDetach = 'popUpWillDetach';
 

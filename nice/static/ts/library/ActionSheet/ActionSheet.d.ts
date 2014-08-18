@@ -1,9 +1,9 @@
 import ActionSheetType = require('./ActionSheetType');
 import CoreUI = require('../CoreUI/CoreUI');
 
-import IView = CoreUI.IView;
+import IFocusableView = CoreUI.IFocusableView;
 
-export interface IActionSheetView extends IView
+export interface IActionSheetView extends IFocusableView
 {
     title: string;
     addChoice(choice: IActionSheetChoice): void;

@@ -6,10 +6,16 @@ class BrowserEvents {
     static focusOut = 'focusout'; // bubbles up
     static mouseDown = 'mousedown';
     static transitionEnd = 'transitionend';
+    // bootstrap
+    static bootstrapPopoverHidden = 'hidden.bs.popover';
     
     // view
     static viewWasAppended = 'viewWasAppended';
     static viewWasRemoved = 'viewWasRemoved';
+
+    // focusable view
+    static focusableViewDidFocus = 'focusableViewDidFocus';
+    static focusableViewDidBlur = 'focusableViewDidBlur';
     
     // popup
     static popUpWillDetach = 'popUpWillDetach';
