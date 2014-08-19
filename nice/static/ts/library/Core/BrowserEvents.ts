@@ -34,5 +34,8 @@ class BrowserEvents {
     // notifications
     static notificationShouldRemove = 'notificationShouldRemove';
     static notificationShouldOpen = 'notificationShouldOpen';
+
+    // segmented control
+    static segmentedControlSelectionChange = 'segmentedControlSelectionChange';
 }
 export = BrowserEvents;

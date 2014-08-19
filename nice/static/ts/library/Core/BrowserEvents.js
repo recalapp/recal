@@ -30,6 +30,8 @@ define(["require", "exports"], function(require, exports) {
 
         BrowserEvents.notificationShouldRemove = 'notificationShouldRemove';
         BrowserEvents.notificationShouldOpen = 'notificationShouldOpen';
+
+        BrowserEvents.segmentedControlSelectionChange = 'segmentedControlSelectionChange';
         return BrowserEvents;
     })();
     
