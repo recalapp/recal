@@ -7,16 +7,16 @@ import SegmentedControlBaseView = require('./SegmentedControlBaseView');
 
 import ISegmentedControlChoice = SegmentedControl.ISegmentedControlChoice;
 
-class SegmentedControlSingleSelectView extends SegmentedControlBaseView
+class SegmentedControlOptionalSingleSelectView extends SegmentedControlBaseView
 {
     public static get cssClass(): string
     {
-        return SegmentedControlBaseView.cssClass + ' segmentedControlSingleSelect';
+        return SegmentedControlBaseView.cssClass + ' segmentedControlOptionalSingleSelectView';
     }
 
     constructor()
     {
-        super(SegmentedControlSingleSelectView.cssClass);
+        super(SegmentedControlOptionalSingleSelectView.cssClass);
     }
 
     /**
@@ -24,7 +24,6 @@ class SegmentedControlSingleSelectView extends SegmentedControlBaseView
       */
     public fixChoices(mostRecent?: ISegmentedControlChoice): void
     {
-        this.choices[0].selected = true; // ok because we keep latest
         if (mostRecent === null || mostRecent === undefined)
         {
             // most recent is not given, defaults to the last choice
@@ -46,4 +45,4 @@ class SegmentedControlSingleSelectView extends SegmentedControlBaseView
     }
 }
 
-export = SegmentedControlSingleSelectView;
+export = SegmentedControlOptionalSingleSelectView;
