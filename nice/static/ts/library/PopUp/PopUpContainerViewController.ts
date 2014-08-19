@@ -1,75 +1,36 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import $ = require('jquery');
 import BrowserEvents = require('../Core/BrowserEvents');
-import ClickToEditBaseView = require('../ClickToEdit/ClickToEditBaseView');
+import CoreUI = require('../CoreUI/CoreUI');
 import GlobalBrowserEventsManager = require('../Core/GlobalBrowserEventsManager');
+import PopUp = require('./PopUp');
 import PopUpCommon = require('./PopUpCommon');
 import PopUpView = require('./PopUpView');
-import View = require('../CoreUI/View');
 import ViewController = require('../CoreUI/ViewController');
 
-class PopUpContainerViewController extends ViewController
+import IPopUpContainerViewController = PopUp.IPopUpContainerViewController;
+import IPopUpView = PopUp.IPopUpView;
+import IView = CoreUI.IView;
+
+class PopUpContainerViewController extends ViewController implements IPopUpContainerViewController
 {
-    constructor(view)
+    /**
+      * Returns all the PopUpViews in this container.
+      */
+    public get popUpViews(): IPopUpView[]
     {
-        super(view);
-        GlobalBrowserEventsManager.instance().attachGlobalEventHandler(BrowserEvents.mouseDown, PopUpCommon.allDescendentsSelector, (ev: JQueryEventObject) =>
-                {
-                    // don't prevent default, otherwise click to edit will not blur on click
-                    var targetView = View.fromJQuery($(ev.target));
-                    if (!(targetView instanceof ClickToEditBaseView)) // these should be handled separately, otherwise flickering occurs
-                    {
-                        $(ev.target).focus();
-                    }
-                });
-    }
-
-    private _tryGetMainPopUp() : PopUpView
-    {
-        var ret = null;
-        this.map((popUpView : PopUpView) => {
-            if (popUpView.isMain)
-            {
-                ret = popUpView;
-                return false;
-            }
+        return <IPopUpView[]> $.grep(this.view.children, (childView : IView, index: number) => {
+            return childView.is(PopUpView.cssSelector());
         });
-        return ret;
-    }
-
-    public hasMain() : Boolean
-    {
-        return this._tryGetMainPopUp() !== null;
     }
 
     /**
-     * Give focus to its PopUpView and cause all other PopUps to lose focus
-     */
-    public giveFocus(toBeFocused : PopUpView) : void
-    {
-        // find a way to get all popups
-        // TODO remove - not used anymore
-        this.map((popUpView : PopUpView) => 
-        {
-            popUpView === toBeFocused ? popUpView.highlight() : popUpView.unhighlight();
-        });
-    }
-
-    public map(apply : (popUpView : PopUpView) => any) : void
-    {
-        // TODO must be overridden to support sidebar
-        $.each(this.view.children, (index : number, childView : View) => {
-            if (childView instanceof PopUpView)
-            {
-                return apply(<PopUpView>childView);
-            }
-        });
-    }
-
-    public getPopUpById(popUpId : number) : PopUpView
+      * Get the PopUpView with the specified ID.
+      */
+    public getPopUpById(popUpId: string): IPopUpView
     {
         var ret = null;
-        this.map((popUpView : PopUpView) => {
+        $.each(this.popUpViews, (index: number, popUpView : IPopUpView) => {
             if (popUpView.popUpId === popUpId)
             {
                 ret = popUpView;

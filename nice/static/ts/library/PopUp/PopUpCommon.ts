@@ -1,28 +1,16 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import $ = require('jquery');
-
-export var cssClass = 'popup'
-export var cssSelector = '.' + cssClass;
-export var allDescendentsSelector = cssSelector + ' *';
-export var headingCssSelector = '.panel-heading';
-export var panelCssSelector = '.panel';
-
-export var focusOpacity = 1;
-export var blurOpacity = 0.6;
-export var focusClass = 'panel-primary';
-export var blurClass = 'panel-default';
-export enum PopUpType { main, detached };
-
-export function findPopUpElementFromChild($child: JQuery) : JQuery
+class PopUpCommon
 {
-    while (!$child.hasClass(cssClass))
-    {
-        if ($child.length === 0)
-        {
-            // not found
-            return null;
-        }
-        $child = $child.parent();
-    }
-    return $child;
+    public static cssClass = 'popup';
+    public static cssSelector = '.' + PopUpCommon.cssClass;
+    public static allDescendentsSelector = PopUpCommon.cssSelector + ' *';
+    public static headingCssSelector = '.panel-heading';
+    public static panelCssSelector = '.panel';
+    public static focusOpacity = 1;
+    public static blurOpacity = 0.6;
+    public static focusClass = 'panel-primary';
+    public static blurClass = 'panel-default';
 }
+
+export = PopUpCommon;

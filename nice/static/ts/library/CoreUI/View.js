@@ -77,24 +77,20 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             configurable: true
         });
 
-        Object.defineProperty(View, "cssSelector", {
-            /******************************************************************
-            Methods
-            ****************************************************************/
-            /**
-            * The unique css selector for this class.
-            */
-            get: function () {
-                var classes = this.cssClass.split(/\s+/);
-                for (var i = 0; i < classes.length; i++) {
-                    classes[i] = '.' + classes[i];
-                }
+        /******************************************************************
+        Methods
+        ****************************************************************/
+        /**
+        * The unique css selector for this class.
+        */
+        View.cssSelector = function () {
+            var classes = this.cssClass.split(/\s+/);
+            for (var i = 0; i < classes.length; i++) {
+                classes[i] = '.' + classes[i];
+            }
 
-                return classes.join('');
-            },
-            enumerable: true,
-            configurable: true
-        });
+            return classes.join('');
+        };
 
         Object.defineProperty(View, "cssClass", {
             /**
@@ -267,6 +263,14 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
         */
         View.prototype.findJQuery = function (cssSelector) {
             return this._$el.find(cssSelector);
+        };
+
+        /**
+        * Returns true if this view's element mataches
+        * the css selector
+        */
+        View.prototype.is = function (cssSelector) {
+            return this._$el.is(cssSelector);
         };
 
         /**

@@ -28,33 +28,18 @@ class SegmentedControlBaseView extends FocusableView implements ISegmentedContro
     }
 
     private _titleView: View = null;
-    private get titleView(): View
-    {
-        return this._titleView;
-    }
-    private set titleView(value: View)
-    {
-        this._titleView = value;
-    }
+    private get titleView(): View { return this._titleView; }
+    private set titleView(value: View) { this._titleView = value; }
 
     private _choicesView: View = null;
-    private get choicesView(): View
-    {
-        return this._choicesView;
-    }
-    private set choicesView(value: View)
-    {
-        this._choicesView = value;
-    }
+    private get choicesView(): View { return this._choicesView; }
+    private set choicesView(value: View) { this._choicesView = value; }
 
     /**
       * The title of the segmented control
       */
     private _title: string = null;
-    public get title(): string
-    {
-        return this._title;
-    }
+    public get title(): string { return this._title; }
     public set title(value: string)
     {
         if (this._title !== value)
@@ -68,10 +53,7 @@ class SegmentedControlBaseView extends FocusableView implements ISegmentedContro
       * The choices for segmented control
       */
     private _choices: ISegmentedControlChoice[] = null;
-    public get choices(): ISegmentedControlChoice[]
-    {
-        return this._choices;
-    }
+    public get choices(): ISegmentedControlChoice[] { return this._choices; }
     public set choices(value: ISegmentedControlChoice[])
     {
         if (value.length < 1)
@@ -93,9 +75,9 @@ class SegmentedControlBaseView extends FocusableView implements ISegmentedContro
         this.titleView.removeAllChildren();
         this.choicesView = View.fromJQuery(this.findJQuery('#choices'));
         this.choicesView.removeAllChildren();
-        this.choicesView.attachEventHandler(BrowserEvents.click, SegmentedControlChoiceView.cssSelector, (ev: JQueryEventObject)=>
+        this.choicesView.attachEventHandler(BrowserEvents.click, SegmentedControlChoiceView.cssSelector(), (ev: JQueryEventObject)=>
         {
-            var $choice: JQuery = $(ev.target).closest(SegmentedControlChoiceView.cssSelector);
+            var $choice: JQuery = $(ev.target).closest(SegmentedControlChoiceView.cssSelector());
             var choiceView: SegmentedControlChoiceView = <SegmentedControlChoiceView> SegmentedControlChoiceView.fromJQuery($choice);
             choiceView.choice.selected = true;
             this.fixChoices(choiceView.choice);

@@ -25,8 +25,8 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             this.titleView.removeAllChildren();
             this.choicesView = View.fromJQuery(this.findJQuery('#choices'));
             this.choicesView.removeAllChildren();
-            this.choicesView.attachEventHandler(BrowserEvents.click, SegmentedControlChoiceView.cssSelector, function (ev) {
-                var $choice = $(ev.target).closest(SegmentedControlChoiceView.cssSelector);
+            this.choicesView.attachEventHandler(BrowserEvents.click, SegmentedControlChoiceView.cssSelector(), function (ev) {
+                var $choice = $(ev.target).closest(SegmentedControlChoiceView.cssSelector());
                 var choiceView = SegmentedControlChoiceView.fromJQuery($choice);
                 choiceView.choice.selected = true;
                 _this.fixChoices(choiceView.choice);

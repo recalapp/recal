@@ -1,30 +1,19 @@
 define(["require", "exports"], function(require, exports) {
-    exports.cssClass = 'popup';
-    exports.cssSelector = '.' + exports.cssClass;
-    exports.allDescendentsSelector = exports.cssSelector + ' *';
-    exports.headingCssSelector = '.panel-heading';
-    exports.panelCssSelector = '.panel';
-
-    exports.focusOpacity = 1;
-    exports.blurOpacity = 0.6;
-    exports.focusClass = 'panel-primary';
-    exports.blurClass = 'panel-default';
-    (function (PopUpType) {
-        PopUpType[PopUpType["main"] = 0] = "main";
-        PopUpType[PopUpType["detached"] = 1] = "detached";
-    })(exports.PopUpType || (exports.PopUpType = {}));
-    var PopUpType = exports.PopUpType;
-    ;
-
-    function findPopUpElementFromChild($child) {
-        while (!$child.hasClass(exports.cssClass)) {
-            if ($child.length === 0) {
-                // not found
-                return null;
-            }
-            $child = $child.parent();
+    var PopUpCommon = (function () {
+        function PopUpCommon() {
         }
-        return $child;
-    }
-    exports.findPopUpElementFromChild = findPopUpElementFromChild;
+        PopUpCommon.cssClass = 'popup';
+        PopUpCommon.cssSelector = '.' + PopUpCommon.cssClass;
+        PopUpCommon.allDescendentsSelector = PopUpCommon.cssSelector + ' *';
+        PopUpCommon.headingCssSelector = '.panel-heading';
+        PopUpCommon.panelCssSelector = '.panel';
+        PopUpCommon.focusOpacity = 1;
+        PopUpCommon.blurOpacity = 0.6;
+        PopUpCommon.focusClass = 'panel-primary';
+        PopUpCommon.blurClass = 'panel-default';
+        return PopUpCommon;
+    })();
+
+    
+    return PopUpCommon;
 });

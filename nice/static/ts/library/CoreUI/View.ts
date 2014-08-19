@@ -67,7 +67,7 @@ class View implements IView
     /**
       * The unique css selector for this class.
       */
-    public static get cssSelector(): string
+    public static cssSelector(): string
     {
         var classes: string[] = this.cssClass.split(/\s+/);
         for (var i = 0; i < classes.length; i++)
@@ -318,6 +318,15 @@ class View implements IView
     public findJQuery(cssSelector: string): JQuery
     {
         return this._$el.find(cssSelector);
+    }
+
+    /**
+      * Returns true if this view's element mataches
+      * the css selector
+      */
+    public is(cssSelector: string): boolean
+    {
+        return this._$el.is(cssSelector);
     }
 
     /**

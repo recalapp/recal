@@ -78,6 +78,12 @@ export interface IView
       * Return the JQuery element(s) matching the selector in this view.
       */
     findJQuery(cssSelector: string): JQuery;
+
+    /**
+      * Returns true if this view's element mataches
+      * the css selector
+      */
+    is(cssSelector: string): boolean;
 }
 
 export interface IFocusableView extends IView

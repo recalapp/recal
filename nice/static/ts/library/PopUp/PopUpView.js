@@ -4,10 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/FocusableView', './PopUpCommon', "bootstrap", "jqueryui"], function(require, exports, $, BrowserEvents, FocusableView, PopUpCommon) {
-    // aliases
-    var PopUpType = PopUpCommon.PopUpType;
-
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit/ClickToEditBaseView', '../CoreUI/FocusableView', './PopUpCommon', './PopUpType', "bootstrap", "jqueryui"], function(require, exports, $, BrowserEvents, ClickToEditBaseView, FocusableView, PopUpCommon, PopUpType) {
     var oldMouseStart = $.ui.draggable.prototype._mouseStart;
     $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
         this._trigger("beforeStart", event, this._uiHash());
@@ -18,20 +15,27 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
         __extends(PopUpView, _super);
         function PopUpView($element, cssClass) {
             _super.call(this, $element, cssClass);
-            this._type = 0 /* main */;
+            this._type = 1 /* pinned */;
 
             // TODO handle main/not main difference
-            this._makeDraggable();
+            this.makeDraggable();
             this.attachEventHandler(BrowserEvents.popUpWillDetach, function (ev, eventData) {
                 var popUpView = eventData.view;
-                popUpView._makeResizable();
+                popUpView.makeResizable();
             });
-
+            this.attachEventHandler(BrowserEvents.mouseDown, function (ev) {
+                // don't prevent default, the default behavior causes other elements
+                // to lose focus
+                var $targetView = $(ev.target);
+                if (!$targetView.is(ClickToEditBaseView.cssSelector())) {
+                    $targetView.focus();
+                }
+            });
             // TODO support for shift-click
             // TODO WONTFIX max height - in subclass
             // TODO initialize as needed
             // TODO tool tip - separate module - maybe in View base
-            this._$el.find('.withtooltip').tooltip({});
+            // this._$el.find('.withtooltip').tooltip({});
             // TODO theme - separate module
             // NOTE extra initialization can be done by overriding the constructor
         }
@@ -58,9 +62,12 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             configurable: true
         });
 
-        Object.defineProperty(PopUpView.prototype, "isMain", {
+        Object.defineProperty(PopUpView.prototype, "type", {
             get: function () {
-                return this._type === 0 /* main */;
+                return this._type;
+            },
+            set: function (value) {
+                this._type = value;
             },
             enumerable: true,
             configurable: true
@@ -77,7 +84,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             configurable: true
         });
 
-        PopUpView.prototype._makeDraggable = function () {
+        PopUpView.prototype.makeDraggable = function () {
             var _this = this;
             this._$el.draggable({
                 handle: '.panel > .panel-heading',
@@ -86,8 +93,8 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
                 appendTo: 'body',
                 zIndex: 2000,
                 beforeStart: function (ev, ui) {
-                    if (_this.isMain) {
-                        _this._type = 1 /* detached */;
+                    if (_this.type !== 0 /* detached */) {
+                        _this.type = 0 /* detached */;
 
                         // TODO handle main/pinned
                         // TODO WONTFIX see if bounding rect logic is needed - do that in a subclass
@@ -98,7 +105,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
                 }
             });
         };
-        PopUpView.prototype._makeResizable = function () {
+        PopUpView.prototype.makeResizable = function () {
             var _this = this;
             this._$el.find(PopUpCommon.panelCssSelector).resizable({
                 stop: function (ev, ui) {
@@ -107,11 +114,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
                     // TODO setbodywidth
                 }
             });
-        };
-
-        PopUpView.prototype.removeFromParent = function () {
-            _super.prototype.removeFromParent.call(this);
-            // TODO WONTFIX handle PopUp_close() logic - subclass
         };
 
         PopUpView.prototype.didFocus = function () {

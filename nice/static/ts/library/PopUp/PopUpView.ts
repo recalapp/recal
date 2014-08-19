@@ -4,11 +4,14 @@
 // imports
 import $ = require('jquery');
 import BrowserEvents = require('../Core/BrowserEvents');
+import ClickToEditBaseView = require('../ClickToEdit/ClickToEditBaseView');
 import FocusableView = require('../CoreUI/FocusableView');
+import PopUp = require('./PopUp');
 import PopUpCommon = require('./PopUpCommon');
+import PopUpType = require('./PopUpType');
 
 // aliases
-import PopUpType = PopUpCommon.PopUpType;
+import IPopUpView = PopUp.IPopUpView;
 
 var oldMouseStart = (<any>$.ui).draggable.prototype._mouseStart;
 (<any>$.ui).draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
@@ -16,21 +19,19 @@ var oldMouseStart = (<any>$.ui).draggable.prototype._mouseStart;
         oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
     };
 
-class PopUpView extends FocusableView
+class PopUpView extends FocusableView implements IPopUpView
 {
-    private _popUpId : number;
-    get popUpId() : number { return this._popUpId; }
-    set popUpId(newValue: number) { this._popUpId = newValue; }
+    private _popUpId: string;
+    public  get popUpId(): string { return this._popUpId; }
+    public set popUpId(newValue: string) { this._popUpId = newValue; }
 
-    private _color : String;
-    get color() : String { return this._color; }
-    set color(newValue : String) { this._color = newValue; this._updateColor(); }
+    private _color: string;
+    public get color(): string { return this._color; }
+    public set color(newValue: string) { this._color = newValue; this._updateColor(); }
 
-    private _type : PopUpType = PopUpType.main;
-    get isMain() : Boolean
-    {
-        return this._type === PopUpType.main;
-    }
+    private _type: PopUpType = PopUpType.pinned;
+    public get type(): PopUpType { return this._type; }
+    public set type(value: PopUpType) { this._type = value; }
 
     /**
       * The unique css class for this class.
@@ -44,22 +45,32 @@ class PopUpView extends FocusableView
     {
         super($element, cssClass);
         // TODO handle main/not main difference
-        this._makeDraggable();
+        this.makeDraggable();
         this.attachEventHandler(BrowserEvents.popUpWillDetach, (ev, eventData) =>
                 {
                     var popUpView = <PopUpView> eventData.view;
-                    popUpView._makeResizable();
+                    popUpView.makeResizable();
                 });
+        this.attachEventHandler(BrowserEvents.mouseDown, (ev: JQueryEventObject)=>
+        {
+            // don't prevent default, the default behavior causes other elements
+            // to lose focus
+            var $targetView = $(ev.target);
+            if (!$targetView.is(ClickToEditBaseView.cssSelector()))
+            {
+                $targetView.focus();
+            }
+        });
         // TODO support for shift-click
         // TODO WONTFIX max height - in subclass
         // TODO initialize as needed
         // TODO tool tip - separate module - maybe in View base
-        this._$el.find('.withtooltip').tooltip({});
+        // this._$el.find('.withtooltip').tooltip({});
         // TODO theme - separate module
         // NOTE extra initialization can be done by overriding the constructor
     }
 
-    private _makeDraggable() : void
+    public makeDraggable() : void
     {
         this._$el.draggable({
             handle: '.panel > .panel-heading',
@@ -68,9 +79,9 @@ class PopUpView extends FocusableView
             appendTo: 'body',
             zIndex: 2000,
             beforeStart: (ev, ui) => {
-                if (this.isMain)
+                if (this.type !== PopUpType.detached)
                 {
-                    this._type = PopUpType.detached;
+                    this.type = PopUpType.detached;
                     // TODO handle main/pinned
                     // TODO WONTFIX see if bounding rect logic is needed - do that in a subclass
                     this.triggerEvent(BrowserEvents.popUpWillDetach);
@@ -80,7 +91,7 @@ class PopUpView extends FocusableView
             },
         });
     }
-    private _makeResizable() : void
+    public makeResizable() : void
     {
         this._$el.find(PopUpCommon.panelCssSelector).resizable({
             stop: (ev, ui) => {
@@ -89,12 +100,6 @@ class PopUpView extends FocusableView
                 // TODO setbodywidth
             },
         });
-    }
-
-    public removeFromParent() : void
-    {
-        super.removeFromParent();
-        // TODO WONTFIX handle PopUp_close() logic - subclass
     }
 
     public didFocus() : void
