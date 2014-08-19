@@ -2,7 +2,7 @@ import CoreUI = require('../CoreUI/CoreUI');
 
 import IFocusableView = CoreUI.IFocusableView;
 
-export interface ISegmentedControlSingleSelectView extends IFocusableView
+export interface ISegmentedControlView extends IFocusableView
 {
     /**
       * The title of the segmented control
