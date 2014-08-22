@@ -115,7 +115,7 @@ class ClickToEditBaseView extends FocusableView
       */
     public processFormValue(value: string, settings: any) : string
     {
-        return EncodeDecodeProxy.instance().htmlEncode(value);
+        return EncodeDecodeProxy.instance.htmlEncode(value);
     }
 
     /**
@@ -134,7 +134,7 @@ class ClickToEditBaseView extends FocusableView
       */
     public content($form: JQuery, contentString: string, settings: any) : void
     {
-        var decoded = EncodeDecodeProxy.instance().htmlDecode(contentString);
+        var decoded = EncodeDecodeProxy.instance.htmlDecode(contentString);
         $form.find('input').val(decoded);
     }
 

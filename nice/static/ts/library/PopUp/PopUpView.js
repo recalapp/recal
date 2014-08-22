@@ -32,12 +32,9 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
                 }
             });
             // TODO support for shift-click
-            // TODO WONTFIX max height - in subclass
-            // TODO initialize as needed
             // TODO tool tip - separate module - maybe in View base
             // this._$el.find('.withtooltip').tooltip({});
             // TODO theme - separate module
-            // NOTE extra initialization can be done by overriding the constructor
         }
         Object.defineProperty(PopUpView.prototype, "popUpId", {
             get: function () {
@@ -95,12 +92,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
                 beforeStart: function (ev, ui) {
                     if (_this.type !== 0 /* detached */) {
                         _this.type = 0 /* detached */;
-
-                        // TODO handle main/pinned
-                        // TODO WONTFIX see if bounding rect logic is needed - do that in a subclass
                         _this.triggerEvent(BrowserEvents.popUpWillDetach);
-                        // needed because when first move, we move to a different
-                        // parent. maybe should expose as an event
                     }
                 }
             });
@@ -111,7 +103,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
                 stop: function (ev, ui) {
                     _this._$el.css("height", ui.size.height);
                     _this._$el.css('width', ui.size.width);
-                    // TODO setbodywidth
                 }
             });
         };
@@ -135,7 +126,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
         };
 
         PopUpView.prototype.unhighlight = function () {
-            // TODO PopUp_loseFocus()
             this._$el.css('z-index', '100');
             var $panel = this._$el.find(PopUpCommon.panelCssSelector);
             $panel.addClass(PopUpCommon.blurClass).removeClass(PopUpCommon.focusClass);

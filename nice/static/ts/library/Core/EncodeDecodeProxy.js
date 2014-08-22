@@ -2,9 +2,13 @@ define(["require", "exports", 'jquery'], function(require, exports, $) {
     var EncodeDecodeProxy = (function () {
         function EncodeDecodeProxy() {
         }
-        EncodeDecodeProxy.instance = function () {
-            return this._instance;
-        };
+        Object.defineProperty(EncodeDecodeProxy, "instance", {
+            get: function () {
+                return this._instance;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         EncodeDecodeProxy.prototype.htmlEncode = function (content) {
             return $('<div>').text(content).html();

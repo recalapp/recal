@@ -10,11 +10,6 @@ import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 class ViewTemplateRetriever implements IViewTemplateRetriever
 {
     private _cachedTemplates = new Dictionary<string, string>();
-    private static _instance = new ViewTemplateRetriever();
-    public static instance(): ViewTemplateRetriever
-    {
-        return this._instance;
-    }
 
     /**
       * Retrieve the template belonging to the container selector as a 

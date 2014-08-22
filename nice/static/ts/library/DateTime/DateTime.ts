@@ -5,6 +5,7 @@
 import moment = require('moment');
 import Comparable = require('../Core/Comparable');
 import ComparableResult = require('../Core/ComparableResult');
+import InvalidActionException = require('../Core/InvalidActionException');
 
 class DateTime implements Comparable
 {
@@ -132,6 +133,10 @@ class DateTime implements Comparable
 
     public compareTo(other: DateTime): ComparableResult
     {
+        if (other === null || other === undefined)
+        {
+            throw new InvalidActionException('Cannot compare a DateTime with a null or undefined object');
+        }
         if (this === other || this.unix === other.unix)
         {
             // catches all cases of equal, including when they are both max or both min
@@ -154,6 +159,15 @@ class DateTime implements Comparable
             return ComparableResult.greater;
         }
         return this.unix - other.unix > 0 ? ComparableResult.greater : ComparableResult.less;
+    }
+
+    public equals(other: DateTime): boolean
+    {
+        if (other === null || other === undefined)
+        {
+            return false; // don't throw exception - it's just not equal
+        }
+        return this.compareTo(other) === ComparableResult.equal;
     }
 }
 

@@ -1,5 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
-define(["require", "exports", 'jquery', './DashboardViewController', './GlobalInstancesManager', '../../library/Notifications/SidebarNotificationsManager', '../../library/CoreUI/View', "dashboard"], function(require, exports, $, DashboardViewController, GlobalInstancesManager, SidebarNotificationsManager, View) {
+define(["require", "exports", 'jquery', './DashboardViewController', './DashboardGlobalInstancesManager', '../common/GlobalInstancesManager', '../../library/CoreUI/View', "dashboard"], function(require, exports, $, DashboardViewController, DashboardGlobalInstancesManager, GlobalInstancesManager, View) {
     var DashboardInitializer = (function () {
         function DashboardInitializer() {
             this._rootViewController = null;
@@ -16,15 +16,16 @@ define(["require", "exports", 'jquery', './DashboardViewController', './GlobalIn
         });
 
         DashboardInitializer.prototype.initialize = function () {
+            // initialize global variables
+            var instancesManager = new DashboardGlobalInstancesManager();
+            GlobalInstancesManager.registerGlobalInstancesManager(instancesManager);
+            GlobalInstancesManager.instance.initialize();
+
             // set up Dashboard View Controller
             var dashboardView = View.fromJQuery($('body'));
             var dashboardVC = new DashboardViewController(dashboardView);
 
             this.rootViewController = dashboardVC;
-
-            // initialize global variables
-            var instancesManager = GlobalInstancesManager.instance();
-            instancesManager.notificationsManager = new SidebarNotificationsManager();
             // TODO state restoration happens in this class?
         };
         return DashboardInitializer;

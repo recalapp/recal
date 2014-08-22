@@ -62,15 +62,12 @@ class PopUpView extends FocusableView implements IPopUpView
             }
         });
         // TODO support for shift-click
-        // TODO WONTFIX max height - in subclass
-        // TODO initialize as needed
         // TODO tool tip - separate module - maybe in View base
         // this._$el.find('.withtooltip').tooltip({});
         // TODO theme - separate module
-        // NOTE extra initialization can be done by overriding the constructor
     }
 
-    public makeDraggable() : void
+    private makeDraggable() : void
     {
         this._$el.draggable({
             handle: '.panel > .panel-heading',
@@ -82,22 +79,17 @@ class PopUpView extends FocusableView implements IPopUpView
                 if (this.type !== PopUpType.detached)
                 {
                     this.type = PopUpType.detached;
-                    // TODO handle main/pinned
-                    // TODO WONTFIX see if bounding rect logic is needed - do that in a subclass
                     this.triggerEvent(BrowserEvents.popUpWillDetach);
-                    // needed because when first move, we move to a different
-                    // parent. maybe should expose as an event
                 }
             },
         });
     }
-    public makeResizable() : void
+    private makeResizable() : void
     {
         this._$el.find(PopUpCommon.panelCssSelector).resizable({
             stop: (ev, ui) => {
                 this._$el.css("height", ui.size.height);
                 this._$el.css('width', ui.size.width);
-                // TODO setbodywidth
             },
         });
     }
@@ -125,7 +117,6 @@ class PopUpView extends FocusableView implements IPopUpView
 
     public unhighlight() : void
     {
-        // TODO PopUp_loseFocus()
         this._$el.css('z-index', '100');
         var $panel = this._$el.find(PopUpCommon.panelCssSelector);
         $panel.addClass(PopUpCommon.blurClass).removeClass(PopUpCommon.focusClass);
@@ -143,18 +134,6 @@ class PopUpView extends FocusableView implements IPopUpView
             opacity: opacity,
         });
     }
-    /*
-       Not implemented:
-       PopUp_getMainPopUp()
-       PopUp_makeMain()
-       _PopUp_setBodyHeight()
-       PopUp_updateSize()
-       listeners
-
-       in PopUpContainerViewController:
-       PopUp_map()
-       PopUp_getPopUpByID()
-       */
 }
 
 export = PopUpView;

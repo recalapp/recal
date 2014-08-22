@@ -4,7 +4,7 @@ import $ = require('jquery');
 class EncodeDecodeProxy 
 {
     private static _instance = new EncodeDecodeProxy();
-    public static instance() : EncodeDecodeProxy
+    public static get instance() : EncodeDecodeProxy
     {
         return this._instance;
     }

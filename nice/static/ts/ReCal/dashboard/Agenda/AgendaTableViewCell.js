@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/DateTime/DateTime', '../../../library/Table/TableViewCell', '../../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, DateTime, TableViewCell, ViewTemplateRetriever) {
+define(["require", "exports", '../../../library/DateTime/DateTime', '../../common/GlobalInstancesManager', '../../../library/Table/TableViewCell'], function(require, exports, DateTime, GlobalInstancesManager, TableViewCell) {
     var AgendaTableViewCell = (function (_super) {
         __extends(AgendaTableViewCell, _super);
         function AgendaTableViewCell() {
@@ -20,7 +20,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
         });
 
         AgendaTableViewCell.fromTemplate = function () {
-            return this.fromJQuery(ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewCell._templateSelector));
+            return this.fromJQuery(GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell._templateSelector));
         };
 
         AgendaTableViewCell.prototype.highlight = function () {

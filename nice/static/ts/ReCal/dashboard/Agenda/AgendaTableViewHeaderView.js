@@ -5,14 +5,14 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Table/TableViewHeaderView', '../../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, TableViewHeaderView, ViewTemplateRetriever) {
+define(["require", "exports", '../../../library/Table/TableViewHeaderView', '../../common/GlobalInstancesManager'], function(require, exports, TableViewHeaderView, GlobalInstancesManager) {
     var AgendaTableViewHeaderView = (function (_super) {
         __extends(AgendaTableViewHeaderView, _super);
         function AgendaTableViewHeaderView() {
             _super.apply(this, arguments);
         }
         AgendaTableViewHeaderView.fromTemplate = function () {
-            return this.fromJQuery(ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewHeaderView._templateSelector));
+            return this.fromJQuery(GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate(AgendaTableViewHeaderView._templateSelector));
         };
 
         AgendaTableViewHeaderView.prototype.setTitle = function (text) {

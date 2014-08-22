@@ -5,7 +5,7 @@ import moment = require('moment');
 
 import Agenda = require('./Agenda');
 import TableViewHeaderView = require('../../../library/Table/TableViewHeaderView');
-import ViewTemplateRetriever = require('../../../library/CoreUI/ViewTemplateRetriever');
+import GlobalInstancesManager = require('../../common/GlobalInstancesManager');
 
 import IAgendaTableViewHeaderView = Agenda.IAgendaTableViewHeaderView;
 
@@ -15,7 +15,7 @@ class AgendaTableViewHeaderView extends TableViewHeaderView implements IAgendaTa
 
     public static fromTemplate(): AgendaTableViewHeaderView
     {
-        return <AgendaTableViewHeaderView> this.fromJQuery(ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewHeaderView._templateSelector));
+        return <AgendaTableViewHeaderView> this.fromJQuery(GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate(AgendaTableViewHeaderView._templateSelector));
     }
 
     public setTitle(text: string): void

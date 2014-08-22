@@ -4,8 +4,8 @@ import $ = require('jquery');
 
 import Agenda = require('./Agenda');
 import DateTime = require('../../../library/DateTime/DateTime');
+import GlobalInstancesManager = require('../../common/GlobalInstancesManager');
 import TableViewCell = require('../../../library/Table/TableViewCell');
-import ViewTemplateRetriever = require('../../../library/CoreUI/ViewTemplateRetriever');
 
 import IAgendaTableViewCell = Agenda.IAgendaTableViewCell;
 
@@ -24,7 +24,7 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
 
     public static fromTemplate(): AgendaTableViewCell
     {
-        return <AgendaTableViewCell> this.fromJQuery(ViewTemplateRetriever.instance().retrieveTemplate(AgendaTableViewCell._templateSelector));
+        return <AgendaTableViewCell> this.fromJQuery(GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell._templateSelector));
     }
 
     public highlight(): void

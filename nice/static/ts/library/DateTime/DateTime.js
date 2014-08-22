@@ -1,6 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings-manual/typings.d.ts" />
-define(["require", "exports", 'moment', '../Core/ComparableResult', "moment-timezone"], function(require, exports, moment, ComparableResult) {
+define(["require", "exports", 'moment', '../Core/ComparableResult', '../Core/InvalidActionException', "moment-timezone"], function(require, exports, moment, ComparableResult, InvalidActionException) {
     var DateTime = (function () {
         function DateTime(arg) {
             this._momentObject = moment();
@@ -124,6 +124,9 @@ define(["require", "exports", 'moment', '../Core/ComparableResult', "moment-time
         };
 
         DateTime.prototype.compareTo = function (other) {
+            if (other === null || other === undefined) {
+                throw new InvalidActionException('Cannot compare a DateTime with a null or undefined object');
+            }
             if (this === other || this.unix === other.unix) {
                 // catches all cases of equal, including when they are both max or both min
                 return 0 /* equal */;
@@ -141,6 +144,13 @@ define(["require", "exports", 'moment', '../Core/ComparableResult', "moment-time
                 return 1 /* greater */;
             }
             return this.unix - other.unix > 0 ? 1 /* greater */ : -1 /* less */;
+        };
+
+        DateTime.prototype.equals = function (other) {
+            if (other === null || other === undefined) {
+                return false;
+            }
+            return this.compareTo(other) === 0 /* equal */;
         };
         DateTime._timeZone = null;
 

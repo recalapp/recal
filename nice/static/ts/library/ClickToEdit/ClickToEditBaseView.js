@@ -108,7 +108,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         * such as converting \n to <br>
         */
         ClickToEditBaseView.prototype.processFormValue = function (value, settings) {
-            return EncodeDecodeProxy.instance().htmlEncode(value);
+            return EncodeDecodeProxy.instance.htmlEncode(value);
         };
 
         /**
@@ -125,7 +125,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         * Set the value of the input to match the value of the contentString.
         */
         ClickToEditBaseView.prototype.content = function ($form, contentString, settings) {
-            var decoded = EncodeDecodeProxy.instance().htmlDecode(contentString);
+            var decoded = EncodeDecodeProxy.instance.htmlDecode(contentString);
             $form.find('input').val(decoded);
         };
 
