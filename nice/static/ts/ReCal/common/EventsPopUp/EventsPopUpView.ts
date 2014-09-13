@@ -2,10 +2,12 @@
 
 import DateTime = require('../../../library/DateTime/DateTime');
 import EncodeDecodeProxy = require('../../../library/Core/EncodeDecodeProxy');
+import Events = require('../Events/Events');
 import EventsPopUp = require('./EventsPopUp');
 import PopUpView = require('../../../library/PopUp/PopUpView');
 import GlobalInstancesManager = require('../GlobalInstancesManager');
 
+import IEventsModel = Events.IEventsModel;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView;
 
 declare function EventsMan_getEventByID(id: string): any;
@@ -14,13 +16,13 @@ declare var TYPE_MAP: any;
 
 class EventsPopUpView extends PopUpView implements IEventsPopUpView
 {
-    private _eventId: string = null;
-    public get eventId(): string { return this._eventId; }
-    public set eventId(value: string)
+    private _eventsModel: IEventsModel = null;
+    public get eventsModel(): IEventsModel { return this._eventsModel; }
+    public set eventsModel(value: IEventsModel) 
     {
-        if (value !== this._eventId)
+        if (this._eventsModel !== value)
         {
-            this._eventId = value;
+            this._eventsModel = value; 
             this.refresh();
         }
     }
@@ -74,37 +76,37 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         this.findJQuery('#popup-loc').text(this._location);
     }
 
-    private _section: string = null;
-    public get section(): string { return this._section; }
-    public set section(value: string)
+    private _sectionId: string = null;
+    public get sectionId(): string { return this._sectionId; }
+    public set sectionId(value: string)
     {
-        if (this._section === value)
+        if (this._sectionId === value)
         {
             return;
         }
-        this._section = value;
-        if (this._section === null || this._section === undefined)
+        this._sectionId = value;
+        if (this._sectionId === null || this._sectionId === undefined)
         {
             return;
         }
-        this.findJQuery('#popup-section').text(SECTION_MAP[this._section]);
+        this.findJQuery('#popup-section').text(SECTION_MAP[this._sectionId]);
     }
 
-    private _eventType: string = null;
-    public get eventType(): string { return this._eventType; }
-    public set eventType(value: string)
+    private _eventTypeCode: string = null;
+    public get eventTypeCode(): string { return this._eventTypeCode; }
+    public set eventTypeCode(value: string)
     {
         // TODO to title case
-        if (this._eventType === value)
+        if (this._eventTypeCode === value)
         {
             return;
         }
-        this._eventType = value;
-        if (this._eventType === null || this._eventType === undefined)
+        this._eventTypeCode = value;
+        if (this._eventTypeCode === null || this._eventTypeCode === undefined)
         {
             return;
         }
-        this.findJQuery('#popup-type').text(TYPE_MAP[this._eventType]);
+        this.findJQuery('#popup-type').text(TYPE_MAP[this._eventTypeCode]);
     }
 
     private _startDate: DateTime = null;
@@ -169,8 +171,21 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         // TODO set up buttons 
     }
 
-    private refresh(): void
+    // can be overridden in subclasses
+    public refresh(): void
     {
+        if (this.eventsModel === null || this.eventsModel === undefined)
+        {
+            return;
+        }
+
+        this.title = this.eventsModel.title;
+        this.description = this.eventsModel.description;
+        this.sectionId = this.eventsModel.sectionId;
+        this.eventTypeCode = this.eventsModel.eventTypeCode;
+        this.startDate = this.eventsModel.startDate;
+        this.endDate = this.eventsModel.endDate;
+        this.lastEdited = this.eventsModel.lastEdited;
     }
 }
 

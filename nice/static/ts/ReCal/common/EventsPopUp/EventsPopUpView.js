@@ -10,24 +10,24 @@ define(["require", "exports", '../../../library/Core/EncodeDecodeProxy', '../../
         __extends(EventsPopUpView, _super);
         function EventsPopUpView() {
             _super.call(this, GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
-            this._eventId = null;
+            this._eventsModel = null;
             this._title = null;
             this._description = null;
             this._location = null;
-            this._section = null;
-            this._eventType = null;
+            this._sectionId = null;
+            this._eventTypeCode = null;
             this._startDate = null;
             this._endDate = null;
             this._lastEdited = null;
             // TODO set up buttons
         }
-        Object.defineProperty(EventsPopUpView.prototype, "eventId", {
+        Object.defineProperty(EventsPopUpView.prototype, "eventsModel", {
             get: function () {
-                return this._eventId;
+                return this._eventsModel;
             },
             set: function (value) {
-                if (value !== this._eventId) {
-                    this._eventId = value;
+                if (this._eventsModel !== value) {
+                    this._eventsModel = value;
                     this.refresh();
                 }
             },
@@ -90,38 +90,38 @@ define(["require", "exports", '../../../library/Core/EncodeDecodeProxy', '../../
             configurable: true
         });
 
-        Object.defineProperty(EventsPopUpView.prototype, "section", {
+        Object.defineProperty(EventsPopUpView.prototype, "sectionId", {
             get: function () {
-                return this._section;
+                return this._sectionId;
             },
             set: function (value) {
-                if (this._section === value) {
+                if (this._sectionId === value) {
                     return;
                 }
-                this._section = value;
-                if (this._section === null || this._section === undefined) {
+                this._sectionId = value;
+                if (this._sectionId === null || this._sectionId === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-section').text(SECTION_MAP[this._section]);
+                this.findJQuery('#popup-section').text(SECTION_MAP[this._sectionId]);
             },
             enumerable: true,
             configurable: true
         });
 
-        Object.defineProperty(EventsPopUpView.prototype, "eventType", {
+        Object.defineProperty(EventsPopUpView.prototype, "eventTypeCode", {
             get: function () {
-                return this._eventType;
+                return this._eventTypeCode;
             },
             set: function (value) {
                 // TODO to title case
-                if (this._eventType === value) {
+                if (this._eventTypeCode === value) {
                     return;
                 }
-                this._eventType = value;
-                if (this._eventType === null || this._eventType === undefined) {
+                this._eventTypeCode = value;
+                if (this._eventTypeCode === null || this._eventTypeCode === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-type').text(TYPE_MAP[this._eventType]);
+                this.findJQuery('#popup-type').text(TYPE_MAP[this._eventTypeCode]);
             },
             enumerable: true,
             configurable: true
@@ -190,7 +190,19 @@ define(["require", "exports", '../../../library/Core/EncodeDecodeProxy', '../../
             configurable: true
         });
 
+        // can be overridden in subclasses
         EventsPopUpView.prototype.refresh = function () {
+            if (this.eventsModel === null || this.eventsModel === undefined) {
+                return;
+            }
+
+            this.title = this.eventsModel.title;
+            this.description = this.eventsModel.description;
+            this.sectionId = this.eventsModel.sectionId;
+            this.eventTypeCode = this.eventsModel.eventTypeCode;
+            this.startDate = this.eventsModel.startDate;
+            this.endDate = this.eventsModel.endDate;
+            this.lastEdited = this.eventsModel.lastEdited;
         };
         return EventsPopUpView;
     })(PopUpView);
