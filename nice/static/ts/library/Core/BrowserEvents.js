@@ -18,7 +18,7 @@ define(["require", "exports"], function(require, exports) {
         BrowserEvents.focusableViewDidFocus = 'focusableViewDidFocus';
         BrowserEvents.focusableViewDidBlur = 'focusableViewDidBlur';
 
-        BrowserEvents.popUpWillDetach = 'popUpWillDetach';
+        BrowserEvents.popUpWillDrag = 'popUpWillDrag';
 
         BrowserEvents.clickToEditComplete = 'clickToEditComplete';
         BrowserEvents.clickToEditShouldBegin = 'clickToEditShouldBegin';

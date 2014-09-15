@@ -18,7 +18,7 @@ class BrowserEvents {
     static focusableViewDidBlur = 'focusableViewDidBlur';
     
     // popup
-    static popUpWillDetach = 'popUpWillDetach';
+    static popUpWillDrag = 'popUpWillDrag';
     
     // clickToEdit
     static clickToEditComplete = 'clickToEditComplete';

@@ -8,7 +8,6 @@ import ClickToEditBaseView = require('../ClickToEdit/ClickToEditBaseView');
 import FocusableView = require('../CoreUI/FocusableView');
 import PopUp = require('./PopUp');
 import PopUpCommon = require('./PopUpCommon');
-import PopUpType = require('./PopUpType');
 
 // aliases
 import IPopUpView = PopUp.IPopUpView;
@@ -28,10 +27,6 @@ class PopUpView extends FocusableView implements IPopUpView
     private _color: string;
     public get color(): string { return this._color; }
     public set color(newValue: string) { this._color = newValue; this._updateColor(); }
-
-    private _type: PopUpType = PopUpType.pinned;
-    public get type(): PopUpType { return this._type; }
-    public set type(value: PopUpType) { this._type = value; }
 
     /**
       * The unique css class for this class.
@@ -76,11 +71,7 @@ class PopUpView extends FocusableView implements IPopUpView
             appendTo: 'body',
             zIndex: 2000,
             beforeStart: (ev, ui) => {
-                if (this.type !== PopUpType.detached)
-                {
-                    this.type = PopUpType.detached;
-                    this.triggerEvent(BrowserEvents.popUpWillDetach);
-                }
+                this.triggerEvent(BrowserEvents.popUpWillDrag);
             },
         });
     }

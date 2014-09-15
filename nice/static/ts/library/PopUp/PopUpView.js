@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit/ClickToEditBaseView', '../CoreUI/FocusableView', './PopUpCommon', './PopUpType', "bootstrap", "jqueryui"], function(require, exports, $, BrowserEvents, ClickToEditBaseView, FocusableView, PopUpCommon, PopUpType) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit/ClickToEditBaseView', '../CoreUI/FocusableView', './PopUpCommon', "bootstrap", "jqueryui"], function(require, exports, $, BrowserEvents, ClickToEditBaseView, FocusableView, PopUpCommon) {
     var oldMouseStart = $.ui.draggable.prototype._mouseStart;
     $.ui.draggable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
         this._trigger("beforeStart", event, this._uiHash());
@@ -15,7 +15,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
         __extends(PopUpView, _super);
         function PopUpView($element, cssClass) {
             _super.call(this, $element, cssClass);
-            this._type = 1 /* pinned */;
 
             // TODO handle main/not main difference
             this.makeDraggable();
@@ -59,17 +58,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
             configurable: true
         });
 
-        Object.defineProperty(PopUpView.prototype, "type", {
-            get: function () {
-                return this._type;
-            },
-            set: function (value) {
-                this._type = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
         Object.defineProperty(PopUpView, "cssClass", {
             /**
             * The unique css class for this class.
@@ -90,10 +78,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
                 appendTo: 'body',
                 zIndex: 2000,
                 beforeStart: function (ev, ui) {
-                    if (_this.type !== 0 /* detached */) {
-                        _this.type = 0 /* detached */;
-                        _this.triggerEvent(BrowserEvents.popUpWillDetach);
-                    }
+                    _this.triggerEvent(BrowserEvents.popUpWillDrag);
                 }
             });
         };
