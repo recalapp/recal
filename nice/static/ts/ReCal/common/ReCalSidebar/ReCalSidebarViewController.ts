@@ -25,6 +25,17 @@ import ISidebarView = Sidebar.ISidebarView;
   **********************************************************************/
 class ReCalSidebarViewController extends ViewController implements IReCalSidebarViewController
 {
+    private static SIDEBAR_POPUP_PREFIX = 'sidebar_popup_';
+    private _currentPopUpView: IPopUpView = null;
+    private get currentPopUpView(): IPopUpView
+    {
+        return this._currentPopUpView;
+    }
+    private set currentPopUpView(value: IPopUpView)
+    {
+        this._currentPopUpView = value;
+    }
+
     constructor(sidebarView: ISidebarView)
     {
         super(sidebarView)
@@ -81,9 +92,25 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
       * must be detached from its previous parent first. If there is an
       * existing PopUpView object, it is removed first and replaced.
       */
-    public addPopUpView(popUpView: IPopUpView): void
+    private addPopUpView(popUpView: IPopUpView): void
     {
-        // TODO ensure there is only one main popup (for now)
+        // ensure there is only one main popup (for now)
+        if (this.currentPopUpView !== null)
+        {
+            this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(this.currentPopUpView));
+            this.currentPopUpView = null;
+        }
+        this.currentPopUpView = popUpView;
+        this.view.pushStackViewWithIdentifier(this.currentPopUpView, this.getIdentifierForPopUpView(this.currentPopUpView));
+    }
+
+    /**
+      * Get the stack view identifier for this popUpView. 
+      * TODO make unique if we want to support multiple popups in sidebar
+      */
+    private getIdentifierForPopUpView(popUpView: IPopUpView)
+    {
+        return ReCalSidebarViewController.SIDEBAR_POPUP_PREFIX;
     }
 }
 export = ReCalSidebarViewController;

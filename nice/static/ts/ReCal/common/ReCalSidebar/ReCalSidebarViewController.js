@@ -18,7 +18,19 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         __extends(ReCalSidebarViewController, _super);
         function ReCalSidebarViewController(sidebarView) {
             _super.call(this, sidebarView);
+            this._currentPopUpView = null;
         }
+        Object.defineProperty(ReCalSidebarViewController.prototype, "currentPopUpView", {
+            get: function () {
+                return this._currentPopUpView;
+            },
+            set: function (value) {
+                this._currentPopUpView = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(ReCalSidebarViewController.prototype, "view", {
             get: function () {
                 return this._view;
@@ -69,8 +81,23 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         * existing PopUpView object, it is removed first and replaced.
         */
         ReCalSidebarViewController.prototype.addPopUpView = function (popUpView) {
-            // TODO ensure there is only one main popup (for now)
+            // ensure there is only one main popup (for now)
+            if (this.currentPopUpView !== null) {
+                this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(this.currentPopUpView));
+                this.currentPopUpView = null;
+            }
+            this.currentPopUpView = popUpView;
+            this.view.pushStackViewWithIdentifier(this.currentPopUpView, this.getIdentifierForPopUpView(this.currentPopUpView));
         };
+
+        /**
+        * Get the stack view identifier for this popUpView.
+        * TODO make unique if we want to support multiple popups in sidebar
+        */
+        ReCalSidebarViewController.prototype.getIdentifierForPopUpView = function (popUpView) {
+            return ReCalSidebarViewController.SIDEBAR_POPUP_PREFIX;
+        };
+        ReCalSidebarViewController.SIDEBAR_POPUP_PREFIX = 'sidebar_popup_';
         return ReCalSidebarViewController;
     })(ViewController);
     
