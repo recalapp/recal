@@ -30,3 +30,5 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
         this.view.append(popUpView);
     }
 }
+
+export = CanvasPopUpContainerViewController;

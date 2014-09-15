@@ -8,7 +8,7 @@ class GlobalBrowserEventsManager
     private static _instance = new GlobalBrowserEventsManager();
     private _$globalParent = View.fromJQuery($(document));
 
-    public static instance() : GlobalBrowserEventsManager
+    public static get instance(): GlobalBrowserEventsManager
     {
         return this._instance;
     }

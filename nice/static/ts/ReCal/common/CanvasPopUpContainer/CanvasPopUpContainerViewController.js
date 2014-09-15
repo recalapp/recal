@@ -29,4 +29,7 @@ define(["require", "exports", '../../../library/Core/InvalidActionException', '.
         };
         return CanvasPopUpContainerViewController;
     })(ViewController);
+
+    
+    return CanvasPopUpContainerViewController;
 });
