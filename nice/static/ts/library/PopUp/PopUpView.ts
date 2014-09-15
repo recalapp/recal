@@ -41,11 +41,6 @@ class PopUpView extends FocusableView implements IPopUpView
         super($element, cssClass);
         // TODO handle main/not main difference
         this.makeDraggable();
-        this.attachEventHandler(BrowserEvents.popUpWillDetach, (ev, eventData) =>
-                {
-                    var popUpView = <PopUpView> eventData.view;
-                    popUpView.makeResizable();
-                });
         this.attachEventHandler(BrowserEvents.mouseDown, (ev: JQueryEventObject)=>
         {
             // don't prevent default, the default behavior causes other elements
@@ -72,11 +67,16 @@ class PopUpView extends FocusableView implements IPopUpView
             zIndex: 2000,
             beforeStart: (ev, ui) => {
                 this.triggerEvent(BrowserEvents.popUpWillDrag);
+                this.makeResizableIfNeeded();
             },
         });
     }
-    private makeResizable() : void
+    private makeResizableIfNeeded() : void
     {
+        if (this._$el.find(PopUpCommon.panelCssSelector).resizable('instance') !== undefined)
+        {
+            return;
+        }
         this._$el.find(PopUpCommon.panelCssSelector).resizable({
             stop: (ev, ui) => {
                 this._$el.css("height", ui.size.height);

@@ -15,11 +15,5 @@ import IPopUpView = PopUp.IPopUpView;
 
 export interface IReCalSidebarViewController extends IViewController
 {
-    /**
-      * Add a PopUpView object to the Sidebar. PopUpView object
-      * must be detached from its previous parent first. If there is an
-      * existing PopUpView object, it is removed first and replaced.
-      */
-    addPopUpView(popUpView: IPopUpView): void;
 }
 

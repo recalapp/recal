@@ -9,10 +9,8 @@ import CanvasPopUpContainer = require('../common/CanvasPopUpContainer/CanvasPopU
 import CanvasPopUpContainerViewController = require('../common/CanvasPopUpContainer/CanvasPopUpContainerViewController');
 import CoreUI = require('../../library/CoreUI/CoreUI');
 import DashboardCalendarViewController = require('./DashboardCalendar/DashboardCalendarViewController');
-import GlobalBrowserEventsManager = require('../../library/Core/GlobalBrowserEventsManager');
 import GlobalInstancesManager = require('../common/GlobalInstancesManager');
 import Notifications = require('../../library/Notifications/Notifications');
-import ReCalCommonBrowserEvents = require('../common/ReCalCommonBrowserEvents');
 import ReCalSidebar = require('../common/ReCalSidebar/ReCalSidebar');
 import ReCalSidebarViewController = require('../common/ReCalSidebar/ReCalSidebarViewController');
 import Sidebar = require('../../library/Sidebar/Sidebar');
@@ -79,17 +77,6 @@ class DashboardViewController extends ViewController
         super.initialize();
         this.initializeSidebar();
         this.initializePopUpCanvas();
-        // setup logic between sidebar and popup canvas
-        // when popup detaches from sidebar
-        GlobalBrowserEventsManager.instance.attachGlobalEventHandler(
-                ReCalCommonBrowserEvents.popUpWillDetachFromSidebar,
-                (ev: JQueryEventObject, extra: any) => 
-                {
-                    this.canvasPopUpContainerViewController.addPopUpView(extra.popUpView);
-                });
-        // when popup is released onto sidebar:
-
-
         this.initializeCalendar();
         this.initializeAgenda();
     }

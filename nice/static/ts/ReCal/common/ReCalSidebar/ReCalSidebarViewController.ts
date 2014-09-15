@@ -3,9 +3,11 @@
 import $ = require('jquery');
 
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import ReCalSidebar = require('./ReCalSidebar');
 import PopUp = require('../../../library/PopUp/PopUp');
+import PopUpView = require('../../../library/PopUp/PopUpView');
 import Sidebar = require('../../../library/Sidebar/Sidebar');
 import ViewController = require('../../../library/CoreUI/ViewController');
 
@@ -59,8 +61,26 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 popUpView: popUpView,
             });
         });
+
+        // register popup as a droppable object
+        this.view.registerDroppable(PopUpView.cssSelector());
+
+        // add listenter for when PopUpView object was dropped into sidebar
+        GlobalBrowserEventsManager.instance.attachGlobalEventHandler(
+                ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, 
+                (ev: JQueryEventObject, extra: any) => 
+                {
+                    var popUpView: IPopUpView = <IPopUpView> extra.popUpView;
+                    this.addPopUpView(popUpView);
+                });
+        
     }
 
+    /**
+      * Add a PopUpView object to the Sidebar. PopUpView object
+      * must be detached from its previous parent first. If there is an
+      * existing PopUpView object, it is removed first and replaced.
+      */
     public addPopUpView(popUpView: IPopUpView): void
     {
         // TODO ensure there is only one main popup (for now)

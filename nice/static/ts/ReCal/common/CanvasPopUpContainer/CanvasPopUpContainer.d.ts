@@ -12,9 +12,4 @@ import IPopUpView = PopUp.IPopUpView;
 
 export interface ICanvasPopUpContainerViewController extends IViewController
 {
-    /**
-      * Add a PopUpView object to the canvas container. PopUpView object
-      * must be detached from its previous parent first
-      */
-    addPopUpView(popUpView: IPopUpView): void
 }

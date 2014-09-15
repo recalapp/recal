@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', './DashboardCalendar/DashboardCalendarViewController', '../../library/Core/GlobalBrowserEventsManager', '../common/GlobalInstancesManager', '../common/ReCalCommonBrowserEvents', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Table/TableView', '../../library/CoreUI/View', '../../library/CoreUI/ViewController'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, DashboardCalendarViewController, GlobalBrowserEventsManager, GlobalInstancesManager, ReCalCommonBrowserEvents, ReCalSidebarViewController, SidebarView, TableView, View, ViewController) {
+define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', './DashboardCalendar/DashboardCalendarViewController', '../common/GlobalInstancesManager', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Table/TableView', '../../library/CoreUI/View', '../../library/CoreUI/ViewController'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, DashboardCalendarViewController, GlobalInstancesManager, ReCalSidebarViewController, SidebarView, TableView, View, ViewController) {
     var DashboardViewController = (function (_super) {
         __extends(DashboardViewController, _super);
         function DashboardViewController() {
@@ -60,18 +60,9 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
         });
 
         DashboardViewController.prototype.initialize = function () {
-            var _this = this;
             _super.prototype.initialize.call(this);
             this.initializeSidebar();
             this.initializePopUpCanvas();
-
-            // setup logic between sidebar and popup canvas
-            // when popup detaches from sidebar
-            GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, function (ev, extra) {
-                _this.canvasPopUpContainerViewController.addPopUpView(extra.popUpView);
-            });
-
-            // when popup is released onto sidebar:
             this.initializeCalendar();
             this.initializeAgenda();
         };

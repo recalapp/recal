@@ -57,7 +57,8 @@ export interface ISidebarView extends IView
       ******************************************************************/    
 
     /**
-      * Registers view with the css selector to receive droppable events
+      * Registers view with the css selector to receive droppable events. sidebarViewDidDrop
+      * event is triggered on dropped element.
       */
     registerDroppable(cssSelector: string);
 }

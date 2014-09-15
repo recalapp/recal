@@ -1,6 +1,10 @@
+import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import CanvasPopUpContainer = require('./CanvasPopUpContainer');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import InvalidActionException = require('../../../library/Core/InvalidActionException');
 import PopUp = require('../../../library/PopUp/PopUp');
+import PopUpView = require('../../../library/PopUp/PopUpView');
+import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import ViewController = require('../../../library/CoreUI/ViewController');
 
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController
@@ -14,7 +18,27 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
       */
     public initialize(): void
     {
-        
+        // when popup detaches from sidebar
+        GlobalBrowserEventsManager.instance.attachGlobalEventHandler(
+                ReCalCommonBrowserEvents.popUpWillDetachFromSidebar,
+                (ev: JQueryEventObject, extra: any) => 
+                {
+                    this.addPopUpView(extra.popUpView);
+                });
+
+        // when popup is dropped onto sidebar
+        this.view.attachEventHandler(BrowserEvents.sidebarViewDidDrop, 
+                PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any) => 
+                {
+                    var popUpView: IPopUpView = extra.view;
+                    popUpView.removeFromParent();
+                    this.view.triggerEvent(
+                        ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, 
+                        {
+                            popUpView: popUpView,
+                        }
+                    );
+                });
     }
 
     /**

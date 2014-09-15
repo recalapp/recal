@@ -18,10 +18,6 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
 
             // TODO handle main/not main difference
             this.makeDraggable();
-            this.attachEventHandler(BrowserEvents.popUpWillDetach, function (ev, eventData) {
-                var popUpView = eventData.view;
-                popUpView.makeResizable();
-            });
             this.attachEventHandler(BrowserEvents.mouseDown, function (ev) {
                 // don't prevent default, the default behavior causes other elements
                 // to lose focus
@@ -79,11 +75,15 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
                 zIndex: 2000,
                 beforeStart: function (ev, ui) {
                     _this.triggerEvent(BrowserEvents.popUpWillDrag);
+                    _this.makeResizableIfNeeded();
                 }
             });
         };
-        PopUpView.prototype.makeResizable = function () {
+        PopUpView.prototype.makeResizableIfNeeded = function () {
             var _this = this;
+            if (this._$el.find(PopUpCommon.panelCssSelector).resizable('instance') !== undefined) {
+                return;
+            }
             this._$el.find(PopUpCommon.panelCssSelector).resizable({
                 stop: function (ev, ui) {
                     _this._$el.css("height", ui.size.height);

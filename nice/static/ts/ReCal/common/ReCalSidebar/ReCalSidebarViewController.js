@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, ReCalCommonBrowserEvents, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/GlobalBrowserEventsManager', '../ReCalCommonBrowserEvents', '../../../library/PopUp/PopUpView', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, GlobalBrowserEventsManager, ReCalCommonBrowserEvents, PopUpView, ViewController) {
     /************************************************************************
     * This class is responsible for managing the sidebar in ReCal. In particular,
     * it is responsible for listening to the following events:
@@ -52,8 +52,22 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../ReCalCo
                     popUpView: popUpView
                 });
             });
+
+            // register popup as a droppable object
+            this.view.registerDroppable(PopUpView.cssSelector());
+
+            // add listenter for when PopUpView object was dropped into sidebar
+            GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, function (ev, extra) {
+                var popUpView = extra.popUpView;
+                _this.addPopUpView(popUpView);
+            });
         };
 
+        /**
+        * Add a PopUpView object to the Sidebar. PopUpView object
+        * must be detached from its previous parent first. If there is an
+        * existing PopUpView object, it is removed first and replaced.
+        */
         ReCalSidebarViewController.prototype.addPopUpView = function (popUpView) {
             // TODO ensure there is only one main popup (for now)
         };

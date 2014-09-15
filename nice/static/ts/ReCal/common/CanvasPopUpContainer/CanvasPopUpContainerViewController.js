@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/InvalidActionException', '../../../library/CoreUI/ViewController'], function(require, exports, InvalidActionException, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/GlobalBrowserEventsManager', '../../../library/Core/InvalidActionException', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, GlobalBrowserEventsManager, InvalidActionException, PopUpView, ReCalCommonBrowserEvents, ViewController) {
     var CanvasPopUpContainerViewController = (function (_super) {
         __extends(CanvasPopUpContainerViewController, _super);
         function CanvasPopUpContainerViewController() {
@@ -15,6 +15,20 @@ define(["require", "exports", '../../../library/Core/InvalidActionException', '.
         * because this gives the option of not calling super.initialize();
         */
         CanvasPopUpContainerViewController.prototype.initialize = function () {
+            var _this = this;
+            // when popup detaches from sidebar
+            GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, function (ev, extra) {
+                _this.addPopUpView(extra.popUpView);
+            });
+
+            // when popup is dropped onto sidebar
+            this.view.attachEventHandler(BrowserEvents.sidebarViewDidDrop, PopUpView.cssSelector(), function (ev, extra) {
+                var popUpView = extra.view;
+                popUpView.removeFromParent();
+                _this.view.triggerEvent(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, {
+                    popUpView: popUpView
+                });
+            });
         };
 
         /**
