@@ -1,9 +1,12 @@
 import CoreUI = require('../../library/CoreUI/CoreUI');
+import Events = require('./Events/Events');
+import EventsManager = require('./Events/EventsManager');
 import InvalidActionException = require('../../library/Core/InvalidActionException');
 import Notifications = require('../../library/Notifications/Notifications');
 import NotificationsManager = require('../../library/Notifications/NotificationsManager');
 import ViewTemplateRetriever = require('../../library/CoreUI/ViewTemplateRetriever');
 
+import IEventsManager = Events.IEventsManager;
 import INotificationsManager = Notifications.INotificationsManager;
 import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
@@ -42,6 +45,7 @@ class GlobalInstancesManager
     {
         this.notificationsManager = new NotificationsManager();
         this.viewTemplateRetriever = new ViewTemplateRetriever();
+        this.eventsManager = new EventsManager();
     }
 
     /**
@@ -57,6 +61,13 @@ class GlobalInstancesManager
     private _viewTemplateRetriever: IViewTemplateRetriever = null;
     public get viewTemplateRetriever(): IViewTemplateRetriever { return this._viewTemplateRetriever; }
     public set viewTemplateRetriever(value: IViewTemplateRetriever) { this._viewTemplateRetriever = value; }
+
+    /**
+      * Events Manager
+      */
+    private _eventsManager: IEventsManager = null;
+    public get eventsManager(): IEventsManager { return this._eventsManager; }
+    public set eventsManager(value: IEventsManager) { this._eventsManager = value; }
 }
 
 export = GlobalInstancesManager;

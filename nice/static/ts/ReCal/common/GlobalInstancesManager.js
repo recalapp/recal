@@ -1,4 +1,4 @@
-define(["require", "exports", '../../library/Core/InvalidActionException', '../../library/Notifications/NotificationsManager', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, InvalidActionException, NotificationsManager, ViewTemplateRetriever) {
+define(["require", "exports", './Events/EventsManager', '../../library/Core/InvalidActionException', '../../library/Notifications/NotificationsManager', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, EventsManager, InvalidActionException, NotificationsManager, ViewTemplateRetriever) {
     /**
     * Used to hold objects that are not singletons but for which we want
     * a global instance. For example, events manager is not a singleton.
@@ -16,6 +16,10 @@ define(["require", "exports", '../../library/Core/InvalidActionException', '../.
             * View template retriever
             */
             this._viewTemplateRetriever = null;
+            /**
+            * Events Manager
+            */
+            this._eventsManager = null;
         }
         Object.defineProperty(GlobalInstancesManager, "instance", {
             get: function () {
@@ -40,6 +44,7 @@ define(["require", "exports", '../../library/Core/InvalidActionException', '../.
         GlobalInstancesManager.prototype.initialize = function () {
             this.notificationsManager = new NotificationsManager();
             this.viewTemplateRetriever = new ViewTemplateRetriever();
+            this.eventsManager = new EventsManager();
         };
 
         Object.defineProperty(GlobalInstancesManager.prototype, "notificationsManager", {
@@ -59,6 +64,17 @@ define(["require", "exports", '../../library/Core/InvalidActionException', '../.
             },
             set: function (value) {
                 this._viewTemplateRetriever = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(GlobalInstancesManager.prototype, "eventsManager", {
+            get: function () {
+                return this._eventsManager;
+            },
+            set: function (value) {
+                this._eventsManager = value;
             },
             enumerable: true,
             configurable: true
