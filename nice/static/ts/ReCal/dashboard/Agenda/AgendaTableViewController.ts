@@ -6,6 +6,9 @@ import Agenda = require('./Agenda');
 import AgendaTableViewCell = require('./AgendaTableViewCell');
 import AgendaTableViewHeaderView = require('./AgendaTableViewHeaderView');
 import DateTime = require('../../../library/DateTime/DateTime');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
+import GlobalInstancesManager = require('../../common/GlobalInstancesManager');
+import ReCalCommonBrowserEvents = require('../../common/ReCalCommonBrowserEvents');
 import IndexPath = require('../../../library/DataStructures/IndexPath');
 import Table = require('../../../library/Table/Table');
 import TableViewController = require('../../../library/Table/TableViewController');
@@ -61,7 +64,7 @@ class AgendaTableViewController extends TableViewController
 
         // unhighlight closed events
         PopUp_addCloseListener((closedEventId: string)=>{
-            // TODO get cell based on eventId and unhighlight it
+            // get cell based on eventId and unhighlight it
             $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath) =>{
                 var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                 if (eventId == closedEventId)
@@ -72,13 +75,35 @@ class AgendaTableViewController extends TableViewController
             });
         });
 
+        // this should be the sole place to unhighlight deselected events and 
+        // make sure the agenda view is in sync with the state of the events
+        GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged,
+                (ev: JQueryEventObject, extra: any) => 
+                {
+                    if (extra !== null && extra !== undefined && extra.eventId !== null && extra.eventId !== undefined)
+                    {
+                        // get cell based on eventId and unhighlight it
+                        $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath) =>{
+                            var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+                            if (eventId == extra.eventId)
+                            {
+                                this.view.deselectCellAtIndexPath(indexPath);
+                                return false; // breaks
+                            }
+                        });
+                    }
+                    else
+                    {
+                        // TODO cannot tell what changed. update everything. need a way to map to all events in events manager
+                    }
+                });
+
         // reload
         this.reload();
     }
 
     public reload() : void
     {
-        // TODO handle timezone and separate time logic into a datetime module
         // TODO Agenda_filter
         // TODO EventSectionRangeProvider
         if (this._loading)
@@ -277,24 +302,34 @@ class AgendaTableViewController extends TableViewController
             return;
         }
         
-        var popUp = PopUp_getPopUpByID(eventId);
-        if (popUp === null || popUp === undefined)
+        if (!GlobalInstancesManager.instance.eventsManager.eventIdIsSelected(eventId))
         {
-            // create the popup
-            popUp = PopUp_getMainPopUp();
-            PopUp_setToEventID(popUp, eventId);
-            // TODO handle success/retry logic. was needed for when popup has uncommitted changes
+            GlobalInstancesManager.instance.eventsManager.selectEventWithId(eventId);
         }
-        PopUp_giveFocus(popUp);
+        else
+        {
+            // TODO bring event popup into focus - maybe simply by calling select again?
+            GlobalInstancesManager.instance.eventsManager.selectEventWithId(eventId); // TODO works?
+        }
 
-        // update cell selection. deselect any cells no longer relevant
-        $.each(this.view.selectedIndexPaths(), (index: string, indexPath: IndexPath)=>{
-            var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
-            if (!UI_isMain(eventId) && !UI_isPinned(eventId))
-            {
-                this.view.deselectCellAtIndexPath(indexPath);
-            }
-        });
+        //var popUp = PopUp_getPopUpByID(eventId);
+        //if (popUp === null || popUp === undefined)
+        //{
+        //    // create the popup
+        //    popUp = PopUp_getMainPopUp();
+        //    PopUp_setToEventID(popUp, eventId);
+        //    // TODO handle success/retry logic. was needed for when popup has uncommitted changes
+        //}
+        //PopUp_giveFocus(popUp);
+
+        //// update cell selection. deselect any cells no longer relevant
+        //$.each(this.view.selectedIndexPaths(), (index: string, indexPath: IndexPath)=>{
+        //    var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+        //    if (!UI_isMain(eventId) && !UI_isPinned(eventId))
+        //    {
+        //        this.view.deselectCellAtIndexPath(indexPath);
+        //    }
+        //});
     }
 }
 

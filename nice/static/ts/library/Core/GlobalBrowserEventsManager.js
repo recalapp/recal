@@ -14,6 +14,10 @@ define(["require", "exports", "jquery", "../CoreUI/View"], function(require, exp
         GlobalBrowserEventsManager.prototype.attachGlobalEventHandler = function (ev, argumentTwo, handler) {
             this._$globalParent.attachEventHandler(ev, argumentTwo, handler);
         };
+
+        GlobalBrowserEventsManager.prototype.triggerEvent = function (ev, extraParameter) {
+            this._$globalParent.triggerEvent(ev, extraParameter);
+        };
         GlobalBrowserEventsManager._instance = new GlobalBrowserEventsManager();
         return GlobalBrowserEventsManager;
     })();

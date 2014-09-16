@@ -1,5 +1,7 @@
 import Events = require('./Events');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import InvalidActionException = require('../../../library/Core/InvalidActionException');
+import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import Set = require('../../../library/DataStructures/Set');
 
 import IEventsManager = Events.IEventsManager;
@@ -71,6 +73,7 @@ class EventsManager implements IEventsManager
     public selectEventWithId(eventId: string): void
     {
         this.selectedIds.add(eventId);
+        this.triggerSelectionChangeBrowserEvent(eventId);
     }
 
     /**
@@ -81,6 +84,7 @@ class EventsManager implements IEventsManager
     {
         this.pinnedIds.remove(eventId);
         this.selectedIds.remove(eventId);
+        this.triggerSelectionChangeBrowserEvent(eventId);
     }
 
     /**
@@ -94,6 +98,7 @@ class EventsManager implements IEventsManager
             throw new InvalidActionException('Event Id must first be selected before pinning');
         }
         this.pinnedIds.add(eventId);
+        this.triggerSelectionChangeBrowserEvent(eventId);
     }
 
     /**
@@ -108,6 +113,7 @@ class EventsManager implements IEventsManager
             throw new InvalidActionException('Cannot unpin an event that is not selected to begin with');
         }
         this.pinnedIds.remove(eventId);
+        this.triggerSelectionChangeBrowserEvent(eventId);
     }
 
     /***************************************************************************
@@ -128,6 +134,17 @@ class EventsManager implements IEventsManager
                 break;
             }
         }
+    }
+
+    /***************************************************************************
+      * Helper functions
+      *************************************************************************/
+    private triggerSelectionChangeBrowserEvent(eventId: string)
+    {
+        GlobalBrowserEventsManager.instance.triggerEvent(ReCalCommonBrowserEvents.eventSelectionChanged, 
+        {
+            eventId: eventId,
+        });
     }
 }
 

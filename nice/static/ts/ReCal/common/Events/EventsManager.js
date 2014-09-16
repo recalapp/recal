@@ -1,4 +1,4 @@
-define(["require", "exports", '../../../library/Core/InvalidActionException', '../../../library/DataStructures/Set'], function(require, exports, InvalidActionException, Set) {
+define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager', '../../../library/Core/InvalidActionException', '../ReCalCommonBrowserEvents', '../../../library/DataStructures/Set'], function(require, exports, GlobalBrowserEventsManager, InvalidActionException, ReCalCommonBrowserEvents, Set) {
     /**
     * EventsManager is the class responsible for all operations related to events
     * in the persepective of any events client. That is, to any non-model classes,
@@ -68,6 +68,7 @@ define(["require", "exports", '../../../library/Core/InvalidActionException', '.
         */
         EventsManager.prototype.selectEventWithId = function (eventId) {
             this.selectedIds.add(eventId);
+            this.triggerSelectionChangeBrowserEvent(eventId);
         };
 
         /**
@@ -77,6 +78,7 @@ define(["require", "exports", '../../../library/Core/InvalidActionException', '.
         EventsManager.prototype.deselectEventWithId = function (eventId) {
             this.pinnedIds.remove(eventId);
             this.selectedIds.remove(eventId);
+            this.triggerSelectionChangeBrowserEvent(eventId);
         };
 
         /**
@@ -88,6 +90,7 @@ define(["require", "exports", '../../../library/Core/InvalidActionException', '.
                 throw new InvalidActionException('Event Id must first be selected before pinning');
             }
             this.pinnedIds.add(eventId);
+            this.triggerSelectionChangeBrowserEvent(eventId);
         };
 
         /**
@@ -100,6 +103,7 @@ define(["require", "exports", '../../../library/Core/InvalidActionException', '.
                 throw new InvalidActionException('Cannot unpin an event that is not selected to begin with');
             }
             this.pinnedIds.remove(eventId);
+            this.triggerSelectionChangeBrowserEvent(eventId);
         };
 
         /***************************************************************************
@@ -117,6 +121,15 @@ define(["require", "exports", '../../../library/Core/InvalidActionException', '.
                     break;
                 }
             }
+        };
+
+        /***************************************************************************
+        * Helper functions
+        *************************************************************************/
+        EventsManager.prototype.triggerSelectionChangeBrowserEvent = function (eventId) {
+            GlobalBrowserEventsManager.instance.triggerEvent(ReCalCommonBrowserEvents.eventSelectionChanged, {
+                eventId: eventId
+            });
         };
         return EventsManager;
     })();

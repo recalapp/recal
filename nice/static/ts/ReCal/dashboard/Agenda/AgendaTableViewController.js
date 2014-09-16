@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, TableViewController) {
+define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../../library/Core/GlobalBrowserEventsManager', '../../common/GlobalInstancesManager', '../../common/ReCalCommonBrowserEvents', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, GlobalBrowserEventsManager, GlobalInstancesManager, ReCalCommonBrowserEvents, TableViewController) {
     var AgendaTableViewController = (function (_super) {
         __extends(AgendaTableViewController, _super);
         function AgendaTableViewController() {
@@ -39,7 +39,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
 
             // unhighlight closed events
             PopUp_addCloseListener(function (closedEventId) {
-                // TODO get cell based on eventId and unhighlight it
+                // get cell based on eventId and unhighlight it
                 $.each(_this.view.selectedIndexPaths(), function (index, indexPath) {
                     var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                     if (eventId == closedEventId) {
@@ -49,12 +49,28 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 });
             });
 
+            // this should be the sole place to unhighlight deselected events and
+            // make sure the agenda view is in sync with the state of the events
+            GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged, function (ev, extra) {
+                if (extra !== null && extra !== undefined && extra.eventId !== null && extra.eventId !== undefined) {
+                    // get cell based on eventId and unhighlight it
+                    $.each(_this.view.selectedIndexPaths(), function (index, indexPath) {
+                        var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+                        if (eventId == extra.eventId) {
+                            _this.view.deselectCellAtIndexPath(indexPath);
+                            return false;
+                        }
+                    });
+                } else {
+                    // TODO cannot tell what changed. update everything. need a way to map to all events in events manager
+                }
+            });
+
             // reload
             this.reload();
         };
 
         AgendaTableViewController.prototype.reload = function () {
-            // TODO handle timezone and separate time logic into a datetime module
             // TODO Agenda_filter
             // TODO EventSectionRangeProvider
             if (this._loading) {
@@ -225,7 +241,6 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * Callback for when a table view cell is selected
         */
         AgendaTableViewController.prototype.didSelectCell = function (cell) {
-            var _this = this;
             var indexPath = cell.indexPath;
             var eventId = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
             if (eventId === undefined) {
@@ -233,22 +248,29 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 return;
             }
 
-            var popUp = PopUp_getPopUpByID(eventId);
-            if (popUp === null || popUp === undefined) {
-                // create the popup
-                popUp = PopUp_getMainPopUp();
-                PopUp_setToEventID(popUp, eventId);
-                // TODO handle success/retry logic. was needed for when popup has uncommitted changes
+            if (!GlobalInstancesManager.instance.eventsManager.eventIdIsSelected(eventId)) {
+                GlobalInstancesManager.instance.eventsManager.selectEventWithId(eventId);
+            } else {
+                // TODO bring event popup into focus - maybe simply by calling select again?
+                GlobalInstancesManager.instance.eventsManager.selectEventWithId(eventId); // TODO works?
             }
-            PopUp_giveFocus(popUp);
-
-            // update cell selection. deselect any cells no longer relevant
-            $.each(this.view.selectedIndexPaths(), function (index, indexPath) {
-                var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
-                if (!UI_isMain(eventId) && !UI_isPinned(eventId)) {
-                    _this.view.deselectCellAtIndexPath(indexPath);
-                }
-            });
+            //var popUp = PopUp_getPopUpByID(eventId);
+            //if (popUp === null || popUp === undefined)
+            //{
+            //    // create the popup
+            //    popUp = PopUp_getMainPopUp();
+            //    PopUp_setToEventID(popUp, eventId);
+            //    // TODO handle success/retry logic. was needed for when popup has uncommitted changes
+            //}
+            //PopUp_giveFocus(popUp);
+            //// update cell selection. deselect any cells no longer relevant
+            //$.each(this.view.selectedIndexPaths(), (index: string, indexPath: IndexPath)=>{
+            //    var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+            //    if (!UI_isMain(eventId) && !UI_isPinned(eventId))
+            //    {
+            //        this.view.deselectCellAtIndexPath(indexPath);
+            //    }
+            //});
         };
         AgendaTableViewController.LO_MESSAGE = 'agenda loading';
         return AgendaTableViewController;

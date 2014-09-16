@@ -19,6 +19,19 @@ class GlobalBrowserEventsManager
     {
         this._$globalParent.attachEventHandler(ev, argumentTwo, handler);
     }
+
+    /**
+      * Triggers an event. The only objects that will be notified of this 
+      * triggered event are the objects the registered an event handler 
+      * through this GlobalBrowserEventsManager. It does NOT trigger an 
+      * event that will be picked up by all listeners.
+      */
+    public triggerEvent(ev: string);
+    public triggerEvent(ev: string, extraParameter : any);
+    public triggerEvent(ev: string, extraParameter? : any)
+    {
+        this._$globalParent.triggerEvent(ev, extraParameter);
+    } 
 }
 
 export = GlobalBrowserEventsManager;
