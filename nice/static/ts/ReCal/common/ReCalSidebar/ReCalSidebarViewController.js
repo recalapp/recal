@@ -71,13 +71,39 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             // register popup as a droppable object
             this.view.registerDroppable(EventsPopUpView.cssSelector());
 
-            // add listenter for when PopUpView object was dropped into sidebar
+            // add listener for when PopUpView object was dropped into sidebar
             GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, function (ev, extra) {
                 var popUpView = extra.popUpView;
                 _this.addPopUpView(popUpView);
 
                 // update event selection state
                 GlobalInstancesManager.instance.eventsManager.unpinEventWithId(popUpView.eventsModel.eventId);
+            });
+
+            // add listener for when event selection state changes
+            GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged, function (ev, extra) {
+                var eventId = extra.eventId;
+                if (eventId === null || eventId === undefined) {
+                    // TODO get the main popup, then do stuffs
+                    return;
+                }
+                if (GlobalInstancesManager.instance.eventsManager.eventIdIsMain(eventId)) {
+                    // this event is supposed to be main
+                    if (_this.currentPopUpView === null || _this.currentPopUpView === undefined) {
+                        // create the popup view
+                        _this.currentPopUpView = new EventsPopUpView();
+
+                        // TODO set events model
+                        // this.currentPopUpView.eventsModel =
+                        _this.addPopUpView(_this.currentPopUpView);
+                    }
+                } else {
+                    // event is no longer main. if it matches our current
+                    // popup, then remove the popup
+                    if (_this.currentPopUpView && _this.currentPopUpView.eventsModel.eventId === eventId) {
+                        _this.removePopUpView(_this.currentPopUpView);
+                    }
+                }
             });
         };
 

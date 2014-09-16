@@ -80,7 +80,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
         // register popup as a droppable object
         this.view.registerDroppable(EventsPopUpView.cssSelector());
 
-        // add listenter for when PopUpView object was dropped into sidebar
+        // add listener for when PopUpView object was dropped into sidebar
         GlobalBrowserEventsManager.instance.attachGlobalEventHandler(
                 ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, 
                 (ev: JQueryEventObject, extra: any) => 
@@ -89,6 +89,40 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                     this.addPopUpView(popUpView);
                     // update event selection state
                     GlobalInstancesManager.instance.eventsManager.unpinEventWithId(popUpView.eventsModel.eventId);
+                });
+
+        // add listener for when event selection state changes
+        GlobalBrowserEventsManager.instance.attachGlobalEventHandler(
+                ReCalCommonBrowserEvents.eventSelectionChanged,
+                (ev: JQueryEventObject, extra: any) =>
+                {
+                    var eventId = extra.eventId;
+                    if (eventId === null || eventId === undefined)
+                    {
+                        // TODO get the main popup, then do stuffs
+                        return;
+                    }
+                    if (GlobalInstancesManager.instance.eventsManager.eventIdIsMain(eventId))
+                    {
+                        // this event is supposed to be main
+                        if (this.currentPopUpView === null || this.currentPopUpView === undefined)
+                        {
+                            // create the popup view
+                            this.currentPopUpView = new EventsPopUpView();
+                            // TODO set events model
+                            // this.currentPopUpView.eventsModel =
+                            this.addPopUpView(this.currentPopUpView);
+                        }
+                    }
+                    else
+                    {
+                        // event is no longer main. if it matches our current 
+                        // popup, then remove the popup
+                        if (this.currentPopUpView && this.currentPopUpView.eventsModel.eventId === eventId)
+                        {
+                            this.removePopUpView(this.currentPopUpView);
+                        }
+                    }
                 });
         
     }
