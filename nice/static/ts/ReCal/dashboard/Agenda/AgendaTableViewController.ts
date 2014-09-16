@@ -87,7 +87,14 @@ class AgendaTableViewController extends TableViewController
                             var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                             if (eventId == extra.eventId)
                             {
-                                this.view.deselectCellAtIndexPath(indexPath);
+                                if (GlobalInstancesManager.instance.eventsManager.eventIdIsSelected(eventId))
+                                {
+                                    this.view.selectCellAtIndexPath(indexPath);
+                                }
+                                else
+                                {
+                                    this.view.deselectCellAtIndexPath(indexPath);
+                                }
                                 return false; // breaks
                             }
                         });

@@ -57,7 +57,11 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                     $.each(_this.view.selectedIndexPaths(), function (index, indexPath) {
                         var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                         if (eventId == extra.eventId) {
-                            _this.view.deselectCellAtIndexPath(indexPath);
+                            if (GlobalInstancesManager.instance.eventsManager.eventIdIsSelected(eventId)) {
+                                _this.view.selectCellAtIndexPath(indexPath);
+                            } else {
+                                _this.view.deselectCellAtIndexPath(indexPath);
+                            }
                             return false;
                         }
                     });
