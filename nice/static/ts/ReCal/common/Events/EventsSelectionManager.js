@@ -1,12 +1,6 @@
 define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager', '../../../library/Core/InvalidActionException', '../ReCalCommonBrowserEvents', '../../../library/DataStructures/Set'], function(require, exports, GlobalBrowserEventsManager, InvalidActionException, ReCalCommonBrowserEvents, Set) {
-    /**
-    * EventsManager is the class responsible for all operations related to events
-    * in the persepective of any events client. That is, to any non-model classes,
-    * EventsManager will serve as the single gateway to getting information about
-    * events.
-    */
-    var EventsManager = (function () {
-        function EventsManager() {
+    var EventsSelectionManager = (function () {
+        function EventsSelectionManager() {
             /**
             * An event is considered pinned if it is selected and if its popup has
             * been dragged from the sidebar.
@@ -17,7 +11,7 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
             */
             this._selectedIds = new Set();
         }
-        Object.defineProperty(EventsManager.prototype, "pinnedIds", {
+        Object.defineProperty(EventsSelectionManager.prototype, "pinnedIds", {
             get: function () {
                 return this._pinnedIds;
             },
@@ -25,7 +19,7 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
             configurable: true
         });
 
-        Object.defineProperty(EventsManager.prototype, "selectedIds", {
+        Object.defineProperty(EventsSelectionManager.prototype, "selectedIds", {
             get: function () {
                 return this._selectedIds;
             },
@@ -40,7 +34,7 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
         * Returns true if the event Id is pinned. That is, if its popup is opened
         * and has been dragged from sidebar.
         */
-        EventsManager.prototype.eventIdIsPinned = function (eventId) {
+        EventsSelectionManager.prototype.eventIdIsPinned = function (eventId) {
             return this._pinnedIds.contains(eventId);
         };
 
@@ -48,14 +42,14 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
         * Returns true if the event Id is the main one opened. That is, it is the
         * one in the sidebar.
         */
-        EventsManager.prototype.eventIdIsMain = function (eventId) {
+        EventsSelectionManager.prototype.eventIdIsMain = function (eventId) {
             return this.eventIdIsSelected(eventId) && !this.eventIdIsPinned(eventId);
         };
 
         /**
         * Returns true if the event Id is selected. That is, its popup is opened
         */
-        EventsManager.prototype.eventIdIsSelected = function (eventId) {
+        EventsSelectionManager.prototype.eventIdIsSelected = function (eventId) {
             return this.selectedIds.contains(eventId);
         };
 
@@ -66,7 +60,7 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
         * Select the event with this ID. An event is considered selected when its
         * popup is opened.
         */
-        EventsManager.prototype.selectEventWithId = function (eventId) {
+        EventsSelectionManager.prototype.selectEventWithId = function (eventId) {
             this.selectedIds.add(eventId);
             this.triggerSelectionChangeBrowserEvent(eventId);
         };
@@ -75,7 +69,7 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
         * Deselect the event with this ID. By deselecting, you are also unpinning.
         * Call this when you are closing an event popup
         */
-        EventsManager.prototype.deselectEventWithId = function (eventId) {
+        EventsSelectionManager.prototype.deselectEventWithId = function (eventId) {
             this.pinnedIds.remove(eventId);
             this.selectedIds.remove(eventId);
             this.triggerSelectionChangeBrowserEvent(eventId);
@@ -85,7 +79,7 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
         * Pin a selected event. Throws an exception if the event is not selected.
         * Pinning means that the event popup is dragged from the sidebar.
         */
-        EventsManager.prototype.pinEventWithId = function (eventId) {
+        EventsSelectionManager.prototype.pinEventWithId = function (eventId) {
             if (!this.eventIdIsSelected(eventId)) {
                 throw new InvalidActionException('Event Id must first be selected before pinning');
             }
@@ -98,7 +92,7 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
         * is not selected. Unpinning means that the event popup has been dropped
         * back into the sidebar.
         */
-        EventsManager.prototype.unpinEventWithId = function (eventId) {
+        EventsSelectionManager.prototype.unpinEventWithId = function (eventId) {
             if (!this.eventIdIsSelected(eventId)) {
                 throw new InvalidActionException('Cannot unpin an event that is not selected to begin with');
             }
@@ -113,7 +107,7 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
         * Apply to all selected events. apply must have type
         * (string, boolean, boolean) => boolean. Returns false to break.
         */
-        EventsManager.prototype.mapToSelectedEventIds = function (apply) {
+        EventsSelectionManager.prototype.mapToSelectedEventIds = function (apply) {
             var selectedIdsArray = this.selectedIds.toArray();
             for (var i = 0; i < selectedIdsArray.length; ++i) {
                 var eventId = selectedIdsArray[i];
@@ -126,14 +120,14 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
         /***************************************************************************
         * Helper functions
         *************************************************************************/
-        EventsManager.prototype.triggerSelectionChangeBrowserEvent = function (eventId) {
+        EventsSelectionManager.prototype.triggerSelectionChangeBrowserEvent = function (eventId) {
             GlobalBrowserEventsManager.instance.triggerEvent(ReCalCommonBrowserEvents.eventSelectionChanged, {
                 eventId: eventId
             });
         };
-        return EventsManager;
+        return EventsSelectionManager;
     })();
 
     
-    return EventsManager;
+    return EventsSelectionManager;
 });

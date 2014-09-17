@@ -1,18 +1,9 @@
-import Events = require('./Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import InvalidActionException = require('../../../library/Core/InvalidActionException');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import Set = require('../../../library/DataStructures/Set');
 
-import IEventsManager = Events.IEventsManager;
-
-/**
-  * EventsManager is the class responsible for all operations related to events 
-  * in the persepective of any events client. That is, to any non-model classes,
-  * EventsManager will serve as the single gateway to getting information about 
-  * events.
-  */
-class EventsManager implements IEventsManager
+class EventsSelectionManager
 {
     /**
       * An event is considered pinned if it is selected and if its popup has
@@ -135,8 +126,7 @@ class EventsManager implements IEventsManager
             }
         }
     }
-
-    /***************************************************************************
+/***************************************************************************
       * Helper functions
       *************************************************************************/
     private triggerSelectionChangeBrowserEvent(eventId: string)
@@ -148,4 +138,4 @@ class EventsManager implements IEventsManager
     }
 }
 
-export = EventsManager;
+export = EventsSelectionManager;

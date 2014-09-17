@@ -1,0 +1,5 @@
+class EventsRetriever
+{
+}
+
+export = EventsRetriever;
