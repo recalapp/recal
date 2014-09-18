@@ -5,10 +5,11 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/EncodeDecodeProxy', '../../../library/PopUp/PopUpView', '../GlobalInstancesManager'], function(require, exports, EncodeDecodeProxy, PopUpView, GlobalInstancesManager) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/EncodeDecodeProxy', '../../../library/CoreUI/FocusableView', '../../../library/PopUp/PopUpView', '../GlobalInstancesManager', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, EncodeDecodeProxy, FocusableView, PopUpView, GlobalInstancesManager, ReCalCommonBrowserEvents) {
     var EventsPopUpView = (function (_super) {
         __extends(EventsPopUpView, _super);
         function EventsPopUpView() {
+            var _this = this;
             _super.call(this, GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
             this._eventsModel = null;
             this._title = null;
@@ -19,7 +20,14 @@ define(["require", "exports", '../../../library/Core/EncodeDecodeProxy', '../../
             this._startDate = null;
             this._endDate = null;
             this._lastEdited = null;
+            this._closeButton = null;
+
             // TODO set up buttons
+            // set up close button
+            this._closeButton = FocusableView.fromJQuery(this.findJQuery('#close_button'));
+            this.closeButton.attachEventHandler(BrowserEvents.click, function (ev) {
+                _this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
+            });
         }
         Object.defineProperty(EventsPopUpView.prototype, "eventsModel", {
             get: function () {
@@ -185,6 +193,14 @@ define(["require", "exports", '../../../library/Core/EncodeDecodeProxy', '../../
         Object.defineProperty(EventsPopUpView, "cssClass", {
             get: function () {
                 return PopUpView.cssClass + ' eventsPopUpView';
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "closeButton", {
+            get: function () {
+                return this._closeButton;
             },
             enumerable: true,
             configurable: true

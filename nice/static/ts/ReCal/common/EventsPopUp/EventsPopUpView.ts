@@ -1,16 +1,18 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
+import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import DateTime = require('../../../library/DateTime/DateTime');
 import EncodeDecodeProxy = require('../../../library/Core/EncodeDecodeProxy');
 import Events = require('../Events/Events');
 import EventsPopUp = require('./EventsPopUp');
+import FocusableView = require('../../../library/CoreUI/FocusableView');
 import PopUpView = require('../../../library/PopUp/PopUpView');
 import GlobalInstancesManager = require('../GlobalInstancesManager');
+import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 
 import IEventsModel = Events.IEventsModel;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView;
 
-declare function EventsMan_getEventByID(id: string): any;
 declare var SECTION_MAP: any;
 declare var TYPE_MAP: any;
 
@@ -158,10 +160,15 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         this.findJQuery('#popup-last-edited-time').text(this._lastEdited.format('MM/DD/YYYY'));
     }
 
-
     public static get cssClass(): string
     {
         return PopUpView.cssClass + ' eventsPopUpView';
+    }
+
+    private _closeButton: FocusableView = null;
+    private get closeButton(): FocusableView
+    {
+        return this._closeButton;
     }
 
     constructor()
@@ -169,6 +176,13 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         super(GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
 
         // TODO set up buttons 
+        // set up close button
+        this._closeButton = <FocusableView> FocusableView.fromJQuery(this.findJQuery('#close_button'));
+        this.closeButton.attachEventHandler(BrowserEvents.click, 
+                (ev: JQueryEventObject)=>
+                {
+                    this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
+                });
     }
 
     // can be overridden in subclasses
