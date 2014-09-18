@@ -6,30 +6,23 @@ import Calendar = require('../../../library/Calendar/Calendar');
 import CalendarViewController = require('../../../library/Calendar/CalendarViewController');
 import CalendarViewEvent = require('../../../library/Calendar/CalendarViewEvent');
 import DateTime = require('../../../library/DateTime/DateTime');
+import GlobalInstancesManager = require('../../common/GlobalInstancesManager');
+import ReCalCalendarViewEventAdapter = require('../../common/ReCalCalendar/ReCalCalendarViewEventAdapter');
 
 import ICalendarViewEvent = Calendar.ICalendarViewEvent;
             
 declare function colorLuminance(color: string, lumFactor: number): string;
 declare function EventsMan_addUpdateListener(listener: ()=>void): void;
-declare function EventsMan_getEventByID(id: string): any;
-declare function EventsMan_getEventIDForRange(start: number, end: number): string[];
 declare function PopUp_addCloseListener(listener: (eventId: string)=>void): void;
-declare function PopUp_getMainPopUp(): any;
-declare function PopUp_getPopUpByID(popUpId: string): any;
-declare function PopUp_giveFocus(popUp: any): void;
-declare function PopUp_setToEventID(popUp: any, popUpId: string): void;
 declare function luminanceToRgb(lum: string): string;
 declare function LO_hideLoading(id: string): void;
 declare function LO_showLoading(id: string): void;
 declare function rgbToRgba(rgb: string, transFactor: number): string;
 declare function setOpacity(color: string, transFactor: number): string;
-declare function UI_isPinned(eventId: string): boolean;
-declare function UI_isMain(eventId: string): boolean;
 declare var FACTOR_LUM: number;
 declare var FACTOR_TRANS: number;
 declare var FACTOR_TRANS_DARK: number;
 declare var SE_id: string;
-declare var SECTION_COLOR_MAP: any;
 declare var THEME: string;
 
 class DashboardCalendarViewController extends CalendarViewController
@@ -121,18 +114,15 @@ class DashboardCalendarViewController extends CalendarViewController
       */
     public calendarViewEventsForRange(start: DateTime, end: DateTime): ICalendarViewEvent[]
     {
-        var eventIds = EventsMan_getEventIDForRange(start.unix, end.unix);
+        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+        var eventIds = eventsOperationsFacade.getEventIdsInRange(start, end);
         var calendarEvents: ICalendarViewEvent[] = new Array<ICalendarViewEvent>();
         $.each(eventIds, (index: number, eventId: string)=>
         {
-            var eventDict = EventsMan_getEventByID(eventId);
-            var calEvent = new CalendarViewEvent();
-            calEvent.uniqueId = eventId;
-            calEvent.title = eventDict['event_title'];
-            calEvent.start = DateTime.fromUnix(parseInt(eventDict.event_start));
-            calEvent.end = DateTime.fromUnix(parseInt(eventDict.event_end));
-            calEvent.sectionColor = SECTION_COLOR_MAP[eventDict.section_id]['color'];
-            calEvent.selected = UI_isPinned(eventId) || UI_isMain(eventId);
+            var eventsModel = eventsOperationsFacade.getEventById(eventId);
+            var calEventAdapter = new ReCalCalendarViewEventAdapter(eventsModel);
+            var calEvent = calEventAdapter.calendarViewEvent;
+            calEvent.selected = eventsOperationsFacade.eventIdIsSelected(eventId);
             calEvent.highlighted = !calEvent.selected; // forces first highlighting
             calEvent.selected ? this.highlightCalendarEvent(calEvent) : this.unhighlightCalendarEvent(calEvent);
             calendarEvents.push(calEvent);
@@ -157,23 +147,25 @@ class DashboardCalendarViewController extends CalendarViewController
       */
     public didSelectEvent(calendarViewEvent: ICalendarViewEvent): void
     {
+        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
         var eventId: string = calendarViewEvent.uniqueId;
-        var popUp = PopUp_getPopUpByID(eventId);
-        if (popUp === null || popUp === undefined)
+
+        if (eventsOperationsFacade.eventIdIsSelected(eventId))
         {
-            // create the popup
-            popUp = PopUp_getMainPopUp();
-            PopUp_setToEventID(popUp, eventId);
-            // TODO handle success/retry logic. was needed for when popup has uncommitted changes
+            eventsOperationsFacade.selectEventWithId(eventId);
         }
-        PopUp_giveFocus(popUp);
+        else
+        {
+            // TODO bring event popup into focus - maybe simply by calling select again?
+            eventsOperationsFacade.selectEventWithId(eventId); // TODO works? Does this cause the popup to come into focus?
+        }
 
         // update selection. deselect any events no longer relevant
         this.highlightCalendarEvent(calendarViewEvent);
         this.view.updateCalendarViewEvent(calendarViewEvent);
         $.each(this.view.selectedCalendarViewEvents(), (index: number, selectedEvent: ICalendarViewEvent)=>{
             var eventId = selectedEvent.uniqueId;
-            if (!UI_isMain(eventId) && !UI_isPinned(eventId))
+            if (!eventsOperationsFacade.eventIdIsSelected(eventId))
             {
                 this.view.deselectCalendarEventsWithId(eventId);
                 this.unhighlightCalendarEvent(selectedEvent);

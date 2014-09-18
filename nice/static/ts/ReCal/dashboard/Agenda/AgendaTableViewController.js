@@ -192,6 +192,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * Return (not necessarily the same) cell.
         */
         AgendaTableViewController.prototype.decorateCell = function (cell) {
+            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
             var agendaCell = cell;
             var indexPath = cell.indexPath;
             var eventSection = this._eventSectionArray[indexPath.section];
@@ -200,12 +201,12 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 // indexPath was invalid
                 return cell;
             }
-            var eventDict = GlobalInstancesManager.instance.eventsOperationsFacade.getEventById(eventId);
+            var eventDict = eventsOperationsFacade.getEventById(eventId);
 
             agendaCell.setToEvent(eventDict);
 
             // TODO window resizing
-            if (UI_isPinned(eventId) || UI_isMain(eventId)) {
+            if (eventsOperationsFacade.eventIdIsSelected(eventId)) {
                 this.view.selectCell(agendaCell);
             } else {
                 this.view.deselectCell(agendaCell);
@@ -246,6 +247,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * Callback for when a table view cell is selected
         */
         AgendaTableViewController.prototype.didSelectCell = function (cell) {
+            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
             var indexPath = cell.indexPath;
             var eventId = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
             if (eventId === undefined) {
@@ -253,29 +255,12 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 return;
             }
 
-            if (!GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsSelected(eventId)) {
-                GlobalInstancesManager.instance.eventsOperationsFacade.selectEventWithId(eventId);
+            if (eventsOperationsFacade.eventIdIsSelected(eventId)) {
+                eventsOperationsFacade.selectEventWithId(eventId);
             } else {
                 // TODO bring event popup into focus - maybe simply by calling select again?
-                GlobalInstancesManager.instance.eventsOperationsFacade.selectEventWithId(eventId); // TODO works?
+                eventsOperationsFacade.selectEventWithId(eventId); // TODO works? Does this cause the popup to come into focus?
             }
-            //var popUp = PopUp_getPopUpByID(eventId);
-            //if (popUp === null || popUp === undefined)
-            //{
-            //    // create the popup
-            //    popUp = PopUp_getMainPopUp();
-            //    PopUp_setToEventID(popUp, eventId);
-            //    // TODO handle success/retry logic. was needed for when popup has uncommitted changes
-            //}
-            //PopUp_giveFocus(popUp);
-            //// update cell selection. deselect any cells no longer relevant
-            //$.each(this.view.selectedIndexPaths(), (index: string, indexPath: IndexPath)=>{
-            //    var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
-            //    if (!UI_isMain(eventId) && !UI_isPinned(eventId))
-            //    {
-            //        this.view.deselectCellAtIndexPath(indexPath);
-            //    }
-            //});
         };
         AgendaTableViewController.LO_MESSAGE = 'agenda loading';
         return AgendaTableViewController;

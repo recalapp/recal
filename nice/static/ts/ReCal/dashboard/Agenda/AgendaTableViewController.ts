@@ -22,12 +22,6 @@ declare function EventsMan_addUpdateListener(callBack: ()=>void): void;
 declare function LO_hideLoading(message: string): void;
 declare function LO_showLoading(message: string): void;
 declare function PopUp_addCloseListener(callBack: (eventId: string)=>void): void;
-declare function PopUp_getMainPopUp(): any;
-declare function PopUp_getPopUpByID(popUpId: string): any;
-declare function PopUp_giveFocus(popUp: any): void;
-declare function PopUp_setToEventID(popUp: any, popUpId: string): void;
-declare function UI_isMain(eventId: string): boolean;
-declare function UI_isPinned(eventId: string): boolean;
 declare var SE_id;
 
 class AgendaTableViewController extends TableViewController
@@ -238,6 +232,7 @@ class AgendaTableViewController extends TableViewController
      */
     public decorateCell(cell: ITableViewCell): ITableViewCell
     {
+        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
         var agendaCell: IAgendaTableViewCell = <IAgendaTableViewCell> cell;
         var indexPath: IndexPath = cell.indexPath;
         var eventSection: EventSection = this._eventSectionArray[indexPath.section];
@@ -247,12 +242,12 @@ class AgendaTableViewController extends TableViewController
             // indexPath was invalid
             return cell;
         }
-        var eventDict = GlobalInstancesManager.instance.eventsOperationsFacade.getEventById(eventId);
+        var eventDict = eventsOperationsFacade.getEventById(eventId);
 
         agendaCell.setToEvent(eventDict);
 
         // TODO window resizing
-        if (UI_isPinned(eventId) || UI_isMain(eventId))
+        if (eventsOperationsFacade.eventIdIsSelected(eventId))
         {
             this.view.selectCell(agendaCell);
         }
@@ -300,6 +295,7 @@ class AgendaTableViewController extends TableViewController
       */
     public didSelectCell(cell: ITableViewCell): void
     {
+        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
         var indexPath: IndexPath = cell.indexPath;
         var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
         if (eventId === undefined)
@@ -308,34 +304,15 @@ class AgendaTableViewController extends TableViewController
             return;
         }
         
-        if (!GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsSelected(eventId))
+        if (eventsOperationsFacade.eventIdIsSelected(eventId))
         {
-            GlobalInstancesManager.instance.eventsOperationsFacade.selectEventWithId(eventId);
+            eventsOperationsFacade.selectEventWithId(eventId);
         }
         else
         {
             // TODO bring event popup into focus - maybe simply by calling select again?
-            GlobalInstancesManager.instance.eventsOperationsFacade.selectEventWithId(eventId); // TODO works?
+            eventsOperationsFacade.selectEventWithId(eventId); // TODO works? Does this cause the popup to come into focus?
         }
-
-        //var popUp = PopUp_getPopUpByID(eventId);
-        //if (popUp === null || popUp === undefined)
-        //{
-        //    // create the popup
-        //    popUp = PopUp_getMainPopUp();
-        //    PopUp_setToEventID(popUp, eventId);
-        //    // TODO handle success/retry logic. was needed for when popup has uncommitted changes
-        //}
-        //PopUp_giveFocus(popUp);
-
-        //// update cell selection. deselect any cells no longer relevant
-        //$.each(this.view.selectedIndexPaths(), (index: string, indexPath: IndexPath)=>{
-        //    var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
-        //    if (!UI_isMain(eventId) && !UI_isPinned(eventId))
-        //    {
-        //        this.view.deselectCellAtIndexPath(indexPath);
-        //    }
-        //});
     }
 }
 

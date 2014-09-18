@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewController', '../../../library/Calendar/CalendarViewEvent', '../../../library/DateTime/DateTime'], function(require, exports, $, CalendarViewController, CalendarViewEvent, DateTime) {
+define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewController', '../../common/GlobalInstancesManager', '../../common/ReCalCalendar/ReCalCalendarViewEventAdapter'], function(require, exports, $, CalendarViewController, GlobalInstancesManager, ReCalCalendarViewEventAdapter) {
     var DashboardCalendarViewController = (function (_super) {
         __extends(DashboardCalendarViewController, _super);
         function DashboardCalendarViewController() {
@@ -88,17 +88,14 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
         */
         DashboardCalendarViewController.prototype.calendarViewEventsForRange = function (start, end) {
             var _this = this;
-            var eventIds = EventsMan_getEventIDForRange(start.unix, end.unix);
+            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+            var eventIds = eventsOperationsFacade.getEventIdsInRange(start, end);
             var calendarEvents = new Array();
             $.each(eventIds, function (index, eventId) {
-                var eventDict = EventsMan_getEventByID(eventId);
-                var calEvent = new CalendarViewEvent();
-                calEvent.uniqueId = eventId;
-                calEvent.title = eventDict['event_title'];
-                calEvent.start = DateTime.fromUnix(parseInt(eventDict.event_start));
-                calEvent.end = DateTime.fromUnix(parseInt(eventDict.event_end));
-                calEvent.sectionColor = SECTION_COLOR_MAP[eventDict.section_id]['color'];
-                calEvent.selected = UI_isPinned(eventId) || UI_isMain(eventId);
+                var eventsModel = eventsOperationsFacade.getEventById(eventId);
+                var calEventAdapter = new ReCalCalendarViewEventAdapter(eventsModel);
+                var calEvent = calEventAdapter.calendarViewEvent;
+                calEvent.selected = eventsOperationsFacade.eventIdIsSelected(eventId);
                 calEvent.highlighted = !calEvent.selected; // forces first highlighting
                 calEvent.selected ? _this.highlightCalendarEvent(calEvent) : _this.unhighlightCalendarEvent(calEvent);
                 calendarEvents.push(calEvent);
@@ -121,22 +118,22 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
         */
         DashboardCalendarViewController.prototype.didSelectEvent = function (calendarViewEvent) {
             var _this = this;
+            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
             var eventId = calendarViewEvent.uniqueId;
-            var popUp = PopUp_getPopUpByID(eventId);
-            if (popUp === null || popUp === undefined) {
-                // create the popup
-                popUp = PopUp_getMainPopUp();
-                PopUp_setToEventID(popUp, eventId);
-                // TODO handle success/retry logic. was needed for when popup has uncommitted changes
+
+            if (eventsOperationsFacade.eventIdIsSelected(eventId)) {
+                eventsOperationsFacade.selectEventWithId(eventId);
+            } else {
+                // TODO bring event popup into focus - maybe simply by calling select again?
+                eventsOperationsFacade.selectEventWithId(eventId); // TODO works? Does this cause the popup to come into focus?
             }
-            PopUp_giveFocus(popUp);
 
             // update selection. deselect any events no longer relevant
             this.highlightCalendarEvent(calendarViewEvent);
             this.view.updateCalendarViewEvent(calendarViewEvent);
             $.each(this.view.selectedCalendarViewEvents(), function (index, selectedEvent) {
                 var eventId = selectedEvent.uniqueId;
-                if (!UI_isMain(eventId) && !UI_isPinned(eventId)) {
+                if (!eventsOperationsFacade.eventIdIsSelected(eventId)) {
                     _this.view.deselectCalendarEventsWithId(eventId);
                     _this.unhighlightCalendarEvent(selectedEvent);
                     _this.view.updateCalendarViewEvent(selectedEvent);
