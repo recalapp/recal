@@ -33,7 +33,20 @@ export interface IEventsModel
 export interface IEventsOperationsFacade
 {
     /***************************************************************************
-      * Checking the state of events.
+      * Event Retrieval
+      *************************************************************************/
+    /**
+      * Get event associated with the ID
+      */
+    getEventById(eventId: string): IEventsModel;
+
+    /**
+      * Get all event IDs in the range, inclusive.
+      */
+    getEventIdsInRange(start: DateTime, end: DateTime): string[];
+
+    /***************************************************************************
+      * Event Selection
       *************************************************************************/
     /**
       * Returns true if the event Id is pinned. That is, if its popup is opened
@@ -51,9 +64,6 @@ export interface IEventsOperationsFacade
       * Returns true if the event Id is selected. That is, its popup is opened
       */
     eventIdIsSelected(eventId: string): boolean;
-    /***************************************************************************
-      * Manipulating the state of events.
-      *************************************************************************/
 
     /**
       * Select the event with this ID. An event is considered selected when its

@@ -36,11 +36,11 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     }
 
     /**
-      * Get all events in the range, inclusive.
+      * Get all event IDs in the range, inclusive.
       */
-    public getAllEventsInRange(start: DateTime, end: DateTime): IEventsModel[]
+    public getEventIdsInRange(start: DateTime, end: DateTime): string[]
     {
-        return this.eventsRetriever.getAllEventsInRange(start, end);
+        return this.eventsRetriever.getEventIdsInRange(start, end);
     }
 
     /***************************************************************************

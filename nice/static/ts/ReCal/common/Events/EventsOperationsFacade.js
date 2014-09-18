@@ -35,10 +35,10 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager'], 
         };
 
         /**
-        * Get all events in the range, inclusive.
+        * Get all event IDs in the range, inclusive.
         */
-        EventsOperationsFacade.prototype.getAllEventsInRange = function (start, end) {
-            return this.eventsRetriever.getAllEventsInRange(start, end);
+        EventsOperationsFacade.prototype.getEventIdsInRange = function (start, end) {
+            return this.eventsRetriever.getEventIdsInRange(start, end);
         };
 
         Object.defineProperty(EventsOperationsFacade.prototype, "eventsSelectionManager", {
