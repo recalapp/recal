@@ -93,8 +93,9 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                         // create the popup view
                         _this.currentPopUpView = new EventsPopUpView();
 
-                        // TODO set events model
-                        // this.currentPopUpView.eventsModel =
+                        // set events model
+                        var eventsModel = GlobalInstancesManager.instance.eventsOperationsFacade.getEventById(eventId);
+                        _this.currentPopUpView.eventsModel = eventsModel;
                         _this.addPopUpView(_this.currentPopUpView);
                     }
                 } else {

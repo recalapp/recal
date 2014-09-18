@@ -96,7 +96,8 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            var eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
+            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+            var eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('Yesterday', eventIds));
             }
@@ -108,7 +109,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
+            eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('Today', eventIds));
             }
@@ -120,7 +121,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
+            eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('This Week', eventIds));
             }
@@ -133,7 +134,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
+            eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('This Month', eventIds));
             }
@@ -199,7 +200,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 // indexPath was invalid
                 return cell;
             }
-            var eventDict = EventsMan_getEventByID(eventId);
+            var eventDict = GlobalInstancesManager.instance.eventsOperationsFacade.getEventById(eventId);
 
             agendaCell.setToEvent(eventDict);
 

@@ -5,7 +5,7 @@ import Events = require('./Events');
 
 class EventsModel implements Events.IEventsModel
 {
-    constructor(arg: Events.EventsModelConstructorArguments)
+    constructor(arg: Events.IEventsModel)
     {
         this.eventId = arg.eventId;
         this.title = arg.title;

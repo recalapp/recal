@@ -19,8 +19,6 @@ import ITableViewCell = Table.ITableViewCell;
 import ITableViewHeaderView = Table.ITableViewHeaderView;
 
 declare function EventsMan_addUpdateListener(callBack: ()=>void): void;
-declare function EventsMan_getEventByID(id: string): any;
-declare function EventsMan_getEventIDForRange(start: number, end: number): string[];
 declare function LO_hideLoading(message: string): void;
 declare function LO_showLoading(message: string): void;
 declare function PopUp_addCloseListener(callBack: (eventId: string)=>void): void;
@@ -133,7 +131,8 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        var eventIds: string[] = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
+        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+        var eventIds: string[] = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Yesterday', eventIds));
@@ -146,7 +145,7 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
+        eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Today', eventIds));
@@ -159,7 +158,7 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
+        eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('This Week', eventIds));
@@ -173,7 +172,7 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        eventIds = EventsMan_getEventIDForRange(startDate.unix, endDate.unix);
+        eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('This Month', eventIds));
@@ -248,7 +247,7 @@ class AgendaTableViewController extends TableViewController
             // indexPath was invalid
             return cell;
         }
-        var eventDict = EventsMan_getEventByID(eventId);
+        var eventDict = GlobalInstancesManager.instance.eventsOperationsFacade.getEventById(eventId);
 
         agendaCell.setToEvent(eventDict);
 

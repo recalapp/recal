@@ -109,8 +109,9 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                         {
                             // create the popup view
                             this.currentPopUpView = new EventsPopUpView();
-                            // TODO set events model
-                            // this.currentPopUpView.eventsModel =
+                            // set events model
+                            var eventsModel = GlobalInstancesManager.instance.eventsOperationsFacade.getEventById(eventId);
+                            this.currentPopUpView.eventsModel = eventsModel;
                             this.addPopUpView(this.currentPopUpView);
                         }
                     }
