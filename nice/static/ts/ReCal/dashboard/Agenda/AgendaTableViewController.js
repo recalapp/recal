@@ -57,7 +57,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                     $.each(_this.view.selectedIndexPaths(), function (index, indexPath) {
                         var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                         if (eventId == extra.eventId) {
-                            if (GlobalInstancesManager.instance.eventsManager.eventIdIsSelected(eventId)) {
+                            if (GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsSelected(eventId)) {
                                 _this.view.selectCellAtIndexPath(indexPath);
                             } else {
                                 _this.view.deselectCellAtIndexPath(indexPath);
@@ -252,11 +252,11 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 return;
             }
 
-            if (!GlobalInstancesManager.instance.eventsManager.eventIdIsSelected(eventId)) {
-                GlobalInstancesManager.instance.eventsManager.selectEventWithId(eventId);
+            if (!GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsSelected(eventId)) {
+                GlobalInstancesManager.instance.eventsOperationsFacade.selectEventWithId(eventId);
             } else {
                 // TODO bring event popup into focus - maybe simply by calling select again?
-                GlobalInstancesManager.instance.eventsManager.selectEventWithId(eventId); // TODO works?
+                GlobalInstancesManager.instance.eventsOperationsFacade.selectEventWithId(eventId); // TODO works?
             }
             //var popUp = PopUp_getPopUpByID(eventId);
             //if (popUp === null || popUp === undefined)

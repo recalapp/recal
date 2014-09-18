@@ -87,7 +87,7 @@ class AgendaTableViewController extends TableViewController
                             var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                             if (eventId == extra.eventId)
                             {
-                                if (GlobalInstancesManager.instance.eventsManager.eventIdIsSelected(eventId))
+                                if (GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsSelected(eventId))
                                 {
                                     this.view.selectCellAtIndexPath(indexPath);
                                 }
@@ -309,14 +309,14 @@ class AgendaTableViewController extends TableViewController
             return;
         }
         
-        if (!GlobalInstancesManager.instance.eventsManager.eventIdIsSelected(eventId))
+        if (!GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsSelected(eventId))
         {
-            GlobalInstancesManager.instance.eventsManager.selectEventWithId(eventId);
+            GlobalInstancesManager.instance.eventsOperationsFacade.selectEventWithId(eventId);
         }
         else
         {
             // TODO bring event popup into focus - maybe simply by calling select again?
-            GlobalInstancesManager.instance.eventsManager.selectEventWithId(eventId); // TODO works?
+            GlobalInstancesManager.instance.eventsOperationsFacade.selectEventWithId(eventId); // TODO works?
         }
 
         //var popUp = PopUp_getPopUpByID(eventId);

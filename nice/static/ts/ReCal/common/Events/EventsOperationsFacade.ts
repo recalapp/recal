@@ -1,6 +1,9 @@
+import DateTime = require('../../../library/DateTime/DateTime');
 import Events = require('./Events');
+import EventsRetriever = require('./EventsRetriever');
 import EventsSelectionManager = require('./EventsSelectionManager');
 
+import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 
 /**
@@ -11,6 +14,39 @@ import IEventsOperationsFacade = Events.IEventsOperationsFacade;
   */
 class EventsOperationsFacade implements IEventsOperationsFacade
 {
+    /***************************************************************************
+      * Event Retrieval
+      *************************************************************************/
+    private _eventsRetriever: EventsRetriever = null;
+    private get eventsRetriever(): EventsRetriever
+    {
+        if (this._eventsRetriever === null || this._eventsRetriever === undefined)
+        {
+            this._eventsRetriever = new EventsRetriever();
+        }
+        return this._eventsRetriever;
+    }
+
+    /**
+      * Get event associated with the ID
+      */
+    public getEventById(eventId: string): IEventsModel
+    {
+        return this.eventsRetriever.getEventById(eventId);
+    }
+
+    /**
+      * Get all events in the range, inclusive.
+      */
+    public getAllEventsInRange(start: DateTime, end: DateTime): IEventsModel[]
+    {
+        return this.eventsRetriever.getAllEventsInRange(start, end);
+    }
+
+    /***************************************************************************
+      * Event Selection
+      *************************************************************************/
+
     private _eventsSelectionManager: EventsSelectionManager = null;
     private get eventsSelectionManager(): EventsSelectionManager
     {
@@ -20,9 +56,7 @@ class EventsOperationsFacade implements IEventsOperationsFacade
         }
         return this._eventsSelectionManager;
     }
-    /***************************************************************************
-      * Checking the state of events.
-      *************************************************************************/
+
     /**
       * Returns true if the event Id is pinned. That is, if its popup is opened
       * and has been dragged from sidebar.
@@ -48,10 +82,6 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     {
         return this.eventsSelectionManager.eventIdIsSelected(eventId);
     }
-
-    /***************************************************************************
-      * Manipulating the state of events.
-      *************************************************************************/
 
     /**
       * Select the event with this ID. An event is considered selected when its

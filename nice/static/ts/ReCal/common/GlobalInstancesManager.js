@@ -1,4 +1,4 @@
-define(["require", "exports", './Events/EventsManager', '../../library/Core/InvalidActionException', '../../library/Notifications/NotificationsManager', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, EventsManager, InvalidActionException, NotificationsManager, ViewTemplateRetriever) {
+define(["require", "exports", './Events/EventsOperationsFacade', '../../library/Core/InvalidActionException', '../../library/Notifications/NotificationsManager', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, EventsOperationsFacade, InvalidActionException, NotificationsManager, ViewTemplateRetriever) {
     /**
     * Used to hold objects that are not singletons but for which we want
     * a global instance. For example, events manager is not a singleton.
@@ -19,7 +19,7 @@ define(["require", "exports", './Events/EventsManager', '../../library/Core/Inva
             /**
             * Events Manager
             */
-            this._eventsManager = null;
+            this._eventsOperationsFacade = null;
         }
         Object.defineProperty(GlobalInstancesManager, "instance", {
             get: function () {
@@ -44,7 +44,7 @@ define(["require", "exports", './Events/EventsManager', '../../library/Core/Inva
         GlobalInstancesManager.prototype.initialize = function () {
             this.notificationsManager = new NotificationsManager();
             this.viewTemplateRetriever = new ViewTemplateRetriever();
-            this.eventsManager = new EventsManager();
+            this.eventsOperationsFacade = new EventsOperationsFacade();
         };
 
         Object.defineProperty(GlobalInstancesManager.prototype, "notificationsManager", {
@@ -69,12 +69,12 @@ define(["require", "exports", './Events/EventsManager', '../../library/Core/Inva
             configurable: true
         });
 
-        Object.defineProperty(GlobalInstancesManager.prototype, "eventsManager", {
+        Object.defineProperty(GlobalInstancesManager.prototype, "eventsOperationsFacade", {
             get: function () {
-                return this._eventsManager;
+                return this._eventsOperationsFacade;
             },
             set: function (value) {
-                this._eventsManager = value;
+                this._eventsOperationsFacade = value;
             },
             enumerable: true,
             configurable: true

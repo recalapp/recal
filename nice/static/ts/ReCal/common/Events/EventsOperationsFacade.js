@@ -1,4 +1,4 @@
-define(["require", "exports", './EventsSelectionManager'], function(require, exports, EventsSelectionManager) {
+define(["require", "exports", './EventsRetriever', './EventsSelectionManager'], function(require, exports, EventsRetriever, EventsSelectionManager) {
     /**
     * IEventsOperationsFacade is the class responsible for all operations
     * related to events in the persepective of any events client. That is, to
@@ -7,8 +7,40 @@ define(["require", "exports", './EventsSelectionManager'], function(require, exp
     */
     var EventsOperationsFacade = (function () {
         function EventsOperationsFacade() {
+            /***************************************************************************
+            * Event Retrieval
+            *************************************************************************/
+            this._eventsRetriever = null;
+            /***************************************************************************
+            * Event Selection
+            *************************************************************************/
             this._eventsSelectionManager = null;
         }
+        Object.defineProperty(EventsOperationsFacade.prototype, "eventsRetriever", {
+            get: function () {
+                if (this._eventsRetriever === null || this._eventsRetriever === undefined) {
+                    this._eventsRetriever = new EventsRetriever();
+                }
+                return this._eventsRetriever;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        /**
+        * Get event associated with the ID
+        */
+        EventsOperationsFacade.prototype.getEventById = function (eventId) {
+            return this.eventsRetriever.getEventById(eventId);
+        };
+
+        /**
+        * Get all events in the range, inclusive.
+        */
+        EventsOperationsFacade.prototype.getAllEventsInRange = function (start, end) {
+            return this.eventsRetriever.getAllEventsInRange(start, end);
+        };
+
         Object.defineProperty(EventsOperationsFacade.prototype, "eventsSelectionManager", {
             get: function () {
                 if (this._eventsSelectionManager === null || this._eventsSelectionManager === undefined) {
@@ -20,9 +52,6 @@ define(["require", "exports", './EventsSelectionManager'], function(require, exp
             configurable: true
         });
 
-        /***************************************************************************
-        * Checking the state of events.
-        *************************************************************************/
         /**
         * Returns true if the event Id is pinned. That is, if its popup is opened
         * and has been dragged from sidebar.
@@ -46,9 +75,6 @@ define(["require", "exports", './EventsSelectionManager'], function(require, exp
             return this.eventsSelectionManager.eventIdIsSelected(eventId);
         };
 
-        /***************************************************************************
-        * Manipulating the state of events.
-        *************************************************************************/
         /**
         * Select the event with this ID. An event is considered selected when its
         * popup is opened.

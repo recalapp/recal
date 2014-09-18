@@ -65,7 +65,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                 });
 
                 // now also update the event selection state by pinning the event
-                GlobalInstancesManager.instance.eventsManager.pinEventWithId(popUpView.eventsModel.eventId);
+                GlobalInstancesManager.instance.eventsOperationsFacade.pinEventWithId(popUpView.eventsModel.eventId);
             });
 
             // register popup as a droppable object
@@ -77,7 +77,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                 _this.addPopUpView(popUpView);
 
                 // update event selection state
-                GlobalInstancesManager.instance.eventsManager.unpinEventWithId(popUpView.eventsModel.eventId);
+                GlobalInstancesManager.instance.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
             });
 
             // add listener for when event selection state changes
@@ -87,7 +87,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     // TODO get the main popup, then do stuffs
                     return;
                 }
-                if (GlobalInstancesManager.instance.eventsManager.eventIdIsMain(eventId)) {
+                if (GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsMain(eventId)) {
                     // this event is supposed to be main
                     if (_this.currentPopUpView === null || _this.currentPopUpView === undefined) {
                         // create the popup view

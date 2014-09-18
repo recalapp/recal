@@ -1,12 +1,12 @@
 import CoreUI = require('../../library/CoreUI/CoreUI');
 import Events = require('./Events/Events');
-import EventsManager = require('./Events/EventsManager');
+import EventsOperationsFacade = require('./Events/EventsOperationsFacade');
 import InvalidActionException = require('../../library/Core/InvalidActionException');
 import Notifications = require('../../library/Notifications/Notifications');
 import NotificationsManager = require('../../library/Notifications/NotificationsManager');
 import ViewTemplateRetriever = require('../../library/CoreUI/ViewTemplateRetriever');
 
-import IEventsManager = Events.IEventsManager;
+import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import INotificationsManager = Notifications.INotificationsManager;
 import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
@@ -45,7 +45,7 @@ class GlobalInstancesManager
     {
         this.notificationsManager = new NotificationsManager();
         this.viewTemplateRetriever = new ViewTemplateRetriever();
-        this.eventsManager = new EventsManager();
+        this.eventsOperationsFacade = new EventsOperationsFacade();
     }
 
     /**
@@ -65,9 +65,9 @@ class GlobalInstancesManager
     /**
       * Events Manager
       */
-    private _eventsManager: IEventsManager = null;
-    public get eventsManager(): IEventsManager { return this._eventsManager; }
-    public set eventsManager(value: IEventsManager) { this._eventsManager = value; }
+    private _eventsOperationsFacade: IEventsOperationsFacade = null;
+    public get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
+    public set eventsOperationsFacade(value: IEventsOperationsFacade) { this._eventsOperationsFacade = value; }
 }
 
 export = GlobalInstancesManager;

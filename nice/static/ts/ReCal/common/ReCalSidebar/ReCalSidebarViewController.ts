@@ -73,7 +73,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 popUpView: popUpView,
             });
             // now also update the event selection state by pinning the event
-            GlobalInstancesManager.instance.eventsManager.pinEventWithId(popUpView.eventsModel.eventId);
+            GlobalInstancesManager.instance.eventsOperationsFacade.pinEventWithId(popUpView.eventsModel.eventId);
 
         });
 
@@ -88,7 +88,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                     var popUpView: IEventsPopUpView = <IEventsPopUpView> extra.popUpView;
                     this.addPopUpView(popUpView);
                     // update event selection state
-                    GlobalInstancesManager.instance.eventsManager.unpinEventWithId(popUpView.eventsModel.eventId);
+                    GlobalInstancesManager.instance.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
                 });
 
         // add listener for when event selection state changes
@@ -102,7 +102,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                         // TODO get the main popup, then do stuffs
                         return;
                     }
-                    if (GlobalInstancesManager.instance.eventsManager.eventIdIsMain(eventId))
+                    if (GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsMain(eventId))
                     {
                         // this event is supposed to be main
                         if (this.currentPopUpView === null || this.currentPopUpView === undefined)
