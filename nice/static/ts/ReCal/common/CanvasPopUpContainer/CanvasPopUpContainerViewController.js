@@ -4,20 +4,30 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/GlobalBrowserEventsManager', '../../../library/Core/InvalidActionException', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, GlobalBrowserEventsManager, InvalidActionException, PopUpView, ReCalCommonBrowserEvents, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/InvalidActionException', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, InvalidActionException, PopUpView, ReCalCommonBrowserEvents, ViewController) {
     var CanvasPopUpContainerViewController = (function (_super) {
         __extends(CanvasPopUpContainerViewController, _super);
-        function CanvasPopUpContainerViewController() {
-            _super.apply(this, arguments);
+        function CanvasPopUpContainerViewController(view, dependencies) {
+            _super.call(this, view);
+            /**
+            * Global Browser Events Manager
+            */
+            this._globalBrowserEventsManager = null;
+            this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+            this.initialize();
         }
-        /**
-        * Do any initialization needed. Better than overriding constructor
-        * because this gives the option of not calling super.initialize();
-        */
+        Object.defineProperty(CanvasPopUpContainerViewController.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                return this._globalBrowserEventsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         CanvasPopUpContainerViewController.prototype.initialize = function () {
             var _this = this;
             // when popup detaches from sidebar
-            GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, function (ev, extra) {
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, function (ev, extra) {
                 _this.addPopUpView(extra.popUpView);
             });
 

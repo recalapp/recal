@@ -1,7 +1,19 @@
+import CoreUI = require('../../../library/CoreUI/CoreUI');
+import Events = require('../../common/Events/Events');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import Table = require('../../../library/Table/Table');
 
+import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import ITableViewCell = Table.ITableViewCell;
 import ITableViewHeaderView = Table.ITableViewHeaderView;
+import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
+
+export interface AgendaTableViewControllerDependencies
+{
+    eventsOperationsFacade: IEventsOperationsFacade;
+    globalBrowserEventsManager: GlobalBrowserEventsManager;
+    viewTemplateRetriever: IViewTemplateRetriever;
+}
 
 export interface IAgendaTableViewCell extends ITableViewCell
 {

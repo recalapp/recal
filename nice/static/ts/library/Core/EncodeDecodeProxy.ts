@@ -3,12 +3,6 @@ import $ = require('jquery');
 
 class EncodeDecodeProxy 
 {
-    private static _instance = new EncodeDecodeProxy();
-    public static get instance() : EncodeDecodeProxy
-    {
-        return this._instance;
-    }
-
     public htmlEncode(content: string) : string
     {
         return $('<div>').text(content).html();

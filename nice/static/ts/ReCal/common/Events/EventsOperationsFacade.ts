@@ -2,6 +2,7 @@ import DateTime = require('../../../library/DateTime/DateTime');
 import Events = require('./Events');
 import EventsRetriever = require('./EventsRetriever');
 import EventsSelectionManager = require('./EventsSelectionManager');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 
 import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
@@ -14,6 +15,17 @@ import IEventsOperationsFacade = Events.IEventsOperationsFacade;
   */
 class EventsOperationsFacade implements IEventsOperationsFacade
 {
+    /**
+      * Global Browser Events Manager
+      */
+    private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
+
+    constructor(dependencies: Events.EventsOperationsFacadeDependencies)
+    {
+        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+    }
+
     /***************************************************************************
       * Event Retrieval
       *************************************************************************/
@@ -52,7 +64,9 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     {
         if (this._eventsSelectionManager === null || this._eventsSelectionManager === undefined)
         {
-            this._eventsSelectionManager = new EventsSelectionManager();
+            this._eventsSelectionManager = new EventsSelectionManager({
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+            });
         }
         return this._eventsSelectionManager;
     }

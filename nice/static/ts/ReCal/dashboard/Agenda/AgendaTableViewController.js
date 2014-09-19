@@ -5,16 +5,28 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../../library/Core/GlobalBrowserEventsManager', '../../common/GlobalInstancesManager', '../../common/ReCalCommonBrowserEvents', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, GlobalBrowserEventsManager, GlobalInstancesManager, ReCalCommonBrowserEvents, TableViewController) {
+define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../common/ReCalCommonBrowserEvents', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, ReCalCommonBrowserEvents, TableViewController) {
     var AgendaTableViewController = (function (_super) {
         __extends(AgendaTableViewController, _super);
-        function AgendaTableViewController() {
-            _super.apply(this, arguments);
-            this._loading = false;
-        }
-        AgendaTableViewController.prototype.initialize = function () {
+        function AgendaTableViewController(tableView, dependencies) {
             var _this = this;
-            _super.prototype.initialize.call(this);
+            _super.call(this, tableView);
+            this._loading = false;
+            /**
+            * Global Browser Events Manager
+            */
+            this._globalBrowserEventsManager = null;
+            /**
+            * View template retriever
+            */
+            this._viewTemplateRetriever = null;
+            /**
+            * Events Operations Facade
+            */
+            this._eventsOperationsFacade = null;
+            this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
+            this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+            this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
 
             // when events change
             EventsMan_addUpdateListener(function () {
@@ -51,13 +63,13 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
 
             // this should be the sole place to unhighlight deselected events and
             // make sure the agenda view is in sync with the state of the events
-            GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged, function (ev, extra) {
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged, function (ev, extra) {
                 if (extra !== null && extra !== undefined && extra.eventId !== null && extra.eventId !== undefined) {
                     // get cell based on eventId and unhighlight it
                     $.each(_this.view.selectedIndexPaths(), function (index, indexPath) {
                         var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                         if (eventId == extra.eventId) {
-                            if (GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsSelected(eventId)) {
+                            if (_this.eventsOperationsFacade.eventIdIsSelected(eventId)) {
                                 _this.view.selectCellAtIndexPath(indexPath);
                             } else {
                                 _this.view.deselectCellAtIndexPath(indexPath);
@@ -72,7 +84,30 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
 
             // reload
             this.reload();
-        };
+        }
+        Object.defineProperty(AgendaTableViewController.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                return this._globalBrowserEventsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(AgendaTableViewController.prototype, "viewTemplateRetriever", {
+            get: function () {
+                return this._viewTemplateRetriever;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(AgendaTableViewController.prototype, "eventsOperationsFacade", {
+            get: function () {
+                return this._eventsOperationsFacade;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         AgendaTableViewController.prototype.reload = function () {
             // TODO Agenda_filter
@@ -96,8 +131,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
-            var eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+            var eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('Yesterday', eventIds));
             }
@@ -109,7 +143,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+            eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('Today', eventIds));
             }
@@ -121,7 +155,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+            eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('This Week', eventIds));
             }
@@ -134,7 +168,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+            eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('This Month', eventIds));
             }
@@ -177,14 +211,14 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * Create a new table view cell for the given identifier
         */
         AgendaTableViewController.prototype.createCell = function (identifier) {
-            return AgendaTableViewCell.fromTemplate();
+            return AgendaTableViewCell.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell.templateSelector));
         };
 
         /**
         * Create a new table view header view for the given identifier
         */
         AgendaTableViewController.prototype.createHeaderView = function (identifier) {
-            return AgendaTableViewHeaderView.fromTemplate();
+            return AgendaTableViewHeaderView.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewHeaderView.templateSelector));
         };
 
         /**
@@ -192,7 +226,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * Return (not necessarily the same) cell.
         */
         AgendaTableViewController.prototype.decorateCell = function (cell) {
-            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+            var eventsOperationsFacade = this.eventsOperationsFacade;
             var agendaCell = cell;
             var indexPath = cell.indexPath;
             var eventSection = this._eventSectionArray[indexPath.section];
@@ -247,7 +281,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * Callback for when a table view cell is selected
         */
         AgendaTableViewController.prototype.didSelectCell = function (cell) {
-            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+            var eventsOperationsFacade = this.eventsOperationsFacade;
             var indexPath = cell.indexPath;
             var eventId = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
             if (eventId === undefined) {

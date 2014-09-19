@@ -3,18 +3,21 @@
 import $ = require('jquery');
 
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
+import CoreUI = require('../../../library/CoreUI/CoreUI');
+import Events = require('../../common/Events/Events');
 import EventsPopUp = require('../EventsPopUp/EventsPopUp');
 import EventsPopUpView = require('../EventsPopUp/EventsPopUpView');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
-import GlobalInstancesManager = require('../GlobalInstancesManager');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import ReCalSidebar = require('./ReCalSidebar');
 import Sidebar = require('../../../library/Sidebar/Sidebar');
 import ViewController = require('../../../library/CoreUI/ViewController');
 
+import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView
 import IReCalSidebarViewController = ReCalSidebar.IReCalSidebarViewController;
 import ISidebarView = Sidebar.ISidebarView;
+import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
 /************************************************************************
   * This class is responsible for managing the sidebar in ReCal. In particular,
@@ -37,23 +40,36 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
         this._currentPopUpView = value;
     }
 
-    constructor(sidebarView: ISidebarView)
+    /**
+      * Global Browser Events Manager
+      */
+    private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
+
+    /**
+      * View template retriever
+      */
+    private _viewTemplateRetriever: IViewTemplateRetriever = null;
+    private get viewTemplateRetriever(): IViewTemplateRetriever { return this._viewTemplateRetriever; }
+
+    /**
+      * Events Operations Facade
+      */
+    private _eventsOperationsFacade: IEventsOperationsFacade = null;
+    private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
+
+    constructor(sidebarView: ISidebarView, dependencies: ReCalSidebar.ReCalSidebarViewControllerDependencies)
     {
-        super(sidebarView)
+        super(sidebarView);
+        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+        this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
+        this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+        this.initializePopUp();
     }
 
     public get view(): ISidebarView
     {
         return <ISidebarView> this._view;
-    }
-
-    /**
-      * Do any initialization needed. Better than overriding constructor
-      * because this gives the option of not calling super.initialize();
-      */
-    public initialize(): void
-    {
-        this.initializePopUp();
     }
 
     /**
@@ -73,7 +89,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 popUpView: popUpView,
             });
             // now also update the event selection state by pinning the event
-            GlobalInstancesManager.instance.eventsOperationsFacade.pinEventWithId(popUpView.eventsModel.eventId);
+            this.eventsOperationsFacade.pinEventWithId(popUpView.eventsModel.eventId);
 
         });
 
@@ -81,18 +97,18 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
         this.view.registerDroppable(EventsPopUpView.cssSelector());
 
         // add listener for when PopUpView object was dropped into sidebar
-        GlobalBrowserEventsManager.instance.attachGlobalEventHandler(
+        this.globalBrowserEventsManager.attachGlobalEventHandler(
                 ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, 
                 (ev: JQueryEventObject, extra: any) => 
                 {
                     var popUpView: IEventsPopUpView = <IEventsPopUpView> extra.popUpView;
                     this.addPopUpView(popUpView);
                     // update event selection state
-                    GlobalInstancesManager.instance.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
+                    this.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
                 });
 
         // add listener for when event selection state changes
-        GlobalBrowserEventsManager.instance.attachGlobalEventHandler(
+        this.globalBrowserEventsManager.attachGlobalEventHandler(
                 ReCalCommonBrowserEvents.eventSelectionChanged,
                 (ev: JQueryEventObject, extra: any) =>
                 {
@@ -102,15 +118,17 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                         // TODO get the main popup, then do stuffs
                         return;
                     }
-                    if (GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsMain(eventId))
+                    if (this.eventsOperationsFacade.eventIdIsMain(eventId))
                     {
                         // this event is supposed to be main
                         if (this.currentPopUpView === null || this.currentPopUpView === undefined)
                         {
                             // create the popup view
-                            this.currentPopUpView = new EventsPopUpView();
+                            this.currentPopUpView = new EventsPopUpView({
+                                viewTemplateRetriever: this.viewTemplateRetriever,
+                            });
                             // set events model
-                            var eventsModel = GlobalInstancesManager.instance.eventsOperationsFacade.getEventById(eventId);
+                            var eventsModel = this.eventsOperationsFacade.getEventById(eventId);
                             this.currentPopUpView.eventsModel = eventsModel;
                             this.addPopUpView(this.currentPopUpView);
                         }

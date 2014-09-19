@@ -5,12 +5,13 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/EncodeDecodeProxy', '../../../library/CoreUI/FocusableView', '../../../library/PopUp/PopUpView', '../GlobalInstancesManager', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, EncodeDecodeProxy, FocusableView, PopUpView, GlobalInstancesManager, ReCalCommonBrowserEvents) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/EncodeDecodeProxy', '../../../library/CoreUI/FocusableView', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, EncodeDecodeProxy, FocusableView, PopUpView, ReCalCommonBrowserEvents) {
     var EventsPopUpView = (function (_super) {
         __extends(EventsPopUpView, _super);
-        function EventsPopUpView() {
+        function EventsPopUpView(dependencies) {
             var _this = this;
-            _super.call(this, GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
+            _super.call(this, dependencies.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
+            this._encodeDecodeProxy = new EncodeDecodeProxy();
             this._eventsModel = null;
             this._title = null;
             this._description = null;
@@ -29,6 +30,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 _this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
             });
         }
+        Object.defineProperty(EventsPopUpView.prototype, "encodeDecodeProxy", {
+            get: function () {
+                return this._encodeDecodeProxy;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(EventsPopUpView.prototype, "eventsModel", {
             get: function () {
                 return this._eventsModel;
@@ -73,8 +82,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._description === null || this._description === undefined) {
                     return;
                 }
-                var proxy = EncodeDecodeProxy.instance;
-                this.findJQuery('#popup-desc').html(proxy.newLinesToBr(proxy.htmlEncode(this._description)));
+                this.findJQuery('#popup-desc').html(this.encodeDecodeProxy.newLinesToBr(this.encodeDecodeProxy.htmlEncode(this._description)));
             },
             enumerable: true,
             configurable: true

@@ -1,6 +1,10 @@
-define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager', '../../../library/Core/InvalidActionException', '../ReCalCommonBrowserEvents', '../../../library/DataStructures/Set'], function(require, exports, GlobalBrowserEventsManager, InvalidActionException, ReCalCommonBrowserEvents, Set) {
+define(["require", "exports", '../../../library/Core/InvalidActionException', '../ReCalCommonBrowserEvents', '../../../library/DataStructures/Set'], function(require, exports, InvalidActionException, ReCalCommonBrowserEvents, Set) {
     var EventsSelectionManager = (function () {
-        function EventsSelectionManager() {
+        function EventsSelectionManager(dependencies) {
+            /**
+            * Global Browser Events Manager
+            */
+            this._globalBrowserEventsManager = null;
             /**
             * An event is considered pinned if it is selected and if its popup has
             * been dragged from the sidebar.
@@ -10,7 +14,16 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
             * An event is considered selected if it has a popup opened for it.
             */
             this._selectedIds = new Set();
+            this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         }
+        Object.defineProperty(EventsSelectionManager.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                return this._globalBrowserEventsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(EventsSelectionManager.prototype, "pinnedIds", {
             get: function () {
                 return this._pinnedIds;
@@ -121,7 +134,7 @@ define(["require", "exports", '../../../library/Core/GlobalBrowserEventsManager'
         * Helper functions
         *************************************************************************/
         EventsSelectionManager.prototype.triggerSelectionChangeBrowserEvent = function (eventId) {
-            GlobalBrowserEventsManager.instance.triggerEvent(ReCalCommonBrowserEvents.eventSelectionChanged, {
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventSelectionChanged, {
                 eventId: eventId
             });
         };

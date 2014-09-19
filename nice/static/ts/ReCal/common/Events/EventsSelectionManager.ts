@@ -1,3 +1,4 @@
+import Events = require('./Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import InvalidActionException = require('../../../library/Core/InvalidActionException');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
@@ -5,6 +6,17 @@ import Set = require('../../../library/DataStructures/Set');
 
 class EventsSelectionManager
 {
+    /**
+      * Global Browser Events Manager
+      */
+    private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
+
+    constructor(dependencies: Events.EventsSelectionManagerDependencies)
+    {
+        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+    }
+
     /**
       * An event is considered pinned if it is selected and if its popup has
       * been dragged from the sidebar.
@@ -126,12 +138,13 @@ class EventsSelectionManager
             }
         }
     }
-/***************************************************************************
+
+    /***************************************************************************
       * Helper functions
       *************************************************************************/
     private triggerSelectionChangeBrowserEvent(eventId: string)
     {
-        GlobalBrowserEventsManager.instance.triggerEvent(ReCalCommonBrowserEvents.eventSelectionChanged, 
+        this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventSelectionChanged, 
         {
             eventId: eventId,
         });

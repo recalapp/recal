@@ -5,16 +5,91 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', './DashboardCalendar/DashboardCalendarViewController', '../common/GlobalInstancesManager', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Table/TableView', '../../library/CoreUI/View', '../../library/CoreUI/ViewController'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, DashboardCalendarViewController, GlobalInstancesManager, ReCalSidebarViewController, SidebarView, TableView, View, ViewController) {
+define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', './DashboardCalendar/DashboardCalendarViewController', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Notifications/SidebarNotificationsManager', '../../library/Table/TableView', '../../library/CoreUI/View', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, DashboardCalendarViewController, EventsOperationsFacade, GlobalBrowserEventsManager, ReCalSidebarViewController, SidebarView, SidebarNotificationsManager, TableView, View, ViewController, ViewTemplateRetriever) {
     var DashboardViewController = (function (_super) {
         __extends(DashboardViewController, _super);
-        function DashboardViewController() {
-            _super.apply(this, arguments);
+        function DashboardViewController(view) {
+            _super.call(this, view);
+            /**
+            * Global Browser Events Manager
+            */
+            this._globalBrowserEventsManager = null;
+            /**
+            * Notifications Manager
+            */
+            this._notificationsManager = null;
+            /**
+            * View template retriever
+            */
+            this._viewTemplateRetriever = null;
+            /**
+            * Events Operations Facade
+            */
+            this._eventsOperationsFacade = null;
+            /**
+            * Calendar view controller
+            */
             this._calendarViewController = null;
+            /**
+            * Agenda View Controller
+            */
             this._agendaViewController = null;
+            /**
+            * Sidebar View Controller
+            */
             this._sidebarViewController = null;
+            /**
+            * Canvas PopUp Container View Controller
+            */
             this._canvasPopUpContainerViewController = null;
+            this.initialize();
         }
+        Object.defineProperty(DashboardViewController.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                if (!this._globalBrowserEventsManager) {
+                    this._globalBrowserEventsManager = new GlobalBrowserEventsManager();
+                }
+                return this._globalBrowserEventsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(DashboardViewController.prototype, "notificationsManager", {
+            get: function () {
+                if (!this._notificationsManager) {
+                    this._notificationsManager = new SidebarNotificationsManager;
+                }
+                return this._notificationsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(DashboardViewController.prototype, "viewTemplateRetriever", {
+            get: function () {
+                if (!this._viewTemplateRetriever) {
+                    this._viewTemplateRetriever = new ViewTemplateRetriever();
+                }
+                return this._viewTemplateRetriever;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(DashboardViewController.prototype, "eventsOperationsFacade", {
+            get: function () {
+                if (!this._eventsOperationsFacade) {
+                    this._eventsOperationsFacade = new EventsOperationsFacade({
+                        globalBrowserEventsManager: this.globalBrowserEventsManager
+                    });
+                }
+                return this._eventsOperationsFacade;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(DashboardViewController.prototype, "calendarViewController", {
             get: function () {
                 return this._calendarViewController;
@@ -60,7 +135,6 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
         });
 
         DashboardViewController.prototype.initialize = function () {
-            _super.prototype.initialize.call(this);
             this.initializeSidebar();
             this.initializePopUpCanvas();
             this.initializeCalendar();
@@ -70,7 +144,9 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
         DashboardViewController.prototype.initializeCalendar = function () {
             // initialize calendar view
             var calendarView = CalendarView.fromJQuery(this.view.findJQuery('#calendarui'));
-            var calendarVC = new DashboardCalendarViewController(calendarView);
+            var calendarVC = new DashboardCalendarViewController(calendarView, {
+                eventsOperationsFacade: this.eventsOperationsFacade
+            });
             this.addChildViewController(calendarVC);
             this.calendarViewController = calendarVC;
         };
@@ -78,7 +154,11 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
         DashboardViewController.prototype.initializeAgenda = function () {
             // initialize agenda view
             var agendaTableView = TableView.fromJQuery(this.view.findJQuery('#agendaui'));
-            var agendaVC = new AgendaTableViewController(agendaTableView);
+            var agendaVC = new AgendaTableViewController(agendaTableView, {
+                viewTemplateRetriever: this.viewTemplateRetriever,
+                eventsOperationsFacade: this.eventsOperationsFacade,
+                globalBrowserEventsManager: this.globalBrowserEventsManager
+            });
             this.addChildViewController(agendaVC);
             this.agendaViewController = agendaVC;
         };
@@ -88,10 +168,14 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             var sidebarView = SidebarView.fromJQuery(this.view.findJQuery('#sidebar-container'));
 
             // set sidebar notifications manager's sidebar instance
-            GlobalInstancesManager.instance.notificationsManager.sidebarView = sidebarView;
+            this.notificationsManager.sidebarView = sidebarView;
 
             // initialize sidebar view controller
-            var sidebarVC = new ReCalSidebarViewController(sidebarView);
+            var sidebarVC = new ReCalSidebarViewController(sidebarView, {
+                viewTemplateRetriever: this.viewTemplateRetriever,
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+                eventsOperationsFacade: this.eventsOperationsFacade
+            });
             this.addChildViewController(sidebarVC);
             this.sidebarViewController = sidebarVC;
         };
@@ -99,7 +183,9 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
         DashboardViewController.prototype.initializePopUpCanvas = function () {
             // initialize popup canvas
             var popUpCanvasView = View.fromJQuery(this.view.findJQuery('#popup-canvas'));
-            var popUpCanvasVC = new CanvasPopUpContainerViewController(popUpCanvasView);
+            var popUpCanvasVC = new CanvasPopUpContainerViewController(popUpCanvasView, {
+                globalBrowserEventsManager: this.globalBrowserEventsManager
+            });
             this.addChildViewController(popUpCanvasVC);
             this.canvasPopUpContainerViewController = popUpCanvasVC;
         };

@@ -8,10 +8,21 @@
   **********************************************************************/
 
 import CoreUI = require('../../../library/CoreUI/CoreUI');
+import Events = require('../../common/Events/Events');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import PopUp = require('../../../library/PopUp/PopUp');
 
+import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IViewController = CoreUI.IViewController;
 import IPopUpView = PopUp.IPopUpView;
+import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
+
+export interface ReCalSidebarViewControllerDependencies
+{
+    eventsOperationsFacade: IEventsOperationsFacade;
+    globalBrowserEventsManager: GlobalBrowserEventsManager;
+    viewTemplateRetriever: IViewTemplateRetriever;
+}
 
 export interface IReCalSidebarViewController extends IViewController
 {

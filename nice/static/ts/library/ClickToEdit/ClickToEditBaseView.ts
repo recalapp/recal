@@ -13,6 +13,16 @@ class ClickToEditBaseView extends FocusableView
 {
     private static _customTypes = new Set();
 
+    private static _encodeDecodeProxy: EncodeDecodeProxy = null;
+    private get encodeDecodeProxy(): EncodeDecodeProxy
+    {
+        if (!ClickToEditBaseView._encodeDecodeProxy)
+        {
+            ClickToEditBaseView._encodeDecodeProxy = new EncodeDecodeProxy();
+        }
+        return ClickToEditBaseView._encodeDecodeProxy;
+    }
+
     /**
       * The unique css class for this class.
       */
@@ -115,7 +125,7 @@ class ClickToEditBaseView extends FocusableView
       */
     public processFormValue(value: string, settings: any) : string
     {
-        return EncodeDecodeProxy.instance.htmlEncode(value);
+        return this.encodeDecodeProxy.htmlEncode(value);
     }
 
     /**
@@ -134,7 +144,7 @@ class ClickToEditBaseView extends FocusableView
       */
     public content($form: JQuery, contentString: string, settings: any) : void
     {
-        var decoded = EncodeDecodeProxy.instance.htmlDecode(contentString);
+        var decoded = this.encodeDecodeProxy.htmlDecode(contentString);
         $form.find('input').val(decoded);
     }
 

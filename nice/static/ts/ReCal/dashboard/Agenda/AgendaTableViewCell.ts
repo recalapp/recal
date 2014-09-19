@@ -4,7 +4,6 @@ import $ = require('jquery');
 
 import Agenda = require('./Agenda');
 import DateTime = require('../../../library/DateTime/DateTime');
-import GlobalInstancesManager = require('../../common/GlobalInstancesManager');
 import TableViewCell = require('../../../library/Table/TableViewCell');
 
 import IAgendaTableViewCell = Agenda.IAgendaTableViewCell;
@@ -14,17 +13,12 @@ declare var SECTION_COLOR_MAP: any;
 
 class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
 {
-    private static _templateSelector = '#agenda-template';
+    public static templateSelector = '#agenda-template';
     private _eventId: number;
 
     public get eventId(): number
     {
         return this._eventId;
-    }
-
-    public static fromTemplate(): AgendaTableViewCell
-    {
-        return <AgendaTableViewCell> this.fromJQuery(GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell._templateSelector));
     }
 
     public highlight(): void

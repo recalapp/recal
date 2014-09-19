@@ -6,7 +6,11 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager'], 
     * gateway to getting information about events.
     */
     var EventsOperationsFacade = (function () {
-        function EventsOperationsFacade() {
+        function EventsOperationsFacade(dependencies) {
+            /**
+            * Global Browser Events Manager
+            */
+            this._globalBrowserEventsManager = null;
             /***************************************************************************
             * Event Retrieval
             *************************************************************************/
@@ -15,7 +19,16 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager'], 
             * Event Selection
             *************************************************************************/
             this._eventsSelectionManager = null;
+            this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         }
+        Object.defineProperty(EventsOperationsFacade.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                return this._globalBrowserEventsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(EventsOperationsFacade.prototype, "eventsRetriever", {
             get: function () {
                 if (this._eventsRetriever === null || this._eventsRetriever === undefined) {
@@ -44,7 +57,9 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager'], 
         Object.defineProperty(EventsOperationsFacade.prototype, "eventsSelectionManager", {
             get: function () {
                 if (this._eventsSelectionManager === null || this._eventsSelectionManager === undefined) {
-                    this._eventsSelectionManager = new EventsSelectionManager();
+                    this._eventsSelectionManager = new EventsSelectionManager({
+                        globalBrowserEventsManager: this.globalBrowserEventsManager
+                    });
                 }
                 return this._eventsSelectionManager;
             },

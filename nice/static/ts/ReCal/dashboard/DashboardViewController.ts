@@ -9,72 +9,125 @@ import CanvasPopUpContainer = require('../common/CanvasPopUpContainer/CanvasPopU
 import CanvasPopUpContainerViewController = require('../common/CanvasPopUpContainer/CanvasPopUpContainerViewController');
 import CoreUI = require('../../library/CoreUI/CoreUI');
 import DashboardCalendarViewController = require('./DashboardCalendar/DashboardCalendarViewController');
-import GlobalInstancesManager = require('../common/GlobalInstancesManager');
+import Events = require('../common/Events/Events');
+import EventsOperationsFacade = require('../common/Events/EventsOperationsFacade');
+import GlobalBrowserEventsManager = require('../../library/Core/GlobalBrowserEventsManager');
 import Notifications = require('../../library/Notifications/Notifications');
 import ReCalSidebar = require('../common/ReCalSidebar/ReCalSidebar');
 import ReCalSidebarViewController = require('../common/ReCalSidebar/ReCalSidebarViewController');
 import Sidebar = require('../../library/Sidebar/Sidebar');
 import SidebarView = require('../../library/Sidebar/SidebarView');
+import SidebarNotificationsManager = require('../../library/Notifications/SidebarNotificationsManager');
 import Table = require('../../library/Table/Table');
 import TableView = require('../../library/Table/TableView');
 import View = require('../../library/CoreUI/View');
 import ViewController = require('../../library/CoreUI/ViewController');
+import ViewTemplateRetriever = require('../../library/CoreUI/ViewTemplateRetriever');
 
 import ICalendarView = Calendar.ICalendarView;
 import ICalendarViewController = Calendar.ICalendarViewController;
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController;
+import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IReCalSidebarViewController = ReCalSidebar.IReCalSidebarViewController;
 import ISidebarNotificationsManager = Notifications.ISidebarNotificationsManager;
 import ISidebarView = Sidebar.ISidebarView;
 import ITableView = Table.ITableView;
 import ITableViewController = Table.ITableViewController;
 import IView = CoreUI.IView;
+import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
 class DashboardViewController extends ViewController
 {
+    /**
+      * Global Browser Events Manager
+      */
+    private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager 
+    {
+        if (!this._globalBrowserEventsManager)
+        {
+            this._globalBrowserEventsManager = new GlobalBrowserEventsManager();
+        }
+        return this._globalBrowserEventsManager;
+    }
+
+    /**
+      * Notifications Manager
+      */
+    private _notificationsManager: ISidebarNotificationsManager = null;
+    private get notificationsManager(): ISidebarNotificationsManager 
+    { 
+        if (!this._notificationsManager)
+        {
+            this._notificationsManager = new SidebarNotificationsManager; 
+        }
+        return this._notificationsManager; 
+    }
+
+    /**
+      * View template retriever
+      */
+    private _viewTemplateRetriever: IViewTemplateRetriever = null;
+    private get viewTemplateRetriever(): IViewTemplateRetriever 
+    {
+        if (!this._viewTemplateRetriever)
+        {
+            this._viewTemplateRetriever = new ViewTemplateRetriever();
+        }
+        return this._viewTemplateRetriever; 
+    }
+
+    /**
+      * Events Operations Facade
+      */
+    private _eventsOperationsFacade: IEventsOperationsFacade = null;
+    private get eventsOperationsFacade(): IEventsOperationsFacade 
+    { 
+        if (!this._eventsOperationsFacade)
+        {
+            this._eventsOperationsFacade = new EventsOperationsFacade({
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+            });
+        }
+        return this._eventsOperationsFacade; 
+    }
+
+    /**
+      * Calendar view controller
+      */
     private _calendarViewController: ICalendarViewController = null;
-    private get calendarViewController(): ICalendarViewController 
-    {
-        return this._calendarViewController;
-    }
-    private set calendarViewController(value: ICalendarViewController)
-    {
-        this._calendarViewController = value;
-    }
+    private get calendarViewController(): ICalendarViewController { return this._calendarViewController; }
+    private set calendarViewController(value: ICalendarViewController) { this._calendarViewController = value; }
 
+    /**
+      * Agenda View Controller
+      */
     private _agendaViewController: ITableViewController = null;
-    private get agendaViewController(): ITableViewController
-    {
-        return this._agendaViewController;
-    }
-    private set agendaViewController(value: ITableViewController)
-    {
-        this._agendaViewController = value;
-    }
+    private get agendaViewController(): ITableViewController { return this._agendaViewController; }
+    private set agendaViewController(value: ITableViewController) { this._agendaViewController = value; }
 
+    /**
+      * Sidebar View Controller
+      */
     private _sidebarViewController: IReCalSidebarViewController = null;
-    private get sidebarViewController(): IReCalSidebarViewController
-    {
-        return this._sidebarViewController;
-    }
-    private set sidebarViewController(value: IReCalSidebarViewController)
-    {
-        this._sidebarViewController = value;
-    }
+    private get sidebarViewController(): IReCalSidebarViewController { return this._sidebarViewController; }
+    private set sidebarViewController(value: IReCalSidebarViewController) { this._sidebarViewController = value; }
 
+    /**
+      * Canvas PopUp Container View Controller
+      */
     private _canvasPopUpContainerViewController: ICanvasPopUpContainerViewController = null;
-    private get canvasPopUpContainerViewController(): ICanvasPopUpContainerViewController
+    private get canvasPopUpContainerViewController(): ICanvasPopUpContainerViewController { return this._canvasPopUpContainerViewController; }
+    private set canvasPopUpContainerViewController(value: ICanvasPopUpContainerViewController) { this._canvasPopUpContainerViewController = value; }
+
+    constructor(view: IView)
     {
-        return this._canvasPopUpContainerViewController;
-    }
-    private set canvasPopUpContainerViewController(value: ICanvasPopUpContainerViewController)
-    {
-        this._canvasPopUpContainerViewController = value;
+        super(view);
+        this.initialize();
     }
 
-    public initialize(): void
+    private initialize(): void
     {
-        super.initialize();
         this.initializeSidebar();
         this.initializePopUpCanvas();
         this.initializeCalendar();
@@ -85,7 +138,9 @@ class DashboardViewController extends ViewController
     {
         // initialize calendar view
         var calendarView: ICalendarView = <CalendarView> CalendarView.fromJQuery(this.view.findJQuery('#calendarui'));
-        var calendarVC: ICalendarViewController = new DashboardCalendarViewController(calendarView);
+        var calendarVC: ICalendarViewController = new DashboardCalendarViewController(calendarView, {
+            eventsOperationsFacade: this.eventsOperationsFacade,
+        });
         this.addChildViewController(calendarVC);
         this.calendarViewController = calendarVC;
     }
@@ -94,7 +149,11 @@ class DashboardViewController extends ViewController
     {
         // initialize agenda view
         var agendaTableView: ITableView = <TableView> TableView.fromJQuery(this.view.findJQuery('#agendaui'));
-        var agendaVC: ITableViewController = new AgendaTableViewController(agendaTableView);
+        var agendaVC: ITableViewController = new AgendaTableViewController(agendaTableView, {
+            viewTemplateRetriever: this.viewTemplateRetriever,
+            eventsOperationsFacade: this.eventsOperationsFacade,
+            globalBrowserEventsManager: this.globalBrowserEventsManager,
+        });
         this.addChildViewController(agendaVC);
         this.agendaViewController = agendaVC;
     }
@@ -105,10 +164,14 @@ class DashboardViewController extends ViewController
         var sidebarView: ISidebarView = <SidebarView> SidebarView.fromJQuery(this.view.findJQuery('#sidebar-container'));
 
         // set sidebar notifications manager's sidebar instance
-        (<ISidebarNotificationsManager>GlobalInstancesManager.instance.notificationsManager).sidebarView = sidebarView;
+        this.notificationsManager.sidebarView = sidebarView;
 
         // initialize sidebar view controller
-        var sidebarVC: IReCalSidebarViewController = new ReCalSidebarViewController(sidebarView);
+        var sidebarVC: IReCalSidebarViewController = new ReCalSidebarViewController(sidebarView, {
+            viewTemplateRetriever: this.viewTemplateRetriever,
+            globalBrowserEventsManager: this.globalBrowserEventsManager,
+            eventsOperationsFacade: this.eventsOperationsFacade,
+        });
         this.addChildViewController(sidebarVC);
         this.sidebarViewController = sidebarVC;
     }
@@ -117,7 +180,9 @@ class DashboardViewController extends ViewController
     {
         // initialize popup canvas
         var popUpCanvasView: IView = View.fromJQuery(this.view.findJQuery('#popup-canvas'));
-        var popUpCanvasVC: ICanvasPopUpContainerViewController = new CanvasPopUpContainerViewController(popUpCanvasView);
+        var popUpCanvasVC: ICanvasPopUpContainerViewController = new CanvasPopUpContainerViewController(popUpCanvasView, {
+            globalBrowserEventsManager: this.globalBrowserEventsManager,
+        });
         this.addChildViewController(popUpCanvasVC);
         this.canvasPopUpContainerViewController = popUpCanvasVC;
     }

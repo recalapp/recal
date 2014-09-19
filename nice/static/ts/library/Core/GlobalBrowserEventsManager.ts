@@ -5,13 +5,7 @@ import View = require("../CoreUI/View");
 
 class GlobalBrowserEventsManager 
 {
-    private static _instance = new GlobalBrowserEventsManager();
     private _$globalParent = View.fromJQuery($(document));
-
-    public static get instance(): GlobalBrowserEventsManager
-    {
-        return this._instance;
-    }
 
     public attachGlobalEventHandler(ev : string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
     public attachGlobalEventHandler(ev : string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);

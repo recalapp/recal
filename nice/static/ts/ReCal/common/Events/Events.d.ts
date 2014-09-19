@@ -1,4 +1,14 @@
 import DateTime = require('../../../library/DateTime/DateTime');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
+
+export interface EventsOperationsFacadeDependencies
+{
+    globalBrowserEventsManager: GlobalBrowserEventsManager;
+}
+export interface EventsSelectionManagerDependencies
+{
+    globalBrowserEventsManager: GlobalBrowserEventsManager;
+}
 
 export interface IEventsModel
 {

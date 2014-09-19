@@ -5,18 +5,23 @@ import $ = require('jquery');
 import Agenda = require('./Agenda');
 import AgendaTableViewCell = require('./AgendaTableViewCell');
 import AgendaTableViewHeaderView = require('./AgendaTableViewHeaderView');
+import CoreUI = require('../../../library/CoreUI/CoreUI');
 import DateTime = require('../../../library/DateTime/DateTime');
+import Events = require('../../common/Events/Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
-import GlobalInstancesManager = require('../../common/GlobalInstancesManager');
 import ReCalCommonBrowserEvents = require('../../common/ReCalCommonBrowserEvents');
 import IndexPath = require('../../../library/DataStructures/IndexPath');
 import Table = require('../../../library/Table/Table');
 import TableViewController = require('../../../library/Table/TableViewController');
 
+import AgendaTableViewControllerDependencies = Agenda.AgendaTableViewControllerDependencies;
 import IAgendaTableViewCell = Agenda.IAgendaTableViewCell;
 import IAgendaTableViewHeaderView = Agenda.IAgendaTableViewHeaderView;
+import IEventsOperationsFacade = Events.IEventsOperationsFacade;
+import ITableView = Table.ITableView;
 import ITableViewCell = Table.ITableViewCell;
 import ITableViewHeaderView = Table.ITableViewHeaderView;
+import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
 declare function EventsMan_addUpdateListener(callBack: ()=>void): void;
 declare function LO_hideLoading(message: string): void;
@@ -29,9 +34,31 @@ class AgendaTableViewController extends TableViewController
     private _eventSectionArray: EventSection[];
     private _loading: boolean = false;
     private static LO_MESSAGE = 'agenda loading';
-    public initialize() : void
+
+    /**
+      * Global Browser Events Manager
+      */
+    private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
+
+    /**
+      * View template retriever
+      */
+    private _viewTemplateRetriever: IViewTemplateRetriever = null;
+    private get viewTemplateRetriever(): IViewTemplateRetriever { return this._viewTemplateRetriever; }
+
+    /**
+      * Events Operations Facade
+      */
+    private _eventsOperationsFacade: IEventsOperationsFacade = null;
+    private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
+
+    constructor(tableView: ITableView, dependencies: AgendaTableViewControllerDependencies)
     {
-        super.initialize();
+        super(tableView);
+        this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
+        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+        this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
         // when events change
         EventsMan_addUpdateListener(()=>{
             // TODO check if visible
@@ -69,7 +96,7 @@ class AgendaTableViewController extends TableViewController
 
         // this should be the sole place to unhighlight deselected events and 
         // make sure the agenda view is in sync with the state of the events
-        GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged,
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged,
                 (ev: JQueryEventObject, extra: any) => 
                 {
                     if (extra !== null && extra !== undefined && extra.eventId !== null && extra.eventId !== undefined)
@@ -79,7 +106,7 @@ class AgendaTableViewController extends TableViewController
                             var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                             if (eventId == extra.eventId)
                             {
-                                if (GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsSelected(eventId))
+                                if (this.eventsOperationsFacade.eventIdIsSelected(eventId))
                                 {
                                     this.view.selectCellAtIndexPath(indexPath);
                                 }
@@ -125,8 +152,7 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
-        var eventIds: string[] = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        var eventIds: string[] = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Yesterday', eventIds));
@@ -139,7 +165,7 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Today', eventIds));
@@ -152,7 +178,7 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('This Week', eventIds));
@@ -166,7 +192,7 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        eventIds = eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('This Month', eventIds));
@@ -215,7 +241,7 @@ class AgendaTableViewController extends TableViewController
      */
     public createCell(identifier: string) : ITableViewCell
     {
-        return AgendaTableViewCell.fromTemplate();
+        return <AgendaTableViewCell> AgendaTableViewCell.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell.templateSelector));
     }
 
     /**
@@ -223,7 +249,7 @@ class AgendaTableViewController extends TableViewController
       */
     public createHeaderView(identifier: string) : ITableViewHeaderView
     {
-        return AgendaTableViewHeaderView.fromTemplate();
+        return <AgendaTableViewHeaderView> AgendaTableViewHeaderView.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewHeaderView.templateSelector));
     }
 
     /**
@@ -232,7 +258,7 @@ class AgendaTableViewController extends TableViewController
      */
     public decorateCell(cell: ITableViewCell): ITableViewCell
     {
-        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+        var eventsOperationsFacade = this.eventsOperationsFacade;
         var agendaCell: IAgendaTableViewCell = <IAgendaTableViewCell> cell;
         var indexPath: IndexPath = cell.indexPath;
         var eventSection: EventSection = this._eventSectionArray[indexPath.section];
@@ -295,7 +321,7 @@ class AgendaTableViewController extends TableViewController
       */
     public didSelectCell(cell: ITableViewCell): void
     {
-        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+        var eventsOperationsFacade = this.eventsOperationsFacade;
         var indexPath: IndexPath = cell.indexPath;
         var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
         if (eventId === undefined)

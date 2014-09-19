@@ -9,7 +9,6 @@ define(["require", "exports", '../Core/InvalidActionException', '../DataStructur
             this._childViewControllers = new Set();
             this._viewControllerNumber = ViewController._viewControllerCount++;
             this._view = view;
-            this.initialize();
         }
         Object.defineProperty(ViewController.prototype, "view", {
             /******************************************************************
@@ -37,13 +36,6 @@ define(["require", "exports", '../Core/InvalidActionException', '../DataStructur
             enumerable: true,
             configurable: true
         });
-
-        /**
-        * Do any initialization needed. Better than overriding constructor
-        * because this gives the option of not calling super.initialize();
-        */
-        ViewController.prototype.initialize = function () {
-        };
 
         ViewController.prototype.addChildViewController = function (childVC) {
             var childVCCasted = childVC;

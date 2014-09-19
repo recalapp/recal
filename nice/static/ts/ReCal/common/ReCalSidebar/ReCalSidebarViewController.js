@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsPopUp/EventsPopUpView', '../../../library/Core/GlobalBrowserEventsManager', '../GlobalInstancesManager', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, EventsPopUpView, GlobalBrowserEventsManager, GlobalInstancesManager, ReCalCommonBrowserEvents, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsPopUp/EventsPopUpView', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, EventsPopUpView, ReCalCommonBrowserEvents, ViewController) {
     /************************************************************************
     * This class is responsible for managing the sidebar in ReCal. In particular,
     * it is responsible for listening to the following events:
@@ -16,9 +16,25 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
     **********************************************************************/
     var ReCalSidebarViewController = (function (_super) {
         __extends(ReCalSidebarViewController, _super);
-        function ReCalSidebarViewController(sidebarView) {
+        function ReCalSidebarViewController(sidebarView, dependencies) {
             _super.call(this, sidebarView);
             this._currentPopUpView = null;
+            /**
+            * Global Browser Events Manager
+            */
+            this._globalBrowserEventsManager = null;
+            /**
+            * View template retriever
+            */
+            this._viewTemplateRetriever = null;
+            /**
+            * Events Operations Facade
+            */
+            this._eventsOperationsFacade = null;
+            this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+            this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
+            this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+            this.initializePopUp();
         }
         Object.defineProperty(ReCalSidebarViewController.prototype, "currentPopUpView", {
             get: function () {
@@ -31,6 +47,30 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             configurable: true
         });
 
+        Object.defineProperty(ReCalSidebarViewController.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                return this._globalBrowserEventsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(ReCalSidebarViewController.prototype, "viewTemplateRetriever", {
+            get: function () {
+                return this._viewTemplateRetriever;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(ReCalSidebarViewController.prototype, "eventsOperationsFacade", {
+            get: function () {
+                return this._eventsOperationsFacade;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(ReCalSidebarViewController.prototype, "view", {
             get: function () {
                 return this._view;
@@ -38,14 +78,6 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             enumerable: true,
             configurable: true
         });
-
-        /**
-        * Do any initialization needed. Better than overriding constructor
-        * because this gives the option of not calling super.initialize();
-        */
-        ReCalSidebarViewController.prototype.initialize = function () {
-            this.initializePopUp();
-        };
 
         /**
         * This initializes all the operations related to PopUp
@@ -65,36 +97,38 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                 });
 
                 // now also update the event selection state by pinning the event
-                GlobalInstancesManager.instance.eventsOperationsFacade.pinEventWithId(popUpView.eventsModel.eventId);
+                _this.eventsOperationsFacade.pinEventWithId(popUpView.eventsModel.eventId);
             });
 
             // register popup as a droppable object
             this.view.registerDroppable(EventsPopUpView.cssSelector());
 
             // add listener for when PopUpView object was dropped into sidebar
-            GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, function (ev, extra) {
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, function (ev, extra) {
                 var popUpView = extra.popUpView;
                 _this.addPopUpView(popUpView);
 
                 // update event selection state
-                GlobalInstancesManager.instance.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
+                _this.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
             });
 
             // add listener for when event selection state changes
-            GlobalBrowserEventsManager.instance.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged, function (ev, extra) {
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged, function (ev, extra) {
                 var eventId = extra.eventId;
                 if (eventId === null || eventId === undefined) {
                     // TODO get the main popup, then do stuffs
                     return;
                 }
-                if (GlobalInstancesManager.instance.eventsOperationsFacade.eventIdIsMain(eventId)) {
+                if (_this.eventsOperationsFacade.eventIdIsMain(eventId)) {
                     // this event is supposed to be main
                     if (_this.currentPopUpView === null || _this.currentPopUpView === undefined) {
                         // create the popup view
-                        _this.currentPopUpView = new EventsPopUpView();
+                        _this.currentPopUpView = new EventsPopUpView({
+                            viewTemplateRetriever: _this.viewTemplateRetriever
+                        });
 
                         // set events model
-                        var eventsModel = GlobalInstancesManager.instance.eventsOperationsFacade.getEventById(eventId);
+                        var eventsModel = _this.eventsOperationsFacade.getEventById(eventId);
                         _this.currentPopUpView.eventsModel = eventsModel;
                         _this.addPopUpView(_this.currentPopUpView);
                     }

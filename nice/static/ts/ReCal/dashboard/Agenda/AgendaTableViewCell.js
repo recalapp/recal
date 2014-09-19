@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/DateTime/DateTime', '../../common/GlobalInstancesManager', '../../../library/Table/TableViewCell'], function(require, exports, DateTime, GlobalInstancesManager, TableViewCell) {
+define(["require", "exports", '../../../library/DateTime/DateTime', '../../../library/Table/TableViewCell'], function(require, exports, DateTime, TableViewCell) {
     var AgendaTableViewCell = (function (_super) {
         __extends(AgendaTableViewCell, _super);
         function AgendaTableViewCell() {
@@ -18,10 +18,6 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../commo
             enumerable: true,
             configurable: true
         });
-
-        AgendaTableViewCell.fromTemplate = function () {
-            return this.fromJQuery(GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell._templateSelector));
-        };
 
         AgendaTableViewCell.prototype.highlight = function () {
             var courseColor = this._$el.data('course-color');
@@ -76,7 +72,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../commo
             this._$el.find('#agenda-title').addClass(agendaColorClass).css('color', darkerColor);
             // TODO special case for hidden events
         };
-        AgendaTableViewCell._templateSelector = '#agenda-template';
+        AgendaTableViewCell.templateSelector = '#agenda-template';
         return AgendaTableViewCell;
     })(TableViewCell);
 

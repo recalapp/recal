@@ -16,6 +16,17 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
             }
             this._initializeClickToEdit();
         }
+        Object.defineProperty(ClickToEditBaseView.prototype, "encodeDecodeProxy", {
+            get: function () {
+                if (!ClickToEditBaseView._encodeDecodeProxy) {
+                    ClickToEditBaseView._encodeDecodeProxy = new EncodeDecodeProxy();
+                }
+                return ClickToEditBaseView._encodeDecodeProxy;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(ClickToEditBaseView, "cssClass", {
             /**
             * The unique css class for this class.
@@ -108,7 +119,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         * such as converting \n to <br>
         */
         ClickToEditBaseView.prototype.processFormValue = function (value, settings) {
-            return EncodeDecodeProxy.instance.htmlEncode(value);
+            return this.encodeDecodeProxy.htmlEncode(value);
         };
 
         /**
@@ -125,7 +136,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         * Set the value of the input to match the value of the contentString.
         */
         ClickToEditBaseView.prototype.content = function ($form, contentString, settings) {
-            var decoded = EncodeDecodeProxy.instance.htmlDecode(contentString);
+            var decoded = this.encodeDecodeProxy.htmlDecode(contentString);
             $form.find('input').val(decoded);
         };
 
@@ -143,6 +154,8 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         ClickToEditBaseView.prototype.plugin = function ($form, settings) {
         };
         ClickToEditBaseView._customTypes = new Set();
+
+        ClickToEditBaseView._encodeDecodeProxy = null;
         return ClickToEditBaseView;
     })(FocusableView);
     

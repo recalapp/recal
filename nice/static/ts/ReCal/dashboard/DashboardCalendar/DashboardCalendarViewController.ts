@@ -5,11 +5,15 @@ import $ = require('jquery');
 import Calendar = require('../../../library/Calendar/Calendar');
 import CalendarViewController = require('../../../library/Calendar/CalendarViewController');
 import CalendarViewEvent = require('../../../library/Calendar/CalendarViewEvent');
+import DashboardCalendar = require('./DashboardCalendar');
 import DateTime = require('../../../library/DateTime/DateTime');
-import GlobalInstancesManager = require('../../common/GlobalInstancesManager');
+import Events = require('../../common/Events/Events');
 import ReCalCalendarViewEventAdapter = require('../../common/ReCalCalendar/ReCalCalendarViewEventAdapter');
 
+import DashboardCalendarViewControllerDependencies = DashboardCalendar.DashboardCalendarViewControllerDependencies;
+import ICalendarView = Calendar.ICalendarView;
 import ICalendarViewEvent = Calendar.ICalendarViewEvent;
+import IEventsOperationsFacade = Events.IEventsOperationsFacade;
             
 declare function colorLuminance(color: string, lumFactor: number): string;
 declare function EventsMan_addUpdateListener(listener: ()=>void): void;
@@ -27,7 +31,20 @@ declare var THEME: string;
 
 class DashboardCalendarViewController extends CalendarViewController
 {
-    public initialize(): void
+    /**
+      * Events Operations Facade
+      */
+    private _eventsOperationsFacade: IEventsOperationsFacade = null;
+    private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
+
+    constructor(calendarView: ICalendarView, dependencies: DashboardCalendarViewControllerDependencies)
+    {
+        super(calendarView);
+        this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+        this.initialize();
+    }
+
+    private initialize(): void
     {
         // deselect when closing events
         PopUp_addCloseListener((eventId: string)=>
@@ -114,7 +131,7 @@ class DashboardCalendarViewController extends CalendarViewController
       */
     public calendarViewEventsForRange(start: DateTime, end: DateTime): ICalendarViewEvent[]
     {
-        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+        var eventsOperationsFacade = this.eventsOperationsFacade;
         var eventIds = eventsOperationsFacade.getEventIdsInRange(start, end);
         var calendarEvents: ICalendarViewEvent[] = new Array<ICalendarViewEvent>();
         $.each(eventIds, (index: number, eventId: string)=>
@@ -147,7 +164,7 @@ class DashboardCalendarViewController extends CalendarViewController
       */
     public didSelectEvent(calendarViewEvent: ICalendarViewEvent): void
     {
-        var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+        var eventsOperationsFacade = this.eventsOperationsFacade;
         var eventId: string = calendarViewEvent.uniqueId;
 
         if (eventsOperationsFacade.eventIdIsSelected(eventId))

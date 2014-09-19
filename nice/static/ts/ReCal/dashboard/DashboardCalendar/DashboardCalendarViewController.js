@@ -5,12 +5,26 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewController', '../../common/GlobalInstancesManager', '../../common/ReCalCalendar/ReCalCalendarViewEventAdapter'], function(require, exports, $, CalendarViewController, GlobalInstancesManager, ReCalCalendarViewEventAdapter) {
+define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewController', '../../common/ReCalCalendar/ReCalCalendarViewEventAdapter'], function(require, exports, $, CalendarViewController, ReCalCalendarViewEventAdapter) {
     var DashboardCalendarViewController = (function (_super) {
         __extends(DashboardCalendarViewController, _super);
-        function DashboardCalendarViewController() {
-            _super.apply(this, arguments);
+        function DashboardCalendarViewController(calendarView, dependencies) {
+            _super.call(this, calendarView);
+            /**
+            * Events Operations Facade
+            */
+            this._eventsOperationsFacade = null;
+            this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+            this.initialize();
         }
+        Object.defineProperty(DashboardCalendarViewController.prototype, "eventsOperationsFacade", {
+            get: function () {
+                return this._eventsOperationsFacade;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         DashboardCalendarViewController.prototype.initialize = function () {
             var _this = this;
             // deselect when closing events
@@ -88,7 +102,7 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
         */
         DashboardCalendarViewController.prototype.calendarViewEventsForRange = function (start, end) {
             var _this = this;
-            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+            var eventsOperationsFacade = this.eventsOperationsFacade;
             var eventIds = eventsOperationsFacade.getEventIdsInRange(start, end);
             var calendarEvents = new Array();
             $.each(eventIds, function (index, eventId) {
@@ -118,7 +132,7 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
         */
         DashboardCalendarViewController.prototype.didSelectEvent = function (calendarViewEvent) {
             var _this = this;
-            var eventsOperationsFacade = GlobalInstancesManager.instance.eventsOperationsFacade;
+            var eventsOperationsFacade = this.eventsOperationsFacade;
             var eventId = calendarViewEvent.uniqueId;
 
             if (eventsOperationsFacade.eventIdIsSelected(eventId)) {

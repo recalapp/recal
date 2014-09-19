@@ -1,15 +1,16 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
+import CoreUI = require('../../../library/CoreUI/CoreUI');
 import DateTime = require('../../../library/DateTime/DateTime');
 import EncodeDecodeProxy = require('../../../library/Core/EncodeDecodeProxy');
 import Events = require('../Events/Events');
 import EventsPopUp = require('./EventsPopUp');
 import FocusableView = require('../../../library/CoreUI/FocusableView');
 import PopUpView = require('../../../library/PopUp/PopUpView');
-import GlobalInstancesManager = require('../GlobalInstancesManager');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 
+import EventsPopUpViewDependencies = EventsPopUp.EventsPopUpViewDependencies;
 import IEventsModel = Events.IEventsModel;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView;
 
@@ -18,6 +19,9 @@ declare var TYPE_MAP: any;
 
 class EventsPopUpView extends PopUpView implements IEventsPopUpView
 {
+    private _encodeDecodeProxy: EncodeDecodeProxy = new EncodeDecodeProxy();
+    private get encodeDecodeProxy(): EncodeDecodeProxy { return this._encodeDecodeProxy; }
+
     private _eventsModel: IEventsModel = null;
     public get eventsModel(): IEventsModel { return this._eventsModel; }
     public set eventsModel(value: IEventsModel) 
@@ -58,8 +62,7 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        var proxy = EncodeDecodeProxy.instance;
-        this.findJQuery('#popup-desc').html(proxy.newLinesToBr(proxy.htmlEncode(this._description)));
+        this.findJQuery('#popup-desc').html(this.encodeDecodeProxy.newLinesToBr(this.encodeDecodeProxy.htmlEncode(this._description)));
     }
 
     private _location: string = null;
@@ -171,9 +174,9 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         return this._closeButton;
     }
 
-    constructor()
+    constructor(dependencies: EventsPopUpViewDependencies)
     {
-        super(GlobalInstancesManager.instance.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
+        super(dependencies.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
 
         // TODO set up buttons 
         // set up close button

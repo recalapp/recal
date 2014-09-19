@@ -2,14 +2,6 @@ define(["require", "exports", 'jquery'], function(require, exports, $) {
     var EncodeDecodeProxy = (function () {
         function EncodeDecodeProxy() {
         }
-        Object.defineProperty(EncodeDecodeProxy, "instance", {
-            get: function () {
-                return this._instance;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
         EncodeDecodeProxy.prototype.htmlEncode = function (content) {
             return $('<div>').text(content).html();
         };
@@ -26,7 +18,6 @@ define(["require", "exports", 'jquery'], function(require, exports, $) {
         EncodeDecodeProxy.prototype.brToNewLines = function (content) {
             return content.replace(/(\n|\r)/g, "").replace(/<br>/g, "\n");
         };
-        EncodeDecodeProxy._instance = new EncodeDecodeProxy();
         return EncodeDecodeProxy;
     })();
     

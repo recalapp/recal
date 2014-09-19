@@ -40,15 +40,6 @@ class ViewController implements IViewController
     {
         this._viewControllerNumber = ViewController._viewControllerCount++;
         this._view = view;
-        this.initialize();
-    }
-
-    /**
-      * Do any initialization needed. Better than overriding constructor
-      * because this gives the option of not calling super.initialize();
-      */
-    public initialize()
-    {
     }
 
     public addChildViewController(childVC : IViewController) : void

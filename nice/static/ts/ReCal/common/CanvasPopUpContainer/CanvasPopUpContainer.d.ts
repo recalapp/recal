@@ -5,10 +5,16 @@
   **********************************************************************/
 
 import CoreUI = require('../../../library/CoreUI/CoreUI');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import PopUp = require('../../../library/PopUp/PopUp');
 
 import IViewController = CoreUI.IViewController;
 import IPopUpView = PopUp.IPopUpView;
+
+export interface CanvasPopUpContainerViewControllerDependencies
+{
+    globalBrowserEventsManager: GlobalBrowserEventsManager;
+}
 
 export interface ICanvasPopUpContainerViewController extends IViewController
 {

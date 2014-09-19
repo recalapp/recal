@@ -3,14 +3,6 @@ define(["require", "exports", "jquery", "../CoreUI/View"], function(require, exp
         function GlobalBrowserEventsManager() {
             this._$globalParent = View.fromJQuery($(document));
         }
-        Object.defineProperty(GlobalBrowserEventsManager, "instance", {
-            get: function () {
-                return this._instance;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
         GlobalBrowserEventsManager.prototype.attachGlobalEventHandler = function (ev, argumentTwo, handler) {
             this._$globalParent.attachEventHandler(ev, argumentTwo, handler);
         };
@@ -18,7 +10,6 @@ define(["require", "exports", "jquery", "../CoreUI/View"], function(require, exp
         GlobalBrowserEventsManager.prototype.triggerEvent = function (ev, extraParameter) {
             this._$globalParent.triggerEvent(ev, extraParameter);
         };
-        GlobalBrowserEventsManager._instance = new GlobalBrowserEventsManager();
         return GlobalBrowserEventsManager;
     })();
 
