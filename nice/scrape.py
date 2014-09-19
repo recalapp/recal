@@ -38,7 +38,7 @@ TERM_PREFIX = FEED_PREFIX + "?term=" + str(TERM_CODE)
 DEP_PREFIX = TERM_PREFIX + "&subject="
 
 # for now hardwire the namespaces--too annoying
-PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
+PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_4'
 
 CURRENT_SEMESTER = ''
 community_user = get_community_user()
