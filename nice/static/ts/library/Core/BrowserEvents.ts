@@ -6,6 +6,8 @@ class BrowserEvents {
     static focusOut = 'focusout'; // bubbles up
     static mouseDown = 'mousedown';
     static transitionEnd = 'transitionend';
+    static keyPress = 'keypress';
+
     // bootstrap
     static bootstrapPopoverHidden = 'hidden.bs.popover';
     

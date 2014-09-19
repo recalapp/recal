@@ -8,7 +8,7 @@ class TableViewCommon
 {
     public static cellCssClass = 'tableViewCell';
     public static cellSelector = '.' + TableViewCommon.cellCssClass;
-    public static cellAllDescendentsSelector = TableViewCommon.cellSelector + ' *';
+    public static cellAllDescendentsSelector = TableViewCommon.cellSelector + ' *, ' + TableViewCommon.cellSelector;
     public static findCellFromChild($child: JQuery) : TableViewCell
     {
         var $cell = TableViewCommon.findCellElementFromChild($child);

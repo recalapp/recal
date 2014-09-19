@@ -23,7 +23,7 @@ define(["require", "exports", '../Core/InvalidArgumentException', './TableViewCe
         };
         TableViewCommon.cellCssClass = 'tableViewCell';
         TableViewCommon.cellSelector = '.' + TableViewCommon.cellCssClass;
-        TableViewCommon.cellAllDescendentsSelector = TableViewCommon.cellSelector + ' *';
+        TableViewCommon.cellAllDescendentsSelector = TableViewCommon.cellSelector + ' *, ' + TableViewCommon.cellSelector;
         return TableViewCommon;
     })();
     

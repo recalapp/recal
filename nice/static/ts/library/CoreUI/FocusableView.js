@@ -34,6 +34,16 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
                     _this.didBlur();
                 }
             });
+            this.attachEventHandler(BrowserEvents.keyPress, function (ev) {
+                var keyCode = ev.keyCode || ev.which;
+                if (keyCode == 13) {
+                    if (_this.hasFocus) {
+                        _this.triggerEvent(BrowserEvents.click, {
+                            keyCode: keyCode
+                        });
+                    }
+                }
+            });
         }
         Object.defineProperty(FocusableView.prototype, "popoverView", {
             get: function () {

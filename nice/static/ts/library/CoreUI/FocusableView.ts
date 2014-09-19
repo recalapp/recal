@@ -63,6 +63,20 @@ class FocusableView extends View implements IFocusableView
                 this.didBlur();
             }
         });
+        this.attachEventHandler(BrowserEvents.keyPress, (ev: JQueryEventObject)=>
+        {
+            var keyCode = ev.keyCode || ev.which;
+            if (keyCode == 13) // enter key
+            {
+                if (this.hasFocus)
+                {
+                    this.triggerEvent(BrowserEvents.click, {
+                        keyCode: keyCode,
+                    });
+                }
+            }
+
+        });
     }
     get hasFocus() : boolean
     {
