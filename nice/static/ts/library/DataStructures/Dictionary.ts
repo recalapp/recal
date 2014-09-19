@@ -53,5 +53,15 @@ class Dictionary<K, V>
         }
         return ret;
     }
+
+    public primitiveObject(): Object
+    {
+        var ret = {};
+        for (var key in this._dict)
+        {
+            ret[key] = this._dict[key].value;
+        }
+        return ret;
+    }
 }
-export=Dictionary;
+export = Dictionary;

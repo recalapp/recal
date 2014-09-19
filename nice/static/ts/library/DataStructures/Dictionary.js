@@ -47,6 +47,14 @@ define(["require", "exports"], function(require, exports) {
             }
             return ret;
         };
+
+        Dictionary.prototype.primitiveObject = function () {
+            var ret = {};
+            for (var key in this._dict) {
+                ret[key] = this._dict[key].value;
+            }
+            return ret;
+        };
         return Dictionary;
     })();
     
