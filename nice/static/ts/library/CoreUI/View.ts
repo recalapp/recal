@@ -144,6 +144,7 @@ class View implements IView
             // parent exists
             var parentView = View.fromJQuery($element.parent()); // use View instead of 'this' so we assume that parent is a generic view
             parentView._children.add(view)
+            view._parentView = parentView;
         }
         return view;
     }

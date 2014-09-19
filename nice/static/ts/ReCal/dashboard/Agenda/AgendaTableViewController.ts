@@ -31,7 +31,7 @@ declare var SE_id;
 
 class AgendaTableViewController extends TableViewController
 {
-    private _eventSectionArray: EventSection[];
+    private _eventSectionArray: EventSection[] = new Array<EventSection>();
     private _loading: boolean = false;
     private static LO_MESSAGE = 'agenda loading';
 
@@ -302,6 +302,10 @@ class AgendaTableViewController extends TableViewController
      */
     public numberOfSections() : number
     {
+        if (!this._eventSectionArray)
+        {
+            return 0;
+        }
         return this._eventSectionArray.length;
     }
 
@@ -310,6 +314,10 @@ class AgendaTableViewController extends TableViewController
      */
     public numberOfItemsInSection(section: number) : number
     {
+        if (!this._eventSectionArray)
+        {
+            return 0;
+        }
         return this._eventSectionArray[section].eventIds.length;
     }
 

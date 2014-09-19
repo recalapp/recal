@@ -12,54 +12,103 @@ class Dictionary<K, V>
       * Set the value in the dictionary, and return the old value (null
       * no old value)
       */
-    set(key : K, value : V) : V
+    public set(key : K, value : V) : V
     {
-        var ret : V = null;
+        var wrapper = this.findWrapper(key);
+        if (wrapper !== null && wrapper !== undefined)
+        {
+            var ret = wrapper.value;
+            wrapper.value = value;
+            return ret;
+        }
+        this.getOrCreateBin(key).push(new Wrapper<K, V>(key, value));
+        return null;
+    }
+
+    public unset(key: K): V
+    {
         if (this.contains(key))
         {
-            ret = this.get(key);
+            var bin = this.getOrCreateBin(key);
+            for (var i = 0; i < bin.length; ++i)
+            {
+                if (bin[i].key === key)
+                {
+                    var ret = bin[i].value;
+                    bin.splice(i, i+1);
+                    return ret;
+                }
+            }
         }
-        this._dict[key.toString()] = new Wrapper<K, V>(key, value);
-        return ret;
+        return null;
     }
 
-    unset(key: K): V
+    public contains(key : K) : boolean
     {
-        var ret : V = null;
-        if (this.contains(key))
+        return this.findWrapper(key) !== null;
+    }
+
+    private getOrCreateBin(key: K): Wrapper<K, V>[]
+    {
+        var keyString = key.toString();
+        if (!(keyString in this._dict))
         {
-            ret = this.get(key);
+            this._dict[keyString] = new Array<Wrapper<K, V>>();
         }
-        delete this._dict[key.toString()];
-        return ret;
+        return this._dict[keyString];
     }
 
-    contains(key : K) : boolean
+    private findWrapper(key: K): Wrapper<K, V>
     {
-        return key.toString() in this._dict;
+        if (key.toString() in this._dict)
+        {
+            var bin = this._dict[key.toString()];
+            for (var i = 0; i < bin.length; ++i)
+            {
+                if (bin[i].key === key)
+                {
+                    return bin[i];
+                }
+            }
+        }
+        return null;
     }
 
-    get(key : K): V
+    public get(key : K): V
     {
-        return this.contains(key) ? this._dict[key.toString()].value : null;
+        var wrapper = this.findWrapper(key);
+        if (wrapper !== null && wrapper !== undefined)
+        {
+            return wrapper.value;
+        }
+        return null;
     }
 
-    allKeys() : Array<K>
+    public allKeys() : Array<K>
     {
         var ret = Array<K>();
         for (var hash in this._dict)
         {
-            ret.push(this._dict[hash].key);
+            var bin = this._dict[hash];
+            for (var i = 0; i < bin.length; ++i)
+            {
+                ret.push(bin[i].key);
+            }
         }
         return ret;
     }
 
+    /**
+      * Assumes that key.toString() is unique.
+      */
     public primitiveObject(): Object
     {
+        var allKeys = this.allKeys();
         var ret = {};
-        for (var key in this._dict)
+        for (var i = 0; i < allKeys.length; ++i)
         {
-            ret[key] = this._dict[key].value;
+            var key = allKeys[i];
+            ret[key.toString()] = this.get(key);
         }
         return ret;
     }

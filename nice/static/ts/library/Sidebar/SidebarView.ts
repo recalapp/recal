@@ -150,7 +150,7 @@ class SidebarView extends View implements ISidebarView
       */
     public getStackViewWithIdentifier(identifier: string): IView
     {
-        return this.getStackViewWithIdentifier(identifier);
+        return this.stackViewContainer.getViewWithIdentifier(identifier);
     }
 
     /**

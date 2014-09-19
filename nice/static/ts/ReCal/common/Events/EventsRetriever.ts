@@ -34,6 +34,7 @@ class EventsRetriever
             title: legacyEventObject.event_title,
             description: legacyEventObject.event_description,
             sectionId: legacyEventObject.section_id.toString(),
+            courseId: legacyEventObject.course_id.toString(),
             eventTypeCode: legacyEventObject.event_type,
             startDate: DateTime.fromUnix(parseInt(legacyEventObject.event_start)),
             endDate: DateTime.fromUnix(parseInt(legacyEventObject.event_end)),

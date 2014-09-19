@@ -16,6 +16,7 @@ export interface IEventsModel
     title: string;
     description: string;
     sectionId: string;
+    courseId: string;
     eventTypeCode: string;
     startDate: DateTime;
     endDate: DateTime;

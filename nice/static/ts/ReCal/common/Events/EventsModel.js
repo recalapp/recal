@@ -7,6 +7,7 @@ define(["require", "exports"], function(require, exports) {
             this._description = null;
             this._location = null;
             this._sectionId = null;
+            this._courseId = null;
             this._eventTypeCode = null;
             this._startDate = null;
             this._endDate = null;
@@ -70,6 +71,17 @@ define(["require", "exports"], function(require, exports) {
             },
             set: function (value) {
                 this._sectionId = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsModel.prototype, "courseId", {
+            get: function () {
+                return this._courseId;
+            },
+            set: function (value) {
+                this._courseId = value;
             },
             enumerable: true,
             configurable: true

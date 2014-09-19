@@ -141,7 +141,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         * Returns the view with identifier. null if does not exist.
         */
         SidebarView.prototype.getStackViewWithIdentifier = function (identifier) {
-            return this.getStackViewWithIdentifier(identifier);
+            return this.stackViewContainer.getViewWithIdentifier(identifier);
         };
 
         /**

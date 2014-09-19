@@ -4,9 +4,11 @@ import $ = require('jquery');
 
 import Agenda = require('./Agenda');
 import DateTime = require('../../../library/DateTime/DateTime');
+import Events = require('../../common/Events/Events');
 import TableViewCell = require('../../../library/Table/TableViewCell');
 
 import IAgendaTableViewCell = Agenda.IAgendaTableViewCell;
+import IEventsModel = Events.IEventsModel;
 
 declare var SECTION_MAP: any;
 declare var SECTION_COLOR_MAP: any;
@@ -14,9 +16,9 @@ declare var SECTION_COLOR_MAP: any;
 class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
 {
     public static templateSelector = '#agenda-template';
-    private _eventId: number;
+    private _eventId: string;
 
-    public get eventId(): number
+    public get eventId(): string
     {
         return this._eventId;
     }
@@ -46,25 +48,23 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
         this._$el.find('#agenda-section').css('color', defaultTextColor);
     }
 
-    public setToEvent(eventDict: any): void
+    public setToEvent(eventsModel: IEventsModel): void
     {
         // TODO timezone
         // TODO theme
-        this._eventId = eventDict.event_id;
-        this._$el.find('.panel-body').find('h4').text(eventDict.event_title);
-        this._$el.find('#agenda-section').text(SECTION_MAP[eventDict.section_id]);
+        this._eventId = eventsModel.eventId;
+        this._$el.find('.panel-body').find('h4').text(eventsModel.title);
+        this._$el.find('#agenda-section').text(SECTION_MAP[eventsModel.sectionId]);
 
-        var start = new DateTime();
-        start.unix = eventDict.event_start;
-        var timeText = start.calendar();
+        var timeText = eventsModel.startDate.calendar();
         this._$el.find('#agenda-time').text(timeText);
 
-        this._setColorForEvent(eventDict);
+        this._setColorForEvent(eventsModel);
     }
-    private _setColorForEvent(eventDict: any): void
+    private _setColorForEvent(eventsModel: IEventsModel): void
     {
-        var agendaColorClass = 'course-color-' + eventDict.course_id;
-        var courseColor = SECTION_COLOR_MAP[eventDict.section_id]['color'];
+        var agendaColorClass = 'course-color-' + eventsModel.courseId;
+        var courseColor = SECTION_COLOR_MAP[eventsModel.sectionId]['color'];
         this._$el.find('.agenda-tag').addClass(agendaColorClass).css('background-color', courseColor);
         this._$el.data('course-color', courseColor);
 

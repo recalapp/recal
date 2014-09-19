@@ -123,14 +123,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     // this event is supposed to be main
                     if (_this.currentPopUpView === null || _this.currentPopUpView === undefined) {
                         // create the popup view
-                        _this.currentPopUpView = new EventsPopUpView({
+                        var newPopUpView = new EventsPopUpView({
                             viewTemplateRetriever: _this.viewTemplateRetriever
                         });
 
                         // set events model
                         var eventsModel = _this.eventsOperationsFacade.getEventById(eventId);
+                        newPopUpView.eventsModel = eventsModel;
+                        _this.addPopUpView(newPopUpView);
+                    } else {
+                        // set events model
+                        var eventsModel = _this.eventsOperationsFacade.getEventById(eventId);
                         _this.currentPopUpView.eventsModel = eventsModel;
-                        _this.addPopUpView(_this.currentPopUpView);
                     }
                 } else {
                     // event is no longer main. if it matches our current
@@ -163,7 +167,9 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             if (this.currentPopUpView === popUpView) {
                 this.currentPopUpView = null;
             }
-            this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView));
+            if (this.view.containsStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView))) {
+                this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView));
+            }
         };
 
         /**

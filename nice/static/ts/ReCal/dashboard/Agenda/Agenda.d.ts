@@ -3,6 +3,7 @@ import Events = require('../../common/Events/Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import Table = require('../../../library/Table/Table');
 
+import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import ITableViewCell = Table.ITableViewCell;
 import ITableViewHeaderView = Table.ITableViewHeaderView;
@@ -17,9 +18,9 @@ export interface AgendaTableViewControllerDependencies
 
 export interface IAgendaTableViewCell extends ITableViewCell
 {
-    eventId: number;
+    eventId: string;
 
-    setToEvent(eventDict: any): void;
+    setToEvent(eventsModel: IEventsModel): void;
 }
 
 export interface IAgendaTableViewHeaderView extends ITableViewHeaderView

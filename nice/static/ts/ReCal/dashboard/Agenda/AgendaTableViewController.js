@@ -11,6 +11,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         function AgendaTableViewController(tableView, dependencies) {
             var _this = this;
             _super.call(this, tableView);
+            this._eventSectionArray = new Array();
             this._loading = false;
             /**
             * Global Browser Events Manager
@@ -264,6 +265,9 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * The number of sections in this table view.
         */
         AgendaTableViewController.prototype.numberOfSections = function () {
+            if (!this._eventSectionArray) {
+                return 0;
+            }
             return this._eventSectionArray.length;
         };
 
@@ -271,6 +275,9 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * The number of items in this section.
         */
         AgendaTableViewController.prototype.numberOfItemsInSection = function (section) {
+            if (!this._eventSectionArray) {
+                return 0;
+            }
             return this._eventSectionArray[section].eventIds.length;
         };
 

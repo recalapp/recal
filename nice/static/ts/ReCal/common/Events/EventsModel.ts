@@ -37,6 +37,10 @@ class EventsModel implements Events.IEventsModel
     public get sectionId(): string { return this._sectionId; }
     public set sectionId(value: string) { this._sectionId = value; }
 
+    private _courseId: string = null;
+    public get courseId(): string { return this._courseId; }
+    public set courseId(value: string) { this._courseId = value; }
+
     private _eventTypeCode: string = null;
     public get eventTypeCode(): string { return this._eventTypeCode; }
     public set eventTypeCode(value: string) { this._eventTypeCode = value; }

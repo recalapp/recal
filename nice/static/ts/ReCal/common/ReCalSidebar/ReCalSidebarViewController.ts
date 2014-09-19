@@ -124,13 +124,19 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                         if (this.currentPopUpView === null || this.currentPopUpView === undefined)
                         {
                             // create the popup view
-                            this.currentPopUpView = new EventsPopUpView({
+                            var newPopUpView = new EventsPopUpView({
                                 viewTemplateRetriever: this.viewTemplateRetriever,
                             });
                             // set events model
                             var eventsModel = this.eventsOperationsFacade.getEventById(eventId);
+                            newPopUpView.eventsModel = eventsModel;
+                            this.addPopUpView(newPopUpView);
+                        }
+                        else
+                        {
+                            // set events model
+                            var eventsModel = this.eventsOperationsFacade.getEventById(eventId);
                             this.currentPopUpView.eventsModel = eventsModel;
-                            this.addPopUpView(this.currentPopUpView);
                         }
                     }
                     else
@@ -171,7 +177,10 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
         {
             this.currentPopUpView = null;
         }
-        this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView));
+        if (this.view.containsStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView)))
+        {
+            this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView));
+        }
     }
 
     /**

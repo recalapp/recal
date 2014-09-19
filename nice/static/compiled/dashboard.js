@@ -2544,8 +2544,8 @@ function PopUp_init()
     POPUP_INIT = true;
 
     // get html template and remove from dom
-    POPUP_HTML = $('#popup-template').html();
-    $('#popup-template').remove();
+    POPUP_HTML = $('#blahblahpopup-template').html();
+    $('#blahblahpopup-template').remove();
     
     // modify jQuery draggable to have a before drag callback
     var oldMouseStart = $.ui.draggable.prototype._mouseStart;

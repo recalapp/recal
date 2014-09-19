@@ -133,6 +133,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
                 // parent exists
                 var parentView = View.fromJQuery($element.parent());
                 parentView._children.add(view);
+                view._parentView = parentView;
             }
             return view;
         };
