@@ -39,7 +39,15 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                 ReCalCommonBrowserEvents.popUpWillDetachFromSidebar,
                 (ev: JQueryEventObject, extra: any) => 
                 {
-                    this.addPopUpView(extra.popUpView);
+                    var popUpView: IPopUpView = extra.popUpView;
+                    this.addPopUpView(popUpView);
+                    popUpView.focus();
+                    popUpView.css({
+                        top: extra.absoluteTop,
+                        left: extra.absoluteLeft
+                    });
+                    popUpView.width = extra.width;
+                    popUpView.height = extra.height;
                 });
 
         // when popup is dropped onto sidebar
@@ -47,7 +55,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                 PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any) => 
                 {
                     var popUpView: IPopUpView = extra.view;
-                    popUpView.removeFromParent();
+                    this.removePopUpView(popUpView);
                     this.canvasView.triggerEvent(
                         ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, 
                         {
@@ -61,13 +69,24 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
       * Add a PopUpView object to the canvas container. PopUpView object
       * must be detached from its previous parent first
       */
-    public addPopUpView(popUpView: IPopUpView): void
+    private addPopUpView(popUpView: IPopUpView): void
     {
         if (popUpView.parentView !== null)
         {
             throw new InvalidActionException("PopUpView must be detached before adding to container");
         }
+        popUpView.addCssClass('in-canvas');
         this.canvasView.append(popUpView);
+    }
+
+    private removePopUpView(popUpView: IPopUpView): void
+    {
+        if (popUpView.parentView !== this.canvasView)
+        {
+            throw new InvalidActionException('PopUpView is not in canvas to begin with');
+        }
+        popUpView.removeCssClass('in-canvas');
+        popUpView.removeFromParent();
     }
 }
 

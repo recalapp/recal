@@ -77,6 +77,37 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             configurable: true
         });
 
+        Object.defineProperty(View.prototype, "absoluteTop", {
+            get: function () {
+                return this._$el.offset().top;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(View.prototype, "absoluteLeft", {
+            get: function () {
+                return this._$el.offset().left;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(View.prototype, "relativeTop", {
+            get: function () {
+                return this._$el.position().top;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(View.prototype, "relativeLeft", {
+            get: function () {
+                return this._$el.position().left;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         /******************************************************************
         Methods
         ****************************************************************/
@@ -272,6 +303,27 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
         */
         View.prototype.is = function (cssSelector) {
             return this._$el.is(cssSelector);
+        };
+
+        /**
+        * Add CSS class to this view. Uses $.addClass
+        */
+        View.prototype.addCssClass = function (cssClass) {
+            this._$el.addClass(cssClass);
+        };
+
+        /**
+        * Remove CSS class from this view. Uses $.removeClass
+        */
+        View.prototype.removeCssClass = function (cssClass) {
+            this._$el.removeClass(cssClass);
+        };
+
+        /**
+        * Calls $.css. See their API
+        */
+        View.prototype.css = function (argument1, argument2) {
+            return this._$el.css(argument1, argument2);
         };
 
         /**

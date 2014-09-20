@@ -38,13 +38,21 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             var _this = this;
             // when popup detaches from sidebar
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, function (ev, extra) {
-                _this.addPopUpView(extra.popUpView);
+                var popUpView = extra.popUpView;
+                _this.addPopUpView(popUpView);
+                popUpView.focus();
+                popUpView.css({
+                    top: extra.absoluteTop,
+                    left: extra.absoluteLeft
+                });
+                popUpView.width = extra.width;
+                popUpView.height = extra.height;
             });
 
             // when popup is dropped onto sidebar
             this.canvasView.attachEventHandler(BrowserEvents.sidebarViewDidDrop, PopUpView.cssSelector(), function (ev, extra) {
                 var popUpView = extra.view;
-                popUpView.removeFromParent();
+                _this.removePopUpView(popUpView);
                 _this.canvasView.triggerEvent(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, {
                     popUpView: popUpView
                 });
@@ -59,7 +67,16 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             if (popUpView.parentView !== null) {
                 throw new InvalidActionException("PopUpView must be detached before adding to container");
             }
+            popUpView.addCssClass('in-canvas');
             this.canvasView.append(popUpView);
+        };
+
+        CanvasPopUpContainerViewController.prototype.removePopUpView = function (popUpView) {
+            if (popUpView.parentView !== this.canvasView) {
+                throw new InvalidActionException('PopUpView is not in canvas to begin with');
+            }
+            popUpView.removeCssClass('in-canvas');
+            popUpView.removeFromParent();
         };
         return CanvasPopUpContainerViewController;
     })(ViewController);

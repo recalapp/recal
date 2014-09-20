@@ -61,6 +61,25 @@ class View implements IView
         this._$el.height(newValue);
     }
 
+    get absoluteTop(): number
+    {
+        return this._$el.offset().top;
+    }
+
+    get absoluteLeft(): number
+    {
+        return this._$el.offset().left;
+    }
+
+    get relativeTop(): number
+    {
+        return this._$el.position().top;
+    }
+    get relativeLeft(): number
+    {
+        return this._$el.position().left;
+    }
+
     /******************************************************************
       Methods
       ****************************************************************/
@@ -328,6 +347,30 @@ class View implements IView
     public is(cssSelector: string): boolean
     {
         return this._$el.is(cssSelector);
+    }
+
+    /**
+      * Add CSS class to this view. Uses $.addClass
+      */
+    public addCssClass(cssClass: string): void
+    {
+        this._$el.addClass(cssClass);
+    }
+
+    /**
+      * Remove CSS class from this view. Uses $.removeClass
+      */
+    public removeCssClass(cssClass: string): void
+    {
+        this._$el.removeClass(cssClass);
+    }
+
+    /**
+      * Calls $.css. See their API
+      */
+    public css(argument1: any, argument2?: any): any
+    {
+        return this._$el.css(argument1, argument2);
     }
 
     /**

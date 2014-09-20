@@ -26,6 +26,38 @@ export interface IView
       */
     height: number;
 
+    /**
+      * The absolute top position
+      * Readonly
+      */
+    absoluteTop: number;
+
+    /**
+      * The absolute left position
+      * Readonly
+      */
+    absoluteLeft: number;
+
+    /**
+      * The top position relative to parent
+      * Readonly
+      */
+    relativeTop: number;
+
+    /**
+      * The top position relative to parent
+      * Readonly
+      */
+    relativeLeft: number;
+
+    /**
+      * Calls $.css. See their API
+      */
+    /**
+      * Calls $.css. See their API
+      */
+    css(argument1: any, argument2?: any): any;
+
     /******************************************************************
       Methods
       ****************************************************************/
@@ -84,6 +116,16 @@ export interface IView
       * the css selector
       */
     is(cssSelector: string): boolean;
+
+    /**
+      * Add CSS class to this view. Uses $.addClass
+      */
+    addCssClass(cssClass: string): void;
+
+    /**
+      * Remove CSS class from this view. Uses $.removeClass
+      */
+    removeCssClass(cssClass: string): void;
 }
 
 export interface IFocusableView extends IView

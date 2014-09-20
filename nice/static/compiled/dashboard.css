@@ -456,6 +456,9 @@ div.modal-footer p.copy {
     top: 100px;
     left: 50%;
 }
+.popup-container.in-canvas{
+    position: fixed !important;
+}
 .popup-container > .panel{
     /*max-height: 100%;*/
 }
