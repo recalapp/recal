@@ -13,6 +13,7 @@ define(["require", "exports", 'jquery', '../DataStructures/Dictionary'], functio
             if (templateString === null) {
                 templateString = $(containerSelector).html();
                 this._cachedTemplates.set(containerSelector, templateString);
+                $(containerSelector).remove();
             }
             return $(templateString);
         };

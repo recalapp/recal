@@ -112,13 +112,22 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 ReCalCommonBrowserEvents.eventSelectionChanged,
                 (ev: JQueryEventObject, extra: any) =>
                 {
-                    var eventId = extra.eventId;
-                    if (eventId === null || eventId === undefined)
+                    if (extra === null || extra === undefined || extra.eventIds === null || extra.eventIds === undefined)
                     {
-                        // TODO get the main popup, then do stuffs
+                        // can't tell anything. must check everything.
                         return;
                     }
-                    if (this.eventsOperationsFacade.eventIdIsMain(eventId))
+                    var eventIds = extra.eventIds;
+                    var mainEventId = null;
+                    for (var i = 0; i < eventIds.length; ++i)
+                    {
+                        if (this.eventsOperationsFacade.eventIdIsMain(eventIds[i]))
+                        {
+                            mainEventId = eventIds[i];
+                            break;
+                        }
+                    }
+                    if (mainEventId !== null)
                     {
                         // this event is supposed to be main
                         if (this.currentPopUpView === null || this.currentPopUpView === undefined)
@@ -128,23 +137,25 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                                 viewTemplateRetriever: this.viewTemplateRetriever,
                             });
                             // set events model
-                            var eventsModel = this.eventsOperationsFacade.getEventById(eventId);
+                            var eventsModel = this.eventsOperationsFacade.getEventById(mainEventId);
                             newPopUpView.eventsModel = eventsModel;
                             this.addPopUpView(newPopUpView);
                         }
                         else
                         {
                             // set events model
-                            var eventsModel = this.eventsOperationsFacade.getEventById(eventId);
+                            var eventsModel = this.eventsOperationsFacade.getEventById(mainEventId);
                             this.currentPopUpView.eventsModel = eventsModel;
                         }
+                        this.currentPopUpView.focus();
                     }
                     else
                     {
                         // event is no longer main. if it matches our current 
                         // popup, then remove the popup
-                        if (this.currentPopUpView && this.currentPopUpView.eventsModel.eventId === eventId)
+                        if (this.currentPopUpView && eventIds.contains(this.currentPopUpView.eventsModel.eventId))
                         {
+                            // everything in eventIds is not main, so we can safely remove this main popup
                             this.removePopUpView(this.currentPopUpView);
                         }
                     }

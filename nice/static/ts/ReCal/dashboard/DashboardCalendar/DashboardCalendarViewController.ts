@@ -17,7 +17,6 @@ import IEventsOperationsFacade = Events.IEventsOperationsFacade;
             
 declare function colorLuminance(color: string, lumFactor: number): string;
 declare function EventsMan_addUpdateListener(listener: ()=>void): void;
-declare function PopUp_addCloseListener(listener: (eventId: string)=>void): void;
 declare function luminanceToRgb(lum: string): string;
 declare function LO_hideLoading(id: string): void;
 declare function LO_showLoading(id: string): void;
@@ -47,13 +46,13 @@ class DashboardCalendarViewController extends CalendarViewController
     private initialize(): void
     {
         // deselect when closing events
-        PopUp_addCloseListener((eventId: string)=>
-        {
-            this.view.deselectCalendarEventsWithId(eventId);
-            var calEvent: ICalendarViewEvent = this.view.getCalendarViewEventWithId(eventId);
-            this.unhighlightCalendarEvent(calEvent);
-            this.view.updateCalendarViewEvent(calEvent);
-        });
+        //PopUp_addCloseListener((eventId: string)=>
+        //{
+        //    this.view.deselectCalendarEventsWithId(eventId);
+        //    var calEvent: ICalendarViewEvent = this.view.getCalendarViewEventWithId(eventId);
+        //    this.unhighlightCalendarEvent(calEvent);
+        //    this.view.updateCalendarViewEvent(calEvent);
+        //});
         
         // reload before displaying
         // TODO check if visible

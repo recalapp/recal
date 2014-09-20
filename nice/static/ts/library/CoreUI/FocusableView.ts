@@ -168,5 +168,13 @@ class FocusableView extends View implements IFocusableView
             this._$el.popover('destroy');
         });
     }
+
+    /**
+      * Brings the view into focus
+      */
+    public focus(): void
+    {
+        this._$el.focus();
+    }
 }
 export = FocusableView;

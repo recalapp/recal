@@ -24,127 +24,127 @@ function EventsMan_init()
         }, true);
     }
 
-    // this gets called whenever the user edits an event
-    PopUp_addEditListener(function(id, field, value) {
-        if (field == 'event_type')
-        {
-            value = TYPE_MAP_INVERSE[value.toLowerCase()];
-            if (id in eventsManager.events && eventsManager.events[id][field] == value)
-                return;
-            if (!(id in eventsManager.uncommitted))
-                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
-            eventsManager.uncommitted[id][field] = value;
-        }
-        else if (field == 'section_id')
-        {
-            value = SECTION_MAP_INVERSE[value.toLowerCase()];
-            if (id in eventsManager.events && eventsManager.events[id][field] == value)
-                return;
-            if (!(id in eventsManager.uncommitted))
-                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
-            eventsManager.uncommitted[id][field] = value;
-        }
-        else if (field == 'event_date')
-        {
-            if (!(id in eventsManager.uncommitted))
-                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
-            var eventDict = eventsManager.uncommitted[id];
-            var startDate = moment.unix(eventDict.event_start);
-            var endDate = moment.unix(eventDict.event_end);
-            var newDate = moment(value);
-            if (id in eventsManager.events && newDate.date() == startDate.date() && newDate.month() == startDate.month() && newDate.year() == startDate.year())
-                return;
-            startDate.year(newDate.year());
-            startDate.month(newDate.month());
-            startDate.date(newDate.date());
-            endDate.year(newDate.year());
-            endDate.month(newDate.month());
-            endDate.date(newDate.date());
-            eventDict.event_start = startDate.unix();
-            eventDict.event_end = endDate.unix();
-        }
-        else if (field == 'event_start' || field == 'event_end')
-        {
-            if (!(id in eventsManager.uncommitted))
-                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
-            value = 'April 25, 2014 ' + value; // gives a dummy date to satisfy moment.js
-            var eventDict = eventsManager.uncommitted[id];
-            var oldTime = moment.unix(eventDict[field]);
-            var newTime = moment(value);
-            if (id in eventsManager.events && oldTime.minute() == newTime.minute() && oldTime.hour() == newTime.hour())
-                return; // TODO this creates a new revision even if no changes were made
-            oldTime.hour(newTime.hour());
-            oldTime.minute(newTime.minute());
-            oldTime.second(0);
-            eventDict[field] = oldTime.unix();
-        }
-        else if (field == 'event_recurrence')
-        {
-            if (value)
-            {
-                // TODO figure out how to get last day of class (not the same as last day of semester - reading period, etc.)
-                if (id in eventsManager.events 
-                    && 'recurrence_days' in eventsManager.events[id]
-                    && eventsManager.events[id].recurrence_days.equals(value))
-                    return; // no change
-                if (!(id in eventsManager.uncommitted))
-                    eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
-                var eventDict = eventsManager.uncommitted[id];
+    //// this gets called whenever the user edits an event
+    //PopUp_addEditListener(function(id, field, value) {
+    //    if (field == 'event_type')
+    //    {
+    //        value = TYPE_MAP_INVERSE[value.toLowerCase()];
+    //        if (id in eventsManager.events && eventsManager.events[id][field] == value)
+    //            return;
+    //        if (!(id in eventsManager.uncommitted))
+    //            eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
+    //        eventsManager.uncommitted[id][field] = value;
+    //    }
+    //    else if (field == 'section_id')
+    //    {
+    //        value = SECTION_MAP_INVERSE[value.toLowerCase()];
+    //        if (id in eventsManager.events && eventsManager.events[id][field] == value)
+    //            return;
+    //        if (!(id in eventsManager.uncommitted))
+    //            eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
+    //        eventsManager.uncommitted[id][field] = value;
+    //    }
+    //    else if (field == 'event_date')
+    //    {
+    //        if (!(id in eventsManager.uncommitted))
+    //            eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
+    //        var eventDict = eventsManager.uncommitted[id];
+    //        var startDate = moment.unix(eventDict.event_start);
+    //        var endDate = moment.unix(eventDict.event_end);
+    //        var newDate = moment(value);
+    //        if (id in eventsManager.events && newDate.date() == startDate.date() && newDate.month() == startDate.month() && newDate.year() == startDate.year())
+    //            return;
+    //        startDate.year(newDate.year());
+    //        startDate.month(newDate.month());
+    //        startDate.date(newDate.date());
+    //        endDate.year(newDate.year());
+    //        endDate.month(newDate.month());
+    //        endDate.date(newDate.date());
+    //        eventDict.event_start = startDate.unix();
+    //        eventDict.event_end = endDate.unix();
+    //    }
+    //    else if (field == 'event_start' || field == 'event_end')
+    //    {
+    //        if (!(id in eventsManager.uncommitted))
+    //            eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+    //        value = 'April 25, 2014 ' + value; // gives a dummy date to satisfy moment.js
+    //        var eventDict = eventsManager.uncommitted[id];
+    //        var oldTime = moment.unix(eventDict[field]);
+    //        var newTime = moment(value);
+    //        if (id in eventsManager.events && oldTime.minute() == newTime.minute() && oldTime.hour() == newTime.hour())
+    //            return; // TODO this creates a new revision even if no changes were made
+    //        oldTime.hour(newTime.hour());
+    //        oldTime.minute(newTime.minute());
+    //        oldTime.second(0);
+    //        eventDict[field] = oldTime.unix();
+    //    }
+    //    else if (field == 'event_recurrence')
+    //    {
+    //        if (value)
+    //        {
+    //            // TODO figure out how to get last day of class (not the same as last day of semester - reading period, etc.)
+    //            if (id in eventsManager.events 
+    //                && 'recurrence_days' in eventsManager.events[id]
+    //                && eventsManager.events[id].recurrence_days.equals(value))
+    //                return; // no change
+    //            if (!(id in eventsManager.uncommitted))
+    //                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+    //            var eventDict = eventsManager.uncommitted[id];
 
-                var start = moment.unix(eventDict.event_start);
-                if (MAIN_TIMEZONE)
-                    start = start.tz(MAIN_TIMEZONE);
-                var day = (start.day() - 1) % 7;
+    //            var start = moment.unix(eventDict.event_start);
+    //            if (MAIN_TIMEZONE)
+    //                start = start.tz(MAIN_TIMEZONE);
+    //            var day = (start.day() - 1) % 7;
 
-                if (!value.contains(day))
-                    value.push(day);
-                value.sort();
-                eventDict['recurrence_days'] = value;
-                if (!('recurrence_interval' in eventDict))
-                    eventDict['recurrence_interval'] = 1;
-                if (!('recurrence_end' in eventDict))
-                    eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
-            }
-            else 
-            {
-                // delete recurrence
-                if (id in eventsManager.events
-                    && !('recurrence_days' in eventsManager.events[id]))
-                    return; // no change
-                if (!(id in eventsManager.uncommitted))
-                    eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
-                var eventDict = eventsManager.uncommitted[id];
+    //            if (!value.contains(day))
+    //                value.push(day);
+    //            value.sort();
+    //            eventDict['recurrence_days'] = value;
+    //            if (!('recurrence_interval' in eventDict))
+    //                eventDict['recurrence_interval'] = 1;
+    //            if (!('recurrence_end' in eventDict))
+    //                eventDict['recurrence_end'] = parseInt(CUR_SEM.end_date);
+    //        }
+    //        else 
+    //        {
+    //            // delete recurrence
+    //            if (id in eventsManager.events
+    //                && !('recurrence_days' in eventsManager.events[id]))
+    //                return; // no change
+    //            if (!(id in eventsManager.uncommitted))
+    //                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+    //            var eventDict = eventsManager.uncommitted[id];
 
-                delete eventDict['recurrence_days'];
-                delete eventDict['recurrence_end'];
-                delete eventDict['recurrence_interval'];
-            }
-        }
-        else if (false && field == 'event_recurrence_interval')
-        {
-            if (id in eventsManager.events && eventsManager.events[id]['reccurrence_interval'] == value)
-                return;
-            if (!(id in eventsManager.uncommitted))
-                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
-            var eventDict = eventsManager.uncommitted[id];
-            eventDict['reccurence_interval'] = value;
-        }
-        else
-        {
-            if (id in eventsManager.events && eventsManager.events[id][field] == value)
-                return;
-            if (!(id in eventsManager.uncommitted))
-                eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
-            eventsManager.uncommitted[id][field] = value;
-        }
-        eventsManager.uncommitted[id].modified_time = moment().unix()
-        if (!(id in eventsManager.events)) // new event
-        {
-            // display notifications if similar events exist.
-            SE_checkSimilarEvents(eventsManager.uncommitted[id]);
-        }
-        _EventsMan_callUpdateListeners()
-    });
+    //            delete eventDict['recurrence_days'];
+    //            delete eventDict['recurrence_end'];
+    //            delete eventDict['recurrence_interval'];
+    //        }
+    //    }
+    //    else if (false && field == 'event_recurrence_interval')
+    //    {
+    //        if (id in eventsManager.events && eventsManager.events[id]['reccurrence_interval'] == value)
+    //            return;
+    //        if (!(id in eventsManager.uncommitted))
+    //            eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id]);
+    //        var eventDict = eventsManager.uncommitted[id];
+    //        eventDict['reccurence_interval'] = value;
+    //    }
+    //    else
+    //    {
+    //        if (id in eventsManager.events && eventsManager.events[id][field] == value)
+    //            return;
+    //        if (!(id in eventsManager.uncommitted))
+    //            eventsManager.uncommitted[id] = EventsMan_cloneEventDict(eventsManager.events[id])
+    //        eventsManager.uncommitted[id][field] = value;
+    //    }
+    //    eventsManager.uncommitted[id].modified_time = moment().unix()
+    //    if (!(id in eventsManager.events)) // new event
+    //    {
+    //        // display notifications if similar events exist.
+    //        SE_checkSimilarEvents(eventsManager.uncommitted[id]);
+    //    }
+    //    _EventsMan_callUpdateListeners()
+    //});
 
     $(window).on('beforeunload', function(ev) {
         // first check if the user has uncommitted changes

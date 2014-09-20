@@ -1,3 +1,4 @@
+.DS_Store
 venv
 settings/dev.py
 nice/static/bower_components/bootstrap/node_modules/*

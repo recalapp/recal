@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../common/ReCalCommonBrowserEvents', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, ReCalCommonBrowserEvents, TableViewController) {
+define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../common/ReCalCommonBrowserEvents', '../../../library/DataStructures/Set', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, ReCalCommonBrowserEvents, Set, TableViewController) {
     var AgendaTableViewController = (function (_super) {
         __extends(AgendaTableViewController, _super);
         function AgendaTableViewController(tableView, dependencies) {
@@ -50,32 +50,39 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 });
             });
 
-            // unhighlight closed events
-            PopUp_addCloseListener(function (closedEventId) {
-                // get cell based on eventId and unhighlight it
-                $.each(_this.view.selectedIndexPaths(), function (index, indexPath) {
-                    var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
-                    if (eventId == closedEventId) {
-                        _this.view.deselectCellAtIndexPath(indexPath);
-                        return false;
-                    }
-                });
-            });
-
+            //// unhighlight closed events
+            //PopUp_addCloseListener((closedEventId: string)=>{
+            //    // get cell based on eventId and unhighlight it
+            //    $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath) =>{
+            //        var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+            //        if (eventId == closedEventId)
+            //        {
+            //            this.view.deselectCellAtIndexPath(indexPath);
+            //            return false; // breaks
+            //        }
+            //    });
+            //});
             // this should be the sole place to unhighlight deselected events and
             // make sure the agenda view is in sync with the state of the events
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged, function (ev, extra) {
-                if (extra !== null && extra !== undefined && extra.eventId !== null && extra.eventId !== undefined) {
+                if (extra !== null && extra !== undefined && extra.eventIds !== null && extra.eventIds !== undefined) {
+                    var changedEventIds = new Set(extra.eventIds);
+                    var changedSize = changedEventIds.size();
+                    var foundCount = 0;
+
                     // get cell based on eventId and unhighlight it
                     $.each(_this.view.selectedIndexPaths(), function (index, indexPath) {
                         var eventId = _this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
-                        if (eventId == extra.eventId) {
+                        if (changedEventIds.contains(eventId)) {
                             if (_this.eventsOperationsFacade.eventIdIsSelected(eventId)) {
                                 _this.view.selectCellAtIndexPath(indexPath);
                             } else {
                                 _this.view.deselectCellAtIndexPath(indexPath);
                             }
-                            return false;
+                            ++foundCount;
+                            if (foundCount == changedSize) {
+                                return false;
+                            }
                         }
                     });
                 } else {

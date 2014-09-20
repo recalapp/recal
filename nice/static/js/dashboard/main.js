@@ -87,7 +87,7 @@ function init()
     SB_init();
     SR_init();
     EventsMan_init();
-    PopUp_init();
+    //PopUp_init();
     NO_init();
     //Agenda_init();
     Cal_init();

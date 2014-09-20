@@ -26,15 +26,15 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
         });
 
         DashboardCalendarViewController.prototype.initialize = function () {
-            var _this = this;
             // deselect when closing events
-            PopUp_addCloseListener(function (eventId) {
-                _this.view.deselectCalendarEventsWithId(eventId);
-                var calEvent = _this.view.getCalendarViewEventWithId(eventId);
-                _this.unhighlightCalendarEvent(calEvent);
-                _this.view.updateCalendarViewEvent(calEvent);
-            });
-
+            //PopUp_addCloseListener((eventId: string)=>
+            //{
+            //    this.view.deselectCalendarEventsWithId(eventId);
+            //    var calEvent: ICalendarViewEvent = this.view.getCalendarViewEventWithId(eventId);
+            //    this.unhighlightCalendarEvent(calEvent);
+            //    this.view.updateCalendarViewEvent(calEvent);
+            //});
+            var _this = this;
             // reload before displaying
             // TODO check if visible
             EventsMan_addUpdateListener(function () {

@@ -128,6 +128,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         */
         SidebarView.prototype.pushStackViewWithIdentifier = function (stackView, identifier) {
             this.stackViewContainer.addOrReplaceViewWithIdentifier(stackView, identifier);
+            this.showSidebar();
         };
 
         /**
@@ -151,6 +152,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         SidebarView.prototype.popStackViewWithIdentifier = function (identifier) {
             var view = this.getStackViewWithIdentifier(identifier);
             this.stackViewContainer.removeViewWithIdentifier(identifier);
+            this.hideSidebarIfEmpty();
             return view;
         };
 
@@ -163,6 +165,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         */
         SidebarView.prototype.setFullView = function (fullView) {
             this.fullViewContainer.setView(fullView);
+            this.showSidebarFull();
         };
 
         /**
@@ -185,6 +188,8 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         */
         SidebarView.prototype.unsetFullView = function () {
             this.fullViewContainer.unsetView();
+            this.hideSidebarFull();
+            this.hideSidebarIfEmpty();
         };
 
         /********************************************************************

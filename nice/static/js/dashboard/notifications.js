@@ -15,9 +15,9 @@ var NO_TYPES = {
 
 function NO_init()
 {
-    PopUp_addCloseListener(function(id){
-        NO_removeNotificationID(id);
-    });
+    //PopUp_addCloseListener(function(id){
+    //    NO_removeNotificationID(id);
+    //});
 }
 
 /**

@@ -75,8 +75,20 @@ class EventsSelectionManager
       */
     public selectEventWithId(eventId: string): void
     {
+        var selected = this.selectedIds.toArray();
+        var changed = new Set<string>();
+        // TODO optimize
+        for (var i = 0; i < selected.length; ++i)
+        {
+            if (!this.eventIdIsPinned(selected[i]))
+            {
+                this.selectedIds.remove(selected[i]);
+                changed.add(selected[i]);
+            }
+        }
         this.selectedIds.add(eventId);
-        this.triggerSelectionChangeBrowserEvent(eventId);
+        changed.add(eventId);
+        this.triggerSelectionChangeBrowserEvent(changed.toArray());
     }
 
     /**
@@ -87,7 +99,7 @@ class EventsSelectionManager
     {
         this.pinnedIds.remove(eventId);
         this.selectedIds.remove(eventId);
-        this.triggerSelectionChangeBrowserEvent(eventId);
+        this.triggerSelectionChangeBrowserEvent([eventId]);
     }
 
     /**
@@ -101,7 +113,7 @@ class EventsSelectionManager
             throw new InvalidActionException('Event Id must first be selected before pinning');
         }
         this.pinnedIds.add(eventId);
-        this.triggerSelectionChangeBrowserEvent(eventId);
+        this.triggerSelectionChangeBrowserEvent([eventId]);
     }
 
     /**
@@ -116,37 +128,17 @@ class EventsSelectionManager
             throw new InvalidActionException('Cannot unpin an event that is not selected to begin with');
         }
         this.pinnedIds.remove(eventId);
-        this.triggerSelectionChangeBrowserEvent(eventId);
-    }
-
-    /***************************************************************************
-      * Getting available event Ids
-      *************************************************************************/
-    /**
-      * Apply to all selected events. apply must have type 
-      * (string, boolean, boolean) => boolean. Returns false to break.
-      */
-    public mapToSelectedEventIds(apply: (eventId: string, isPinned: boolean, isMain: boolean) => boolean): void
-    {
-        var selectedIdsArray = this.selectedIds.toArray();
-        for (var i = 0; i < selectedIdsArray.length; ++i)
-        {
-            var eventId = selectedIdsArray[i]
-            if (!apply(eventId, this.eventIdIsPinned(eventId), this.eventIdIsMain(eventId)))
-            {
-                break;
-            }
-        }
+        this.triggerSelectionChangeBrowserEvent([eventId]);
     }
 
     /***************************************************************************
       * Helper functions
       *************************************************************************/
-    private triggerSelectionChangeBrowserEvent(eventId: string)
+    private triggerSelectionChangeBrowserEvent(eventIds: string[])
     {
         this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventSelectionChanged, 
         {
-            eventId: eventId,
+            eventIds: eventIds,
         });
     }
 }

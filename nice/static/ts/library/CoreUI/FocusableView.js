@@ -148,6 +148,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
                 _this._$el.popover('destroy');
             });
         };
+
+        /**
+        * Brings the view into focus
+        */
+        FocusableView.prototype.focus = function () {
+            this._$el.focus();
+        };
         return FocusableView;
     })(View);
     

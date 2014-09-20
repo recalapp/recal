@@ -102,6 +102,11 @@ export interface IFocusableView extends IView
       * Remove the popover element
       */
     hidePopover(): void;
+
+    /**
+      * Brings the view into focus
+      */
+    focus(): void;
 }
 
 export interface IViewController

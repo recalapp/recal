@@ -22,6 +22,7 @@ class ViewTemplateRetriever implements IViewTemplateRetriever
         {
             templateString = $(containerSelector).html();
             this._cachedTemplates.set(containerSelector, templateString);
+            $(containerSelector).remove();
         }
         return $(templateString);
     }

@@ -135,6 +135,7 @@ class SidebarView extends View implements ISidebarView
     public pushStackViewWithIdentifier(stackView: IView, identifier: string): void
     {
         this.stackViewContainer.addOrReplaceViewWithIdentifier(<View> stackView, identifier);
+        this.showSidebar();
     }
     
     /**
@@ -161,6 +162,7 @@ class SidebarView extends View implements ISidebarView
     {
         var view = this.getStackViewWithIdentifier(identifier);
         this.stackViewContainer.removeViewWithIdentifier(identifier);
+        this.hideSidebarIfEmpty();
         return view;
     }
 
@@ -174,6 +176,7 @@ class SidebarView extends View implements ISidebarView
     public setFullView(fullView: IView): void
     {
         this.fullViewContainer.setView(<View> fullView);
+        this.showSidebarFull();
     }
     
     /**
@@ -199,6 +202,8 @@ class SidebarView extends View implements ISidebarView
     public unsetFullView(): void
     {
         this.fullViewContainer.unsetView();
+        this.hideSidebarFull();
+        this.hideSidebarIfEmpty();
     }
 
     /********************************************************************

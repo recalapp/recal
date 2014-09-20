@@ -9,8 +9,9 @@ import CoreUI = require('../../../library/CoreUI/CoreUI');
 import DateTime = require('../../../library/DateTime/DateTime');
 import Events = require('../../common/Events/Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
-import ReCalCommonBrowserEvents = require('../../common/ReCalCommonBrowserEvents');
 import IndexPath = require('../../../library/DataStructures/IndexPath');
+import ReCalCommonBrowserEvents = require('../../common/ReCalCommonBrowserEvents');
+import Set = require('../../../library/DataStructures/Set');
 import Table = require('../../../library/Table/Table');
 import TableViewController = require('../../../library/Table/TableViewController');
 
@@ -26,7 +27,6 @@ import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 declare function EventsMan_addUpdateListener(callBack: ()=>void): void;
 declare function LO_hideLoading(message: string): void;
 declare function LO_showLoading(message: string): void;
-declare function PopUp_addCloseListener(callBack: (eventId: string)=>void): void;
 declare var SE_id;
 
 class AgendaTableViewController extends TableViewController
@@ -81,30 +81,33 @@ class AgendaTableViewController extends TableViewController
             });
         });
 
-        // unhighlight closed events
-        PopUp_addCloseListener((closedEventId: string)=>{
-            // get cell based on eventId and unhighlight it
-            $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath) =>{
-                var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
-                if (eventId == closedEventId)
-                {
-                    this.view.deselectCellAtIndexPath(indexPath);
-                    return false; // breaks
-                }
-            });
-        });
+        //// unhighlight closed events
+        //PopUp_addCloseListener((closedEventId: string)=>{
+        //    // get cell based on eventId and unhighlight it
+        //    $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath) =>{
+        //        var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
+        //        if (eventId == closedEventId)
+        //        {
+        //            this.view.deselectCellAtIndexPath(indexPath);
+        //            return false; // breaks
+        //        }
+        //    });
+        //});
 
         // this should be the sole place to unhighlight deselected events and 
         // make sure the agenda view is in sync with the state of the events
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged,
                 (ev: JQueryEventObject, extra: any) => 
                 {
-                    if (extra !== null && extra !== undefined && extra.eventId !== null && extra.eventId !== undefined)
+                    if (extra !== null && extra !== undefined && extra.eventIds !== null && extra.eventIds !== undefined)
                     {
+                        var changedEventIds = new Set<string>(extra.eventIds);
+                        var changedSize = changedEventIds.size();
+                        var foundCount = 0;
                         // get cell based on eventId and unhighlight it
                         $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath) =>{
                             var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
-                            if (eventId == extra.eventId)
+                            if (changedEventIds.contains(eventId))
                             {
                                 if (this.eventsOperationsFacade.eventIdIsSelected(eventId))
                                 {
@@ -114,7 +117,11 @@ class AgendaTableViewController extends TableViewController
                                 {
                                     this.view.deselectCellAtIndexPath(indexPath);
                                 }
-                                return false; // breaks
+                                ++foundCount;
+                                if (foundCount == changedSize)
+                                {
+                                    return false; // break;
+                                }
                             }
                         });
                     }

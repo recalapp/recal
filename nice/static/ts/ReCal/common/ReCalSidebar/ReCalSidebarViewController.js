@@ -114,12 +114,19 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
 
             // add listener for when event selection state changes
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged, function (ev, extra) {
-                var eventId = extra.eventId;
-                if (eventId === null || eventId === undefined) {
-                    // TODO get the main popup, then do stuffs
+                if (extra === null || extra === undefined || extra.eventIds === null || extra.eventIds === undefined) {
+                    // can't tell anything. must check everything.
                     return;
                 }
-                if (_this.eventsOperationsFacade.eventIdIsMain(eventId)) {
+                var eventIds = extra.eventIds;
+                var mainEventId = null;
+                for (var i = 0; i < eventIds.length; ++i) {
+                    if (_this.eventsOperationsFacade.eventIdIsMain(eventIds[i])) {
+                        mainEventId = eventIds[i];
+                        break;
+                    }
+                }
+                if (mainEventId !== null) {
                     // this event is supposed to be main
                     if (_this.currentPopUpView === null || _this.currentPopUpView === undefined) {
                         // create the popup view
@@ -128,18 +135,20 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                         });
 
                         // set events model
-                        var eventsModel = _this.eventsOperationsFacade.getEventById(eventId);
+                        var eventsModel = _this.eventsOperationsFacade.getEventById(mainEventId);
                         newPopUpView.eventsModel = eventsModel;
                         _this.addPopUpView(newPopUpView);
                     } else {
                         // set events model
-                        var eventsModel = _this.eventsOperationsFacade.getEventById(eventId);
+                        var eventsModel = _this.eventsOperationsFacade.getEventById(mainEventId);
                         _this.currentPopUpView.eventsModel = eventsModel;
                     }
+                    _this.currentPopUpView.focus();
                 } else {
                     // event is no longer main. if it matches our current
                     // popup, then remove the popup
-                    if (_this.currentPopUpView && _this.currentPopUpView.eventsModel.eventId === eventId) {
+                    if (_this.currentPopUpView && eventIds.contains(_this.currentPopUpView.eventsModel.eventId)) {
+                        // everything in eventIds is not main, so we can safely remove this main popup
                         _this.removePopUpView(_this.currentPopUpView);
                     }
                 }

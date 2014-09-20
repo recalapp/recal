@@ -452,6 +452,8 @@ div.modal-footer p.copy {
 .popup-container{
     width: 300px;
     height: 350px;
+    outline-color: transparent;
+    outline-style: none;
 }
 .popup-container:not(.popup-ep){
     position: fixed;
