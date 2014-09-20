@@ -21,10 +21,14 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
     private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
     private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
 
+    private _canvasView: IView = null;
+    private get canvasView(): IView { return this._canvasView; }
+
     constructor(view: IView, dependencies: CanvasPopUpContainerViewControllerDependencies)
     {
         super(view);
         this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+        this._canvasView = dependencies.canvasView;
         this.initialize();
     }
 
@@ -39,12 +43,12 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                 });
 
         // when popup is dropped onto sidebar
-        this.view.attachEventHandler(BrowserEvents.sidebarViewDidDrop, 
+        this.canvasView.attachEventHandler(BrowserEvents.sidebarViewDidDrop, 
                 PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any) => 
                 {
                     var popUpView: IPopUpView = extra.view;
                     popUpView.removeFromParent();
-                    this.view.triggerEvent(
+                    this.canvasView.triggerEvent(
                         ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, 
                         {
                             popUpView: popUpView,
@@ -63,7 +67,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
         {
             throw new InvalidActionException("PopUpView must be detached before adding to container");
         }
-        this.view.append(popUpView);
+        this.canvasView.append(popUpView);
     }
 }
 

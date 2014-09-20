@@ -91,7 +91,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                 // when we begin dragging, we remove from sidebar and trigger this
                 // event, allowing other controllers to add this PopUpView to their
                 // view
-                _this.removePopUpView(popUpView);
+                _this.removePopUpView(popUpView, false);
                 _this.view.triggerEvent(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, {
                     popUpView: popUpView
                 });
@@ -149,7 +149,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     // popup, then remove the popup
                     if (_this.currentPopUpView && eventIds.contains(_this.currentPopUpView.eventsModel.eventId)) {
                         // everything in eventIds is not main, so we can safely remove this main popup
-                        _this.removePopUpView(_this.currentPopUpView);
+                        _this.removePopUpView(_this.currentPopUpView, true);
                     }
                 }
             });
@@ -163,7 +163,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
         ReCalSidebarViewController.prototype.addPopUpView = function (popUpView) {
             // ensure there is only one main popup (for now)
             if (this.currentPopUpView !== null) {
-                this.removePopUpView(this.currentPopUpView);
+                this.removePopUpView(this.currentPopUpView, false);
             }
             this.currentPopUpView = popUpView;
             this.view.pushStackViewWithIdentifier(this.currentPopUpView, this.getIdentifierForPopUpView(this.currentPopUpView));
@@ -172,12 +172,12 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
         /**
         * Remove the popup from sidebar
         */
-        ReCalSidebarViewController.prototype.removePopUpView = function (popUpView) {
+        ReCalSidebarViewController.prototype.removePopUpView = function (popUpView, animated) {
             if (this.currentPopUpView === popUpView) {
                 this.currentPopUpView = null;
             }
             if (this.view.containsStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView))) {
-                this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView));
+                this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView), animated);
             }
         };
 

@@ -38,7 +38,7 @@ class SidebarNotificationsManager extends NotificationsManager implements ISideb
       */
     public removeNotification(notiView: NotificationView): void
     {
-        this.sidebarView.popStackViewWithIdentifier(this._identifierPrefix + notiView.identifier);
+        this.sidebarView.popStackViewWithIdentifier(this._identifierPrefix + notiView.identifier, true);
     }
 }
 export = SidebarNotificationsManager;

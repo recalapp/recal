@@ -66,7 +66,7 @@ class SidebarStackViewContainer extends View
         return this._viewDict.get(identifier);
     }
 
-    public removeViewWithIdentifier(identifier: string): void
+    public removeViewWithIdentifier(identifier: string, animated: boolean): void
     {
         // handle class "in" logic to give transition
         if (!this._viewDict.contains(identifier))
@@ -74,23 +74,32 @@ class SidebarStackViewContainer extends View
             throw new InvalidActionException('Sidebar Stack View does not contain a view with identifier "' + identifier + '"');
         }
         var view = this._viewDict.get(identifier);
-        view.attachOneTimeEventHandler(BrowserEvents.transitionEnd, (ev: JQueryEventObject) => {
-            // when transition ends, check if the view still does not
-            // have the class in, just to verify that it wasn't readded.
-            if (view._$el.hasClass('in'))
-            {
-                return;
-            }
-            view.removeFromParent();
-            view._$el.removeClass('sb-left-content');
+        if (animated)
+        {
+            view.attachOneTimeEventHandler(BrowserEvents.transitionEnd, (ev: JQueryEventObject) => {
+                // when transition ends, check if the view still does not
+                // have the class in, just to verify that it wasn't readded.
+                if (view._$el.hasClass('in'))
+                {
+                    return;
+                }
+                view.removeFromParent();
+                view._$el.removeClass('sb-left-content');
 
-            // only unset after the view is physically removed 
-            // (not just that it does not have the in class), otherwise if 
-            // the same view is added again, an exception will be thrown
+                // only unset after the view is physically removed 
+                // (not just that it does not have the in class), otherwise if 
+                // the same view is added again, an exception will be thrown
+                this._viewDict.unset(identifier);
+                
+            });
+            view._$el.removeClass('in');
+        }
+        else
+        {
+            view.removeFromParent();
+            view._$el.removeClass('sb-left-content in');
             this._viewDict.unset(identifier);
-            
-        });
-        view._$el.removeClass('in');
+        }
     }
 }
 

@@ -160,11 +160,7 @@ body.dark{
     cursor: pointer;
 }
 
-#content_bounds {
-    position: fixed;
-    z-index: -999;
-    visibility: hidden;
-}
+
 
 .nav_controls {
     text-align: right;
@@ -594,6 +590,16 @@ div.modal-footer p.copy {
 .panel-heading-faded-out { /* add this class to div.panel-heading via JS */
 	border: none;
 	/* opacity: .4; */
+}
+
+#popup-canvas {
+    position: fixed;
+    z-index: -999;
+    visibility: hidden;
+    left: -50px;
+    right: -50px;
+    bottom: -50px;
+    top: -50px;
 }
 #sidebar {
     width: 80%;

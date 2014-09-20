@@ -13,12 +13,22 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             * Global Browser Events Manager
             */
             this._globalBrowserEventsManager = null;
+            this._canvasView = null;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+            this._canvasView = dependencies.canvasView;
             this.initialize();
         }
         Object.defineProperty(CanvasPopUpContainerViewController.prototype, "globalBrowserEventsManager", {
             get: function () {
                 return this._globalBrowserEventsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(CanvasPopUpContainerViewController.prototype, "canvasView", {
+            get: function () {
+                return this._canvasView;
             },
             enumerable: true,
             configurable: true
@@ -32,10 +42,10 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             });
 
             // when popup is dropped onto sidebar
-            this.view.attachEventHandler(BrowserEvents.sidebarViewDidDrop, PopUpView.cssSelector(), function (ev, extra) {
+            this.canvasView.attachEventHandler(BrowserEvents.sidebarViewDidDrop, PopUpView.cssSelector(), function (ev, extra) {
                 var popUpView = extra.view;
                 popUpView.removeFromParent();
-                _this.view.triggerEvent(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, {
+                _this.canvasView.triggerEvent(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, {
                     popUpView: popUpView
                 });
             });
@@ -49,7 +59,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             if (popUpView.parentView !== null) {
                 throw new InvalidActionException("PopUpView must be detached before adding to container");
             }
-            this.view.append(popUpView);
+            this.canvasView.append(popUpView);
         };
         return CanvasPopUpContainerViewController;
     })(ViewController);

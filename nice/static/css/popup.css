@@ -144,3 +144,13 @@
 	border: none;
 	/* opacity: .4; */
 }
+
+#popup-canvas {
+    position: fixed;
+    z-index: -999;
+    visibility: hidden;
+    left: -50px;
+    right: -50px;
+    bottom: -50px;
+    top: -50px;
+}

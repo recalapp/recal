@@ -36,7 +36,7 @@ define(["require", "exports", './NotificationsManager'], function(require, expor
         * Closes the notification. To be overriden in a sbuclass
         */
         SidebarNotificationsManager.prototype.removeNotification = function (notiView) {
-            this.sidebarView.popStackViewWithIdentifier(this._identifierPrefix + notiView.identifier);
+            this.sidebarView.popStackViewWithIdentifier(this._identifierPrefix + notiView.identifier, true);
         };
         return SidebarNotificationsManager;
     })(NotificationsManager);

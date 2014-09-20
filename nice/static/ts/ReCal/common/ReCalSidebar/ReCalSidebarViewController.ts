@@ -84,7 +84,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
             // when we begin dragging, we remove from sidebar and trigger this 
             // event, allowing other controllers to add this PopUpView to their 
             // view
-            this.removePopUpView(popUpView);
+            this.removePopUpView(popUpView, false);
             this.view.triggerEvent(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, {
                 popUpView: popUpView,
             });
@@ -156,7 +156,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                         if (this.currentPopUpView && eventIds.contains(this.currentPopUpView.eventsModel.eventId))
                         {
                             // everything in eventIds is not main, so we can safely remove this main popup
-                            this.removePopUpView(this.currentPopUpView);
+                            this.removePopUpView(this.currentPopUpView, true);
                         }
                     }
                 });
@@ -173,7 +173,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
         // ensure there is only one main popup (for now)
         if (this.currentPopUpView !== null)
         {
-            this.removePopUpView(this.currentPopUpView);
+            this.removePopUpView(this.currentPopUpView, false);
         }
         this.currentPopUpView = popUpView;
         this.view.pushStackViewWithIdentifier(this.currentPopUpView, this.getIdentifierForPopUpView(this.currentPopUpView));
@@ -182,7 +182,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
     /**
       * Remove the popup from sidebar
       */
-    private removePopUpView(popUpView: IEventsPopUpView): void
+    private removePopUpView(popUpView: IEventsPopUpView, animated: boolean): void
     {
         if (this.currentPopUpView === popUpView)
         {
@@ -190,7 +190,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
         }
         if (this.view.containsStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView)))
         {
-            this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView));
+            this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView), animated);
         }
     }
 

@@ -24,9 +24,11 @@ export interface ISidebarView extends IView
     getStackViewWithIdentifier(identifier: string): IView;
 
     /**
-      * Remove the view with identifier and return it
+      * Remove the view with identifier and return it. Throws an exception
+      * if does not exist. Notes that animation causes a delay, as the
+      * view is only removed after animation.
       */
-    popStackViewWithIdentifier(identifier: string): IView;
+    popStackViewWithIdentifier(identifier: string, animated: boolean): IView;
 
     /********************************************************************
       Full View

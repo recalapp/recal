@@ -156,12 +156,13 @@ class SidebarView extends View implements ISidebarView
 
     /**
       * Remove the view with identifier and return it. Throws an exception
-      * if does not exist
+      * if does not exist. Notes that animation causes a delay, as the
+      * view is only removed after animation.
       */
-    public popStackViewWithIdentifier(identifier: string): IView
+    public popStackViewWithIdentifier(identifier: string, animated: boolean): IView
     {
         var view = this.getStackViewWithIdentifier(identifier);
-        this.stackViewContainer.removeViewWithIdentifier(identifier);
+        this.stackViewContainer.removeViewWithIdentifier(identifier, animated);
         this.hideSidebarIfEmpty();
         return view;
     }

@@ -51,11 +51,7 @@ body.dark{
     cursor: pointer;
 }
 
-#content_bounds {
-    position: fixed;
-    z-index: -999;
-    visibility: hidden;
-}
+
 
 .nav_controls {
     text-align: right;

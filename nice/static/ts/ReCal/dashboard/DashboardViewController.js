@@ -182,9 +182,12 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
 
         DashboardViewController.prototype.initializePopUpCanvas = function () {
             // initialize popup canvas
+            // NOTE #popup-canvas div is only used to set the bounds. the actual div
+            // that we attach popup to is the body.
             var popUpCanvasView = View.fromJQuery(this.view.findJQuery('#popup-canvas'));
             var popUpCanvasVC = new CanvasPopUpContainerViewController(popUpCanvasView, {
-                globalBrowserEventsManager: this.globalBrowserEventsManager
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+                canvasView: this.view
             });
             this.addChildViewController(popUpCanvasVC);
             this.canvasPopUpContainerViewController = popUpCanvasVC;

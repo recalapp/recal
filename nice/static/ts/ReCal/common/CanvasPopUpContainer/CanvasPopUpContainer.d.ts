@@ -8,14 +8,21 @@ import CoreUI = require('../../../library/CoreUI/CoreUI');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import PopUp = require('../../../library/PopUp/PopUp');
 
+import IView = CoreUI.IView;
 import IViewController = CoreUI.IViewController;
 import IPopUpView = PopUp.IPopUpView;
 
 export interface CanvasPopUpContainerViewControllerDependencies
 {
     globalBrowserEventsManager: GlobalBrowserEventsManager;
+    /**
+      * The actual view in which the popups are appended to. Does not have
+      * to be the same view as the view managed by controller.
+      */
+    canvasView: IView;
 }
 
 export interface ICanvasPopUpContainerViewController extends IViewController
 {
+    
 }
