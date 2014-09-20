@@ -114,10 +114,15 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             // add listener for when PopUpView object was dropped into sidebar
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, function (ev, extra) {
                 var popUpView = extra.popUpView;
+                var oldId = null;
+                if (_this.currentPopUpView) {
+                    oldId = _this.currentPopUpView.eventsModel.eventId;
+                }
                 _this.addPopUpView(popUpView);
 
                 // update event selection state
                 _this.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
+                _this.eventsOperationsFacade.deselectEventWithId(oldId);
             });
 
             // add listener for when event selection state changes
@@ -149,7 +154,11 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     } else {
                         // set events model
                         var eventsModel = _this.eventsOperationsFacade.getEventById(mainEventId);
-                        _this.currentPopUpView.eventsModel = eventsModel;
+                        if (_this.currentPopUpView.eventsModel.eventId !== eventsModel.eventId) {
+                            var oldId = _this.currentPopUpView.eventsModel.eventId;
+                            _this.currentPopUpView.eventsModel = eventsModel;
+                            _this.eventsOperationsFacade.deselectEventWithId(oldId);
+                        }
                     }
                     _this.currentPopUpView.focus();
                 } else {

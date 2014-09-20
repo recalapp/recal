@@ -110,9 +110,15 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 (ev: JQueryEventObject, extra: any) => 
                 {
                     var popUpView: IEventsPopUpView = <IEventsPopUpView> extra.popUpView;
+                    var oldId = null;
+                    if (this.currentPopUpView)
+                    {
+                        oldId = this.currentPopUpView.eventsModel.eventId;
+                    }
                     this.addPopUpView(popUpView);
                     // update event selection state
                     this.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
+                    this.eventsOperationsFacade.deselectEventWithId(oldId);
                 });
 
         // add listener for when event selection state changes
@@ -153,7 +159,12 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                         {
                             // set events model
                             var eventsModel = this.eventsOperationsFacade.getEventById(mainEventId);
-                            this.currentPopUpView.eventsModel = eventsModel;
+                            if (this.currentPopUpView.eventsModel.eventId !== eventsModel.eventId)
+                            {
+                                var oldId = this.currentPopUpView.eventsModel.eventId;
+                                this.currentPopUpView.eventsModel = eventsModel;
+                                this.eventsOperationsFacade.deselectEventWithId(oldId);
+                            }
                         }
                         this.currentPopUpView.focus();
                     }
