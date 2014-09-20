@@ -67,8 +67,8 @@ class SidebarView extends View implements ISidebarView
 
         // droppable
         this._$sidebar.droppable({
-            drop: (ev: JQueryEventObject, ui: Element)=>{
-                var $ui = $(ui);
+            drop: (ev: JQueryEventObject, ui: JQueryUI.DroppableEventUIParam)=>{
+                var $ui = $(ui.draggable);
                 if ($ui.is(this.droppableCssSelectorsString))
                 {
                     View.fromJQuery($ui).triggerEvent(BrowserEvents.sidebarViewDidDrop);
@@ -77,13 +77,13 @@ class SidebarView extends View implements ISidebarView
             hoverClass: 'hover-active'
         });
         this._$el.find('#sidebar-target').droppable({
-            over: (ev: JQueryEventObject, ui: Element)=>{
-                if ($(ui).is(this.droppableCssSelectorsString))
+            over: (ev: JQueryEventObject, ui: JQueryUI.DroppableEventUIParam)=>{
+                if ($(ui.draggable).is(this.droppableCssSelectorsString))
                 {
                     this.showSidebar();
                 }
             },
-            out: (ev: JQueryEventObject, ui: Element)=>{
+            out: (ev: JQueryEventObject, ui: JQueryUI.DroppableEventUIParam)=>{
                 this.hideSidebarIfEmpty();
             }
         });

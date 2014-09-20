@@ -24,7 +24,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             // droppable
             this._$sidebar.droppable({
                 drop: function (ev, ui) {
-                    var $ui = $(ui);
+                    var $ui = $(ui.draggable);
                     if ($ui.is(_this.droppableCssSelectorsString)) {
                         View.fromJQuery($ui).triggerEvent(BrowserEvents.sidebarViewDidDrop);
                     }
@@ -33,7 +33,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
             });
             this._$el.find('#sidebar-target').droppable({
                 over: function (ev, ui) {
-                    if ($(ui).is(_this.droppableCssSelectorsString)) {
+                    if ($(ui.draggable).is(_this.droppableCssSelectorsString)) {
                         _this.showSidebar();
                     }
                 },
