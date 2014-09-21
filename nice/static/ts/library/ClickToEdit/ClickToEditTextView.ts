@@ -19,7 +19,7 @@ class ClickToEditTextView extends ClickToEditBaseView
     /**
       * The unique input type identifier associated with this type of input
       */
-    public inputType() : string
+    public get inputType() : string
     {
         return 'CTE_Text';
     }

@@ -11,10 +11,8 @@ import Set = require('../DataStructures/Set');
 
 class ClickToEditBaseView extends FocusableView
 {
-    private static _customTypes = new Set();
-
     private static _encodeDecodeProxy: EncodeDecodeProxy = null;
-    private get encodeDecodeProxy(): EncodeDecodeProxy
+    public get encodeDecodeProxy(): EncodeDecodeProxy
     {
         if (!ClickToEditBaseView._encodeDecodeProxy)
         {
@@ -43,32 +41,8 @@ class ClickToEditBaseView extends FocusableView
 
     private _initializeClickToEdit()
     {
-        if (!ClickToEditBaseView._customTypes.contains(this.inputType()))
-        {
-            // initialize the custom type
-            ClickToEditBaseView._customTypes.add(this.inputType());
-
-            // NOTE this = form in the context of functions
-            $.editable.addInputType(this.inputType(), {
-                element: function(settings, original) {
-                    // ok to do this because we assume the view is
-                    // already initialized, so the created instance
-                    // will be of the correct ClickToEdit type.
-                    var view = <ClickToEditBaseView> ClickToEditBaseView.fromJQuery($(original));
-                    return view.element($(this), settings);
-                },
-                content: function(contentString, settings, original){
-                    var view = <ClickToEditBaseView> ClickToEditBaseView.fromJQuery($(original));
-                    return view.content($(this), contentString, settings);
-                },
-                plugin: function(settings, original){
-                    var view = <ClickToEditBaseView> ClickToEditBaseView.fromJQuery($(original));
-                    return view.plugin($(this), settings);
-                },
-            });
-        }
         var options = this.options();
-        options.type = this.inputType();
+        options.type = this.inputType;
         options.event = BrowserEvents.clickToEditShouldBegin;
         options.onblur = 'submit';
         this._$el.editable((value: string, settings: any)=>{
@@ -114,7 +88,7 @@ class ClickToEditBaseView extends FocusableView
     /**
       * The unique input type identifier associated with this type of input
       */
-    public inputType() : string
+    public get inputType() : string
     {
         return 'text';
     }

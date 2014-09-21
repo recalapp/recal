@@ -6,7 +6,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './ClickToEditBaseView', "../Core/EncodeDecodeProxy"], function(require, exports, $, ClickToEditBaseView, EncodeDecodeProxy) {
+define(["require", "exports", 'jquery', './ClickToEditBaseView'], function(require, exports, $, ClickToEditBaseView) {
     var ClickToEditTextAreaView = (function (_super) {
         __extends(ClickToEditTextAreaView, _super);
         function ClickToEditTextAreaView() {
@@ -23,20 +23,24 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', "../Core/Encode
             configurable: true
         });
 
-        /**
-        * The unique input type identifier associated with this type of input
-        */
-        ClickToEditTextAreaView.prototype.inputType = function () {
-            return 'CTE_TextArea';
-        };
+        Object.defineProperty(ClickToEditTextAreaView.prototype, "inputType", {
+            /**
+            * The unique input type identifier associated with this type of input
+            */
+            get: function () {
+                return 'CTE_TextArea';
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         /**
         * Returns the string html value of the form value. Do processing
         * such as converting \n to <br>
         */
         ClickToEditTextAreaView.prototype.processFormValue = function (value, settings) {
-            var encoded = EncodeDecodeProxy.instance().htmlEncode(value);
-            encoded = EncodeDecodeProxy.instance().newLinesToBr(encoded);
+            var encoded = this.encodeDecodeProxy.htmlEncode(value);
+            encoded = this.encodeDecodeProxy.newLinesToBr(encoded);
             return encoded;
         };
 
@@ -55,8 +59,8 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', "../Core/Encode
         * Set the value of the input to match the value of the contentString.
         */
         ClickToEditTextAreaView.prototype.content = function ($form, contentString, settings) {
-            var decoded = EncodeDecodeProxy.instance().brToNewLines(contentString);
-            decoded = EncodeDecodeProxy.instance().htmlDecode(decoded);
+            var decoded = this.encodeDecodeProxy.brToNewLines(contentString);
+            decoded = this.encodeDecodeProxy.htmlDecode(decoded);
             $form.find('textarea').val(decoded);
         };
         return ClickToEditTextAreaView;

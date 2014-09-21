@@ -20,7 +20,7 @@ class ClickToEditTextAreaView extends ClickToEditBaseView
     /**
       * The unique input type identifier associated with this type of input
       */
-    public inputType() : string
+    public get inputType() : string
     {
         return 'CTE_TextArea';
     }
@@ -31,8 +31,8 @@ class ClickToEditTextAreaView extends ClickToEditBaseView
       */
     public processFormValue(value: string, settings: any) : string
     {
-        var encoded = EncodeDecodeProxy.instance().htmlEncode(value);
-        encoded = EncodeDecodeProxy.instance().newLinesToBr(encoded);
+        var encoded = this.encodeDecodeProxy.htmlEncode(value);
+        encoded = this.encodeDecodeProxy.newLinesToBr(encoded);
         return encoded;
     }
 
@@ -53,8 +53,8 @@ class ClickToEditTextAreaView extends ClickToEditBaseView
       */
     public content($form: JQuery, contentString: string, settings: any) : void
     {
-        var decoded = EncodeDecodeProxy.instance().brToNewLines(contentString);
-        decoded = EncodeDecodeProxy.instance().htmlDecode(decoded);
+        var decoded = this.encodeDecodeProxy.brToNewLines(contentString);
+        decoded = this.encodeDecodeProxy.htmlDecode(decoded);
         $form.find('textarea').val(decoded);
     }
 }

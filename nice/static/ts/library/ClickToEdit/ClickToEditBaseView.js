@@ -6,7 +6,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/FocusableView', "../Core/EncodeDecodeProxy", '../Core/InvalidArgumentException', '../DataStructures/Set'], function(require, exports, $, BrowserEvents, FocusableView, EncodeDecodeProxy, InvalidArgumentException, Set) {
+define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/FocusableView', "../Core/EncodeDecodeProxy", '../Core/InvalidArgumentException'], function(require, exports, $, BrowserEvents, FocusableView, EncodeDecodeProxy, InvalidArgumentException) {
     var ClickToEditBaseView = (function (_super) {
         __extends(ClickToEditBaseView, _super);
         function ClickToEditBaseView($element, cssClass) {
@@ -40,31 +40,8 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
 
         ClickToEditBaseView.prototype._initializeClickToEdit = function () {
             var _this = this;
-            if (!ClickToEditBaseView._customTypes.contains(this.inputType())) {
-                // initialize the custom type
-                ClickToEditBaseView._customTypes.add(this.inputType());
-
-                // NOTE this = form in the context of functions
-                $.editable.addInputType(this.inputType(), {
-                    element: function (settings, original) {
-                        // ok to do this because we assume the view is
-                        // already initialized, so the created instance
-                        // will be of the correct ClickToEdit type.
-                        var view = ClickToEditBaseView.fromJQuery($(original));
-                        return view.element($(this), settings);
-                    },
-                    content: function (contentString, settings, original) {
-                        var view = ClickToEditBaseView.fromJQuery($(original));
-                        return view.content($(this), contentString, settings);
-                    },
-                    plugin: function (settings, original) {
-                        var view = ClickToEditBaseView.fromJQuery($(original));
-                        return view.plugin($(this), settings);
-                    }
-                });
-            }
             var options = this.options();
-            options.type = this.inputType();
+            options.type = this.inputType;
             options.event = BrowserEvents.clickToEditShouldBegin;
             options.onblur = 'submit';
             this._$el.editable(function (value, settings) {
@@ -107,12 +84,16 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
             return {};
         };
 
-        /**
-        * The unique input type identifier associated with this type of input
-        */
-        ClickToEditBaseView.prototype.inputType = function () {
-            return 'text';
-        };
+        Object.defineProperty(ClickToEditBaseView.prototype, "inputType", {
+            /**
+            * The unique input type identifier associated with this type of input
+            */
+            get: function () {
+                return 'text';
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         /**
         * Returns the string html value of the form value. Do processing
@@ -153,8 +134,6 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         */
         ClickToEditBaseView.prototype.plugin = function ($form, settings) {
         };
-        ClickToEditBaseView._customTypes = new Set();
-
         ClickToEditBaseView._encodeDecodeProxy = null;
         return ClickToEditBaseView;
     })(FocusableView);

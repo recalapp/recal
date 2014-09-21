@@ -24,12 +24,16 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', "jeditable"], f
             configurable: true
         });
 
-        /**
-        * The unique input type identifier associated with this type of input
-        */
-        ClickToEditTextView.prototype.inputType = function () {
-            return 'CTE_Text';
-        };
+        Object.defineProperty(ClickToEditTextView.prototype, "inputType", {
+            /**
+            * The unique input type identifier associated with this type of input
+            */
+            get: function () {
+                return 'CTE_Text';
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         /**
         * Create a new input element and attach it to the form. Also return
