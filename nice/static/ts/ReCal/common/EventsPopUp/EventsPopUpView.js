@@ -25,7 +25,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
 
             // TODO set up buttons
             // set up close button
-            this._closeButton = FocusableView.fromJQuery(this.findJQuery('#close_button'));
+            this._closeButton = FocusableView.fromJQuery(this.findJQuery('#close-button'));
             this.closeButton.attachEventHandler(BrowserEvents.click, function (ev) {
                 _this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
             });

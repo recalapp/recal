@@ -122,7 +122,9 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
 
                 // update event selection state
                 _this.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
-                _this.eventsOperationsFacade.deselectEventWithId(oldId);
+                if (oldId !== null) {
+                    _this.eventsOperationsFacade.deselectEventWithId(oldId);
+                }
             });
 
             // add listener for when event selection state changes

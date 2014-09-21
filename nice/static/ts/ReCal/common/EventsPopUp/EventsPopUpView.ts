@@ -180,7 +180,7 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
 
         // TODO set up buttons 
         // set up close button
-        this._closeButton = <FocusableView> FocusableView.fromJQuery(this.findJQuery('#close_button'));
+        this._closeButton = <FocusableView> FocusableView.fromJQuery(this.findJQuery('#close-button'));
         this.closeButton.attachEventHandler(BrowserEvents.click, 
                 (ev: JQueryEventObject)=>
                 {

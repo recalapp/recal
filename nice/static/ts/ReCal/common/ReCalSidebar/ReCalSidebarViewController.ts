@@ -118,7 +118,10 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                     this.addPopUpView(popUpView);
                     // update event selection state
                     this.eventsOperationsFacade.unpinEventWithId(popUpView.eventsModel.eventId);
-                    this.eventsOperationsFacade.deselectEventWithId(oldId);
+                    if (oldId !== null)
+                    {
+                        this.eventsOperationsFacade.deselectEventWithId(oldId);
+                    }
                 });
 
         // add listener for when event selection state changes
