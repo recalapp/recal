@@ -70,6 +70,9 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             get: function () {
                 return this._$el.height();
             },
+            /**
+            * Physical height of the view
+            */
             set: function (newValue) {
                 this._$el.height(newValue);
             },
@@ -77,7 +80,12 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             configurable: true
         });
 
+
         Object.defineProperty(View.prototype, "absoluteTop", {
+            /**
+            * The absolute top position
+            * Readonly
+            */
             get: function () {
                 return this._$el.offset().top;
             },
@@ -86,6 +94,10 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
         });
 
         Object.defineProperty(View.prototype, "absoluteLeft", {
+            /**
+            * The absolute left position
+            * Readonly
+            */
             get: function () {
                 return this._$el.offset().left;
             },
@@ -94,15 +106,37 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
         });
 
         Object.defineProperty(View.prototype, "relativeTop", {
+            /**
+            * The top position relative to parent
+            * Readonly
+            */
             get: function () {
                 return this._$el.position().top;
             },
             enumerable: true,
             configurable: true
         });
+
         Object.defineProperty(View.prototype, "relativeLeft", {
+            /**
+            * The top position relative to parent
+            * Readonly
+            */
             get: function () {
                 return this._$el.position().left;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(View.prototype, "boundingRect", {
+            /**
+            * Get the bounding rect of this view. This is the position of the view
+            * with respect to the browser, and will be different from absolute
+            * position if the website itself has scrolled.
+            */
+            get: function () {
+                return this._$el[0].getBoundingClientRect();
             },
             enumerable: true,
             configurable: true

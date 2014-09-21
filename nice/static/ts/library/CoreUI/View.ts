@@ -5,6 +5,7 @@ import BrowserEvents = require("../Core/BrowserEvents");
 import CoreUI = require('./CoreUI');
 import InvalidActionException = require('../Core/InvalidActionException');
 import InvalidArgumentException = require("../Core/InvalidArgumentException");
+import Rect = require('../DataStructures/Rect');
 import Set = require('../DataStructures/Set');
 
 import IView = CoreUI.IView;
@@ -40,11 +41,11 @@ class View implements IView
     /**
       * Physical width of the view
       */
-    get width(): number
+    public get width(): number
     {
         return this._$el.width();
     }
-    set width(newValue: number)
+    public set width(newValue: number)
     {
         this._$el.width(newValue);
     }
@@ -52,32 +53,63 @@ class View implements IView
     /**
       * Physical height of the view
       */
-    get height(): number
+    public get height(): number
     {
         return this._$el.height();
     }
-    set height(newValue: number)
+
+    /**
+      * Physical height of the view
+      */
+    public set height(newValue: number)
     {
         this._$el.height(newValue);
     }
 
-    get absoluteTop(): number
+    /**
+      * The absolute top position
+      * Readonly
+      */
+    public get absoluteTop(): number
     {
         return this._$el.offset().top;
     }
 
-    get absoluteLeft(): number
+    /**
+      * The absolute left position
+      * Readonly
+      */
+    public get absoluteLeft(): number
     {
         return this._$el.offset().left;
     }
 
-    get relativeTop(): number
+    /**
+      * The top position relative to parent
+      * Readonly
+      */
+    public get relativeTop(): number
     {
         return this._$el.position().top;
     }
-    get relativeLeft(): number
+
+    /**
+      * The top position relative to parent
+      * Readonly
+      */
+    public get relativeLeft(): number
     {
         return this._$el.position().left;
+    }
+
+    /**
+      * Get the bounding rect of this view. This is the position of the view
+      * with respect to the browser, and will be different from absolute 
+      * position if the website itself has scrolled.
+      */
+    public get boundingRect(): Rect
+    {
+        return this._$el[0].getBoundingClientRect();
     }
 
     /******************************************************************

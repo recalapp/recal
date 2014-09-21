@@ -1,5 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
+import Rect = require('../DataStructures/Rect');
+
 export interface IView 
 {
     /******************************************************************
@@ -21,6 +23,7 @@ export interface IView
       * Physical width of the view
       */
     width: number;
+    
     /**
       * Physical height of the view
       */
@@ -51,12 +54,11 @@ export interface IView
     relativeLeft: number;
 
     /**
-      * Calls $.css. See their API
+      * Get the bounding rect of this view. This is the position of the view
+      * with respect to the browser, and will be different from absolute 
+      * position if the website itself has scrolled.
       */
-    /**
-      * Calls $.css. See their API
-      */
-    css(argument1: any, argument2?: any): any;
+    boundingRect: Rect;
 
     /******************************************************************
       Methods
@@ -126,6 +128,14 @@ export interface IView
       * Remove CSS class from this view. Uses $.removeClass
       */
     removeCssClass(cssClass: string): void;
+
+    /**
+      * Calls $.css. See their API
+      */
+    /**
+      * Calls $.css. See their API
+      */
+    css(argument1: any, argument2?: any): any;
 }
 
 export interface IFocusableView extends IView

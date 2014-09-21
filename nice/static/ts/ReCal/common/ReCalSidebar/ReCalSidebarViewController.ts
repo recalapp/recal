@@ -84,15 +84,13 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
             // when we begin dragging, we remove from sidebar and trigger this 
             // event, allowing other controllers to add this PopUpView to their 
             // view
-            var absoluteTop = popUpView.absoluteTop;
-            var absoluteLeft = popUpView.absoluteLeft;
+            var boundingRect = popUpView.boundingRect;
             var width = popUpView.width;
             var height = popUpView.height;
             this.removePopUpView(popUpView, false);
             this.view.triggerEvent(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, {
                 popUpView: popUpView,
-                absoluteTop: absoluteTop,
-                absoluteLeft: absoluteLeft,
+                boundingRect: boundingRect,
                 width: width,
                 height: height
             });

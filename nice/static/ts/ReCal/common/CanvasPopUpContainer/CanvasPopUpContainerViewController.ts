@@ -41,13 +41,13 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                 {
                     var popUpView: IPopUpView = extra.popUpView;
                     this.addPopUpView(popUpView);
-                    popUpView.focus();
                     popUpView.css({
-                        top: extra.absoluteTop,
-                        left: extra.absoluteLeft
+                        top: extra.boundingRect.top,
+                        left: extra.boundingRect.left
                     });
                     popUpView.width = extra.width;
                     popUpView.height = extra.height;
+                    popUpView.focus(); // focus must be called after the positions are set
                 });
 
         // when popup is dropped onto sidebar
