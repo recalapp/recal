@@ -29,6 +29,13 @@
 .popup-container .panel .panel-heading .panel-title {
   max-width: 90%;
 }
+.popup-container .panel .panel-heading.panel-heading-handle {
+  cursor: move;
+  /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
 .popup-container .panel .panel-body {
   position: absolute;
   overflow: scroll;
