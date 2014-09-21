@@ -1,0 +1,99 @@
+import Dictionary = require('../../../library/DataStructures/Dictionary');
+import Events = require('./Events');
+
+import IEventsModel = Events.IEventsModel;
+
+/**
+  * The class responsible to actually storing the events locally. 
+  * TODO also responsible for editing?
+  */
+class EventsStoreCoordinator
+{
+    private _eventsRegistry: Dictionary<string, IEventsModel> = null;
+    private get eventsRegistry(): Dictionary<string, IEventsModel> { return this._eventsRegistry; }
+    private set eventsRegistry(value: Dictionary<string, IEventsModel>) { this._eventsRegistry = value; }
+
+    private _eventIdsSorted: string[] = null;
+    private get eventIdsSorted(): string[] 
+    {
+        if (this._eventIdsSorted === null || this._eventIdsSorted === undefined)
+        {
+            this._eventIdsSorted = this.eventsRegistry.allKeys();
+            this._eventIdsSorted.sort((a: string, b: string) => {
+                var eventA = this.eventsRegistry.get(a);
+                var eventB = this.eventsRegistry.get(b);
+                return eventA.startDate.unix - eventB.startDate.unix;
+            });
+        }
+        return this._eventIdsSorted;
+    }
+
+    constructor()
+    {
+        this.clearLocalEvents();
+    }
+
+    /**
+      * Add the specified events to the events store. If an existing event with
+      * the same id exists, this replaces it.
+      */
+    public addLocalEvents(eventsModels: IEventsModel[]): void
+    {
+        for (var i = 0; i < eventsModels.length; ++i)
+        {
+            this.eventsRegistry.set(eventsModels[i].eventId, eventsModels[i]);
+        }
+    }
+
+    /**
+      * Delete any events in the specified list of IDs. This function can safely
+      * be called with event IDs that do not exist.
+      */
+    public clearLocalEventsWithIds(eventIds: string[]): void
+    {
+        for (var i = 0; i < eventIds.length; ++i)
+        {
+            if (this.eventsRegistry.contains(eventIds[i]))
+            {
+                this.eventsRegistry.unset(eventIds[i]);
+            }
+        }
+    }
+
+    /**
+      * Clear out the local event store.
+      */
+    public clearLocalEvents(): void
+    {
+        this.eventsRegistry = new Dictionary<string, IEventsModel>();
+        this._eventIdsSorted = null;
+    }
+    
+    /**
+      * Get event associated with the ID
+      */
+    public getEventById(eventId: string): IEventsModel
+    {
+        return this.eventsRegistry.get(eventId);
+    }
+
+    public getEventIdsWithFilter(filter: (string)=> {keep: boolean; stop: boolean}): string[]
+    {
+        var ret = new Array<string>();
+        for (var i = 0; i < this.eventIdsSorted.length; ++i)
+        {
+            var result = filter(this.eventIdsSorted[i]);
+            if (result.keep)
+            {
+                ret.push(this.eventIdsSorted[i]);
+            }
+            if (result.stop)
+            {
+                break;
+            }
+        }
+        return ret;
+    }
+}
+
+export = EventsStoreCoordinator;

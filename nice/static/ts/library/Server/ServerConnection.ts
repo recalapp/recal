@@ -7,7 +7,9 @@ import Queue = require('../DataStructures/Queue');
 import Server = require('./Server');
 import ServerRequestType = require('./ServerRequestType');
 
+import IServerConnection = Server.IServerConnection;
 import IServerRequest = Server.IServerRequest;
+
 
 interface RequestDeferredPair
 {
@@ -19,7 +21,7 @@ interface RequestDeferredPair
   * A ServerConnection object is responsible for making server calls using  
   * server requests.
   */
-class ServerConnection
+class ServerConnection implements IServerConnection
 {
     private _requestsQueue: Queue<RequestDeferredPair> = null;
     private get requestsQueue(): Queue<RequestDeferredPair>

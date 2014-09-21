@@ -1,21 +1,37 @@
-define(["require", "exports", '../../../library/DateTime/DateTime', './EventsModel'], function(require, exports, DateTime, EventsModel) {
+define(["require", "exports", '../../../library/Core/ComparableResult', '../../../library/DateTime/DateTime', './EventsModel'], function(require, exports, ComparableResult, DateTime, EventsModel) {
     // TODO implement
     var EventsRetriever = (function () {
-        function EventsRetriever() {
+        function EventsRetriever(dependencies) {
+            this._eventsStoreCoordinator = null;
+            this._eventsStoreCoordinator = dependencies.eventsStoreCoordinator;
         }
+        Object.defineProperty(EventsRetriever.prototype, "eventsStoreCoordinator", {
+            get: function () {
+                return this._eventsStoreCoordinator;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         /**
         * Get event associated with the ID
         */
         EventsRetriever.prototype.getEventById = function (eventId) {
-            var legacyEventObject = EventsMan_getEventByID(eventId);
-            return this.getEventsModelFromLegacyEventObject(legacyEventObject);
+            return this.eventsStoreCoordinator.getEventById(eventId);
         };
 
         /**
         * Get all event IDs in the range, inclusive.
         */
         EventsRetriever.prototype.getEventIdsInRange = function (start, end) {
-            return EventsMan_getEventIDForRange(start.unix, end.unix);
+            var _this = this;
+            return this.eventsStoreCoordinator.getEventIdsWithFilter(function (eventId) {
+                var eventsModel = _this.getEventById(eventId);
+                var ret = { keep: false, stop: false };
+                ret.keep = start.compareTo(eventsModel.startDate) === -1 /* less */ && end.compareTo(eventsModel.startDate) === 1 /* greater */;
+                ret.stop = end.compareTo(eventsModel.startDate) === -1 /* less */;
+                return ret;
+            });
         };
 
         EventsRetriever.prototype.getEventsModelFromLegacyEventObject = function (legacyEventObject) {
