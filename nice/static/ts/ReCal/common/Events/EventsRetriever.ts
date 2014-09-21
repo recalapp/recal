@@ -43,20 +43,6 @@ class EventsRetriever
         });
     }
 
-    private getEventsModelFromLegacyEventObject(legacyEventObject: any): IEventsModel
-    {
-        return new EventsModel({
-            eventId: legacyEventObject.event_id.toString(),
-            title: legacyEventObject.event_title,
-            description: legacyEventObject.event_description,
-            sectionId: legacyEventObject.section_id.toString(),
-            courseId: legacyEventObject.course_id.toString(),
-            eventTypeCode: legacyEventObject.event_type,
-            startDate: DateTime.fromUnix(parseInt(legacyEventObject.event_start)),
-            endDate: DateTime.fromUnix(parseInt(legacyEventObject.event_end)),
-            lastEdited: DateTime.fromUnix(parseInt(legacyEventObject.modified_time))
-        });
-    }
 }
 
 export = EventsRetriever;

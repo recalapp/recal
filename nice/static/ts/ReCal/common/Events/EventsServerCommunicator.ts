@@ -1,10 +1,12 @@
-/// <reference path="../../../typings/tsd.d.ts" />
-
 import DateTime = require('../../../library/DateTime/DateTime');
+import Dictionary = require('../../../library/DataStructures/Dictionary');
 import Events = require('./Events');
+import EventsModel = require('./EventsModel');
+import EventsStoreCoordinator = require('./EventsStoreCoordinator');
 import Server = require('../../../library/Server/Server');
 import ServerConnection = require('../../../library/Server/ServerConnection');
 import ServerRequest = require('../../../library/Server/ServerRequest');
+import ServerRequestType = require('../../../library/Server/ServerRequestType');
 
 import IEventsModel = Events.IEventsModel;
 import IServerConnection = Server.IServerConnection;
@@ -19,18 +21,58 @@ class EventsServerCommunicator
     private get lastConnected(): DateTime { return this._lastConnected }
     private set lastConnected(value: DateTime) { this._lastConnected = value; }
 
-    public pullEvents(): JQueryPromise<IEventsModel[]>
+    private _eventsStoreCoordinator: EventsStoreCoordinator = null;
+    private get eventsStoreCoordinator(): EventsStoreCoordinator { return this._eventsStoreCoordinator; }
+
+    constructor(dependencies: Events.EventsRetrieverDependencies)
+    {
+        this._eventsStoreCoordinator = dependencies.eventsStoreCoordinator;
+    }
+
+    public pullEvents(): void
     {
         var createServerRequest = ()=>
         {
-            return null;
+            var serverRequest = new ServerRequest({
+                url: '/get/' + this.lastConnected.unix,
+                async: true,
+                parameters: new Dictionary<string, string>(),
+                requestType: ServerRequestType.get,
+            });
+            return serverRequest;
         };
         this.serverConnection.sendRequest(createServerRequest())
             .done((data: any) =>{
-
+                if (this.lastConnected.unix === 0)
+                {
+                    this.eventsStoreCoordinator.clearLocalEvents();
+                }
+                this.lastConnected = new DateTime();
+                var eventsModels = new Array<IEventsModel>();
+                for (var i = 0; i < data.events; ++i)
+                {
+                    // TODO handle uncommitted and updated events
+                    eventsModels.push(this.getEventsModelFromLegacyEventObject(data.events[i]));
+                }
+                this.eventsStoreCoordinator.addLocalEvents(eventsModels);
+                // TODO hidden events
             }).fail((data: any) =>{
             });
-        return null;
+    }
+
+    private getEventsModelFromLegacyEventObject(legacyEventObject: any): IEventsModel
+    {
+        return new EventsModel({
+            eventId: legacyEventObject.event_id.toString(),
+            title: legacyEventObject.event_title,
+            description: legacyEventObject.event_description,
+            sectionId: legacyEventObject.section_id.toString(),
+            courseId: legacyEventObject.course_id.toString(),
+            eventTypeCode: legacyEventObject.event_type,
+            startDate: DateTime.fromUnix(parseInt(legacyEventObject.event_start)),
+            endDate: DateTime.fromUnix(parseInt(legacyEventObject.event_end)),
+            lastEdited: DateTime.fromUnix(parseInt(legacyEventObject.modified_time))
+        });
     }
 }
 

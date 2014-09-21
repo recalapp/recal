@@ -1,4 +1,4 @@
-define(["require", "exports", '../../../library/Core/ComparableResult', '../../../library/DateTime/DateTime', './EventsModel'], function(require, exports, ComparableResult, DateTime, EventsModel) {
+define(["require", "exports", '../../../library/Core/ComparableResult'], function(require, exports, ComparableResult) {
     // TODO implement
     var EventsRetriever = (function () {
         function EventsRetriever(dependencies) {
@@ -31,20 +31,6 @@ define(["require", "exports", '../../../library/Core/ComparableResult', '../../.
                 ret.keep = start.compareTo(eventsModel.startDate) === -1 /* less */ && end.compareTo(eventsModel.startDate) === 1 /* greater */;
                 ret.stop = end.compareTo(eventsModel.startDate) === -1 /* less */;
                 return ret;
-            });
-        };
-
-        EventsRetriever.prototype.getEventsModelFromLegacyEventObject = function (legacyEventObject) {
-            return new EventsModel({
-                eventId: legacyEventObject.event_id.toString(),
-                title: legacyEventObject.event_title,
-                description: legacyEventObject.event_description,
-                sectionId: legacyEventObject.section_id.toString(),
-                courseId: legacyEventObject.course_id.toString(),
-                eventTypeCode: legacyEventObject.event_type,
-                startDate: DateTime.fromUnix(parseInt(legacyEventObject.event_start)),
-                endDate: DateTime.fromUnix(parseInt(legacyEventObject.event_end)),
-                lastEdited: DateTime.fromUnix(parseInt(legacyEventObject.modified_time))
             });
         };
         return EventsRetriever;

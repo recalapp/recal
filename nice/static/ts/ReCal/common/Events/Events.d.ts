@@ -16,6 +16,10 @@ export interface EventsRetrieverDependencies
     eventsStoreCoordinator: EventsStoreCoordinator;
 }
 
+export interface EventsServerCommunicatorDependencies
+{
+    eventsStoreCoordinator: EventsStoreCoordinator;
+}
 
 export interface IEventsModel
 {
