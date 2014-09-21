@@ -50,7 +50,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
                 }
                 _this.lastConnected = new DateTime();
                 var eventsModels = new Array();
-                for (var i = 0; i < data.events; ++i) {
+                for (var i = 0; i < data.events.length; ++i) {
                     // TODO handle uncommitted and updated events
                     eventsModels.push(_this.getEventsModelFromLegacyEventObject(data.events[i]));
                 }

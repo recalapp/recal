@@ -42,14 +42,14 @@ class EventsServerCommunicator
             return serverRequest;
         };
         this.serverConnection.sendRequest(createServerRequest())
-            .done((data: any) =>{
+            .done((data: {events: any[]; hidden_events: string[]}) =>{
                 if (this.lastConnected.unix === 0)
                 {
                     this.eventsStoreCoordinator.clearLocalEvents();
                 }
                 this.lastConnected = new DateTime();
                 var eventsModels = new Array<IEventsModel>();
-                for (var i = 0; i < data.events; ++i)
+                for (var i = 0; i < data.events.length; ++i)
                 {
                     // TODO handle uncommitted and updated events
                     eventsModels.push(this.getEventsModelFromLegacyEventObject(data.events[i]));
