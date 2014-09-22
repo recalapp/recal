@@ -196,9 +196,10 @@ class DashboardViewController extends ViewController
         // that we attach popup to is the body.
         var popUpCanvasView: IView = View.fromJQuery(this.view.findJQuery('#popup-canvas'));
         var popUpCanvasVC: ICanvasPopUpContainerViewController = new CanvasPopUpContainerViewController(popUpCanvasView, {
-            globalBrowserEventsManager: this.globalBrowserEventsManager,
             canvasView: this.view,
             clickToEditViewFactory: this.clickToEditViewFactory,
+            eventsOperationsFacade: this.eventsOperationsFacade,
+            globalBrowserEventsManager: this.globalBrowserEventsManager,
         });
         this.addChildViewController(popUpCanvasVC);
         this.canvasPopUpContainerViewController = popUpCanvasVC;

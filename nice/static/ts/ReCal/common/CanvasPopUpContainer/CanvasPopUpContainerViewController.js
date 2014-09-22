@@ -18,9 +18,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             * ClickToEditView Factory
             */
             this._clickToEditViewFactory = null;
+            /**
+            * Events Operations Facade
+            */
+            this._eventsOperationsFacade = null;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this._canvasView = dependencies.canvasView;
             this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
+            this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
             this.initialize();
         }
         Object.defineProperty(CanvasPopUpContainerViewController.prototype, "globalBrowserEventsManager", {
@@ -42,6 +47,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         Object.defineProperty(CanvasPopUpContainerViewController.prototype, "clickToEditViewFactory", {
             get: function () {
                 return this._clickToEditViewFactory;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(CanvasPopUpContainerViewController.prototype, "eventsOperationsFacade", {
+            get: function () {
+                return this._eventsOperationsFacade;
             },
             enumerable: true,
             configurable: true
@@ -69,6 +82,16 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 _this.canvasView.triggerEvent(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, {
                     popUpView: popUpView
                 });
+            });
+
+            // when popup needs to close
+            this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.popUpShouldClose, PopUpView.cssSelector(), function (ev, extra) {
+                if (extra.view.parentView === _this.canvasView) {
+                    // if sidebar is also a child of canvas view, we may
+                    // want to check where the popup actually is in DOM
+                    _this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
+                    _this.removePopUpView(extra.view);
+                }
             });
         };
 

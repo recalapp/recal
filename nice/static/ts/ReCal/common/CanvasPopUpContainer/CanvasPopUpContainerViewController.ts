@@ -2,6 +2,7 @@ import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
 import CanvasPopUpContainer = require('./CanvasPopUpContainer');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
+import Events = require('../../common/Events/Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import InvalidActionException = require('../../../library/Core/InvalidActionException');
 import PopUp = require('../../../library/PopUp/PopUp');
@@ -12,6 +13,7 @@ import ViewController = require('../../../library/CoreUI/ViewController');
 import CanvasPopUpContainerViewControllerDependencies = CanvasPopUpContainer.CanvasPopUpContainerViewControllerDependencies
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
+import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IPopUpView = PopUp.IPopUpView;
 import IView = CoreUI.IView;
 
@@ -31,6 +33,13 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
       */
     private _clickToEditViewFactory: IClickToEditViewFactory = null;
     private get clickToEditViewFactory(): IClickToEditViewFactory { return this._clickToEditViewFactory; }
+
+    /**
+      * Events Operations Facade
+      */
+    private _eventsOperationsFacade: IEventsOperationsFacade = null;
+    private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
+
     
     constructor(view: IView, dependencies: CanvasPopUpContainerViewControllerDependencies)
     {
@@ -38,6 +47,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
         this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         this._canvasView = dependencies.canvasView;
         this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
+        this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
         this.initialize();
     }
 
@@ -71,6 +81,19 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                             popUpView: popUpView,
                         }
                     );
+                });
+        // when popup needs to close
+        this.canvasView.attachEventHandler(
+                ReCalCommonBrowserEvents.popUpShouldClose, 
+                PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any)=>
+                {
+                    if (extra.view.parentView === this.canvasView)
+                    {
+                        // if sidebar is also a child of canvas view, we may
+                        // want to check where the popup actually is in DOM
+                        this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
+                        this.removePopUpView(extra.view);
+                    }
                 });
     }
 

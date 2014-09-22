@@ -190,7 +190,14 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                         }
                     }
                 });
-        
+        // when popup needs to close
+        this.view.attachEventHandler(
+                ReCalCommonBrowserEvents.popUpShouldClose, 
+                EventsPopUpView.cssSelector(), (ev: JQueryEventObject, extra: any)=>
+                {
+                    this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
+                    this.removePopUpView(extra.view, true);
+                });
     }
 
     /**

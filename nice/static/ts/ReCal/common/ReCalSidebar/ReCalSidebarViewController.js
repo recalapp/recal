@@ -184,6 +184,12 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     }
                 }
             });
+
+            // when popup needs to close
+            this.view.attachEventHandler(ReCalCommonBrowserEvents.popUpShouldClose, EventsPopUpView.cssSelector(), function (ev, extra) {
+                _this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
+                _this.removePopUpView(extra.view, true);
+            });
         };
 
         /**

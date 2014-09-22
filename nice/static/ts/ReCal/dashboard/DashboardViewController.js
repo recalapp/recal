@@ -199,9 +199,10 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             // that we attach popup to is the body.
             var popUpCanvasView = View.fromJQuery(this.view.findJQuery('#popup-canvas'));
             var popUpCanvasVC = new CanvasPopUpContainerViewController(popUpCanvasView, {
-                globalBrowserEventsManager: this.globalBrowserEventsManager,
                 canvasView: this.view,
-                clickToEditViewFactory: this.clickToEditViewFactory
+                clickToEditViewFactory: this.clickToEditViewFactory,
+                eventsOperationsFacade: this.eventsOperationsFacade,
+                globalBrowserEventsManager: this.globalBrowserEventsManager
             });
             this.addChildViewController(popUpCanvasVC);
             this.canvasPopUpContainerViewController = popUpCanvasVC;
