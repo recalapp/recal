@@ -4,6 +4,7 @@
 import $ = require('jquery');
 
 import ClickToEditBaseView = require('./ClickToEditBaseView');
+import ClickToEditType = require('./ClickToEditType');
 import EncodeDecodeProxy = require("../Core/EncodeDecodeProxy");
 
 class ClickToEditTextAreaView extends ClickToEditBaseView
@@ -22,7 +23,7 @@ class ClickToEditTextAreaView extends ClickToEditBaseView
       */
     public get inputType() : string
     {
-        return 'CTE_TextArea';
+        return ClickToEditType.textArea;
     }
 
     /**

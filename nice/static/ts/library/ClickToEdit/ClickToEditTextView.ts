@@ -5,6 +5,7 @@
 import $ = require('jquery');
 
 import ClickToEditBaseView = require('./ClickToEditBaseView');
+import ClickToEditType = require('./ClickToEditType');
 
 class ClickToEditTextView extends ClickToEditBaseView
 {
@@ -21,7 +22,7 @@ class ClickToEditTextView extends ClickToEditBaseView
       */
     public get inputType() : string
     {
-        return 'CTE_Text';
+        return ClickToEditType.text;
     }
 
     /**

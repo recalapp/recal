@@ -7,7 +7,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './ClickToEditBaseView', "jeditable"], function(require, exports, $, ClickToEditBaseView) {
+define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditType', "jeditable"], function(require, exports, $, ClickToEditBaseView, ClickToEditType) {
     var ClickToEditTextView = (function (_super) {
         __extends(ClickToEditTextView, _super);
         function ClickToEditTextView() {
@@ -29,7 +29,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', "jeditable"], f
             * The unique input type identifier associated with this type of input
             */
             get: function () {
-                return 'CTE_Text';
+                return ClickToEditType.text;
             },
             enumerable: true,
             configurable: true

@@ -27,23 +27,13 @@ class ClickToEditViewFactory
     public createFromJQuery($element: JQuery): IClickToEditView
     {
         var type = $element.data(ClickToEditCommon.DataType) || ClickToEditType.text;
-        var clickToEditView: ClickToEditBaseView = null;
-        switch(type)
-        {
-            case ClickToEditType.text:
-                clickToEditView = <ClickToEditTextView> ClickToEditTextView.fromJQuery($element);
-            case ClickToEditType.textArea:
-                clickToEditView = <ClickToEditTextAreaView> ClickToEditTextAreaView.fromJQuery($element);
-            default:
-                throw new NotImplementedException('ClickToEditType ' + type + ' is not supported');
-        }
-        if (!this.customTypes.contains(clickToEditView.inputType))
+        if (!this.customTypes.contains(type))
         {
             // initialize the custom type
-            this.customTypes.add(clickToEditView.inputType);
+            this.customTypes.add(type);
 
             // NOTE this = form in the context of functions
-            $.editable.addInputType(clickToEditView.inputType, {
+            $.editable.addInputType(type, {
                 element: function(settings, original) {
                     // ok to do this because we assume the view is
                     // already initialized, so the created instance
@@ -63,6 +53,20 @@ class ClickToEditViewFactory
                 },
             });
         }
+        var clickToEditView: IClickToEditView = null;
+        switch(type)
+        {
+            case ClickToEditType.text:
+                clickToEditView = <ClickToEditTextView> ClickToEditTextView.fromJQuery($element);
+                break;
+            case ClickToEditType.textArea:
+                clickToEditView = <ClickToEditTextAreaView> ClickToEditTextAreaView.fromJQuery($element);
+                break;
+            default:
+                throw new NotImplementedException('ClickToEditType ' + type + ' is not supported');
+                break;
+        }
+        
         return clickToEditView;
     }
 }

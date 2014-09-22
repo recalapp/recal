@@ -6,7 +6,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './ClickToEditBaseView'], function(require, exports, $, ClickToEditBaseView) {
+define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditType'], function(require, exports, $, ClickToEditBaseView, ClickToEditType) {
     var ClickToEditTextAreaView = (function (_super) {
         __extends(ClickToEditTextAreaView, _super);
         function ClickToEditTextAreaView() {
@@ -28,7 +28,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView'], function(requi
             * The unique input type identifier associated with this type of input
             */
             get: function () {
-                return 'CTE_TextArea';
+                return ClickToEditType.textArea;
             },
             enumerable: true,
             configurable: true

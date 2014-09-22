@@ -18,22 +18,13 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditC
         * clickToEditType.
         */
         ClickToEditViewFactory.prototype.createFromJQuery = function ($element) {
-            var type = $element.data(ClickToEditCommon.DataType) || 0 /* text */;
-            var clickToEditView = null;
-            switch (type) {
-                case 0 /* text */:
-                    clickToEditView = ClickToEditTextView.fromJQuery($element);
-                case 1 /* textArea */:
-                    clickToEditView = ClickToEditTextAreaView.fromJQuery($element);
-                default:
-                    throw new NotImplementedException('ClickToEditType ' + type + ' is not supported');
-            }
-            if (!this.customTypes.contains(clickToEditView.inputType)) {
+            var type = $element.data(ClickToEditCommon.DataType) || ClickToEditType.text;
+            if (!this.customTypes.contains(type)) {
                 // initialize the custom type
-                this.customTypes.add(clickToEditView.inputType);
+                this.customTypes.add(type);
 
                 // NOTE this = form in the context of functions
-                $.editable.addInputType(clickToEditView.inputType, {
+                $.editable.addInputType(type, {
                     element: function (settings, original) {
                         // ok to do this because we assume the view is
                         // already initialized, so the created instance
@@ -54,6 +45,19 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditC
                     }
                 });
             }
+            var clickToEditView = null;
+            switch (type) {
+                case ClickToEditType.text:
+                    clickToEditView = ClickToEditTextView.fromJQuery($element);
+                    break;
+                case ClickToEditType.textArea:
+                    clickToEditView = ClickToEditTextAreaView.fromJQuery($element);
+                    break;
+                default:
+                    throw new NotImplementedException('ClickToEditType ' + type + ' is not supported');
+                    break;
+            }
+
             return clickToEditView;
         };
         return ClickToEditViewFactory;

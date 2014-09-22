@@ -1,6 +1,7 @@
-enum ClickToEditType {
-    text = 0,
-    textArea = 1,
-    select = 2,
+class ClickToEditType 
+{
+    static text = 'CTE_Text';
+    static textArea = 'CTE_TextArea';
+    static select = 'CTE_select';
 }
 export = ClickToEditType;
