@@ -25,7 +25,7 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
     private _encodeDecodeProxy: EncodeDecodeProxy = new EncodeDecodeProxy();
     private get encodeDecodeProxy(): EncodeDecodeProxy { return this._encodeDecodeProxy; }
 
-    private _eventsModel: IEventsModel = null;
+    public _eventsModel: IEventsModel = null;
     public get eventsModel(): IEventsModel { return this._eventsModel; }
     public set eventsModel(value: IEventsModel) 
     {
@@ -49,7 +49,16 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.findJQuery('#popup-title').text(this._title);
+        this.titleJQuery.text(this._title);
+    }
+    private _titleJQuery: JQuery = null;
+    public get titleJQuery(): JQuery 
+    {
+        if (!this._titleJQuery)
+        {
+            this._titleJQuery = this.findJQuery('#popup-title');
+        }
+        return this._titleJQuery;
     }
 
     private _description: string = null;
@@ -65,7 +74,16 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.findJQuery('#popup-desc').html(this.encodeDecodeProxy.newLinesToBr(this.encodeDecodeProxy.htmlEncode(this._description)));
+        this.descriptionJQuery.html(this.encodeDecodeProxy.newLinesToBr(this.encodeDecodeProxy.htmlEncode(this._description)));
+    }
+    private _descriptionJQuery: JQuery = null;
+    public get descriptionJQuery(): JQuery
+    {
+        if (!this._descriptionJQuery)
+        {
+            this._descriptionJQuery = this.findJQuery('#popup-desc');
+        }
+        return this._descriptionJQuery;
     }
 
     private _location: string = null;
@@ -81,7 +99,16 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.findJQuery('#popup-loc').text(this._location);
+        this.locationJQuery.text(this._location);
+    }
+    private _locationJQuery: JQuery = null;
+    public get locationJQuery(): JQuery
+    {
+        if (!this._locationJQuery)
+        {
+            this._locationJQuery = this.findJQuery('#popup-loc');
+        }
+        return this._locationJQuery;
     }
 
     private _sectionId: string = null;
@@ -97,7 +124,16 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.findJQuery('#popup-section').text(SECTION_MAP[this._sectionId]);
+        this.sectionJQuery.text(SECTION_MAP[this._sectionId]);
+    }
+    private _sectionJQuery: JQuery = null;
+    public get sectionJQuery(): JQuery
+    {
+        if (!this._sectionJQuery)
+        {
+            this._sectionJQuery = this.findJQuery('#popup-section');
+        }
+        return this._sectionJQuery
     }
 
     private _eventTypeCode: string = null;
@@ -114,7 +150,16 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.findJQuery('#popup-type').text(TYPE_MAP[this._eventTypeCode]);
+        this.eventTypeJQuery.text(TYPE_MAP[this._eventTypeCode]);
+    }
+    private _eventTypeJQuery: JQuery = null;
+    public get eventTypeJQuery(): JQuery 
+    {
+        if (!this._eventTypeJQuery)
+        {
+            this._eventTypeJQuery = this.findJQuery('#popup-type');
+        }
+        return this._eventTypeJQuery;
     }
 
     private _startDate: DateTime = null;
@@ -130,8 +175,26 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.findJQuery('#popup-date').text(this._startDate.format('MMMM D, YYYY'));
-        this.findJQuery('#popup-time-start').text(this._startDate.format('h:mm A'));
+        this.dateJQuery.text(this._startDate.format('MMMM D, YYYY'));
+        this.startTimeJQuery.text(this._startDate.format('h:mm A'));
+    }
+    private _dateJQuery: JQuery = null;
+    public get dateJQuery(): JQuery 
+    {
+        if (!this._dateJQuery)
+        {
+            this._dateJQuery = this.findJQuery('#popup-date');
+        }
+        return this._dateJQuery;
+    }
+    private _startTimeJQuery: JQuery = null;
+    public get startTimeJQuery(): JQuery
+    {
+        if (!this._startTimeJQuery)
+        {
+            this._startTimeJQuery = this.findJQuery('#popup-time-start');
+        }
+        return this._startTimeJQuery;
     }
 
     private _endDate: DateTime = null;
@@ -147,7 +210,16 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.findJQuery('#popup-time-end').text(this._endDate.format('h:mm A'));
+        this.endTimeJQuery.text(this._endDate.format('h:mm A'));
+    }
+    private _endTimeJQuery: JQuery = null;
+    public get endTimeJQuery(): JQuery 
+    {
+        if (!this._endTimeJQuery)
+        {
+            this._endTimeJQuery = this.findJQuery('#popup-time-end');
+        }
+        return this._endTimeJQuery;
     }
 
     private _lastEdited: DateTime = null;
@@ -163,7 +235,16 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.findJQuery('#popup-last-edited-time').text(this._lastEdited.format('MM/DD/YYYY'));
+        this.lastEditedJQuery.text(this._lastEdited.format('MM/DD/YYYY'));
+    }
+    private _lastEditedJQuery: JQuery = null;
+    public get lastEditedJQuery(): JQuery
+    {
+        if (!this._lastEditedJQuery)
+        {
+            this._lastEditedJQuery = this.findJQuery('#popup-last-edited-time');
+        }
+        return this._lastEditedJQuery;
     }
 
     public static get cssClass(): string
@@ -198,21 +279,26 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
                 });
     }
 
-    // can be overridden in subclasses
     public refresh(): void
     {
-        if (this.eventsModel === null || this.eventsModel === undefined)
+        this.refreshWithEventsModel(this.eventsModel);
+    }
+
+    // can be overridden in subclasses
+    public refreshWithEventsModel(eventsModel: IEventsModel): void
+    {
+        if (eventsModel === null || eventsModel === undefined)
         {
             return;
         }
 
-        this.title = this.eventsModel.title;
-        this.description = this.eventsModel.description;
-        this.sectionId = this.eventsModel.sectionId;
-        this.eventTypeCode = this.eventsModel.eventTypeCode;
-        this.startDate = this.eventsModel.startDate;
-        this.endDate = this.eventsModel.endDate;
-        this.lastEdited = this.eventsModel.lastEdited;
+        this.title = eventsModel.title;
+        this.description = eventsModel.description;
+        this.sectionId = eventsModel.sectionId;
+        this.eventTypeCode = eventsModel.eventTypeCode;
+        this.startDate = eventsModel.startDate;
+        this.endDate = eventsModel.endDate;
+        this.lastEdited = eventsModel.lastEdited;
     }
 }
 

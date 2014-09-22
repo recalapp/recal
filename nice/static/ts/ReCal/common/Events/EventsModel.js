@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", '../../../library/DateTime/DateTime'], function(require, exports, DateTime) {
     // when we support todos in addition to events, this class will become a base class (?)
     var EventsModel = (function () {
         function EventsModel(arg) {
@@ -17,9 +17,9 @@ define(["require", "exports"], function(require, exports) {
             this.description = arg.description;
             this.sectionId = arg.sectionId;
             this.eventTypeCode = arg.eventTypeCode;
-            this.startDate = arg.startDate;
-            this.endDate = arg.endDate;
-            this.lastEdited = arg.lastEdited;
+            this.startDate = new DateTime(arg.startDate);
+            this.endDate = new DateTime(arg.endDate);
+            this.lastEdited = new DateTime(arg.lastEdited);
         }
         Object.defineProperty(EventsModel.prototype, "eventId", {
             get: function () {

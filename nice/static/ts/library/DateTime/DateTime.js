@@ -7,6 +7,8 @@ define(["require", "exports", 'moment', '../Core/ComparableResult', '../Core/Inv
             if (arg) {
                 if (arg instanceof Date) {
                     this._momentObject = moment(arg);
+                } else if (arg instanceof DateTime) {
+                    this.unix = arg.unix;
                 } else {
                     this.unix = arg.unix();
                 }

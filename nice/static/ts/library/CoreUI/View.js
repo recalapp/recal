@@ -331,12 +331,8 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             return this._$el.find(cssSelector);
         };
 
-        /**
-        * Returns true if this view's element mataches
-        * the css selector
-        */
-        View.prototype.is = function (cssSelector) {
-            return this._$el.is(cssSelector);
+        View.prototype.is = function (arg) {
+            return this._$el.is(arg);
         };
 
         /**

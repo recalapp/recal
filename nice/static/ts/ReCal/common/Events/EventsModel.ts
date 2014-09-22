@@ -12,9 +12,9 @@ class EventsModel implements Events.IEventsModel
         this.description = arg.description;
         this.sectionId = arg.sectionId;
         this.eventTypeCode = arg.eventTypeCode;
-        this.startDate = arg.startDate;
-        this.endDate = arg.endDate;
-        this.lastEdited = arg.lastEdited;
+        this.startDate = new DateTime(arg.startDate);
+        this.endDate = new DateTime(arg.endDate);
+        this.lastEdited = new DateTime(arg.lastEdited);
     }
 
     private _eventId: string = null;

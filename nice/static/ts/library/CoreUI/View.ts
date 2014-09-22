@@ -376,9 +376,11 @@ class View implements IView
       * Returns true if this view's element mataches
       * the css selector
       */
+    public is($element: JQuery): boolean
     public is(cssSelector: string): boolean
+    public is(arg: any): boolean
     {
-        return this._$el.is(cssSelector);
+        return this._$el.is(arg);
     }
 
     /**

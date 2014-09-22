@@ -83,6 +83,7 @@ class DateTime implements Comparable
 
 
     constructor();
+    constructor(toCopy: DateTime);
     constructor(momentObject: Moment);
     constructor(toParse: Date);
     constructor(arg?: any)
@@ -92,6 +93,10 @@ class DateTime implements Comparable
             if (arg instanceof Date)
             {
                 this._momentObject = moment(<Date>arg);
+            }
+            else if (arg instanceof DateTime)
+            {
+                this.unix = arg.unix;
             }
             else
             {

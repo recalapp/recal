@@ -117,6 +117,7 @@ export interface IView
       * Returns true if this view's element mataches
       * the css selector
       */
+    is($element: JQuery): boolean
     is(cssSelector: string): boolean;
 
     /**

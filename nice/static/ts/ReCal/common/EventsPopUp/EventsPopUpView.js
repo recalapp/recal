@@ -14,13 +14,22 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this._encodeDecodeProxy = new EncodeDecodeProxy();
             this._eventsModel = null;
             this._title = null;
+            this._titleJQuery = null;
             this._description = null;
+            this._descriptionJQuery = null;
             this._location = null;
+            this._locationJQuery = null;
             this._sectionId = null;
+            this._sectionJQuery = null;
             this._eventTypeCode = null;
+            this._eventTypeJQuery = null;
             this._startDate = null;
+            this._dateJQuery = null;
+            this._startTimeJQuery = null;
             this._endDate = null;
+            this._endTimeJQuery = null;
             this._lastEdited = null;
+            this._lastEditedJQuery = null;
             this._closeButton = null;
             this._clickToEditViewFactory = null;
             this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
@@ -70,7 +79,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._title === null || this._title === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-title').text(this._title);
+                this.titleJQuery.text(this._title);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "titleJQuery", {
+            get: function () {
+                if (!this._titleJQuery) {
+                    this._titleJQuery = this.findJQuery('#popup-title');
+                }
+                return this._titleJQuery;
             },
             enumerable: true,
             configurable: true
@@ -88,7 +108,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._description === null || this._description === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-desc').html(this.encodeDecodeProxy.newLinesToBr(this.encodeDecodeProxy.htmlEncode(this._description)));
+                this.descriptionJQuery.html(this.encodeDecodeProxy.newLinesToBr(this.encodeDecodeProxy.htmlEncode(this._description)));
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "descriptionJQuery", {
+            get: function () {
+                if (!this._descriptionJQuery) {
+                    this._descriptionJQuery = this.findJQuery('#popup-desc');
+                }
+                return this._descriptionJQuery;
             },
             enumerable: true,
             configurable: true
@@ -106,7 +137,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._location === null || this._location === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-loc').text(this._location);
+                this.locationJQuery.text(this._location);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "locationJQuery", {
+            get: function () {
+                if (!this._locationJQuery) {
+                    this._locationJQuery = this.findJQuery('#popup-loc');
+                }
+                return this._locationJQuery;
             },
             enumerable: true,
             configurable: true
@@ -124,7 +166,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._sectionId === null || this._sectionId === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-section').text(SECTION_MAP[this._sectionId]);
+                this.sectionJQuery.text(SECTION_MAP[this._sectionId]);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "sectionJQuery", {
+            get: function () {
+                if (!this._sectionJQuery) {
+                    this._sectionJQuery = this.findJQuery('#popup-section');
+                }
+                return this._sectionJQuery;
             },
             enumerable: true,
             configurable: true
@@ -143,7 +196,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._eventTypeCode === null || this._eventTypeCode === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-type').text(TYPE_MAP[this._eventTypeCode]);
+                this.eventTypeJQuery.text(TYPE_MAP[this._eventTypeCode]);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "eventTypeJQuery", {
+            get: function () {
+                if (!this._eventTypeJQuery) {
+                    this._eventTypeJQuery = this.findJQuery('#popup-type');
+                }
+                return this._eventTypeJQuery;
             },
             enumerable: true,
             configurable: true
@@ -161,8 +225,30 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._startDate === null || this._startDate === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-date').text(this._startDate.format('MMMM D, YYYY'));
-                this.findJQuery('#popup-time-start').text(this._startDate.format('h:mm A'));
+                this.dateJQuery.text(this._startDate.format('MMMM D, YYYY'));
+                this.startTimeJQuery.text(this._startDate.format('h:mm A'));
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "dateJQuery", {
+            get: function () {
+                if (!this._dateJQuery) {
+                    this._dateJQuery = this.findJQuery('#popup-date');
+                }
+                return this._dateJQuery;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "startTimeJQuery", {
+            get: function () {
+                if (!this._startTimeJQuery) {
+                    this._startTimeJQuery = this.findJQuery('#popup-time-start');
+                }
+                return this._startTimeJQuery;
             },
             enumerable: true,
             configurable: true
@@ -180,7 +266,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._endDate === null || this._endDate === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-time-end').text(this._endDate.format('h:mm A'));
+                this.endTimeJQuery.text(this._endDate.format('h:mm A'));
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "endTimeJQuery", {
+            get: function () {
+                if (!this._endTimeJQuery) {
+                    this._endTimeJQuery = this.findJQuery('#popup-time-end');
+                }
+                return this._endTimeJQuery;
             },
             enumerable: true,
             configurable: true
@@ -198,7 +295,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._lastEdited === null || this._lastEdited === undefined) {
                     return;
                 }
-                this.findJQuery('#popup-last-edited-time').text(this._lastEdited.format('MM/DD/YYYY'));
+                this.lastEditedJQuery.text(this._lastEdited.format('MM/DD/YYYY'));
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "lastEditedJQuery", {
+            get: function () {
+                if (!this._lastEditedJQuery) {
+                    this._lastEditedJQuery = this.findJQuery('#popup-last-edited-time');
+                }
+                return this._lastEditedJQuery;
             },
             enumerable: true,
             configurable: true
@@ -228,19 +336,23 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             configurable: true
         });
 
-        // can be overridden in subclasses
         EventsPopUpView.prototype.refresh = function () {
-            if (this.eventsModel === null || this.eventsModel === undefined) {
+            this.refreshWithEventsModel(this.eventsModel);
+        };
+
+        // can be overridden in subclasses
+        EventsPopUpView.prototype.refreshWithEventsModel = function (eventsModel) {
+            if (eventsModel === null || eventsModel === undefined) {
                 return;
             }
 
-            this.title = this.eventsModel.title;
-            this.description = this.eventsModel.description;
-            this.sectionId = this.eventsModel.sectionId;
-            this.eventTypeCode = this.eventsModel.eventTypeCode;
-            this.startDate = this.eventsModel.startDate;
-            this.endDate = this.eventsModel.endDate;
-            this.lastEdited = this.eventsModel.lastEdited;
+            this.title = eventsModel.title;
+            this.description = eventsModel.description;
+            this.sectionId = eventsModel.sectionId;
+            this.eventTypeCode = eventsModel.eventTypeCode;
+            this.startDate = eventsModel.startDate;
+            this.endDate = eventsModel.endDate;
+            this.lastEdited = eventsModel.lastEdited;
         };
         return EventsPopUpView;
     })(PopUpView);
