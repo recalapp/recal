@@ -30,8 +30,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
 
             // when events change
-            EventsMan_addUpdateListener(function () {
-                // TODO check if visible
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDataChanged, function (ev) {
                 _this.reload();
             });
 

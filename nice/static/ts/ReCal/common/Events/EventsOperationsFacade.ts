@@ -2,6 +2,8 @@ import DateTime = require('../../../library/DateTime/DateTime');
 import Events = require('./Events');
 import EventsRetriever = require('./EventsRetriever');
 import EventsSelectionManager = require('./EventsSelectionManager');
+import EventsServerCommunicator = require('./EventsServerCommunicator');
+import EventsStoreCoordinator = require('./EventsStoreCoordinator');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 
 import IEventsModel = Events.IEventsModel;
@@ -15,6 +17,29 @@ import IEventsOperationsFacade = Events.IEventsOperationsFacade;
   */
 class EventsOperationsFacade implements IEventsOperationsFacade
 {
+    private _eventsStoreCoordinator: EventsStoreCoordinator = null;
+    private get eventsStoreCoordinator(): EventsStoreCoordinator 
+    {
+        if (!this._eventsStoreCoordinator)
+        {
+            this._eventsStoreCoordinator = new EventsStoreCoordinator({
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+            });
+        }
+        return this._eventsStoreCoordinator;
+    }
+    
+    private _eventsServerCommunicator: EventsServerCommunicator = null;
+    private get eventsServerCommunicator(): EventsServerCommunicator
+    {
+        if (!this._eventsServerCommunicator)
+        {
+            this._eventsServerCommunicator = new EventsServerCommunicator({
+                eventsStoreCoordinator: this.eventsStoreCoordinator,
+            });
+        }
+        return this._eventsServerCommunicator;
+    }
     /**
       * Global Browser Events Manager
       */
@@ -24,6 +49,7 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     constructor(dependencies: Events.EventsOperationsFacadeDependencies)
     {
         this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+        this.eventsServerCommunicator.pullEvents();
     }
 
     /***************************************************************************
@@ -34,7 +60,9 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     {
         if (this._eventsRetriever === null || this._eventsRetriever === undefined)
         {
-            this._eventsRetriever = new EventsRetriever();
+            this._eventsRetriever = new EventsRetriever({
+                eventsStoreCoordinator: this.eventsStoreCoordinator,
+            });
         }
         return this._eventsRetriever;
     }

@@ -42,11 +42,11 @@ class ServerConnection implements IServerConnection
     private _activeCalls: number = 0;
     private get activeCalls(): number
     {
-        return this.activeCalls;
+        return this._activeCalls;
     }
     private set activeCalls(value: number)
     {
-        this.activeCalls = value;
+        this._activeCalls = value;
     }
 
 

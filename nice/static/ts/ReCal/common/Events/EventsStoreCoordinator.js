@@ -1,12 +1,17 @@
-define(["require", "exports", '../../../library/DataStructures/Dictionary'], function(require, exports, Dictionary) {
+define(["require", "exports", '../../../library/DataStructures/Dictionary', '../ReCalCommonBrowserEvents'], function(require, exports, Dictionary, ReCalCommonBrowserEvents) {
     /**
     * The class responsible to actually storing the events locally.
     * TODO also responsible for editing?
     */
     var EventsStoreCoordinator = (function () {
-        function EventsStoreCoordinator() {
+        function EventsStoreCoordinator(dependencies) {
             this._eventsRegistry = null;
             this._eventIdsSorted = null;
+            /**
+            * Global Browser Events Manager
+            */
+            this._globalBrowserEventsManager = null;
+            this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this.clearLocalEvents();
         }
         Object.defineProperty(EventsStoreCoordinator.prototype, "eventsRegistry", {
@@ -37,6 +42,14 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary'], fun
             configurable: true
         });
 
+        Object.defineProperty(EventsStoreCoordinator.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                return this._globalBrowserEventsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         /**
         * Add the specified events to the events store. If an existing event with
         * the same id exists, this replaces it.
@@ -45,6 +58,7 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary'], fun
             for (var i = 0; i < eventsModels.length; ++i) {
                 this.eventsRegistry.set(eventsModels[i].eventId, eventsModels[i]);
             }
+            this.eventsDataChanged();
         };
 
         /**
@@ -57,6 +71,7 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary'], fun
                     this.eventsRegistry.unset(eventIds[i]);
                 }
             }
+            this.eventsDataChanged();
         };
 
         /**
@@ -64,7 +79,7 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary'], fun
         */
         EventsStoreCoordinator.prototype.clearLocalEvents = function () {
             this.eventsRegistry = new Dictionary();
-            this._eventIdsSorted = null;
+            this.eventsDataChanged();
         };
 
         /**
@@ -86,6 +101,11 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary'], fun
                 }
             }
             return ret;
+        };
+
+        EventsStoreCoordinator.prototype.eventsDataChanged = function () {
+            this._eventIdsSorted = null;
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
         };
         return EventsStoreCoordinator;
     })();

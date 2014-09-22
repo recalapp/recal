@@ -39,10 +39,10 @@ define(["require", "exports", 'jquery', '../Core/InvalidActionException', '../Da
 
         Object.defineProperty(ServerConnection.prototype, "activeCalls", {
             get: function () {
-                return this.activeCalls;
+                return this._activeCalls;
             },
             set: function (value) {
-                this.activeCalls = value;
+                this._activeCalls = value;
             },
             enumerable: true,
             configurable: true

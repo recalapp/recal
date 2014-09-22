@@ -24,7 +24,6 @@ import ITableViewCell = Table.ITableViewCell;
 import ITableViewHeaderView = Table.ITableViewHeaderView;
 import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
-declare function EventsMan_addUpdateListener(callBack: ()=>void): void;
 declare function LO_hideLoading(message: string): void;
 declare function LO_showLoading(message: string): void;
 declare var SE_id;
@@ -60,8 +59,8 @@ class AgendaTableViewController extends TableViewController
         this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
         // when events change
-        EventsMan_addUpdateListener(()=>{
-            // TODO check if visible
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDataChanged, (ev: JQueryEventObject)=>
+        {
             this.reload();
         });
 

@@ -1,6 +1,9 @@
 import Dictionary = require('../../../library/DataStructures/Dictionary');
 import Events = require('./Events');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
+import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 
+import EventsStoreCoordinatorDependencies = Events.EventsStoreCoordinatorDependencies;
 import IEventsModel = Events.IEventsModel;
 
 /**
@@ -28,8 +31,15 @@ class EventsStoreCoordinator
         return this._eventIdsSorted;
     }
 
-    constructor()
+    /**
+      * Global Browser Events Manager
+      */
+    private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
+
+    constructor(dependencies: EventsStoreCoordinatorDependencies)
     {
+        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         this.clearLocalEvents();
     }
 
@@ -43,6 +53,7 @@ class EventsStoreCoordinator
         {
             this.eventsRegistry.set(eventsModels[i].eventId, eventsModels[i]);
         }
+        this.eventsDataChanged();
     }
 
     /**
@@ -58,6 +69,7 @@ class EventsStoreCoordinator
                 this.eventsRegistry.unset(eventIds[i]);
             }
         }
+        this.eventsDataChanged();
     }
 
     /**
@@ -66,7 +78,7 @@ class EventsStoreCoordinator
     public clearLocalEvents(): void
     {
         this.eventsRegistry = new Dictionary<string, IEventsModel>();
-        this._eventIdsSorted = null;
+        this.eventsDataChanged();
     }
     
     /**
@@ -93,6 +105,12 @@ class EventsStoreCoordinator
             }
         }
         return ret;
+    }
+
+    private eventsDataChanged()
+    {
+        this._eventIdsSorted = null;
+        this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
     }
 }
 

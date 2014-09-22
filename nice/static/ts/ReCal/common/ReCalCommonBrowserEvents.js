@@ -7,6 +7,7 @@ define(["require", "exports"], function(require, exports) {
         ReCalCommonBrowserEvents.popUpShouldClose = 'popUpShouldClose';
 
         ReCalCommonBrowserEvents.eventSelectionChanged = 'eventSelectionChanged';
+        ReCalCommonBrowserEvents.eventsDataChanged = 'eventsDataChanged';
         return ReCalCommonBrowserEvents;
     })();
 

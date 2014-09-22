@@ -1,4 +1,4 @@
-define(["require", "exports", './EventsRetriever', './EventsSelectionManager'], function(require, exports, EventsRetriever, EventsSelectionManager) {
+define(["require", "exports", './EventsRetriever', './EventsSelectionManager', './EventsServerCommunicator', './EventsStoreCoordinator'], function(require, exports, EventsRetriever, EventsSelectionManager, EventsServerCommunicator, EventsStoreCoordinator) {
     /**
     * IEventsOperationsFacade is the class responsible for all operations
     * related to events in the persepective of any events client. That is, to
@@ -7,6 +7,8 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager'], 
     */
     var EventsOperationsFacade = (function () {
         function EventsOperationsFacade(dependencies) {
+            this._eventsStoreCoordinator = null;
+            this._eventsServerCommunicator = null;
             /**
             * Global Browser Events Manager
             */
@@ -20,7 +22,34 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager'], 
             *************************************************************************/
             this._eventsSelectionManager = null;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+            this.eventsServerCommunicator.pullEvents();
         }
+        Object.defineProperty(EventsOperationsFacade.prototype, "eventsStoreCoordinator", {
+            get: function () {
+                if (!this._eventsStoreCoordinator) {
+                    this._eventsStoreCoordinator = new EventsStoreCoordinator({
+                        globalBrowserEventsManager: this.globalBrowserEventsManager
+                    });
+                }
+                return this._eventsStoreCoordinator;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsOperationsFacade.prototype, "eventsServerCommunicator", {
+            get: function () {
+                if (!this._eventsServerCommunicator) {
+                    this._eventsServerCommunicator = new EventsServerCommunicator({
+                        eventsStoreCoordinator: this.eventsStoreCoordinator
+                    });
+                }
+                return this._eventsServerCommunicator;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(EventsOperationsFacade.prototype, "globalBrowserEventsManager", {
             get: function () {
                 return this._globalBrowserEventsManager;
@@ -32,7 +61,9 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager'], 
         Object.defineProperty(EventsOperationsFacade.prototype, "eventsRetriever", {
             get: function () {
                 if (this._eventsRetriever === null || this._eventsRetriever === undefined) {
-                    this._eventsRetriever = new EventsRetriever();
+                    this._eventsRetriever = new EventsRetriever({
+                        eventsStoreCoordinator: this.eventsStoreCoordinator
+                    });
                 }
                 return this._eventsRetriever;
             },

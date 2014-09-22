@@ -10,6 +10,10 @@ export interface EventsSelectionManagerDependencies
 {
     globalBrowserEventsManager: GlobalBrowserEventsManager;
 }
+export interface EventsStoreCoordinatorDependencies
+{
+    globalBrowserEventsManager: GlobalBrowserEventsManager;
+}
 
 export interface EventsRetrieverDependencies
 {
