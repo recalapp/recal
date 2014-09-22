@@ -1,5 +1,4 @@
 define(["require", "exports", '../../../library/Core/ComparableResult'], function(require, exports, ComparableResult) {
-    // TODO implement
     var EventsRetriever = (function () {
         function EventsRetriever(dependencies) {
             this._eventsStoreCoordinator = null;

@@ -3,6 +3,7 @@
 import $ = require('jquery');
 
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
+import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Events = require('../../common/Events/Events');
 import EventsPopUp = require('../EventsPopUp/EventsPopUp');
@@ -13,6 +14,7 @@ import ReCalSidebar = require('./ReCalSidebar');
 import Sidebar = require('../../../library/Sidebar/Sidebar');
 import ViewController = require('../../../library/CoreUI/ViewController');
 
+import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView
 import IReCalSidebarViewController = ReCalSidebar.IReCalSidebarViewController;
@@ -58,12 +60,19 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
     private _eventsOperationsFacade: IEventsOperationsFacade = null;
     private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
 
+    /**
+      * ClickToEditView Factory
+      */
+    private _clickToEditViewFactory: IClickToEditViewFactory = null;
+    private get clickToEditViewFactory(): IClickToEditViewFactory { return this._clickToEditViewFactory; }
+
     constructor(sidebarView: ISidebarView, dependencies: ReCalSidebar.ReCalSidebarViewControllerDependencies)
     {
         super(sidebarView);
         this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
         this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+        this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
         this.initializePopUp();
     }
 
@@ -150,6 +159,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                             // create the popup view
                             var newPopUpView = new EventsPopUpView({
                                 viewTemplateRetriever: this.viewTemplateRetriever,
+                                clickToEditViewFactory: this.clickToEditViewFactory,
                             });
                             // set events model
                             var eventsModel = this.eventsOperationsFacade.getEventById(mainEventId);

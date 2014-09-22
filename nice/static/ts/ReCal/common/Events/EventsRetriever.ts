@@ -10,7 +10,6 @@ import IEventsModel = Events.IEventsModel;
 declare function EventsMan_getEventByID(id: string): any;
 declare function EventsMan_getEventIDForRange(start: number, end: number): string[];
 
-// TODO implement
 class EventsRetriever
 {
     private _eventsStoreCoordinator: EventsStoreCoordinator = null;

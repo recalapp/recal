@@ -4,6 +4,7 @@ import EventsRetriever = require('./EventsRetriever');
 import EventsSelectionManager = require('./EventsSelectionManager');
 import EventsServerCommunicator = require('./EventsServerCommunicator');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
+import EventsVisibilityManager = require('./EventsVisibilityManager');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 
 import IEventsModel = Events.IEventsModel;
@@ -36,10 +37,22 @@ class EventsOperationsFacade implements IEventsOperationsFacade
         {
             this._eventsServerCommunicator = new EventsServerCommunicator({
                 eventsStoreCoordinator: this.eventsStoreCoordinator,
+                eventsVisibilityManager: this.eventsVisibilityManager,
             });
         }
         return this._eventsServerCommunicator;
     }
+    
+    private _eventsVisibilityManager: EventsVisibilityManager = null;
+    private get eventsVisibilityManager(): EventsVisibilityManager
+    {
+        if (!this._eventsVisibilityManager)
+        {
+            this._eventsVisibilityManager = new EventsVisibilityManager();
+        }
+        return this._eventsVisibilityManager;
+    }
+
     /**
       * Global Browser Events Manager
       */
@@ -62,6 +75,7 @@ class EventsOperationsFacade implements IEventsOperationsFacade
         {
             this._eventsRetriever = new EventsRetriever({
                 eventsStoreCoordinator: this.eventsStoreCoordinator,
+                eventsVisibilityManager: this.eventsVisibilityManager,
             });
         }
         return this._eventsRetriever;

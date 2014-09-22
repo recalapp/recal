@@ -14,8 +14,13 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             */
             this._globalBrowserEventsManager = null;
             this._canvasView = null;
+            /**
+            * ClickToEditView Factory
+            */
+            this._clickToEditViewFactory = null;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this._canvasView = dependencies.canvasView;
+            this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
             this.initialize();
         }
         Object.defineProperty(CanvasPopUpContainerViewController.prototype, "globalBrowserEventsManager", {
@@ -29,6 +34,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         Object.defineProperty(CanvasPopUpContainerViewController.prototype, "canvasView", {
             get: function () {
                 return this._canvasView;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(CanvasPopUpContainerViewController.prototype, "clickToEditViewFactory", {
+            get: function () {
+                return this._clickToEditViewFactory;
             },
             enumerable: true,
             configurable: true

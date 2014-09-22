@@ -7,6 +7,8 @@ import Calendar = require('../../library/Calendar/Calendar');
 import CalendarView = require('../../library/Calendar/CalendarView');
 import CanvasPopUpContainer = require('../common/CanvasPopUpContainer/CanvasPopUpContainer');
 import CanvasPopUpContainerViewController = require('../common/CanvasPopUpContainer/CanvasPopUpContainerViewController');
+import ClickToEdit = require('../../library/ClickToEdit/ClickToEdit');
+import ClickToEditViewFactory = require('../../library/ClickToEdit/ClickToEditViewFactory');
 import CoreUI = require('../../library/CoreUI/CoreUI');
 import DashboardCalendarViewController = require('./DashboardCalendar/DashboardCalendarViewController');
 import Events = require('../common/Events/Events');
@@ -27,6 +29,7 @@ import ViewTemplateRetriever = require('../../library/CoreUI/ViewTemplateRetriev
 import ICalendarView = Calendar.ICalendarView;
 import ICalendarViewController = Calendar.ICalendarViewController;
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController;
+import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IReCalSidebarViewController = ReCalSidebar.IReCalSidebarViewController;
 import ISidebarNotificationsManager = Notifications.ISidebarNotificationsManager;
@@ -90,6 +93,15 @@ class DashboardViewController extends ViewController
             });
         }
         return this._eventsOperationsFacade; 
+    }
+    private _clickToEditViewFactory: IClickToEditViewFactory = null;
+    private get clickToEditViewFactory(): IClickToEditViewFactory
+    {
+        if (!this._clickToEditViewFactory)
+        {
+            this._clickToEditViewFactory = new ClickToEditViewFactory();
+        }
+        return this._clickToEditViewFactory;
     }
 
     /**
@@ -171,6 +183,7 @@ class DashboardViewController extends ViewController
             viewTemplateRetriever: this.viewTemplateRetriever,
             globalBrowserEventsManager: this.globalBrowserEventsManager,
             eventsOperationsFacade: this.eventsOperationsFacade,
+            clickToEditViewFactory: this.clickToEditViewFactory,
         });
         this.addChildViewController(sidebarVC);
         this.sidebarViewController = sidebarVC;
@@ -185,6 +198,7 @@ class DashboardViewController extends ViewController
         var popUpCanvasVC: ICanvasPopUpContainerViewController = new CanvasPopUpContainerViewController(popUpCanvasView, {
             globalBrowserEventsManager: this.globalBrowserEventsManager,
             canvasView: this.view,
+            clickToEditViewFactory: this.clickToEditViewFactory,
         });
         this.addChildViewController(popUpCanvasVC);
         this.canvasPopUpContainerViewController = popUpCanvasVC;

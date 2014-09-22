@@ -22,12 +22,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this._endDate = null;
             this._lastEdited = null;
             this._closeButton = null;
+            this._clickToEditViewFactory = null;
+            this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
 
             // TODO set up buttons
             // set up close button
             this._closeButton = FocusableView.fromJQuery(this.findJQuery('#close-button'));
             this.closeButton.attachEventHandler(BrowserEvents.click, function (ev) {
                 _this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
+            });
+            this.findJQuery('.clickToEdit').each(function (index, element) {
+                var $element = $(element);
+                var clickToEditView = _this.clickToEditViewFactory.createFromJQuery($element);
             });
         }
         Object.defineProperty(EventsPopUpView.prototype, "encodeDecodeProxy", {
@@ -209,6 +215,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         Object.defineProperty(EventsPopUpView.prototype, "closeButton", {
             get: function () {
                 return this._closeButton;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "clickToEditViewFactory", {
+            get: function () {
+                return this._clickToEditViewFactory;
             },
             enumerable: true,
             configurable: true

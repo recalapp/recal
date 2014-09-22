@@ -1,4 +1,5 @@
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
+import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
 import CanvasPopUpContainer = require('./CanvasPopUpContainer');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
@@ -10,6 +11,7 @@ import ViewController = require('../../../library/CoreUI/ViewController');
 
 import CanvasPopUpContainerViewControllerDependencies = CanvasPopUpContainer.CanvasPopUpContainerViewControllerDependencies
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController
+import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IPopUpView = PopUp.IPopUpView;
 import IView = CoreUI.IView;
 
@@ -24,11 +26,18 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
     private _canvasView: IView = null;
     private get canvasView(): IView { return this._canvasView; }
 
+    /**
+      * ClickToEditView Factory
+      */
+    private _clickToEditViewFactory: IClickToEditViewFactory = null;
+    private get clickToEditViewFactory(): IClickToEditViewFactory { return this._clickToEditViewFactory; }
+    
     constructor(view: IView, dependencies: CanvasPopUpContainerViewControllerDependencies)
     {
         super(view);
         this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         this._canvasView = dependencies.canvasView;
+        this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
         this.initialize();
     }
 

@@ -1,4 +1,4 @@
-define(["require", "exports", './EventsRetriever', './EventsSelectionManager', './EventsServerCommunicator', './EventsStoreCoordinator'], function(require, exports, EventsRetriever, EventsSelectionManager, EventsServerCommunicator, EventsStoreCoordinator) {
+define(["require", "exports", './EventsRetriever', './EventsSelectionManager', './EventsServerCommunicator', './EventsStoreCoordinator', './EventsVisibilityManager'], function(require, exports, EventsRetriever, EventsSelectionManager, EventsServerCommunicator, EventsStoreCoordinator, EventsVisibilityManager) {
     /**
     * IEventsOperationsFacade is the class responsible for all operations
     * related to events in the persepective of any events client. That is, to
@@ -9,6 +9,7 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager', '
         function EventsOperationsFacade(dependencies) {
             this._eventsStoreCoordinator = null;
             this._eventsServerCommunicator = null;
+            this._eventsVisibilityManager = null;
             /**
             * Global Browser Events Manager
             */
@@ -41,10 +42,22 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager', '
             get: function () {
                 if (!this._eventsServerCommunicator) {
                     this._eventsServerCommunicator = new EventsServerCommunicator({
-                        eventsStoreCoordinator: this.eventsStoreCoordinator
+                        eventsStoreCoordinator: this.eventsStoreCoordinator,
+                        eventsVisibilityManager: this.eventsVisibilityManager
                     });
                 }
                 return this._eventsServerCommunicator;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsOperationsFacade.prototype, "eventsVisibilityManager", {
+            get: function () {
+                if (!this._eventsVisibilityManager) {
+                    this._eventsVisibilityManager = new EventsVisibilityManager();
+                }
+                return this._eventsVisibilityManager;
             },
             enumerable: true,
             configurable: true
@@ -62,7 +75,8 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager', '
             get: function () {
                 if (this._eventsRetriever === null || this._eventsRetriever === undefined) {
                     this._eventsRetriever = new EventsRetriever({
-                        eventsStoreCoordinator: this.eventsStoreCoordinator
+                        eventsStoreCoordinator: this.eventsStoreCoordinator,
+                        eventsVisibilityManager: this.eventsVisibilityManager
                     });
                 }
                 return this._eventsRetriever;

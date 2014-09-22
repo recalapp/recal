@@ -3,13 +3,14 @@
 
 import $ = require('jquery');
 
+import ClickToEdit = require('./ClickToEdit');
 import BrowserEvents = require("../Core/BrowserEvents");
 import FocusableView = require('../CoreUI/FocusableView');
 import EncodeDecodeProxy = require("../Core/EncodeDecodeProxy");
 import InvalidArgumentException = require('../Core/InvalidArgumentException');
 import Set = require('../DataStructures/Set');
 
-class ClickToEditBaseView extends FocusableView
+class ClickToEditBaseView extends FocusableView implements ClickToEdit.IClickToEditView
 {
     private static _encodeDecodeProxy: EncodeDecodeProxy = null;
     public get encodeDecodeProxy(): EncodeDecodeProxy

@@ -2,6 +2,7 @@
 
 import $ = require('jquery');
 
+import ClickToEdit = require('./ClickToEdit');
 import ClickToEditBaseView = require('./ClickToEditBaseView');
 import ClickToEditCommon = require('./ClickToEditCommon');
 import ClickToEditTextView = require('./ClickToEditTextView');
@@ -10,12 +11,20 @@ import ClickToEditType = require('./ClickToEditType');
 import NotImplementedException = require('../Core/NotImplementedException');
 import Set = require('../DataStructures/Set');
 
+import IClickToEditView = ClickToEdit.IClickToEditView;
+
 class ClickToEditViewFactory
 {
     private _customTypes = new Set<string>();
     private get customTypes(): Set<string> { return this._customTypes; }
 
-    public fromJQuery($element: JQuery) : ClickToEditBaseView
+
+    /**
+      * Create a new ClickToEditView instance. $element must have data-cte_type
+      * set to a number that correspondsto the enum representing 
+      * clickToEditType.
+      */
+    public createFromJQuery($element: JQuery): IClickToEditView
     {
         var type = $element.data(ClickToEditCommon.DataType) || ClickToEditType.text;
         var clickToEditView: ClickToEditBaseView = null;

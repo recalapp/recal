@@ -31,9 +31,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             * Events Operations Facade
             */
             this._eventsOperationsFacade = null;
+            /**
+            * ClickToEditView Factory
+            */
+            this._clickToEditViewFactory = null;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
             this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+            this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
             this.initializePopUp();
         }
         Object.defineProperty(ReCalSidebarViewController.prototype, "currentPopUpView", {
@@ -66,6 +71,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
         Object.defineProperty(ReCalSidebarViewController.prototype, "eventsOperationsFacade", {
             get: function () {
                 return this._eventsOperationsFacade;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(ReCalSidebarViewController.prototype, "clickToEditViewFactory", {
+            get: function () {
+                return this._clickToEditViewFactory;
             },
             enumerable: true,
             configurable: true
@@ -144,7 +157,8 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     if (_this.currentPopUpView === null || _this.currentPopUpView === undefined) {
                         // create the popup view
                         var newPopUpView = new EventsPopUpView({
-                            viewTemplateRetriever: _this.viewTemplateRetriever
+                            viewTemplateRetriever: _this.viewTemplateRetriever,
+                            clickToEditViewFactory: _this.clickToEditViewFactory
                         });
 
                         // set events model

@@ -12,7 +12,12 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditC
             configurable: true
         });
 
-        ClickToEditViewFactory.prototype.fromJQuery = function ($element) {
+        /**
+        * Create a new ClickToEditView instance. $element must have data-cte_type
+        * set to a number that correspondsto the enum representing
+        * clickToEditType.
+        */
+        ClickToEditViewFactory.prototype.createFromJQuery = function ($element) {
             var type = $element.data(ClickToEditCommon.DataType) || 0 /* text */;
             var clickToEditView = null;
             switch (type) {

@@ -1,6 +1,7 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
+import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import DateTime = require('../../../library/DateTime/DateTime');
 import EncodeDecodeProxy = require('../../../library/Core/EncodeDecodeProxy');
@@ -11,6 +12,8 @@ import PopUpView = require('../../../library/PopUp/PopUpView');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 
 import EventsPopUpViewDependencies = EventsPopUp.EventsPopUpViewDependencies;
+import IClickToEditView = ClickToEdit.IClickToEditView;
+import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsModel = Events.IEventsModel;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView;
 
@@ -169,14 +172,15 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
     }
 
     private _closeButton: FocusableView = null;
-    private get closeButton(): FocusableView
-    {
-        return this._closeButton;
-    }
+    private get closeButton(): FocusableView { return this._closeButton; }
+
+    private _clickToEditViewFactory: IClickToEditViewFactory = null;
+    private get clickToEditViewFactory(): IClickToEditViewFactory { return this._clickToEditViewFactory; }
 
     constructor(dependencies: EventsPopUpViewDependencies)
     {
         super(dependencies.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
+        this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
 
         // TODO set up buttons 
         // set up close button
@@ -185,6 +189,12 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
                 (ev: JQueryEventObject)=>
                 {
                     this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
+                });
+        this.findJQuery('.clickToEdit').each(
+                (index: number, element: Element)=>
+                {
+                    var $element = $(element);
+                    var clickToEditView = <IClickToEditView> this.clickToEditViewFactory.createFromJQuery($element);
                 });
     }
 
