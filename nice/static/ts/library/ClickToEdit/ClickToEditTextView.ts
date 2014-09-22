@@ -32,6 +32,7 @@ class ClickToEditTextView extends ClickToEditBaseView
     public element($form: JQuery, settings: any) : JQuery
     {
         var $input = $('<input>').addClass('form-control');
+        $input.height(settings.height);
         $form.append($input);
         return $input;
     }

@@ -33,9 +33,9 @@ class ClickToEditBaseView extends FocusableView implements ClickToEdit.IClickToE
     constructor($element: JQuery, cssClass: string)
     {
         super($element, cssClass);
-        if (!this._$el.is('p, h1, h2, h3, h4, h5, h6'))
+        if (!this._$el.is('p, h1, h2, h3, h4, h5, h6, span'))
         {
-            throw new InvalidArgumentException('ClickToEdit must be p, h1, h2, h3, h4, h5, or h6');
+            throw new InvalidArgumentException('ClickToEdit must be p, h1, h2, h3, h4, h5, h6, or span');
         }
         this._initializeClickToEdit();
     }

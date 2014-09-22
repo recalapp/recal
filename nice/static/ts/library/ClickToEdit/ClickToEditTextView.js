@@ -41,6 +41,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         */
         ClickToEditTextView.prototype.element = function ($form, settings) {
             var $input = $('<input>').addClass('form-control');
+            $input.height(settings.height);
             $form.append($input);
             return $input;
         };

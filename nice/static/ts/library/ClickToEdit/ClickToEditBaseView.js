@@ -11,8 +11,8 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         __extends(ClickToEditBaseView, _super);
         function ClickToEditBaseView($element, cssClass) {
             _super.call(this, $element, cssClass);
-            if (!this._$el.is('p, h1, h2, h3, h4, h5, h6')) {
-                throw new InvalidArgumentException('ClickToEdit must be p, h1, h2, h3, h4, h5, or h6');
+            if (!this._$el.is('p, h1, h2, h3, h4, h5, h6, span')) {
+                throw new InvalidArgumentException('ClickToEdit must be p, h1, h2, h3, h4, h5, h6, or span');
             }
             this._initializeClickToEdit();
         }
