@@ -3,6 +3,7 @@ import Dictionary = require('../../../library/DataStructures/Dictionary');
 import Events = require('./Events');
 import EventsModel = require('./EventsModel');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
+import EventsVisibilityManager = require('./EventsVisibilityManager');
 import Server = require('../../../library/Server/Server');
 import ServerConnection = require('../../../library/Server/ServerConnection');
 import ServerRequest = require('../../../library/Server/ServerRequest');
@@ -24,9 +25,13 @@ class EventsServerCommunicator
     private _eventsStoreCoordinator: EventsStoreCoordinator = null;
     private get eventsStoreCoordinator(): EventsStoreCoordinator { return this._eventsStoreCoordinator; }
 
+    private _eventsVisibilityManager: EventsVisibilityManager = null;
+    private get eventsVisibilityManager(): EventsVisibilityManager { return this._eventsVisibilityManager; }
+
     constructor(dependencies: Events.EventsRetrieverDependencies)
     {
         this._eventsStoreCoordinator = dependencies.eventsStoreCoordinator;
+        this._eventsVisibilityManager = dependencies.eventsVisibilityManager;
     }
 
     public pullEvents(): void
@@ -55,7 +60,11 @@ class EventsServerCommunicator
                     eventsModels.push(this.getEventsModelFromLegacyEventObject(data.events[i]));
                 }
                 this.eventsStoreCoordinator.addLocalEvents(eventsModels);
-                // TODO hidden events
+                // hidden events
+                if (data.hidden_events)
+                {
+                    this.eventsVisibilityManager.resetEventVisibilityToHiddenEventIds(data.hidden_events);
+                }
             }).fail((data: any) =>{
             });
     }

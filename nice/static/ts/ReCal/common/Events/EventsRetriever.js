@@ -3,11 +3,21 @@ define(["require", "exports", '../../../library/Core/ComparableResult'], functio
     var EventsRetriever = (function () {
         function EventsRetriever(dependencies) {
             this._eventsStoreCoordinator = null;
+            this._eventsVisibilityManager = null;
             this._eventsStoreCoordinator = dependencies.eventsStoreCoordinator;
+            this._eventsVisibilityManager = dependencies.eventsVisibilityManager;
         }
         Object.defineProperty(EventsRetriever.prototype, "eventsStoreCoordinator", {
             get: function () {
                 return this._eventsStoreCoordinator;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsRetriever.prototype, "eventsVisibilityManager", {
+            get: function () {
+                return this._eventsVisibilityManager;
             },
             enumerable: true,
             configurable: true
@@ -28,7 +38,8 @@ define(["require", "exports", '../../../library/Core/ComparableResult'], functio
             return this.eventsStoreCoordinator.getEventIdsWithFilter(function (eventId) {
                 var eventsModel = _this.getEventById(eventId);
                 var ret = { keep: false, stop: false };
-                ret.keep = start.compareTo(eventsModel.startDate) === -1 /* less */ && end.compareTo(eventsModel.startDate) === 1 /* greater */;
+                ret.keep = start.compareTo(eventsModel.startDate) === -1 /* less */ && end.compareTo(eventsModel.startDate) === 1 /* greater */ && !_this.eventsVisibilityManager.eventIdIsHidden(eventId);
+
                 ret.stop = end.compareTo(eventsModel.startDate) === -1 /* less */;
                 return ret;
             });

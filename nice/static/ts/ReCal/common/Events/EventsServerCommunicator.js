@@ -4,7 +4,9 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
             this._serverConnection = new ServerConnection(1);
             this._lastConnected = DateTime.fromUnix(0);
             this._eventsStoreCoordinator = null;
+            this._eventsVisibilityManager = null;
             this._eventsStoreCoordinator = dependencies.eventsStoreCoordinator;
+            this._eventsVisibilityManager = dependencies.eventsVisibilityManager;
         }
         Object.defineProperty(EventsServerCommunicator.prototype, "serverConnection", {
             get: function () {
@@ -33,6 +35,14 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
             configurable: true
         });
 
+        Object.defineProperty(EventsServerCommunicator.prototype, "eventsVisibilityManager", {
+            get: function () {
+                return this._eventsVisibilityManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         EventsServerCommunicator.prototype.pullEvents = function () {
             var _this = this;
             var createServerRequest = function () {
@@ -55,7 +65,11 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
                     eventsModels.push(_this.getEventsModelFromLegacyEventObject(data.events[i]));
                 }
                 _this.eventsStoreCoordinator.addLocalEvents(eventsModels);
-                // TODO hidden events
+
+                // hidden events
+                if (data.hidden_events) {
+                    _this.eventsVisibilityManager.resetEventVisibilityToHiddenEventIds(data.hidden_events);
+                }
             }).fail(function (data) {
             });
         };

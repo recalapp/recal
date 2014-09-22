@@ -3,6 +3,7 @@ import DateTime = require('../../../library/DateTime/DateTime');
 import Events = require('./Events');
 import EventsModel = require('./EventsModel');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
+import EventsVisibilityManager = require('./EventsVisibilityManager');
 
 import IEventsModel = Events.IEventsModel;
 
@@ -15,9 +16,13 @@ class EventsRetriever
     private _eventsStoreCoordinator: EventsStoreCoordinator = null;
     private get eventsStoreCoordinator(): EventsStoreCoordinator { return this._eventsStoreCoordinator; }
 
+    private _eventsVisibilityManager: EventsVisibilityManager = null;
+    private get eventsVisibilityManager(): EventsVisibilityManager { return this._eventsVisibilityManager; }
+
     constructor(dependencies: Events.EventsRetrieverDependencies)
     {
         this._eventsStoreCoordinator = dependencies.eventsStoreCoordinator;
+        this._eventsVisibilityManager = dependencies.eventsVisibilityManager;
     }
 
     /**
@@ -37,7 +42,9 @@ class EventsRetriever
             var eventsModel = this.getEventById(eventId);
             var ret: { keep: boolean; stop: boolean; } = { keep: false, stop: false };
             ret.keep = start.compareTo(eventsModel.startDate) === ComparableResult.less 
-                && end.compareTo(eventsModel.startDate) === ComparableResult.greater;
+                && end.compareTo(eventsModel.startDate) === ComparableResult.greater
+                && !this.eventsVisibilityManager.eventIdIsHidden(eventId);
+
             ret.stop = end.compareTo(eventsModel.startDate) === ComparableResult.less;
             return ret;
         });

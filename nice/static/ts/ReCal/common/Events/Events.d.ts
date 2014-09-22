@@ -1,5 +1,6 @@
 import DateTime = require('../../../library/DateTime/DateTime');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
+import EventsVisibilityManager = require('./EventsVisibilityManager');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 
 export interface EventsOperationsFacadeDependencies
@@ -18,11 +19,13 @@ export interface EventsStoreCoordinatorDependencies
 export interface EventsRetrieverDependencies
 {
     eventsStoreCoordinator: EventsStoreCoordinator;
+    eventsVisibilityManager: EventsVisibilityManager;
 }
 
 export interface EventsServerCommunicatorDependencies
 {
     eventsStoreCoordinator: EventsStoreCoordinator;
+    eventsVisibilityManager: EventsVisibilityManager;
 }
 
 export interface IEventsModel
