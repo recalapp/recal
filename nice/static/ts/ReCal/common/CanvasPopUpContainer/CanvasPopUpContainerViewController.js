@@ -100,7 +100,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                     return;
                 }
                 var modifiedEventsModel = extra.modifiedEventsModel;
-                // TODO call events operations facade
+                _this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
             });
         };
 

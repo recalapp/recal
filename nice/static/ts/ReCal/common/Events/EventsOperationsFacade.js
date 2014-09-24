@@ -1,4 +1,4 @@
-define(["require", "exports", './EventsRetriever', './EventsSelectionManager', './EventsServerCommunicator', './EventsStoreCoordinator', './EventsVisibilityManager'], function(require, exports, EventsRetriever, EventsSelectionManager, EventsServerCommunicator, EventsStoreCoordinator, EventsVisibilityManager) {
+define(["require", "exports", './EventsModificationsManager', './EventsRetriever', './EventsSelectionManager', './EventsServerCommunicator', './EventsStoreCoordinator', './EventsVisibilityManager'], function(require, exports, EventsModificationsManager, EventsRetriever, EventsSelectionManager, EventsServerCommunicator, EventsStoreCoordinator, EventsVisibilityManager) {
     /**
     * IEventsOperationsFacade is the class responsible for all operations
     * related to events in the persepective of any events client. That is, to
@@ -10,6 +10,10 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager', '
             this._eventsStoreCoordinator = null;
             this._eventsServerCommunicator = null;
             this._eventsVisibilityManager = null;
+            /**
+            * Events Modifications Manager
+            */
+            this._eventsModificationsManager = null;
             /**
             * Global Browser Events Manager
             */
@@ -58,6 +62,19 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager', '
                     this._eventsVisibilityManager = new EventsVisibilityManager();
                 }
                 return this._eventsVisibilityManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsOperationsFacade.prototype, "eventsModificationsManager", {
+            get: function () {
+                if (!this._eventsModificationsManager) {
+                    this._eventsModificationsManager = new EventsModificationsManager({
+                        eventsStoreCoordinator: this.eventsStoreCoordinator
+                    });
+                }
+                return this._eventsModificationsManager;
             },
             enumerable: true,
             configurable: true
@@ -166,6 +183,17 @@ define(["require", "exports", './EventsRetriever', './EventsSelectionManager', '
         */
         EventsOperationsFacade.prototype.unpinEventWithId = function (eventId) {
             this.eventsSelectionManager.unpinEventWithId(eventId);
+        };
+
+        /***************************************************************************
+        * Event Modification
+        *************************************************************************/
+        /**
+        * Tells the events module that an event has been modified to be
+        * modifiedEventsModel
+        */
+        EventsOperationsFacade.prototype.commitModifiedEvent = function (modifiedEventsModel) {
+            this.eventsModificationsManager.commitModifiedEvent(modifiedEventsModel);
         };
         return EventsOperationsFacade;
     })();

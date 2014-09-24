@@ -8,7 +8,8 @@ import IEventsModel = Events.IEventsModel;
 
 /**
   * The class responsible to actually storing the events locally. 
-  * TODO also responsible for editing?
+  * This class is also responsible for keeping track of which events have been
+  * modified.
   */
 class EventsStoreCoordinator
 {
@@ -80,7 +81,7 @@ class EventsStoreCoordinator
         this.eventsRegistry = new Dictionary<string, IEventsModel>();
         this.eventsDataChanged();
     }
-    
+
     /**
       * Get event associated with the ID
       */

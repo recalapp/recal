@@ -205,7 +205,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 EventsPopUpView.cssSelector(), (ev: JQueryEventObject, extra: { modifiedEventsModel: IEventsModel }) =>
                 {
                     var modifiedEventsModel = extra.modifiedEventsModel;
-                    // TODO call events operations facade
+                    this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
                 });
     }
 

@@ -1,5 +1,6 @@
 import DateTime = require('../../../library/DateTime/DateTime');
 import Events = require('./Events');
+import EventsModificationsManager = require('./EventsModificationsManager');
 import EventsRetriever = require('./EventsRetriever');
 import EventsSelectionManager = require('./EventsSelectionManager');
 import EventsServerCommunicator = require('./EventsServerCommunicator');
@@ -52,12 +53,28 @@ class EventsOperationsFacade implements IEventsOperationsFacade
         }
         return this._eventsVisibilityManager;
     }
+    /**
+      * Events Modifications Manager
+      */
+    private _eventsModificationsManager: EventsModificationsManager = null;
+    private get eventsModificationsManager(): EventsModificationsManager
+    {
+        if (!this._eventsModificationsManager)
+        {
+            this._eventsModificationsManager = new EventsModificationsManager({
+                eventsStoreCoordinator: this.eventsStoreCoordinator,
+            });
+        }
+        return this._eventsModificationsManager;
+    }
 
     /**
       * Global Browser Events Manager
       */
     private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
     private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
+
+    
 
     constructor(dependencies: Events.EventsOperationsFacadeDependencies)
     {
@@ -174,6 +191,18 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     public unpinEventWithId(eventId: string): void
     {
         this.eventsSelectionManager.unpinEventWithId(eventId);
+    }
+
+    /***************************************************************************
+      * Event Modification
+      *************************************************************************/
+    /**
+      * Tells the events module that an event has been modified to be 
+      * modifiedEventsModel
+      */
+    public commitModifiedEvent(modifiedEventsModel: IEventsModel): void
+    {
+        this.eventsModificationsManager.commitModifiedEvent(modifiedEventsModel);
     }
 }
 

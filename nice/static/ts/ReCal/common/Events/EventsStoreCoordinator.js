@@ -1,7 +1,8 @@
 define(["require", "exports", '../../../library/DataStructures/Dictionary', '../ReCalCommonBrowserEvents'], function(require, exports, Dictionary, ReCalCommonBrowserEvents) {
     /**
     * The class responsible to actually storing the events locally.
-    * TODO also responsible for editing?
+    * This class is also responsible for keeping track of which events have been
+    * modified.
     */
     var EventsStoreCoordinator = (function () {
         function EventsStoreCoordinator(dependencies) {

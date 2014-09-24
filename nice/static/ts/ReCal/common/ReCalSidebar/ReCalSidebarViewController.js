@@ -192,7 +192,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             });
             this.view.attachEventHandler(ReCalCommonBrowserEvents.editablePopUpDidSave, EventsPopUpView.cssSelector(), function (ev, extra) {
                 var modifiedEventsModel = extra.modifiedEventsModel;
-                // TODO call events operations facade
+                _this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
             });
         };
 

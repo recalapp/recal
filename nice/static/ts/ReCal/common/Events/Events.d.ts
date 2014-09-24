@@ -7,6 +7,10 @@ export interface EventsOperationsFacadeDependencies
 {
     globalBrowserEventsManager: GlobalBrowserEventsManager;
 }
+export interface EventsModificationsManagerDependencies
+{
+    eventsStoreCoordinator: EventsStoreCoordinator;
+}
 export interface EventsSelectionManagerDependencies
 {
     globalBrowserEventsManager: GlobalBrowserEventsManager;
@@ -107,4 +111,13 @@ export interface IEventsOperationsFacade
       * back into the sidebar.
       */
     unpinEventWithId(eventId: string): void;
+
+    /***************************************************************************
+      * Event Modification
+      *************************************************************************/
+    /**
+      * Tells the events module that an event has been modified to be 
+      * modifiedEventsModel
+      */
+    commitModifiedEvent(modifiedEventsModel: IEventsModel): void;
 }

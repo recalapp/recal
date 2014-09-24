@@ -106,7 +106,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                         return;
                     }
                     var modifiedEventsModel = extra.modifiedEventsModel;
-                    // TODO call events operations facade
+                    this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
                 });
     }
 
