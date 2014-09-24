@@ -112,6 +112,18 @@ class View implements IView
         return this._$el[0].getBoundingClientRect();
     }
 
+    /**
+      * Returns true if the view is hidden.
+      */
+    public get viewIsHidden(): boolean
+    {
+        return this.is('.hide');
+    }
+    public set viewIsHidden(value: boolean)
+    {
+        value ? this.addCssClass('hide') : this.removeCssClass('hide');
+    }
+
     /******************************************************************
       Methods
       ****************************************************************/

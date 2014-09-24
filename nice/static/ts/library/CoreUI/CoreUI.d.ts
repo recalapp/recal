@@ -60,6 +60,12 @@ export interface IView
       */
     boundingRect: Rect;
 
+    /**
+      * Indicates whether or not view is hidden. Implemented using CSS class
+      * 'hide'
+      */
+    viewIsHidden: boolean;
+
     /******************************************************************
       Methods
       ****************************************************************/

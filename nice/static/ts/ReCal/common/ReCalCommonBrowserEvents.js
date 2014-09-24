@@ -6,6 +6,8 @@ define(["require", "exports"], function(require, exports) {
         ReCalCommonBrowserEvents.popUpWillDetachFromSidebar = 'popUpWillDetachFromSidebar';
         ReCalCommonBrowserEvents.popUpShouldClose = 'popUpShouldClose';
 
+        ReCalCommonBrowserEvents.editablePopUpDidSave = 'editablePopUpDidSave';
+
         ReCalCommonBrowserEvents.eventSelectionChanged = 'eventSelectionChanged';
         ReCalCommonBrowserEvents.eventsDataChanged = 'eventsDataChanged';
         return ReCalCommonBrowserEvents;

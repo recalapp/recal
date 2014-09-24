@@ -6,6 +6,8 @@ import Events = require('../Events/Events');
 import EventsModel = require('../Events/EventsModel');
 import EventsPopUp = require('./EventsPopUp');
 import EventsPopUpView = require('./EventsPopUpView');
+import FocusableView = require('../../../library/CoreUI/FocusableView');
+import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 
 import EditableEventsPopUpViewDependencies = EventsPopUp.EditableEventsPopUpViewDependencies;
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
@@ -21,6 +23,21 @@ class EditableEventsPopUpView extends EventsPopUpView
     private get modifiedEventsModel(): IEventsModel { return this._modifiedEventsModel; }
     private set modifiedEventsModel(value: IEventsModel) { this._modifiedEventsModel = value; }
 
+    private _isModified: boolean = false;
+    private get isModified(): boolean { return this._isModified; }
+    private set isModified(value: boolean) 
+    {
+        if (this._isModified !== value)
+        {
+            this._isModified = value;
+            this.saveButton.viewIsHidden = !value;
+        }
+    }
+
+    private _saveButton: FocusableView = null;
+    private get saveButton(): FocusableView { return this._saveButton; }
+    
+
     private _clickToEditViewFactory: IClickToEditViewFactory = null;
     private get clickToEditViewFactory(): IClickToEditViewFactory { return this._clickToEditViewFactory; }
     
@@ -32,6 +49,7 @@ class EditableEventsPopUpView extends EventsPopUpView
         {
             this._eventsModel = value;
             this.modifiedEventsModel = new EventsModel(this._eventsModel);
+            this.isModified = false;
             this.refresh();
         }
     }
@@ -45,6 +63,18 @@ class EditableEventsPopUpView extends EventsPopUpView
 
     private initialize(): void
     {
+        // initialize save button
+        this._saveButton = <FocusableView> FocusableView.fromJQuery(this.findJQuery('#save_button'));
+        this.saveButton.attachEventHandler(BrowserEvents.click, 
+                (ev: JQueryEventObject, extra: any) => {
+                    this.triggerEvent(
+                        ReCalCommonBrowserEvents.editablePopUpDidSave,
+                        {
+                            modifiedEventsModel: this.modifiedEventsModel,
+                        }
+                        );
+                    this.eventsModel = this.modifiedEventsModel; // TODO do this here?
+                });
         // initialize click to edit
         this.findJQuery('.clickToEdit').each(
                 (index: number, element: Element)=>
@@ -59,17 +89,19 @@ class EditableEventsPopUpView extends EventsPopUpView
                 {
                     var result = extra.value.trim();
                     var view = extra.view;
+
+                    // if we reach this point, assume result is valid.
                     if (view.is(this.titleJQuery))
                     {
-                        this.modifiedEventsModel.title = result;
+                        this.processModifiedTitle(result);
                     }
                     else if (view.is(this.descriptionJQuery))
                     {
-                        this.modifiedEventsModel.description = result;
+                        this.processModifiedDescription(result);
                     }
                     else if (view.is(this.locationJQuery))
                     {
-                        this.modifiedEventsModel.location = result;
+                        this.processModifiedLocation(result);
                     }
                     else if (view.is(this.sectionJQuery))
                     {
@@ -88,6 +120,30 @@ class EditableEventsPopUpView extends EventsPopUpView
                     }
                     this.refresh();
                 });
+    }
+    private processModifiedTitle(value: string): void
+    {
+        if (value !== this.modifiedEventsModel.title)
+        {
+            this.modifiedEventsModel.title = value;
+            this.isModified = true;
+        }
+    }
+    private processModifiedDescription(value: string): void
+    {
+        if (value !== this.modifiedEventsModel.description)
+        {
+            this.modifiedEventsModel.description = value;
+            this.isModified = true;
+        }
+    }
+    private processModifiedLocation(value: string): void
+    {
+        if (value !== this.modifiedEventsModel.location)
+        {
+            this.modifiedEventsModel.location = value;
+            this.isModified = true;
+        }
     }
 
     public refresh(): void

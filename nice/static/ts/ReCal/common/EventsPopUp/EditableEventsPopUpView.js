@@ -4,13 +4,15 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/ComparableResult', '../Events/EventsModel', './EventsPopUpView'], function(require, exports, BrowserEvents, ComparableResult, EventsModel, EventsPopUpView) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/ComparableResult', '../Events/EventsModel', './EventsPopUpView', '../../../library/CoreUI/FocusableView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, ComparableResult, EventsModel, EventsPopUpView, FocusableView, ReCalCommonBrowserEvents) {
     var EditableEventsPopUpView = (function (_super) {
         __extends(EditableEventsPopUpView, _super);
         function EditableEventsPopUpView(dependencies) {
             _super.call(this, dependencies);
             this.HIGHLIGHTED_CLASS = 'highlighted';
             this._modifiedEventsModel = null;
+            this._isModified = false;
+            this._saveButton = null;
             this._clickToEditViewFactory = null;
             this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
             this.initialize();
@@ -21,6 +23,28 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             },
             set: function (value) {
                 this._modifiedEventsModel = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EditableEventsPopUpView.prototype, "isModified", {
+            get: function () {
+                return this._isModified;
+            },
+            set: function (value) {
+                if (this._isModified !== value) {
+                    this._isModified = value;
+                    this.saveButton.viewIsHidden = !value;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EditableEventsPopUpView.prototype, "saveButton", {
+            get: function () {
+                return this._saveButton;
             },
             enumerable: true,
             configurable: true
@@ -43,6 +67,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._eventsModel !== value) {
                     this._eventsModel = value;
                     this.modifiedEventsModel = new EventsModel(this._eventsModel);
+                    this.isModified = false;
                     this.refresh();
                 }
             },
@@ -52,6 +77,15 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
 
         EditableEventsPopUpView.prototype.initialize = function () {
             var _this = this;
+            // initialize save button
+            this._saveButton = FocusableView.fromJQuery(this.findJQuery('#save_button'));
+            this.saveButton.attachEventHandler(BrowserEvents.click, function (ev, extra) {
+                _this.triggerEvent(ReCalCommonBrowserEvents.editablePopUpDidSave, {
+                    modifiedEventsModel: _this.modifiedEventsModel
+                });
+                _this.eventsModel = _this.modifiedEventsModel; // TODO do this here?
+            });
+
             // initialize click to edit
             this.findJQuery('.clickToEdit').each(function (index, element) {
                 var $element = $(element);
@@ -62,12 +96,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this.attachEventHandler(BrowserEvents.clickToEditComplete, function (ev, extra) {
                 var result = extra.value.trim();
                 var view = extra.view;
+
+                // if we reach this point, assume result is valid.
                 if (view.is(_this.titleJQuery)) {
-                    _this.modifiedEventsModel.title = result;
+                    _this.processModifiedTitle(result);
                 } else if (view.is(_this.descriptionJQuery)) {
-                    _this.modifiedEventsModel.description = result;
+                    _this.processModifiedDescription(result);
                 } else if (view.is(_this.locationJQuery)) {
-                    _this.modifiedEventsModel.location = result;
+                    _this.processModifiedLocation(result);
                 } else if (view.is(_this.sectionJQuery)) {
                 } else if (view.is(_this.eventTypeJQuery)) {
                 } else if (view.is(_this.dateJQuery)) {
@@ -76,6 +112,24 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 }
                 _this.refresh();
             });
+        };
+        EditableEventsPopUpView.prototype.processModifiedTitle = function (value) {
+            if (value !== this.modifiedEventsModel.title) {
+                this.modifiedEventsModel.title = value;
+                this.isModified = true;
+            }
+        };
+        EditableEventsPopUpView.prototype.processModifiedDescription = function (value) {
+            if (value !== this.modifiedEventsModel.description) {
+                this.modifiedEventsModel.description = value;
+                this.isModified = true;
+            }
+        };
+        EditableEventsPopUpView.prototype.processModifiedLocation = function (value) {
+            if (value !== this.modifiedEventsModel.location) {
+                this.modifiedEventsModel.location = value;
+                this.isModified = true;
+            }
         };
 
         EditableEventsPopUpView.prototype.refresh = function () {

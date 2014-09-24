@@ -142,6 +142,20 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             configurable: true
         });
 
+        Object.defineProperty(View.prototype, "viewIsHidden", {
+            /**
+            * Returns true if the view is hidden.
+            */
+            get: function () {
+                return this.is('.hide');
+            },
+            set: function (value) {
+                value ? this.addCssClass('hide') : this.removeCssClass('hide');
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         /******************************************************************
         Methods
         ****************************************************************/
