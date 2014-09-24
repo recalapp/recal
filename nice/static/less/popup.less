@@ -18,6 +18,8 @@
 @text-title-hover-color: gray;
 @text-vertical-padding: 3px;
 @top-padding: 10px;
+@highlighted-text-color: yellow;
+@highlighted-text-color-dark-bg: darkorange;
 .invisible-focus
 {
     outline-color: transparent;
@@ -65,6 +67,10 @@
             {
                 max-width: 90%;
                 display: inline-block;
+            }
+            .highlighted
+            {
+                background-color: @highlighted-text-color-dark-bg;
             }
             .popup-title-text
             {
@@ -129,6 +135,10 @@
                 #popup-desc
                 {
                     min-height: 150px;
+                }
+                .highlighted
+                {
+                    background-color: @highlighted-text-color;
                 }
             }
         }

@@ -33,6 +33,7 @@ export interface IEventsModel
     eventId: string;
     title: string;
     description: string;
+    location: string;
     sectionId: string;
     courseId: string;
     eventTypeCode: string;

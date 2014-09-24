@@ -9,6 +9,10 @@ import IPopUpView = PopUp.IPopUpView;
 export interface EventsPopUpViewDependencies
 {
     viewTemplateRetriever: CoreUI.IViewTemplateRetriever;
+}
+
+export interface EditableEventsPopUpViewDependencies extends EventsPopUpViewDependencies
+{
     clickToEditViewFactory: ClickToEdit.IClickToEditViewFactory;
 }
 

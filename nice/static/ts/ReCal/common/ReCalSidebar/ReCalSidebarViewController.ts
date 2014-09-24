@@ -7,6 +7,7 @@ import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Events = require('../../common/Events/Events');
 import EventsPopUp = require('../EventsPopUp/EventsPopUp');
+import EditableEventsPopUpView = require('../EventsPopUp/EditableEventsPopUpView');
 import EventsPopUpView = require('../EventsPopUp/EventsPopUpView');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
@@ -157,7 +158,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                         if (this.currentPopUpView === null || this.currentPopUpView === undefined)
                         {
                             // create the popup view
-                            var newPopUpView = new EventsPopUpView({
+                            var newPopUpView = new EditableEventsPopUpView({
                                 viewTemplateRetriever: this.viewTemplateRetriever,
                                 clickToEditViewFactory: this.clickToEditViewFactory,
                             });

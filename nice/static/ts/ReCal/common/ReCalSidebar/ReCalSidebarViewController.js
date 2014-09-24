@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsPopUp/EventsPopUpView', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, EventsPopUpView, ReCalCommonBrowserEvents, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsPopUp/EditableEventsPopUpView', '../EventsPopUp/EventsPopUpView', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, EditableEventsPopUpView, EventsPopUpView, ReCalCommonBrowserEvents, ViewController) {
     /************************************************************************
     * This class is responsible for managing the sidebar in ReCal. In particular,
     * it is responsible for listening to the following events:
@@ -156,7 +156,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     // this event is supposed to be main
                     if (_this.currentPopUpView === null || _this.currentPopUpView === undefined) {
                         // create the popup view
-                        var newPopUpView = new EventsPopUpView({
+                        var newPopUpView = new EditableEventsPopUpView({
                             viewTemplateRetriever: _this.viewTemplateRetriever,
                             clickToEditViewFactory: _this.clickToEditViewFactory
                         });

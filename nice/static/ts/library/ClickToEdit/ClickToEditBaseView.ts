@@ -9,6 +9,7 @@ import FocusableView = require('../CoreUI/FocusableView');
 import EncodeDecodeProxy = require("../Core/EncodeDecodeProxy");
 import InvalidArgumentException = require('../Core/InvalidArgumentException');
 import Set = require('../DataStructures/Set');
+import View = require('../CoreUI/View');
 
 class ClickToEditBaseView extends FocusableView implements ClickToEdit.IClickToEditView
 {
