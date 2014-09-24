@@ -86,12 +86,21 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
 
             // when popup needs to close
             this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.popUpShouldClose, PopUpView.cssSelector(), function (ev, extra) {
-                if (extra.view.parentView === _this.canvasView) {
-                    // if sidebar is also a child of canvas view, we may
-                    // want to check where the popup actually is in DOM
-                    _this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
-                    _this.removePopUpView(extra.view);
+                if (extra.view.parentView !== _this.canvasView) {
+                    return;
                 }
+
+                // if sidebar is also a child of canvas view, we may
+                // want to check where the popup actually is in DOM
+                _this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
+                _this.removePopUpView(extra.view);
+            });
+            this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.editablePopUpDidSave, PopUpView.cssSelector(), function (ev, extra) {
+                if (extra.view.parentView !== _this.canvasView) {
+                    return;
+                }
+                var modifiedEventsModel = extra.modifiedEventsModel;
+                // TODO call events operations facade
             });
         };
 

@@ -79,6 +79,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
                 eventId: legacyEventObject.event_id.toString(),
                 title: legacyEventObject.event_title,
                 description: legacyEventObject.event_description,
+                location: legacyEventObject.event_location,
                 sectionId: legacyEventObject.section_id.toString(),
                 courseId: legacyEventObject.course_id.toString(),
                 eventTypeCode: legacyEventObject.event_type,

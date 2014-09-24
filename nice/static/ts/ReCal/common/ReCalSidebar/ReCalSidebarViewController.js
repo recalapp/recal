@@ -190,6 +190,10 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                 _this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
                 _this.removePopUpView(extra.view, true);
             });
+            this.view.attachEventHandler(ReCalCommonBrowserEvents.editablePopUpDidSave, EventsPopUpView.cssSelector(), function (ev, extra) {
+                var modifiedEventsModel = extra.modifiedEventsModel;
+                // TODO call events operations facade
+            });
         };
 
         /**

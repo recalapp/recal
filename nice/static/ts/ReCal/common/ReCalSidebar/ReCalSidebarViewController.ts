@@ -16,6 +16,7 @@ import Sidebar = require('../../../library/Sidebar/Sidebar');
 import ViewController = require('../../../library/CoreUI/ViewController');
 
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
+import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView
 import IReCalSidebarViewController = ReCalSidebar.IReCalSidebarViewController;
@@ -198,6 +199,13 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 {
                     this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
                     this.removePopUpView(extra.view, true);
+                });
+        this.view.attachEventHandler(
+                ReCalCommonBrowserEvents.editablePopUpDidSave,
+                EventsPopUpView.cssSelector(), (ev: JQueryEventObject, extra: { modifiedEventsModel: IEventsModel }) =>
+                {
+                    var modifiedEventsModel = extra.modifiedEventsModel;
+                    // TODO call events operations facade
                 });
     }
 

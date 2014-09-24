@@ -13,6 +13,7 @@ import ViewController = require('../../../library/CoreUI/ViewController');
 import CanvasPopUpContainerViewControllerDependencies = CanvasPopUpContainer.CanvasPopUpContainerViewControllerDependencies
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
+import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IPopUpView = PopUp.IPopUpView;
 import IView = CoreUI.IView;
@@ -87,13 +88,25 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                 ReCalCommonBrowserEvents.popUpShouldClose, 
                 PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any)=>
                 {
-                    if (extra.view.parentView === this.canvasView)
+                    if (extra.view.parentView !== this.canvasView)
                     {
-                        // if sidebar is also a child of canvas view, we may
-                        // want to check where the popup actually is in DOM
-                        this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
-                        this.removePopUpView(extra.view);
+                        return;
                     }
+                    // if sidebar is also a child of canvas view, we may
+                    // want to check where the popup actually is in DOM
+                    this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
+                    this.removePopUpView(extra.view);
+                });
+        this.canvasView.attachEventHandler(
+                ReCalCommonBrowserEvents.editablePopUpDidSave,
+                PopUpView.cssSelector(), (ev: JQueryEventObject, extra: { modifiedEventsModel: IEventsModel; view: IView }) => 
+                {
+                    if (extra.view.parentView !== this.canvasView)
+                    {
+                        return;
+                    }
+                    var modifiedEventsModel = extra.modifiedEventsModel;
+                    // TODO call events operations facade
                 });
     }
 
