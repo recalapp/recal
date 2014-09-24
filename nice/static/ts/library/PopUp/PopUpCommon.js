@@ -17,3 +17,4 @@ define(["require", "exports"], function(require, exports) {
     
     return PopUpCommon;
 });
+//# sourceMappingURL=PopUpCommon.js.map

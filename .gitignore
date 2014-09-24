@@ -1,3 +1,5 @@
+*.map
+.idea
 .DS_Store
 venv
 settings/dev.py

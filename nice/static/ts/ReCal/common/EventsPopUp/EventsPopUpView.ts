@@ -28,11 +28,10 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
     {
         if (this._eventsModel !== value)
         {
-            this._eventsModel = value; 
+            this._eventsModel = value;
             this.refresh();
         }
     }
-
     private _title: string = null;
     public get title(): string { return this._title; }
     public set title(value: string)
