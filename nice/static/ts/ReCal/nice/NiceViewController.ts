@@ -48,6 +48,18 @@ class NiceViewController extends ViewController
 
     private initialize(): void
     {
+        initializeCalendar();
+    }
+
+    private initializeCalendar(): void
+    {
+        // initialize calendar view
+        var calendarView: ICalendarView = <CalendarView> CalendarView.fromJQuery(this.view.findJQuery('#calendarui'));
+        var calendarVC: ICalendarViewController = new NiceCalendarViewController(calendarView, {
+            eventsOperationsFacade: this.eventsOperationsFacade,
+        });
+        this.addChildViewController(calendarVC);
+        this.calendarViewController = calendarVC;
     }
 }
 

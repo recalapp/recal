@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^chromeframe/loggedout$', views.embedded_not_logged_in, name="embedded_not_logged_in"),
     url(r'^profile$', views.edit_profile, name="edit_profile"),
     url(r'^testers/login$', views.tester_login, name="tester_login"),
+    url(r'^nice$', views.nice, name="nice"),
 
     url(r'^get/(?P<last_updated>\d+)/(?P<start_date>\d+)/(?P<end_date>\d+)$', views.events_json, name='events-json'),
     url(r'^get/(?P<last_updated>\d+)/(?P<start_date>\d+)$', views.events_json, name='events-json'),

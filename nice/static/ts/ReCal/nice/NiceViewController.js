@@ -43,6 +43,17 @@ define(["require", "exports", '../../library/Core/GlobalBrowserEventsManager', '
         });
 
         NiceViewController.prototype.initialize = function () {
+            initializeCalendar();
+        };
+
+        NiceViewController.prototype.initializeCalendar = function () {
+            // initialize calendar view
+            var calendarView = CalendarView.fromJQuery(this.view.findJQuery('#calendarui'));
+            var calendarVC = new NiceCalendarViewController(calendarView, {
+                eventsOperationsFacade: this.eventsOperationsFacade
+            });
+            this.addChildViewController(calendarVC);
+            this.calendarViewController = calendarVC;
         };
         return NiceViewController;
     })(ViewController);

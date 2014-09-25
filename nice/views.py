@@ -193,6 +193,10 @@ def auto(request):
     return render(request, 'main/auto_result.html', None)
 
 
+@login_required
+@ensure_csrf_cookie
+def nice(request):
+    return render(request, 'main/nice.html')
 
 @login_required
 @ensure_csrf_cookie
