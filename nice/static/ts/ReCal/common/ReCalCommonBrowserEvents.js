@@ -16,4 +16,3 @@ define(["require", "exports"], function(require, exports) {
     
     return ReCalCommonBrowserEvents;
 });
-//# sourceMappingURL=ReCalCommonBrowserEvents.js.map

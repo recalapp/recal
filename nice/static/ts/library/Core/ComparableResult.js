@@ -9,4 +9,3 @@ define(["require", "exports"], function(require, exports) {
     
     return ComparableResult;
 });
-//# sourceMappingURL=ComparableResult.js.map

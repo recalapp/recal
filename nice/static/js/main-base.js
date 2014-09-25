@@ -1,5 +1,5 @@
-var pinnedIDs = null;
-var mainID = null;
+//var pinnedIDs = null;
+//var mainID = null;
 var csrftoken;
 $(function(){
     csrftoken = $.cookie('csrftoken');
@@ -12,7 +12,7 @@ var SECTION_COLOR_MAP;
  * An ID is pinned if its popup has been dragged away from
  * the sidebar.
  **********************************************************/
-function UI_pin(id)
+/*function UI_pin(id)
 {
     if (UI_isMain(id))
         UI_unsetMain();
@@ -39,7 +39,7 @@ function UI_setMain(id)
 function UI_unsetMain()
 {
     mainID = null;
-}
+}*/
 
 /***********************************************************
  * Themes

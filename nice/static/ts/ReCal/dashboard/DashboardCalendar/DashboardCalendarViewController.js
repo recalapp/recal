@@ -37,9 +37,6 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
             var _this = this;
             // reload before displaying
             // TODO check if visible
-            EventsMan_addUpdateListener(function () {
-                _this.view.refresh();
-            });
             $('#' + SE_id).on('close', function (ev) {
                 _this.view.refresh();
             });

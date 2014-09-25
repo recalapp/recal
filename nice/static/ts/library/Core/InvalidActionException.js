@@ -17,4 +17,3 @@ define(["require", "exports", './Exception'], function(require, exports, Excepti
     
     return InvalidActionException;
 });
-//# sourceMappingURL=InvalidActionException.js.map

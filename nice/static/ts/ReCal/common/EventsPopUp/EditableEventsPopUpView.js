@@ -11,7 +11,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             _super.call(this, dependencies);
             this.HIGHLIGHTED_CLASS = 'highlighted';
             this._modifiedEventsModel = null;
-            this._isModified = false;
+            this._isModified = null;
             this._saveButton = null;
             this._clickToEditViewFactory = null;
             this._clickToEditViewFactory = dependencies.clickToEditViewFactory;

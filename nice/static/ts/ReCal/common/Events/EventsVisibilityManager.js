@@ -57,4 +57,3 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
     
     return EventsVisibilityManager;
 });
-//# sourceMappingURL=EventsVisibilityManager.js.map

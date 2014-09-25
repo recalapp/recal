@@ -16,7 +16,6 @@ import ICalendarViewEvent = Calendar.ICalendarViewEvent;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
             
 declare function colorLuminance(color: string, lumFactor: number): string;
-declare function EventsMan_addUpdateListener(listener: ()=>void): void;
 declare function luminanceToRgb(lum: string): string;
 declare function LO_hideLoading(id: string): void;
 declare function LO_showLoading(id: string): void;
@@ -56,10 +55,6 @@ class DashboardCalendarViewController extends CalendarViewController
         
         // reload before displaying
         // TODO check if visible
-        EventsMan_addUpdateListener(()=>
-        {
-            this.view.refresh();
-        });
         $('#' + SE_id).on('close', (ev: JQueryEventObject)=>
         {
             this.view.refresh();

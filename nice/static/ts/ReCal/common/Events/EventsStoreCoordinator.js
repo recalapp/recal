@@ -114,4 +114,3 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary', '../
     
     return EventsStoreCoordinator;
 });
-//# sourceMappingURL=EventsStoreCoordinator.js.map

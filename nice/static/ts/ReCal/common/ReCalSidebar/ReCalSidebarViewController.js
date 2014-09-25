@@ -52,6 +52,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             configurable: true
         });
 
+
         Object.defineProperty(ReCalSidebarViewController.prototype, "globalBrowserEventsManager", {
             get: function () {
                 return this._globalBrowserEventsManager;
@@ -162,8 +163,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                         });
 
                         // set events model
-                        var eventsModel = _this.eventsOperationsFacade.getEventById(mainEventId);
-                        newPopUpView.eventsModel = eventsModel;
+                        newPopUpView.eventsModel = _this.eventsOperationsFacade.getEventById(mainEventId);
                         _this.addPopUpView(newPopUpView);
                     } else {
                         // set events model

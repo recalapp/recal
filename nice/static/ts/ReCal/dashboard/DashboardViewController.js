@@ -113,6 +113,7 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             configurable: true
         });
 
+
         Object.defineProperty(DashboardViewController.prototype, "agendaViewController", {
             get: function () {
                 return this._agendaViewController;
@@ -123,6 +124,7 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(DashboardViewController.prototype, "sidebarViewController", {
             get: function () {
@@ -135,6 +137,7 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             configurable: true
         });
 
+
         Object.defineProperty(DashboardViewController.prototype, "canvasPopUpContainerViewController", {
             get: function () {
                 return this._canvasPopUpContainerViewController;
@@ -145,6 +148,7 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             enumerable: true,
             configurable: true
         });
+
 
         DashboardViewController.prototype.initialize = function () {
             this.initializeSidebar();
@@ -173,6 +177,7 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             });
             this.addChildViewController(agendaVC);
             this.agendaViewController = agendaVC;
+            return;
         };
 
         DashboardViewController.prototype.initializeSidebar = function () {

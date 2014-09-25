@@ -99,8 +99,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (extra.view.parentView !== _this.canvasView) {
                     return;
                 }
-                var modifiedEventsModel = extra.modifiedEventsModel;
-                _this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
+                _this.eventsOperationsFacade.commitModifiedEvent(extra.modifiedEventsModel);
             });
         };
 

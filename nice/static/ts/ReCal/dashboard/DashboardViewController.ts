@@ -42,10 +42,10 @@ import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 class DashboardViewController extends ViewController
 {
     /**
-      * Global Browser Events Manager
-      */
+     * Global Browser Events Manager
+     */
     private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
-    private get globalBrowserEventsManager(): GlobalBrowserEventsManager 
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager
     {
         if (!this._globalBrowserEventsManager)
         {
@@ -55,45 +55,46 @@ class DashboardViewController extends ViewController
     }
 
     /**
-      * Notifications Manager
-      */
+     * Notifications Manager
+     */
     private _notificationsManager: ISidebarNotificationsManager = null;
-    private get notificationsManager(): ISidebarNotificationsManager 
-    { 
+    private get notificationsManager(): ISidebarNotificationsManager
+    {
         if (!this._notificationsManager)
         {
-            this._notificationsManager = new SidebarNotificationsManager; 
+            this._notificationsManager = new SidebarNotificationsManager;
         }
-        return this._notificationsManager; 
+        return this._notificationsManager;
     }
 
     /**
-      * View template retriever
-      */
+     * View template retriever
+     */
     private _viewTemplateRetriever: IViewTemplateRetriever = null;
-    private get viewTemplateRetriever(): IViewTemplateRetriever 
+    private get viewTemplateRetriever(): IViewTemplateRetriever
     {
         if (!this._viewTemplateRetriever)
         {
             this._viewTemplateRetriever = new ViewTemplateRetriever();
         }
-        return this._viewTemplateRetriever; 
+        return this._viewTemplateRetriever;
     }
 
     /**
-      * Events Operations Facade
-      */
+     * Events Operations Facade
+     */
     private _eventsOperationsFacade: IEventsOperationsFacade = null;
-    private get eventsOperationsFacade(): IEventsOperationsFacade 
-    { 
+    private get eventsOperationsFacade(): IEventsOperationsFacade
+    {
         if (!this._eventsOperationsFacade)
         {
             this._eventsOperationsFacade = new EventsOperationsFacade({
                 globalBrowserEventsManager: this.globalBrowserEventsManager,
             });
         }
-        return this._eventsOperationsFacade; 
+        return this._eventsOperationsFacade;
     }
+
     private _clickToEditViewFactory: IClickToEditViewFactory = null;
     private get clickToEditViewFactory(): IClickToEditViewFactory
     {
@@ -105,32 +106,39 @@ class DashboardViewController extends ViewController
     }
 
     /**
-      * Calendar view controller
-      */
+     * Calendar view controller
+     */
     private _calendarViewController: ICalendarViewController = null;
     private get calendarViewController(): ICalendarViewController { return this._calendarViewController; }
+
     private set calendarViewController(value: ICalendarViewController) { this._calendarViewController = value; }
 
     /**
-      * Agenda View Controller
-      */
+     * Agenda View Controller
+     */
     private _agendaViewController: ITableViewController = null;
     private get agendaViewController(): ITableViewController { return this._agendaViewController; }
+
     private set agendaViewController(value: ITableViewController) { this._agendaViewController = value; }
 
     /**
-      * Sidebar View Controller
-      */
+     * Sidebar View Controller
+     */
     private _sidebarViewController: IReCalSidebarViewController = null;
     private get sidebarViewController(): IReCalSidebarViewController { return this._sidebarViewController; }
+
     private set sidebarViewController(value: IReCalSidebarViewController) { this._sidebarViewController = value; }
 
     /**
-      * Canvas PopUp Container View Controller
-      */
+     * Canvas PopUp Container View Controller
+     */
     private _canvasPopUpContainerViewController: ICanvasPopUpContainerViewController = null;
     private get canvasPopUpContainerViewController(): ICanvasPopUpContainerViewController { return this._canvasPopUpContainerViewController; }
-    private set canvasPopUpContainerViewController(value: ICanvasPopUpContainerViewController) { this._canvasPopUpContainerViewController = value; }
+
+    private set canvasPopUpContainerViewController(value: ICanvasPopUpContainerViewController)
+    {
+        this._canvasPopUpContainerViewController = value;
+    }
 
     constructor(view: IView)
     {
@@ -168,8 +176,9 @@ class DashboardViewController extends ViewController
         });
         this.addChildViewController(agendaVC);
         this.agendaViewController = agendaVC;
+        return;
     }
-    
+
     private initializeSidebar(): void
     {
         // initialize sidebar
@@ -195,12 +204,13 @@ class DashboardViewController extends ViewController
         // NOTE #popup-canvas div is only used to set the bounds. the actual div
         // that we attach popup to is the body.
         var popUpCanvasView: IView = View.fromJQuery(this.view.findJQuery('#popup-canvas'));
-        var popUpCanvasVC: ICanvasPopUpContainerViewController = new CanvasPopUpContainerViewController(popUpCanvasView, {
-            canvasView: this.view,
-            clickToEditViewFactory: this.clickToEditViewFactory,
-            eventsOperationsFacade: this.eventsOperationsFacade,
-            globalBrowserEventsManager: this.globalBrowserEventsManager,
-        });
+        var popUpCanvasVC: ICanvasPopUpContainerViewController = new CanvasPopUpContainerViewController(popUpCanvasView,
+            {
+                canvasView: this.view,
+                clickToEditViewFactory: this.clickToEditViewFactory,
+                eventsOperationsFacade: this.eventsOperationsFacade,
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+            });
         this.addChildViewController(popUpCanvasVC);
         this.canvasPopUpContainerViewController = popUpCanvasVC;
     }

@@ -383,4 +383,3 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
     
     return View;
 });
-//# sourceMappingURL=View.js.map

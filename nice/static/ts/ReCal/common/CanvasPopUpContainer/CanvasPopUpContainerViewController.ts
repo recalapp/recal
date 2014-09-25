@@ -21,8 +21,8 @@ import IView = CoreUI.IView;
 class CanvasPopUpContainerViewController extends ViewController implements ICanvasPopUpContainerViewController
 {
     /**
-      * Global Browser Events Manager
-      */
+     * Global Browser Events Manager
+     */
     private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
     private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
 
@@ -30,18 +30,18 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
     private get canvasView(): IView { return this._canvasView; }
 
     /**
-      * ClickToEditView Factory
-      */
+     * ClickToEditView Factory
+     */
     private _clickToEditViewFactory: IClickToEditViewFactory = null;
     private get clickToEditViewFactory(): IClickToEditViewFactory { return this._clickToEditViewFactory; }
 
     /**
-      * Events Operations Facade
-      */
+     * Events Operations Facade
+     */
     private _eventsOperationsFacade: IEventsOperationsFacade = null;
     private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
 
-    
+
     constructor(view: IView, dependencies: CanvasPopUpContainerViewControllerDependencies)
     {
         super(view);
@@ -56,64 +56,64 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
     {
         // when popup detaches from sidebar
         this.globalBrowserEventsManager.attachGlobalEventHandler(
-                ReCalCommonBrowserEvents.popUpWillDetachFromSidebar,
-                (ev: JQueryEventObject, extra: any) => 
-                {
-                    var popUpView: IPopUpView = extra.popUpView;
-                    this.addPopUpView(popUpView);
-                    popUpView.css({
-                        top: extra.boundingRect.top,
-                        left: extra.boundingRect.left
-                    });
-                    popUpView.width = extra.width;
-                    popUpView.height = extra.height;
-                    popUpView.focus(); // focus must be called after the positions are set
+            ReCalCommonBrowserEvents.popUpWillDetachFromSidebar,
+            (ev: JQueryEventObject, extra: any) =>
+            {
+                var popUpView: IPopUpView = extra.popUpView;
+                this.addPopUpView(popUpView);
+                popUpView.css({
+                    top: extra.boundingRect.top,
+                    left: extra.boundingRect.left
                 });
+                popUpView.width = extra.width;
+                popUpView.height = extra.height;
+                popUpView.focus(); // focus must be called after the positions are set
+            });
 
         // when popup is dropped onto sidebar
-        this.canvasView.attachEventHandler(BrowserEvents.sidebarViewDidDrop, 
-                PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any) => 
-                {
-                    var popUpView: IPopUpView = extra.view;
-                    this.removePopUpView(popUpView);
-                    this.canvasView.triggerEvent(
-                        ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, 
-                        {
-                            popUpView: popUpView,
-                        }
-                    );
-                });
+        this.canvasView.attachEventHandler(BrowserEvents.sidebarViewDidDrop,
+            PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any) =>
+            {
+                var popUpView: IPopUpView = extra.view;
+                this.removePopUpView(popUpView);
+                this.canvasView.triggerEvent(
+                    ReCalCommonBrowserEvents.popUpWasDroppedInSidebar,
+                    {
+                        popUpView: popUpView,
+                    }
+                );
+            });
         // when popup needs to close
         this.canvasView.attachEventHandler(
-                ReCalCommonBrowserEvents.popUpShouldClose, 
-                PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any)=>
+            ReCalCommonBrowserEvents.popUpShouldClose,
+            PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any)=>
+            {
+                if (extra.view.parentView !== this.canvasView)
                 {
-                    if (extra.view.parentView !== this.canvasView)
-                    {
-                        return;
-                    }
-                    // if sidebar is also a child of canvas view, we may
-                    // want to check where the popup actually is in DOM
-                    this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
-                    this.removePopUpView(extra.view);
-                });
+                    return;
+                }
+                // if sidebar is also a child of canvas view, we may
+                // want to check where the popup actually is in DOM
+                this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
+                this.removePopUpView(extra.view);
+            });
         this.canvasView.attachEventHandler(
-                ReCalCommonBrowserEvents.editablePopUpDidSave,
-                PopUpView.cssSelector(), (ev: JQueryEventObject, extra: { modifiedEventsModel: IEventsModel; view: IView }) => 
+            ReCalCommonBrowserEvents.editablePopUpDidSave,
+            PopUpView.cssSelector(),
+            (ev: JQueryEventObject, extra: { modifiedEventsModel: IEventsModel; view: IView }) =>
+            {
+                if (extra.view.parentView !== this.canvasView)
                 {
-                    if (extra.view.parentView !== this.canvasView)
-                    {
-                        return;
-                    }
-                    var modifiedEventsModel = extra.modifiedEventsModel;
-                    this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
-                });
+                    return;
+                }
+                this.eventsOperationsFacade.commitModifiedEvent(extra.modifiedEventsModel);
+            });
     }
 
     /**
-      * Add a PopUpView object to the canvas container. PopUpView object
-      * must be detached from its previous parent first
-      */
+     * Add a PopUpView object to the canvas container. PopUpView object
+     * must be detached from its previous parent first
+     */
     private addPopUpView(popUpView: IPopUpView): void
     {
         if (popUpView.parentView !== null)

@@ -13,7 +13,7 @@ var COURSE_FILTER_BLACKLIST;
 
 function init()
 {
-    pinnedIDs = new Set();
+    //pinnedIDs = new Set();
 
     // initializing
     LO_init();
@@ -84,13 +84,13 @@ function init()
    
     
     // more inits
-    SB_init();
+    //SB_init();
     SR_init();
-    EventsMan_init();
+    //EventsMan_init();
     //PopUp_init();
-    NO_init();
+    //NO_init();
     //Agenda_init();
-    Cal_init();
+    //Cal_init();
     SE_init();
     Tutorial_Setup();
 
@@ -105,15 +105,15 @@ function init()
     });
 
     // if event id changes, manage the ui module accordingly
-    EventsMan_addEventIDsChangeListener(function(oldID, newID){
-        if (UI_isMain(oldID))
-            UI_setMain(newID);
-        else if (UI_isPinned(oldID))
-        {
-            UI_unpin(oldID);
-            UI_pin(newID);
-        }
-    });
+    // EventsMan_addEventIDsChangeListener(function(oldID, newID){
+    //     if (UI_isMain(oldID))
+    //         UI_setMain(newID);
+    //     else if (UI_isPinned(oldID))
+    //     {
+    //         UI_unpin(oldID);
+    //         UI_pin(newID);
+    //     }
+    // });
 
     // load the correct theme
     if (THEME == 'w')
@@ -131,14 +131,14 @@ function init()
     adaptSize();
 
     // check for unapproved revisions
-    UR_pullUnapprovedRevisions();
+    // UR_pullUnapprovedRevisions();
 
     // check for unapproved revisions at 10 seconds interval
     RF_addRecurringFunction(function(isInterval){
         updatePoints();
     }, 5 * 1000, 2 * 60 * 1000);
     RF_addRecurringFunction(function(isInterval){
-        UR_pullUnapprovedRevisions();
+        // UR_pullUnapprovedRevisions();
     }, 10 * 1000, 5 * 60 * 1000);
 }
 

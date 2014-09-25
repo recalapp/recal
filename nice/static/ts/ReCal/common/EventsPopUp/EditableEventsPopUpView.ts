@@ -23,7 +23,7 @@ class EditableEventsPopUpView extends EventsPopUpView
     private get modifiedEventsModel(): IEventsModel { return this._modifiedEventsModel; }
     private set modifiedEventsModel(value: IEventsModel) { this._modifiedEventsModel = value; }
 
-    private _isModified: boolean = false;
+    private _isModified: boolean = null;
     private get isModified(): boolean { return this._isModified; }
     private set isModified(value: boolean) 
     {
