@@ -1,12 +1,17 @@
-define(["require", "exports", '../../../library/DateTime/DateTime', '../../../library/DataStructures/Dictionary', './EventsModel', '../../../library/Server/ServerConnection', '../../../library/Server/ServerRequest', '../../../library/Server/ServerRequestType'], function(require, exports, DateTime, Dictionary, EventsModel, ServerConnection, ServerRequest, ServerRequestType) {
+define(["require", "exports", '../../../library/DateTime/DateTime', '../../../library/DataStructures/Dictionary', './EventsModel', '../ReCalCommonBrowserEvents', '../../../library/Server/ServerConnection', '../../../library/Server/ServerRequest', '../../../library/Server/ServerRequestType'], function(require, exports, DateTime, Dictionary, EventsModel, ReCalCommonBrowserEvents, ServerConnection, ServerRequest, ServerRequestType) {
     var EventsServerCommunicator = (function () {
         function EventsServerCommunicator(dependencies) {
             this._serverConnection = new ServerConnection(1);
             this._lastConnected = DateTime.fromUnix(0);
             this._eventsStoreCoordinator = null;
             this._eventsVisibilityManager = null;
+            /**
+            * Global Browser Events Manager
+            */
+            this._globalBrowserEventsManager = null;
             this._eventsStoreCoordinator = dependencies.eventsStoreCoordinator;
             this._eventsVisibilityManager = dependencies.eventsVisibilityManager;
+            this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         }
         Object.defineProperty(EventsServerCommunicator.prototype, "serverConnection", {
             get: function () {
@@ -27,6 +32,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
             configurable: true
         });
 
+
         Object.defineProperty(EventsServerCommunicator.prototype, "eventsStoreCoordinator", {
             get: function () {
                 return this._eventsStoreCoordinator;
@@ -43,6 +49,14 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
             configurable: true
         });
 
+        Object.defineProperty(EventsServerCommunicator.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                return this._globalBrowserEventsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         EventsServerCommunicator.prototype.pullEvents = function () {
             var _this = this;
             var createServerRequest = function () {
@@ -54,6 +68,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
                 });
                 return serverRequest;
             };
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginDownloading);
             this.serverConnection.sendRequest(createServerRequest()).done(function (data) {
                 if (_this.lastConnected.unix === 0) {
                     _this.eventsStoreCoordinator.clearLocalEvents();
@@ -70,7 +85,9 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
                 if (data.hidden_events) {
                     _this.eventsVisibilityManager.resetEventVisibilityToHiddenEventIds(data.hidden_events);
                 }
+                _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFinishDownloading);
             }).fail(function (data) {
+                _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFailDownloading);
             });
         };
 

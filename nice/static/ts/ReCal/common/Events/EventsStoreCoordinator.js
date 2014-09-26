@@ -26,6 +26,7 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary', '../
             configurable: true
         });
 
+
         Object.defineProperty(EventsStoreCoordinator.prototype, "eventIdsSorted", {
             get: function () {
                 var _this = this;

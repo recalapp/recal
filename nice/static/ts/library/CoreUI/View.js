@@ -347,6 +347,16 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             return this._$el.find(cssSelector);
         };
 
+        /**
+        * Return the JQuery element(s) matching the selector that are direct
+        * descendants of the view.
+        * @param cssSelector
+        * @returns {JQuery}
+        */
+        View.prototype.findChildrenJQuery = function (cssSelector) {
+            return this._$el.children(cssSelector);
+        };
+
         View.prototype.is = function (arg) {
             return this._$el.is(arg);
         };

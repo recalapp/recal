@@ -395,12 +395,23 @@ class View implements IView
     }
 
     /**
+     * Return the JQuery element(s) matching the selector that are direct
+     * descendants of the view.
+     * @param cssSelector
+     * @returns {JQuery}
+     */
+    public findChildrenJQuery(cssSelector: string): JQuery
+    {
+        return this._$el.children(cssSelector);
+    }
+
+    /**
      * Returns true if this view's element mataches
      * the css selector
      */
-    public is($element: JQuery): boolean
+    public is($element: JQuery): boolean;
 
-    public is(cssSelector: string): boolean
+    public is(cssSelector: string): boolean;
 
     public is(arg: any): boolean
     {

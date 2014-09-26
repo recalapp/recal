@@ -5,7 +5,7 @@ class BrowserEvents {
     static focusIn = 'focusin'; // bubbles up
     static focusOut = 'focusout'; // bubbles up
     static mouseDown = 'mousedown';
-    static transitionEnd = 'transitionend';
+    static transitionEnd = 'transitionend webkitTransitionEnd oTransitionEnd';
     static keyPress = 'keypress';
 
     // bootstrap

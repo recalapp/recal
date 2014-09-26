@@ -120,6 +120,14 @@ export interface IView
     findJQuery(cssSelector: string): JQuery;
 
     /**
+     * Return the JQuery element(s) matching the selector that are direct
+     * descendants of the view.
+     * @param cssSelector
+     * @returns {JQuery}
+     */
+    findChildrenJQuery(cssSelector: string): JQuery;
+
+    /**
       * Returns true if this view's element mataches
       * the css selector
       */

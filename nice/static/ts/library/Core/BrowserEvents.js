@@ -8,7 +8,7 @@ define(["require", "exports"], function(require, exports) {
         BrowserEvents.focusIn = 'focusin';
         BrowserEvents.focusOut = 'focusout';
         BrowserEvents.mouseDown = 'mousedown';
-        BrowserEvents.transitionEnd = 'transitionend';
+        BrowserEvents.transitionEnd = 'transitionend webkitTransitionEnd oTransitionEnd';
         BrowserEvents.keyPress = 'keypress';
 
         BrowserEvents.bootstrapPopoverHidden = 'hidden.bs.popover';

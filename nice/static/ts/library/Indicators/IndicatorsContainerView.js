@@ -7,9 +7,19 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", '../DataStructures/Dictionary', '../Core/InvalidActionException', '../CoreUI/View'], function(require, exports, Dictionary, InvalidActionException, View) {
     var IndicatorsContainerView = (function (_super) {
         __extends(IndicatorsContainerView, _super);
-        function IndicatorsContainerView() {
-            _super.apply(this, arguments);
+        function IndicatorsContainerView($element, cssClass) {
+            _super.call(this, $element, cssClass);
             this._indicatorViewsDict = new Dictionary();
+            /*
+            setInterval(()=>
+            {
+            // TODO separate timer into a different module with support for pausing
+            this.findChildrenJQuery(':not(.in)').each((index: number, element: Element)=>{
+            var indicatorView = IndicatorView.fromJQuery($(element));
+            indicatorView.removeFromParent();
+            })
+            }, 500)
+            */
         }
         Object.defineProperty(IndicatorsContainerView.prototype, "indicatorViewsDict", {
             get: function () {
@@ -30,6 +40,7 @@ define(["require", "exports", '../DataStructures/Dictionary', '../Core/InvalidAc
             }
             this.indicatorViewsDict.set(indicatorView.identifier, indicatorView);
             this.append(indicatorView);
+            //indicatorView.addCssClass("in");
         };
 
         /**
@@ -43,6 +54,8 @@ define(["require", "exports", '../DataStructures/Dictionary', '../Core/InvalidAc
             }
             var indicatorView = this.indicatorViewsDict.get(identifier);
             this.indicatorViewsDict.unset(identifier);
+
+            //indicatorView.removeCssClass('in');
             indicatorView.removeFromParent();
         };
         return IndicatorsContainerView;

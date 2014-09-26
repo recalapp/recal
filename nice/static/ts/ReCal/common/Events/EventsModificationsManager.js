@@ -17,6 +17,7 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
             configurable: true
         });
 
+
         Object.defineProperty(EventsModificationsManager.prototype, "eventsStoreCoordinator", {
             get: function () {
                 return this._eventsStoreCoordinator;

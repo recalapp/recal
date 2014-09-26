@@ -1,3 +1,4 @@
+import BrowserEvents = require('../Core/BrowserEvents');
 import Dictionary = require('../DataStructures/Dictionary');
 import Indicators = require('./Indicators');
 import IndicatorView = require('./IndicatorView');
@@ -8,6 +9,21 @@ class IndicatorsContainerView extends View implements Indicators.IIndicatorsCont
 {
     private _indicatorViewsDict: Dictionary<string, IndicatorView> = new Dictionary<string, IndicatorView>();
     private get indicatorViewsDict(): Dictionary<string, IndicatorView> { return this._indicatorViewsDict; }
+
+    constructor($element: JQuery, cssClass: string)
+    {
+        super($element, cssClass);
+        /*
+        setInterval(()=>
+        {
+            // TODO separate timer into a different module with support for pausing
+            this.findChildrenJQuery(':not(.in)').each((index: number, element: Element)=>{
+                var indicatorView = IndicatorView.fromJQuery($(element));
+                indicatorView.removeFromParent();
+            })
+        }, 500)
+        */
+    }
 
     /**
      * Add the specified indicator view to the container. Throws an exception
@@ -22,6 +38,7 @@ class IndicatorsContainerView extends View implements Indicators.IIndicatorsCont
         }
         this.indicatorViewsDict.set(indicatorView.identifier, indicatorView);
         this.append(indicatorView);
+        //indicatorView.addCssClass("in");
     }
 
     /**
@@ -37,6 +54,7 @@ class IndicatorsContainerView extends View implements Indicators.IIndicatorsCont
         }
         var indicatorView = this.indicatorViewsDict.get(identifier);
         this.indicatorViewsDict.unset(identifier);
+        //indicatorView.removeCssClass('in');
         indicatorView.removeFromParent();
     }
 

@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', '../../library/ClickToEdit/ClickToEditViewFactory', './DashboardCalendar/DashboardCalendarViewController', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../../library/Indicators/IndicatorsContainerView', '../../library/Indicators/IndicatorsManager', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Notifications/SidebarNotificationsManager', '../../library/Table/TableView', '../../library/CoreUI/View', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, ClickToEditViewFactory, DashboardCalendarViewController, EventsOperationsFacade, GlobalBrowserEventsManager, IndicatorsContainerView, IndicatorsManager, ReCalSidebarViewController, SidebarView, SidebarNotificationsManager, TableView, View, ViewController, ViewTemplateRetriever) {
+define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', '../../library/ClickToEdit/ClickToEditViewFactory', './DashboardCalendar/DashboardCalendarViewController', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../../library/Indicators/IndicatorsContainerView', '../../library/Indicators/IndicatorsManager', '../../library/Indicators/IndicatorsType', '../common/ReCalCommonBrowserEvents', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Notifications/SidebarNotificationsManager', '../../library/Table/TableView', '../../library/CoreUI/View', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, ClickToEditViewFactory, DashboardCalendarViewController, EventsOperationsFacade, GlobalBrowserEventsManager, IndicatorsContainerView, IndicatorsManager, IndicatorsType, ReCalCommonBrowserEvents, ReCalSidebarViewController, SidebarView, SidebarNotificationsManager, TableView, View, ViewController, ViewTemplateRetriever) {
     var DashboardViewController = (function (_super) {
         __extends(DashboardViewController, _super);
         function DashboardViewController(view) {
@@ -176,10 +176,24 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
 
 
         DashboardViewController.prototype.initialize = function () {
+            this.setUpEventsServerCommunicationIndicators();
             this.initializeSidebar();
             this.initializePopUpCanvas();
             this.initializeCalendar();
             this.initializeAgenda();
+        };
+
+        DashboardViewController.prototype.setUpEventsServerCommunicationIndicators = function () {
+            var _this = this;
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsWillBeginDownloading, function () {
+                _this.indicatorsManager.showIndicator("events_download", 0 /* persistent */, "Loading events...");
+            });
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFinishDownloading, function () {
+                _this.indicatorsManager.hideIndicatorWithIdentifier("events_download");
+            });
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailDownloading, function () {
+                _this.indicatorsManager.showIndicator("events_download", 2 /* error */, "Error connecting.");
+            });
         };
 
         DashboardViewController.prototype.initializeCalendar = function () {

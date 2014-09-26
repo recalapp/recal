@@ -4,6 +4,8 @@ import Events = require('./Events');
 import EventsModel = require('./EventsModel');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
 import EventsVisibilityManager = require('./EventsVisibilityManager');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
+import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import Server = require('../../../library/Server/Server');
 import ServerConnection = require('../../../library/Server/ServerConnection');
 import ServerRequest = require('../../../library/Server/ServerRequest');
@@ -20,6 +22,7 @@ class EventsServerCommunicator
 
     private _lastConnected: DateTime = DateTime.fromUnix(0);
     private get lastConnected(): DateTime { return this._lastConnected }
+
     private set lastConnected(value: DateTime) { this._lastConnected = value; }
 
     private _eventsStoreCoordinator: EventsStoreCoordinator = null;
@@ -28,10 +31,17 @@ class EventsServerCommunicator
     private _eventsVisibilityManager: EventsVisibilityManager = null;
     private get eventsVisibilityManager(): EventsVisibilityManager { return this._eventsVisibilityManager; }
 
-    constructor(dependencies: Events.EventsRetrieverDependencies)
+    /**
+     * Global Browser Events Manager
+     */
+    private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
+
+    constructor(dependencies: Events.EventsServerCommunicatorDependencies)
     {
         this._eventsStoreCoordinator = dependencies.eventsStoreCoordinator;
         this._eventsVisibilityManager = dependencies.eventsVisibilityManager;
+        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
     }
 
     public pullEvents(): void
@@ -46,8 +56,10 @@ class EventsServerCommunicator
             });
             return serverRequest;
         };
+        this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginDownloading);
         this.serverConnection.sendRequest(createServerRequest())
-            .done((data: {events: any[]; hidden_events: string[]}) =>{
+            .done((data: {events: any[]; hidden_events: string[]}) =>
+            {
                 if (this.lastConnected.unix === 0)
                 {
                     this.eventsStoreCoordinator.clearLocalEvents();
@@ -65,7 +77,10 @@ class EventsServerCommunicator
                 {
                     this.eventsVisibilityManager.resetEventVisibilityToHiddenEventIds(data.hidden_events);
                 }
-            }).fail((data: any) =>{
+                this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFinishDownloading);
+            }).fail((data: any) =>
+            {
+                this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFailDownloading);
             });
     }
 

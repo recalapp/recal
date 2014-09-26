@@ -32,6 +32,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             configurable: true
         });
 
+
         Object.defineProperty(EventsModel.prototype, "title", {
             get: function () {
                 return this._title;
@@ -42,6 +43,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(EventsModel.prototype, "description", {
             get: function () {
@@ -54,6 +56,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             configurable: true
         });
 
+
         Object.defineProperty(EventsModel.prototype, "location", {
             get: function () {
                 return this._location;
@@ -64,6 +67,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(EventsModel.prototype, "sectionId", {
             get: function () {
@@ -76,6 +80,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             configurable: true
         });
 
+
         Object.defineProperty(EventsModel.prototype, "courseId", {
             get: function () {
                 return this._courseId;
@@ -86,6 +91,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(EventsModel.prototype, "eventTypeCode", {
             get: function () {
@@ -98,6 +104,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             configurable: true
         });
 
+
         Object.defineProperty(EventsModel.prototype, "startDate", {
             get: function () {
                 return this._startDate;
@@ -108,6 +115,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(EventsModel.prototype, "endDate", {
             get: function () {
@@ -120,6 +128,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             configurable: true
         });
 
+
         Object.defineProperty(EventsModel.prototype, "lastEdited", {
             get: function () {
                 return this._lastEdited;
@@ -130,6 +139,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             enumerable: true,
             configurable: true
         });
+
         return EventsModel;
     })();
 

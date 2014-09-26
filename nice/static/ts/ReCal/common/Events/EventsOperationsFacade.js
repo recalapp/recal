@@ -47,7 +47,8 @@ define(["require", "exports", './EventsModificationsManager', './EventsRetriever
                 if (!this._eventsServerCommunicator) {
                     this._eventsServerCommunicator = new EventsServerCommunicator({
                         eventsStoreCoordinator: this.eventsStoreCoordinator,
-                        eventsVisibilityManager: this.eventsVisibilityManager
+                        eventsVisibilityManager: this.eventsVisibilityManager,
+                        globalBrowserEventsManager: this.globalBrowserEventsManager
                     });
                 }
                 return this._eventsServerCommunicator;

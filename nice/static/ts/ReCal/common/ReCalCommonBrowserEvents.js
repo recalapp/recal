@@ -10,6 +10,9 @@ define(["require", "exports"], function(require, exports) {
 
         ReCalCommonBrowserEvents.eventSelectionChanged = 'eventSelectionChanged';
         ReCalCommonBrowserEvents.eventsDataChanged = 'eventsDataChanged';
+        ReCalCommonBrowserEvents.eventsWillBeginDownloading = 'eventsWillBeginDownloading';
+        ReCalCommonBrowserEvents.eventsDidFinishDownloading = 'eventsDidFinishDownloading';
+        ReCalCommonBrowserEvents.eventsDidFailDownloading = 'eventsDidFailDownloading';
         return ReCalCommonBrowserEvents;
     })();
 

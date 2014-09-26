@@ -263,11 +263,14 @@ a {
     opacity: 0;
     position: relative;
     bottom: -100px;
-}
-.indicator.in{
     opacity: 1;
     bottom: 0;
 }
+/*
+.indicator.in{
+    opacity: 1;
+    bottom: 0;
+}*/
 #loading-icon{
     float: right;
     -webkit-animation: rotateIcon 1s infinite linear;

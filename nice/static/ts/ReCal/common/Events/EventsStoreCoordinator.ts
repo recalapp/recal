@@ -7,23 +7,28 @@ import EventsStoreCoordinatorDependencies = Events.EventsStoreCoordinatorDepende
 import IEventsModel = Events.IEventsModel;
 
 /**
-  * The class responsible to actually storing the events locally. 
-  * This class is also responsible for keeping track of which events have been
-  * modified.
-  */
+ * The class responsible to actually storing the events locally.
+ * This class is also responsible for keeping track of which events have been
+ * modified.
+ */
 class EventsStoreCoordinator
 {
     private _eventsRegistry: Dictionary<string, IEventsModel> = null;
     private get eventsRegistry(): Dictionary<string, IEventsModel> { return this._eventsRegistry; }
-    private set eventsRegistry(value: Dictionary<string, IEventsModel>) { this._eventsRegistry = value; }
+
+    private set eventsRegistry(value: Dictionary<string, IEventsModel>)
+    {
+        this._eventsRegistry = value;
+    }
 
     private _eventIdsSorted: string[] = null;
-    private get eventIdsSorted(): string[] 
+    private get eventIdsSorted(): string[]
     {
         if (this._eventIdsSorted === null || this._eventIdsSorted === undefined)
         {
             this._eventIdsSorted = this.eventsRegistry.allKeys();
-            this._eventIdsSorted.sort((a: string, b: string) => {
+            this._eventIdsSorted.sort((a: string, b: string) =>
+            {
                 var eventA = this.eventsRegistry.get(a);
                 var eventB = this.eventsRegistry.get(b);
                 return eventA.startDate.unix - eventB.startDate.unix;
@@ -33,21 +38,22 @@ class EventsStoreCoordinator
     }
 
     /**
-      * Global Browser Events Manager
-      */
+     * Global Browser Events Manager
+     */
     private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
     private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
 
     constructor(dependencies: EventsStoreCoordinatorDependencies)
     {
-        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+        this._globalBrowserEventsManager =
+        dependencies.globalBrowserEventsManager;
         this.clearLocalEvents();
     }
 
     /**
-      * Add the specified events to the events store. If an existing event with
-      * the same id exists, this replaces it.
-      */
+     * Add the specified events to the events store. If an existing event with
+     * the same id exists, this replaces it.
+     */
     public addLocalEvents(eventsModels: IEventsModel[]): void
     {
         for (var i = 0; i < eventsModels.length; ++i)
@@ -58,9 +64,9 @@ class EventsStoreCoordinator
     }
 
     /**
-      * Delete any events in the specified list of IDs. This function can safely
-      * be called with event IDs that do not exist.
-      */
+     * Delete any events in the specified list of IDs. This function can safely
+     * be called with event IDs that do not exist.
+     */
     public clearLocalEventsWithIds(eventIds: string[]): void
     {
         for (var i = 0; i < eventIds.length; ++i)
@@ -74,8 +80,8 @@ class EventsStoreCoordinator
     }
 
     /**
-      * Clear out the local event store.
-      */
+     * Clear out the local event store.
+     */
     public clearLocalEvents(): void
     {
         this.eventsRegistry = new Dictionary<string, IEventsModel>();
@@ -83,8 +89,8 @@ class EventsStoreCoordinator
     }
 
     /**
-      * Get event associated with the ID
-      */
+     * Get event associated with the ID
+     */
     public getEventById(eventId: string): IEventsModel
     {
         return this.eventsRegistry.get(eventId);

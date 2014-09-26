@@ -8,7 +8,8 @@ import EventsVisibilityManager = require('./EventsVisibilityManager');
 import IEventsModel = Events.IEventsModel;
 
 declare function EventsMan_getEventByID(id: string): any;
-declare function EventsMan_getEventIDForRange(start: number, end: number): string[];
+declare function EventsMan_getEventIDForRange(start: number,
+                                              end: number): string[];
 
 class EventsRetriever
 {
@@ -25,26 +26,30 @@ class EventsRetriever
     }
 
     /**
-      * Get event associated with the ID
-      */
+     * Get event associated with the ID
+     */
     public getEventById(eventId: string): IEventsModel
     {
         return this.eventsStoreCoordinator.getEventById(eventId);
     }
 
     /**
-      * Get all event IDs in the range, inclusive.
-      */
+     * Get all event IDs in the range, inclusive.
+     */
     public getEventIdsInRange(start: DateTime, end: DateTime): string[]
     {
-        return this.eventsStoreCoordinator.getEventIdsWithFilter((eventId: string)=>{
+        return this.eventsStoreCoordinator.getEventIdsWithFilter((eventId: string)=>
+        {
             var eventsModel = this.getEventById(eventId);
             var ret: { keep: boolean; stop: boolean; } = { keep: false, stop: false };
-            ret.keep = start.compareTo(eventsModel.startDate) === ComparableResult.less 
-                && end.compareTo(eventsModel.startDate) === ComparableResult.greater
+            ret.keep =
+            start.compareTo(eventsModel.startDate) === ComparableResult.less
+                && end.compareTo(eventsModel.startDate)
+                === ComparableResult.greater
                 && !this.eventsVisibilityManager.eventIdIsHidden(eventId);
 
-            ret.stop = end.compareTo(eventsModel.startDate) === ComparableResult.less;
+            ret.stop =
+            end.compareTo(eventsModel.startDate) === ComparableResult.less;
             return ret;
         });
     }

@@ -17,7 +17,9 @@ import GlobalBrowserEventsManager = require('../../library/Core/GlobalBrowserEve
 import Indicators = require('../../library/Indicators/Indicators');
 import IndicatorsContainerView = require('../../library/Indicators/IndicatorsContainerView');
 import IndicatorsManager = require('../../library/Indicators/IndicatorsManager');
+import IndicatorsType = require('../../library/Indicators/IndicatorsType');
 import Notifications = require('../../library/Notifications/Notifications');
+import ReCalCommonBrowserEvents = require('../common/ReCalCommonBrowserEvents');
 import ReCalSidebar = require('../common/ReCalSidebar/ReCalSidebar');
 import ReCalSidebarViewController = require('../common/ReCalSidebar/ReCalSidebarViewController');
 import Sidebar = require('../../library/Sidebar/Sidebar');
@@ -185,10 +187,24 @@ class DashboardViewController extends ViewController
 
     private initialize(): void
     {
+        this.setUpEventsServerCommunicationIndicators();
         this.initializeSidebar();
         this.initializePopUpCanvas();
         this.initializeCalendar();
         this.initializeAgenda();
+    }
+
+    private setUpEventsServerCommunicationIndicators()
+    {
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsWillBeginDownloading, ()=>{
+            this.indicatorsManager.showIndicator("events_download", IndicatorsType.persistent, "Loading events...");
+        });
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFinishDownloading, ()=>{
+            this.indicatorsManager.hideIndicatorWithIdentifier("events_download");
+        });
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailDownloading, ()=>{
+            this.indicatorsManager.showIndicator("events_download", IndicatorsType.error, "Error connecting.");
+        })
     }
 
     private initializeCalendar(): void
