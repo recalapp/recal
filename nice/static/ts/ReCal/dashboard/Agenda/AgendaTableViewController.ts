@@ -35,44 +35,50 @@ class AgendaTableViewController extends TableViewController
     private static LO_MESSAGE = 'agenda loading';
 
     /**
-      * Global Browser Events Manager
-      */
+     * Global Browser Events Manager
+     */
     private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
     private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
 
     /**
-      * View template retriever
-      */
+     * View template retriever
+     */
     private _viewTemplateRetriever: IViewTemplateRetriever = null;
     private get viewTemplateRetriever(): IViewTemplateRetriever { return this._viewTemplateRetriever; }
 
     /**
-      * Events Operations Facade
-      */
+     * Events Operations Facade
+     */
     private _eventsOperationsFacade: IEventsOperationsFacade = null;
     private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
 
-    constructor(tableView: ITableView, dependencies: AgendaTableViewControllerDependencies)
+    constructor(tableView: ITableView,
+                dependencies: AgendaTableViewControllerDependencies)
     {
         super(tableView);
         this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
-        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+        this._globalBrowserEventsManager =
+        dependencies.globalBrowserEventsManager;
         this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
         // when events change
-        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDataChanged, (ev: JQueryEventObject)=>
-        {
-            this.reload();
-        });
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDataChanged,
+            (ev: JQueryEventObject)=>
+            {
+                this.reload();
+            });
 
         // when settings close
-        $('#' + SE_id).on('close', (ev: JQueryEventObject)=>{
+        $('#' + SE_id).on('close', (ev: JQueryEventObject)=>
+        {
             // TODO check if visible
             this.reload();
         });
 
         // when switching between agenda and calendar
-        $('#agenda.tab-pane').each((index: number, pane: any)=>{
-            $(pane).on('transitionend', (ev: JQueryEventObject)=>{
+        $('#agenda.tab-pane').each((index: number, pane: any)=>
+        {
+            $(pane).on('transitionend', (ev: JQueryEventObject)=>
+            {
                 if ($(pane).hasClass('in'))
                 {
                     this.reload();
@@ -96,15 +102,18 @@ class AgendaTableViewController extends TableViewController
         // this should be the sole place to unhighlight deselected events and 
         // make sure the agenda view is in sync with the state of the events
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventSelectionChanged,
-                (ev: JQueryEventObject, extra: any) => 
+            (ev: JQueryEventObject, extra: any) =>
+            {
+                if (extra !== null && extra !== undefined && extra.eventIds
+                    !== null && extra.eventIds !== undefined)
                 {
-                    if (extra !== null && extra !== undefined && extra.eventIds !== null && extra.eventIds !== undefined)
-                    {
-                        var changedEventIds = new Set<string>(extra.eventIds);
-                        var changedSize = changedEventIds.size();
-                        var foundCount = 0;
-                        // get cell based on eventId and unhighlight it
-                        $.each(this.view.selectedIndexPaths(), (index: number, indexPath: IndexPath) =>{
+                    var changedEventIds = new Set<string>(extra.eventIds);
+                    var changedSize = changedEventIds.size();
+                    var foundCount = 0;
+                    // get cell based on eventId and unhighlight it
+                    $.each(this.view.selectedIndexPaths(),
+                        (index: number, indexPath: IndexPath) =>
+                        {
                             var eventId: string = this._eventSectionArray[indexPath.section].eventIds[indexPath.item];
                             if (changedEventIds.contains(eventId))
                             {
@@ -123,18 +132,18 @@ class AgendaTableViewController extends TableViewController
                                 }
                             }
                         });
-                    }
-                    else
-                    {
-                        // TODO cannot tell what changed. update everything. need a way to map to all events in events manager
-                    }
-                });
+                }
+                else
+                {
+                    // TODO cannot tell what changed. update everything. need a way to map to all events in events manager
+                }
+            });
 
         // reload
         this.reload();
     }
 
-    public reload() : void
+    public reload(): void
     {
         // TODO Agenda_filter
         // TODO EventSectionRangeProvider
@@ -158,10 +167,12 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        var eventIds: string[] = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        var eventIds: string[] = this.eventsOperationsFacade.getEventIdsInRange(startDate,
+            endDate);
         if (eventIds.length > 0)
         {
-            this._eventSectionArray.push(new EventSection('Yesterday', eventIds));
+            this._eventSectionArray.push(new EventSection('Yesterday',
+                eventIds));
         }
 
         // today to midnight
@@ -171,7 +182,8 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        eventIds =
+        this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Today', eventIds));
@@ -184,10 +196,12 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        eventIds =
+        this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
-            this._eventSectionArray.push(new EventSection('This Week', eventIds));
+            this._eventSectionArray.push(new EventSection('This Week',
+                eventIds));
         }
 
         // this month
@@ -198,10 +212,12 @@ class AgendaTableViewController extends TableViewController
         endDate.hours = 0;
         endDate.minutes = 0;
         endDate.seconds = 0;
-        eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        eventIds =
+        this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
         if (eventIds.length > 0)
         {
-            this._eventSectionArray.push(new EventSection('This Month', eventIds));
+            this._eventSectionArray.push(new EventSection('This Month',
+                eventIds));
         }
 
         this.view.refresh();
@@ -214,9 +230,9 @@ class AgendaTableViewController extends TableViewController
      *****************************************************************/
 
     /**
-      * Returns true if a cell should be deselected
-      * when it is selected and clicked on again.
-      */
+     * Returns true if a cell should be deselected
+     * when it is selected and clicked on again.
+     */
     public shouldToggleSelection(): boolean
     {
         return false;
@@ -227,17 +243,17 @@ class AgendaTableViewController extends TableViewController
      * Useful for when there are more than one types of cells in
      * a table view
      */
-    public identifierForCellAtIndexPath(indexPath: IndexPath) : string
+    public identifierForCellAtIndexPath(indexPath: IndexPath): string
     {
         return 'agenda';
     }
 
     /**
-      * Return a unique identifier for the header at the given index path.
-      * Useful for when there are more than one types of header in
-      * a table view
-      */
-    public identifierForHeaderViewAtSection(section: number) : string
+     * Return a unique identifier for the header at the given index path.
+     * Useful for when there are more than one types of header in
+     * a table view
+     */
+    public identifierForHeaderViewAtSection(section: number): string
     {
         return 'agenda-header';
     }
@@ -245,15 +261,15 @@ class AgendaTableViewController extends TableViewController
     /**
      * Create a new table view cell for the given identifier
      */
-    public createCell(identifier: string) : ITableViewCell
+    public createCell(identifier: string): ITableViewCell
     {
         return <AgendaTableViewCell> AgendaTableViewCell.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell.templateSelector));
     }
 
     /**
-      * Create a new table view header view for the given identifier
-      */
-    public createHeaderView(identifier: string) : ITableViewHeaderView
+     * Create a new table view header view for the given identifier
+     */
+    public createHeaderView(identifier: string): ITableViewHeaderView
     {
         return <AgendaTableViewHeaderView> AgendaTableViewHeaderView.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewHeaderView.templateSelector));
     }
@@ -292,9 +308,9 @@ class AgendaTableViewController extends TableViewController
     }
 
     /**
-      * Make any changes to the cell before it goes on screen.
-      * Return (not necessarily the same) cell.
-      */
+     * Make any changes to the cell before it goes on screen.
+     * Return (not necessarily the same) cell.
+     */
     public decorateHeaderView(headerView: ITableViewHeaderView): ITableViewHeaderView
     {
         var agendaHeaderView: IAgendaTableViewHeaderView = <IAgendaTableViewHeaderView> headerView;
@@ -306,7 +322,7 @@ class AgendaTableViewController extends TableViewController
     /**
      * The number of sections in this table view.
      */
-    public numberOfSections() : number
+    public numberOfSections(): number
     {
         if (!this._eventSectionArray)
         {
@@ -318,7 +334,7 @@ class AgendaTableViewController extends TableViewController
     /**
      * The number of items in this section.
      */
-    public numberOfItemsInSection(section: number) : number
+    public numberOfItemsInSection(section: number): number
     {
         if (!this._eventSectionArray)
         {
@@ -328,11 +344,11 @@ class AgendaTableViewController extends TableViewController
     }
 
     /*******************************************************************
-      * Table View Delegate
-      *****************************************************************/
+     * Table View Delegate
+     *****************************************************************/
     /**
-      * Callback for when a table view cell is selected
-      */
+     * Callback for when a table view cell is selected
+     */
     public didSelectCell(cell: ITableViewCell): void
     {
         var eventsOperationsFacade = this.eventsOperationsFacade;
@@ -343,7 +359,7 @@ class AgendaTableViewController extends TableViewController
             // indexPath was invalid
             return;
         }
-        
+
         if (eventsOperationsFacade.eventIdIsSelected(eventId))
         {
             eventsOperationsFacade.selectEventWithId(eventId);
@@ -366,6 +382,7 @@ class EventSection
     {
         return this._sectionName;
     }
+
     public set sectionName(value: string)
     {
         this._sectionName = value;
@@ -375,6 +392,7 @@ class EventSection
     {
         return this._eventIds;
     }
+
     public set eventIds(value: string[])
     {
         this._eventIds = value;

@@ -15,6 +15,7 @@ define(["require", "exports", 'jquery', './DashboardViewController', '../../libr
             configurable: true
         });
 
+
         DashboardInitializer.prototype.initialize = function () {
             // set up Dashboard View Controller
             var dashboardView = View.fromJQuery($('body'));

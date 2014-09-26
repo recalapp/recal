@@ -53,6 +53,7 @@ define(["require", "exports", '../../../library/Table/TableViewCell'], function(
 
             this._setColorForEvent(eventsModel);
         };
+
         AgendaTableViewCell.prototype._setColorForEvent = function (eventsModel) {
             var agendaColorClass = 'course-color-' + eventsModel.courseId;
             var courseColor = SECTION_COLOR_MAP[eventsModel.sectionId]['color'];

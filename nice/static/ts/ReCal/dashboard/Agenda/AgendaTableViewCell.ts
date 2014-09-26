@@ -32,7 +32,8 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
         }
         this._$el.find('#agenda-section').css('color', courseColor);
         this._$el.find('#agenda-title').css('color', courseColor);
-        this._$el.find('.agenda-item').addClass('panel-primary').removeClass('panel-default').css('border-color', courseColor);
+        this._$el.find('.agenda-item').addClass('panel-primary').removeClass('panel-default').css('border-color',
+            courseColor);
     }
 
     public unhighlight(): void
@@ -42,7 +43,9 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
         if (borderColor === undefined)
         {
         }
-        this._$el.find('.agenda-item').addClass("panel-default").removeClass("panel-primary").css('border-color', borderColor);;
+        this._$el.find('.agenda-item').addClass("panel-default").removeClass("panel-primary").css('border-color',
+            borderColor);
+        ;
         this._$el.find('#agenda-section').css('color', borderColor);
         this._$el.find('#agenda-title').css('color', defaultTextColor);
         this._$el.find('#agenda-section').css('color', defaultTextColor);
@@ -61,11 +64,13 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
 
         this._setColorForEvent(eventsModel);
     }
+
     private _setColorForEvent(eventsModel: IEventsModel): void
     {
         var agendaColorClass = 'course-color-' + eventsModel.courseId;
         var courseColor = SECTION_COLOR_MAP[eventsModel.sectionId]['color'];
-        this._$el.find('.agenda-tag').addClass(agendaColorClass).css('background-color', courseColor);
+        this._$el.find('.agenda-tag').addClass(agendaColorClass).css('background-color',
+            courseColor);
         this._$el.data('course-color', courseColor);
 
         var oldColor = this._$el.css('border-color');
@@ -75,8 +80,10 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
         var darkerColor = 'rgba(0,0,0,0.4)';
 
         this._$el.data('default-text-color', darkerColor);
-        this._$el.find('#agenda-section').addClass(agendaColorClass).css('color', darkerColor);
-        this._$el.find('#agenda-title').addClass(agendaColorClass).css('color', darkerColor);
+        this._$el.find('#agenda-section').addClass(agendaColorClass).css('color',
+            darkerColor);
+        this._$el.find('#agenda-title').addClass(agendaColorClass).css('color',
+            darkerColor);
         // TODO special case for hidden events
     }
 }

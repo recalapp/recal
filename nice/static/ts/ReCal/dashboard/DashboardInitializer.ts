@@ -18,6 +18,7 @@ class DashboardInitializer
     {
         return this._rootViewController;
     }
+
     private set rootViewController(value: IViewController)
     {
         this._rootViewController = value;

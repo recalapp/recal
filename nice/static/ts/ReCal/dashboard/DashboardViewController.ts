@@ -14,6 +14,9 @@ import DashboardCalendarViewController = require('./DashboardCalendar/DashboardC
 import Events = require('../common/Events/Events');
 import EventsOperationsFacade = require('../common/Events/EventsOperationsFacade');
 import GlobalBrowserEventsManager = require('../../library/Core/GlobalBrowserEventsManager');
+import Indicators = require('../../library/Indicators/Indicators');
+import IndicatorsContainerView = require('../../library/Indicators/IndicatorsContainerView');
+import IndicatorsManager = require('../../library/Indicators/IndicatorsManager');
 import Notifications = require('../../library/Notifications/Notifications');
 import ReCalSidebar = require('../common/ReCalSidebar/ReCalSidebar');
 import ReCalSidebarViewController = require('../common/ReCalSidebar/ReCalSidebarViewController');
@@ -31,6 +34,7 @@ import ICalendarViewController = Calendar.ICalendarViewController;
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController;
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
+import IIndicatorsManager = Indicators.IIndicatorsManager;
 import IReCalSidebarViewController = ReCalSidebar.IReCalSidebarViewController;
 import ISidebarNotificationsManager = Notifications.ISidebarNotificationsManager;
 import ISidebarView = Sidebar.ISidebarView;
@@ -82,6 +86,8 @@ class DashboardViewController extends ViewController
 
     /**
      * Events Operations Facade
+     * @type IEventsOperationsFacade
+     * @private
      */
     private _eventsOperationsFacade: IEventsOperationsFacade = null;
     private get eventsOperationsFacade(): IEventsOperationsFacade
@@ -95,6 +101,11 @@ class DashboardViewController extends ViewController
         return this._eventsOperationsFacade;
     }
 
+    /**
+     * click to edit view factory
+     * @type IClickToEditViewFactory
+     * @private
+     */
     private _clickToEditViewFactory: IClickToEditViewFactory = null;
     private get clickToEditViewFactory(): IClickToEditViewFactory
     {
@@ -105,13 +116,29 @@ class DashboardViewController extends ViewController
         return this._clickToEditViewFactory;
     }
 
+    private _indicatorsManager: IIndicatorsManager = null;
+
+    private indicatorsManager(): IIndicatorsManager
+    {
+        if (!this._indicatorsManager)
+        {
+            this._indicatorsManager = new IndicatorsManager();
+            this._indicatorsManager.indicatorsContainerView =
+            IndicatorsContainerView.fromJQuery(this.view.findJQuery('#indicators-container'));
+        }
+        return this._indicatorsManager;
+    }
+
     /**
      * Calendar view controller
      */
     private _calendarViewController: ICalendarViewController = null;
     private get calendarViewController(): ICalendarViewController { return this._calendarViewController; }
 
-    private set calendarViewController(value: ICalendarViewController) { this._calendarViewController = value; }
+    private set calendarViewController(value: ICalendarViewController)
+    {
+        this._calendarViewController = value;
+    }
 
     /**
      * Agenda View Controller
@@ -119,7 +146,10 @@ class DashboardViewController extends ViewController
     private _agendaViewController: ITableViewController = null;
     private get agendaViewController(): ITableViewController { return this._agendaViewController; }
 
-    private set agendaViewController(value: ITableViewController) { this._agendaViewController = value; }
+    private set agendaViewController(value: ITableViewController)
+    {
+        this._agendaViewController = value;
+    }
 
     /**
      * Sidebar View Controller
@@ -127,7 +157,10 @@ class DashboardViewController extends ViewController
     private _sidebarViewController: IReCalSidebarViewController = null;
     private get sidebarViewController(): IReCalSidebarViewController { return this._sidebarViewController; }
 
-    private set sidebarViewController(value: IReCalSidebarViewController) { this._sidebarViewController = value; }
+    private set sidebarViewController(value: IReCalSidebarViewController)
+    {
+        this._sidebarViewController = value;
+    }
 
     /**
      * Canvas PopUp Container View Controller
@@ -158,9 +191,10 @@ class DashboardViewController extends ViewController
     {
         // initialize calendar view
         var calendarView: ICalendarView = <CalendarView> CalendarView.fromJQuery(this.view.findJQuery('#calendarui'));
-        var calendarVC: ICalendarViewController = new DashboardCalendarViewController(calendarView, {
-            eventsOperationsFacade: this.eventsOperationsFacade,
-        });
+        var calendarVC: ICalendarViewController = new DashboardCalendarViewController(calendarView,
+            {
+                eventsOperationsFacade: this.eventsOperationsFacade,
+            });
         this.addChildViewController(calendarVC);
         this.calendarViewController = calendarVC;
     }
@@ -169,11 +203,12 @@ class DashboardViewController extends ViewController
     {
         // initialize agenda view
         var agendaTableView: ITableView = <TableView> TableView.fromJQuery(this.view.findJQuery('#agendaui'));
-        var agendaVC: ITableViewController = new AgendaTableViewController(agendaTableView, {
-            viewTemplateRetriever: this.viewTemplateRetriever,
-            eventsOperationsFacade: this.eventsOperationsFacade,
-            globalBrowserEventsManager: this.globalBrowserEventsManager,
-        });
+        var agendaVC: ITableViewController = new AgendaTableViewController(agendaTableView,
+            {
+                viewTemplateRetriever: this.viewTemplateRetriever,
+                eventsOperationsFacade: this.eventsOperationsFacade,
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+            });
         this.addChildViewController(agendaVC);
         this.agendaViewController = agendaVC;
         return;
@@ -188,12 +223,13 @@ class DashboardViewController extends ViewController
         this.notificationsManager.sidebarView = sidebarView;
 
         // initialize sidebar view controller
-        var sidebarVC: IReCalSidebarViewController = new ReCalSidebarViewController(sidebarView, {
-            viewTemplateRetriever: this.viewTemplateRetriever,
-            globalBrowserEventsManager: this.globalBrowserEventsManager,
-            eventsOperationsFacade: this.eventsOperationsFacade,
-            clickToEditViewFactory: this.clickToEditViewFactory,
-        });
+        var sidebarVC: IReCalSidebarViewController = new ReCalSidebarViewController(sidebarView,
+            {
+                viewTemplateRetriever: this.viewTemplateRetriever,
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+                eventsOperationsFacade: this.eventsOperationsFacade,
+                clickToEditViewFactory: this.clickToEditViewFactory,
+            });
         this.addChildViewController(sidebarVC);
         this.sidebarViewController = sidebarVC;
     }

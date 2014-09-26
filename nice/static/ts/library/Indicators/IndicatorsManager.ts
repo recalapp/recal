@@ -16,7 +16,8 @@ class IndicatorsManager implements Indicators.IIndicatorsManager
     private get identifierTypeDict(): Dictionary<string, IndicatorsType> { return this._identifierTypeDict; }
 
     private _indicatorsContainerView: IIndicatorsContainerView = null;
-    private get indicatorsContainerView(): IIndicatorsContainerView { return this._indicatorsContainerView; }
+    public get indicatorsContainerView(): IIndicatorsContainerView { return this._indicatorsContainerView; }
+    public set indicatorsContainerView(value: IIndicatorsContainerView) { this._indicatorsContainerView = value; }
 
     private _indicatorViewFactory: IndicatorViewFactory = new IndicatorViewFactory();
     private get indicatorViewFactory(): IndicatorViewFactory { return this._indicatorViewFactory; }

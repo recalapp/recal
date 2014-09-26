@@ -53,6 +53,7 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
             // TODO check if visible
             this.view.refresh();
         };
+
         DashboardCalendarViewController.prototype.highlightCalendarEvent = function (calEvent) {
             if (calEvent.highlighted) {
                 return;
@@ -64,6 +65,7 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
             calEvent.textColor = '#ffffff';
             calEvent.highlighted = true;
         };
+
         DashboardCalendarViewController.prototype.unhighlightCalendarEvent = function (calEvent) {
             if (!calEvent.highlighted) {
                 return;

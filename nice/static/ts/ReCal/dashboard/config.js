@@ -24,7 +24,9 @@ require.config({
         bootstrap: ['jquery'],
         'bootstrap-datepicker': ['bootstrap'],
         dashboard: {
-            deps: ['bootstrap', 'bootstrap-datepicker', 'fullcalendar', 'jquery', 'jqueryui', 'jquery.cookie', 'moment-timezone'],
+            deps: [
+                'bootstrap', 'bootstrap-datepicker', 'fullcalendar',
+                'jquery', 'jqueryui', 'jquery.cookie', 'moment-timezone'],
             init: function () {
                 init();
             }

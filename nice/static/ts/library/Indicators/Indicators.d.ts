@@ -23,6 +23,8 @@ export interface IIndicatorsContainerView extends IView
 
 export interface IIndicatorsManager
 {
+    indicatorsContainerView: IIndicatorsContainerView;
+
     /**
      * Show an indicator with the specified type and identifier.
      * When an indicator is of type persistent, it stays on screen until

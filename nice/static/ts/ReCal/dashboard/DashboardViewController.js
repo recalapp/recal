@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', '../../library/ClickToEdit/ClickToEditViewFactory', './DashboardCalendar/DashboardCalendarViewController', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Notifications/SidebarNotificationsManager', '../../library/Table/TableView', '../../library/CoreUI/View', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, ClickToEditViewFactory, DashboardCalendarViewController, EventsOperationsFacade, GlobalBrowserEventsManager, ReCalSidebarViewController, SidebarView, SidebarNotificationsManager, TableView, View, ViewController, ViewTemplateRetriever) {
+define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', '../../library/ClickToEdit/ClickToEditViewFactory', './DashboardCalendar/DashboardCalendarViewController', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../../library/Indicators/IndicatorsContainerView', '../../library/Indicators/IndicatorsManager', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Notifications/SidebarNotificationsManager', '../../library/Table/TableView', '../../library/CoreUI/View', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, ClickToEditViewFactory, DashboardCalendarViewController, EventsOperationsFacade, GlobalBrowserEventsManager, IndicatorsContainerView, IndicatorsManager, ReCalSidebarViewController, SidebarView, SidebarNotificationsManager, TableView, View, ViewController, ViewTemplateRetriever) {
     var DashboardViewController = (function (_super) {
         __extends(DashboardViewController, _super);
         function DashboardViewController(view) {
@@ -24,9 +24,17 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             this._viewTemplateRetriever = null;
             /**
             * Events Operations Facade
+            * @type IEventsOperationsFacade
+            * @private
             */
             this._eventsOperationsFacade = null;
+            /**
+            * click to edit view factory
+            * @type IClickToEditViewFactory
+            * @private
+            */
             this._clickToEditViewFactory = null;
+            this._indicatorsManager = null;
             /**
             * Calendar view controller
             */
@@ -101,6 +109,14 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             enumerable: true,
             configurable: true
         });
+
+        DashboardViewController.prototype.indicatorsManager = function () {
+            if (!this._indicatorsManager) {
+                this._indicatorsManager = new IndicatorsManager();
+                this._indicatorsManager.indicatorsContainerView = IndicatorsContainerView.fromJQuery(this.view.findJQuery('#indicators-container'));
+            }
+            return this._indicatorsManager;
+        };
 
         Object.defineProperty(DashboardViewController.prototype, "calendarViewController", {
             get: function () {

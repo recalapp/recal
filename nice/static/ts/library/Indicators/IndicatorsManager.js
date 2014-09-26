@@ -26,6 +26,9 @@ define(["require", "exports", '../Core/AssertionException', '../DataStructures/D
             get: function () {
                 return this._indicatorsContainerView;
             },
+            set: function (value) {
+                this._indicatorsContainerView = value;
+            },
             enumerable: true,
             configurable: true
         });

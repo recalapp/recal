@@ -329,6 +329,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             configurable: true
         });
 
+
         Object.defineProperty(EventSection.prototype, "eventIds", {
             get: function () {
                 return this._eventIds;
@@ -339,6 +340,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             enumerable: true,
             configurable: true
         });
+
         return EventSection;
     })();
 
