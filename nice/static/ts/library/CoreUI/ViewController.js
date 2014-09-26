@@ -65,3 +65,4 @@ define(["require", "exports", '../Core/InvalidActionException', '../DataStructur
     
     return ViewController;
 });
+//# sourceMappingURL=ViewController.js.map

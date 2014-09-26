@@ -40,3 +40,4 @@ define(["require", "exports", 'jquery', './IndicatorView'], function(require, ex
     
     return TemporaryIndicatorView;
 });
+//# sourceMappingURL=TemporaryIndicatorView.js.map

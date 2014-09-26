@@ -30,3 +30,4 @@ define(["require", "exports", 'jquery', './DashboardViewController', '../../libr
     
     return DashboardInitializer;
 });
+//# sourceMappingURL=DashboardInitializer.js.map

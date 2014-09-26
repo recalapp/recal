@@ -159,3 +159,4 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
     
     return DashboardCalendarViewController;
 });
+//# sourceMappingURL=DashboardCalendarViewController.js.map

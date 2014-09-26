@@ -116,15 +116,19 @@ class DashboardViewController extends ViewController
         return this._clickToEditViewFactory;
     }
 
+    /**
+     * IndicatorsManager
+     * @type IIndicatorsManager
+     * @private
+     */
     private _indicatorsManager: IIndicatorsManager = null;
-
-    private indicatorsManager(): IIndicatorsManager
+    private get indicatorsManager(): IIndicatorsManager
     {
         if (!this._indicatorsManager)
         {
             this._indicatorsManager = new IndicatorsManager();
             this._indicatorsManager.indicatorsContainerView =
-            IndicatorsContainerView.fromJQuery(this.view.findJQuery('#indicators-container'));
+            <IndicatorsContainerView> IndicatorsContainerView.fromJQuery(this.view.findJQuery('#indicators-container'));
         }
         return this._indicatorsManager;
     }
@@ -207,11 +211,11 @@ class DashboardViewController extends ViewController
             {
                 viewTemplateRetriever: this.viewTemplateRetriever,
                 eventsOperationsFacade: this.eventsOperationsFacade,
+                indicatorsManager: this.indicatorsManager,
                 globalBrowserEventsManager: this.globalBrowserEventsManager,
             });
         this.addChildViewController(agendaVC);
         this.agendaViewController = agendaVC;
-        return;
     }
 
     private initializeSidebar(): void

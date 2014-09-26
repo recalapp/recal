@@ -22,3 +22,4 @@ define(["require", "exports", 'jquery', '../DataStructures/Dictionary'], functio
     
     return ViewTemplateRetriever;
 });
+//# sourceMappingURL=ViewTemplateRetriever.js.map

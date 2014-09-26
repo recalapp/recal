@@ -10,3 +10,4 @@ define(["require", "exports"], function(require, exports) {
     
     return ClickToEditType;
 });
+//# sourceMappingURL=ClickToEditType.js.map

@@ -34,6 +34,11 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             * @private
             */
             this._clickToEditViewFactory = null;
+            /**
+            * IndicatorsManager
+            * @type IIndicatorsManager
+            * @private
+            */
             this._indicatorsManager = null;
             /**
             * Calendar view controller
@@ -110,13 +115,17 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             configurable: true
         });
 
-        DashboardViewController.prototype.indicatorsManager = function () {
-            if (!this._indicatorsManager) {
-                this._indicatorsManager = new IndicatorsManager();
-                this._indicatorsManager.indicatorsContainerView = IndicatorsContainerView.fromJQuery(this.view.findJQuery('#indicators-container'));
-            }
-            return this._indicatorsManager;
-        };
+        Object.defineProperty(DashboardViewController.prototype, "indicatorsManager", {
+            get: function () {
+                if (!this._indicatorsManager) {
+                    this._indicatorsManager = new IndicatorsManager();
+                    this._indicatorsManager.indicatorsContainerView = IndicatorsContainerView.fromJQuery(this.view.findJQuery('#indicators-container'));
+                }
+                return this._indicatorsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         Object.defineProperty(DashboardViewController.prototype, "calendarViewController", {
             get: function () {
@@ -189,11 +198,11 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             var agendaVC = new AgendaTableViewController(agendaTableView, {
                 viewTemplateRetriever: this.viewTemplateRetriever,
                 eventsOperationsFacade: this.eventsOperationsFacade,
+                indicatorsManager: this.indicatorsManager,
                 globalBrowserEventsManager: this.globalBrowserEventsManager
             });
             this.addChildViewController(agendaVC);
             this.agendaViewController = agendaVC;
-            return;
         };
 
         DashboardViewController.prototype.initializeSidebar = function () {
@@ -234,3 +243,4 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
     
     return DashboardViewController;
 });
+//# sourceMappingURL=DashboardViewController.js.map

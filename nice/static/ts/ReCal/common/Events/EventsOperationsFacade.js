@@ -201,3 +201,4 @@ define(["require", "exports", './EventsModificationsManager', './EventsRetriever
     
     return EventsOperationsFacade;
 });
+//# sourceMappingURL=EventsOperationsFacade.js.map

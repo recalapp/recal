@@ -16,3 +16,4 @@ define(["require", "exports", "jquery", "../CoreUI/View"], function(require, exp
     
     return GlobalBrowserEventsManager;
 });
+//# sourceMappingURL=GlobalBrowserEventsManager.js.map

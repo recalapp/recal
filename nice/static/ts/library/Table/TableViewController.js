@@ -117,3 +117,4 @@ define(["require", "exports", '../Core/AbstractMethodException', '../CoreUI/View
     
     return TableViewController;
 });
+//# sourceMappingURL=TableViewController.js.map

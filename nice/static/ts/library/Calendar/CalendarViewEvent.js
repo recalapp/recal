@@ -127,3 +127,4 @@ define(["require", "exports"], function(require, exports) {
     
     return CalendarViewEvent;
 });
+//# sourceMappingURL=CalendarViewEvent.js.map

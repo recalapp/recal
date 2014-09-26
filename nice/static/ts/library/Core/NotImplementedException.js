@@ -17,3 +17,4 @@ define(["require", "exports", './Exception'], function(require, exports, Excepti
     
     return NotImplementedException;
 });
+//# sourceMappingURL=NotImplementedException.js.map

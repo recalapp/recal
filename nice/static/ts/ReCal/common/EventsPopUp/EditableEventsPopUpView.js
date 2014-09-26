@@ -171,3 +171,4 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
     
     return EditableEventsPopUpView;
 });
+//# sourceMappingURL=EditableEventsPopUpView.js.map

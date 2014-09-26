@@ -132,3 +132,4 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
     
     return PopUpView;
 });
+//# sourceMappingURL=PopUpView.js.map

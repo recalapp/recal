@@ -49,3 +49,4 @@ define(["require", "exports", '../../../library/Core/ComparableResult'], functio
     
     return EventsRetriever;
 });
+//# sourceMappingURL=EventsRetriever.js.map

@@ -50,3 +50,4 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
     
     return ClickToEditTextView;
 });
+//# sourceMappingURL=ClickToEditTextView.js.map

@@ -210,3 +210,4 @@ define(["require", "exports", 'jquery', '../DateTime/DateTime', '../CoreUI/View'
     
     return CalendarView;
 });
+//# sourceMappingURL=CalendarView.js.map

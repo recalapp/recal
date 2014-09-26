@@ -16,7 +16,7 @@ function init()
     //pinnedIDs = new Set();
 
     // initializing
-    LO_init();
+    //LO_init();
     RF_init();
     
     // set up ajax, so it shows loading indicator and send csrf properly
@@ -34,23 +34,23 @@ function init()
             var loadingID = settings.loadingID;
             if (typeof loadingID == 'undefined')
                 loadingID = settings.url;
-            LO_showLoading(loadingID);
+            //LO_showLoading(loadingID);
         },
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
         var loadingID = settings.loadingID;
         if (typeof loadingID == 'undefined')
             loadingID = settings.url;
-        LO_hideLoading(loadingID);
+        //LO_hideLoading(loadingID);
     });
     $(document).ajaxError(function(event, xhr, settings){
         var loadingID = settings.loadingID;
         if (typeof loadingID == 'undefined')
             loadingID = settings.url;
-        LO_hideLoading(loadingID, false);
+        //LO_hideLoading(loadingID, false);
         if (settings.loadingIndicator == false)
             return;
-        LO_showError(loadingID);
+        //LO_showError(loadingID);
     });
 
     // more inits

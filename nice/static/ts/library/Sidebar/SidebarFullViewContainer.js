@@ -70,3 +70,4 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Invali
     
     return SidebarFullViewContainer;
 });
+//# sourceMappingURL=SidebarFullViewContainer.js.map

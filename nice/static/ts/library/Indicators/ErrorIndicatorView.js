@@ -40,3 +40,4 @@ define(["require", "exports", 'jquery', './IndicatorView'], function(require, ex
     
     return ErrorIndicatorView;
 });
+//# sourceMappingURL=ErrorIndicatorView.js.map

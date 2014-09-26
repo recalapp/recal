@@ -10,6 +10,8 @@ import DateTime = require('../../../library/DateTime/DateTime');
 import Events = require('../../common/Events/Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import IndexPath = require('../../../library/DataStructures/IndexPath');
+import Indicators = require('../../../library/Indicators/Indicators');
+import IndicatorsType = require('../../../library/Indicators/IndicatorsType');
 import ReCalCommonBrowserEvents = require('../../common/ReCalCommonBrowserEvents');
 import Set = require('../../../library/DataStructures/Set');
 import Table = require('../../../library/Table/Table');
@@ -19,20 +21,20 @@ import AgendaTableViewControllerDependencies = Agenda.AgendaTableViewControllerD
 import IAgendaTableViewCell = Agenda.IAgendaTableViewCell;
 import IAgendaTableViewHeaderView = Agenda.IAgendaTableViewHeaderView;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
+import IIndicatorsManager = Indicators.IIndicatorsManager;
 import ITableView = Table.ITableView;
 import ITableViewCell = Table.ITableViewCell;
 import ITableViewHeaderView = Table.ITableViewHeaderView;
 import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
-declare function LO_hideLoading(message: string): void;
-declare function LO_showLoading(message: string): void;
 declare var SE_id;
 
 class AgendaTableViewController extends TableViewController
 {
     private _eventSectionArray: EventSection[] = new Array<EventSection>();
     private _loading: boolean = false;
-    private static LO_MESSAGE = 'agenda loading';
+    private INDICATOR_INDENTIFIER = 'agenda';
+    private INDICATOR_DISPLAY_TEXT = 'Loading agendas...';
 
     /**
      * Global Browser Events Manager
@@ -52,6 +54,14 @@ class AgendaTableViewController extends TableViewController
     private _eventsOperationsFacade: IEventsOperationsFacade = null;
     private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
 
+    /**
+     * Indicators Manager
+     * @type IIndicatorsManager
+     * @private
+     */
+    private _indicatorsManager: IIndicatorsManager = null;
+    private get indicatorsManager(): IIndicatorsManager { return this._indicatorsManager; }
+
     constructor(tableView: ITableView,
                 dependencies: AgendaTableViewControllerDependencies)
     {
@@ -60,6 +70,7 @@ class AgendaTableViewController extends TableViewController
         this._globalBrowserEventsManager =
         dependencies.globalBrowserEventsManager;
         this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+        this._indicatorsManager = dependencies.indicatorsManager;
         // when events change
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDataChanged,
             (ev: JQueryEventObject)=>
@@ -152,7 +163,7 @@ class AgendaTableViewController extends TableViewController
             return;
         }
         this._loading = true;
-        LO_showLoading(AgendaTableViewController.LO_MESSAGE);
+        this.indicatorsManager.showIndicator(this.INDICATOR_INDENTIFIER, IndicatorsType.persistent, this.INDICATOR_DISPLAY_TEXT);
         this._eventSectionArray = new Array<EventSection>();
 
         // yesterday 0:00:00 AM to before midnight
@@ -221,7 +232,7 @@ class AgendaTableViewController extends TableViewController
         }
 
         this.view.refresh();
-        LO_hideLoading(AgendaTableViewController.LO_MESSAGE);
+        this.indicatorsManager.hideIndicatorWithIdentifier(this.INDICATOR_INDENTIFIER);
         this._loading = false;
     }
 

@@ -235,3 +235,4 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
     
     return ReCalSidebarViewController;
 });
+//# sourceMappingURL=ReCalSidebarViewController.js.map

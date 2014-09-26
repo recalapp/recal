@@ -128,3 +128,4 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
     
     return CanvasPopUpContainerViewController;
 });
+//# sourceMappingURL=CanvasPopUpContainerViewController.js.map

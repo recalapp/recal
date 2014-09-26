@@ -209,3 +209,4 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
     
     return SidebarView;
 });
+//# sourceMappingURL=SidebarView.js.map

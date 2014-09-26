@@ -53,3 +53,4 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
     
     return EventsModificationsManager;
 });
+//# sourceMappingURL=EventsModificationsManager.js.map

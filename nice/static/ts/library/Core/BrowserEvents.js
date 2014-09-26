@@ -38,3 +38,4 @@ define(["require", "exports"], function(require, exports) {
     
     return BrowserEvents;
 });
+//# sourceMappingURL=BrowserEvents.js.map

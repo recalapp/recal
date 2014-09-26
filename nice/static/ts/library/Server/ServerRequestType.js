@@ -8,3 +8,4 @@ define(["require", "exports"], function(require, exports) {
     
     return ServerRequestType;
 });
+//# sourceMappingURL=ServerRequestType.js.map

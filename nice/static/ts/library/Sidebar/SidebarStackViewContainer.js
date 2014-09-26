@@ -94,3 +94,4 @@ define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictio
     
     return SidebarStackViewContainer;
 });
+//# sourceMappingURL=SidebarStackViewContainer.js.map

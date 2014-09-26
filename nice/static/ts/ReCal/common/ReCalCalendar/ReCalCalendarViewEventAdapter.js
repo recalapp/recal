@@ -24,3 +24,4 @@ define(["require", "exports", '../../../library/Calendar/CalendarViewEvent'], fu
     
     return ReCalCalendarViewEventAdapter;
 });
+//# sourceMappingURL=ReCalCalendarViewEventAdapter.js.map

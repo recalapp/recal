@@ -112,3 +112,4 @@ define(["require", "exports", '../Core/AssertionException', '../DataStructures/D
     
     return IndicatorsManager;
 });
+//# sourceMappingURL=IndicatorsManager.js.map

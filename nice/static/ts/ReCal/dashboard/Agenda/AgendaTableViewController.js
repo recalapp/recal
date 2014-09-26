@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../common/ReCalCommonBrowserEvents', '../../../library/DataStructures/Set', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, ReCalCommonBrowserEvents, Set, TableViewController) {
+define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../../library/Indicators/IndicatorsType', '../../common/ReCalCommonBrowserEvents', '../../../library/DataStructures/Set', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, IndicatorsType, ReCalCommonBrowserEvents, Set, TableViewController) {
     var AgendaTableViewController = (function (_super) {
         __extends(AgendaTableViewController, _super);
         function AgendaTableViewController(tableView, dependencies) {
@@ -13,6 +13,8 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             _super.call(this, tableView);
             this._eventSectionArray = new Array();
             this._loading = false;
+            this.INDICATOR_INDENTIFIER = 'agenda';
+            this.INDICATOR_DISPLAY_TEXT = 'Loading agendas...';
             /**
             * Global Browser Events Manager
             */
@@ -25,9 +27,16 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             * Events Operations Facade
             */
             this._eventsOperationsFacade = null;
+            /**
+            * Indicators Manager
+            * @type IIndicatorsManager
+            * @private
+            */
+            this._indicatorsManager = null;
             this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+            this._indicatorsManager = dependencies.indicatorsManager;
 
             // when events change
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDataChanged, function (ev) {
@@ -116,6 +125,14 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             configurable: true
         });
 
+        Object.defineProperty(AgendaTableViewController.prototype, "indicatorsManager", {
+            get: function () {
+                return this._indicatorsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         AgendaTableViewController.prototype.reload = function () {
             // TODO Agenda_filter
             // TODO EventSectionRangeProvider
@@ -123,7 +140,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 return;
             }
             this._loading = true;
-            LO_showLoading(AgendaTableViewController.LO_MESSAGE);
+            this.indicatorsManager.showIndicator(this.INDICATOR_INDENTIFIER, 0 /* persistent */, this.INDICATOR_DISPLAY_TEXT);
             this._eventSectionArray = new Array();
 
             // yesterday 0:00:00 AM to before midnight
@@ -181,7 +198,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             }
 
             this.view.refresh();
-            LO_hideLoading(AgendaTableViewController.LO_MESSAGE);
+            this.indicatorsManager.hideIndicatorWithIdentifier(this.INDICATOR_INDENTIFIER);
             this._loading = false;
         };
 
@@ -309,7 +326,6 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 eventsOperationsFacade.selectEventWithId(eventId); // TODO works? Does this cause the popup to come into focus?
             }
         };
-        AgendaTableViewController.LO_MESSAGE = 'agenda loading';
         return AgendaTableViewController;
     })(TableViewController);
 
@@ -347,3 +363,4 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
     
     return AgendaTableViewController;
 });
+//# sourceMappingURL=AgendaTableViewController.js.map

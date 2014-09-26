@@ -28,3 +28,4 @@ define(["require", "exports"], function(require, exports) {
     
     return IndexPath;
 });
+//# sourceMappingURL=IndexPath.js.map

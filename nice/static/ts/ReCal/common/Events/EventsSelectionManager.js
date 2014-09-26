@@ -137,3 +137,4 @@ define(["require", "exports", '../../../library/Core/InvalidActionException', '.
     
     return EventsSelectionManager;
 });
+//# sourceMappingURL=EventsSelectionManager.js.map

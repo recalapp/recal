@@ -41,3 +41,4 @@ define(["require", "exports", '../Core/InvalidActionException'], function(requir
     
     return Queue;
 });
+//# sourceMappingURL=Queue.js.map
