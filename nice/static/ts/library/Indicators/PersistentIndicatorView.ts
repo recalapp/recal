@@ -29,6 +29,7 @@ class PersistentIndicatorView extends IndicatorView
         {
             this.findJQuery('#loading-content').text(displayText);
         }
+        this.findJQuery('#loading-content').append('&nbsp;&nbsp;&nbsp;<i class="fa fa-spinner fa-spin"></i>');
     }
 }
 

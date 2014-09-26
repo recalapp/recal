@@ -16,6 +16,7 @@ define(["require", "exports", 'jquery', './IndicatorView'], function(require, ex
             } else {
                 this.findJQuery('#loading-content').text(displayText);
             }
+            this.findJQuery('#loading-content').append('&nbsp;&nbsp;&nbsp;<i class="fa fa-spinner fa-spin"></i>');
         }
         Object.defineProperty(PersistentIndicatorView, "template", {
             get: function () {
