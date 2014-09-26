@@ -63,6 +63,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             configurable: true
         });
 
+
         Object.defineProperty(View.prototype, "height", {
             /**
             * Physical height of the view
@@ -155,6 +156,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             enumerable: true,
             configurable: true
         });
+
 
         /******************************************************************
         Methods

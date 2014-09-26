@@ -1,6 +1,6 @@
 enum ActionSheetType
 {
+    important,
     default,
-    important
 }
 export = ActionSheetType;

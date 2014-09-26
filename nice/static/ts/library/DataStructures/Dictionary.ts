@@ -1,4 +1,4 @@
-class Wrapper<K, V> 
+class Wrapper<K, V>
 {
     constructor(public key: K, public value: V)
     {
@@ -9,10 +9,10 @@ class Dictionary<K, V>
     private _dict = {};
 
     /**
-      * Set the value in the dictionary, and return the old value (null
-      * no old value)
-      */
-    public set(key : K, value : V) : V
+     * Set the value in the dictionary, and return the old value (null
+     * no old value)
+     */
+    public set(key: K, value: V): V
     {
         var wrapper = this.findWrapper(key);
         if (wrapper !== null && wrapper !== undefined)
@@ -35,7 +35,7 @@ class Dictionary<K, V>
                 if (bin[i].key === key)
                 {
                     var ret = bin[i].value;
-                    bin.splice(i, i+1);
+                    bin.splice(i, i + 1);
                     return ret;
                 }
             }
@@ -43,7 +43,7 @@ class Dictionary<K, V>
         return null;
     }
 
-    public contains(key : K) : boolean
+    public contains(key: K): boolean
     {
         return this.findWrapper(key) !== null;
     }
@@ -74,7 +74,7 @@ class Dictionary<K, V>
         return null;
     }
 
-    public get(key : K): V
+    public get(key: K): V
     {
         var wrapper = this.findWrapper(key);
         if (wrapper !== null && wrapper !== undefined)
@@ -84,7 +84,24 @@ class Dictionary<K, V>
         return null;
     }
 
-    public allKeys() : Array<K>
+    /**
+     * Gets the value associated with the key if it exists. Otherwise,
+     * set the key to dictionary with default value, and return the
+     * default value.
+     * @param key
+     * @param defaultValue
+     */
+    public getOrCreate(key: K, defaultValue: V): V
+    {
+        if (this.contains(key))
+        {
+            return this.get(key);
+        }
+        this.set(key, defaultValue);
+        return defaultValue;
+    }
+
+    public allKeys(): Array<K>
     {
         var ret = Array<K>();
         for (var hash in this._dict)
@@ -99,8 +116,8 @@ class Dictionary<K, V>
     }
 
     /**
-      * Assumes that key.toString() is unique.
-      */
+     * Assumes that key.toString() is unique.
+     */
     public primitiveObject(): Object
     {
         var allKeys = this.allKeys();

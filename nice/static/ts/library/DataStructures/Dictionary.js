@@ -71,6 +71,21 @@ define(["require", "exports"], function(require, exports) {
             return null;
         };
 
+        /**
+        * Gets the value associated with the key if it exists. Otherwise,
+        * set the key to dictionary with default value, and return the
+        * default value.
+        * @param key
+        * @param defaultValue
+        */
+        Dictionary.prototype.getOrCreate = function (key, defaultValue) {
+            if (this.contains(key)) {
+                return this.get(key);
+            }
+            this.set(key, defaultValue);
+            return defaultValue;
+        };
+
         Dictionary.prototype.allKeys = function () {
             var ret = Array();
             for (var hash in this._dict) {

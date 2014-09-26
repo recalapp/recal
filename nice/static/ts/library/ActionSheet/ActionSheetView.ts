@@ -13,7 +13,6 @@ import IActionSheetView = ActionSheet.IActionSheetView;
 import IFocusableView = CoreUI.IFocusableView;
 
 
-
 class ActionSheetView extends FocusableView implements IActionSheetView
 {
     public static get cssClass(): string
@@ -29,6 +28,7 @@ class ActionSheetView extends FocusableView implements IActionSheetView
     {
         return this._title;
     }
+
     public set title(value: string)
     {
         this._title = value;
@@ -41,6 +41,7 @@ class ActionSheetView extends FocusableView implements IActionSheetView
         $template.append($('<div id="actionSheetTitle">'));
         return $template;
     }
+
     private static get buttonTemplate(): JQuery
     {
         var $button = $('<div>').addClass('white-link-btn').addClass('prompt-btn theme');
@@ -60,8 +61,9 @@ class ActionSheetView extends FocusableView implements IActionSheetView
     public addChoice(choice: IActionSheetChoice): void
     {
         var buttonView: IFocusableView = ActionSheetView.createButtonView();
-        (<FocusableView> buttonView)._$el.attr('id', this._actionSheetPrefix + choice.identifier).text(choice.displayText);
-        switch(choice.type)
+        (<FocusableView> buttonView)._$el.attr('id', this._actionSheetPrefix
+            + choice.identifier).text(choice.displayText);
+        switch (choice.type)
         {
             case ActionSheetType.important:
                 (<FocusableView> buttonView)._$el.addClass('no');

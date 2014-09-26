@@ -19,117 +19,119 @@ class View implements IView
     _parentView: IView = null;
     _children: Set<IView> = new Set<View>();
     /******************************************************************
-      Properties
-      ****************************************************************/
+     Properties
+     ****************************************************************/
 
     /**
-      * The parent view of the view, if exists. Null if no parent
-      */
+     * The parent view of the view, if exists. Null if no parent
+     */
     get parentView(): IView
     {
         return this._parentView;
     }
 
     /**
-      * Immutable array of child views
-      */
+     * Immutable array of child views
+     */
     get children(): IView[]
     {
         return this._children.toArray();
     }
 
     /**
-      * Physical width of the view
-      */
+     * Physical width of the view
+     */
     public get width(): number
     {
         return this._$el.width();
     }
+
     public set width(newValue: number)
     {
         this._$el.width(newValue);
     }
 
     /**
-      * Physical height of the view
-      */
+     * Physical height of the view
+     */
     public get height(): number
     {
         return this._$el.height();
     }
 
     /**
-      * Physical height of the view
-      */
+     * Physical height of the view
+     */
     public set height(newValue: number)
     {
         this._$el.height(newValue);
     }
 
     /**
-      * The absolute top position
-      * Readonly
-      */
+     * The absolute top position
+     * Readonly
+     */
     public get absoluteTop(): number
     {
         return this._$el.offset().top;
     }
 
     /**
-      * The absolute left position
-      * Readonly
-      */
+     * The absolute left position
+     * Readonly
+     */
     public get absoluteLeft(): number
     {
         return this._$el.offset().left;
     }
 
     /**
-      * The top position relative to parent
-      * Readonly
-      */
+     * The top position relative to parent
+     * Readonly
+     */
     public get relativeTop(): number
     {
         return this._$el.position().top;
     }
 
     /**
-      * The top position relative to parent
-      * Readonly
-      */
+     * The top position relative to parent
+     * Readonly
+     */
     public get relativeLeft(): number
     {
         return this._$el.position().left;
     }
 
     /**
-      * Get the bounding rect of this view. This is the position of the view
-      * with respect to the browser, and will be different from absolute 
-      * position if the website itself has scrolled.
-      */
+     * Get the bounding rect of this view. This is the position of the view
+     * with respect to the browser, and will be different from absolute
+     * position if the website itself has scrolled.
+     */
     public get boundingRect(): Rect
     {
         return this._$el[0].getBoundingClientRect();
     }
 
     /**
-      * Returns true if the view is hidden.
-      */
+     * Returns true if the view is hidden.
+     */
     public get viewIsHidden(): boolean
     {
         return this.is('.hide');
     }
+
     public set viewIsHidden(value: boolean)
     {
         value ? this.addCssClass('hide') : this.removeCssClass('hide');
     }
 
     /******************************************************************
-      Methods
-      ****************************************************************/
+     Methods
+     ****************************************************************/
     /**
-      * The unique css selector for this class.
-      */
+     * The unique css selector for this class.
+     */
     public static cssSelector(): string
     {
         var classes: string[] = this.cssClass.split(/\s+/);
@@ -142,18 +144,18 @@ class View implements IView
     }
 
     /**
-      * The unique css class for this class.
-      */
+     * The unique css class for this class.
+     */
     public static get cssClass(): string
     {
         return 'view';
     }
 
     /**
-      * Initialize a new View object from the JQuery element.
-      * Throws an error if the JQuery element already belongs to another
-      * View object.
-      */
+     * Initialize a new View object from the JQuery element.
+     * Throws an error if the JQuery element already belongs to another
+     * View object.
+     */
     constructor($element: JQuery, cssClass: string)
     {
         if ($element === null)
@@ -175,10 +177,10 @@ class View implements IView
     }
 
     /**
-      * Returns true if the view associated with the jQuery element has
-      * been initialized.
-      */
-    static _viewIsInitialized($element: JQuery) : boolean
+     * Returns true if the view associated with the jQuery element has
+     * been initialized.
+     */
+    static _viewIsInitialized($element: JQuery): boolean
     {
         // NOTE(naphatkrit) cannot do a typecheck as of now. instaceof operator does not respect inheritance
         var viewObject = $element.data(View.JQUERY_DATA_KEY);
@@ -186,14 +188,14 @@ class View implements IView
     }
 
     /**
-      * Initialize a new View object from the JQuery element, or return
-      * an existing one.
-      * NOTE: initialization must happen top-down. That is, once a view is
-      * initialized, all its ancestors (parent, grandparent, etc.) must
-      * either already be initialized, or they can be initialized as a 
-      * generic view class.
-      */
-    public static fromJQuery($element: JQuery) : View
+     * Initialize a new View object from the JQuery element, or return
+     * an existing one.
+     * NOTE: initialization must happen top-down. That is, once a view is
+     * initialized, all its ancestors (parent, grandparent, etc.) must
+     * either already be initialized, or they can be initialized as a
+     * generic view class.
+     */
+    public static fromJQuery($element: JQuery): View
     {
         if (this._viewIsInitialized($element))
         {
@@ -213,9 +215,9 @@ class View implements IView
     }
 
     /**
-      * Append childView to this view. childView cannot already have a parent
-      */
-    public append(childView: IView) : void 
+     * Append childView to this view. childView cannot already have a parent
+     */
+    public append(childView: IView): void
     {
         var childViewCasted: View = <View> childView;
         if (this._children.contains(childView))
@@ -236,9 +238,9 @@ class View implements IView
     }
 
     /**
-      * Append this view to the parent view of the parameter siblingView,
-      * in the position right after siblingView.
-      */
+     * Append this view to the parent view of the parameter siblingView,
+     * in the position right after siblingView.
+     */
     public insertAfter(siblingView: IView): void
     {
         var parentView = <View>siblingView.parentView;
@@ -265,10 +267,10 @@ class View implements IView
     }
 
     /**
-      * Remove this view from its parent. Cannot be called if this view 
-      * does not have a parent.
-      */
-    public removeFromParent() : void
+     * Remove this view from its parent. Cannot be called if this view
+     * does not have a parent.
+     */
+    public removeFromParent(): void
     {
         var parentView = <View>this._parentView;
         if (parentView === null)
@@ -285,15 +287,18 @@ class View implements IView
     }
 
     /**
-      * Attach an event handler to the view
-      */
-    public attachEventHandler(ev : string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachEventHandler(ev : string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachEventHandler(ev : string, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
+     * Attach an event handler to the view
+     */
+    public attachEventHandler(ev: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+
+    public attachEventHandler(ev: string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+
+    public attachEventHandler(ev: string, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
     {
         var eventName = ev;
         var $element = this._$el;
-        if (typeof argumentThree === 'string' || argumentThree instanceof String || argumentThree.constructor === String)
+        if (typeof argumentThree === 'string' || argumentThree instanceof String || argumentThree.constructor
+            === String)
         {
             if (handler === undefined)
             {
@@ -312,15 +317,18 @@ class View implements IView
     }
 
     /**
-      * Attach an event handler to the view that only gets triggered once
-      */
-    public attachOneTimeEventHandler(ev : string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachOneTimeEventHandler(ev : string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
-    public attachOneTimeEventHandler(ev : string, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
+     * Attach an event handler to the view that only gets triggered once
+     */
+    public attachOneTimeEventHandler(ev: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+
+    public attachOneTimeEventHandler(ev: string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
+
+    public attachOneTimeEventHandler(ev: string, argumentThree: any, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
     {
         var eventName = ev;
         var $element = this._$el;
-        if (typeof argumentThree === 'string' || argumentThree instanceof String || argumentThree.constructor === String)
+        if (typeof argumentThree === 'string' || argumentThree instanceof String || argumentThree.constructor
+            === String)
         {
             if (handler === undefined)
             {
@@ -339,11 +347,13 @@ class View implements IView
     }
 
     /**
-      * Triggers an event on the View.
-      */
+     * Triggers an event on the View.
+     */
     public triggerEvent(ev: string);
-    public triggerEvent(ev: string, extraParameter : any);
-    public triggerEvent(ev: string, extraParameter? : any)
+
+    public triggerEvent(ev: string, extraParameter: any);
+
+    public triggerEvent(ev: string, extraParameter?: any)
     {
         var eventName = ev;
         if (extraParameter === undefined || extraParameter === null)
@@ -355,74 +365,76 @@ class View implements IView
     }
 
     /**
-      * Returns true if $element is the view itself
-      * or is a descendent of the view.
-      */
-    public containsJQueryElement($element : JQuery) : boolean
+     * Returns true if $element is the view itself
+     * or is a descendent of the view.
+     */
+    public containsJQueryElement($element: JQuery): boolean
     {
         return this._$el.is($element) || this._$el.find($element).length != 0;
     }
 
     /**
-      * Remove all children from this view, both initialized and uninitialized
-      */
-    public removeAllChildren() : void
+     * Remove all children from this view, both initialized and uninitialized
+     */
+    public removeAllChildren(): void
     {
         $.each(this.children, (index: number, child: View) =>
-                {
-                    child.removeFromParent();
-                });
+        {
+            child.removeFromParent();
+        });
         this._$el.html('') // in case some child views have not been initialized
         this._children = new Set<View>();
     }
 
     /**
-      * Return the JQuery element(s) matching the selector in this view.
-      */
+     * Return the JQuery element(s) matching the selector in this view.
+     */
     public findJQuery(cssSelector: string): JQuery
     {
         return this._$el.find(cssSelector);
     }
 
     /**
-      * Returns true if this view's element mataches
-      * the css selector
-      */
+     * Returns true if this view's element mataches
+     * the css selector
+     */
     public is($element: JQuery): boolean
+
     public is(cssSelector: string): boolean
+
     public is(arg: any): boolean
     {
         return this._$el.is(arg);
     }
 
     /**
-      * Add CSS class to this view. Uses $.addClass
-      */
+     * Add CSS class to this view. Uses $.addClass
+     */
     public addCssClass(cssClass: string): void
     {
         this._$el.addClass(cssClass);
     }
 
     /**
-      * Remove CSS class from this view. Uses $.removeClass
-      */
+     * Remove CSS class from this view. Uses $.removeClass
+     */
     public removeCssClass(cssClass: string): void
     {
         this._$el.removeClass(cssClass);
     }
 
     /**
-      * Calls $.css. See their API
-      */
+     * Calls $.css. See their API
+     */
     public css(argument1: any, argument2?: any): any
     {
         return this._$el.css(argument1, argument2);
     }
 
     /**
-      * Unique
-      */
-    public toString() : string
+     * Unique
+     */
+    public toString(): string
     {
         return 'View no. ' + this._viewNumber;
     }

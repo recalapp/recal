@@ -33,6 +33,7 @@ define(["require", "exports", 'jquery', './ActionSheetType', '../CoreUI/Focusabl
             configurable: true
         });
 
+
         Object.defineProperty(ActionSheetView, "template", {
             get: function () {
                 var $template = $('<div>');
@@ -42,6 +43,7 @@ define(["require", "exports", 'jquery', './ActionSheetType', '../CoreUI/Focusabl
             enumerable: true,
             configurable: true
         });
+
         Object.defineProperty(ActionSheetView, "buttonTemplate", {
             get: function () {
                 var $button = $('<div>').addClass('white-link-btn').addClass('prompt-btn theme');
