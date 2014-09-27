@@ -1,4 +1,4 @@
-define(["require", "exports", '../Core/AssertionException', '../DataStructures/Dictionary', './IndicatorsType', './IndicatorViewFactory', '../Core/InvalidActionException'], function(require, exports, AssertionException, Dictionary, IndicatorsType, IndicatorViewFactory, InvalidActionException) {
+define(["require", "exports", '../Core/AssertionException', '../DataStructures/Dictionary', './IndicatorViewFactory', '../Core/InvalidActionException'], function(require, exports, AssertionException, Dictionary, IndicatorViewFactory, InvalidActionException) {
     var IndicatorsManager = (function () {
         function IndicatorsManager() {
             this._identifierCountDict = new Dictionary();
@@ -70,17 +70,8 @@ define(["require", "exports", '../Core/AssertionException', '../DataStructures/D
                 if (prevType === null) {
                     throw new AssertionException("Should never get here. Type dict should always be set.");
                 }
-                if (prevType === 2 /* error */) {
-                    // remove the error
-                    this.hideIndicatorWithIdentifier(identifier);
-                    identifierCount = 0; // reset count, gets incremented below
-
-                    // create a new indicator view
-                    var indicatorView = this.indicatorViewFactory.createIndicatorView(type, identifier, displayText);
-                    this.indicatorsContainerView.addIndicatorView(indicatorView);
-                    this.identifierTypeDict.set(identifier, type);
-                } else if (prevType !== type) {
-                    throw new InvalidActionException("If the indicator type is not error, it must be the same as the previous type.");
+                if (prevType !== type) {
+                    throw new InvalidActionException("Indicator with " + identifier + " is already of type " + prevType + " and cannot be redefined as type " + type);
                 }
             }
 

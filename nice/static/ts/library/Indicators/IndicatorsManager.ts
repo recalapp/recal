@@ -56,20 +56,9 @@ class IndicatorsManager implements Indicators.IIndicatorsManager
             {
                 throw new AssertionException("Should never get here. Type dict should always be set.");
             }
-            if (prevType === IndicatorsType.error)
+            if (prevType !== type)
             {
-                // remove the error
-                this.hideIndicatorWithIdentifier(identifier);
-                identifierCount = 0; // reset count, gets incremented below
-
-                // create a new indicator view
-                var indicatorView = this.indicatorViewFactory.createIndicatorView(type, identifier, displayText);
-                this.indicatorsContainerView.addIndicatorView(indicatorView);
-                this.identifierTypeDict.set(identifier, type);
-            }
-            else if (prevType !== type)
-            {
-                throw new InvalidActionException("If the indicator type is not error, it must be the same as the previous type.");
+                throw new InvalidActionException("Indicator with " + identifier + " is already of type " + prevType + " and cannot be redefined as type " + type);
             }
         }
         // increment count
@@ -86,7 +75,6 @@ class IndicatorsManager implements Indicators.IIndicatorsManager
     {
         if (!this.identifierCountDict.contains(identifier))
         {
-            // TODO special logic for error type?
             throw new InvalidActionException("Cannot hide an indicator that does not exist");
         }
         var identifierCount = this.identifierCountDict.get(identifier) - 1;

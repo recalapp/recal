@@ -185,13 +185,21 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
 
         DashboardViewController.prototype.setUpEventsServerCommunicationIndicators = function () {
             var _this = this;
+            var errorDownloading = false;
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsWillBeginDownloading, function () {
-                _this.indicatorsManager.showIndicator("events_download", 0 /* persistent */, "Loading events...");
+                if (!errorDownloading) {
+                    _this.indicatorsManager.showIndicator("events_download", 0 /* persistent */, "Loading events...");
+                }
             });
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFinishDownloading, function () {
                 _this.indicatorsManager.hideIndicatorWithIdentifier("events_download");
+                if (errorDownloading) {
+                    errorDownloading = false;
+                    _this.indicatorsManager.showIndicator("events_success", 1 /* temporary */, "Connected :)");
+                }
             });
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailDownloading, function () {
+                errorDownloading = true;
                 _this.indicatorsManager.showIndicator("events_download", 2 /* error */, "Error connecting.");
             });
         };

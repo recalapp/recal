@@ -196,13 +196,24 @@ class DashboardViewController extends ViewController
 
     private setUpEventsServerCommunicationIndicators()
     {
+        var errorDownloading = false;
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsWillBeginDownloading, ()=>{
-            this.indicatorsManager.showIndicator("events_download", IndicatorsType.persistent, "Loading events...");
+            if (!errorDownloading)
+            {
+                this.indicatorsManager.showIndicator("events_download",
+                    IndicatorsType.persistent, "Loading events...");
+            }
         });
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFinishDownloading, ()=>{
             this.indicatorsManager.hideIndicatorWithIdentifier("events_download");
+            if (errorDownloading)
+            {
+                errorDownloading = false;
+                this.indicatorsManager.showIndicator("events_success", IndicatorsType.temporary, "Connected :)");
+            }
         });
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailDownloading, ()=>{
+            errorDownloading = true;
             this.indicatorsManager.showIndicator("events_download", IndicatorsType.error, "Error connecting.");
         })
     }
