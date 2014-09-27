@@ -1,4 +1,5 @@
-class BrowserEvents {
+class BrowserEvents
+{
     static blur = 'blur'; // does not bubble up
     static click = 'click';
     static focus = 'focus'; // does not bubble up
@@ -10,7 +11,7 @@ class BrowserEvents {
 
     // bootstrap
     static bootstrapPopoverHidden = 'hidden.bs.popover';
-    
+
     // view
     static viewWasAppended = 'viewWasAppended';
     static viewWasRemoved = 'viewWasRemoved';
@@ -18,10 +19,10 @@ class BrowserEvents {
     // focusable view
     static focusableViewDidFocus = 'focusableViewDidFocus';
     static focusableViewDidBlur = 'focusableViewDidBlur';
-    
+
     // popup
     static popUpWillDrag = 'popUpWillDrag';
-    
+
     // clickToEdit
     static clickToEditComplete = 'clickToEditComplete';
     static clickToEditShouldBegin = 'clickToEditShouldBegin';

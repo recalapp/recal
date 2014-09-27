@@ -1,4 +1,4 @@
-enum ComparableResult 
+enum ComparableResult
 {
     greater = 1,
     equal = 0,

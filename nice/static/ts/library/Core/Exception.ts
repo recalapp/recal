@@ -1,18 +1,22 @@
 /*
-   interface Error {
-   name: string;
-   message: string;
-   }
+ interface Error {
+ name: string;
+ message: string;
+ }
  */
-class Exception implements Error {
+class Exception implements Error
+{
     name: string;
     message: string;
-    
-    constructor(message: string) {
+
+    constructor(message: string)
+    {
         this.name = 'Exception';
         this.message = message;
     }
-    toString() {
+
+    toString()
+    {
         return this.name + ': ' + this.message;
     }
 }

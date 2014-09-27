@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
-    
+define(["require", "exports"], function (require, exports) {
+
 });
 //# sourceMappingURL=Comparable.js.map

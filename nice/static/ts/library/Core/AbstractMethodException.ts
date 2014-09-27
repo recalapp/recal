@@ -6,7 +6,8 @@ class AbstractMethodException extends Exception
     {
         super(message);
         this.name = 'Abstract Method Exception';
-        if (this.message === undefined || this.message === null || this.message === '')
+        if (this.message === undefined || this.message === null || this.message
+            === '')
         {
             this.message = 'Method is abstract and must be overriden';
         }
