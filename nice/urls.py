@@ -36,6 +36,7 @@ urlpatterns = patterns('',
     url(r'^get/bycourses/(?P<last_updated>\d*)$', views.events_by_course_json, name='events-by-course'),
     url(r'^get/bycourses/(?P<last_updated>\d+)/(?P<start_date>\d+)/(?P<end_date>\d+)$', views.events_by_course_json, name='events-by-course'),
     url(r'^get/user$', views.user_json, name='user-json'),
+    url(r'^get/user_profile_info$', views.user_profile_info, name="user-profile-info"),
     url(r'^get/unapproved$', views.unapproved_revisions_json, name='unapproved-revisions'),
 
     url(r'^put/state-restoration$', views.save_state_restoration, name='save-state-restoration'),

@@ -355,6 +355,13 @@ def events_by_course_json(request, last_updated=0, start_date=None, end_date=Non
     events = queries.get_events_by_course_ids(course_ids, last_updated=last_updated, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
     
+@login_required
+@require_GET
+def user_profile_info(request):
+    netid = request.user.username
+    ret = queries.get_user_profile_info(netid)
+    return HttpResponse(json.dumps(ret), content_type="application/javascript")
+
 
 @login_required
 @require_GET

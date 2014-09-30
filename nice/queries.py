@@ -15,6 +15,46 @@ import settings.common as settings
 
 ### User event interaction: read and write ###
 
+def get_user_profile_info(netid, **kwargs):
+    """
+    Return all user profile info, including displayName, username, enrolledSections
+    :param netid:
+    :return:
+    """
+    try:
+        user = User.objects.get(username=netid).profile
+    except Exception, e:
+        return {}
+    term_code = kwargs.pop('term_code', get_cur_semester().term_code)
+    all_sections = user.sections.filter(course__semester__term_code=term_code)
+    all_courses = []
+    for section in all_sections:
+        if section.course not in all_courses:
+            all_courses.append(section.course)
+
+    def construct_course_dict_for_profile(course):
+        sections_array = []
+        for section in course.section_set.all():
+            if section in all_sections:
+                sections_array.append(construct_section_dict(section))
+
+        return {
+            'course_id': course.id,
+            'course_title': course.title,
+            'course_listings': course.course_listings(),
+            'course_primary_listing': course.primary_listing(),
+            'course_professor': course.professor,
+            'course_description': course.description,
+            'sections': sections_array
+        }
+    courses_dict_array = [construct_course_dict_for_profile(x)
+                          for x in all_courses]
+    return {
+        'display_name': unicode(user),
+        'username': netid,
+        'enrolled_courses': courses_dict_array,
+    }
+
 def get_events(netid, escape=False, **kwargs):
     """
     Fetches events this user should see. Returns a list of their compressed event dictionaries.
