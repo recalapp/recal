@@ -173,7 +173,7 @@ jQuery.fn.editable = function(target, options, callback) {
             var t = setTimeout(function() {
                 i.disabled = true;
                 content.apply(f, [settings.loadtext, settings, self]);
-            }, 0);
+            }, 10000);
                 
             var loaddata = {};
             loaddata[settings.id] = self.id;

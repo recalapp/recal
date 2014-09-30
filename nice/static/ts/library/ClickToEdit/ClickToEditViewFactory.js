@@ -1,5 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
-define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditCommon', './ClickToEditTextView', './ClickToEditTextAreaView', './ClickToEditType', '../Core/NotImplementedException', '../DataStructures/Set'], function(require, exports, $, ClickToEditBaseView, ClickToEditCommon, ClickToEditTextView, ClickToEditTextAreaView, ClickToEditType, NotImplementedException, Set) {
+define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditCommon', './ClickToEditSelectView', './ClickToEditTextView', './ClickToEditTextAreaView', './ClickToEditType', '../Core/NotImplementedException', '../DataStructures/Set'], function(require, exports, $, ClickToEditBaseView, ClickToEditCommon, ClickToEditSelectView, ClickToEditTextView, ClickToEditTextAreaView, ClickToEditType, NotImplementedException, Set) {
     var ClickToEditViewFactory = (function () {
         function ClickToEditViewFactory() {
             this._customTypes = new Set();
@@ -52,6 +52,9 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditC
                     break;
                 case ClickToEditType.textArea:
                     clickToEditView = ClickToEditTextAreaView.fromJQuery($element);
+                    break;
+                case ClickToEditType.select:
+                    clickToEditView = ClickToEditSelectView.fromJQuery($element);
                     break;
                 default:
                     throw new NotImplementedException('ClickToEditType ' + type + ' is not supported');

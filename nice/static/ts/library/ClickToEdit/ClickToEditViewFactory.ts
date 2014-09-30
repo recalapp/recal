@@ -5,6 +5,7 @@ import $ = require('jquery');
 import ClickToEdit = require('./ClickToEdit');
 import ClickToEditBaseView = require('./ClickToEditBaseView');
 import ClickToEditCommon = require('./ClickToEditCommon');
+import ClickToEditSelectView = require('./ClickToEditSelectView');
 import ClickToEditTextView = require('./ClickToEditTextView');
 import ClickToEditTextAreaView = require('./ClickToEditTextAreaView');
 import ClickToEditType = require('./ClickToEditType');
@@ -20,13 +21,14 @@ class ClickToEditViewFactory
 
 
     /**
-      * Create a new ClickToEditView instance. $element must have data-cte_type
-      * set to a number that correspondsto the enum representing 
-      * clickToEditType.
-      */
+     * Create a new ClickToEditView instance. $element must have data-cte_type
+     * set to a number that correspondsto the enum representing
+     * clickToEditType.
+     */
     public createFromJQuery($element: JQuery): IClickToEditView
     {
-        var type = $element.data(ClickToEditCommon.DataType) || ClickToEditType.text;
+        var type = $element.data(ClickToEditCommon.DataType)
+            || ClickToEditType.text;
         if (!this.customTypes.contains(type))
         {
             // initialize the custom type
@@ -34,7 +36,8 @@ class ClickToEditViewFactory
 
             // NOTE this = form in the context of functions
             $.editable.addInputType(type, {
-                element: function(settings, original) {
+                element: function (settings, original)
+                {
                     // ok to do this because we assume the view is
                     // already initialized, so the created instance
                     // will be of the correct ClickToEdit type.
@@ -43,30 +46,39 @@ class ClickToEditViewFactory
                     // not a lambda, so the context changes.
                     return view.element($(this), settings);
                 },
-                content: function(contentString, settings, original){
+                content: function (contentString, settings, original)
+                {
                     var view = <ClickToEditBaseView> ClickToEditBaseView.fromJQuery($(original));
                     return view.content($(this), contentString, settings);
                 },
-                plugin: function(settings, original){
+                plugin: function (settings, original)
+                {
                     var view = <ClickToEditBaseView> ClickToEditBaseView.fromJQuery($(original));
                     return view.plugin($(this), settings);
                 },
             });
         }
         var clickToEditView: IClickToEditView = null;
-        switch(type)
+        switch (type)
         {
             case ClickToEditType.text:
-                clickToEditView = <ClickToEditTextView> ClickToEditTextView.fromJQuery($element);
+                clickToEditView =
+                <ClickToEditTextView> ClickToEditTextView.fromJQuery($element);
                 break;
             case ClickToEditType.textArea:
-                clickToEditView = <ClickToEditTextAreaView> ClickToEditTextAreaView.fromJQuery($element);
+                clickToEditView =
+                <ClickToEditTextAreaView> ClickToEditTextAreaView.fromJQuery($element);
+                break;
+            case ClickToEditType.select:
+                clickToEditView =
+                <ClickToEditSelectView> ClickToEditSelectView.fromJQuery($element);
                 break;
             default:
-                throw new NotImplementedException('ClickToEditType ' + type + ' is not supported');
+                throw new NotImplementedException('ClickToEditType ' + type
+                    + ' is not supported');
                 break;
         }
-        
+
         return clickToEditView;
     }
 }

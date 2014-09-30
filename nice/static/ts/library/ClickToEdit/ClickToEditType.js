@@ -4,7 +4,7 @@ define(["require", "exports"], function(require, exports) {
         }
         ClickToEditType.text = 'CTE_Text';
         ClickToEditType.textArea = 'CTE_TextArea';
-        ClickToEditType.select = 'CTE_select';
+        ClickToEditType.select = 'CTE_Select';
         return ClickToEditType;
     })();
     

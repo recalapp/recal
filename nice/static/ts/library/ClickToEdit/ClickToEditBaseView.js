@@ -55,6 +55,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
                 _this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
             });
         };
+
         Object.defineProperty(ClickToEditBaseView.prototype, "value", {
             get: function () {
                 return this._$el.text();
@@ -65,6 +66,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
             enumerable: true,
             configurable: true
         });
+
 
         ClickToEditBaseView.prototype.didFocus = function () {
             _super.prototype.didFocus.call(this);

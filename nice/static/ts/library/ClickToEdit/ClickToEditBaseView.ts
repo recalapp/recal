@@ -24,8 +24,8 @@ class ClickToEditBaseView extends FocusableView implements ClickToEdit.IClickToE
     }
 
     /**
-      * The unique css class for this class.
-      */
+     * The unique css class for this class.
+     */
     public static get cssClass(): string
     {
         return FocusableView.cssClass + ' clickToEdit';
@@ -47,68 +47,72 @@ class ClickToEditBaseView extends FocusableView implements ClickToEdit.IClickToE
         options.type = this.inputType;
         options.event = BrowserEvents.clickToEditShouldBegin;
         options.onblur = 'submit';
-        this._$el.editable((value: string, settings: any)=>{
+        this._$el.editable((value: string, settings: any)=>
+        {
             var processed = this.processFormValue(value, settings);
             this.triggerEvent(BrowserEvents.clickToEditComplete, {
                 value: processed,
             });
             return processed;
         }, options);
-        this.attachEventHandler(BrowserEvents.click, () => {
+        this.attachEventHandler(BrowserEvents.click, () =>
+        {
             this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
         });
     }
-    get value() : string
+
+    get value(): string
     {
         return this._$el.text();
     }
+
     set value(text: string)
     {
         this._$el.text(text);
     }
 
-    public didFocus() : void
+    public didFocus(): void
     {
         super.didFocus();
-        this.triggerEvent(BrowserEvents.clickToEditShouldBegin); 
+        this.triggerEvent(BrowserEvents.clickToEditShouldBegin);
         // don't allow itself to be tabbed when focused, since the form
         // will receive the tab
         this._$el.attr('tabindex', -1);
     }
 
-    public didBlur() : void
+    public didBlur(): void
     {
         super.didBlur();
         this._$el.attr('tabindex', 0);
     }
 
-    public options() : any
+    public options(): any
     {
         return {};
     }
 
     /**
-      * The unique input type identifier associated with this type of input
-      */
-    public get inputType() : string
+     * The unique input type identifier associated with this type of input
+     */
+    public get inputType(): string
     {
         return 'text';
     }
 
     /**
-      * Returns the string html value of the form value. Do processing
-      * such as converting \n to <br>
-      */
-    public processFormValue(value: string, settings: any) : string
+     * Returns the string html value of the form value. Do processing
+     * such as converting \n to <br>
+     */
+    public processFormValue(value: string, settings: any): string
     {
         return this.encodeDecodeProxy.htmlEncode(value);
     }
 
     /**
-      * Create a new input element and attach it to the form. Also return
-      * the created element.
-      */
-    public element($form: JQuery, settings: any) : JQuery
+     * Create a new input element and attach it to the form. Also return
+     * the created element.
+     */
+    public element($form: JQuery, settings: any): JQuery
     {
         var $input = $('<input>');
         $form.append($input);
@@ -116,27 +120,27 @@ class ClickToEditBaseView extends FocusableView implements ClickToEdit.IClickToE
     }
 
     /**
-      * Set the value of the input to match the value of the contentString.
-      */
-    public content($form: JQuery, contentString: string, settings: any) : void
+     * Set the value of the input to match the value of the contentString.
+     */
+    public content($form: JQuery, contentString: string, settings: any): void
     {
         var decoded = this.encodeDecodeProxy.htmlDecode(contentString);
         $form.find('input').val(decoded);
     }
 
     /**
-      * Call before the value of the form is saved. Not usually needed.
-      * Use processFormValue() instead to parse the value of the form
-      * back to the appropriate display element.
-      */
-    public submit($form: JQuery, settings: any) : void
+     * Call before the value of the form is saved. Not usually needed.
+     * Use processFormValue() instead to parse the value of the form
+     * back to the appropriate display element.
+     */
+    public submit($form: JQuery, settings: any): void
     {
     }
 
     /**
-      * Initialize any plugins here
-      */
-    public plugin($form: JQuery, settings: any) : void
+     * Initialize any plugins here
+     */
+    public plugin($form: JQuery, settings: any): void
     {
     }
 }
