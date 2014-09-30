@@ -14,8 +14,12 @@ class SectionTypesModel implements ISectionTypesModel
 
     public set displayText(value: string) { this._displayText = value; }
 
-    constructor(copy: ISectionTypesModel)
+    constructor(copy?: ISectionTypesModel)
     {
+        if (!copy)
+        {
+            return;
+        }
         this.code = copy.code;
         this.displayText = copy.displayText;
     }

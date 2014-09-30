@@ -30,8 +30,12 @@ class SectionsModel implements ISectionsModel
     public set sectionTypesModel(value: ISectionTypesModel)
     { this._sectionTypesModel = value; }
 
-    constructor(copy: ISectionsModel)
+    constructor(copy?: ISectionsModel)
     {
+        if (!copy)
+        {
+            return;
+        }
         this.coursesModel = copy.coursesModel; // don't copy because courses own sections, not the other way around.
         this.sectionId = copy.sectionId;
         this.title = copy.title;

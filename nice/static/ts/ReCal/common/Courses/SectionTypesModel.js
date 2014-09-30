@@ -3,6 +3,9 @@ define(["require", "exports"], function(require, exports) {
         function SectionTypesModel(copy) {
             this._code = null;
             this._displayText = null;
+            if (!copy) {
+                return;
+            }
             this.code = copy.code;
             this.displayText = copy.displayText;
         }

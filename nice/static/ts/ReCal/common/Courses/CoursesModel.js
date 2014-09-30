@@ -7,6 +7,9 @@ define(["require", "exports", '../../../library/Core/InvalidArgumentException', 
             this._courseListings = new Set();
             this._primaryListing = null;
             this._sectionsModels = new Set();
+            if (!copy) {
+                return;
+            }
             this.courseId = copy.courseId;
             this.title = copy.title;
             this.description = copy.description;

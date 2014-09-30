@@ -41,8 +41,12 @@ class CoursesModel implements ICoursesModel
     private _sectionsModels: Set<ISectionsModel> = new Set<ISectionsModel>();
     public get sectionsModels(): ISectionsModel[] { return this._sectionsModels.toArray(); }
 
-    constructor(copy: ICoursesModel)
+    constructor(copy?: ICoursesModel)
     {
+        if (!copy)
+        {
+            return;
+        }
         this.courseId = copy.courseId;
         this.title = copy.title;
         this.description = copy.description;

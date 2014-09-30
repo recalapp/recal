@@ -18,17 +18,17 @@ class ViewController implements IViewController
     /******************************************************************
       Properties
       ****************************************************************/
-    get view() : IView
+    public get view() : IView
     {
         return this._view;
     }
 
-    get parentViewController() : ViewController
+    public get parentViewController() : ViewController
     {
         return this._parentViewController;
     }
 
-    get childViewControllers() : ViewController[]
+    public get childViewControllers() : ViewController[]
     {
         return this._childViewControllers.toArray();
     }
