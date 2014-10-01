@@ -4,6 +4,11 @@ import Courses = require('../Courses/Courses');
 
 import ICoursesModel = Courses.ICoursesModel;
 
+export interface UserProfilesServerCommunicatorDependencies
+{
+
+}
+
 export interface IUserProfilesModel
 {
     username: string; // netID

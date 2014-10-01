@@ -9,7 +9,7 @@ export interface ICoursesModel
 }
 export interface ISectionsModel
 {
-    coursesModel: ICoursesModel;
+    coursesModel?: ICoursesModel;
     sectionId: string;
     title: string;
     sectionTypesModel: ISectionTypesModel;

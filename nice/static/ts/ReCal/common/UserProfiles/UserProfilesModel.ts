@@ -17,6 +17,14 @@ class UserProfilesModel implements  IUserProfilesModel
 
     private _enrolledCoursesModels: Set<ICoursesModel> = new Set<ICoursesModel>();
     public get enrolledCoursesModels(): ICoursesModel[] { return this._enrolledCoursesModels.toArray(); }
+    public set enrolledCoursesModels(value: ICoursesModel[])
+    {
+        if (!value)
+        {
+            return;
+        }
+        this._enrolledCoursesModels = new Set<ICoursesModel>(value);
+    }
 
     constructor(copy?: IUserProfilesModel)
     {

@@ -40,6 +40,12 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
             get: function () {
                 return this._enrolledCoursesModels.toArray();
             },
+            set: function (value) {
+                if (!value) {
+                    return;
+                }
+                this._enrolledCoursesModels = new Set(value);
+            },
             enumerable: true,
             configurable: true
         });

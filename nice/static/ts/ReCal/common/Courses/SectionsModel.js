@@ -8,7 +8,9 @@ define(["require", "exports", './SectionTypesModel'], function(require, exports,
             if (!copy) {
                 return;
             }
-            this.coursesModel = copy.coursesModel; // don't copy because courses own sections, not the other way around.
+            if (copy.coursesModel) {
+                this.coursesModel = copy.coursesModel; // don't copy because courses own sections, not the other way around.
+            }
             this.sectionId = copy.sectionId;
             this.title = copy.title;
             this.sectionTypesModel = new SectionTypesModel(copy.sectionTypesModel);
