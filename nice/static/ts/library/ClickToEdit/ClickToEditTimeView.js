@@ -10,7 +10,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         __extends(ClickToEditTimeView, _super);
         function ClickToEditTimeView() {
             _super.apply(this, arguments);
-            this._displayFormat = "H:mm A";
+            this._displayFormat = "h:mm A";
             this._timeInputView = null;
         }
         Object.defineProperty(ClickToEditTimeView.prototype, "displayFormat", {

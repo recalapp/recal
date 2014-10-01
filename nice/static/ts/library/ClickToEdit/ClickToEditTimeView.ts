@@ -11,7 +11,7 @@ import TimeInputView = require('../CustomInputs/TimeInputView');
 
 class ClickToEditTimeView extends ClickToEditBaseView
 {
-    private _displayFormat: string = "H:mm A";
+    private _displayFormat: string = "h:mm A";
     public get displayFormat(): string { return this._displayFormat; }
     public set displayFormat(value: string) { this._displayFormat = value; }
 
