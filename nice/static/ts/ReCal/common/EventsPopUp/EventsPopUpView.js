@@ -12,6 +12,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             var _this = this;
             _super.call(this, $element, cssClass);
             this._encodeDecodeProxy = new EncodeDecodeProxy();
+            this._possibleSections = [];
             this._eventsModel = null;
             this._title = null;
             this._titleJQuery = null;
@@ -42,6 +43,17 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         Object.defineProperty(EventsPopUpView.prototype, "encodeDecodeProxy", {
             get: function () {
                 return this._encodeDecodeProxy;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "possibleSections", {
+            get: function () {
+                return this._possibleSections;
+            },
+            set: function (value) {
+                this._possibleSections = value;
             },
             enumerable: true,
             configurable: true
@@ -153,6 +165,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 return this._sectionId;
             },
             set: function (value) {
+                var _this = this;
                 if (this._sectionId === value) {
                     return;
                 }
@@ -160,7 +173,16 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._sectionId === null || this._sectionId === undefined) {
                     return;
                 }
-                this.sectionJQuery.text(SECTION_MAP[this._sectionId]);
+
+                // TODO improve logic. this assumes possibleSections already set
+                var sections = this.possibleSections.filter(function (sectionsModel) {
+                    return sectionsModel.sectionId === _this._sectionId;
+                });
+                if (sections.length > 0) {
+                    var section = sections[0];
+                    this.sectionJQuery.text(section.coursesModel.primaryListing + " - " + section.title);
+                    this.sectionJQuery.data("logical_value", section.sectionId);
+                }
             },
             enumerable: true,
             configurable: true

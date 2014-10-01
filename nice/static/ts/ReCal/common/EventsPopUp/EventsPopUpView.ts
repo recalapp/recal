@@ -2,6 +2,7 @@
 
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
+import Courses = require('../Courses/Courses');
 import DateTime = require('../../../library/DateTime/DateTime');
 import EncodeDecodeProxy = require('../../../library/Core/EncodeDecodeProxy');
 import Events = require('../Events/Events');
@@ -13,14 +14,18 @@ import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import EventsPopUpViewDependencies = EventsPopUp.EventsPopUpViewDependencies;
 import IEventsModel = Events.IEventsModel;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView;
+import ISectionsModel = Courses.ISectionsModel;
 
-declare var SECTION_MAP: any;
 declare var TYPE_MAP: any;
 
 class EventsPopUpView extends PopUpView implements IEventsPopUpView
 {
     private _encodeDecodeProxy: EncodeDecodeProxy = new EncodeDecodeProxy();
     private get encodeDecodeProxy(): EncodeDecodeProxy { return this._encodeDecodeProxy; }
+
+    public _possibleSections: ISectionsModel[] = [];
+    public get possibleSections(): ISectionsModel[] { return this._possibleSections; }
+    public set possibleSections(value: ISectionsModel[]) { this._possibleSections = value; }
 
     public _eventsModel: IEventsModel = null;
     public get eventsModel(): IEventsModel { return this._eventsModel; }
@@ -120,7 +125,17 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.sectionJQuery.text(SECTION_MAP[this._sectionId]);
+        // TODO improve logic. this assumes possibleSections already set
+        var sections = this.possibleSections.filter((sectionsModel: ISectionsModel)=>{
+            return sectionsModel.sectionId === this._sectionId;
+        });
+        if (sections.length > 0)
+        {
+            var section = sections[0];
+            this.sectionJQuery.text(section.coursesModel.primaryListing + " - "
+                + section.title);
+            this.sectionJQuery.data("logical_value", section.sectionId);
+        }
     }
     private _sectionJQuery: JQuery = null;
     public get sectionJQuery(): JQuery

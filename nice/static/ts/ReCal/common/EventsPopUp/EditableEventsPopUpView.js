@@ -11,7 +11,6 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             _super.call(this, $element, cssClass);
             this.HIGHLIGHTED_CLASS = 'highlighted';
             this._modifiedEventsModel = null;
-            this._possibleSections = [];
             this._isModified = null;
             this._saveButton = null;
             this._clickToEditViewFactory = null;
@@ -39,7 +38,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 sectionView.selectOptions = this._possibleSections.map(function (sectionsModel, index) {
                     return {
                         value: sectionsModel.sectionId,
-                        displayText: sectionsModel.coursesModel.primaryListing + ': ' + sectionsModel.title
+                        displayText: sectionsModel.coursesModel.primaryListing + ' - ' + sectionsModel.title
                     };
                 });
                 // TODO add listener for when section changes
@@ -125,6 +124,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 } else if (view.is(_this.locationJQuery)) {
                     _this.processModifiedLocation(result);
                 } else if (view.is(_this.sectionJQuery)) {
+                    _this.processModifiedSection();
                 } else if (view.is(_this.eventTypeJQuery)) {
                 } else if (view.is(_this.dateJQuery)) {
                 } else if (view.is(_this.startTimeJQuery)) {
@@ -148,6 +148,12 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         EditableEventsPopUpView.prototype.processModifiedLocation = function (value) {
             if (value !== this.modifiedEventsModel.location) {
                 this.modifiedEventsModel.location = value;
+                this.isModified = true;
+            }
+        };
+        EditableEventsPopUpView.prototype.processModifiedSection = function () {
+            this.modifiedEventsModel.sectionId = this.sectionJQuery.data('logical_value');
+            if (this.modifiedEventsModel.sectionId !== this.eventsModel.sectionId) {
                 this.isModified = true;
             }
         };

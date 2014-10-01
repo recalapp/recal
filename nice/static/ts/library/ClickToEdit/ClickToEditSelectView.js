@@ -59,6 +59,32 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
             $form.append($input);
             return $input;
         };
+
+        /**
+        * Set the value of the input to match the value of the contentString.
+        */
+        ClickToEditSelectView.prototype.content = function ($form, contentString, settings) {
+            var cur_val = this._$el.data("logical_value");
+            if (cur_val === null || cur_val === undefined) {
+                cur_val = contentString;
+            }
+            $form.find('select').val(cur_val);
+        };
+
+        /**
+        * Returns the string html value of the form value. Do processing
+        * such as converting \n to <br>
+        */
+        ClickToEditSelectView.prototype.processFormValue = function (value, settings) {
+            var displayText = value;
+            this.selectOptions.map(function (option) {
+                if (value === option.value) {
+                    displayText = option.displayText;
+                }
+            });
+            this._$el.data('logical_value', value);
+            return this.encodeDecodeProxy.htmlEncode(displayText);
+        };
         return ClickToEditSelectView;
     })(ClickToEditBaseView);
 

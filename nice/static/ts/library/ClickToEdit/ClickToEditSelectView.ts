@@ -42,6 +42,36 @@ class ClickToEditSelectView extends ClickToEditBaseView
         $form.append($input);
         return $input;
     }
+
+    /**
+     * Set the value of the input to match the value of the contentString.
+     */
+    public content($form: JQuery, contentString: string, settings: any): void
+    {
+        var cur_val = this._$el.data("logical_value");
+        if (cur_val === null || cur_val === undefined)
+        {
+            cur_val = contentString;
+        }
+        $form.find('select').val(cur_val);
+    }
+
+    /**
+     * Returns the string html value of the form value. Do processing
+     * such as converting \n to <br>
+     */
+    public processFormValue(value: string, settings: any): string
+    {
+        var displayText = value;
+        this.selectOptions.map((option: { value: string; displayText: string;})=>{
+            if (value === option.value)
+            {
+                displayText = option.displayText;
+            }
+        });
+        this._$el.data('logical_value', value);
+        return this.encodeDecodeProxy.htmlEncode(displayText);
+    }
 }
 
 export = ClickToEditSelectView;

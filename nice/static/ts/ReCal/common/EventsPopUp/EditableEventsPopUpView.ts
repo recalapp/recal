@@ -26,7 +26,6 @@ class EditableEventsPopUpView extends EventsPopUpView
     private get modifiedEventsModel(): IEventsModel { return this._modifiedEventsModel; }
     private set modifiedEventsModel(value: IEventsModel) { this._modifiedEventsModel = value; }
 
-    private _possibleSections: ISectionsModel[] = [];
     public get possibleSections(): ISectionsModel[] { return this._possibleSections; }
     public set possibleSections(value: ISectionsModel[])
     {
@@ -35,7 +34,7 @@ class EditableEventsPopUpView extends EventsPopUpView
         sectionView.selectOptions = this._possibleSections.map((sectionsModel: ISectionsModel, index: number)=>{
             return {
                 value: sectionsModel.sectionId,
-                displayText: sectionsModel.coursesModel.primaryListing + ': ' + sectionsModel.title
+                displayText: sectionsModel.coursesModel.primaryListing + ' - ' + sectionsModel.title
             };
         });
         // TODO add listener for when section changes
@@ -125,6 +124,7 @@ class EditableEventsPopUpView extends EventsPopUpView
                     }
                     else if (view.is(this.sectionJQuery))
                     {
+                        this.processModifiedSection();
                     }
                     else if (view.is(this.eventTypeJQuery))
                     {
@@ -162,6 +162,14 @@ class EditableEventsPopUpView extends EventsPopUpView
         if (value !== this.modifiedEventsModel.location)
         {
             this.modifiedEventsModel.location = value;
+            this.isModified = true;
+        }
+    }
+    private processModifiedSection(): void
+    {
+        this.modifiedEventsModel.sectionId = this.sectionJQuery.data('logical_value');
+        if (this.modifiedEventsModel.sectionId !== this.eventsModel.sectionId)
+        {
             this.isModified = true;
         }
     }
