@@ -4,6 +4,7 @@ import ClickToEditSelectView = require('../../../library/ClickToEdit/ClickToEdit
 import ComparableResult = require('../../../library/Core/ComparableResult');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Courses = require('../Courses/Courses');
+import Dictionary = require('../../../library/DataStructures/Dictionary');
 import Events = require('../Events/Events');
 import EventsModel = require('../Events/EventsModel');
 import EventsPopUp = require('./EventsPopUp');
@@ -37,7 +38,21 @@ class EditableEventsPopUpView extends EventsPopUpView
                 displayText: sectionsModel.coursesModel.primaryListing + ' - ' + sectionsModel.title
             };
         });
-        // TODO add listener for when section changes
+        // TODO add listener for when section changes, important for when page loads slowly and this is not yet loaded.
+    }
+
+    public get possibleEventTypes(): Dictionary<string, string> { return this._possibleEventTypes; }
+    public set possibleEventTypes(value: Dictionary<string, string>)
+    {
+        this._possibleEventTypes = value;
+        var eventTypeView = <ClickToEditSelectView> ClickToEditSelectView.fromJQuery(this.eventTypeJQuery);
+        eventTypeView.selectOptions = this._possibleEventTypes.allKeys().map((eventTypeCode: string)=>{
+            return {
+                value: eventTypeCode,
+                displayText: this._possibleEventTypes.get(eventTypeCode),
+            }
+        });
+        // TODO add listener for when event type changes
     }
 
     private _isModified: boolean = null;
@@ -128,6 +143,7 @@ class EditableEventsPopUpView extends EventsPopUpView
                     }
                     else if (view.is(this.eventTypeJQuery))
                     {
+                        this.processModifiedEventType();
                     }
                     else if (view.is(this.dateJQuery))
                     {
@@ -169,6 +185,14 @@ class EditableEventsPopUpView extends EventsPopUpView
     {
         this.modifiedEventsModel.sectionId = this.sectionJQuery.data('logical_value');
         if (this.modifiedEventsModel.sectionId !== this.eventsModel.sectionId)
+        {
+            this.isModified = true;
+        }
+    }
+    private processModifiedEventType(): void
+    {
+        this.modifiedEventsModel.eventTypeCode = this.eventTypeJQuery.data('logical_value');
+        if (this.modifiedEventsModel.eventTypeCode !== this.eventsModel.eventTypeCode)
         {
             this.isModified = true;
         }

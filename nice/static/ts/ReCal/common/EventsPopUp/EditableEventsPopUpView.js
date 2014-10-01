@@ -41,7 +41,27 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                         displayText: sectionsModel.coursesModel.primaryListing + ' - ' + sectionsModel.title
                     };
                 });
-                // TODO add listener for when section changes
+                // TODO add listener for when section changes, important for when page loads slowly and this is not yet loaded.
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EditableEventsPopUpView.prototype, "possibleEventTypes", {
+            get: function () {
+                return this._possibleEventTypes;
+            },
+            set: function (value) {
+                var _this = this;
+                this._possibleEventTypes = value;
+                var eventTypeView = ClickToEditSelectView.fromJQuery(this.eventTypeJQuery);
+                eventTypeView.selectOptions = this._possibleEventTypes.allKeys().map(function (eventTypeCode) {
+                    return {
+                        value: eventTypeCode,
+                        displayText: _this._possibleEventTypes.get(eventTypeCode)
+                    };
+                });
+                // TODO add listener for when event type changes
             },
             enumerable: true,
             configurable: true
@@ -126,6 +146,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 } else if (view.is(_this.sectionJQuery)) {
                     _this.processModifiedSection();
                 } else if (view.is(_this.eventTypeJQuery)) {
+                    _this.processModifiedEventType();
                 } else if (view.is(_this.dateJQuery)) {
                 } else if (view.is(_this.startTimeJQuery)) {
                 } else if (view.is(_this.endTimeJQuery)) {
@@ -154,6 +175,12 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         EditableEventsPopUpView.prototype.processModifiedSection = function () {
             this.modifiedEventsModel.sectionId = this.sectionJQuery.data('logical_value');
             if (this.modifiedEventsModel.sectionId !== this.eventsModel.sectionId) {
+                this.isModified = true;
+            }
+        };
+        EditableEventsPopUpView.prototype.processModifiedEventType = function () {
+            this.modifiedEventsModel.eventTypeCode = this.eventTypeJQuery.data('logical_value');
+            if (this.modifiedEventsModel.eventTypeCode !== this.eventsModel.eventTypeCode) {
                 this.isModified = true;
             }
         };

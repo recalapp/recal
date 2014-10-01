@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/EncodeDecodeProxy', '../../../library/CoreUI/FocusableView', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, EncodeDecodeProxy, FocusableView, PopUpView, ReCalCommonBrowserEvents) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/DataStructures/Dictionary', '../../../library/Core/EncodeDecodeProxy', '../../../library/CoreUI/FocusableView', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, Dictionary, EncodeDecodeProxy, FocusableView, PopUpView, ReCalCommonBrowserEvents) {
     var EventsPopUpView = (function (_super) {
         __extends(EventsPopUpView, _super);
         function EventsPopUpView($element, cssClass) {
@@ -13,6 +13,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             _super.call(this, $element, cssClass);
             this._encodeDecodeProxy = new EncodeDecodeProxy();
             this._possibleSections = [];
+            this._possibleEventTypes = new Dictionary();
             this._eventsModel = null;
             this._title = null;
             this._titleJQuery = null;
@@ -54,6 +55,17 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             },
             set: function (value) {
                 this._possibleSections = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsPopUpView.prototype, "possibleEventTypes", {
+            get: function () {
+                return this._possibleEventTypes;
+            },
+            set: function (value) {
+                this._possibleEventTypes = value;
             },
             enumerable: true,
             configurable: true
@@ -212,7 +224,8 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._eventTypeCode === null || this._eventTypeCode === undefined) {
                     return;
                 }
-                this.eventTypeJQuery.text(TYPE_MAP[this._eventTypeCode]);
+                this.eventTypeJQuery.text(this.possibleEventTypes.getOrCreate(this._eventTypeCode, this._eventTypeCode));
+                this.eventTypeJQuery.data('logical_value', this._eventTypeCode);
             },
             enumerable: true,
             configurable: true

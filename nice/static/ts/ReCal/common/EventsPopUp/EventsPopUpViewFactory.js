@@ -53,6 +53,7 @@ define(["require", "exports", './EditableEventsPopUpView'], function(require, ex
                 clickToEditViewFactory: this.clickToEditViewFactory
             });
             eventsPopUpView.possibleSections = this.user.enrolledSectionsModels;
+            eventsPopUpView.possibleEventTypes = this.user.eventTypes;
             return eventsPopUpView;
         };
         return EventsPopUpViewFactory;

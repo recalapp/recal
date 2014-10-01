@@ -49,6 +49,7 @@ class EventsPopUpViewFactory
                 clickToEditViewFactory: this.clickToEditViewFactory
             });
         eventsPopUpView.possibleSections = this.user.enrolledSectionsModels;
+        eventsPopUpView.possibleEventTypes = this.user.eventTypes;
         return eventsPopUpView;
     }
 }

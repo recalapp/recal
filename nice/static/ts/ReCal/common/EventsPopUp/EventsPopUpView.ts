@@ -4,6 +4,7 @@ import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Courses = require('../Courses/Courses');
 import DateTime = require('../../../library/DateTime/DateTime');
+import Dictionary = require('../../../library/DataStructures/Dictionary');
 import EncodeDecodeProxy = require('../../../library/Core/EncodeDecodeProxy');
 import Events = require('../Events/Events');
 import EventsPopUp = require('./EventsPopUp');
@@ -16,8 +17,6 @@ import IEventsModel = Events.IEventsModel;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView;
 import ISectionsModel = Courses.ISectionsModel;
 
-declare var TYPE_MAP: any;
-
 class EventsPopUpView extends PopUpView implements IEventsPopUpView
 {
     private _encodeDecodeProxy: EncodeDecodeProxy = new EncodeDecodeProxy();
@@ -26,6 +25,10 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
     public _possibleSections: ISectionsModel[] = [];
     public get possibleSections(): ISectionsModel[] { return this._possibleSections; }
     public set possibleSections(value: ISectionsModel[]) { this._possibleSections = value; }
+
+    public _possibleEventTypes: Dictionary<string, string> = new Dictionary<string, string>();
+    public get possibleEventTypes(): Dictionary<string, string> { return this._possibleEventTypes; }
+    public set possibleEventTypes(value: Dictionary<string, string>) { this._possibleEventTypes = value; }
 
     public _eventsModel: IEventsModel = null;
     public get eventsModel(): IEventsModel { return this._eventsModel; }
@@ -161,7 +164,8 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this.eventTypeJQuery.text(TYPE_MAP[this._eventTypeCode]);
+        this.eventTypeJQuery.text(this.possibleEventTypes.getOrCreate(this._eventTypeCode, this._eventTypeCode));
+        this.eventTypeJQuery.data('logical_value', this._eventTypeCode);
     }
     private _eventTypeJQuery: JQuery = null;
     public get eventTypeJQuery(): JQuery 
