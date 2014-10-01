@@ -245,7 +245,7 @@ class Event(models.Model):
 
 class Event_Revision(models.Model):
     # constants
-    # TODO:(Naphat) why are there types that are not in type_choices?
+
     TYPE_ASSIGNMENT = "AS"
     TYPE_EXAM = "EX"
     TYPE_LAB = "LA"
@@ -257,9 +257,12 @@ class Event_Revision(models.Model):
     TYPE_CHOICES = (
         (TYPE_ASSIGNMENT, "assignment"),
         (TYPE_EXAM, "exam"),
+        (TYPE_LAB, "lab"),
+        (TYPE_LECTURE, "lecture"),
         (TYPE_OFFICE_HOURS, "office hours"),
         (TYPE_PRECEPT, "precept"),
         (TYPE_REVIEW_SESSION, "review session"),
+        (TYPE_STUDIO, "studio"),
     )
 
     STATUS_APPROVED = "S_AP"

@@ -47,12 +47,20 @@ def get_user_profile_info(netid, **kwargs):
             'course_description': course.description,
             'sections': sections_array
         }
+    
+    def construct_type_map(type_choices):
+        ret = {}
+        for type_code, type_display in type_choices:
+            ret[type_code] = type_display
+        return ret
+
     courses_dict_array = [construct_course_dict_for_profile(x)
                           for x in all_courses]
     return {
         'display_name': unicode(user),
         'username': netid,
         'enrolled_courses': courses_dict_array,
+        'event_types': construct_type_map(Event_Revision.TYPE_CHOICES),
     }
 
 def get_events(netid, escape=False, **kwargs):

@@ -51,6 +51,7 @@ define(["require", "exports", 'jquery', '../../../library/DataStructures/Diction
                 profile.username = data.username;
                 profile.displayName = data.display_name;
                 profile.enrolledCoursesModels = data.enrolled_courses.map(courseDataToModel);
+                profile.eventTypes = new Dictionary(data.event_types);
                 deferred.resolve(profile);
             }).fail(function (data) {
                 deferred.resolve(profile);

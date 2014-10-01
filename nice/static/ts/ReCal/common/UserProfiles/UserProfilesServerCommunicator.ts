@@ -24,6 +24,7 @@ interface UserProfileInfoServerData
     username: string;
     display_name: string;
     enrolled_courses: CourseInfoServerData[];
+    event_types: any;
 }
 interface CourseInfoServerData
 {
@@ -90,6 +91,7 @@ class UserProfilesServerCommunicator implements IUserProfilesServerCommunicator
                 profile.username = data.username;
                 profile.displayName = data.display_name;
                 profile.enrolledCoursesModels = data.enrolled_courses.map(courseDataToModel);
+                profile.eventTypes = new Dictionary<string, string>(data.event_types);
                 deferred.resolve(profile);
             })
             .fail((data: any)=>{

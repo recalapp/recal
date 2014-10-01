@@ -7,8 +7,14 @@ define(["require", "exports"], function(require, exports) {
         return Wrapper;
     })();
     var Dictionary = (function () {
-        function Dictionary() {
+        function Dictionary(primitiveObject) {
             this._dict = {};
+            if (primitiveObject) {
+                for (var key in primitiveObject) {
+                    var value = primitiveObject[key];
+                    this.set(key, value);
+                }
+            }
         }
         /**
         * Set the value in the dictionary, and return the old value (null

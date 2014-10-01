@@ -8,6 +8,18 @@ class Dictionary<K, V>
 {
     private _dict = {};
 
+    constructor(primitiveObject?: any)
+    {
+        if (primitiveObject)
+        {
+            for (var key in primitiveObject)
+            {
+                var value: V = primitiveObject[key];
+                this.set(key, value);
+            }
+        }
+    }
+
     /**
      * Set the value in the dictionary, and return the old value (null
      * no old value)

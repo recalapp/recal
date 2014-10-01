@@ -1,6 +1,7 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
 import Courses = require('../Courses/Courses');
+import Dictionary = require('../../../library/DataStructures/Dictionary');
 
 import ICoursesModel = Courses.ICoursesModel;
 import ISectionsModel = Courses.ISectionsModel;
@@ -16,6 +17,7 @@ export interface IUserProfilesModel
     displayName?: string; // null initially?
     enrolledCoursesModels?: ICoursesModel[]; // null initially
     enrolledSectionsModels?: ISectionsModel[]; // computed based on enrolledCourses
+    eventTypes?: Dictionary<string, string>; // mapping from type code to type display for this user (can be different in the future for each user)
 }
 
 export interface IUserProfilesServerCommunicator
