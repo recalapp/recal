@@ -8,6 +8,7 @@ import ClickToEditCommon = require('./ClickToEditCommon');
 import ClickToEditSelectView = require('./ClickToEditSelectView');
 import ClickToEditTextView = require('./ClickToEditTextView');
 import ClickToEditTextAreaView = require('./ClickToEditTextAreaView');
+import ClickToEditTimeView = require('./ClickToEditTimeView');
 import ClickToEditType = require('./ClickToEditType');
 import NotImplementedException = require('../Core/NotImplementedException');
 import Set = require('../DataStructures/Set');
@@ -72,6 +73,10 @@ class ClickToEditViewFactory
             case ClickToEditType.select:
                 clickToEditView =
                 <ClickToEditSelectView> ClickToEditSelectView.fromJQuery($element);
+                break;
+            case ClickToEditType.time:
+                clickToEditView =
+                <ClickToEditTimeView> ClickToEditTimeView.fromJQuery($element);
                 break;
             default:
                 throw new NotImplementedException('ClickToEditType ' + type

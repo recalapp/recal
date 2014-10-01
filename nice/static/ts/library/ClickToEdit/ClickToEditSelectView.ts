@@ -40,7 +40,7 @@ class ClickToEditSelectView extends ClickToEditBaseView
         });
         // don't set the height, use default
         $form.append($input);
-        return $input;
+        return $input; // return the input itself, not form
     }
 
     /**

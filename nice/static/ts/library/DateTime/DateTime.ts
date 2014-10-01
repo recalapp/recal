@@ -5,9 +5,11 @@
 import moment = require('moment');
 import Comparable = require('../Core/Comparable');
 import ComparableResult = require('../Core/ComparableResult');
+import Date = require('./Date');
 import InvalidActionException = require('../Core/InvalidActionException');
+import Time = require('./Time');
 
-class DateTime implements Comparable
+class DateTime implements Comparable, Date, Time
 {
     private _momentObject: Moment = moment();
     private static _timeZone: string = null;

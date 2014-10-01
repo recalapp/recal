@@ -106,8 +106,8 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         };
 
         /**
-        * Create a new input element and attach it to the form. Also return
-        * the created element.
+        * Create a new input element and attach it to the form. Return part of the
+        * created element meant to hold the value of the input
         */
         ClickToEditBaseView.prototype.element = function ($form, settings) {
             var $input = $('<input>');
