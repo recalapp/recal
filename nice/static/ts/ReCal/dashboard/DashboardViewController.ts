@@ -27,6 +27,8 @@ import SidebarView = require('../../library/Sidebar/SidebarView');
 import SidebarNotificationsManager = require('../../library/Notifications/SidebarNotificationsManager');
 import Table = require('../../library/Table/Table');
 import TableView = require('../../library/Table/TableView');
+import UserProfiles = require('../common/UserProfiles/UserProfiles');
+import UserProfilesServerCommunicator = require('../common/UserProfiles/UserProfilesServerCommunicator');
 import View = require('../../library/CoreUI/View');
 import ViewController = require('../../library/CoreUI/ViewController');
 import ViewTemplateRetriever = require('../../library/CoreUI/ViewTemplateRetriever');
@@ -42,6 +44,8 @@ import ISidebarNotificationsManager = Notifications.ISidebarNotificationsManager
 import ISidebarView = Sidebar.ISidebarView;
 import ITableView = Table.ITableView;
 import ITableViewController = Table.ITableViewController;
+import IUserProfilesModel = UserProfiles.IUserProfilesModel;
+import IUserProfilesServerCommunicator = UserProfiles.IUserProfilesServerCommunicator;
 import IView = CoreUI.IView;
 import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
@@ -179,14 +183,36 @@ class DashboardViewController extends ViewController
         this._canvasPopUpContainerViewController = value;
     }
 
-    constructor(view: IView)
+    /**
+     * The logged in user
+     * @type {IUserProfilesMode}
+     * @private
+     */
+    private _user: IUserProfilesModel = null;
+    private get user(): IUserProfilesModel { return this._user; }
+
+    private _userProfilesServerCommunicator: IUserProfilesServerCommunicator = null;
+    private get userProfilesServerCommunicator(): IUserProfilesServerCommunicator
+    {
+        if (!this._userProfilesServerCommunicator)
+        {
+            this._userProfilesServerCommunicator = new UserProfilesServerCommunicator();
+        }
+        return this._userProfilesServerCommunicator;
+    }
+
+    constructor(view: IView, dependencies: {user: IUserProfilesModel})
     {
         super(view);
+        this._user = dependencies.user;
         this.initialize();
     }
 
     private initialize(): void
     {
+        this.userProfilesServerCommunicator.updateUserProfile(this.user).done((user: IUserProfilesModel)=>{
+            this._user = user;
+        });
         this.setUpEventsServerCommunicationIndicators();
         this.initializeSidebar();
         this.initializePopUpCanvas();

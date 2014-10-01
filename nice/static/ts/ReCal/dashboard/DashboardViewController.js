@@ -5,10 +5,10 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', '../../library/ClickToEdit/ClickToEditViewFactory', './DashboardCalendar/DashboardCalendarViewController', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../../library/Indicators/IndicatorsContainerView', '../../library/Indicators/IndicatorsManager', '../../library/Indicators/IndicatorsType', '../common/ReCalCommonBrowserEvents', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Notifications/SidebarNotificationsManager', '../../library/Table/TableView', '../../library/CoreUI/View', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, ClickToEditViewFactory, DashboardCalendarViewController, EventsOperationsFacade, GlobalBrowserEventsManager, IndicatorsContainerView, IndicatorsManager, IndicatorsType, ReCalCommonBrowserEvents, ReCalSidebarViewController, SidebarView, SidebarNotificationsManager, TableView, View, ViewController, ViewTemplateRetriever) {
+define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', '../../library/ClickToEdit/ClickToEditViewFactory', './DashboardCalendar/DashboardCalendarViewController', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../../library/Indicators/IndicatorsContainerView', '../../library/Indicators/IndicatorsManager', '../../library/Indicators/IndicatorsType', '../common/ReCalCommonBrowserEvents', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Notifications/SidebarNotificationsManager', '../../library/Table/TableView', '../common/UserProfiles/UserProfilesServerCommunicator', '../../library/CoreUI/View', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, ClickToEditViewFactory, DashboardCalendarViewController, EventsOperationsFacade, GlobalBrowserEventsManager, IndicatorsContainerView, IndicatorsManager, IndicatorsType, ReCalCommonBrowserEvents, ReCalSidebarViewController, SidebarView, SidebarNotificationsManager, TableView, UserProfilesServerCommunicator, View, ViewController, ViewTemplateRetriever) {
     var DashboardViewController = (function (_super) {
         __extends(DashboardViewController, _super);
-        function DashboardViewController(view) {
+        function DashboardViewController(view, dependencies) {
             _super.call(this, view);
             /**
             * Global Browser Events Manager
@@ -56,6 +56,14 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             * Canvas PopUp Container View Controller
             */
             this._canvasPopUpContainerViewController = null;
+            /**
+            * The logged in user
+            * @type {IUserProfilesMode}
+            * @private
+            */
+            this._user = null;
+            this._userProfilesServerCommunicator = null;
+            this._user = dependencies.user;
             this.initialize();
         }
         Object.defineProperty(DashboardViewController.prototype, "globalBrowserEventsManager", {
@@ -175,7 +183,30 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
         });
 
 
+        Object.defineProperty(DashboardViewController.prototype, "user", {
+            get: function () {
+                return this._user;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(DashboardViewController.prototype, "userProfilesServerCommunicator", {
+            get: function () {
+                if (!this._userProfilesServerCommunicator) {
+                    this._userProfilesServerCommunicator = new UserProfilesServerCommunicator();
+                }
+                return this._userProfilesServerCommunicator;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         DashboardViewController.prototype.initialize = function () {
+            var _this = this;
+            this.userProfilesServerCommunicator.updateUserProfile(this.user).done(function (user) {
+                _this._user = user;
+            });
             this.setUpEventsServerCommunicationIndicators();
             this.initializeSidebar();
             this.initializePopUpCanvas();
