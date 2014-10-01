@@ -8,6 +8,7 @@ class BrowserEvents
     static mouseDown = 'mousedown';
     static transitionEnd = 'transitionend webkitTransitionEnd oTransitionEnd';
     static keyPress = 'keypress';
+    static keyDown = 'keydown';
 
     // bootstrap
     static bootstrapPopoverHidden = 'hidden.bs.popover';

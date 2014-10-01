@@ -11,6 +11,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         function ClickToEditTimeView() {
             _super.apply(this, arguments);
             this._displayFormat = "H:mm A";
+            this._timeInputView = null;
         }
         Object.defineProperty(ClickToEditTimeView.prototype, "displayFormat", {
             get: function () {
@@ -18,6 +19,17 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
             },
             set: function (value) {
                 this._displayFormat = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(ClickToEditTimeView.prototype, "timeInputView", {
+            get: function () {
+                return this._timeInputView;
+            },
+            set: function (value) {
+                this._timeInputView = value;
             },
             enumerable: true,
             configurable: true
@@ -49,7 +61,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
             var $input = $('<input>').addClass('form-control');
             $input.height(settings.height);
             $form.append($input);
-            var inputView = TimeInputView.fromJQuery($input);
+            this.timeInputView = TimeInputView.fromJQuery($input);
             return $input;
         };
 
@@ -57,7 +69,8 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         * Set the value of the input to match the value of the contentString.
         */
         ClickToEditTimeView.prototype.content = function ($form, contentString, settings) {
-            // automatic in the time input view constructor
+            this.timeInputView.value = this._$el.data("logical_value") || this.timeInputView.value;
+            this.timeInputView.timeFormat = this.displayFormat;
         };
 
         /**
@@ -65,6 +78,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         * such as converting \n to <br>
         */
         ClickToEditTimeView.prototype.processFormValue = function (value, settings) {
+            this.timeInputView = null;
             return this.encodeDecodeProxy.htmlEncode(value);
         };
         return ClickToEditTimeView;

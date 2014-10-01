@@ -16,8 +16,9 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
                 throw new InvalidArgumentException("TimeInputView can only be constructed from a HTML input element.");
             }
             this._value = this._$el.data("logical_value") || DateTime.fromUnix(0);
-            this.attachEventHandler(BrowserEvents.keyPress, function (ev) {
+            this.attachEventHandler(BrowserEvents.keyDown, function (ev) {
                 ev.preventDefault();
+                // TODO check for tabs, enters
             });
             this.refresh();
         }

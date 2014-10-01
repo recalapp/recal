@@ -14,6 +14,11 @@ class ClickToEditTimeView extends ClickToEditBaseView
     private _displayFormat: string = "H:mm A";
     public get displayFormat(): string { return this._displayFormat; }
     public set displayFormat(value: string) { this._displayFormat = value; }
+
+    private _timeInputView: TimeInputView = null;
+    private get timeInputView(): TimeInputView { return this._timeInputView; }
+    private set timeInputView(value: TimeInputView) { this._timeInputView = value; }
+
     /**
      * The unique css class for this class.
      */
@@ -35,7 +40,7 @@ class ClickToEditTimeView extends ClickToEditBaseView
         var $input = $('<input>').addClass('form-control');
         $input.height(settings.height);
         $form.append($input);
-        var inputView = <TimeInputView> TimeInputView.fromJQuery($input);
+        this.timeInputView = <TimeInputView> TimeInputView.fromJQuery($input);
         return $input;
     }
 
@@ -44,7 +49,8 @@ class ClickToEditTimeView extends ClickToEditBaseView
      */
     public content($form: JQuery, contentString: string, settings: any): void
     {
-        // automatic in the time input view constructor
+        this.timeInputView.value = this._$el.data("logical_value") || this.timeInputView.value;
+        this.timeInputView.timeFormat = this.displayFormat;
     }
 
     /**
@@ -53,6 +59,7 @@ class ClickToEditTimeView extends ClickToEditBaseView
      */
     public processFormValue(value: string, settings: any): string
     {
+        this.timeInputView = null;
         return this.encodeDecodeProxy.htmlEncode(value);
     }
 }

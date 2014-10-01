@@ -39,9 +39,10 @@ class TimeInputView extends FocusableView implements ITimeInputView
             );
         }
         this._value = this._$el.data("logical_value") || DateTime.fromUnix(0);
-        this.attachEventHandler(BrowserEvents.keyPress, (ev: JQueryEventObject)=>{
+        this.attachEventHandler(BrowserEvents.keyDown, (ev: JQueryEventObject)=>{
             ev.preventDefault();
-        });
+            // TODO check for tabs, enters
+        })
         this.refresh();
     }
 

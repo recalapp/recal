@@ -10,6 +10,7 @@ define(["require", "exports"], function(require, exports) {
         BrowserEvents.mouseDown = 'mousedown';
         BrowserEvents.transitionEnd = 'transitionend webkitTransitionEnd oTransitionEnd';
         BrowserEvents.keyPress = 'keypress';
+        BrowserEvents.keyDown = 'keydown';
 
         BrowserEvents.bootstrapPopoverHidden = 'hidden.bs.popover';
 
