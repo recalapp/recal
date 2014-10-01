@@ -19,6 +19,7 @@ import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView
+import IEventsPopUpViewFactory = EventsPopUp.IEventsPopUpViewFactory;
 import IReCalSidebarViewController = ReCalSidebar.IReCalSidebarViewController;
 import ISidebarView = Sidebar.ISidebarView;
 import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
@@ -52,30 +53,20 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
     private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
 
     /**
-     * View template retriever
-     */
-    private _viewTemplateRetriever: IViewTemplateRetriever = null;
-    private get viewTemplateRetriever(): IViewTemplateRetriever { return this._viewTemplateRetriever; }
-
-    /**
      * Events Operations Facade
      */
     private _eventsOperationsFacade: IEventsOperationsFacade = null;
     private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
 
-    /**
-     * ClickToEditView Factory
-     */
-    private _clickToEditViewFactory: IClickToEditViewFactory = null;
-    private get clickToEditViewFactory(): IClickToEditViewFactory { return this._clickToEditViewFactory; }
+    private _eventsPopUpViewFactory: IEventsPopUpViewFactory = null;
+    private get eventsPopUpViewFactory(): IEventsPopUpViewFactory { return this._eventsPopUpViewFactory; }
 
     constructor(sidebarView: ISidebarView, dependencies: ReCalSidebar.ReCalSidebarViewControllerDependencies)
     {
         super(sidebarView);
+        this._eventsPopUpViewFactory = dependencies.eventsPopUpViewFactory;
         this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
-        this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
         this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
-        this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
         this.initializePopUp();
     }
 
@@ -160,10 +151,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                     if (this.currentPopUpView === null || this.currentPopUpView === undefined)
                     {
                         // create the popup view
-                        var newPopUpView = new EditableEventsPopUpView({
-                            viewTemplateRetriever: this.viewTemplateRetriever,
-                            clickToEditViewFactory: this.clickToEditViewFactory
-                        });
+                        var newPopUpView = this.eventsPopUpViewFactory.createEventsPopUp();
                         // set events model
                         newPopUpView.eventsModel = this.eventsOperationsFacade.getEventById(mainEventId);
                         this.addPopUpView(newPopUpView);

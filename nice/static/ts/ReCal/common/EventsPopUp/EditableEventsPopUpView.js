@@ -4,13 +4,14 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/ComparableResult', '../Events/EventsModel', './EventsPopUpView', '../../../library/CoreUI/FocusableView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, ComparableResult, EventsModel, EventsPopUpView, FocusableView, ReCalCommonBrowserEvents) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/ClickToEdit/ClickToEditSelectView', '../../../library/Core/ComparableResult', '../Events/EventsModel', './EventsPopUpView', '../../../library/CoreUI/FocusableView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, ClickToEditSelectView, ComparableResult, EventsModel, EventsPopUpView, FocusableView, ReCalCommonBrowserEvents) {
     var EditableEventsPopUpView = (function (_super) {
         __extends(EditableEventsPopUpView, _super);
-        function EditableEventsPopUpView(dependencies) {
-            _super.call(this, dependencies);
+        function EditableEventsPopUpView($element, cssClass, dependencies) {
+            _super.call(this, $element, cssClass);
             this.HIGHLIGHTED_CLASS = 'highlighted';
             this._modifiedEventsModel = null;
+            this._possibleSections = [];
             this._isModified = null;
             this._saveButton = null;
             this._clickToEditViewFactory = null;
@@ -23,6 +24,25 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             },
             set: function (value) {
                 this._modifiedEventsModel = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EditableEventsPopUpView.prototype, "possibleSections", {
+            get: function () {
+                return this._possibleSections;
+            },
+            set: function (value) {
+                this._possibleSections = value;
+                var sectionView = ClickToEditSelectView.fromJQuery(this.sectionJQuery);
+                sectionView.selectOptions = this._possibleSections.map(function (sectionsModel, index) {
+                    return {
+                        value: sectionsModel.sectionId,
+                        displayText: sectionsModel.coursesModel.primaryListing + ': ' + sectionsModel.title
+                    };
+                });
+                // TODO add listener for when section changes
             },
             enumerable: true,
             configurable: true

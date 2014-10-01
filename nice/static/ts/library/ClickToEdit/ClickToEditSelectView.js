@@ -10,7 +10,19 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         __extends(ClickToEditSelectView, _super);
         function ClickToEditSelectView() {
             _super.apply(this, arguments);
+            this._selectOptions = [];
         }
+        Object.defineProperty(ClickToEditSelectView.prototype, "selectOptions", {
+            get: function () {
+                return this._selectOptions;
+            },
+            set: function (value) {
+                this._selectOptions = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(ClickToEditSelectView, "cssClass", {
             /**
             * The unique css class for this class.
@@ -36,6 +48,12 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         ClickToEditSelectView.prototype.element = function ($form, settings) {
             // TODO need a list of values and display texts
             var $input = $('<select class="form-control">');
+            this.selectOptions.map(function (option, index) {
+                var $option = $('<option>');
+                $option.attr('value', option.value);
+                $option.text(option.displayText);
+                $input.append($option);
+            });
 
             // don't set the height, use default
             $form.append($input);

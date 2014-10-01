@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsPopUp/EditableEventsPopUpView', '../EventsPopUp/EventsPopUpView', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, EditableEventsPopUpView, EventsPopUpView, ReCalCommonBrowserEvents, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsPopUp/EventsPopUpView', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, EventsPopUpView, ReCalCommonBrowserEvents, ViewController) {
     /************************************************************************
     * This class is responsible for managing the sidebar in ReCal. In particular,
     * it is responsible for listening to the following events:
@@ -24,21 +24,13 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             */
             this._globalBrowserEventsManager = null;
             /**
-            * View template retriever
-            */
-            this._viewTemplateRetriever = null;
-            /**
             * Events Operations Facade
             */
             this._eventsOperationsFacade = null;
-            /**
-            * ClickToEditView Factory
-            */
-            this._clickToEditViewFactory = null;
+            this._eventsPopUpViewFactory = null;
+            this._eventsPopUpViewFactory = dependencies.eventsPopUpViewFactory;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
-            this._viewTemplateRetriever = dependencies.viewTemplateRetriever;
             this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
-            this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
             this.initializePopUp();
         }
         Object.defineProperty(ReCalSidebarViewController.prototype, "currentPopUpView", {
@@ -61,14 +53,6 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             configurable: true
         });
 
-        Object.defineProperty(ReCalSidebarViewController.prototype, "viewTemplateRetriever", {
-            get: function () {
-                return this._viewTemplateRetriever;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
         Object.defineProperty(ReCalSidebarViewController.prototype, "eventsOperationsFacade", {
             get: function () {
                 return this._eventsOperationsFacade;
@@ -77,9 +61,9 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             configurable: true
         });
 
-        Object.defineProperty(ReCalSidebarViewController.prototype, "clickToEditViewFactory", {
+        Object.defineProperty(ReCalSidebarViewController.prototype, "eventsPopUpViewFactory", {
             get: function () {
-                return this._clickToEditViewFactory;
+                return this._eventsPopUpViewFactory;
             },
             enumerable: true,
             configurable: true
@@ -157,10 +141,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     // this event is supposed to be main
                     if (_this.currentPopUpView === null || _this.currentPopUpView === undefined) {
                         // create the popup view
-                        var newPopUpView = new EditableEventsPopUpView({
-                            viewTemplateRetriever: _this.viewTemplateRetriever,
-                            clickToEditViewFactory: _this.clickToEditViewFactory
-                        });
+                        var newPopUpView = _this.eventsPopUpViewFactory.createEventsPopUp();
 
                         // set events model
                         newPopUpView.eventsModel = _this.eventsOperationsFacade.getEventById(mainEventId);

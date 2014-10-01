@@ -3,6 +3,7 @@ import Set = require('../../../library/DataStructures/Set')
 import UserProfiles = require('./UserProfiles');
 
 import ICoursesModel = Courses.ICoursesModel;
+import ISectionsModel = Courses.ISectionsModel;
 import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 
 class UserProfilesModel implements  IUserProfilesModel
@@ -24,6 +25,13 @@ class UserProfilesModel implements  IUserProfilesModel
             return;
         }
         this._enrolledCoursesModels = new Set<ICoursesModel>(value);
+    }
+
+    public get enrolledSectionsModels(): ISectionsModel[]
+    {
+        return this.enrolledCoursesModels.reduce((sectionsModels: ISectionsModel[], coursesModel: ICoursesModel, index: number)=>{
+            return sectionsModels.concat(coursesModel.sectionsModels);
+        }, []);
     }
 
     constructor(copy?: IUserProfilesModel)

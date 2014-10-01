@@ -3,6 +3,7 @@
 import Courses = require('../Courses/Courses');
 
 import ICoursesModel = Courses.ICoursesModel;
+import ISectionsModel = Courses.ISectionsModel;
 
 export interface UserProfilesServerCommunicatorDependencies
 {
@@ -14,6 +15,7 @@ export interface IUserProfilesModel
     username: string; // netID
     displayName?: string; // null initially?
     enrolledCoursesModels?: ICoursesModel[]; // null initially
+    enrolledSectionsModels?: ISectionsModel[]; // computed based on enrolledCourses
 }
 
 export interface IUserProfilesServerCommunicator

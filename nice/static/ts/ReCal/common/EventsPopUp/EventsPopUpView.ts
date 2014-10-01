@@ -253,9 +253,9 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
 
     
 
-    constructor(dependencies: EventsPopUpViewDependencies)
+    constructor($element: JQuery, cssClass: string)
     {
-        super(dependencies.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
+        super($element, cssClass);
 
         // TODO set up buttons 
         // set up close button

@@ -8,9 +8,9 @@ var __extends = this.__extends || function (d, b) {
 define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/EncodeDecodeProxy', '../../../library/CoreUI/FocusableView', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, EncodeDecodeProxy, FocusableView, PopUpView, ReCalCommonBrowserEvents) {
     var EventsPopUpView = (function (_super) {
         __extends(EventsPopUpView, _super);
-        function EventsPopUpView(dependencies) {
+        function EventsPopUpView($element, cssClass) {
             var _this = this;
-            _super.call(this, dependencies.viewTemplateRetriever.retrieveTemplate('#popup-template'), EventsPopUpView.cssClass);
+            _super.call(this, $element, cssClass);
             this._encodeDecodeProxy = new EncodeDecodeProxy();
             this._eventsModel = null;
             this._title = null;

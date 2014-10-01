@@ -12,6 +12,8 @@ import ClickToEditViewFactory = require('../../library/ClickToEdit/ClickToEditVi
 import CoreUI = require('../../library/CoreUI/CoreUI');
 import DashboardCalendarViewController = require('./DashboardCalendar/DashboardCalendarViewController');
 import Events = require('../common/Events/Events');
+import EventsPopUp = require('../common/EventsPopUp/EventsPopUp');
+import EventsPopUpViewFactory = require('../common/EventsPopUp/EventsPopUpViewFactory');
 import EventsOperationsFacade = require('../common/Events/EventsOperationsFacade');
 import GlobalBrowserEventsManager = require('../../library/Core/GlobalBrowserEventsManager');
 import Indicators = require('../../library/Indicators/Indicators');
@@ -38,6 +40,7 @@ import ICalendarViewController = Calendar.ICalendarViewController;
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController;
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
+import IEventsPopUpViewFactory = EventsPopUp.IEventsPopUpViewFactory;
 import IIndicatorsManager = Indicators.IIndicatorsManager;
 import IReCalSidebarViewController = ReCalSidebar.IReCalSidebarViewController;
 import ISidebarNotificationsManager = Notifications.ISidebarNotificationsManager;
@@ -137,6 +140,25 @@ class DashboardViewController extends ViewController
             <IndicatorsContainerView> IndicatorsContainerView.fromJQuery(this.view.findJQuery('#indicators-container'));
         }
         return this._indicatorsManager;
+    }
+
+    /**
+     * Events Pop Up View Factory
+     * @type {IEventsPopUpViewFactory}
+     * @private
+     */
+    private _eventsPopUpViewFactory: IEventsPopUpViewFactory = null;
+    private get eventsPopUpViewFactory(): IEventsPopUpViewFactory
+    {
+        if (!this._eventsPopUpViewFactory)
+        {
+            this._eventsPopUpViewFactory = new EventsPopUpViewFactory({
+                clickToEditViewFactory: this.clickToEditViewFactory,
+                viewTemplateRetriever: this.viewTemplateRetriever,
+                user: this.user,
+            })
+        }
+        return this._eventsPopUpViewFactory;
     }
 
     /**
@@ -282,10 +304,9 @@ class DashboardViewController extends ViewController
         // initialize sidebar view controller
         var sidebarVC: IReCalSidebarViewController = new ReCalSidebarViewController(sidebarView,
             {
-                viewTemplateRetriever: this.viewTemplateRetriever,
                 globalBrowserEventsManager: this.globalBrowserEventsManager,
+                eventsPopUpViewFactory: this.eventsPopUpViewFactory,
                 eventsOperationsFacade: this.eventsOperationsFacade,
-                clickToEditViewFactory: this.clickToEditViewFactory,
             });
         this.addChildViewController(sidebarVC);
         this.sidebarViewController = sidebarVC;

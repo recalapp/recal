@@ -1,7 +1,9 @@
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
+import ClickToEditSelectView = require('../../../library/ClickToEdit/ClickToEditSelectView');
 import ComparableResult = require('../../../library/Core/ComparableResult');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
+import Courses = require('../Courses/Courses');
 import Events = require('../Events/Events');
 import EventsModel = require('../Events/EventsModel');
 import EventsPopUp = require('./EventsPopUp');
@@ -13,6 +15,7 @@ import EditableEventsPopUpViewDependencies = EventsPopUp.EditableEventsPopUpView
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IClickToEditView = ClickToEdit.IClickToEditView;
 import IEventsModel = Events.IEventsModel;
+import ISectionsModel = Courses.ISectionsModel;
 import IView = CoreUI.IView;
 
 class EditableEventsPopUpView extends EventsPopUpView
@@ -22,6 +25,21 @@ class EditableEventsPopUpView extends EventsPopUpView
     private _modifiedEventsModel: IEventsModel = null;
     private get modifiedEventsModel(): IEventsModel { return this._modifiedEventsModel; }
     private set modifiedEventsModel(value: IEventsModel) { this._modifiedEventsModel = value; }
+
+    private _possibleSections: ISectionsModel[] = [];
+    public get possibleSections(): ISectionsModel[] { return this._possibleSections; }
+    public set possibleSections(value: ISectionsModel[])
+    {
+        this._possibleSections = value;
+        var sectionView = <ClickToEditSelectView> ClickToEditSelectView.fromJQuery(this.sectionJQuery);
+        sectionView.selectOptions = this._possibleSections.map((sectionsModel: ISectionsModel, index: number)=>{
+            return {
+                value: sectionsModel.sectionId,
+                displayText: sectionsModel.coursesModel.primaryListing + ': ' + sectionsModel.title
+            };
+        });
+        // TODO add listener for when section changes
+    }
 
     private _isModified: boolean = null;
     private get isModified(): boolean { return this._isModified; }
@@ -54,9 +72,9 @@ class EditableEventsPopUpView extends EventsPopUpView
         }
     }
 
-    constructor(dependencies: EditableEventsPopUpViewDependencies)
+    constructor($element: JQuery, cssClass: string, dependencies: EditableEventsPopUpViewDependencies)
     {
-        super(dependencies);
+        super($element, cssClass);
         this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
         this.initialize();
     }
@@ -82,6 +100,8 @@ class EditableEventsPopUpView extends EventsPopUpView
                     var $element = $(element);
                     var clickToEditView = <IClickToEditView> this.clickToEditViewFactory.createFromJQuery($element);
                 });
+
+
 
         // add event handler for click to edit
         this.attachEventHandler(BrowserEvents.clickToEditComplete, 

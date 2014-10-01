@@ -50,19 +50,15 @@ class CoursesModel implements ICoursesModel
         this.courseId = copy.courseId;
         this.title = copy.title;
         this.description = copy.description;
-        var courseListings = copy.courseListings;
-        for (var i = 0; i < courseListings.length; ++i)
-        {
-            this._courseListings.add(courseListings[i]);
-        }
+        copy.courseListings.map((courseListing: string)=>{
+            this._courseListings.add(courseListing);
+        });
         this.primaryListing = copy.primaryListing;
-        var sectionsModels = copy.sectionsModels;
-        for (var i = 0; i < sectionsModels.length; ++i)
-        {
-            var newModel = new SectionsModel(sectionsModels[i]);
+        copy.sectionsModels.map((sectionsModel: ISectionsModel)=>{
+            var newModel = new SectionsModel(sectionsModel);
             newModel.coursesModel = this;
             this._sectionsModels.add(newModel);
-        }
+        });
     }
 }
 

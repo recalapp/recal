@@ -10,8 +10,10 @@
 import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Events = require('../../common/Events/Events');
+import EventsPopUp = require('../../common/EventsPopUp/EventsPopUp');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import PopUp = require('../../../library/PopUp/PopUp');
+import UserProfiles = require('../../common/UserProfiles/UserProfiles');
 
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
@@ -21,10 +23,11 @@ import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
 export interface ReCalSidebarViewControllerDependencies
 {
-    clickToEditViewFactory: IClickToEditViewFactory;
+    //clickToEditViewFactory: IClickToEditViewFactory;
     eventsOperationsFacade: IEventsOperationsFacade;
+    eventsPopUpViewFactory: EventsPopUp.IEventsPopUpViewFactory;
     globalBrowserEventsManager: GlobalBrowserEventsManager;
-    viewTemplateRetriever: IViewTemplateRetriever;
+    //viewTemplateRetriever: IViewTemplateRetriever;
 }
 
 export interface IReCalSidebarViewController extends IViewController

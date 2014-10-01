@@ -1,6 +1,7 @@
 define(["require", "exports", '../../../library/Core/InvalidArgumentException', './SectionsModel', '../../../library/DataStructures/Set'], function(require, exports, InvalidArgumentException, SectionsModel, Set) {
     var CoursesModel = (function () {
         function CoursesModel(copy) {
+            var _this = this;
             this._courseId = null;
             this._title = null;
             this._description = null;
@@ -13,17 +14,15 @@ define(["require", "exports", '../../../library/Core/InvalidArgumentException', 
             this.courseId = copy.courseId;
             this.title = copy.title;
             this.description = copy.description;
-            var courseListings = copy.courseListings;
-            for (var i = 0; i < courseListings.length; ++i) {
-                this._courseListings.add(courseListings[i]);
-            }
+            copy.courseListings.map(function (courseListing) {
+                _this._courseListings.add(courseListing);
+            });
             this.primaryListing = copy.primaryListing;
-            var sectionsModels = copy.sectionsModels;
-            for (var i = 0; i < sectionsModels.length; ++i) {
-                var newModel = new SectionsModel(sectionsModels[i]);
-                newModel.coursesModel = this;
-                this._sectionsModels.add(newModel);
-            }
+            copy.sectionsModels.map(function (sectionsModel) {
+                var newModel = new SectionsModel(sectionsModel);
+                newModel.coursesModel = _this;
+                _this._sectionsModels.add(newModel);
+            });
         }
         Object.defineProperty(CoursesModel.prototype, "courseId", {
             get: function () {

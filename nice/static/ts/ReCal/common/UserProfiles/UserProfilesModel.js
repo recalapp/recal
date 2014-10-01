@@ -49,6 +49,16 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
             enumerable: true,
             configurable: true
         });
+
+        Object.defineProperty(UserProfilesModel.prototype, "enrolledSectionsModels", {
+            get: function () {
+                return this.enrolledCoursesModels.reduce(function (sectionsModels, coursesModel, index) {
+                    return sectionsModels.concat(coursesModel.sectionsModels);
+                }, []);
+            },
+            enumerable: true,
+            configurable: true
+        });
         return UserProfilesModel;
     })();
 

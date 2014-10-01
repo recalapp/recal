@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', '../../library/ClickToEdit/ClickToEditViewFactory', './DashboardCalendar/DashboardCalendarViewController', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../../library/Indicators/IndicatorsContainerView', '../../library/Indicators/IndicatorsManager', '../../library/Indicators/IndicatorsType', '../common/ReCalCommonBrowserEvents', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Notifications/SidebarNotificationsManager', '../../library/Table/TableView', '../common/UserProfiles/UserProfilesServerCommunicator', '../../library/CoreUI/View', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, ClickToEditViewFactory, DashboardCalendarViewController, EventsOperationsFacade, GlobalBrowserEventsManager, IndicatorsContainerView, IndicatorsManager, IndicatorsType, ReCalCommonBrowserEvents, ReCalSidebarViewController, SidebarView, SidebarNotificationsManager, TableView, UserProfilesServerCommunicator, View, ViewController, ViewTemplateRetriever) {
+define(["require", "exports", './Agenda/AgendaTableViewController', '../../library/Calendar/CalendarView', '../common/CanvasPopUpContainer/CanvasPopUpContainerViewController', '../../library/ClickToEdit/ClickToEditViewFactory', './DashboardCalendar/DashboardCalendarViewController', '../common/EventsPopUp/EventsPopUpViewFactory', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../../library/Indicators/IndicatorsContainerView', '../../library/Indicators/IndicatorsManager', '../../library/Indicators/IndicatorsType', '../common/ReCalCommonBrowserEvents', '../common/ReCalSidebar/ReCalSidebarViewController', '../../library/Sidebar/SidebarView', '../../library/Notifications/SidebarNotificationsManager', '../../library/Table/TableView', '../common/UserProfiles/UserProfilesServerCommunicator', '../../library/CoreUI/View', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, AgendaTableViewController, CalendarView, CanvasPopUpContainerViewController, ClickToEditViewFactory, DashboardCalendarViewController, EventsPopUpViewFactory, EventsOperationsFacade, GlobalBrowserEventsManager, IndicatorsContainerView, IndicatorsManager, IndicatorsType, ReCalCommonBrowserEvents, ReCalSidebarViewController, SidebarView, SidebarNotificationsManager, TableView, UserProfilesServerCommunicator, View, ViewController, ViewTemplateRetriever) {
     var DashboardViewController = (function (_super) {
         __extends(DashboardViewController, _super);
         function DashboardViewController(view, dependencies) {
@@ -40,6 +40,12 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
             * @private
             */
             this._indicatorsManager = null;
+            /**
+            * Events Pop Up View Factory
+            * @type {IEventsPopUpViewFactory}
+            * @private
+            */
+            this._eventsPopUpViewFactory = null;
             /**
             * Calendar view controller
             */
@@ -130,6 +136,21 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
                     this._indicatorsManager.indicatorsContainerView = IndicatorsContainerView.fromJQuery(this.view.findJQuery('#indicators-container'));
                 }
                 return this._indicatorsManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(DashboardViewController.prototype, "eventsPopUpViewFactory", {
+            get: function () {
+                if (!this._eventsPopUpViewFactory) {
+                    this._eventsPopUpViewFactory = new EventsPopUpViewFactory({
+                        clickToEditViewFactory: this.clickToEditViewFactory,
+                        viewTemplateRetriever: this.viewTemplateRetriever,
+                        user: this.user
+                    });
+                }
+                return this._eventsPopUpViewFactory;
             },
             enumerable: true,
             configurable: true
@@ -267,10 +288,9 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
 
             // initialize sidebar view controller
             var sidebarVC = new ReCalSidebarViewController(sidebarView, {
-                viewTemplateRetriever: this.viewTemplateRetriever,
                 globalBrowserEventsManager: this.globalBrowserEventsManager,
-                eventsOperationsFacade: this.eventsOperationsFacade,
-                clickToEditViewFactory: this.clickToEditViewFactory
+                eventsPopUpViewFactory: this.eventsPopUpViewFactory,
+                eventsOperationsFacade: this.eventsOperationsFacade
             });
             this.addChildViewController(sidebarVC);
             this.sidebarViewController = sidebarVC;
