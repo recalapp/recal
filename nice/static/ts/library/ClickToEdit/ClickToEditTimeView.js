@@ -5,12 +5,24 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', '../Core/BrowserEvents', './ClickToEditBaseView', './ClickToEditType', '../CoreUI/FocusableView'], function(require, exports, $, BrowserEvents, ClickToEditBaseView, ClickToEditType, FocusableView) {
+define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditType', '../CustomInputs/TimeInputView'], function(require, exports, $, ClickToEditBaseView, ClickToEditType, TimeInputView) {
     var ClickToEditTimeView = (function (_super) {
         __extends(ClickToEditTimeView, _super);
         function ClickToEditTimeView() {
             _super.apply(this, arguments);
+            this._displayFormat = "H:mm A";
         }
+        Object.defineProperty(ClickToEditTimeView.prototype, "displayFormat", {
+            get: function () {
+                return this._displayFormat;
+            },
+            set: function (value) {
+                this._displayFormat = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(ClickToEditTimeView, "cssClass", {
             /**
             * The unique css class for this class.
@@ -36,12 +48,8 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', './ClickToEditB
         ClickToEditTimeView.prototype.element = function ($form, settings) {
             var $input = $('<input>').addClass('form-control');
             $input.height(settings.height);
-            var inputView = FocusableView.fromJQuery($input);
-            inputView.attachEventHandler(BrowserEvents.keyPress, function (ev) {
-                ev.preventDefault();
-                // TODO custom logic
-            });
             $form.append($input);
+            var inputView = TimeInputView.fromJQuery($input);
             return $input;
         };
 
@@ -49,6 +57,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', './ClickToEditB
         * Set the value of the input to match the value of the contentString.
         */
         ClickToEditTimeView.prototype.content = function ($form, contentString, settings) {
+            // automatic in the time input view constructor
         };
 
         /**

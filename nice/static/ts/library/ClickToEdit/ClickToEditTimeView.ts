@@ -5,11 +5,15 @@ import $ = require('jquery');
 import BrowserEvents = require('../Core/BrowserEvents');
 import ClickToEditBaseView = require('./ClickToEditBaseView');
 import ClickToEditType = require('./ClickToEditType');
-import FocusableView = require('../CoreUI/FocusableView');
+import DateTime = require('../DateTime/DateTime');
+import Time = require('../DateTime/Time');
+import TimeInputView = require('../CustomInputs/TimeInputView');
 
 class ClickToEditTimeView extends ClickToEditBaseView
 {
-
+    private _displayFormat: string = "H:mm A";
+    public get displayFormat(): string { return this._displayFormat; }
+    public set displayFormat(value: string) { this._displayFormat = value; }
     /**
      * The unique css class for this class.
      */
@@ -30,12 +34,8 @@ class ClickToEditTimeView extends ClickToEditBaseView
     {
         var $input = $('<input>').addClass('form-control');
         $input.height(settings.height);
-        var inputView = <FocusableView> FocusableView.fromJQuery($input);
-        inputView.attachEventHandler(BrowserEvents.keyPress, (ev: JQueryEventObject)=>{
-            ev.preventDefault();
-            // TODO custom logic
-        });
         $form.append($input);
+        var inputView = <TimeInputView> TimeInputView.fromJQuery($input);
         return $input;
     }
 
@@ -44,6 +44,7 @@ class ClickToEditTimeView extends ClickToEditBaseView
      */
     public content($form: JQuery, contentString: string, settings: any): void
     {
+        // automatic in the time input view constructor
     }
 
     /**
