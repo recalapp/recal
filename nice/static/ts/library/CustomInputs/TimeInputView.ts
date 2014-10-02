@@ -1,5 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
+import AssertionException = require('../Core/AssertionException');
 import BrowserEvents = require('../Core/BrowserEvents');
 import CustomInputs = require('./CustomInputs');
 import DateTime = require('../DateTime/DateTime');
@@ -15,6 +16,7 @@ enum TimeSelectionComponent
 }
 enum KeyCode
 {
+    left=37, up=38, right=39, down=40,
     enter=13,
     tab = 9,
     zero=48,one=49,two=50,three=51,four=52,five=53,six=54,seven=55,eight=56,nine=57,
@@ -64,6 +66,7 @@ class TimeInputView extends FocusableView implements ITimeInputView
         {
             this._hoursCharactersBuffer = value;
         }
+        this.refreshWithCharBuffer();
     }
 
     private _minutesCharactersBuffer: string = null;
@@ -78,11 +81,16 @@ class TimeInputView extends FocusableView implements ITimeInputView
         {
             this._minutesCharactersBuffer = value;
         }
+        this.refreshWithCharBuffer();
     }
 
-    private _periodsString: string = null;
-    private get periodsString(): string { return this._periodsString; }
-    private set periodsString(value: string) { this._periodsString = value; }
+    private _periodsCharacterBuffer: string = null;
+    private get periodsCharacterBuffer(): string { return this._periodsCharacterBuffer; }
+    private set periodsCharacterBuffer(value: string)
+    {
+        this._periodsCharacterBuffer = value;
+        this.refreshWithCharBuffer();
+    }
 
     constructor($element: JQuery, cssClass: string)
     {
@@ -127,6 +135,10 @@ class TimeInputView extends FocusableView implements ITimeInputView
                 case KeyCode.nineNumPad:
                     this.handleNumericCharacters(ev);
                     break;
+                case KeyCode.up:
+                case KeyCode.down:
+                    this.handleVerticalArrowCharacter(ev, keyCode);
+                    break;
                 case KeyCode.a:
                 case KeyCode.p:
                     this.handlePeriodCharacter(ev);
@@ -144,6 +156,7 @@ class TimeInputView extends FocusableView implements ITimeInputView
     private handleEnterCharacter(ev: JQueryEventObject)
     {
         // don't prevent default
+        this.blur();
     }
 
     private handleNumericCharacters(ev: JQueryEventObject)
@@ -157,26 +170,82 @@ class TimeInputView extends FocusableView implements ITimeInputView
         var inputChar = String.fromCharCode(ev.keyCode || ev.which);
         if (this.selectedComponent === TimeSelectionComponent.hours)
         {
-            this.hoursCharactersBuffer = this.hoursCharactersBuffer.charAt(1) + inputChar;
-            if (!this.validateHoursBuffer())
+            if (this.numericKeyStrokesCount === 1)
             {
-                --this.numericKeyStrokesCount;
+                // first time pressing the keys. replace all the characters in buffer - this is more natural
+                this.hoursCharactersBuffer = inputChar;
+            }
+            else
+            {
+                this.hoursCharactersBuffer =
+                this.hoursCharactersBuffer.charAt(1) + inputChar;
+                // if the key is not valid, we must make sure not to move to the next field.
+                if (!this.validateHoursBuffer())
+                {
+                    --this.numericKeyStrokesCount;
+                }
             }
         }
         else
         {
-            this.minutesCharactersBuffer = this.minutesCharactersBuffer.charAt(1) + inputChar;
-            if (!this.validateMinutesBuffer())
+            if (this.numericKeyStrokesCount === 1)
             {
-                --this.numericKeyStrokesCount;
+                this.minutesCharactersBuffer = inputChar;
+            }
+            else
+            {
+                this.minutesCharactersBuffer =
+                this.minutesCharactersBuffer.charAt(1) + inputChar;
+                if (!this.validateMinutesBuffer())
+                {
+                    --this.numericKeyStrokesCount;
+                }
             }
         }
-        this.refreshWithCharBuffer();
-        this.refreshSelection();
+        // move to the next field automatically if the user has entered two key strokes
         if (this.numericKeyStrokesCount >= 2)
         {
             this.numericKeyStrokesCount = 0;
             ++this.selectedComponent;
+        }
+    }
+
+    private handleVerticalArrowCharacter(ev: JQueryEventObject, keyCode: KeyCode)
+    {
+        ev.preventDefault();
+        this.numericKeyStrokesCount = 0;
+        switch (this.selectedComponent)
+        {
+            case TimeSelectionComponent.hours:
+                var curVal = parseInt(this.hoursCharactersBuffer);
+                keyCode === KeyCode.up ? ++curVal : --curVal;
+                while (curVal < 0)
+                {
+                    curVal += 12;
+                }
+                curVal %= 12;
+                if (curVal === 0)
+                {
+                    curVal = 12;
+                }
+                this.hoursCharactersBuffer = curVal.toString();
+                break;
+            case TimeSelectionComponent.minutes:
+                var curVal = parseInt(this.minutesCharactersBuffer);
+                keyCode === KeyCode.up ? ++curVal : --curVal;
+                while (curVal < 0)
+                {
+                    curVal += 60;
+                }
+                curVal %= 60;
+                this.minutesCharactersBuffer = curVal.toString();
+                break;
+            case TimeSelectionComponent.periods:
+                this.periodsCharacterBuffer = this.periodsCharacterBuffer === 'AM' ? 'PM':'AM';
+                break;
+            default:
+                throw new AssertionException("should never get here");
+                break;
         }
     }
 
@@ -190,14 +259,12 @@ class TimeInputView extends FocusableView implements ITimeInputView
         var inputChar = String.fromCharCode(ev.keyCode || ev.which).toLowerCase();
         if (inputChar === 'a')
         {
-            this.periodsString = "AM";
+            this.periodsCharacterBuffer = "AM";
         }
         else if (inputChar === 'p')
         {
-            this.periodsString = "PM";
+            this.periodsCharacterBuffer = "PM";
         }
-        this.refreshWithCharBuffer();
-        this.refreshSelection();
     }
 
     private handleTabCharacter(ev: JQueryEventObject)
@@ -218,7 +285,6 @@ class TimeInputView extends FocusableView implements ITimeInputView
                 }
                 break;
         }
-        this.refreshWithCharBuffer();
         if (ev.shiftKey)
         {
             if (this.selectedComponent != TimeSelectionComponent.hours)
@@ -251,8 +317,8 @@ class TimeInputView extends FocusableView implements ITimeInputView
     {
         this.hoursCharactersBuffer = (this.value.hours % 12).toString();
         this.minutesCharactersBuffer = this.value.minutes.toString();
-        this.periodsString = parseInt((this.value.hours / 12).toString()) === 1 ? 'PM' : 'AM';
-        if (this.periodsString === 'PM' && this.hoursCharactersBuffer === '00')
+        this.periodsCharacterBuffer = parseInt((this.value.hours / 12).toString()) === 1 ? 'PM' : 'AM';
+        if (this.periodsCharacterBuffer === 'PM' && this.hoursCharactersBuffer === '00')
         {
             this.hoursCharactersBuffer = '12'; // handle 12PM case, as 12 % 12 = 0
         }
@@ -264,9 +330,13 @@ class TimeInputView extends FocusableView implements ITimeInputView
     {
         var hours = parseInt(this.hoursCharactersBuffer);
         var minutes = parseInt(this.minutesCharactersBuffer);
-        if (this.periodsString === 'PM' && hours != 12)
+        if (this.periodsCharacterBuffer === 'PM' && hours != 12)
         {
-            hours += 12; // we prevent bubbling in momentjs via DateTime module.
+            hours += 12;
+            if (hours === 24)
+            {
+                hours = 0;
+            }
         }
         this.value.hours = hours;
         this.value.minutes = minutes;
@@ -280,7 +350,8 @@ class TimeInputView extends FocusableView implements ITimeInputView
     }
     private refreshWithCharBuffer(): void
     {
-        this._$el.val(this.hoursCharactersBuffer + ":" + this.minutesCharactersBuffer + " " + this.periodsString);
+        this._$el.val(this.hoursCharactersBuffer + ":" + this.minutesCharactersBuffer + " " + this.periodsCharacterBuffer);
+        this.refreshSelection();
     }
 
     public didFocus(): void

@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '../CoreUI/FocusableView', '../Core/InvalidArgumentException'], function(require, exports, BrowserEvents, DateTime, FocusableView, InvalidArgumentException) {
+define(["require", "exports", '../Core/AssertionException', '../Core/BrowserEvents', '../DateTime/DateTime', '../CoreUI/FocusableView', '../Core/InvalidArgumentException'], function(require, exports, AssertionException, BrowserEvents, DateTime, FocusableView, InvalidArgumentException) {
     var TimeSelectionComponent;
     (function (TimeSelectionComponent) {
         TimeSelectionComponent[TimeSelectionComponent["hours"] = 0] = "hours";
@@ -14,6 +14,10 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
     })(TimeSelectionComponent || (TimeSelectionComponent = {}));
     var KeyCode;
     (function (KeyCode) {
+        KeyCode[KeyCode["left"] = 37] = "left";
+        KeyCode[KeyCode["up"] = 38] = "up";
+        KeyCode[KeyCode["right"] = 39] = "right";
+        KeyCode[KeyCode["down"] = 40] = "down";
         KeyCode[KeyCode["enter"] = 13] = "enter";
         KeyCode[KeyCode["tab"] = 9] = "tab";
         KeyCode[KeyCode["zero"] = 48] = "zero";
@@ -50,7 +54,7 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
             this._numericKeyStrokesCount = 0;
             this._hoursCharactersBuffer = null;
             this._minutesCharactersBuffer = null;
-            this._periodsString = null;
+            this._periodsCharacterBuffer = null;
             if (!$element.is('input')) {
                 throw new InvalidArgumentException("TimeInputView can only be constructed from a HTML input element.");
             }
@@ -85,6 +89,10 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
                     case 57 /* nine */:
                     case 105 /* nineNumPad */:
                         _this.handleNumericCharacters(ev);
+                        break;
+                    case 38 /* up */:
+                    case 40 /* down */:
+                        _this.handleVerticalArrowCharacter(ev, keyCode);
                         break;
                     case 65 /* a */:
                     case 80 /* p */:
@@ -154,6 +162,7 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
                 } else {
                     this._hoursCharactersBuffer = value;
                 }
+                this.refreshWithCharBuffer();
             },
             enumerable: true,
             configurable: true
@@ -169,17 +178,19 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
                 } else {
                     this._minutesCharactersBuffer = value;
                 }
+                this.refreshWithCharBuffer();
             },
             enumerable: true,
             configurable: true
         });
 
-        Object.defineProperty(TimeInputView.prototype, "periodsString", {
+        Object.defineProperty(TimeInputView.prototype, "periodsCharacterBuffer", {
             get: function () {
-                return this._periodsString;
+                return this._periodsCharacterBuffer;
             },
             set: function (value) {
-                this._periodsString = value;
+                this._periodsCharacterBuffer = value;
+                this.refreshWithCharBuffer();
             },
             enumerable: true,
             configurable: true
@@ -187,6 +198,7 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
 
         TimeInputView.prototype.handleEnterCharacter = function (ev) {
             // don't prevent default
+            this.blur();
         };
 
         TimeInputView.prototype.handleNumericCharacters = function (ev) {
@@ -197,21 +209,66 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
             ++this.numericKeyStrokesCount;
             var inputChar = String.fromCharCode(ev.keyCode || ev.which);
             if (this.selectedComponent === 0 /* hours */) {
-                this.hoursCharactersBuffer = this.hoursCharactersBuffer.charAt(1) + inputChar;
-                if (!this.validateHoursBuffer()) {
-                    --this.numericKeyStrokesCount;
+                if (this.numericKeyStrokesCount === 1) {
+                    // first time pressing the keys. replace all the characters in buffer - this is more natural
+                    this.hoursCharactersBuffer = inputChar;
+                } else {
+                    this.hoursCharactersBuffer = this.hoursCharactersBuffer.charAt(1) + inputChar;
+
+                    // if the key is not valid, we must make sure not to move to the next field.
+                    if (!this.validateHoursBuffer()) {
+                        --this.numericKeyStrokesCount;
+                    }
                 }
             } else {
-                this.minutesCharactersBuffer = this.minutesCharactersBuffer.charAt(1) + inputChar;
-                if (!this.validateMinutesBuffer()) {
-                    --this.numericKeyStrokesCount;
+                if (this.numericKeyStrokesCount === 1) {
+                    this.minutesCharactersBuffer = inputChar;
+                } else {
+                    this.minutesCharactersBuffer = this.minutesCharactersBuffer.charAt(1) + inputChar;
+                    if (!this.validateMinutesBuffer()) {
+                        --this.numericKeyStrokesCount;
+                    }
                 }
             }
-            this.refreshWithCharBuffer();
-            this.refreshSelection();
+
+            // move to the next field automatically if the user has entered two key strokes
             if (this.numericKeyStrokesCount >= 2) {
                 this.numericKeyStrokesCount = 0;
                 ++this.selectedComponent;
+            }
+        };
+
+        TimeInputView.prototype.handleVerticalArrowCharacter = function (ev, keyCode) {
+            ev.preventDefault();
+            this.numericKeyStrokesCount = 0;
+            switch (this.selectedComponent) {
+                case 0 /* hours */:
+                    var curVal = parseInt(this.hoursCharactersBuffer);
+                    keyCode === 38 /* up */ ? ++curVal : --curVal;
+                    while (curVal < 0) {
+                        curVal += 12;
+                    }
+                    curVal %= 12;
+                    if (curVal === 0) {
+                        curVal = 12;
+                    }
+                    this.hoursCharactersBuffer = curVal.toString();
+                    break;
+                case 1 /* minutes */:
+                    var curVal = parseInt(this.minutesCharactersBuffer);
+                    keyCode === 38 /* up */ ? ++curVal : --curVal;
+                    while (curVal < 0) {
+                        curVal += 60;
+                    }
+                    curVal %= 60;
+                    this.minutesCharactersBuffer = curVal.toString();
+                    break;
+                case 2 /* periods */:
+                    this.periodsCharacterBuffer = this.periodsCharacterBuffer === 'AM' ? 'PM' : 'AM';
+                    break;
+                default:
+                    throw new AssertionException("should never get here");
+                    break;
             }
         };
 
@@ -222,12 +279,10 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
             }
             var inputChar = String.fromCharCode(ev.keyCode || ev.which).toLowerCase();
             if (inputChar === 'a') {
-                this.periodsString = "AM";
+                this.periodsCharacterBuffer = "AM";
             } else if (inputChar === 'p') {
-                this.periodsString = "PM";
+                this.periodsCharacterBuffer = "PM";
             }
-            this.refreshWithCharBuffer();
-            this.refreshSelection();
         };
 
         TimeInputView.prototype.handleTabCharacter = function (ev) {
@@ -244,7 +299,6 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
                     }
                     break;
             }
-            this.refreshWithCharBuffer();
             if (ev.shiftKey) {
                 if (this.selectedComponent != 0 /* hours */) {
                     --this.selectedComponent;
@@ -268,8 +322,8 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
         TimeInputView.prototype.refresh = function () {
             this.hoursCharactersBuffer = (this.value.hours % 12).toString();
             this.minutesCharactersBuffer = this.value.minutes.toString();
-            this.periodsString = parseInt((this.value.hours / 12).toString()) === 1 ? 'PM' : 'AM';
-            if (this.periodsString === 'PM' && this.hoursCharactersBuffer === '00') {
+            this.periodsCharacterBuffer = parseInt((this.value.hours / 12).toString()) === 1 ? 'PM' : 'AM';
+            if (this.periodsCharacterBuffer === 'PM' && this.hoursCharactersBuffer === '00') {
                 this.hoursCharactersBuffer = '12'; // handle 12PM case, as 12 % 12 = 0
             }
             this._$el.data("logical_value", this.value);
@@ -279,8 +333,11 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
         TimeInputView.prototype.save = function () {
             var hours = parseInt(this.hoursCharactersBuffer);
             var minutes = parseInt(this.minutesCharactersBuffer);
-            if (this.periodsString === 'PM' && hours != 12) {
-                hours += 12; // we prevent bubbling in momentjs via DateTime module.
+            if (this.periodsCharacterBuffer === 'PM' && hours != 12) {
+                hours += 12;
+                if (hours === 24) {
+                    hours = 0;
+                }
             }
             this.value.hours = hours;
             this.value.minutes = minutes;
@@ -291,7 +348,8 @@ define(["require", "exports", '../Core/BrowserEvents', '../DateTime/DateTime', '
             this.inputElement.setSelectionRange(this.selectedComponent * 3, (this.selectedComponent + 1) * 3 - 1);
         };
         TimeInputView.prototype.refreshWithCharBuffer = function () {
-            this._$el.val(this.hoursCharactersBuffer + ":" + this.minutesCharactersBuffer + " " + this.periodsString);
+            this._$el.val(this.hoursCharactersBuffer + ":" + this.minutesCharactersBuffer + " " + this.periodsCharacterBuffer);
+            this.refreshSelection();
         };
 
         TimeInputView.prototype.didFocus = function () {
