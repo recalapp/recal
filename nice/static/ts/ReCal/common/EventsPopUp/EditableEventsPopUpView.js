@@ -149,7 +149,9 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                     _this.processModifiedEventType();
                 } else if (view.is(_this.dateJQuery)) {
                 } else if (view.is(_this.startTimeJQuery)) {
+                    _this.processModifiedStartTime();
                 } else if (view.is(_this.endTimeJQuery)) {
+                    _this.processModifiedEndTime();
                 }
                 _this.refresh();
             });
@@ -181,6 +183,22 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         EditableEventsPopUpView.prototype.processModifiedEventType = function () {
             this.modifiedEventsModel.eventTypeCode = this.eventTypeJQuery.data('logical_value');
             if (this.modifiedEventsModel.eventTypeCode !== this.eventsModel.eventTypeCode) {
+                this.isModified = true;
+            }
+        };
+        EditableEventsPopUpView.prototype.processModifiedStartTime = function () {
+            var value = this.startTimeJQuery.data('logical_value');
+            this.modifiedEventsModel.startDate.hours = value.hours;
+            this.modifiedEventsModel.startDate.minutes = value.minutes;
+            if (this.modifiedEventsModel.startDate.compareTo(this.eventsModel.startDate) !== 0 /* equal */) {
+                this.isModified = true;
+            }
+        };
+        EditableEventsPopUpView.prototype.processModifiedEndTime = function () {
+            var value = this.endTimeJQuery.data('logical_value');
+            this.modifiedEventsModel.endDate.hours = value.hours;
+            this.modifiedEventsModel.endDate.minutes = value.minutes;
+            if (this.modifiedEventsModel.endDate.compareTo(this.eventsModel.endDate) !== 0 /* equal */) {
                 this.isModified = true;
             }
         };

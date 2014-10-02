@@ -176,5 +176,13 @@ class FocusableView extends View implements IFocusableView
     {
         this._$el.focus();
     }
+
+    /**
+      * Brings the view into blur
+      */
+    public blur(): void
+    {
+        this._$el.blur();
+    }
 }
 export = FocusableView;

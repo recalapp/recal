@@ -9,9 +9,4 @@ export interface ITimeInputView extends IFocusableView
      * The value of the input view
      */
     value: Time;
-
-    /**
-     * The format of the display text for this time. See DateTime documentation.
-     */
-    timeFormat: string;
 }

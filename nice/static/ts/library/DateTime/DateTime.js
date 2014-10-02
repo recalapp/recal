@@ -64,6 +64,7 @@ define(["require", "exports", 'moment', '../Core/ComparableResult', './Date', '.
                 return this._momentObject.hours();
             },
             set: function (value) {
+                value %= 24; // prevent bubbling effect. confusing for 24 hours
                 this._momentObject.hours(value);
             },
             enumerable: true,

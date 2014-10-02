@@ -50,7 +50,6 @@ class ClickToEditTimeView extends ClickToEditBaseView
     public content($form: JQuery, contentString: string, settings: any): void
     {
         this.timeInputView.value = this._$el.data("logical_value") || this.timeInputView.value;
-        this.timeInputView.timeFormat = this.displayFormat;
     }
 
     /**
@@ -59,8 +58,10 @@ class ClickToEditTimeView extends ClickToEditBaseView
      */
     public processFormValue(value: string, settings: any): string
     {
+        var value = this.timeInputView.value;
+        this._$el.data('logical_value', value);
         this.timeInputView = null;
-        return this.encodeDecodeProxy.htmlEncode(value);
+        return this.encodeDecodeProxy.htmlEncode(value.format(this.displayFormat));
     }
 }
 

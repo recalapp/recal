@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/DataStructures/Dictionary', '../../../library/Core/EncodeDecodeProxy', '../../../library/CoreUI/FocusableView', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, Dictionary, EncodeDecodeProxy, FocusableView, PopUpView, ReCalCommonBrowserEvents) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/DateTime/DateTime', '../../../library/DataStructures/Dictionary', '../../../library/Core/EncodeDecodeProxy', '../../../library/CoreUI/FocusableView', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, DateTime, Dictionary, EncodeDecodeProxy, FocusableView, PopUpView, ReCalCommonBrowserEvents) {
     var EventsPopUpView = (function (_super) {
         __extends(EventsPopUpView, _super);
         function EventsPopUpView($element, cssClass) {
@@ -250,12 +250,13 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._startDate && this._startDate.equals(value)) {
                     return;
                 }
-                this._startDate = value;
+                this._startDate = new DateTime(value);
                 if (this._startDate === null || this._startDate === undefined) {
                     return;
                 }
                 this.dateJQuery.text(this._startDate.format('MMMM D, YYYY'));
                 this.startTimeJQuery.text(this._startDate.format('h:mm A'));
+                this.startTimeJQuery.data('logical_value', this._startDate);
             },
             enumerable: true,
             configurable: true
@@ -291,11 +292,12 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 if (this._endDate && this._endDate.equals(value)) {
                     return;
                 }
-                this._endDate = value;
+                this._endDate = new DateTime(value);
                 if (this._endDate === null || this._endDate === undefined) {
                     return;
                 }
                 this.endTimeJQuery.text(this._endDate.format('h:mm A'));
+                this.endTimeJQuery.data('logical_value', this._endDate);
             },
             enumerable: true,
             configurable: true

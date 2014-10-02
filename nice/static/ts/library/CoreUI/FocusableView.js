@@ -155,6 +155,13 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
         FocusableView.prototype.focus = function () {
             this._$el.focus();
         };
+
+        /**
+        * Brings the view into blur
+        */
+        FocusableView.prototype.blur = function () {
+            this._$el.blur();
+        };
         return FocusableView;
     })(View);
     

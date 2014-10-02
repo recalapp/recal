@@ -185,13 +185,14 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this._startDate = value;
+        this._startDate = new DateTime(value);
         if (this._startDate === null || this._startDate === undefined)
         {
             return;
         }
         this.dateJQuery.text(this._startDate.format('MMMM D, YYYY'));
         this.startTimeJQuery.text(this._startDate.format('h:mm A'));
+        this.startTimeJQuery.data('logical_value', this._startDate);
     }
     private _dateJQuery: JQuery = null;
     public get dateJQuery(): JQuery 
@@ -220,12 +221,13 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         {
             return;
         }
-        this._endDate = value;
+        this._endDate = new DateTime(value);
         if (this._endDate === null || this._endDate === undefined)
         {
             return;
         }
         this.endTimeJQuery.text(this._endDate.format('h:mm A'));
+        this.endTimeJQuery.data('logical_value', this._endDate);
     }
     private _endTimeJQuery: JQuery = null;
     public get endTimeJQuery(): JQuery 

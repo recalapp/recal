@@ -70,7 +70,6 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         */
         ClickToEditTimeView.prototype.content = function ($form, contentString, settings) {
             this.timeInputView.value = this._$el.data("logical_value") || this.timeInputView.value;
-            this.timeInputView.timeFormat = this.displayFormat;
         };
 
         /**
@@ -78,8 +77,10 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         * such as converting \n to <br>
         */
         ClickToEditTimeView.prototype.processFormValue = function (value, settings) {
+            var value = this.timeInputView.value;
+            this._$el.data('logical_value', value);
             this.timeInputView = null;
-            return this.encodeDecodeProxy.htmlEncode(value);
+            return this.encodeDecodeProxy.htmlEncode(value.format(this.displayFormat));
         };
         return ClickToEditTimeView;
     })(ClickToEditBaseView);

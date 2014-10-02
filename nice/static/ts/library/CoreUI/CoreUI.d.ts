@@ -174,6 +174,11 @@ export interface IFocusableView extends IView
       * Brings the view into focus
       */
     focus(): void;
+
+    /**
+      * Causes the view to lose focus
+      */
+    blur(): void;
 }
 
 export interface IViewController

@@ -11,6 +11,7 @@ import EventsPopUp = require('./EventsPopUp');
 import EventsPopUpView = require('./EventsPopUpView');
 import FocusableView = require('../../../library/CoreUI/FocusableView');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
+import Time = require('../../../library/DateTime/Time');
 
 import EditableEventsPopUpViewDependencies = EventsPopUp.EditableEventsPopUpViewDependencies;
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
@@ -150,9 +151,11 @@ class EditableEventsPopUpView extends EventsPopUpView
                     }
                     else if (view.is(this.startTimeJQuery))
                     {
+                        this.processModifiedStartTime();
                     }
                     else if (view.is(this.endTimeJQuery))
                     {
+                        this.processModifiedEndTime();
                     }
                     this.refresh();
                 });
@@ -193,6 +196,26 @@ class EditableEventsPopUpView extends EventsPopUpView
     {
         this.modifiedEventsModel.eventTypeCode = this.eventTypeJQuery.data('logical_value');
         if (this.modifiedEventsModel.eventTypeCode !== this.eventsModel.eventTypeCode)
+        {
+            this.isModified = true;
+        }
+    }
+    private processModifiedStartTime(): void
+    {
+        var value = <Time> this.startTimeJQuery.data('logical_value');
+        this.modifiedEventsModel.startDate.hours = value.hours;
+        this.modifiedEventsModel.startDate.minutes = value.minutes;
+        if (this.modifiedEventsModel.startDate.compareTo(this.eventsModel.startDate) !== ComparableResult.equal)
+        {
+            this.isModified = true;
+        }
+    }
+    private processModifiedEndTime(): void
+    {
+        var value = <Time> this.endTimeJQuery.data('logical_value');
+        this.modifiedEventsModel.endDate.hours = value.hours;
+        this.modifiedEventsModel.endDate.minutes = value.minutes;
+        if (this.modifiedEventsModel.endDate.compareTo(this.eventsModel.endDate) !== ComparableResult.equal)
         {
             this.isModified = true;
         }

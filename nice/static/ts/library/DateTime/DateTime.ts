@@ -56,6 +56,7 @@ class DateTime implements Comparable, Date, Time
     }
     set hours(value: number)
     {
+        value %= 24; // prevent bubbling effect. confusing for 24 hours
         this._momentObject.hours(value);
     }
     get minutes(): number
