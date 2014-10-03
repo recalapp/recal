@@ -148,6 +148,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 } else if (view.is(_this.eventTypeJQuery)) {
                     _this.processModifiedEventType();
                 } else if (view.is(_this.dateJQuery)) {
+                    _this.processModifiedDate();
                 } else if (view.is(_this.startTimeJQuery)) {
                     _this.processModifiedStartTime();
                 } else if (view.is(_this.endTimeJQuery)) {
@@ -199,6 +200,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this.modifiedEventsModel.endDate.hours = value.hours;
             this.modifiedEventsModel.endDate.minutes = value.minutes;
             if (this.modifiedEventsModel.endDate.compareTo(this.eventsModel.endDate) !== 0 /* equal */) {
+                this.isModified = true;
+            }
+        };
+        EditableEventsPopUpView.prototype.processModifiedDate = function () {
+            var value = this.dateJQuery.data('logical_value');
+            this.modifiedEventsModel.startDate.year = value.year;
+            this.modifiedEventsModel.startDate.month = value.month;
+            this.modifiedEventsModel.startDate.date = value.date;
+            this.modifiedEventsModel.endDate.year = value.year;
+            this.modifiedEventsModel.endDate.month = value.month;
+            this.modifiedEventsModel.endDate.date = value.date;
+            if (this.modifiedEventsModel.startDate.compareTo(this.eventsModel.startDate) !== 0 /* equal */) {
                 this.isModified = true;
             }
         };

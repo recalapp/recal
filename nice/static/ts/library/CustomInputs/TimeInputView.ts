@@ -270,21 +270,7 @@ class TimeInputView extends FocusableView implements ITimeInputView
     private handleTabCharacter(ev: JQueryEventObject)
     {
         this.numericKeyStrokesCount = 0;
-        switch(this.selectedComponent)
-        {
-            case TimeSelectionComponent.hours:
-                if (!this.validateHoursBuffer())
-                {
-                    this.hoursCharactersBuffer = "08";
-                }
-                break;
-            case TimeSelectionComponent.minutes:
-                if (!this.validateMinutesBuffer())
-                {
-                    this.minutesCharactersBuffer = "00";
-                }
-                break;
-        }
+        this.verifyAndFixSelection();
         if (ev.shiftKey)
         {
             if (this.selectedComponent != TimeSelectionComponent.hours)
@@ -363,7 +349,27 @@ class TimeInputView extends FocusableView implements ITimeInputView
     public didBlur(): void
     {
         super.didBlur();
+        this.verifyAndFixSelection();
         this.save();
+    }
+
+    private verifyAndFixSelection(): void
+    {
+        switch(this.selectedComponent)
+        {
+            case TimeSelectionComponent.hours:
+                if (!this.validateHoursBuffer())
+                {
+                    this.hoursCharactersBuffer = "08";
+                }
+                break;
+            case TimeSelectionComponent.minutes:
+                if (!this.validateMinutesBuffer())
+                {
+                    this.minutesCharactersBuffer = "00";
+                }
+                break;
+        }
     }
 }
 

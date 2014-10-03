@@ -9,6 +9,7 @@ define(["require", "exports"], function(require, exports) {
     var Dictionary = (function () {
         function Dictionary(primitiveObject) {
             this._dict = {};
+            // assumes key is a string, as var in returns a string by default
             if (primitiveObject) {
                 for (var key in primitiveObject) {
                     var value = primitiveObject[key];

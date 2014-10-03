@@ -2,6 +2,12 @@ define(["require", "exports", 'jquery'], function(require, exports, $) {
     var EncodeDecodeProxy = (function () {
         function EncodeDecodeProxy() {
         }
+        EncodeDecodeProxy.prototype.titleCaseEncode = function (content) {
+            return string.replace(/\w\S*/g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        };
+
         EncodeDecodeProxy.prototype.htmlEncode = function (content) {
             return $('<div>').text(content).html();
         };

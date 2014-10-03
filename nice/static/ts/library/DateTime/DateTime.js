@@ -1,6 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings-manual/typings.d.ts" />
-define(["require", "exports", 'moment', '../Core/ComparableResult', './Date', '../Core/InvalidActionException', "moment-timezone"], function(require, exports, moment, ComparableResult, Date, InvalidActionException) {
+define(["require", "exports", 'moment', '../Core/ComparableResult', '../Core/InvalidActionException', "moment-timezone"], function(require, exports, moment, ComparableResult, InvalidActionException) {
     var DateTime = (function () {
         function DateTime(arg) {
             this._momentObject = moment();
@@ -29,6 +29,16 @@ define(["require", "exports", 'moment', '../Core/ComparableResult', './Date', '.
             configurable: true
         });
 
+        Object.defineProperty(DateTime.prototype, "year", {
+            get: function () {
+                return this._momentObject.year();
+            },
+            set: function (value) {
+                this._momentObject.year(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(DateTime.prototype, "month", {
             get: function () {
                 return this._momentObject.month();

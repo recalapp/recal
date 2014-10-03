@@ -5,19 +5,19 @@ import $ = require('jquery');
 import BrowserEvents = require('../Core/BrowserEvents');
 import ClickToEditBaseView = require('./ClickToEditBaseView');
 import ClickToEditType = require('./ClickToEditType');
+import Date = require('../DateTime/Date');
 import DateTime = require('../DateTime/DateTime');
-import Time = require('../DateTime/Time');
-import TimeInputView = require('../CustomInputs/TimeInputView');
+import DateInputView = require('../CustomInputs/DateInputView');
 
 class ClickToEditTimeView extends ClickToEditBaseView
 {
-    private _displayFormat: string = "h:mm A";
+    private _displayFormat: string = 'MMMM D, YYYY';
     public get displayFormat(): string { return this._displayFormat; }
     public set displayFormat(value: string) { this._displayFormat = value; }
 
-    private _timeInputView: TimeInputView = null;
-    private get timeInputView(): TimeInputView { return this._timeInputView; }
-    private set timeInputView(value: TimeInputView) { this._timeInputView = value; }
+    private _dateInputView: DateInputView = null;
+    private get dateInputView(): DateInputView { return this._dateInputView; }
+    private set dateInputView(value: DateInputView) { this._dateInputView = value; }
 
     /**
      * The unique css class for this class.
@@ -32,7 +32,7 @@ class ClickToEditTimeView extends ClickToEditBaseView
      */
     public get inputType(): string
     {
-        return ClickToEditType.time;
+        return ClickToEditType.date;
     }
 
     public element($form: JQuery, settings: any): JQuery
@@ -40,7 +40,7 @@ class ClickToEditTimeView extends ClickToEditBaseView
         var $input = $('<input>').addClass('form-control');
         $input.height(settings.height);
         $form.append($input);
-        this.timeInputView = <TimeInputView> TimeInputView.fromJQuery($input);
+        this.dateInputView = <DateInputView> DateInputView.fromJQuery($input);
         return $input;
     }
 
@@ -49,7 +49,7 @@ class ClickToEditTimeView extends ClickToEditBaseView
      */
     public content($form: JQuery, contentString: string, settings: any): void
     {
-        this.timeInputView.value = this._$el.data("logical_value") || this.timeInputView.value;
+        this.dateInputView.value = this._$el.data("logical_value") || this.dateInputView.value;
     }
 
     /**
@@ -58,9 +58,9 @@ class ClickToEditTimeView extends ClickToEditBaseView
      */
     public processFormValue(value: string, settings: any): string
     {
-        var logicalValue = this.timeInputView.value;
+        var logicalValue: Date = this.dateInputView.value;
         this._$el.data('logical_value', logicalValue);
-        this.timeInputView = null;
+        this.dateInputView = null;
         return this.encodeDecodeProxy.htmlEncode(logicalValue.format(this.displayFormat));
     }
 }

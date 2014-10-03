@@ -5,11 +5,11 @@
 import moment = require('moment');
 import Comparable = require('../Core/Comparable');
 import ComparableResult = require('../Core/ComparableResult');
-import Date = require('./Date');
+import DateInterface = require('./Date');
 import InvalidActionException = require('../Core/InvalidActionException');
 import Time = require('./Time');
 
-class DateTime implements Comparable, Date, Time
+class DateTime implements Comparable, DateInterface, Time
 {
     private _momentObject: Moment = moment();
     private static _timeZone: string = null;
@@ -26,6 +26,14 @@ class DateTime implements Comparable, Date, Time
         return DateTime._min;
     }
 
+    get year(): number
+    {
+        return this._momentObject.year();
+    }
+    set year(value: number)
+    {
+        this._momentObject.year(value)
+    }
     get month(): number
     {
         return this._momentObject.month();

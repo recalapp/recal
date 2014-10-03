@@ -191,6 +191,7 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
             return;
         }
         this.dateJQuery.text(this._startDate.format('MMMM D, YYYY'));
+        this.dateJQuery.data('logical_value', this._startDate);
         this.startTimeJQuery.text(this._startDate.format('h:mm A'));
         this.startTimeJQuery.data('logical_value', this._startDate);
     }

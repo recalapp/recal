@@ -10,6 +10,7 @@ class Dictionary<K, V>
 
     constructor(primitiveObject?: any)
     {
+        // assumes key is a string, as var in returns a string by default
         if (primitiveObject)
         {
             for (var key in primitiveObject)

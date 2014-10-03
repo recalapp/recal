@@ -1,5 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
-define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditCommon', './ClickToEditSelectView', './ClickToEditTextView', './ClickToEditTextAreaView', './ClickToEditTimeView', './ClickToEditType', '../Core/NotImplementedException', '../DataStructures/Set'], function(require, exports, $, ClickToEditBaseView, ClickToEditCommon, ClickToEditSelectView, ClickToEditTextView, ClickToEditTextAreaView, ClickToEditTimeView, ClickToEditType, NotImplementedException, Set) {
+define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditCommon', './ClickToEditDateView', './ClickToEditSelectView', './ClickToEditTextView', './ClickToEditTextAreaView', './ClickToEditTimeView', './ClickToEditType', '../Core/NotImplementedException', '../DataStructures/Set'], function(require, exports, $, ClickToEditBaseView, ClickToEditCommon, ClickToEditDateView, ClickToEditSelectView, ClickToEditTextView, ClickToEditTextAreaView, ClickToEditTimeView, ClickToEditType, NotImplementedException, Set) {
     var ClickToEditViewFactory = (function () {
         function ClickToEditViewFactory() {
             this._customTypes = new Set();
@@ -58,6 +58,9 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditC
                     break;
                 case ClickToEditType.time:
                     clickToEditView = ClickToEditTimeView.fromJQuery($element);
+                    break;
+                case ClickToEditType.date:
+                    clickToEditView = ClickToEditDateView.fromJQuery($element);
                     break;
                 default:
                     throw new NotImplementedException('ClickToEditType ' + type + ' is not supported');

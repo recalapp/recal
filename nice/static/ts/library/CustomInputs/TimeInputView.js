@@ -287,18 +287,7 @@ define(["require", "exports", '../Core/AssertionException', '../Core/BrowserEven
 
         TimeInputView.prototype.handleTabCharacter = function (ev) {
             this.numericKeyStrokesCount = 0;
-            switch (this.selectedComponent) {
-                case 0 /* hours */:
-                    if (!this.validateHoursBuffer()) {
-                        this.hoursCharactersBuffer = "08";
-                    }
-                    break;
-                case 1 /* minutes */:
-                    if (!this.validateMinutesBuffer()) {
-                        this.minutesCharactersBuffer = "00";
-                    }
-                    break;
-            }
+            this.verifyAndFixSelection();
             if (ev.shiftKey) {
                 if (this.selectedComponent != 0 /* hours */) {
                     --this.selectedComponent;
@@ -359,7 +348,23 @@ define(["require", "exports", '../Core/AssertionException', '../Core/BrowserEven
 
         TimeInputView.prototype.didBlur = function () {
             _super.prototype.didBlur.call(this);
+            this.verifyAndFixSelection();
             this.save();
+        };
+
+        TimeInputView.prototype.verifyAndFixSelection = function () {
+            switch (this.selectedComponent) {
+                case 0 /* hours */:
+                    if (!this.validateHoursBuffer()) {
+                        this.hoursCharactersBuffer = "08";
+                    }
+                    break;
+                case 1 /* minutes */:
+                    if (!this.validateMinutesBuffer()) {
+                        this.minutesCharactersBuffer = "00";
+                    }
+                    break;
+            }
         };
         return TimeInputView;
     })(FocusableView);

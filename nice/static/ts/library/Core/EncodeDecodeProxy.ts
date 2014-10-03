@@ -3,6 +3,11 @@ import $ = require('jquery');
 
 class EncodeDecodeProxy
 {
+    public titleCaseEncode(content: string): string
+    {
+        return string.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    }
+
     public htmlEncode(content: string): string
     {
         return $('<div>').text(content).html();

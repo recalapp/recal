@@ -4,6 +4,7 @@ import ClickToEditSelectView = require('../../../library/ClickToEdit/ClickToEdit
 import ComparableResult = require('../../../library/Core/ComparableResult');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Courses = require('../Courses/Courses');
+import Date = require('../../../library/DateTime/Date');
 import Dictionary = require('../../../library/DataStructures/Dictionary');
 import Events = require('../Events/Events');
 import EventsModel = require('../Events/EventsModel');
@@ -148,6 +149,7 @@ class EditableEventsPopUpView extends EventsPopUpView
                     }
                     else if (view.is(this.dateJQuery))
                     {
+                        this.processModifiedDate();
                     }
                     else if (view.is(this.startTimeJQuery))
                     {
@@ -216,6 +218,20 @@ class EditableEventsPopUpView extends EventsPopUpView
         this.modifiedEventsModel.endDate.hours = value.hours;
         this.modifiedEventsModel.endDate.minutes = value.minutes;
         if (this.modifiedEventsModel.endDate.compareTo(this.eventsModel.endDate) !== ComparableResult.equal)
+        {
+            this.isModified = true;
+        }
+    }
+    private processModifiedDate(): void
+    {
+        var value = <Date> this.dateJQuery.data('logical_value');
+        this.modifiedEventsModel.startDate.year = value.year;
+        this.modifiedEventsModel.startDate.month = value.month;
+        this.modifiedEventsModel.startDate.date = value.date;
+        this.modifiedEventsModel.endDate.year = value.year;
+        this.modifiedEventsModel.endDate.month = value.month;
+        this.modifiedEventsModel.endDate.date = value.date;
+        if (this.modifiedEventsModel.startDate.compareTo(this.eventsModel.startDate) !== ComparableResult.equal)
         {
             this.isModified = true;
         }

@@ -5,13 +5,13 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditType', '../CustomInputs/TimeInputView'], function(require, exports, $, ClickToEditBaseView, ClickToEditType, TimeInputView) {
+define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditType', '../CustomInputs/DateInputView'], function(require, exports, $, ClickToEditBaseView, ClickToEditType, DateInputView) {
     var ClickToEditTimeView = (function (_super) {
         __extends(ClickToEditTimeView, _super);
         function ClickToEditTimeView() {
             _super.apply(this, arguments);
-            this._displayFormat = "h:mm A";
-            this._timeInputView = null;
+            this._displayFormat = 'MMMM D, YYYY';
+            this._dateInputView = null;
         }
         Object.defineProperty(ClickToEditTimeView.prototype, "displayFormat", {
             get: function () {
@@ -24,12 +24,12 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
             configurable: true
         });
 
-        Object.defineProperty(ClickToEditTimeView.prototype, "timeInputView", {
+        Object.defineProperty(ClickToEditTimeView.prototype, "dateInputView", {
             get: function () {
-                return this._timeInputView;
+                return this._dateInputView;
             },
             set: function (value) {
-                this._timeInputView = value;
+                this._dateInputView = value;
             },
             enumerable: true,
             configurable: true
@@ -51,7 +51,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
             * The unique input type identifier associated with this type of input
             */
             get: function () {
-                return ClickToEditType.time;
+                return ClickToEditType.date;
             },
             enumerable: true,
             configurable: true
@@ -61,7 +61,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
             var $input = $('<input>').addClass('form-control');
             $input.height(settings.height);
             $form.append($input);
-            this.timeInputView = TimeInputView.fromJQuery($input);
+            this.dateInputView = DateInputView.fromJQuery($input);
             return $input;
         };
 
@@ -69,7 +69,7 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         * Set the value of the input to match the value of the contentString.
         */
         ClickToEditTimeView.prototype.content = function ($form, contentString, settings) {
-            this.timeInputView.value = this._$el.data("logical_value") || this.timeInputView.value;
+            this.dateInputView.value = this._$el.data("logical_value") || this.dateInputView.value;
         };
 
         /**
@@ -77,9 +77,9 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
         * such as converting \n to <br>
         */
         ClickToEditTimeView.prototype.processFormValue = function (value, settings) {
-            var logicalValue = this.timeInputView.value;
+            var logicalValue = this.dateInputView.value;
             this._$el.data('logical_value', logicalValue);
-            this.timeInputView = null;
+            this.dateInputView = null;
             return this.encodeDecodeProxy.htmlEncode(logicalValue.format(this.displayFormat));
         };
         return ClickToEditTimeView;
@@ -88,4 +88,4 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditT
     
     return ClickToEditTimeView;
 });
-//# sourceMappingURL=ClickToEditTimeView.js.map
+//# sourceMappingURL=ClickToEditDateView.js.map
