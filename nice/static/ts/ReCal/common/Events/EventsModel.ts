@@ -10,6 +10,7 @@ class EventsModel implements Events.IEventsModel
         this.eventId = arg.eventId;
         this.title = arg.title;
         this.description = arg.description;
+        this.location = arg.location;
         this.sectionId = arg.sectionId;
         this.eventTypeCode = arg.eventTypeCode;
         this.startDate = new DateTime(arg.startDate);

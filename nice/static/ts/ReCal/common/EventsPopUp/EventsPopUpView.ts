@@ -304,6 +304,7 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         }
 
         this.title = eventsModel.title;
+        this.location = eventsModel.location;
         this.description = eventsModel.description;
         this.sectionId = eventsModel.sectionId;
         this.eventTypeCode = eventsModel.eventTypeCode;

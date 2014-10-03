@@ -371,6 +371,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             }
 
             this.title = eventsModel.title;
+            this.location = eventsModel.location;
             this.description = eventsModel.description;
             this.sectionId = eventsModel.sectionId;
             this.eventTypeCode = eventsModel.eventTypeCode;

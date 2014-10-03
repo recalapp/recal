@@ -28,6 +28,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             configurable: true
         });
 
+
         Object.defineProperty(EditableEventsPopUpView.prototype, "possibleSections", {
             get: function () {
                 return this._possibleSections;
@@ -46,6 +47,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(EditableEventsPopUpView.prototype, "possibleEventTypes", {
             get: function () {
@@ -67,6 +69,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             configurable: true
         });
 
+
         Object.defineProperty(EditableEventsPopUpView.prototype, "isModified", {
             get: function () {
                 return this._isModified;
@@ -80,6 +83,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(EditableEventsPopUpView.prototype, "saveButton", {
             get: function () {
@@ -113,6 +117,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             enumerable: true,
             configurable: true
         });
+
 
         EditableEventsPopUpView.prototype.initialize = function () {
             var _this = this;
@@ -157,36 +162,42 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 _this.refresh();
             });
         };
+
         EditableEventsPopUpView.prototype.processModifiedTitle = function (value) {
             if (value !== this.modifiedEventsModel.title) {
                 this.modifiedEventsModel.title = value;
                 this.isModified = true;
             }
         };
+
         EditableEventsPopUpView.prototype.processModifiedDescription = function (value) {
             if (value !== this.modifiedEventsModel.description) {
                 this.modifiedEventsModel.description = value;
                 this.isModified = true;
             }
         };
+
         EditableEventsPopUpView.prototype.processModifiedLocation = function (value) {
             if (value !== this.modifiedEventsModel.location) {
                 this.modifiedEventsModel.location = value;
                 this.isModified = true;
             }
         };
+
         EditableEventsPopUpView.prototype.processModifiedSection = function () {
             this.modifiedEventsModel.sectionId = this.sectionJQuery.data('logical_value');
             if (this.modifiedEventsModel.sectionId !== this.eventsModel.sectionId) {
                 this.isModified = true;
             }
         };
+
         EditableEventsPopUpView.prototype.processModifiedEventType = function () {
             this.modifiedEventsModel.eventTypeCode = this.eventTypeJQuery.data('logical_value');
             if (this.modifiedEventsModel.eventTypeCode !== this.eventsModel.eventTypeCode) {
                 this.isModified = true;
             }
         };
+
         EditableEventsPopUpView.prototype.processModifiedStartTime = function () {
             var value = this.startTimeJQuery.data('logical_value');
             this.modifiedEventsModel.startDate.hours = value.hours;
@@ -195,6 +206,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 this.isModified = true;
             }
         };
+
         EditableEventsPopUpView.prototype.processModifiedEndTime = function () {
             var value = this.endTimeJQuery.data('logical_value');
             this.modifiedEventsModel.endDate.hours = value.hours;
@@ -203,6 +215,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 this.isModified = true;
             }
         };
+
         EditableEventsPopUpView.prototype.processModifiedDate = function () {
             var value = this.dateJQuery.data('logical_value');
             this.modifiedEventsModel.startDate.year = value.year;
@@ -243,11 +256,22 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             } else {
                 this.eventTypeJQuery.removeClass(this.HIGHLIGHTED_CLASS);
             }
-            if (this.modifiedEventsModel.startDate.compareTo(this.eventsModel.startDate) !== 0 /* equal */) {
+            if (this.modifiedEventsModel.startDate.hours !== this.eventsModel.startDate.hours || this.modifiedEventsModel.startDate.minutes !== this.eventsModel.startDate.minutes) {
+                this.startTimeJQuery.addClass(this.HIGHLIGHTED_CLASS);
             } else {
+                this.startTimeJQuery.removeClass(this.HIGHLIGHTED_CLASS);
             }
-            if (this.modifiedEventsModel.endDate.compareTo(this.eventsModel.endDate) !== 0 /* equal */) {
+
+            if (this.modifiedEventsModel.startDate.year !== this.eventsModel.startDate.year || this.modifiedEventsModel.startDate.month !== this.eventsModel.startDate.month || this.modifiedEventsModel.startDate.date !== this.eventsModel.startDate.date) {
+                this.dateJQuery.addClass(this.HIGHLIGHTED_CLASS);
             } else {
+                this.dateJQuery.removeClass(this.HIGHLIGHTED_CLASS);
+            }
+
+            if (this.modifiedEventsModel.endDate.hours !== this.eventsModel.endDate.hours || this.modifiedEventsModel.endDate.minutes !== this.eventsModel.endDate.minutes) {
+                this.endTimeJQuery.addClass(this.HIGHLIGHTED_CLASS);
+            } else {
+                this.endTimeJQuery.removeClass(this.HIGHLIGHTED_CLASS);
             }
         };
         return EditableEventsPopUpView;
