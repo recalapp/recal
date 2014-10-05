@@ -1,3 +1,6 @@
+import ActionSheet = require('../../../library/ActionSheet/ActionSheet');
+import ActionSheetType = require('../../../library/ActionSheet/ActionSheetType');
+import ActionSheetView = require('../../../library/ActionSheet/ActionSheetView');
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
 import ClickToEditSelectView = require('../../../library/ClickToEdit/ClickToEditSelectView');
@@ -14,6 +17,7 @@ import FocusableView = require('../../../library/CoreUI/FocusableView');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import Time = require('../../../library/DateTime/Time');
 
+import IActionSheetView = ActionSheet.IActionSheetView;
 import EditableEventsPopUpViewDependencies = EventsPopUp.EditableEventsPopUpViewDependencies;
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IClickToEditView = ClickToEdit.IClickToEditView;
@@ -118,13 +122,7 @@ class EditableEventsPopUpView extends EventsPopUpView
         this.saveButton.attachEventHandler(BrowserEvents.click,
             (ev: JQueryEventObject, extra: any) =>
             {
-                this.triggerEvent(
-                    ReCalCommonBrowserEvents.editablePopUpDidSave,
-                    {
-                        modifiedEventsModel: this.modifiedEventsModel,
-                    }
-                );
-                this.eventsModel = this.modifiedEventsModel; // TODO do this here?
+                this.saveChanges();
             });
         // initialize click to edit
         this.findJQuery('.clickToEdit').each(
@@ -177,6 +175,61 @@ class EditableEventsPopUpView extends EventsPopUpView
                 }
                 this.refresh();
             });
+    }
+
+    public handleCloseButtonClick(ev: JQueryEventObject)
+    {
+        if (this.isModified)
+        {
+            var actionSheet: IActionSheetView = new ActionSheetView();
+            actionSheet.title = 'Save changes?';
+            actionSheet.addChoice({
+                identifier: 'no',
+                displayText: 'No',
+                type: ActionSheetType.important
+            });
+            actionSheet.addChoice({
+                identifier: 'yes',
+                displayText: 'Yes',
+                type: ActionSheetType.default
+            });
+            this.closeButton.showViewInPopover(actionSheet);
+            actionSheet.attachOneTimeEventHandler(BrowserEvents.actionSheetDidSelectChoice,
+                (ev: JQueryEventObject, data: {identifier: string})=>
+                {
+                    if (data.identifier === 'yes')
+                    {
+                        this.saveChanges();
+                    }
+                    else
+                    {
+                        this.discardChanges();
+                    }
+                    super.handleCloseButtonClick(ev);
+                });
+        }
+        else
+        {
+            super.handleCloseButtonClick(ev);
+        }
+    }
+
+    public saveChanges(): void
+    {
+        this.triggerEvent(
+            ReCalCommonBrowserEvents.editablePopUpDidSave,
+            {
+                modifiedEventsModel: this.modifiedEventsModel,
+            }
+        );
+        this.eventsModel = this.modifiedEventsModel; // TODO do this here?
+    }
+
+    public discardChanges(): void
+    {
+        this.modifiedEventsModel = new EventsModel(this.eventsModel);
+        this.isModified = false;
+        this.refresh();
     }
 
     private processModifiedTitle(value: string): void
@@ -326,7 +379,7 @@ class EditableEventsPopUpView extends EventsPopUpView
 
         if (this.modifiedEventsModel.startDate.year
                 !== this.eventsModel.startDate.year
-            || this.modifiedEventsModel.startDate.month
+                || this.modifiedEventsModel.startDate.month
                 !== this.eventsModel.startDate.month
             || this.modifiedEventsModel.startDate.date
                 !== this.eventsModel.startDate.date)

@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictionary', '../Core/InvalidActionException', '../CoreUI/View'], function(require, exports, BrowserEvents, Dictionary, InvalidActionException, View) {
+define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructures/Dictionary', '../Core/InvalidActionException', '../Timer/Timer', '../CoreUI/View'], function(require, exports, $, BrowserEvents, Dictionary, InvalidActionException, Timer, View) {
     var SidebarStackViewContainer = (function (_super) {
         __extends(SidebarStackViewContainer, _super);
         function SidebarStackViewContainer($element, cssClass) {
@@ -67,10 +67,11 @@ define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictio
             }
             var view = this._viewDict.get(identifier);
             if (animated) {
-                view.attachOneTimeEventHandler(BrowserEvents.transitionEnd, function (ev) {
+                var remove = function () {
                     // when transition ends, check if the view still does not
                     // have the class in, just to verify that it wasn't readded.
-                    if (view._$el.hasClass('in')) {
+                    // also verifies that this is not run twice
+                    if (view._$el.hasClass('in') || !_this._viewDict.contains(identifier)) {
                         return;
                     }
                     view.removeFromParent();
@@ -80,6 +81,16 @@ define(["require", "exports", '../Core/BrowserEvents', '../DataStructures/Dictio
                     // (not just that it does not have the in class), otherwise if
                     // the same view is added again, an exception will be thrown
                     _this._viewDict.unset(identifier);
+                };
+                view.attachOneTimeEventHandler(BrowserEvents.transitionEnd, function (ev) {
+                    if (!view.is($(ev.target))) {
+                        // in case children are also animating
+                        new Timer(function () {
+                            remove();
+                        }, 100);
+                        return;
+                    }
+                    remove();
                 });
                 view._$el.removeClass('in');
             } else {

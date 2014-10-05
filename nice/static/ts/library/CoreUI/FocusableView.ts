@@ -102,7 +102,10 @@ class FocusableView extends View implements IFocusableView
             // have received focus yet. Figure out a better
             // way to do this.
             setTimeout(()=>{
-                
+                if (!this.popoverView)
+                {
+                    return;
+                }
                 if (!this.popoverView.hasFocus)
                 {
                     // focus lost

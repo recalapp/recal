@@ -18,16 +18,16 @@ define(["require", "exports", 'jquery', '../library/ActionSheet/ActionSheetType'
             closeButton.attachEventHandler(BrowserEvents.click, function (ev) {
                 ev.preventDefault();
                 var actionSheet = new ActionSheetView();
-                actionSheet.title = 'Are you sure you want to close?';
+                actionSheet.title = 'Save changes?';
                 actionSheet.addChoice({
                     identifier: 'no',
                     displayText: 'No',
-                    type: 1 /* important */
+                    type: 0 /* important */
                 });
                 actionSheet.addChoice({
                     identifier: 'yes',
                     displayText: 'Yes',
-                    type: 0 /* default */
+                    type: 1 /* default */
                 });
                 closeButton.showViewInPopover(actionSheet);
             });
@@ -38,3 +38,4 @@ define(["require", "exports", 'jquery', '../library/ActionSheet/ActionSheetType'
     
     return TestPopUpView;
 });
+//# sourceMappingURL=TestPopUpView.js.map

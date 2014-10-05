@@ -92,6 +92,9 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../Core/Global
                 // have received focus yet. Figure out a better
                 // way to do this.
                 setTimeout(function () {
+                    if (!_this.popoverView) {
+                        return;
+                    }
                     if (!_this.popoverView.hasFocus) {
                         // focus lost
                         _this.hidePopover();

@@ -27,7 +27,7 @@ class TestPopUpView extends PopUpView
         {
             ev.preventDefault();
             var actionSheet: IActionSheetView = new ActionSheetView();
-            actionSheet.title = 'Are you sure you want to close?';
+            actionSheet.title = 'Save changes?';
             actionSheet.addChoice({
                 identifier: 'no',
                 displayText: 'No',

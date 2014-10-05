@@ -312,6 +312,16 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../Core/Invali
             }
         };
 
+        /**
+        * Remove the event handler
+        * @param ev
+        * @param selector
+        * @param handler
+        */
+        View.prototype.removeHandlersForEvent = function (ev, selector, handler) {
+            this._$el.off(ev, handler);
+        };
+
         View.prototype.triggerEvent = function (ev, extraParameter) {
             var eventName = ev;
             if (extraParameter === undefined || extraParameter === null) {

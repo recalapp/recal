@@ -12,6 +12,8 @@ define(["require", "exports"], function(require, exports) {
         BrowserEvents.keyPress = 'keypress';
         BrowserEvents.keyDown = 'keydown';
 
+        BrowserEvents.actionSheetDidSelectChoice = 'actionSheetDidSelectChoice';
+
         BrowserEvents.bootstrapPopoverHidden = 'hidden.bs.popover';
 
         BrowserEvents.viewWasAppended = 'viewWasAppended';

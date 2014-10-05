@@ -271,9 +271,7 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
     }
 
     private _closeButton: FocusableView = null;
-    private get closeButton(): FocusableView { return this._closeButton; }
-
-    
+    public get closeButton(): FocusableView { return this._closeButton; }
 
     constructor($element: JQuery, cssClass: string)
     {
@@ -282,12 +280,15 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         // TODO set up buttons 
         // set up close button
         this._closeButton = <FocusableView> FocusableView.fromJQuery(this.findJQuery('#close-button'));
-        this.closeButton.attachEventHandler(BrowserEvents.click, 
-                (ev: JQueryEventObject)=>
-                {
-                    this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
-                });
-        
+        this.closeButton.attachEventHandler(BrowserEvents.click, (ev: JQueryEventObject)=>{
+            // lambda forces a context change
+            this.handleCloseButtonClick(ev);
+        });
+    }
+
+    public handleCloseButtonClick(ev: JQueryEventObject)
+    {
+        this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
     }
 
     public refresh(): void

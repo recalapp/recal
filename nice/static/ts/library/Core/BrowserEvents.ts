@@ -10,6 +10,9 @@ class BrowserEvents
     static keyPress = 'keypress';
     static keyDown = 'keydown';
 
+    // Action Sheet
+    static actionSheetDidSelectChoice = 'actionSheetDidSelectChoice';
+
     // bootstrap
     static bootstrapPopoverHidden = 'hidden.bs.popover';
 

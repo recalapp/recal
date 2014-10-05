@@ -4,6 +4,7 @@ import $ = require('jquery');
 
 import ActionSheet = require('./ActionSheet');
 import ActionSheetType = require('./ActionSheetType');
+import BrowserEvents = require('../Core/BrowserEvents');
 import CoreUI = require('../CoreUI/CoreUI');
 import FocusableView = require('../CoreUI/FocusableView');
 import View = require('../CoreUI/View');
@@ -72,6 +73,11 @@ class ActionSheetView extends FocusableView implements IActionSheetView
                 (<FocusableView> buttonView)._$el.addClass('yes');
                 break;
         }
+        buttonView.attachEventHandler(BrowserEvents.click, (ev: JQueryEventObject)=>{
+            this.triggerEvent(BrowserEvents.actionSheetDidSelectChoice, {
+                identifier: choice.identifier
+            });
+        });
         this.append(buttonView);
     }
 }

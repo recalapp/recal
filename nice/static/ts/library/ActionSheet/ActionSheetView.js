@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './ActionSheetType', '../CoreUI/FocusableView', '../CoreUI/View'], function(require, exports, $, ActionSheetType, FocusableView, View) {
+define(["require", "exports", 'jquery', './ActionSheetType', '../Core/BrowserEvents', '../CoreUI/FocusableView', '../CoreUI/View'], function(require, exports, $, ActionSheetType, BrowserEvents, FocusableView, View) {
     var ActionSheetView = (function (_super) {
         __extends(ActionSheetView, _super);
         function ActionSheetView() {
@@ -58,16 +58,22 @@ define(["require", "exports", 'jquery', './ActionSheetType', '../CoreUI/Focusabl
         };
 
         ActionSheetView.prototype.addChoice = function (choice) {
+            var _this = this;
             var buttonView = ActionSheetView.createButtonView();
             buttonView._$el.attr('id', this._actionSheetPrefix + choice.identifier).text(choice.displayText);
             switch (choice.type) {
-                case 1 /* important */:
+                case 0 /* important */:
                     buttonView._$el.addClass('no');
                     break;
-                case 0 /* default */:
+                case 1 /* default */:
                     buttonView._$el.addClass('yes');
                     break;
             }
+            buttonView.attachEventHandler(BrowserEvents.click, function (ev) {
+                _this.triggerEvent(BrowserEvents.actionSheetDidSelectChoice, {
+                    identifier: choice.identifier
+                });
+            });
             this.append(buttonView);
         };
         return ActionSheetView;
@@ -75,3 +81,4 @@ define(["require", "exports", 'jquery', './ActionSheetType', '../CoreUI/Focusabl
     
     return ActionSheetView;
 });
+//# sourceMappingURL=ActionSheetView.js.map

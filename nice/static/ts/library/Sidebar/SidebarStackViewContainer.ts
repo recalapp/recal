@@ -5,6 +5,7 @@ import $ = require('jquery');
 import BrowserEvents = require('../Core/BrowserEvents');
 import Dictionary = require('../DataStructures/Dictionary');
 import InvalidActionException = require('../Core/InvalidActionException');
+import Timer = require('../Timer/Timer');
 import View = require('../CoreUI/View');
 
 class SidebarStackViewContainer extends View
@@ -76,21 +77,33 @@ class SidebarStackViewContainer extends View
         var view = this._viewDict.get(identifier);
         if (animated)
         {
-            view.attachOneTimeEventHandler(BrowserEvents.transitionEnd, (ev: JQueryEventObject) => {
+            var remove = ()=>{
                 // when transition ends, check if the view still does not
                 // have the class in, just to verify that it wasn't readded.
-                if (view._$el.hasClass('in'))
+                // also verifies that this is not run twice
+                if (view._$el.hasClass('in') || !this._viewDict.contains(identifier))
                 {
                     return;
                 }
                 view.removeFromParent();
                 view._$el.removeClass('sb-left-content');
 
-                // only unset after the view is physically removed 
-                // (not just that it does not have the in class), otherwise if 
+                // only unset after the view is physically removed
+                // (not just that it does not have the in class), otherwise if
                 // the same view is added again, an exception will be thrown
                 this._viewDict.unset(identifier);
-                
+            };
+            view.attachOneTimeEventHandler(BrowserEvents.transitionEnd, (ev: JQueryEventObject) => {
+                if (!view.is($(ev.target)))
+                {
+                    // in case children are also animating
+                    new Timer(()=>{
+                        remove();
+                    }, 100);
+                    return;
+                }
+                remove();
+
             });
             view._$el.removeClass('in');
         }

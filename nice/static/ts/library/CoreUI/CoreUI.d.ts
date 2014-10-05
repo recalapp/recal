@@ -97,6 +97,13 @@ export interface IView
     attachOneTimeEventHandler(ev : string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
     attachOneTimeEventHandler(ev : string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any);
 
+    /**
+     * Remove the event handler
+     * @param ev
+     * @param selector
+     * @param handler
+     */
+    removeHandlersForEvent(ev: string, selector?: string, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
 
     /**
       * Triggers an event on the View.

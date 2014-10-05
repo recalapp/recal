@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/ClickToEdit/ClickToEditSelectView', '../../../library/Core/ComparableResult', '../Events/EventsModel', './EventsPopUpView', '../../../library/CoreUI/FocusableView', '../ReCalCommonBrowserEvents'], function(require, exports, BrowserEvents, ClickToEditSelectView, ComparableResult, EventsModel, EventsPopUpView, FocusableView, ReCalCommonBrowserEvents) {
+define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '../../../library/ActionSheet/ActionSheetView', '../../../library/Core/BrowserEvents', '../../../library/ClickToEdit/ClickToEditSelectView', '../../../library/Core/ComparableResult', '../Events/EventsModel', './EventsPopUpView', '../../../library/CoreUI/FocusableView', '../ReCalCommonBrowserEvents'], function(require, exports, ActionSheetType, ActionSheetView, BrowserEvents, ClickToEditSelectView, ComparableResult, EventsModel, EventsPopUpView, FocusableView, ReCalCommonBrowserEvents) {
     var EditableEventsPopUpView = (function (_super) {
         __extends(EditableEventsPopUpView, _super);
         function EditableEventsPopUpView($element, cssClass, dependencies) {
@@ -124,10 +124,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             // initialize save button
             this._saveButton = FocusableView.fromJQuery(this.findJQuery('#save_button'));
             this.saveButton.attachEventHandler(BrowserEvents.click, function (ev, extra) {
-                _this.triggerEvent(ReCalCommonBrowserEvents.editablePopUpDidSave, {
-                    modifiedEventsModel: _this.modifiedEventsModel
-                });
-                _this.eventsModel = _this.modifiedEventsModel; // TODO do this here?
+                _this.saveChanges();
             });
 
             // initialize click to edit
@@ -161,6 +158,48 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 }
                 _this.refresh();
             });
+        };
+
+        EditableEventsPopUpView.prototype.handleCloseButtonClick = function (ev) {
+            var _this = this;
+            if (this.isModified) {
+                var actionSheet = new ActionSheetView();
+                actionSheet.title = 'Save changes?';
+                actionSheet.addChoice({
+                    identifier: 'no',
+                    displayText: 'No',
+                    type: 0 /* important */
+                });
+                actionSheet.addChoice({
+                    identifier: 'yes',
+                    displayText: 'Yes',
+                    type: 1 /* default */
+                });
+                this.closeButton.showViewInPopover(actionSheet);
+                actionSheet.attachOneTimeEventHandler(BrowserEvents.actionSheetDidSelectChoice, function (ev, data) {
+                    if (data.identifier === 'yes') {
+                        _this.saveChanges();
+                    } else {
+                        _this.discardChanges();
+                    }
+                    _super.prototype.handleCloseButtonClick.call(_this, ev);
+                });
+            } else {
+                _super.prototype.handleCloseButtonClick.call(this, ev);
+            }
+        };
+
+        EditableEventsPopUpView.prototype.saveChanges = function () {
+            this.triggerEvent(ReCalCommonBrowserEvents.editablePopUpDidSave, {
+                modifiedEventsModel: this.modifiedEventsModel
+            });
+            this.eventsModel = this.modifiedEventsModel; // TODO do this here?
+        };
+
+        EditableEventsPopUpView.prototype.discardChanges = function () {
+            this.modifiedEventsModel = new EventsModel(this.eventsModel);
+            this.isModified = false;
+            this.refresh();
         };
 
         EditableEventsPopUpView.prototype.processModifiedTitle = function (value) {

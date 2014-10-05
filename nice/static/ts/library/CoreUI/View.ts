@@ -347,6 +347,17 @@ class View implements IView
     }
 
     /**
+     * Remove the event handler
+     * @param ev
+     * @param selector
+     * @param handler
+     */
+    public removeHandlersForEvent(ev: string, selector?: string, handler?: (eventObject: JQueryEventObject, ...eventData: any[]) => any)
+    {
+        this._$el.off(ev, handler);
+    }
+
+    /**
      * Triggers an event on the View.
      */
     public triggerEvent(ev: string);

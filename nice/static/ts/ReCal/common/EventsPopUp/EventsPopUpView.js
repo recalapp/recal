@@ -38,7 +38,8 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             // set up close button
             this._closeButton = FocusableView.fromJQuery(this.findJQuery('#close-button'));
             this.closeButton.attachEventHandler(BrowserEvents.click, function (ev) {
-                _this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
+                // lambda forces a context change
+                _this.handleCloseButtonClick(ev);
             });
         }
         Object.defineProperty(EventsPopUpView.prototype, "encodeDecodeProxy", {
@@ -359,6 +360,10 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             enumerable: true,
             configurable: true
         });
+
+        EventsPopUpView.prototype.handleCloseButtonClick = function (ev) {
+            this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
+        };
 
         EventsPopUpView.prototype.refresh = function () {
             this.refreshWithEventsModel(this.eventsModel);
