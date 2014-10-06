@@ -48,6 +48,13 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
             this.modifiedEventIds.add(modifiedEventsModel.eventId);
             this.eventsStoreCoordinator.addLocalEvents([modifiedEventsModel]);
         };
+
+        EventsModificationsManager.prototype.getModifiedEvents = function () {
+            var _this = this;
+            return this.modifiedEventIds.toArray().map(function (eventId) {
+                return _this.eventsStoreCoordinator.getEventById(eventId);
+            });
+        };
         return EventsModificationsManager;
     })();
 

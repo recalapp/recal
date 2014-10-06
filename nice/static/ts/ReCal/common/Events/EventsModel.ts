@@ -16,6 +16,9 @@ class EventsModel implements Events.IEventsModel
         this.startDate = new DateTime(arg.startDate);
         this.endDate = new DateTime(arg.endDate);
         this.lastEdited = new DateTime(arg.lastEdited);
+        this.eventGroupId = arg.eventGroupId;
+        this.sectionColor = arg.sectionColor;
+        this.revisionId = arg.sectionId;
     }
 
     private _eventId: string = null;
@@ -67,6 +70,18 @@ class EventsModel implements Events.IEventsModel
     public get lastEdited(): DateTime { return this._lastEdited; }
 
     public set lastEdited(value: DateTime) { this._lastEdited = value; }
+
+    private _eventGroupId: string = null;
+    public get eventGroupId(): string { return this._eventGroupId; }
+    public set eventGroupId(value: string) { this._eventGroupId = value; }
+
+    private _sectionColor: string = null;
+    public get sectionColor(): string { return this._sectionColor; }
+    public set sectionColor(value: string) { this._sectionColor = value; }
+
+    private _revisionId: string = null;
+    public get revisionId(): string { return this._revisionId; }
+    public set revisionId(value: string) { this._revisionId = value; }
 }
 
 export = EventsModel;

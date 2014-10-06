@@ -49,6 +49,13 @@ class EventsModificationsManager
         this.eventsStoreCoordinator.addLocalEvents([modifiedEventsModel]);
     }
 
+    public getModifiedEvents(): IEventsModel[]
+    {
+        return this.modifiedEventIds.toArray().map((eventId: string)=>{
+            return this.eventsStoreCoordinator.getEventById(eventId);
+        });
+    }
+
 }
 
 export = EventsModificationsManager;

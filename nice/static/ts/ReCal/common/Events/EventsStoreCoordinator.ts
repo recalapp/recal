@@ -89,6 +89,29 @@ class EventsStoreCoordinator
     }
 
     /**
+     * Rewrite the event id of an event
+     * @param oldId
+     * @param newId
+     * @param newGroupId
+     */
+    public remapEventId(oldId: string, newId: string, newGroupId: string)
+    {
+        var eventsModel = this.getEventById(oldId);
+        if (eventsModel)
+        {
+            eventsModel.eventId = newId;
+            eventsModel.eventGroupId = newGroupId;
+            this.eventsRegistry.unset(oldId);
+            this.eventsRegistry.set(newId, eventsModel);
+            this._eventIdsSorted = null;
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventIdChanged, {
+                oldId: oldId,
+                eventsModel: eventsModel
+            });
+        }
+    }
+
+    /**
      * Get event associated with the ID
      */
     public getEventById(eventId: string): IEventsModel

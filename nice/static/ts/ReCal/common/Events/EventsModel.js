@@ -12,6 +12,9 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             this._startDate = null;
             this._endDate = null;
             this._lastEdited = null;
+            this._eventGroupId = null;
+            this._sectionColor = null;
+            this._revisionId = null;
             this.eventId = arg.eventId;
             this.title = arg.title;
             this.description = arg.description;
@@ -21,6 +24,9 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             this.startDate = new DateTime(arg.startDate);
             this.endDate = new DateTime(arg.endDate);
             this.lastEdited = new DateTime(arg.lastEdited);
+            this.eventGroupId = arg.eventGroupId;
+            this.sectionColor = arg.sectionColor;
+            this.revisionId = arg.sectionId;
         }
         Object.defineProperty(EventsModel.prototype, "eventId", {
             get: function () {
@@ -141,6 +147,39 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             configurable: true
         });
 
+
+        Object.defineProperty(EventsModel.prototype, "eventGroupId", {
+            get: function () {
+                return this._eventGroupId;
+            },
+            set: function (value) {
+                this._eventGroupId = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsModel.prototype, "sectionColor", {
+            get: function () {
+                return this._sectionColor;
+            },
+            set: function (value) {
+                this._sectionColor = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsModel.prototype, "revisionId", {
+            get: function () {
+                return this._revisionId;
+            },
+            set: function (value) {
+                this._revisionId = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
         return EventsModel;
     })();
 

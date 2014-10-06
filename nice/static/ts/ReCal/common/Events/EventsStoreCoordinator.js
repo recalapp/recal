@@ -85,6 +85,27 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary', '../
         };
 
         /**
+        * Rewrite the event id of an event
+        * @param oldId
+        * @param newId
+        * @param newGroupId
+        */
+        EventsStoreCoordinator.prototype.remapEventId = function (oldId, newId, newGroupId) {
+            var eventsModel = this.getEventById(oldId);
+            if (eventsModel) {
+                eventsModel.eventId = newId;
+                eventsModel.eventGroupId = newGroupId;
+                this.eventsRegistry.unset(oldId);
+                this.eventsRegistry.set(newId, eventsModel);
+                this._eventIdsSorted = null;
+                this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventIdChanged, {
+                    oldId: oldId,
+                    eventsModel: eventsModel
+                });
+            }
+        };
+
+        /**
         * Get event associated with the ID
         */
         EventsStoreCoordinator.prototype.getEventById = function (eventId) {

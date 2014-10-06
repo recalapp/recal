@@ -9,6 +9,7 @@ define(["require", "exports"], function(require, exports) {
         ReCalCommonBrowserEvents.editablePopUpDidSave = 'editablePopUpDidSave';
 
         ReCalCommonBrowserEvents.eventSelectionChanged = 'eventSelectionChanged';
+        ReCalCommonBrowserEvents.eventIdChanged = 'eventIdChanged';
         ReCalCommonBrowserEvents.eventsDataChanged = 'eventsDataChanged';
         ReCalCommonBrowserEvents.eventsWillBeginDownloading = 'eventsWillBeginDownloading';
         ReCalCommonBrowserEvents.eventsDidFinishDownloading = 'eventsDidFinishDownloading';

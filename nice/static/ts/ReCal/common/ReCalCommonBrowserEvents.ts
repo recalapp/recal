@@ -7,6 +7,7 @@ class ReCalCommonBrowserEvents
     static editablePopUpDidSave = 'editablePopUpDidSave';
 
     static eventSelectionChanged = 'eventSelectionChanged';
+    static eventIdChanged = 'eventIdChanged';
     static eventsDataChanged = 'eventsDataChanged';
     static eventsWillBeginDownloading = 'eventsWillBeginDownloading';
     static eventsDidFinishDownloading = 'eventsDidFinishDownloading';

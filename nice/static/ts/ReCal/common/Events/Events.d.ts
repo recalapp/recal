@@ -1,4 +1,5 @@
 import DateTime = require('../../../library/DateTime/DateTime');
+import EventsModificationsManager = require('./EventsModificationsManager');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
 import EventsVisibilityManager = require('./EventsVisibilityManager');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
@@ -28,6 +29,7 @@ export interface EventsRetrieverDependencies
 
 export interface EventsServerCommunicatorDependencies
 {
+    eventsModificationsManager: EventsModificationsManager;
     eventsStoreCoordinator: EventsStoreCoordinator;
     eventsVisibilityManager: EventsVisibilityManager;
     globalBrowserEventsManager: GlobalBrowserEventsManager;
@@ -45,6 +47,9 @@ export interface IEventsModel
     startDate: DateTime;
     endDate: DateTime;
     lastEdited: DateTime;
+    eventGroupId: string;
+    sectionColor: string;
+    revisionId: string;
 }
 
 /**
