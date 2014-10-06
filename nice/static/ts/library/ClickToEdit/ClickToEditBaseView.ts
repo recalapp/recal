@@ -47,12 +47,14 @@ class ClickToEditBaseView extends FocusableView implements ClickToEdit.IClickToE
         options.type = this.inputType;
         options.event = BrowserEvents.clickToEditShouldBegin;
         options.onblur = 'submit';
+        options.callback = (value: string, settings: any)=>{
+            this.triggerEvent(BrowserEvents.clickToEditComplete, {
+                value: value,
+            });
+        };
         this._$el.editable((value: string, settings: any)=>
         {
             var processed = this.processFormValue(value, settings);
-            this.triggerEvent(BrowserEvents.clickToEditComplete, {
-                value: processed,
-            });
             return processed;
         }, options);
         this.attachEventHandler(BrowserEvents.click, () =>

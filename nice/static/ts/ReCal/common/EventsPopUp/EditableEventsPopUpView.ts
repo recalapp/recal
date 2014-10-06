@@ -3,11 +3,13 @@ import ActionSheetType = require('../../../library/ActionSheet/ActionSheetType')
 import ActionSheetView = require('../../../library/ActionSheet/ActionSheetView');
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
+import ClickToEditBaseView = require('../../../library/ClickToEdit/ClickToEditBaseView');
 import ClickToEditSelectView = require('../../../library/ClickToEdit/ClickToEditSelectView');
 import ComparableResult = require('../../../library/Core/ComparableResult');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Courses = require('../Courses/Courses');
 import Date = require('../../../library/DateTime/Date');
+import DateTime = require('../../../library/DateTime/DateTime');
 import Dictionary = require('../../../library/DataStructures/Dictionary');
 import Events = require('../Events/Events');
 import EventsModel = require('../Events/EventsModel');
@@ -135,7 +137,7 @@ class EditableEventsPopUpView extends EventsPopUpView
 
         // add event handler for click to edit
         this.attachEventHandler(BrowserEvents.clickToEditComplete,
-            (ev: JQueryEventObject, extra: {value: string; view: IView})=>
+            (ev: JQueryEventObject, extra: {value: string; view: IClickToEditView})=>
             {
                 var result = extra.value.trim();
                 var view = extra.view;
@@ -173,6 +175,7 @@ class EditableEventsPopUpView extends EventsPopUpView
                 {
                     this.processModifiedEndTime();
                 }
+                this.verifyAndCorrectEndTime(view);
                 this.refresh();
             });
     }
@@ -239,6 +242,7 @@ class EditableEventsPopUpView extends EventsPopUpView
             this.modifiedEventsModel.title = value;
             this.isModified = true;
         }
+        this.updateModifiedTime();
     }
 
     private processModifiedDescription(value: string): void
@@ -248,6 +252,7 @@ class EditableEventsPopUpView extends EventsPopUpView
             this.modifiedEventsModel.description = value;
             this.isModified = true;
         }
+        this.updateModifiedTime();
     }
 
     private processModifiedLocation(value: string): void
@@ -257,6 +262,7 @@ class EditableEventsPopUpView extends EventsPopUpView
             this.modifiedEventsModel.location = value;
             this.isModified = true;
         }
+        this.updateModifiedTime();
     }
 
     private processModifiedSection(): void
@@ -267,6 +273,7 @@ class EditableEventsPopUpView extends EventsPopUpView
         {
             this.isModified = true;
         }
+        this.updateModifiedTime();
     }
 
     private processModifiedEventType(): void
@@ -278,6 +285,7 @@ class EditableEventsPopUpView extends EventsPopUpView
         {
             this.isModified = true;
         }
+        this.updateModifiedTime();
     }
 
     private processModifiedStartTime(): void
@@ -289,6 +297,28 @@ class EditableEventsPopUpView extends EventsPopUpView
             !== ComparableResult.equal)
         {
             this.isModified = true;
+        }
+        this.updateModifiedTime();
+    }
+
+    private verifyAndCorrectEndTime(editedView: IClickToEditView): void
+    {
+        var endTimeView = <ClickToEditBaseView> ClickToEditBaseView.fromJQuery(this.endTimeJQuery);
+        if (endTimeView.hasFocus && editedView !== endTimeView)
+        {
+            return; // already editing, don't verify just yet.
+        }
+        // verify that end time is after start time
+        if (this.modifiedEventsModel.startDate.compareTo(this.modifiedEventsModel.endDate) !== ComparableResult.less)
+        {
+            var newEndDate = new DateTime(this.modifiedEventsModel.startDate);
+            ++newEndDate.hours;
+            while (newEndDate.hours < this.modifiedEventsModel.startDate.hours)
+            {
+                ++newEndDate.hours;
+            }
+            this.endTimeJQuery.data('logical_value', newEndDate);
+            this.processModifiedEndTime();
         }
     }
 
@@ -302,6 +332,7 @@ class EditableEventsPopUpView extends EventsPopUpView
         {
             this.isModified = true;
         }
+        this.updateModifiedTime();
     }
 
     private processModifiedDate(): void
@@ -318,6 +349,12 @@ class EditableEventsPopUpView extends EventsPopUpView
         {
             this.isModified = true;
         }
+        this.updateModifiedTime();
+    }
+
+    private updateModifiedTime(): void
+    {
+        this.modifiedEventsModel.lastEdited = new DateTime();
     }
 
     public refresh(): void
@@ -403,7 +440,5 @@ class EditableEventsPopUpView extends EventsPopUpView
             this.endTimeJQuery.removeClass(this.HIGHLIGHTED_CLASS);
         }
     }
-
-
 }
 export = EditableEventsPopUpView;

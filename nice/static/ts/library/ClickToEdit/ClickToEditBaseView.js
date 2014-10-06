@@ -44,11 +44,13 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
             options.type = this.inputType;
             options.event = BrowserEvents.clickToEditShouldBegin;
             options.onblur = 'submit';
+            options.callback = function (value, settings) {
+                _this.triggerEvent(BrowserEvents.clickToEditComplete, {
+                    value: value
+                });
+            };
             this._$el.editable(function (value, settings) {
                 var processed = _this.processFormValue(value, settings);
-                _this.triggerEvent(BrowserEvents.clickToEditComplete, {
-                    value: processed
-                });
                 return processed;
             }, options);
             this.attachEventHandler(BrowserEvents.click, function () {

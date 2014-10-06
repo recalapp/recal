@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '../../../library/ActionSheet/ActionSheetView', '../../../library/Core/BrowserEvents', '../../../library/ClickToEdit/ClickToEditSelectView', '../../../library/Core/ComparableResult', '../Events/EventsModel', './EventsPopUpView', '../../../library/CoreUI/FocusableView', '../ReCalCommonBrowserEvents'], function(require, exports, ActionSheetType, ActionSheetView, BrowserEvents, ClickToEditSelectView, ComparableResult, EventsModel, EventsPopUpView, FocusableView, ReCalCommonBrowserEvents) {
+define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '../../../library/ActionSheet/ActionSheetView', '../../../library/Core/BrowserEvents', '../../../library/ClickToEdit/ClickToEditBaseView', '../../../library/ClickToEdit/ClickToEditSelectView', '../../../library/Core/ComparableResult', '../../../library/DateTime/DateTime', '../Events/EventsModel', './EventsPopUpView', '../../../library/CoreUI/FocusableView', '../ReCalCommonBrowserEvents'], function(require, exports, ActionSheetType, ActionSheetView, BrowserEvents, ClickToEditBaseView, ClickToEditSelectView, ComparableResult, DateTime, EventsModel, EventsPopUpView, FocusableView, ReCalCommonBrowserEvents) {
     var EditableEventsPopUpView = (function (_super) {
         __extends(EditableEventsPopUpView, _super);
         function EditableEventsPopUpView($element, cssClass, dependencies) {
@@ -156,6 +156,7 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
                 } else if (view.is(_this.endTimeJQuery)) {
                     _this.processModifiedEndTime();
                 }
+                _this.verifyAndCorrectEndTime(view);
                 _this.refresh();
             });
         };
@@ -207,6 +208,7 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
                 this.modifiedEventsModel.title = value;
                 this.isModified = true;
             }
+            this.updateModifiedTime();
         };
 
         EditableEventsPopUpView.prototype.processModifiedDescription = function (value) {
@@ -214,6 +216,7 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
                 this.modifiedEventsModel.description = value;
                 this.isModified = true;
             }
+            this.updateModifiedTime();
         };
 
         EditableEventsPopUpView.prototype.processModifiedLocation = function (value) {
@@ -221,6 +224,7 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
                 this.modifiedEventsModel.location = value;
                 this.isModified = true;
             }
+            this.updateModifiedTime();
         };
 
         EditableEventsPopUpView.prototype.processModifiedSection = function () {
@@ -228,6 +232,7 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
             if (this.modifiedEventsModel.sectionId !== this.eventsModel.sectionId) {
                 this.isModified = true;
             }
+            this.updateModifiedTime();
         };
 
         EditableEventsPopUpView.prototype.processModifiedEventType = function () {
@@ -235,6 +240,7 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
             if (this.modifiedEventsModel.eventTypeCode !== this.eventsModel.eventTypeCode) {
                 this.isModified = true;
             }
+            this.updateModifiedTime();
         };
 
         EditableEventsPopUpView.prototype.processModifiedStartTime = function () {
@@ -243,6 +249,25 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
             this.modifiedEventsModel.startDate.minutes = value.minutes;
             if (this.modifiedEventsModel.startDate.compareTo(this.eventsModel.startDate) !== 0 /* equal */) {
                 this.isModified = true;
+            }
+            this.updateModifiedTime();
+        };
+
+        EditableEventsPopUpView.prototype.verifyAndCorrectEndTime = function (editedView) {
+            var endTimeView = ClickToEditBaseView.fromJQuery(this.endTimeJQuery);
+            if (endTimeView.hasFocus && editedView !== endTimeView) {
+                return;
+            }
+
+            // verify that end time is after start time
+            if (this.modifiedEventsModel.startDate.compareTo(this.modifiedEventsModel.endDate) !== -1 /* less */) {
+                var newEndDate = new DateTime(this.modifiedEventsModel.startDate);
+                ++newEndDate.hours;
+                while (newEndDate.hours < this.modifiedEventsModel.startDate.hours) {
+                    ++newEndDate.hours;
+                }
+                this.endTimeJQuery.data('logical_value', newEndDate);
+                this.processModifiedEndTime();
             }
         };
 
@@ -253,6 +278,7 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
             if (this.modifiedEventsModel.endDate.compareTo(this.eventsModel.endDate) !== 0 /* equal */) {
                 this.isModified = true;
             }
+            this.updateModifiedTime();
         };
 
         EditableEventsPopUpView.prototype.processModifiedDate = function () {
@@ -266,6 +292,11 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
             if (this.modifiedEventsModel.startDate.compareTo(this.eventsModel.startDate) !== 0 /* equal */) {
                 this.isModified = true;
             }
+            this.updateModifiedTime();
+        };
+
+        EditableEventsPopUpView.prototype.updateModifiedTime = function () {
+            this.modifiedEventsModel.lastEdited = new DateTime();
         };
 
         EditableEventsPopUpView.prototype.refresh = function () {
