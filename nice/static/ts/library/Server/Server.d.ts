@@ -27,4 +27,12 @@ export interface IServerConnection
       * request is not successful.
       */
     sendRequest(serverRequest: IServerRequest): JQueryPromise<any>;
+
+    /**
+     * Same as sendRequest, but pass in a function to create the request, which
+     * only gets called right before sending.
+     * @param requestConstructor
+     * @returns {JQueryPromise<T>}
+     */
+    sendRequestLazilyConstructed(requestConstructor: ()=>IServerRequest): JQueryPromise<any>;
 }

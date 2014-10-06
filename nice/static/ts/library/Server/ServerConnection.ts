@@ -13,8 +13,10 @@ import IServerRequest = Server.IServerRequest;
 
 interface RequestDeferredPair
 {
-    request: IServerRequest;
+    request?: IServerRequest;
     deferred: JQueryDeferred<any>;
+    lazy: boolean;
+    requestConstructor?: ()=>IServerRequest;
 }
 
 /**
@@ -79,6 +81,29 @@ class ServerConnection implements IServerConnection
         this.requestsQueue.enqueue({
             request: serverRequest,
             deferred: deferred,
+            lazy: false,
+        });
+        this.handleQueue();
+        return deferred.promise();
+    }
+
+    /**
+     * Same as sendRequest, but pass in a function to create the request, which
+     * only gets called right before sending.
+     * @param requestConstructor
+     * @returns {JQueryPromise<T>}
+     */
+    public sendRequestLazilyConstructed(requestConstructor: ()=>IServerRequest): JQueryPromise<any>
+    {
+        if (requestConstructor === null || requestConstructor === undefined)
+        {
+            throw new InvalidActionException('Server Request Constructor cannot be null');
+        }
+        var deferred = $.Deferred();
+        this.requestsQueue.enqueue({
+            requestConstructor: requestConstructor,
+            lazy: true,
+            deferred: deferred,
         });
         this.handleQueue();
         return deferred.promise();
@@ -92,7 +117,7 @@ class ServerConnection implements IServerConnection
         }
         ++this.activeCalls;
         var pair = this.requestsQueue.dequeue();
-        var request = pair.request;
+        var request = pair.lazy ? pair.requestConstructor() : pair.request;
         var deferred = pair.deferred;
         var complete = () => {
             --this.activeCalls;

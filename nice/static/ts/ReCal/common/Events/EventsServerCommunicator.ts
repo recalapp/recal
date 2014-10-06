@@ -58,7 +58,8 @@ class EventsServerCommunicator
 
     private pushAndPullEvents(): void
     {
-
+        // TODO finish implementing.
+        this.pullEvents();
     }
 
     public pushModifiedEvents(): void
@@ -85,7 +86,7 @@ class EventsServerCommunicator
             });
             return request;
         };
-        this.serverConnection.sendRequest(createServerRequest())
+        this.serverConnection.sendRequestLazilyConstructed(createServerRequest)
             .done((data: {changed_ids: EventIdChangeMap; deleted_ids: string[]})=>{
                 this.eventsModificationsManager.clearModificationsHistory();
                 for (var oldId in data.changed_ids)
@@ -114,7 +115,7 @@ class EventsServerCommunicator
             return serverRequest;
         };
         this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginDownloading);
-        this.serverConnection.sendRequest(createServerRequest())
+        this.serverConnection.sendRequestLazilyConstructed(createServerRequest)
             .done((data: {events: LegacyEventObject[]; hidden_events: string[]}) =>
             {
                 if (this.eventsModificationsManager.hasModifiedEvents())

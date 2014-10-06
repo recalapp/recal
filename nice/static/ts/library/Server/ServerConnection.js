@@ -61,6 +61,27 @@ define(["require", "exports", 'jquery', '../Core/InvalidActionException', '../Da
             var deferred = $.Deferred();
             this.requestsQueue.enqueue({
                 request: serverRequest,
+                deferred: deferred,
+                lazy: false
+            });
+            this.handleQueue();
+            return deferred.promise();
+        };
+
+        /**
+        * Same as sendRequest, but pass in a function to create the request, which
+        * only gets called right before sending.
+        * @param requestConstructor
+        * @returns {JQueryPromise<T>}
+        */
+        ServerConnection.prototype.sendRequestLazilyConstructed = function (requestConstructor) {
+            if (requestConstructor === null || requestConstructor === undefined) {
+                throw new InvalidActionException('Server Request Constructor cannot be null');
+            }
+            var deferred = $.Deferred();
+            this.requestsQueue.enqueue({
+                requestConstructor: requestConstructor,
+                lazy: true,
                 deferred: deferred
             });
             this.handleQueue();
@@ -74,7 +95,7 @@ define(["require", "exports", 'jquery', '../Core/InvalidActionException', '../Da
             }
             ++this.activeCalls;
             var pair = this.requestsQueue.dequeue();
-            var request = pair.request;
+            var request = pair.lazy ? pair.requestConstructor() : pair.request;
             var deferred = pair.deferred;
             var complete = function () {
                 --_this.activeCalls;

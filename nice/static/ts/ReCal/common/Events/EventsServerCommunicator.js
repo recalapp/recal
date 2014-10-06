@@ -75,6 +75,8 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
         });
 
         EventsServerCommunicator.prototype.pushAndPullEvents = function () {
+            // TODO finish implementing.
+            this.pullEvents();
         };
 
         EventsServerCommunicator.prototype.pushModifiedEvents = function () {
@@ -100,7 +102,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
                 });
                 return request;
             };
-            this.serverConnection.sendRequest(createServerRequest()).done(function (data) {
+            this.serverConnection.sendRequestLazilyConstructed(createServerRequest).done(function (data) {
                 _this.eventsModificationsManager.clearModificationsHistory();
                 for (var oldId in data.changed_ids) {
                     var newId = data.changed_ids[oldId][0];
@@ -124,7 +126,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
                 return serverRequest;
             };
             this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginDownloading);
-            this.serverConnection.sendRequest(createServerRequest()).done(function (data) {
+            this.serverConnection.sendRequestLazilyConstructed(createServerRequest).done(function (data) {
                 if (_this.eventsModificationsManager.hasModifiedEvents()) {
                     return;
                 }
