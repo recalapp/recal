@@ -58,6 +58,17 @@ define(["require", "exports", '../Core/InvalidArgumentException'], function(requ
             color._blue = HexUtilities.hexToNumber(hexString.substr(4, 6));
             return color;
         };
+
+        Color.fromRGB = function (red, green, blue) {
+            if (!HexUtilities.validateHexNumber(red) || !HexUtilities.validateHexNumber(blue) || !HexUtilities.validateHexNumber(green)) {
+                throw new InvalidArgumentException("RGB must be between 0 and 255");
+            }
+            var color = new Color();
+            color._red = red;
+            color._blue = blue;
+            color._green = green;
+            return color;
+        };
         return Color;
     })();
 
@@ -69,61 +80,11 @@ define(["require", "exports", '../Core/InvalidArgumentException'], function(requ
         };
 
         HexUtilities.numberToHex = function (value) {
-            var createHexDigit = function (value) {
-                if (value === 0) {
-                    return '';
-                }
-                var hex = value % 16;
-                var hexString = HexUtilities._numToHex[hex];
-                return createHexDigit(value / 16) + hexString;
-            };
-            return createHexDigit(value);
+            return value.toString(16);
         };
 
         HexUtilities.hexToNumber = function (hex) {
-            var createNumberDigit = function (hex) {
-                var lastChar = hex.charAt(hex.length - 1);
-                var value = parseInt(HexUtilities._hexToNum[lastChar.toUpperCase()]);
-                return createNumberDigit(hex.substring(0, hex.length - 1)) * 16 + value;
-            };
-            return createNumberDigit(hex);
-        };
-        HexUtilities._numToHex = {
-            0: '0',
-            1: '1',
-            2: '2',
-            3: '3',
-            4: '4',
-            5: '5',
-            6: '6',
-            7: '7',
-            8: '8',
-            9: '9',
-            10: 'A',
-            11: 'B',
-            12: 'C',
-            13: 'D',
-            14: 'E',
-            15: 'F'
-        };
-
-        HexUtilities._hexToNum = {
-            '0': 0,
-            '1': 1,
-            '2': 2,
-            '3': 3,
-            '4': 4,
-            '5': 5,
-            '6': 6,
-            '7': 7,
-            '8': 8,
-            '9': 9,
-            'A': 10,
-            'B': 11,
-            'C': 12,
-            'D': 13,
-            'E': 14,
-            'F': 15
+            return parseInt(hex, 16);
         };
         return HexUtilities;
     })();
