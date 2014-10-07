@@ -261,6 +261,7 @@ class DashboardViewController extends ViewController
             }
         });
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailDownloading, ()=>{
+            this.indicatorsManager.hideIndicatorWithIdentifier("events_download");
             errorDownloading = true;
             this.indicatorsManager.showIndicator("events_download", IndicatorsType.error, "Error connecting.");
         })

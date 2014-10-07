@@ -4,6 +4,7 @@ define(["require", "exports", '../Core/InvalidArgumentException'], function(requ
             this._red = 0;
             this._green = 0;
             this._blue = 0;
+            this._hexValue = null;
         }
         Object.defineProperty(Color.prototype, "red", {
             get: function () {
@@ -31,7 +32,10 @@ define(["require", "exports", '../Core/InvalidArgumentException'], function(requ
 
         Object.defineProperty(Color.prototype, "hexValue", {
             get: function () {
-                return '#' + HexUtilities.numberToHex(this.red) + HexUtilities.numberToHex(this.green) + HexUtilities.numberToHex(this.blue);
+                if (!this._hexValue) {
+                    this._hexValue = '#' + HexUtilities.numberToHex(this.red) + HexUtilities.numberToHex(this.green) + HexUtilities.numberToHex(this.blue);
+                }
+                return this._hexValue;
             },
             enumerable: true,
             configurable: true

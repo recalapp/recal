@@ -251,6 +251,7 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
                 }
             });
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailDownloading, function () {
+                _this.indicatorsManager.hideIndicatorWithIdentifier("events_download");
                 errorDownloading = true;
                 _this.indicatorsManager.showIndicator("events_download", 2 /* error */, "Error connecting.");
             });

@@ -5,12 +5,52 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Table/TableViewCell'], function(require, exports, TableViewCell) {
+define(["require", "exports", '../../../library/Color/Color', '../../../library/Table/TableViewCell'], function(require, exports, Color, TableViewCell) {
     var AgendaTableViewCell = (function (_super) {
         __extends(AgendaTableViewCell, _super);
         function AgendaTableViewCell() {
             _super.apply(this, arguments);
+            this._defaultBorderColor = null;
+            this._defaultTextColor = null;
+            this._color = null;
+            this._eventId = null;
         }
+        Object.defineProperty(AgendaTableViewCell.prototype, "defaultBorderColor", {
+            get: function () {
+                if (!this._defaultBorderColor) {
+                    this._defaultBorderColor = Color.fromHex("#ddd");
+                }
+                return this._defaultBorderColor;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(AgendaTableViewCell.prototype, "defaultTextColor", {
+            get: function () {
+                if (!this._defaultTextColor) {
+                    this._defaultTextColor = Color.fromHex("#666");
+                }
+                return this._defaultTextColor;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(AgendaTableViewCell.prototype, "color", {
+            get: function () {
+                if (!this._color) {
+                    this._color = this._defaultBorderColor;
+                }
+                return this._color;
+            },
+            set: function (value) {
+                this._color = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(AgendaTableViewCell.prototype, "eventId", {
             get: function () {
                 return this._eventId;
@@ -20,56 +60,26 @@ define(["require", "exports", '../../../library/Table/TableViewCell'], function(
         });
 
         AgendaTableViewCell.prototype.highlight = function () {
-            var courseColor = this._$el.data('course-color');
-            if (courseColor === undefined) {
-                courseColor = "#000000";
-            }
-            this._$el.find('#agenda-section').css('color', courseColor);
-            this._$el.find('#agenda-title').css('color', courseColor);
-            this._$el.find('.agenda-item').addClass('panel-primary').removeClass('panel-default').css('border-color', courseColor);
+            this._$el.find('#agenda-section').css('color', this.color.hexValue);
+            this._$el.find('#agenda-title').css('color', this.color.hexValue);
+            this._$el.find('.agenda-item').addClass('panel-primary').removeClass('panel-default').css('border-color', this.color.hexValue);
         };
 
         AgendaTableViewCell.prototype.unhighlight = function () {
-            var borderColor = this._$el.data('default-border-color');
-            var defaultTextColor = this._$el.data('default-text-color');
-            if (borderColor === undefined) {
-            }
-            this._$el.find('.agenda-item').addClass("panel-default").removeClass("panel-primary").css('border-color', borderColor);
+            this._$el.find('.agenda-item').addClass("panel-default").removeClass("panel-primary").css('border-color', this.defaultBorderColor.hexValue);
             ;
-            this._$el.find('#agenda-section').css('color', borderColor);
-            this._$el.find('#agenda-title').css('color', defaultTextColor);
-            this._$el.find('#agenda-section').css('color', defaultTextColor);
+            this._$el.find('#agenda-section').css('color', this.defaultBorderColor.hexValue);
+            this._$el.find('#agenda-title').css('color', this.defaultTextColor.hexValue);
+            this._$el.find('#agenda-section').css('color', this.defaultTextColor.hexValue);
         };
 
         AgendaTableViewCell.prototype.setToEvent = function (eventsModel) {
-            // TODO timezone
-            // TODO theme
             this._eventId = eventsModel.eventId;
             this._$el.find('.panel-body').find('h4').text(eventsModel.title);
             this._$el.find('#agenda-section').text(SECTION_MAP[eventsModel.sectionId]);
 
             var timeText = eventsModel.startDate.calendar();
             this._$el.find('#agenda-time').text(timeText);
-
-            this._setColorForEvent(eventsModel);
-        };
-
-        AgendaTableViewCell.prototype._setColorForEvent = function (eventsModel) {
-            var agendaColorClass = 'course-color-' + eventsModel.courseId;
-            var courseColor = SECTION_COLOR_MAP[eventsModel.sectionId]['color'];
-            this._$el.find('.agenda-tag').addClass(agendaColorClass).css('background-color', courseColor);
-            this._$el.data('course-color', courseColor);
-
-            var oldColor = this._$el.css('border-color');
-            this._$el.data('default-border-color', oldColor);
-
-            // TODO theme
-            var darkerColor = 'rgba(0,0,0,0.4)';
-
-            this._$el.data('default-text-color', darkerColor);
-            this._$el.find('#agenda-section').addClass(agendaColorClass).css('color', darkerColor);
-            this._$el.find('#agenda-title').addClass(agendaColorClass).css('color', darkerColor);
-            // TODO special case for hidden events
         };
         AgendaTableViewCell.templateSelector = '#agenda-template';
         return AgendaTableViewCell;

@@ -11,11 +11,16 @@ class Color
     private _blue: number = 0;
     public get blue(): number { return this._blue; }
 
+    private _hexValue: string = null;
     public get hexValue(): string
     {
-        return '#' + HexUtilities.numberToHex(this.red)
-                   + HexUtilities.numberToHex(this.green)
-                   + HexUtilities.numberToHex(this.blue);
+        if (!this._hexValue)
+        {
+            this._hexValue = '#' + HexUtilities.numberToHex(this.red)
+                                 + HexUtilities.numberToHex(this.green)
+                                 + HexUtilities.numberToHex(this.blue);
+        }
+        return this._hexValue;
     }
 
     public static fromHex(hexString: string): Color
