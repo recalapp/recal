@@ -107,13 +107,16 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
 
             var $panel = this._$el.find(PopUpCommon.panelCssSelector);
             $panel.addClass(PopUpCommon.focusClass).removeClass(PopUpCommon.blurClass);
+
             // TODO color and opacity
+            this._updateColor();
         };
 
         PopUpView.prototype.unhighlight = function () {
             this._$el.css('z-index', '100');
             var $panel = this._$el.find(PopUpCommon.panelCssSelector);
             $panel.addClass(PopUpCommon.blurClass).removeClass(PopUpCommon.focusClass);
+            this._updateColor();
         };
 
         PopUpView.prototype._updateColor = function () {
@@ -125,6 +128,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
                 'border-color': this.color.hexValue,
                 opacity: opacity
             });
+            this.findJQuery(".panel").css("border-color", this.color.hexValue);
         };
         return PopUpView;
     })(FocusableView);

@@ -106,6 +106,7 @@ class PopUpView extends FocusableView implements IPopUpView
         var $panel = this._$el.find(PopUpCommon.panelCssSelector);
         $panel.addClass(PopUpCommon.focusClass).removeClass(PopUpCommon.blurClass);
         // TODO color and opacity
+        this._updateColor();
     }
 
     public unhighlight() : void
@@ -113,7 +114,7 @@ class PopUpView extends FocusableView implements IPopUpView
         this._$el.css('z-index', '100');
         var $panel = this._$el.find(PopUpCommon.panelCssSelector);
         $panel.addClass(PopUpCommon.blurClass).removeClass(PopUpCommon.focusClass);
-
+        this._updateColor();
     }
 
     private _updateColor() : void
@@ -126,6 +127,7 @@ class PopUpView extends FocusableView implements IPopUpView
             'border-color': this.color.hexValue,
             opacity: opacity,
         });
+        this.findJQuery(".panel").css("border-color", this.color.hexValue);
     }
 }
 

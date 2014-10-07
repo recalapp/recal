@@ -42,7 +42,7 @@ define(["require", "exports", '../Core/InvalidArgumentException'], function(requ
                 throw new InvalidArgumentException("HexString cannot be null.");
             }
             if (hexString.indexOf('#') === 0) {
-                hexString = hexString.substr(1);
+                hexString = hexString.substring(1);
             }
             if (hexString.length === 3) {
                 hexString = hexString[0] + hexString[0] + hexString[1] + hexString[1] + hexString[2] + hexString[2];
@@ -53,9 +53,9 @@ define(["require", "exports", '../Core/InvalidArgumentException'], function(requ
                 throw new InvalidArgumentException("HexString is of wrong format.");
             }
             var color = new Color();
-            color._red = HexUtilities.hexToNumber(hexString.substr(0, 2));
-            color._green = HexUtilities.hexToNumber(hexString.substr(2, 4));
-            color._blue = HexUtilities.hexToNumber(hexString.substr(4, 6));
+            color._red = HexUtilities.hexToNumber(hexString.substring(0, 2));
+            color._green = HexUtilities.hexToNumber(hexString.substring(2, 4));
+            color._blue = HexUtilities.hexToNumber(hexString.substring(4, 6));
             return color;
         };
 
