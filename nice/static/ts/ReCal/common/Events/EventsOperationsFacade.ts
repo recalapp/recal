@@ -37,6 +37,7 @@ class EventsOperationsFacade implements IEventsOperationsFacade
         if (!this._eventsServerCommunicator)
         {
             this._eventsServerCommunicator = new EventsServerCommunicator({
+                eventsModificationsManager: this.eventsModificationsManager,
                 eventsStoreCoordinator: this.eventsStoreCoordinator,
                 eventsVisibilityManager: this.eventsVisibilityManager,
                 globalBrowserEventsManager: this.globalBrowserEventsManager,

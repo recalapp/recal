@@ -1,3 +1,4 @@
+import Color = require('../../../library/Color/Color');
 import DateTime = require('../../../library/DateTime/DateTime');
 import EventsModificationsManager = require('./EventsModificationsManager');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
@@ -48,7 +49,7 @@ export interface IEventsModel
     endDate: DateTime;
     lastEdited: DateTime;
     eventGroupId: string;
-    sectionColor: string;
+    sectionColor: Color;
     revisionId: string;
 }
 

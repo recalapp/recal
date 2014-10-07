@@ -1,3 +1,4 @@
+import Color = require('../../../library/Color/Color');
 import DateTime = require('../../../library/DateTime/DateTime');
 import Events = require('./Events');
 
@@ -75,9 +76,9 @@ class EventsModel implements Events.IEventsModel
     public get eventGroupId(): string { return this._eventGroupId; }
     public set eventGroupId(value: string) { this._eventGroupId = value; }
 
-    private _sectionColor: string = null;
-    public get sectionColor(): string { return this._sectionColor; }
-    public set sectionColor(value: string) { this._sectionColor = value; }
+    private _sectionColor: Color = null;
+    public get sectionColor(): Color { return this._sectionColor; }
+    public set sectionColor(value: Color) { this._sectionColor = value; }
 
     private _revisionId: string = null;
     public get revisionId(): string { return this._revisionId; }

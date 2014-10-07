@@ -1,3 +1,4 @@
+import Color = require('../../../library/Color/Color');
 import DateTime = require('../../../library/DateTime/DateTime');
 import Dictionary = require('../../../library/DataStructures/Dictionary');
 import Events = require('./Events');
@@ -160,7 +161,7 @@ class EventsServerCommunicator
             endDate: DateTime.fromUnix(parseInt(legacyEventObject.event_end)),
             lastEdited: DateTime.fromUnix(parseInt(legacyEventObject.modified_time)),
             eventGroupId: legacyEventObject.event_group_id.toString(),
-            sectionColor: legacyEventObject.section_color,
+            sectionColor: Color.fromHex(legacyEventObject.section_color),
             revisionId: legacyEventObject.revision_id
         });
     }
@@ -179,7 +180,7 @@ class EventsServerCommunicator
             event_end: eventsModel.endDate.unix.toString(),
             modified_time: eventsModel.lastEdited.unix.toString(),
             event_group_id: eventsModel.eventGroupId,
-            section_color: eventsModel.sectionColor,
+            section_color: eventsModel.sectionColor.hexValue,
             revisionId: eventsModel.revisionId,
         };
     }

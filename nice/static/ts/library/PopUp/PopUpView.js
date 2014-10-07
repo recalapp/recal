@@ -121,8 +121,8 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../ClickToEdit
             var $heading = this._$el.find(PopUpCommon.headingCssSelector);
             var opacity = this.hasFocus ? PopUpCommon.focusOpacity : PopUpCommon.blurOpacity;
             $heading.css({
-                'background-color': this.color,
-                'border-color': this.color,
+                'background-color': this.color.hexValue,
+                'border-color': this.color.hexValue,
                 opacity: opacity
             });
         };

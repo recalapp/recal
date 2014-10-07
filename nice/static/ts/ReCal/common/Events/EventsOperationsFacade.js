@@ -46,6 +46,7 @@ define(["require", "exports", './EventsModificationsManager', './EventsRetriever
             get: function () {
                 if (!this._eventsServerCommunicator) {
                     this._eventsServerCommunicator = new EventsServerCommunicator({
+                        eventsModificationsManager: this.eventsModificationsManager,
                         eventsStoreCoordinator: this.eventsStoreCoordinator,
                         eventsVisibilityManager: this.eventsVisibilityManager,
                         globalBrowserEventsManager: this.globalBrowserEventsManager

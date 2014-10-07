@@ -3,8 +3,10 @@
 /// <amd-dependency path="jqueryui" />
 // imports
 import $ = require('jquery');
+
 import BrowserEvents = require('../Core/BrowserEvents');
 import ClickToEditBaseView = require('../ClickToEdit/ClickToEditBaseView');
+import Color = require('../Color/Color');
 import FocusableView = require('../CoreUI/FocusableView');
 import PopUp = require('./PopUp');
 import PopUpCommon = require('./PopUpCommon');
@@ -24,9 +26,9 @@ class PopUpView extends FocusableView implements IPopUpView
     public  get popUpId(): string { return this._popUpId; }
     public set popUpId(newValue: string) { this._popUpId = newValue; }
 
-    private _color: string;
-    public get color(): string { return this._color; }
-    public set color(newValue: string) { this._color = newValue; this._updateColor(); }
+    private _color: Color;
+    public get color(): Color { return this._color; }
+    public set color(newValue: Color) { this._color = newValue; this._updateColor(); }
 
     /**
       * The unique css class for this class.
@@ -120,8 +122,8 @@ class PopUpView extends FocusableView implements IPopUpView
         var $heading = this._$el.find(PopUpCommon.headingCssSelector);
         var opacity : number = this.hasFocus ? PopUpCommon.focusOpacity : PopUpCommon.blurOpacity;
         $heading.css({
-            'background-color': this.color,
-            'border-color': this.color,
+            'background-color': this.color.hexValue,
+            'border-color': this.color.hexValue,
             opacity: opacity,
         });
     }

@@ -383,6 +383,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this.startDate = eventsModel.startDate;
             this.endDate = eventsModel.endDate;
             this.lastEdited = eventsModel.lastEdited;
+            this.color = eventsModel.sectionColor;
         };
         return EventsPopUpView;
     })(PopUpView);

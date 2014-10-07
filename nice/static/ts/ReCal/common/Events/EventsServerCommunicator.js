@@ -1,4 +1,4 @@
-define(["require", "exports", '../../../library/DateTime/DateTime', '../../../library/DataStructures/Dictionary', './EventsModel', '../ReCalCommonBrowserEvents', '../../../library/Timer/RepeatingTimer', '../../../library/Server/ServerConnection', '../../../library/Server/ServerRequest', '../../../library/Server/ServerRequestType'], function(require, exports, DateTime, Dictionary, EventsModel, ReCalCommonBrowserEvents, RepeatingTimer, ServerConnection, ServerRequest, ServerRequestType) {
+define(["require", "exports", '../../../library/Color/Color', '../../../library/DateTime/DateTime', '../../../library/DataStructures/Dictionary', './EventsModel', '../ReCalCommonBrowserEvents', '../../../library/Timer/RepeatingTimer', '../../../library/Server/ServerConnection', '../../../library/Server/ServerRequest', '../../../library/Server/ServerRequestType'], function(require, exports, Color, DateTime, Dictionary, EventsModel, ReCalCommonBrowserEvents, RepeatingTimer, ServerConnection, ServerRequest, ServerRequestType) {
     var EventsServerCommunicator = (function () {
         function EventsServerCommunicator(dependencies) {
             var _this = this;
@@ -164,7 +164,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
                 endDate: DateTime.fromUnix(parseInt(legacyEventObject.event_end)),
                 lastEdited: DateTime.fromUnix(parseInt(legacyEventObject.modified_time)),
                 eventGroupId: legacyEventObject.event_group_id.toString(),
-                sectionColor: legacyEventObject.section_color,
+                sectionColor: Color.fromHex(legacyEventObject.section_color),
                 revisionId: legacyEventObject.revision_id
             });
         };
@@ -182,7 +182,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime', '../../../li
                 event_end: eventsModel.endDate.unix.toString(),
                 modified_time: eventsModel.lastEdited.unix.toString(),
                 event_group_id: eventsModel.eventGroupId,
-                section_color: eventsModel.sectionColor,
+                section_color: eventsModel.sectionColor.hexValue,
                 revisionId: eventsModel.revisionId
             };
         };

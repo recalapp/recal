@@ -1,3 +1,4 @@
+import Color = require('../Color/Color');
 import CoreUI = require('../CoreUI/CoreUI');
 
 import IFocusableView = CoreUI.IFocusableView;
@@ -6,7 +7,7 @@ import IViewController = CoreUI.IViewController;
 export interface IPopUpView extends IFocusableView
 {
     popUpId: string;
-    color: string; // TODO make into module
+    color: Color;
 }
 
 export interface IPopUpContainerViewController extends IViewController

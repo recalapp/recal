@@ -312,6 +312,7 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         this.startDate = eventsModel.startDate;
         this.endDate = eventsModel.endDate;
         this.lastEdited = eventsModel.lastEdited;
+        this.color = eventsModel.sectionColor;
     }
 }
 
