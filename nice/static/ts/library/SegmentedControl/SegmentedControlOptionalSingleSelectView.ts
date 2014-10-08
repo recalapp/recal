@@ -19,6 +19,11 @@ class SegmentedControlOptionalSingleSelectView extends SegmentedControlBaseView
         super(SegmentedControlOptionalSingleSelectView.cssClass);
     }
 
+    public handleClickForChoice(choice: ISegmentedControlChoice)
+    {
+        choice.selected = !choice.selected;
+    }
+
     /**
       * Provide single select behavior
       */
@@ -27,16 +32,18 @@ class SegmentedControlOptionalSingleSelectView extends SegmentedControlBaseView
         if (mostRecent === null || mostRecent === undefined)
         {
             // most recent is not given, defaults to the last choice
-            $.each(this.choices, (index: number, choice: ISegmentedControlChoice)=>
-            {
-                if (choice.selected)
+            mostRecent = this.choices.reduce((prevSelected: ISegmentedControlChoice, curVal: ISegmentedControlChoice)=>{
+                if (curVal.selected)
                 {
-                    mostRecent = choice;
+                    return curVal;
                 }
-            });
+                else
+                {
+                    return prevSelected;
+                }
+            }, null);
         }
-        $.each(this.choices, (index: number, choice: ISegmentedControlChoice)=>
-        {
+        this.choices.map((choice: ISegmentedControlChoice)=>{
             if (choice !== mostRecent)
             {
                 choice.selected = false;

@@ -24,6 +24,9 @@ import Notifications = require('../../library/Notifications/Notifications');
 import ReCalCommonBrowserEvents = require('../common/ReCalCommonBrowserEvents');
 import ReCalSidebar = require('../common/ReCalSidebar/ReCalSidebar');
 import ReCalSidebarViewController = require('../common/ReCalSidebar/ReCalSidebarViewController');
+import Settings = require('./Settings/Settings');
+import SettingsView = require('./Settings/SettingsView');
+import SettingsViewController = require('./Settings/SettingsViewController');
 import Sidebar = require('../../library/Sidebar/Sidebar');
 import SidebarView = require('../../library/Sidebar/SidebarView');
 import SidebarNotificationsManager = require('../../library/Notifications/SidebarNotificationsManager');
@@ -205,6 +208,10 @@ class DashboardViewController extends ViewController
         this._canvasPopUpContainerViewController = value;
     }
 
+    private _settingsViewController: SettingsViewController = null;
+    private get settingsViewController(): SettingsViewController { return this._settingsViewController; }
+    private set settingsViewController(value: SettingsViewController) { this._settingsViewController = value; }
+
     /**
      * The logged in user
      * @type {IUserProfilesMode}
@@ -240,6 +247,7 @@ class DashboardViewController extends ViewController
         this.initializePopUpCanvas();
         this.initializeCalendar();
         this.initializeAgenda();
+        this.initializeSettings();
     }
 
     private setUpEventsServerCommunicationIndicators()
@@ -329,6 +337,15 @@ class DashboardViewController extends ViewController
             });
         this.addChildViewController(popUpCanvasVC);
         this.canvasPopUpContainerViewController = popUpCanvasVC;
+    }
+
+    private initializeSettings(): void
+    {
+        var settingsView = SettingsView.fromJQuery(this.view.findJQuery('#settingsModal'));
+        this.settingsViewController = new SettingsViewController(settingsView, {
+            globalBrowserEventsManager: this.globalBrowserEventsManager,
+        });
+        this.addChildViewController(this.settingsViewController);
     }
 }
 

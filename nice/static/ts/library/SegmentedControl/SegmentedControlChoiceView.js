@@ -20,6 +20,7 @@ define(["require", "exports", 'jquery', '../CoreUI/FocusableView', './SegmentedC
             enumerable: true,
             configurable: true
         });
+
         Object.defineProperty(SegmentedControlChoiceView, "template", {
             get: function () {
                 var $button = $('<button class="btn btn-sm">');
@@ -34,14 +35,13 @@ define(["require", "exports", 'jquery', '../CoreUI/FocusableView', './SegmentedC
                 return this._choice;
             },
             set: function (value) {
-                if (this._choice !== value) {
-                    this._choice = value;
-                    this.refresh();
-                }
+                this._choice = value;
+                this.refresh();
             },
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(SegmentedControlChoiceView.prototype, "highlighted", {
             get: function () {
@@ -54,6 +54,7 @@ define(["require", "exports", 'jquery', '../CoreUI/FocusableView', './SegmentedC
             enumerable: true,
             configurable: true
         });
+
 
         SegmentedControlChoiceView.prototype.refresh = function () {
             if (this.choice === null || this.choice === undefined) {
@@ -71,3 +72,4 @@ define(["require", "exports", 'jquery', '../CoreUI/FocusableView', './SegmentedC
     
     return SegmentedControlChoiceView;
 });
+//# sourceMappingURL=SegmentedControlChoiceView.js.map

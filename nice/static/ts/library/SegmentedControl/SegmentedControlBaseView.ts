@@ -75,12 +75,13 @@ class SegmentedControlBaseView extends FocusableView implements ISegmentedContro
         this.titleView.removeAllChildren();
         this.choicesView = View.fromJQuery(this.findJQuery('#choices'));
         this.choicesView.removeAllChildren();
-        this.choicesView.attachEventHandler(BrowserEvents.click, SegmentedControlChoiceView.cssSelector(), (ev: JQueryEventObject)=>
+        this.choicesView.attachEventHandler(BrowserEvents.click, (ev: JQueryEventObject)=>
         {
             var $choice: JQuery = $(ev.target).closest(SegmentedControlChoiceView.cssSelector());
             var choiceView: SegmentedControlChoiceView = <SegmentedControlChoiceView> SegmentedControlChoiceView.fromJQuery($choice);
-            choiceView.choice.selected = true;
+            this.handleClickForChoice(choiceView.choice);
             this.fixChoices(choiceView.choice);
+            this.renderChoices();
             this.triggerEvent(BrowserEvents.segmentedControlSelectionChange);
         })
     }
@@ -94,19 +95,24 @@ class SegmentedControlBaseView extends FocusableView implements ISegmentedContro
     {
     }
 
+    public handleClickForChoice(choice: ISegmentedControlChoice)
+    {
+        choice.selected = true;
+    }
+
     private renderChoices(): void
     {
-        $.each(this.choices, (index: number, choice: ISegmentedControlChoice) =>{
+        this.choices.map((choice: ISegmentedControlChoice)=>{
             // get or create the button for this choice
             var $choice: JQuery = this.choicesView.findJQuery('#' + SegmentedControlCommon.prefix + choice.identifier);
             var choiceView: SegmentedControlChoiceView;
             if ($choice.length === 0)
             {
                 // create
-                $choice = $('<button class="btn btn-sm">');
+                $choice = $('<button class="btn btn-sm">').attr('id', '#' + SegmentedControlCommon.prefix + choice.identifier);
                 choiceView = <SegmentedControlChoiceView> SegmentedControlChoiceView.fromJQuery($choice);
-                this.append(choiceView);
-            } 
+                this.choicesView.append(choiceView);
+            }
             else
             {
                 // reuse
@@ -115,6 +121,7 @@ class SegmentedControlBaseView extends FocusableView implements ISegmentedContro
 
             // update view
             choiceView.choice = choice;
+
         });
     }
 }

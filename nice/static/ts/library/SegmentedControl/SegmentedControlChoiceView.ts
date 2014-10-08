@@ -14,6 +14,7 @@ class SegmentedControlChoiceView extends FocusableView
     {
         return FocusableView.cssClass + ' segmentedControlChoiceView';
     }
+
     private static get template(): JQuery
     {
         var $button = $('<button class="btn btn-sm">');
@@ -25,13 +26,11 @@ class SegmentedControlChoiceView extends FocusableView
     {
         return this._choice;
     }
+
     public set choice(value: ISegmentedControlChoice)
     {
-        if (this._choice !== value)
-        {
-            this._choice = value;
-            this.refresh();
-        }
+        this._choice = value;
+        this.refresh();
     }
 
     private _highlighted: boolean = false;
@@ -39,17 +38,19 @@ class SegmentedControlChoiceView extends FocusableView
     {
         return this._highlighted;
     }
+
     private set highlighted(value: boolean)
     {
         this._highlighted = value;
-        this._highlighted ? 
+        this._highlighted ?
             this._$el.addClass('btn-primary') :
             this._$el.removeClass('btn-primary');
     }
 
     constructor()
     {
-        super(SegmentedControlChoiceView.template, SegmentedControlChoiceView.cssClass);
+        super(SegmentedControlChoiceView.template,
+            SegmentedControlChoiceView.cssClass);
     }
 
     private refresh(): void
@@ -61,7 +62,8 @@ class SegmentedControlChoiceView extends FocusableView
             return;
         }
         this._$el.text(this._choice.displayText);
-        this._$el.attr('id', SegmentedControlCommon.prefix + this._choice.identifier);
+        this._$el.attr('id',
+                SegmentedControlCommon.prefix + this._choice.identifier);
         this.highlighted = this._choice.selected;
     }
 }

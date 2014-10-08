@@ -25,11 +25,12 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
             this.titleView.removeAllChildren();
             this.choicesView = View.fromJQuery(this.findJQuery('#choices'));
             this.choicesView.removeAllChildren();
-            this.choicesView.attachEventHandler(BrowserEvents.click, SegmentedControlChoiceView.cssSelector(), function (ev) {
+            this.choicesView.attachEventHandler(BrowserEvents.click, function (ev) {
                 var $choice = $(ev.target).closest(SegmentedControlChoiceView.cssSelector());
                 var choiceView = SegmentedControlChoiceView.fromJQuery($choice);
-                choiceView.choice.selected = true;
+                _this.handleClickForChoice(choiceView.choice);
                 _this.fixChoices(choiceView.choice);
+                _this.renderChoices();
                 _this.triggerEvent(BrowserEvents.segmentedControlSelectionChange);
             });
         }
@@ -114,17 +115,21 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
         SegmentedControlBaseView.prototype.fixChoices = function (mostRecent) {
         };
 
+        SegmentedControlBaseView.prototype.handleClickForChoice = function (choice) {
+            choice.selected = true;
+        };
+
         SegmentedControlBaseView.prototype.renderChoices = function () {
             var _this = this;
-            $.each(this.choices, function (index, choice) {
+            this.choices.map(function (choice) {
                 // get or create the button for this choice
                 var $choice = _this.choicesView.findJQuery('#' + SegmentedControlCommon.prefix + choice.identifier);
                 var choiceView;
                 if ($choice.length === 0) {
                     // create
-                    $choice = $('<button class="btn btn-sm">');
+                    $choice = $('<button class="btn btn-sm">').attr('id', '#' + SegmentedControlCommon.prefix + choice.identifier);
                     choiceView = SegmentedControlChoiceView.fromJQuery($choice);
-                    _this.append(choiceView);
+                    _this.choicesView.append(choiceView);
                 } else {
                     // reuse
                     choiceView = SegmentedControlChoiceView.fromJQuery($choice);
@@ -140,3 +145,4 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
     
     return SegmentedControlBaseView;
 });
+//# sourceMappingURL=SegmentedControlBaseView.js.map
