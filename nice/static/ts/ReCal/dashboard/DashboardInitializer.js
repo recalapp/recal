@@ -1,5 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
-define(["require", "exports", 'jquery', './DashboardViewController', '../common/UserProfiles/UserProfilesModel', '../../library/CoreUI/View', "dashboard"], function(require, exports, $, DashboardViewController, UserProfilesModel, View) {
+define(["require", "exports", 'jquery', './DashboardViewController', '../common/UserProfiles/UserProfilesModel', '../../library/CoreUI/View'], function(require, exports, $, DashboardViewController, UserProfilesModel, View) {
     var DashboardInitializer = (function () {
         function DashboardInitializer() {
             this._rootViewController = null;

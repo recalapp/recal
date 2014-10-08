@@ -173,7 +173,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 {
                     // event is no longer main. if it matches our current
                     // popup, then remove the popup
-                    if (this.currentPopUpView && eventIds.contains(this.currentPopUpView.eventsModel.eventId))
+                    if (this.currentPopUpView && eventIds.indexOf(this.currentPopUpView.eventsModel.eventId) >= 0)
                     {
                         // everything in eventIds is not main, so we can safely remove this main popup
                         this.removePopUpView(this.currentPopUpView, true);

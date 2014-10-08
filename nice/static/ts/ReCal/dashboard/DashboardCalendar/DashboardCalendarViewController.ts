@@ -15,18 +15,6 @@ import ICalendarView = Calendar.ICalendarView;
 import ICalendarViewEvent = Calendar.ICalendarViewEvent;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 
-declare function colorLuminance(color: string, lumFactor: number): string;
-declare function luminanceToRgb(lum: string): string;
-declare function LO_hideLoading(id: string): void;
-declare function LO_showLoading(id: string): void;
-declare function rgbToRgba(rgb: string, transFactor: number): string;
-declare function setOpacity(color: string, transFactor: number): string;
-declare var FACTOR_LUM: number;
-declare var FACTOR_TRANS: number;
-declare var FACTOR_TRANS_DARK: number;
-declare var SE_id: string;
-declare var THEME: string;
-
 class DashboardCalendarViewController extends CalendarViewController
 {
     /**
@@ -56,10 +44,10 @@ class DashboardCalendarViewController extends CalendarViewController
 
         // reload before displaying
         // TODO check if visible
-        $('#' + SE_id).on('close', (ev: JQueryEventObject)=>
+        /*$('#' + SE_id).on('close', (ev: JQueryEventObject)=>
         {
             this.view.refresh();
-        });
+        });*/
         $('#calendar.tab-pane').each((index: number, pane: any)=>
         {
             $(pane).on('transitionend', (ev: JQueryEventObject)=>
@@ -82,13 +70,13 @@ class DashboardCalendarViewController extends CalendarViewController
         {
             return;
         }
-        var backgroundColor = calEvent.sectionColor;
-        backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
-        calEvent.backgroundColor =
-        rgbToRgba(luminanceToRgb(backgroundColor), 1.0);
-        calEvent.borderColor = calEvent.backgroundColor;
-        calEvent.textColor = '#ffffff';
-        calEvent.highlighted = true;
+        //var backgroundColor = calEvent.sectionColor;
+        //backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
+        //calEvent.backgroundColor =
+        //rgbToRgba(luminanceToRgb(backgroundColor), 1.0);
+        //calEvent.borderColor = calEvent.backgroundColor;
+        //calEvent.textColor = '#ffffff';
+//        calEvent.highlighted = true;
     }
 
     private unhighlightCalendarEvent(calEvent: ICalendarViewEvent)
@@ -97,21 +85,21 @@ class DashboardCalendarViewController extends CalendarViewController
         {
             return;
         }
-        var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
-        var backgroundColor = calEvent.sectionColor;
-        backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
-        calEvent.backgroundColor =
-        rgbToRgba(luminanceToRgb(backgroundColor), factor_trans);
-        calEvent.borderColor = setOpacity(calEvent.backgroundColor, 1.0);
-        calEvent.textColor = calEvent.sectionColor;
-        calEvent.highlighted = false;
+        //var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
+        //var backgroundColor = calEvent.sectionColor;
+        //backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
+        //calEvent.backgroundColor =
+        //rgbToRgba(luminanceToRgb(backgroundColor), factor_trans);
+        //calEvent.borderColor = setOpacity(calEvent.backgroundColor, 1.0);
+        //calEvent.textColor = calEvent.sectionColor;
+//        calEvent.highlighted = false;
     }
 
     public reload(): void
     {
-        LO_showLoading('cal loading');
+        //LO_showLoading('cal loading');
         this.view.refresh();
-        LO_hideLoading('cal loading');
+        //LO_hideLoading('cal loading');
     }
 
     /********************************************************************

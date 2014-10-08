@@ -159,7 +159,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                 } else {
                     // event is no longer main. if it matches our current
                     // popup, then remove the popup
-                    if (_this.currentPopUpView && eventIds.contains(_this.currentPopUpView.eventsModel.eventId)) {
+                    if (_this.currentPopUpView && eventIds.indexOf(_this.currentPopUpView.eventsModel.eventId) >= 0) {
                         // everything in eventIds is not main, so we can safely remove this main popup
                         _this.removePopUpView(_this.currentPopUpView, true);
                     }
