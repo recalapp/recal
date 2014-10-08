@@ -274,7 +274,8 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
                 viewTemplateRetriever: this.viewTemplateRetriever,
                 eventsOperationsFacade: this.eventsOperationsFacade,
                 indicatorsManager: this.indicatorsManager,
-                globalBrowserEventsManager: this.globalBrowserEventsManager
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+                user: this.user
             });
             this.addChildViewController(agendaVC);
             this.agendaViewController = agendaVC;

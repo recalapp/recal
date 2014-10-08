@@ -55,6 +55,14 @@ class AgendaTableViewController extends TableViewController
     private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
 
     /**
+     * The current logged in user, needed to get the list of sections
+     * @type {IUserProfilesModel}
+     * @private
+     */
+    private _user: IUserProfilesModel = null;
+    private get user(): IUserProfilesModel { return this._user; }
+
+    /**
      * Indicators Manager
      * @type IIndicatorsManager
      * @private
@@ -71,6 +79,7 @@ class AgendaTableViewController extends TableViewController
         dependencies.globalBrowserEventsManager;
         this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
         this._indicatorsManager = dependencies.indicatorsManager;
+        this._user = dependencies.user;
         // when events change
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDataChanged,
             (ev: JQueryEventObject)=>
@@ -274,7 +283,9 @@ class AgendaTableViewController extends TableViewController
      */
     public createCell(identifier: string): ITableViewCell
     {
-        return <AgendaTableViewCell> AgendaTableViewCell.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell.templateSelector));
+        var cell = <AgendaTableViewCell> AgendaTableViewCell.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell.templateSelector));
+        cell.possibleSections = this.user.enrolledSectionsModels;
+        return cell;
     }
 
     /**

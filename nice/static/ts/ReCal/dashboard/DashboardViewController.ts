@@ -289,6 +289,7 @@ class DashboardViewController extends ViewController
                 eventsOperationsFacade: this.eventsOperationsFacade,
                 indicatorsManager: this.indicatorsManager,
                 globalBrowserEventsManager: this.globalBrowserEventsManager,
+                user: this.user,
             });
         this.addChildViewController(agendaVC);
         this.agendaViewController = agendaVC;

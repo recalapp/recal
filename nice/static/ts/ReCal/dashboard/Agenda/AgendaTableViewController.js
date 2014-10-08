@@ -28,6 +28,12 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             */
             this._eventsOperationsFacade = null;
             /**
+            * The current logged in user, needed to get the list of sections
+            * @type {IUserProfilesModel}
+            * @private
+            */
+            this._user = null;
+            /**
             * Indicators Manager
             * @type IIndicatorsManager
             * @private
@@ -37,6 +43,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
             this._indicatorsManager = dependencies.indicatorsManager;
+            this._user = dependencies.user;
 
             // when events change
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDataChanged, function (ev) {
@@ -120,6 +127,14 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         Object.defineProperty(AgendaTableViewController.prototype, "eventsOperationsFacade", {
             get: function () {
                 return this._eventsOperationsFacade;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(AgendaTableViewController.prototype, "user", {
+            get: function () {
+                return this._user;
             },
             enumerable: true,
             configurable: true
@@ -235,7 +250,9 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         * Create a new table view cell for the given identifier
         */
         AgendaTableViewController.prototype.createCell = function (identifier) {
-            return AgendaTableViewCell.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell.templateSelector));
+            var cell = AgendaTableViewCell.fromJQuery(this.viewTemplateRetriever.retrieveTemplate(AgendaTableViewCell.templateSelector));
+            cell.possibleSections = this.user.enrolledSectionsModels;
+            return cell;
         };
 
         /**

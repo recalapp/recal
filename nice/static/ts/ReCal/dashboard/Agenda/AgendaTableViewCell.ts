@@ -4,15 +4,14 @@ import $ = require('jquery');
 
 import Agenda = require('./Agenda');
 import Color = require('../../../library/Color/Color');
+import Courses = require('../../common/Courses/Courses');
 import DateTime = require('../../../library/DateTime/DateTime');
 import Events = require('../../common/Events/Events');
 import TableViewCell = require('../../../library/Table/TableViewCell');
 
 import IAgendaTableViewCell = Agenda.IAgendaTableViewCell;
 import IEventsModel = Events.IEventsModel;
-
-declare var SECTION_MAP: any;
-declare var SECTION_COLOR_MAP: any;
+import ISectionsModel = Courses.ISectionsModel;
 
 class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
 {
@@ -55,6 +54,10 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
         return this._eventId;
     }
 
+    public _possibleSections: ISectionsModel[] = [];
+    public get possibleSections(): ISectionsModel[] { return this._possibleSections; }
+    public set possibleSections(value: ISectionsModel[]) { this._possibleSections = value; }
+
     public highlight(): void
     {
         this._$el.find('#agenda-section').css('color', this.color.hexValue);
@@ -67,7 +70,6 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
     {
         this._$el.find('.agenda-item').addClass("panel-default").removeClass("panel-primary").css('border-color',
             this.defaultBorderColor.hexValue);
-        ;
         this._$el.find('#agenda-section').css('color', this.defaultBorderColor.hexValue);
         this._$el.find('#agenda-title').css('color', this.defaultTextColor.hexValue);
         this._$el.find('#agenda-section').css('color', this.defaultTextColor.hexValue);
@@ -77,8 +79,15 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
     {
         this._eventId = eventsModel.eventId;
         this._$el.find('.panel-body').find('h4').text(eventsModel.title);
-        this._$el.find('#agenda-section').text(SECTION_MAP[eventsModel.sectionId]);
-
+        var sections = this.possibleSections.filter((sectionsModel: ISectionsModel)=>{
+            return sectionsModel.sectionId === eventsModel.sectionId;
+        });
+        if (sections.length > 0)
+        {
+            this._$el.find('#agenda-section').text(
+                    sections[0].coursesModel.primaryListing +
+                    ' - ' + sections[0].title);
+        }
         var timeText = eventsModel.startDate.calendar();
         this._$el.find('#agenda-time').text(timeText);
     }
