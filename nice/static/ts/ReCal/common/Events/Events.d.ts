@@ -36,6 +36,11 @@ export interface EventsServerCommunicatorDependencies
     globalBrowserEventsManager: GlobalBrowserEventsManager;
 }
 
+export interface EventsVisibilityManagerDependencies
+{
+    globalBrowserEventsManager: GlobalBrowserEventsManager;
+}
+
 export interface IEventsModel
 {
     eventId: string;
@@ -127,4 +132,19 @@ export interface IEventsOperationsFacade
      * modifiedEventsModel
      */
     commitModifiedEvent(modifiedEventsModel: IEventsModel): void;
+
+    /***************************************************************************
+     * Event Visibility
+     **************************************************************************/
+    /**
+     * Hide the event associated with this ID. This is used for when the user
+     * explicitly clicks on the hide button.
+     */
+    hideEventWithId(eventId: string): void;
+
+    /**
+     * Unhide the event associated with this ID. Safe to call on an event that
+     * hasn't been hidden.
+     */
+    unhideEventWithId(eventId: string): void;
 }

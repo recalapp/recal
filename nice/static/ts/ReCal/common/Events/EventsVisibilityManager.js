@@ -1,4 +1,4 @@
-define(["require", "exports", '../../../library/DataStructures/Set'], function(require, exports, Set) {
+define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/DataStructures/Set'], function(require, exports, ReCalCommonBrowserEvents, Set) {
     /**
     * EventsVisibilityManager deals with the visibility of events. An event may be
     * hidden because a user explicitly selected it to be hidden, or because its
@@ -6,12 +6,25 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
     * preferences.
     */
     var EventsVisibilityManager = (function () {
-        function EventsVisibilityManager() {
+        function EventsVisibilityManager(dependencies) {
             this._hiddenEventIds = new Set();
+            /**
+            * Global Browser Events Manager
+            */
+            this._globalBrowserEventsManager = null;
+            this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         }
         Object.defineProperty(EventsVisibilityManager.prototype, "hiddenEventIds", {
             get: function () {
                 return this._hiddenEventIds;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsVisibilityManager.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                return this._globalBrowserEventsManager;
             },
             enumerable: true,
             configurable: true
@@ -23,6 +36,7 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
         */
         EventsVisibilityManager.prototype.hideEventWithId = function (eventId) {
             this.hiddenEventIds.add(eventId);
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
         };
 
         /**
@@ -32,6 +46,7 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
         EventsVisibilityManager.prototype.unhideEventWithId = function (eventId) {
             if (this.hiddenEventIds.contains(eventId)) {
                 this.hiddenEventIds.remove(eventId);
+                this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
             }
         };
 

@@ -3,6 +3,7 @@ import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
 import CanvasPopUpContainer = require('./CanvasPopUpContainer');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Events = require('../../common/Events/Events');
+import EventsPopUpView = require('../EventsPopUp/EventsPopUpView');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import InvalidActionException = require('../../../library/Core/InvalidActionException');
 import PopUp = require('../../../library/PopUp/PopUp');
@@ -72,7 +73,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
 
         // when popup is dropped onto sidebar
         this.canvasView.attachEventHandler(BrowserEvents.sidebarViewDidDrop,
-            PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any) =>
+            EventsPopUpView.cssSelector(), (ev: JQueryEventObject, extra: any) =>
             {
                 var popUpView: IPopUpView = extra.view;
                 this.removePopUpView(popUpView);
@@ -86,7 +87,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
         // when popup needs to close
         this.canvasView.attachEventHandler(
             ReCalCommonBrowserEvents.popUpShouldClose,
-            PopUpView.cssSelector(), (ev: JQueryEventObject, extra: any)=>
+            EventsPopUpView.cssSelector(), (ev: JQueryEventObject, extra: any)=>
             {
                 if (extra.view.parentView !== this.canvasView)
                 {
@@ -99,7 +100,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
             });
         this.canvasView.attachEventHandler(
             ReCalCommonBrowserEvents.editablePopUpDidSave,
-            PopUpView.cssSelector(),
+            EventsPopUpView.cssSelector(),
             (ev: JQueryEventObject, extra: { modifiedEventsModel: IEventsModel; view: IView }) =>
             {
                 if (extra.view.parentView !== this.canvasView)
@@ -108,13 +109,25 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                 }
                 this.eventsOperationsFacade.commitModifiedEvent(extra.modifiedEventsModel);
             });
+        this.canvasView.attachEventHandler(
+            ReCalCommonBrowserEvents.eventShouldHide,
+            EventsPopUpView.cssSelector(),
+            (ev: JQueryEventObject, extra: { view: EventsPopUpView }) =>
+            {
+                if (extra.view.parentView !== this.canvasView)
+                {
+                    return;
+                }
+                this.eventsOperationsFacade.hideEventWithId(extra.view.eventsModel.eventId);
+                this.removePopUpView(extra.view);
+            });
     }
 
     /**
      * Add a PopUpView object to the canvas container. PopUpView object
      * must be detached from its previous parent first
      */
-    private addPopUpView(popUpView: IPopUpView): void
+    private addPopUpView(popUpView: IEventsPopUpView): void
     {
         if (popUpView.parentView !== null)
         {
@@ -124,7 +137,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
         this.canvasView.append(popUpView);
     }
 
-    private removePopUpView(popUpView: IPopUpView): void
+    private removePopUpView(popUpView: IEventsPopUpView): void
     {
         if (popUpView.parentView !== this.canvasView)
         {

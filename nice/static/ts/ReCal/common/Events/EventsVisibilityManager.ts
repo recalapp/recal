@@ -1,4 +1,9 @@
+import Events = require('./Events');
+import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
+import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import Set = require('../../../library/DataStructures/Set');
+
+import EventsVisibilityManagerDependencies = Events.EventsVisibilityManagerDependencies;
 
 /**
  * EventsVisibilityManager deals with the visibility of events. An event may be
@@ -12,12 +17,25 @@ class EventsVisibilityManager
     private get hiddenEventIds(): Set<string> { return this._hiddenEventIds; }
 
     /**
+     * Global Browser Events Manager
+     */
+    private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager { return this._globalBrowserEventsManager; }
+
+    constructor(dependencies: EventsVisibilityManagerDependencies)
+    {
+        this._globalBrowserEventsManager =
+        dependencies.globalBrowserEventsManager;
+    }
+
+    /**
      * Hide the event associated with this ID. This is used for when the user
      * explicitly clicks on the hide button.
      */
     public hideEventWithId(eventId: string): void
     {
         this.hiddenEventIds.add(eventId);
+        this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
     }
 
     /**
@@ -29,6 +47,7 @@ class EventsVisibilityManager
         if (this.hiddenEventIds.contains(eventId))
         {
             this.hiddenEventIds.remove(eventId);
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
         }
     }
 

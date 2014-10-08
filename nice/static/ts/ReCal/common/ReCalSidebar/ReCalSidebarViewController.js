@@ -175,6 +175,10 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                 var modifiedEventsModel = extra.modifiedEventsModel;
                 _this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
             });
+            this.view.attachEventHandler(ReCalCommonBrowserEvents.eventShouldHide, EventsPopUpView.cssSelector(), function (ev, extra) {
+                _this.eventsOperationsFacade.hideEventWithId(extra.view.eventsModel.eventId);
+                _this.removePopUpView(extra.view, true);
+            });
         };
 
         /**

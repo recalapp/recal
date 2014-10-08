@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/Core/InvalidActionException', '../../../library/PopUp/PopUpView', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, InvalidActionException, PopUpView, ReCalCommonBrowserEvents, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsPopUp/EventsPopUpView', '../../../library/Core/InvalidActionException', '../ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, EventsPopUpView, InvalidActionException, ReCalCommonBrowserEvents, ViewController) {
     var CanvasPopUpContainerViewController = (function (_super) {
         __extends(CanvasPopUpContainerViewController, _super);
         function CanvasPopUpContainerViewController(view, dependencies) {
@@ -76,7 +76,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             });
 
             // when popup is dropped onto sidebar
-            this.canvasView.attachEventHandler(BrowserEvents.sidebarViewDidDrop, PopUpView.cssSelector(), function (ev, extra) {
+            this.canvasView.attachEventHandler(BrowserEvents.sidebarViewDidDrop, EventsPopUpView.cssSelector(), function (ev, extra) {
                 var popUpView = extra.view;
                 _this.removePopUpView(popUpView);
                 _this.canvasView.triggerEvent(ReCalCommonBrowserEvents.popUpWasDroppedInSidebar, {
@@ -85,7 +85,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             });
 
             // when popup needs to close
-            this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.popUpShouldClose, PopUpView.cssSelector(), function (ev, extra) {
+            this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.popUpShouldClose, EventsPopUpView.cssSelector(), function (ev, extra) {
                 if (extra.view.parentView !== _this.canvasView) {
                     return;
                 }
@@ -95,11 +95,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 _this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
                 _this.removePopUpView(extra.view);
             });
-            this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.editablePopUpDidSave, PopUpView.cssSelector(), function (ev, extra) {
+            this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.editablePopUpDidSave, EventsPopUpView.cssSelector(), function (ev, extra) {
                 if (extra.view.parentView !== _this.canvasView) {
                     return;
                 }
                 _this.eventsOperationsFacade.commitModifiedEvent(extra.modifiedEventsModel);
+            });
+            this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.eventShouldHide, EventsPopUpView.cssSelector(), function (ev, extra) {
+                if (extra.view.parentView !== _this.canvasView) {
+                    return;
+                }
+                _this.eventsOperationsFacade.hideEventWithId(extra.view.eventsModel.eventId);
+                _this.removePopUpView(extra.view);
             });
         };
 

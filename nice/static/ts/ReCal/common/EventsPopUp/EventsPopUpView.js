@@ -33,13 +33,24 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this._lastEdited = null;
             this._lastEditedJQuery = null;
             this._closeButton = null;
+            this._hideButton = null;
 
             // TODO set up buttons
             // set up close button
             this._closeButton = FocusableView.fromJQuery(this.findJQuery('#close-button'));
             this.closeButton.attachEventHandler(BrowserEvents.click, function (ev) {
+                ev.preventDefault(); // prevent from going to recal.io/#, which goes to the top of the page
+
                 // lambda forces a context change
                 _this.handleCloseButtonClick(ev);
+            });
+
+            // set up hide button
+            this._hideButton = FocusableView.fromJQuery(this.findJQuery('#hide-button'));
+            this.hideButton.attachEventHandler(BrowserEvents.click, function (ev) {
+                ev.preventDefault(); // prevent from going to recal.io/#
+
+                _this.handleHideButtonClick(ev);
             });
         }
         Object.defineProperty(EventsPopUpView.prototype, "encodeDecodeProxy", {
@@ -361,8 +372,20 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             configurable: true
         });
 
+        Object.defineProperty(EventsPopUpView.prototype, "hideButton", {
+            get: function () {
+                return this._hideButton;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         EventsPopUpView.prototype.handleCloseButtonClick = function (ev) {
             this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
+        };
+
+        EventsPopUpView.prototype.handleHideButtonClick = function (ev) {
+            this.triggerEvent(ReCalCommonBrowserEvents.eventShouldHide);
         };
 
         EventsPopUpView.prototype.refresh = function () {

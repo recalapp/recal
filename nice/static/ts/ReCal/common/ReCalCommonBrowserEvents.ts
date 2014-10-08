@@ -8,6 +8,7 @@ class ReCalCommonBrowserEvents
 
     static eventSelectionChanged = 'eventSelectionChanged';
     static eventIdChanged = 'eventIdChanged';
+    static eventShouldHide = 'eventShouldHide';
     static eventsDataChanged = 'eventsDataChanged';
     static eventsWillBeginDownloading = 'eventsWillBeginDownloading';
     static eventsDidFinishDownloading = 'eventsDidFinishDownloading';

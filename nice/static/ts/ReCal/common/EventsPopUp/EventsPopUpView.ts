@@ -273,6 +273,9 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
     private _closeButton: FocusableView = null;
     public get closeButton(): FocusableView { return this._closeButton; }
 
+    private _hideButton: FocusableView = null;
+    public get hideButton(): FocusableView { return this._hideButton; }
+
     constructor($element: JQuery, cssClass: string)
     {
         super($element, cssClass);
@@ -281,14 +284,28 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
         // set up close button
         this._closeButton = <FocusableView> FocusableView.fromJQuery(this.findJQuery('#close-button'));
         this.closeButton.attachEventHandler(BrowserEvents.click, (ev: JQueryEventObject)=>{
+            ev.preventDefault(); // prevent from going to recal.io/#, which goes to the top of the page
             // lambda forces a context change
             this.handleCloseButtonClick(ev);
         });
+
+        // set up hide button
+        this._hideButton = <FocusableView> FocusableView.fromJQuery(this.findJQuery('#hide-button'));
+        this.hideButton.attachEventHandler(BrowserEvents.click, (ev: JQueryEventObject)=>{
+            ev.preventDefault(); // prevent from going to recal.io/#
+
+            this.handleHideButtonClick(ev);
+        })
     }
 
     public handleCloseButtonClick(ev: JQueryEventObject)
     {
         this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
+    }
+
+    public handleHideButtonClick(ev: JQueryEventObject)
+    {
+        this.triggerEvent(ReCalCommonBrowserEvents.eventShouldHide);
     }
 
     public refresh(): void

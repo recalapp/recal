@@ -61,7 +61,9 @@ define(["require", "exports", './EventsModificationsManager', './EventsRetriever
         Object.defineProperty(EventsOperationsFacade.prototype, "eventsVisibilityManager", {
             get: function () {
                 if (!this._eventsVisibilityManager) {
-                    this._eventsVisibilityManager = new EventsVisibilityManager();
+                    this._eventsVisibilityManager = new EventsVisibilityManager({
+                        globalBrowserEventsManager: this.globalBrowserEventsManager
+                    });
                 }
                 return this._eventsVisibilityManager;
             },
@@ -196,6 +198,25 @@ define(["require", "exports", './EventsModificationsManager', './EventsRetriever
         */
         EventsOperationsFacade.prototype.commitModifiedEvent = function (modifiedEventsModel) {
             this.eventsModificationsManager.commitModifiedEvent(modifiedEventsModel);
+        };
+
+        /***************************************************************************
+        * Event Visibility
+        **************************************************************************/
+        /**
+        * Hide the event associated with this ID. This is used for when the user
+        * explicitly clicks on the hide button.
+        */
+        EventsOperationsFacade.prototype.hideEventWithId = function (eventId) {
+            this.eventsVisibilityManager.hideEventWithId(eventId);
+        };
+
+        /**
+        * Unhide the event associated with this ID. Safe to call on an event that
+        * hasn't been hidden.
+        */
+        EventsOperationsFacade.prototype.unhideEventWithId = function (eventId) {
+            this.eventsVisibilityManager.unhideEventWithId(eventId);
         };
         return EventsOperationsFacade;
     })();

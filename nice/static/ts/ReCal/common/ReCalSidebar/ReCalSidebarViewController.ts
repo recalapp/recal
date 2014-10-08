@@ -195,6 +195,11 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 var modifiedEventsModel = extra.modifiedEventsModel;
                 this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
             });
+        this.view.attachEventHandler(ReCalCommonBrowserEvents.eventShouldHide,
+            EventsPopUpView.cssSelector(), (ev: JQueryEventObject, extra: { view: EventsPopUpView })=>{
+                this.eventsOperationsFacade.hideEventWithId(extra.view.eventsModel.eventId);
+                this.removePopUpView(extra.view, true);
+            });
     }
 
     /**

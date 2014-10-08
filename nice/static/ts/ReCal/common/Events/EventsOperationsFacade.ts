@@ -51,7 +51,9 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     {
         if (!this._eventsVisibilityManager)
         {
-            this._eventsVisibilityManager = new EventsVisibilityManager();
+            this._eventsVisibilityManager = new EventsVisibilityManager({
+                globalBrowserEventsManager: this.globalBrowserEventsManager
+            });
         }
         return this._eventsVisibilityManager;
     }
@@ -208,6 +210,27 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     public commitModifiedEvent(modifiedEventsModel: IEventsModel): void
     {
         this.eventsModificationsManager.commitModifiedEvent(modifiedEventsModel);
+    }
+
+    /***************************************************************************
+     * Event Visibility
+     **************************************************************************/
+    /**
+     * Hide the event associated with this ID. This is used for when the user
+     * explicitly clicks on the hide button.
+     */
+    public hideEventWithId(eventId: string): void
+    {
+        this.eventsVisibilityManager.hideEventWithId(eventId);
+    }
+
+    /**
+     * Unhide the event associated with this ID. Safe to call on an event that
+     * hasn't been hidden.
+     */
+    public unhideEventWithId(eventId: string): void
+    {
+        this.eventsVisibilityManager.unhideEventWithId(eventId);
     }
 }
 
