@@ -24,20 +24,21 @@ class SegmentedControlSingleSelectView extends SegmentedControlBaseView
       */
     public fixChoices(mostRecent?: ISegmentedControlChoice): void
     {
-        this.choices[0].selected = true; // ok because we keep latest
         if (mostRecent === null || mostRecent === undefined)
         {
             // most recent is not given, defaults to the last choice
-            $.each(this.choices, (index: number, choice: ISegmentedControlChoice)=>
-            {
-                if (choice.selected)
+            mostRecent = this.choices.reduce((prevSelected: ISegmentedControlChoice, curVal: ISegmentedControlChoice)=>{
+                if (curVal.selected)
                 {
-                    mostRecent = choice;
+                    return curVal;
                 }
-            });
+                else
+                {
+                    return prevSelected;
+                }
+            }, this.choices[0]);
         }
-        $.each(this.choices, (index: number, choice: ISegmentedControlChoice)=>
-        {
+        this.choices.map((choice: ISegmentedControlChoice)=>{
             if (choice !== mostRecent)
             {
                 choice.selected = false;

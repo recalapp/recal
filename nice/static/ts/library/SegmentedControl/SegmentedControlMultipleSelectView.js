@@ -19,6 +19,10 @@ define(["require", "exports", './SegmentedControlBaseView'], function(require, e
             configurable: true
         });
 
+        SegmentedControlMultipleSelectView.prototype.handleClickForChoice = function (choice) {
+            choice.selected = !choice.selected;
+        };
+
         /**
         * Provide multiple select behavior
         */
@@ -31,3 +35,4 @@ define(["require", "exports", './SegmentedControlBaseView'], function(require, e
     
     return SegmentedControlMultipleSelectView;
 });
+//# sourceMappingURL=SegmentedControlMultipleSelectView.js.map

@@ -19,6 +19,10 @@ class SegmentedControlMultipleSelectView extends SegmentedControlBaseView
         super(SegmentedControlMultipleSelectView.cssClass);
     }
 
+    public handleClickForChoice(choice: ISegmentedControlChoice)
+    {
+        choice.selected = !choice.selected;
+    }
     /**
       * Provide multiple select behavior
       */

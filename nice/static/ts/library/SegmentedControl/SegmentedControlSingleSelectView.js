@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './SegmentedControlBaseView'], function(require, exports, $, SegmentedControlBaseView) {
+define(["require", "exports", './SegmentedControlBaseView'], function(require, exports, SegmentedControlBaseView) {
     var SegmentedControlSingleSelectView = (function (_super) {
         __extends(SegmentedControlSingleSelectView, _super);
         function SegmentedControlSingleSelectView() {
@@ -23,16 +23,17 @@ define(["require", "exports", 'jquery', './SegmentedControlBaseView'], function(
         * Provide single select behavior
         */
         SegmentedControlSingleSelectView.prototype.fixChoices = function (mostRecent) {
-            this.choices[0].selected = true; // ok because we keep latest
             if (mostRecent === null || mostRecent === undefined) {
                 // most recent is not given, defaults to the last choice
-                $.each(this.choices, function (index, choice) {
-                    if (choice.selected) {
-                        mostRecent = choice;
+                mostRecent = this.choices.reduce(function (prevSelected, curVal) {
+                    if (curVal.selected) {
+                        return curVal;
+                    } else {
+                        return prevSelected;
                     }
-                });
+                }, this.choices[0]);
             }
-            $.each(this.choices, function (index, choice) {
+            this.choices.map(function (choice) {
                 if (choice !== mostRecent) {
                     choice.selected = false;
                 }
@@ -44,3 +45,4 @@ define(["require", "exports", 'jquery', './SegmentedControlBaseView'], function(
     
     return SegmentedControlSingleSelectView;
 });
+//# sourceMappingURL=SegmentedControlSingleSelectView.js.map

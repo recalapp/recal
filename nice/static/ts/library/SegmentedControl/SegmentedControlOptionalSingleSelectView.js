@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './SegmentedControlBaseView'], function(require, exports, $, SegmentedControlBaseView) {
+define(["require", "exports", './SegmentedControlBaseView'], function(require, exports, SegmentedControlBaseView) {
     var SegmentedControlOptionalSingleSelectView = (function (_super) {
         __extends(SegmentedControlOptionalSingleSelectView, _super);
         function SegmentedControlOptionalSingleSelectView() {
@@ -19,19 +19,25 @@ define(["require", "exports", 'jquery', './SegmentedControlBaseView'], function(
             configurable: true
         });
 
+        SegmentedControlOptionalSingleSelectView.prototype.handleClickForChoice = function (choice) {
+            choice.selected = !choice.selected;
+        };
+
         /**
         * Provide single select behavior
         */
         SegmentedControlOptionalSingleSelectView.prototype.fixChoices = function (mostRecent) {
             if (mostRecent === null || mostRecent === undefined) {
                 // most recent is not given, defaults to the last choice
-                $.each(this.choices, function (index, choice) {
-                    if (choice.selected) {
-                        mostRecent = choice;
+                mostRecent = this.choices.reduce(function (prevSelected, curVal) {
+                    if (curVal.selected) {
+                        return curVal;
+                    } else {
+                        return prevSelected;
                     }
-                });
+                }, null);
             }
-            $.each(this.choices, function (index, choice) {
+            this.choices.map(function (choice) {
                 if (choice !== mostRecent) {
                     choice.selected = false;
                 }
@@ -43,3 +49,4 @@ define(["require", "exports", 'jquery', './SegmentedControlBaseView'], function(
     
     return SegmentedControlOptionalSingleSelectView;
 });
+//# sourceMappingURL=SegmentedControlOptionalSingleSelectView.js.map
