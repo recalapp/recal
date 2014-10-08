@@ -42,7 +42,7 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
     {
         if (!this._color)
         {
-            this._color = this._defaultBorderColor;
+            this._color = this.defaultBorderColor;
         }
         return this._color;
     }
@@ -60,19 +60,35 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
 
     public highlight(): void
     {
-        this._$el.find('#agenda-section').css('color', this.color.hexValue);
-        this._$el.find('#agenda-title').css('color', this.color.hexValue);
-        this._$el.find('.agenda-item').addClass('panel-primary').removeClass('panel-default').css('border-color',
-            this.color.hexValue);
+        this.findJQuery('.agenda-item').addClass('panel-primary').removeClass('panel-default');
+        this.updateColor();
     }
 
     public unhighlight(): void
     {
-        this._$el.find('.agenda-item').addClass("panel-default").removeClass("panel-primary").css('border-color',
-            this.defaultBorderColor.hexValue);
-        this._$el.find('#agenda-section').css('color', this.defaultBorderColor.hexValue);
-        this._$el.find('#agenda-title').css('color', this.defaultTextColor.hexValue);
-        this._$el.find('#agenda-section').css('color', this.defaultTextColor.hexValue);
+        this.findJQuery('.agenda-item').addClass("panel-default").removeClass("panel-primary");
+        this.updateColor();
+    }
+
+    private updateColor(): void
+    {
+        if (this.selected)
+        {
+            this.findJQuery('#agenda-section').css('color',
+                this.color.hexValue);
+            this.findJQuery('#agenda-title').css('color', this.color.hexValue);
+            this.findJQuery('.agenda-item').css('border-color',
+                this.color.hexValue);
+        }
+        else
+        {
+            this.findJQuery('#agenda-section').css('color',
+                this.defaultTextColor.hexValue);
+            this.findJQuery('#agenda-title').css('color', this.defaultTextColor.hexValue);
+            this.findJQuery('.agenda-item').css('border-color',
+                this.defaultBorderColor.hexValue);
+        }
+        this.findJQuery('.agenda-tag').css('background-color', this.color.hexValue);
     }
 
     public setToEvent(eventsModel: IEventsModel): void
@@ -90,6 +106,8 @@ class AgendaTableViewCell extends TableViewCell implements IAgendaTableViewCell
         }
         var timeText = eventsModel.startDate.calendar();
         this._$el.find('#agenda-time').text(timeText);
+        this.color = eventsModel.sectionColor;
+        this.updateColor();
     }
 }
 
