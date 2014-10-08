@@ -51,11 +51,11 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             });
 
             // when settings close
-            $('#' + SE_id).on('close', function (ev) {
-                // TODO check if visible
-                _this.reload();
-            });
-
+            //$('#' + SE_id).on('close', (ev: JQueryEventObject)=>
+            //{
+            //    // TODO check if visible
+            //    this.reload();
+            //        });
             // when switching between agenda and calendar
             $('#agenda.tab-pane').each(function (index, pane) {
                 $(pane).on('transitionend', function (ev) {

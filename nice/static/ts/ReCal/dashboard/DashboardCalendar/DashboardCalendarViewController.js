@@ -37,9 +37,10 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
             var _this = this;
             // reload before displaying
             // TODO check if visible
-            $('#' + SE_id).on('close', function (ev) {
-                _this.view.refresh();
-            });
+            /*$('#' + SE_id).on('close', (ev: JQueryEventObject)=>
+            {
+            this.view.refresh();
+            });*/
             $('#calendar.tab-pane').each(function (index, pane) {
                 $(pane).on('transitionend', function (ev) {
                     if ($(pane).hasClass('in')) {
@@ -58,31 +59,33 @@ define(["require", "exports", 'jquery', '../../../library/Calendar/CalendarViewC
             if (calEvent.highlighted) {
                 return;
             }
-            var backgroundColor = calEvent.sectionColor;
-            backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
-            calEvent.backgroundColor = rgbToRgba(luminanceToRgb(backgroundColor), 1.0);
-            calEvent.borderColor = calEvent.backgroundColor;
-            calEvent.textColor = '#ffffff';
-            calEvent.highlighted = true;
+            //var backgroundColor = calEvent.sectionColor;
+            //backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
+            //calEvent.backgroundColor =
+            //rgbToRgba(luminanceToRgb(backgroundColor), 1.0);
+            //calEvent.borderColor = calEvent.backgroundColor;
+            //calEvent.textColor = '#ffffff';
+            //        calEvent.highlighted = true;
         };
 
         DashboardCalendarViewController.prototype.unhighlightCalendarEvent = function (calEvent) {
             if (!calEvent.highlighted) {
                 return;
             }
-            var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
-            var backgroundColor = calEvent.sectionColor;
-            backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
-            calEvent.backgroundColor = rgbToRgba(luminanceToRgb(backgroundColor), factor_trans);
-            calEvent.borderColor = setOpacity(calEvent.backgroundColor, 1.0);
-            calEvent.textColor = calEvent.sectionColor;
-            calEvent.highlighted = false;
+            //var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
+            //var backgroundColor = calEvent.sectionColor;
+            //backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
+            //calEvent.backgroundColor =
+            //rgbToRgba(luminanceToRgb(backgroundColor), factor_trans);
+            //calEvent.borderColor = setOpacity(calEvent.backgroundColor, 1.0);
+            //calEvent.textColor = calEvent.sectionColor;
+            //        calEvent.highlighted = false;
         };
 
         DashboardCalendarViewController.prototype.reload = function () {
-            LO_showLoading('cal loading');
+            //LO_showLoading('cal loading');
             this.view.refresh();
-            LO_hideLoading('cal loading');
+            //LO_hideLoading('cal loading');
         };
 
         /********************************************************************

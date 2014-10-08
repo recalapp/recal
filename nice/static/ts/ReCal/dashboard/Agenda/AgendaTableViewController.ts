@@ -88,11 +88,11 @@ class AgendaTableViewController extends TableViewController
             });
 
         // when settings close
-        $('#' + SE_id).on('close', (ev: JQueryEventObject)=>
-        {
-            // TODO check if visible
-            this.reload();
-        });
+        //$('#' + SE_id).on('close', (ev: JQueryEventObject)=>
+        //{
+        //    // TODO check if visible
+        //    this.reload();
+//        });
 
         // when switching between agenda and calendar
         $('#agenda.tab-pane').each((index: number, pane: any)=>

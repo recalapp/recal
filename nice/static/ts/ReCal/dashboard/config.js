@@ -11,7 +11,6 @@ require.config({
     paths: {
         bootstrap: bowerPath('bootstrap/dist/js/bootstrap'),
         'bootstrap-datepicker': bowerPath('smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker'),
-        dashboard: staticPath('compiled/dashboard'),
         fullcalendar: bowerPath('fullcalendar/dist/fullcalendar'),
         jeditable: bowerPath('jquery_jeditable/jquery.jeditable'),
         jquery: bowerPath('jquery/dist/jquery'),
@@ -23,18 +22,10 @@ require.config({
     shim: {
         bootstrap: ['jquery'],
         'bootstrap-datepicker': ['bootstrap'],
-        dashboard: {
-            deps: [
-                'bootstrap', 'bootstrap-datepicker', 'fullcalendar',
-                'jquery', 'jqueryui', 'jquery.cookie', 'moment-timezone'],
-            init: function () {
-                init();
-            }
-        },
         fullcalendar: ['jqueryui'],
         jeditable: ['jquery']
     }
 });
 
-require(['dashboard']);
 require(['./main']);
+//# sourceMappingURL=config.js.map
