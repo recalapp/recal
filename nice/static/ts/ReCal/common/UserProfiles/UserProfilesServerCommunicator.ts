@@ -60,7 +60,7 @@ class UserProfilesServerCommunicator implements IUserProfilesServerCommunicator
         {
             var serverRequest = new ServerRequest({
                 url: '/get/user_profile_info',
-                async: true,
+                async: false,
                 parameters: new Dictionary<string, string>(),
                 requestType: ServerRequestType.get,
             });

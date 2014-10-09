@@ -56,7 +56,7 @@ class SegmentedControlBaseView extends FocusableView implements ISegmentedContro
     public get choices(): ISegmentedControlChoice[] { return this._choices; }
     public set choices(value: ISegmentedControlChoice[])
     {
-        if (value.length < 1)
+        if (value.length < 0)
         {
             throw new InvalidActionException('Segmented control must have at least one choice');
         }
