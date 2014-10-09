@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/SegmentedControl/SegmentedControlSingleSelectView', '../../../library/DataStructures/Set', '../../../library/CoreUI/View'], function(require, exports, SegmentedControlSingleSelectView, Set, View) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/SegmentedControl/SegmentedControlMultipleSelectView', '../../../library/SegmentedControl/SegmentedControlSingleSelectView', '../../../library/DataStructures/Set', '../../../library/CoreUI/View'], function(require, exports, BrowserEvents, SegmentedControlMultipleSelectView, SegmentedControlSingleSelectView, Set, View) {
     var SettingsView = (function (_super) {
         __extends(SettingsView, _super);
         /***************************************************************************
@@ -13,9 +13,15 @@ define(["require", "exports", '../../../library/SegmentedControl/SegmentedContro
         **************************************************************************/
         function SettingsView($element, cssClass) {
             _super.call(this, $element, cssClass);
+            /***************************************************************************
+            * Settings options
+            **************************************************************************/
             this._possibleEventTypes = null;
             this._agendaSelectedEventTypes = null;
             this._calendarSelectedEventTypes = null;
+            this._eventsHidden = false;
+            this._possibleCourses = null;
+            this._visibleCourses = null;
             /***************************************************************************
             * Subviews
             **************************************************************************/
@@ -77,6 +83,50 @@ define(["require", "exports", '../../../library/SegmentedControl/SegmentedContro
             configurable: true
         });
 
+        Object.defineProperty(SettingsView.prototype, "eventsHidden", {
+            get: function () {
+                return this._eventsHidden;
+            },
+            set: function (value) {
+                this._eventsHidden = value;
+                this.renderEventsVisibilityOptions();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(SettingsView.prototype, "possibleCourses", {
+            get: function () {
+                if (!this._possibleCourses) {
+                    this._possibleCourses = new Set();
+                }
+                return this._possibleCourses.toArray();
+            },
+            set: function (value) {
+                value = value || [];
+                this.renderCourseOptionsView();
+                this._possibleCourses = new Set(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(SettingsView.prototype, "visibleCourses", {
+            get: function () {
+                if (!this._visibleCourses) {
+                    this._visibleCourses = new Set();
+                }
+                return this._visibleCourses.toArray();
+            },
+            set: function (value) {
+                value = value || [];
+                this.renderCourseOptionsView();
+                this._visibleCourses = new Set(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(SettingsView.prototype, "agendaOptionsView", {
             get: function () {
                 if (!this._agendaOptionsView) {
@@ -133,6 +183,35 @@ define(["require", "exports", '../../../library/SegmentedControl/SegmentedContro
         });
 
         SettingsView.prototype.render = function () {
+            this.renderCourseOptionsView();
+            this.renderEventsVisibilityOptions();
+        };
+
+        SettingsView.prototype.renderCourseOptionsView = function () {
+            var _this = this;
+            this.courseOptionsView.removeAllChildren();
+            var courseVisibilitySegmentedControl = new SegmentedControlMultipleSelectView();
+            courseVisibilitySegmentedControl.title = 'Visible Courses';
+            courseVisibilitySegmentedControl.choices = this.possibleCourses.map(function (course) {
+                return {
+                    identifier: course.courseId,
+                    displayText: course.primaryListing,
+                    selected: _this._visibleCourses.contains(course)
+                };
+            });
+            courseVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, function (ev, extra) {
+                var choices = courseVisibilitySegmentedControl.choices;
+                _this.visibleCourses = _this.possibleCourses.filter(function (course) {
+                    return choices.filter(function (choice) {
+                        return choice.identifier === course.courseId;
+                    }).length !== 0;
+                });
+            });
+            this.courseOptionsView.append(courseVisibilitySegmentedControl);
+        };
+
+        SettingsView.prototype.renderEventsVisibilityOptions = function () {
+            var _this = this;
             this.eventsVisibilityOptionsView.removeAllChildren();
             var eventsVisibilitySegmentedControl = new SegmentedControlSingleSelectView();
             eventsVisibilitySegmentedControl.title = 'Show hidden events';
@@ -140,14 +219,21 @@ define(["require", "exports", '../../../library/SegmentedControl/SegmentedContro
                 {
                     identifier: 'yes',
                     displayText: 'Yes',
-                    selected: true
+                    selected: this.eventsHidden
                 },
                 {
                     identifier: 'no',
                     displayText: 'No',
-                    selected: false
+                    selected: !this.eventsHidden
                 }
             ];
+            eventsVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, function (ev, extra) {
+                eventsVisibilitySegmentedControl.choices.filter(function (choice) {
+                    return choice.selected;
+                }).map(function (choice) {
+                    _this.eventsHidden = (choice.identifier === 'yes');
+                });
+            });
             this.eventsVisibilityOptionsView.append(eventsVisibilitySegmentedControl);
         };
         return SettingsView;

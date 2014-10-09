@@ -1,13 +1,19 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
+import BrowserEvents = require('../../../library/Core/BrowserEvents');
+import Courses = require('../../common/Courses/Courses');
 import SegmentedControlMultipleSelectView = require('../../../library/SegmentedControl/SegmentedControlMultipleSelectView');
 import SegmentedControlSingleSelectView = require('../../../library/SegmentedControl/SegmentedControlSingleSelectView');
-import SegmentedControlOptionalSingleSelectView = require('../../../library/SegmentedControl/SegmentedControlOptionalSingleSelectView');
 import Set = require('../../../library/DataStructures/Set');
 import View = require('../../../library/CoreUI/View');
 
+import ICoursesModel = Courses.ICoursesModel;
+
 class SettingsView extends View
 {
+    /***************************************************************************
+     * Settings options
+     **************************************************************************/
     private _possibleEventTypes: Set<string> = null;
     public get possibleEventTypes(): string[]
     {
@@ -62,6 +68,41 @@ class SettingsView extends View
         this._calendarSelectedEventTypes = new Set<string>(value);
     }
 
+    private _eventsHidden = false;
+    public get eventsHidden(): boolean { return this._eventsHidden; }
+    public set eventsHidden(value: boolean) { this._eventsHidden = value; this.renderEventsVisibilityOptions(); }
+
+    private _possibleCourses: Set<ICoursesModel> = null;
+    public get possibleCourses(): ICoursesModel[]
+    {
+        if (!this._possibleCourses)
+        {
+            this._possibleCourses = new Set<ICoursesModel>();
+        }
+        return this._possibleCourses.toArray();
+    }
+    public set possibleCourses(value: ICoursesModel[])
+    {
+        value = value || [];
+        this.renderCourseOptionsView();
+        this._possibleCourses = new Set<ICoursesModel>(value);
+    }
+
+    private _visibleCourses: Set<ICoursesModel> = null;
+    public get visibleCourses(): ICoursesModel[]
+    {
+        if (!this._visibleCourses)
+        {
+            this._visibleCourses = new Set<ICoursesModel>();
+        }
+        return this._visibleCourses.toArray();
+    }
+    public set visibleCourses(value: ICoursesModel[])
+    {
+        value = value || [];
+        this.renderCourseOptionsView();
+        this._visibleCourses = new Set<ICoursesModel>(value);
+    }
 
     /***************************************************************************
      * Subviews
@@ -127,6 +168,35 @@ class SettingsView extends View
 
     private render(): void
     {
+        this.renderCourseOptionsView();
+        this.renderEventsVisibilityOptions();
+    }
+
+    private renderCourseOptionsView()
+    {
+        this.courseOptionsView.removeAllChildren();
+        var courseVisibilitySegmentedControl = new SegmentedControlMultipleSelectView();
+        courseVisibilitySegmentedControl.title = 'Visible Courses';
+        courseVisibilitySegmentedControl.choices = this.possibleCourses.map((course: ICoursesModel)=>{
+            return {
+                identifier: course.courseId,
+                displayText: course.primaryListing,
+                selected: this._visibleCourses.contains(course),
+            };
+        });
+        courseVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, (ev: JQueryEventObject, extra: any)=>{
+            var choices = courseVisibilitySegmentedControl.choices;
+            this.visibleCourses = this.possibleCourses.filter((course: ICoursesModel)=>{
+                return choices.filter((choice)=>{
+                    return choice.identifier === course.courseId;
+                }).length !== 0;
+            });
+        });
+        this.courseOptionsView.append(courseVisibilitySegmentedControl);
+    }
+
+    private renderEventsVisibilityOptions()
+    {
         this.eventsVisibilityOptionsView.removeAllChildren();
         var eventsVisibilitySegmentedControl = new SegmentedControlSingleSelectView();
         eventsVisibilitySegmentedControl.title = 'Show hidden events';
@@ -134,14 +204,19 @@ class SettingsView extends View
             {
                 identifier: 'yes',
                 displayText: 'Yes',
-                selected: true
+                selected: this.eventsHidden
             },
             {
                 identifier: 'no',
                 displayText: 'No',
-                selected: false
+                selected: !this.eventsHidden
             },
         ];
+        eventsVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, (ev: JQueryEventObject, extra: any)=>{
+            eventsVisibilitySegmentedControl.choices.filter((choice)=>{return choice.selected;}).map((choice)=>{
+                this.eventsHidden = (choice.identifier === 'yes');
+            });
+        });
         this.eventsVisibilityOptionsView.append(eventsVisibilitySegmentedControl);
     }
 }
