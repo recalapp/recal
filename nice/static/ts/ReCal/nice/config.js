@@ -11,7 +11,6 @@ require.config({
     paths: {
         bootstrap: bowerPath('bootstrap/dist/js/bootstrap'),
         'bootstrap-datepicker': bowerPath('smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker'),
-        nice: staticPath('compiled/nice'),
         fullcalendar: bowerPath('fullcalendar/dist/fullcalendar'),
         jeditable: bowerPath('jquery_jeditable/jquery.jeditable'),
         jquery: bowerPath('jquery/dist/jquery'),
@@ -34,5 +33,4 @@ require.config({
     }
 });
 
-require(['nice']);
 require(['./main']);

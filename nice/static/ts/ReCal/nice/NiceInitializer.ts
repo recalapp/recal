@@ -1,7 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-/// <amd-dependency path="dashboard" />
-
 import $ = require('jquery');
 
 import CoreUI = require('../../library/CoreUI/CoreUI');

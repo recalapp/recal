@@ -194,7 +194,6 @@ def auto(request):
 
 
 @login_required
-@ensure_csrf_cookie
 def nice(request):
     return render(request, 'main/nice.html')
 

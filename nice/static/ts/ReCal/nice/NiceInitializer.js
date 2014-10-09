@@ -1,5 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
-define(["require", "exports", 'jquery', './NiceViewController', '../../library/CoreUI/View', "dashboard"], function(require, exports, $, NiceViewController, View) {
+define(["require", "exports", 'jquery', './NiceViewController', '../../library/CoreUI/View'], function(require, exports, $, NiceViewController, View) {
     var NiceInitializer = (function () {
         function NiceInitializer() {
             this._rootViewController = null;

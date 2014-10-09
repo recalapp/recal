@@ -1,37 +1,23 @@
 {% extends 'main/base.html' %}
 {% load staticfiles %}
-
-
 {% block main_content %}
-    <div class="container">
-	<div class="row clearfix">
+<div class="container-fluid">
+	<div class="row">
 		<div class="col-md-12 column">
 			<ul class="nav nav-tabs">
 				<li class="active">
-					<a href="#">Home</a>
-				</li>
-				<li>
-					<a href="#">Profile</a>
-				</li>
-				<li class="disabled">
-					<a href="#">Messages</a>
+					<a href="#">ReCal</a>
 				</li>
 				<li class="dropdown pull-right">
-					 <a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<strong class="caret"></strong></a>
+					 <a href="#" data-toggle="dropdown" class="dropdown-toggle">Dyland Xue<strong class="caret"></strong></a>
 					<ul class="dropdown-menu">
 						<li>
-							<a href="#">Action</a>
-						</li>
-						<li>
-							<a href="#">Another action</a>
-						</li>
-						<li>
-							<a href="#">Something else here</a>
+							<a href="#">Preferences</a>
 						</li>
 						<li class="divider">
 						</li>
 						<li>
-							<a href="#">Separated link</a>
+							<a href="#">Log out</a>
 						</li>
 					</ul>
 				</li>
@@ -39,101 +25,48 @@
 		</div>
 	</div>
 	<div class="row clearfix">
-		<div class="col-md-4 column">
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="navbar-header">
-					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Brand</a>
-				</div>
-
-				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li class="active">
-							<a href="#">Link</a>
-						</li>
-						<li>
-							<a href="#">Link</a>
-						</li>
-						<li class="dropdown">
-							 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
-							<ul class="dropdown-menu">
-								<li>
-									<a href="#">Action</a>
-								</li>
-								<li>
-									<a href="#">Another action</a>
-								</li>
-								<li>
-									<a href="#">Something else here</a>
-								</li>
-								<li class="divider">
-								</li>
-								<li>
-									<a href="#">Separated link</a>
-								</li>
-								<li class="divider">
-								</li>
-								<li>
-									<a href="#">One more separated link</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
+		<div class="col-md-4 column clearfix">
+			<nav class="navbar search-bar" role="navigation">
 					<form class="navbar-form navbar-left" role="search">
-						<div class="form-group">
-							<input type="text" class="form-control" />
-						</div> <button type="submit" class="btn btn-default">Submit</button>
+                            <div class="form-group" style="width=800px;">
+                                <input type="text" class="form-control" />
+                            </div> 
+                            <button type="submit" class="btn btn-default">Search</button>
 					</form>
-					<ul class="nav navbar-nav navbar-right">
-						<li>
-							<a href="#">Link</a>
-						</li>
-						<li class="dropdown">
-							 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
-							<ul class="dropdown-menu">
-								<li>
-									<a href="#">Action</a>
-								</li>
-								<li>
-									<a href="#">Another action</a>
-								</li>
-								<li>
-									<a href="#">Something else here</a>
-								</li>
-								<li class="divider">
-								</li>
-								<li>
-									<a href="#">Separated link</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-
 			</nav>
-			<div class="panel-group" id="panel-637263">
+			<div class="panel-group" id="accordion">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						 <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-637263" href="#panel-element-763539">Collapsible Group Item #1</a>
+                        <a class="panel-title collapsed" data-toggle="collapse" data-parent="#accordion" href="#accordion-one">
+                            COS 217 (QR) (npdf)  <a href="http://easypce.com/courses/cos217"><span style="float:right">4.14</span></a>
+                        </a>
 					</div>
-					<div id="panel-element-763539" class="panel-collapse collapse">
+					<div id="accordion-one" class="panel-collapse collapse">
 						<div class="panel-body">
-							Anim pariatur cliche...
+                            Introduction to Programming Systems
+                             <a href="http://registrar.princeton.edu/course-offerings/course_details.xml?courseid=002053&term=1152"><span style="float:right">Registrar Link</span></a> <br/>
+
+                            The purpose of this course is to provide the fundamental background necessary to understand, design and implement the components of programming systems. Examples of such components include text editors, assemblers, compilers, loaders, interpreters, and portions of operating systems. The course is divided into three major parts: machine organization and assembly language programming, program design and development, and software tools.
 						</div>
 					</div>
 				</div>
-				<div class="panel panel-default">
+                <div class="panel panel-default">
 					<div class="panel-heading">
-						 <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-637263" href="#panel-element-244436">Collapsible Group Item #2</a>
+                        <a class="panel-title collapsed" data-toggle="collapse" data-parent="#accordion" href="#accordion-two">
+                            COS 226 (QR) (na) (npdf)  <a href="http://easypce.com/courses/cos226"><span style="float:right">4.03</span></a>
+                        </a>
 					</div>
-					<div id="panel-element-244436" class="panel-collapse collapse">
+					<div id="accordion-two" class="panel-collapse collapse">
 						<div class="panel-body">
-							Anim pariatur cliche...
+                            Algorithms and Data Structures
+                            <a href="http://registrar.princeton.edu/course-offerings/course_details.xml?courseid=002054&term=1152"><span style="float:right">Registrar Link</span></a> <br/>
+                            This course surveys the most important algorithms and data structures in use on computers today. Particular emphasis is given to algorithms for sorting, searching, and string processing. Fundamental algorithms in a number of other areas are covered as well, including geometric algorithms, graph algorithms, and some numerical algorithms. The course will concentrate on developing implementations, understanding their performance characteristics, and estimating their potential effectiveness in applications.
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4 column">
+		<div class="col-md-6 column">
 			<div class="row clearfix">
 				<div class="col-md-12 column">
                     <div id="calendarui"></div>
@@ -144,31 +77,24 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4 column">
+		<div class="col-md-2 column">
 		</div>
 	</div>
 </div>
 {% endblock %}
 
 {% block link_or_script_blocking %}
-<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}"> 
 <link rel="stylesheet" href="{% static 'bower_components/fullcalendar/dist/fullcalendar.css' %}">
-<!--<link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">-->
-<link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-darkness/jquery-ui.min.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
 <link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
 
-<link rel="stylesheet" href="{% static 'compiled/profile.css' %}">
-
+<link rel="stylesheet" href="{% static 'css/nice/nice.css' %}">
+<link rel="stylesheet" href="{% static 'css/landing/landing.css' %}">
 {% endblock %}
 
 {% block link_or_script_nonblocking %}
-<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
-<script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
-<script src="{% static 'bower_components/moment-timezone/moment-timezone.js' %}"></script>
-<script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
-<script src="{% static 'bower_components/fullcalendar/dist/fullcalendar.min.js' %}"></script>
-
-<script src="{% static 'compiled/profile.js' %}"></script>
+    <script src="{% static 'bower_components/requirejs/require.js' %}" data-main="{% static 'ts/ReCal/nice/config' %}"></script>
 {% endblock %}

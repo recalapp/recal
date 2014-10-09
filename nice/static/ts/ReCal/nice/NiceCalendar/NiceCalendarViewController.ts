@@ -1,6 +1,5 @@
 /// <reference path="../../../typings/tsd.d.ts" />
-
-import $ = require('jquery');
+/// <amd-dependency path="bootstrap" />
 
 import Calendar = require('../../../library/Calendar/Calendar');
 import CalendarViewController = require('../../../library/Calendar/CalendarViewController');
@@ -14,18 +13,6 @@ import NiceCalendarViewControllerDependencies = NiceCalendar.NiceCalendarViewCon
 import ICalendarView = Calendar.ICalendarView;
 import ICalendarViewEvent = Calendar.ICalendarViewEvent;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
-
-declare function colorLuminance(color: string, lumFactor: number): string;
-declare function luminanceToRgb(lum: string): string;
-declare function LO_hideLoading(id: string): void;
-declare function LO_showLoading(id: string): void;
-declare function rgbToRgba(rgb: string, transFactor: number): string;
-declare function setOpacity(color: string, transFactor: number): string;
-declare var FACTOR_LUM: number;
-declare var FACTOR_TRANS: number;
-declare var FACTOR_TRANS_DARK: number;
-declare var SE_id: string;
-declare var THEME: string;
 
 class NiceCalendarViewController extends CalendarViewController
 {
@@ -44,21 +31,6 @@ class NiceCalendarViewController extends CalendarViewController
 
     private initialize(): void
     {
-        // deselect when closing events
-        //PopUp_addCloseListener((eventId: string)=>
-        //{
-        //    this.view.deselectCalendarEventsWithId(eventId);
-        //    var calEvent: ICalendarViewEvent = this.view.getCalendarViewEventWithId(eventId);
-        //    this.unhighlightCalendarEvent(calEvent);
-        //    this.view.updateCalendarViewEvent(calEvent);
-        //});
-
-        // reload before displaying
-        // TODO check if visible
-        $('#' + SE_id).on('close', (ev: JQueryEventObject)=>
-        {
-            this.view.refresh();
-        });
         $('#calendar.tab-pane').each((index: number, pane: any)=>{
             $(pane).on('transitionend', (ev: JQueryEventObject)=>{
                 if ($(pane).hasClass('in'))
@@ -71,40 +43,6 @@ class NiceCalendarViewController extends CalendarViewController
         });
         // TODO check if visible
         this.view.refresh();
-    }
-    private highlightCalendarEvent(calEvent: ICalendarViewEvent)
-    {
-        if (calEvent.highlighted)
-        {
-            return;
-        }
-        var backgroundColor = calEvent.sectionColor;
-        backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
-        calEvent.backgroundColor = rgbToRgba(luminanceToRgb(backgroundColor), 1.0);
-        calEvent.borderColor = calEvent.backgroundColor;
-        calEvent.textColor = '#ffffff';
-        calEvent.highlighted = true;
-    }
-    private unhighlightCalendarEvent(calEvent: ICalendarViewEvent)
-    {
-        if (!calEvent.highlighted)
-        {
-            return;
-        }
-        var factor_trans = (THEME == 'w') ? FACTOR_TRANS : FACTOR_TRANS_DARK;
-        var backgroundColor = calEvent.sectionColor;
-        backgroundColor = colorLuminance(backgroundColor, FACTOR_LUM);
-        calEvent.backgroundColor = rgbToRgba(luminanceToRgb(backgroundColor), factor_trans);
-        calEvent.borderColor = setOpacity(calEvent.backgroundColor, 1.0);
-        calEvent.textColor = calEvent.sectionColor;
-        calEvent.highlighted = false;
-    }
-
-    public reload(): void
-    {
-        LO_showLoading('cal loading');
-        this.view.refresh();
-        LO_hideLoading('cal loading');
     }
 
     /********************************************************************
@@ -121,24 +59,10 @@ class NiceCalendarViewController extends CalendarViewController
     }
 
     /**
-      * The array of calendar view events in range
-      */
-    public calendarViewEventsForRange(start: DateTime, end: DateTime): ICalendarViewEvent[]
-    {
-        var eventsOperationsFacade = this.eventsOperationsFacade;
-        var eventIds = eventsOperationsFacade.getEventIdsInRange(start, end);
-        var calendarEvents: ICalendarViewEvent[] = new Array<ICalendarViewEvent>();
-        $.each(eventIds, (index: number, eventId: string)=>
-        {
-            var eventsModel = eventsOperationsFacade.getEventById(eventId);
-            var calEventAdapter = new ReCalCalendarViewEventAdapter(eventsModel);
-            var calEvent = calEventAdapter.calendarViewEvent;
-            calEvent.selected = eventsOperationsFacade.eventIdIsSelected(eventId);
-            calEvent.highlighted = !calEvent.selected; // forces first highlighting
-            calEvent.selected ? this.highlightCalendarEvent(calEvent) : this.unhighlightCalendarEvent(calEvent);
-            calendarEvents.push(calEvent);
-        });
-        return calendarEvents;
+     * The array of calendar view events in range
+     */
+    public calendarViewEventsForRange(start: DateTime, end: DateTime): ICalendarViewEvent[] {
+        return [];
     }
 
     /**
@@ -152,39 +76,6 @@ class NiceCalendarViewController extends CalendarViewController
     /********************************************************************
       Delegate
       ******************************************************************/
-
-    /**
-      * Callback for when an event is selected
-      */
-    public didSelectEvent(calendarViewEvent: ICalendarViewEvent): void
-    {
-        var eventsOperationsFacade = this.eventsOperationsFacade;
-        var eventId: string = calendarViewEvent.uniqueId;
-
-        if (eventsOperationsFacade.eventIdIsSelected(eventId))
-        {
-            eventsOperationsFacade.selectEventWithId(eventId);
-        }
-        else
-        {
-            // TODO bring event popup into focus - maybe simply by calling select again?
-            eventsOperationsFacade.selectEventWithId(eventId); // TODO works? Does this cause the popup to come into focus?
-        }
-
-        // update selection. deselect any events no longer relevant
-        this.highlightCalendarEvent(calendarViewEvent);
-        this.view.updateCalendarViewEvent(calendarViewEvent);
-        $.each(this.view.selectedCalendarViewEvents(), (index: number, selectedEvent: ICalendarViewEvent)=>{
-            var eventId = selectedEvent.uniqueId;
-            if (!eventsOperationsFacade.eventIdIsSelected(eventId))
-            {
-                this.view.deselectCalendarEventsWithId(eventId);
-                this.unhighlightCalendarEvent(selectedEvent);
-                this.view.updateCalendarViewEvent(selectedEvent);
-            }
-        });
-
-    }
 }
 
 export = NiceCalendarViewController;

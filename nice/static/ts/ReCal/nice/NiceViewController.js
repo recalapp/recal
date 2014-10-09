@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../library/Core/GlobalBrowserEventsManager', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, GlobalBrowserEventsManager, ViewController, ViewTemplateRetriever) {
+define(["require", "exports", '../../library/Calendar/CalendarView', './NiceCalendar/NiceCalendarViewController', '../common/Events/EventsOperationsFacade', '../../library/Core/GlobalBrowserEventsManager', '../../library/CoreUI/ViewController', '../../library/CoreUI/ViewTemplateRetriever'], function(require, exports, CalendarView, NiceCalendarViewController, EventsOperationsFacade, GlobalBrowserEventsManager, ViewController, ViewTemplateRetriever) {
     var NiceViewController = (function (_super) {
         __extends(NiceViewController, _super);
         function NiceViewController(view) {
@@ -18,6 +18,14 @@ define(["require", "exports", '../../library/Core/GlobalBrowserEventsManager', '
             * View template retriever
             */
             this._viewTemplateRetriever = null;
+            /**
+            * Events Operations Facade
+            */
+            this._eventsOperationsFacade = null;
+            /**
+            * Calendar view controller
+            */
+            this._calendarViewController = null;
             this.initialize();
         }
         Object.defineProperty(NiceViewController.prototype, "globalBrowserEventsManager", {
@@ -42,8 +50,33 @@ define(["require", "exports", '../../library/Core/GlobalBrowserEventsManager', '
             configurable: true
         });
 
+        Object.defineProperty(NiceViewController.prototype, "eventsOperationsFacade", {
+            get: function () {
+                if (!this._eventsOperationsFacade) {
+                    this._eventsOperationsFacade = new EventsOperationsFacade({
+                        globalBrowserEventsManager: this.globalBrowserEventsManager
+                    });
+                }
+                return this._eventsOperationsFacade;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(NiceViewController.prototype, "calendarViewController", {
+            get: function () {
+                return this._calendarViewController;
+            },
+            set: function (value) {
+                this._calendarViewController = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
         NiceViewController.prototype.initialize = function () {
-            initializeCalendar();
+            this.initializeCalendar();
         };
 
         NiceViewController.prototype.initializeCalendar = function () {
