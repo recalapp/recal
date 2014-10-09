@@ -84,23 +84,26 @@ class SettingsView extends View
     public set possibleCourses(value: ICoursesModel[])
     {
         value = value || [];
-        this.renderCourseOptionsView();
         this._possibleCourses = new Set<ICoursesModel>(value);
+        this.renderCourseOptionsView();
     }
 
     private _visibleCourses: Set<ICoursesModel> = null;
-    public get visibleCourses(): ICoursesModel[]
+    private get visibleCoursesSet(): Set<ICoursesModel>
     {
         if (!this._visibleCourses)
         {
             this._visibleCourses = new Set<ICoursesModel>();
         }
-        return this._visibleCourses.toArray();
+        return this._visibleCourses;
+    }
+    public get visibleCourses(): ICoursesModel[]
+    {
+        return this.visibleCoursesSet.toArray();
     }
     public set visibleCourses(value: ICoursesModel[])
     {
         value = value || [];
-        this.renderCourseOptionsView();
         this._visibleCourses = new Set<ICoursesModel>(value);
     }
 
@@ -181,14 +184,14 @@ class SettingsView extends View
             return {
                 identifier: course.courseId,
                 displayText: course.primaryListing,
-                selected: this._visibleCourses.contains(course),
+                selected: this.visibleCoursesSet.contains(course),
             };
         });
         courseVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, (ev: JQueryEventObject, extra: any)=>{
             var choices = courseVisibilitySegmentedControl.choices;
             this.visibleCourses = this.possibleCourses.filter((course: ICoursesModel)=>{
                 return choices.filter((choice)=>{
-                    return choice.identifier === course.courseId;
+                    return choice.identifier === course.courseId && choice.selected;
                 }).length !== 0;
             });
         });

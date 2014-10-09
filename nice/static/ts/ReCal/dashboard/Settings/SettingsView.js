@@ -104,23 +104,29 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             },
             set: function (value) {
                 value = value || [];
-                this.renderCourseOptionsView();
                 this._possibleCourses = new Set(value);
+                this.renderCourseOptionsView();
             },
             enumerable: true,
             configurable: true
         });
 
-        Object.defineProperty(SettingsView.prototype, "visibleCourses", {
+        Object.defineProperty(SettingsView.prototype, "visibleCoursesSet", {
             get: function () {
                 if (!this._visibleCourses) {
                     this._visibleCourses = new Set();
                 }
-                return this._visibleCourses.toArray();
+                return this._visibleCourses;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SettingsView.prototype, "visibleCourses", {
+            get: function () {
+                return this.visibleCoursesSet.toArray();
             },
             set: function (value) {
                 value = value || [];
-                this.renderCourseOptionsView();
                 this._visibleCourses = new Set(value);
             },
             enumerable: true,
@@ -196,14 +202,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 return {
                     identifier: course.courseId,
                     displayText: course.primaryListing,
-                    selected: _this._visibleCourses.contains(course)
+                    selected: _this.visibleCoursesSet.contains(course)
                 };
             });
             courseVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, function (ev, extra) {
                 var choices = courseVisibilitySegmentedControl.choices;
                 _this.visibleCourses = _this.possibleCourses.filter(function (course) {
                     return choices.filter(function (choice) {
-                        return choice.identifier === course.courseId;
+                        return choice.identifier === course.courseId && choice.selected;
                     }).length !== 0;
                 });
             });

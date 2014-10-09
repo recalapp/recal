@@ -93,7 +93,7 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../CoreUI/Focu
                 return this._choices;
             },
             set: function (value) {
-                if (value.length < 1) {
+                if (value.length < 0) {
                     throw new InvalidActionException('Segmented control must have at least one choice');
                 }
                 this._choices = value;

@@ -344,6 +344,7 @@ class DashboardViewController extends ViewController
         var settingsView = SettingsView.fromJQuery(this.view.findJQuery('#settingsModal'));
         this.settingsViewController = new SettingsViewController(settingsView, {
             globalBrowserEventsManager: this.globalBrowserEventsManager,
+            user: this.user,
         });
         this.addChildViewController(this.settingsViewController);
     }

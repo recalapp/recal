@@ -10,7 +10,29 @@ define(["require", "exports", '../../../library/CoreUI/ViewController'], functio
         __extends(SettingsViewController, _super);
         function SettingsViewController(view, dependencies) {
             _super.call(this, view);
+            this._user = null;
+            this._user = dependencies.user;
+            this.initialize();
         }
+        Object.defineProperty(SettingsViewController.prototype, "user", {
+            get: function () {
+                return this._user;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(SettingsViewController.prototype, "view", {
+            get: function () {
+                return this._view;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        SettingsViewController.prototype.initialize = function () {
+            this.view.possibleCourses = this.user.enrolledCoursesModels;
+        };
         return SettingsViewController;
     })(ViewController);
 

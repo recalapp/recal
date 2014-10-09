@@ -21,7 +21,7 @@ define(["require", "exports", 'jquery', '../../../library/DataStructures/Diction
             var createServerRequest = function () {
                 var serverRequest = new ServerRequest({
                     url: '/get/user_profile_info',
-                    async: true,
+                    async: false,
                     parameters: new Dictionary(),
                     requestType: 0 /* get */
                 });

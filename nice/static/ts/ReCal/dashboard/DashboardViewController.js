@@ -329,7 +329,8 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
         DashboardViewController.prototype.initializeSettings = function () {
             var settingsView = SettingsView.fromJQuery(this.view.findJQuery('#settingsModal'));
             this.settingsViewController = new SettingsViewController(settingsView, {
-                globalBrowserEventsManager: this.globalBrowserEventsManager
+                globalBrowserEventsManager: this.globalBrowserEventsManager,
+                user: this.user
             });
             this.addChildViewController(this.settingsViewController);
         };
