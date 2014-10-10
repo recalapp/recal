@@ -20,6 +20,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this._agendaSelectedEventTypes = null;
             this._calendarSelectedEventTypes = null;
             this._eventsHidden = false;
+            this._isLocalTimezone = false;
             this._possibleCourses = null;
             this._visibleCourses = null;
             /***************************************************************************
@@ -108,6 +109,18 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             set: function (value) {
                 this._eventsHidden = value;
                 this.renderEventsVisibilityOptions();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(SettingsView.prototype, "isLocalTimezone", {
+            get: function () {
+                return this._isLocalTimezone;
+            },
+            set: function (value) {
+                value = value || false;
+                this._isLocalTimezone = value;
             },
             enumerable: true,
             configurable: true
@@ -212,8 +225,37 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this.renderEventsVisibilityOptions();
             this.renderAgendaOptionsView();
             this.renderCalendarOptionsView();
+            this.renderTimezoneOptionsView();
         };
 
+        SettingsView.prototype.renderTimezoneOptionsView = function () {
+            var _this = this;
+            this.timezoneOptionsView.removeAllChildren();
+            var timezoneSegmentedControl = new SegmentedControlSingleSelectView();
+            timezoneSegmentedControl.title = "Timezone";
+            timezoneSegmentedControl.choices = [
+                {
+                    identifier: 'princeton',
+                    displayText: 'Princeton\'s Timezone',
+                    selected: !this.isLocalTimezone
+                },
+                {
+                    identifier: 'local',
+                    displayText: 'Local Timezone',
+                    selected: this.isLocalTimezone
+                }
+            ];
+            timezoneSegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, function (ev) {
+                var choice = timezoneSegmentedControl.choices.reduce(function (selected, choice) {
+                    if (selected === null && choice.selected) {
+                        return choice;
+                    }
+                    return selected;
+                }, null);
+                _this.isLocalTimezone = choice.identifier === 'local';
+            });
+            this.timezoneOptionsView.append(timezoneSegmentedControl);
+        };
         SettingsView.prototype.renderCalendarOptionsView = function () {
             var _this = this;
             this.calendarOptionsView.removeAllChildren();
