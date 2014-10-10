@@ -1,6 +1,7 @@
-define(["require", "exports", '../../../library/DataStructures/Set'], function(require, exports, Set) {
+define(["require", "exports", '../../../library/DataStructures/Dictionary', '../../../library/DataStructures/Set'], function(require, exports, Dictionary, Set) {
     var UserProfilesModel = (function () {
         function UserProfilesModel(copy) {
+            this._eventTypes = null;
             this._username = null;
             this._displayName = null;
             this._enrolledCoursesModels = new Set();
@@ -14,6 +15,21 @@ define(["require", "exports", '../../../library/DataStructures/Set'], function(r
                 }
             }
         }
+        Object.defineProperty(UserProfilesModel.prototype, "eventTypes", {
+            get: function () {
+                if (!this._eventTypes) {
+                    this._eventTypes = new Dictionary();
+                }
+                return this._eventTypes;
+            },
+            set: function (value) {
+                value = value || new Dictionary();
+                this._eventTypes = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(UserProfilesModel.prototype, "username", {
             get: function () {
                 return this._username;

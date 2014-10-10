@@ -1,4 +1,5 @@
 import Courses = require('../Courses/Courses');
+import Dictionary = require('../../../library/DataStructures/Dictionary');
 import Set = require('../../../library/DataStructures/Set')
 import UserProfiles = require('./UserProfiles');
 
@@ -8,6 +9,22 @@ import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 
 class UserProfilesModel implements  IUserProfilesModel
 {
+    private _eventTypes: Dictionary<string, string> = null;
+    public get eventTypes(): Dictionary<string, string>
+    {
+        if (!this._eventTypes)
+        {
+            this._eventTypes = new Dictionary<string, string>();
+        }
+        return this._eventTypes;
+    }
+    public set eventTypes(value: Dictionary<string, string>)
+    {
+        value = value || new Dictionary<string, string>();
+        this._eventTypes = value;
+    }
+
+
     private _username: string = null;
     public get username(): string { return this._username; }
     public set username(value: string) { this._username = value; }
