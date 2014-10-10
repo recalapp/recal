@@ -32,6 +32,7 @@ define(["require", "exports", '../../../library/CoreUI/ViewController'], functio
 
         SettingsViewController.prototype.initialize = function () {
             this.view.possibleCourses = this.user.enrolledCoursesModels;
+            this.view.possibleEventTypes = this.user.eventTypes;
         };
         return SettingsViewController;
     })(ViewController);

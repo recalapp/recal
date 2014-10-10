@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/SegmentedControl/SegmentedControlMultipleSelectView', '../../../library/SegmentedControl/SegmentedControlSingleSelectView', '../../../library/DataStructures/Set', '../../../library/CoreUI/View'], function(require, exports, BrowserEvents, SegmentedControlMultipleSelectView, SegmentedControlSingleSelectView, Set, View) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/DataStructures/Dictionary', '../../../library/SegmentedControl/SegmentedControlMultipleSelectView', '../../../library/SegmentedControl/SegmentedControlSingleSelectView', '../../../library/DataStructures/Set', '../../../library/CoreUI/View'], function(require, exports, BrowserEvents, Dictionary, SegmentedControlMultipleSelectView, SegmentedControlSingleSelectView, Set, View) {
     var SettingsView = (function (_super) {
         __extends(SettingsView, _super);
         /***************************************************************************
@@ -35,49 +35,67 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         Object.defineProperty(SettingsView.prototype, "possibleEventTypes", {
             get: function () {
                 if (!this._possibleEventTypes) {
-                    this._possibleEventTypes = new Set();
+                    this._possibleEventTypes = new Dictionary();
                 }
-                return this._possibleEventTypes.toArray();
+                return this._possibleEventTypes;
             },
             set: function (value) {
                 if (value === null || value === undefined) {
-                    value = [];
+                    value = new Dictionary();
                 }
-                this._possibleEventTypes = new Set(value);
+                this._possibleEventTypes = value;
+                this.renderAgendaOptionsView();
+                this.renderCalendarOptionsView();
             },
             enumerable: true,
             configurable: true
         });
 
-        Object.defineProperty(SettingsView.prototype, "agendaSelectedEventTypes", {
+        Object.defineProperty(SettingsView.prototype, "agendaSelectedEventTypesSet", {
             get: function () {
                 if (!this._agendaSelectedEventTypes) {
                     this._agendaSelectedEventTypes = new Set();
                 }
-                return this._agendaSelectedEventTypes.toArray();
+                return this._agendaSelectedEventTypes;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SettingsView.prototype, "agendaSelectedEventTypes", {
+            get: function () {
+                return this.agendaSelectedEventTypesSet.toArray();
             },
             set: function (value) {
                 if (value === null || value === undefined) {
                     value = [];
                 }
                 this._agendaSelectedEventTypes = new Set(value);
+                this.renderAgendaOptionsView();
             },
             enumerable: true,
             configurable: true
         });
 
-        Object.defineProperty(SettingsView.prototype, "calendarSelectedEventTypes", {
+        Object.defineProperty(SettingsView.prototype, "calendarSelectedEventTypesSet", {
             get: function () {
                 if (!this._calendarSelectedEventTypes) {
                     this._calendarSelectedEventTypes = new Set();
                 }
-                return this._calendarSelectedEventTypes.toArray();
+                return this._calendarSelectedEventTypes;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SettingsView.prototype, "calendarSelectedEventTypes", {
+            get: function () {
+                return this.calendarSelectedEventTypesSet.toArray();
             },
             set: function (value) {
                 if (value === null || value === undefined) {
                     value = [];
                 }
                 this._calendarSelectedEventTypes = new Set(value);
+                this.renderCalendarOptionsView();
             },
             enumerable: true,
             configurable: true
@@ -128,6 +146,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             set: function (value) {
                 value = value || [];
                 this._visibleCourses = new Set(value);
+                this.renderCourseOptionsView();
             },
             enumerable: true,
             configurable: true
@@ -191,6 +210,56 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
         SettingsView.prototype.render = function () {
             this.renderCourseOptionsView();
             this.renderEventsVisibilityOptions();
+            this.renderAgendaOptionsView();
+            this.renderCalendarOptionsView();
+        };
+
+        SettingsView.prototype.renderCalendarOptionsView = function () {
+            var _this = this;
+            this.calendarOptionsView.removeAllChildren();
+            var calendarVisibilitySegmentedControl = new SegmentedControlMultipleSelectView();
+            calendarVisibilitySegmentedControl.title = "Show these in calendar:";
+            calendarVisibilitySegmentedControl.choices = this.possibleEventTypes.allKeys().map(function (eventTypeCode) {
+                return {
+                    identifier: eventTypeCode,
+                    displayText: _this.possibleEventTypes.get(eventTypeCode),
+                    selected: _this.calendarSelectedEventTypesSet.contains(eventTypeCode)
+                };
+            });
+            calendarVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, function (ev) {
+                var choices = calendarVisibilitySegmentedControl.choices;
+                _this._calendarSelectedEventTypes = choices.reduce(function (selected, choice) {
+                    if (choice.selected) {
+                        selected.add(choice.identifier);
+                    }
+                    return selected;
+                }, new Set());
+            });
+            this.calendarOptionsView.append(calendarVisibilitySegmentedControl);
+        };
+
+        SettingsView.prototype.renderAgendaOptionsView = function () {
+            var _this = this;
+            this.agendaOptionsView.removeAllChildren();
+            var agendaVisibilitySegmentedControl = new SegmentedControlMultipleSelectView();
+            agendaVisibilitySegmentedControl.title = "Show these in agenda:";
+            agendaVisibilitySegmentedControl.choices = this.possibleEventTypes.allKeys().map(function (eventTypeCode) {
+                return {
+                    identifier: eventTypeCode,
+                    displayText: _this.possibleEventTypes.get(eventTypeCode),
+                    selected: _this.agendaSelectedEventTypesSet.contains(eventTypeCode)
+                };
+            });
+            agendaVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, function (ev) {
+                var choices = agendaVisibilitySegmentedControl.choices;
+                _this._agendaSelectedEventTypes = choices.reduce(function (selected, choice) {
+                    if (choice.selected) {
+                        selected.add(choice.identifier);
+                    }
+                    return selected;
+                }, new Set());
+            });
+            this.agendaOptionsView.append(agendaVisibilitySegmentedControl);
         };
 
         SettingsView.prototype.renderCourseOptionsView = function () {
@@ -207,11 +276,11 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             });
             courseVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, function (ev, extra) {
                 var choices = courseVisibilitySegmentedControl.choices;
-                _this.visibleCourses = _this.possibleCourses.filter(function (course) {
+                _this._visibleCourses = new Set(_this.possibleCourses.filter(function (course) {
                     return choices.filter(function (choice) {
                         return choice.identifier === course.courseId && choice.selected;
                     }).length !== 0;
-                });
+                }));
             });
             this.courseOptionsView.append(courseVisibilitySegmentedControl);
         };

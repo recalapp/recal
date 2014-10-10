@@ -27,6 +27,7 @@ class SettingsViewController extends ViewController
     private initialize(): void
     {
         this.view.possibleCourses = this.user.enrolledCoursesModels;
+        this.view.possibleEventTypes = this.user.eventTypes;
     }
 }
 
