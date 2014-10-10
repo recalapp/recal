@@ -83,6 +83,14 @@ class SettingsView extends View
     public get eventsHidden(): boolean { return this._eventsHidden; }
     public set eventsHidden(value: boolean) { this._eventsHidden = value; this.renderEventsVisibilityOptions(); }
 
+    private _isLocalTimezone = false;
+    public get isLocalTimezone(): boolean { return this._isLocalTimezone; }
+    public set isLocalTimezone(value: boolean)
+    {
+        value = value || false;
+        this._isLocalTimezone = value;
+    }
+
     private _possibleCourses: Set<ICoursesModel> = null;
     public get possibleCourses(): ICoursesModel[]
     {
@@ -187,8 +195,39 @@ class SettingsView extends View
         this.renderEventsVisibilityOptions();
         this.renderAgendaOptionsView();
         this.renderCalendarOptionsView();
+        this.renderTimezoneOptionsView();
     }
 
+
+    private renderTimezoneOptionsView()
+    {
+        this.timezoneOptionsView.removeAllChildren();
+        var timezoneSegmentedControl = new SegmentedControlSingleSelectView();
+        timezoneSegmentedControl.title = "Timezone";
+        timezoneSegmentedControl.choices = [
+            {
+                identifier: 'princeton',
+                displayText: 'Princeton\'s Timezone',
+                selected: !this.isLocalTimezone
+            },
+            {
+                identifier: 'local',
+                displayText: 'Local Timezone',
+                selected: this.isLocalTimezone
+            }
+        ];
+        timezoneSegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, (ev: JQueryEventObject)=>{
+            var choice = timezoneSegmentedControl.choices.reduce((selected, choice)=>{
+                if (selected === null && choice.selected)
+                {
+                    return choice;
+                }
+                return selected;
+            }, null);
+            this.isLocalTimezone = choice.identifier === 'local';
+        });
+        this.timezoneOptionsView.append(timezoneSegmentedControl);
+    }
     private renderCalendarOptionsView()
     {
         this.calendarOptionsView.removeAllChildren();
