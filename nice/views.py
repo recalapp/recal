@@ -67,6 +67,7 @@ def gather_dashboard(request):
         'theme': theme,
         'base_url': request.build_absolute_uri(),
         'all_sections': json.dumps(all_sections),
+        'user_profile': json.dumps(queries.get_user_profile_info(request.user.username))
     })
 
 def testpage(request):

@@ -56,11 +56,19 @@ def get_user_profile_info(netid, **kwargs):
 
     courses_dict_array = [construct_course_dict_for_profile(x)
                           for x in all_courses]
+    agenda_pref = ['AS', 'RS', 'EX', 'LE', 'LA', 'OH', 'PR']
+    if user.ui_agenda_pref:
+        agenda_pref = json.loads(user.ui_agenda_pref)
+    calendar_pref = ['AS', 'RS', 'EX', 'LE', 'LA', 'OH', 'PR']
+    if user.ui_calendar_pref:
+        calendar_pref = json.loads(user.ui_calendar_pref)
     return {
         'display_name': unicode(user),
         'username': netid,
         'enrolled_courses': courses_dict_array,
         'event_types': construct_type_map(Event_Revision.TYPE_CHOICES),
+        'calendar_pref': calendar_pref,
+        'agenda_pref': agenda_pref
     }
 
 def get_events(netid, escape=False, **kwargs):

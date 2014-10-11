@@ -1,4 +1,4 @@
-define(["require", "exports", 'jquery', '../../../library/DataStructures/Dictionary', '../Courses/CoursesModel', '../Courses/SectionsModel', '../Courses/SectionTypesModel', '../../../library/Server/ServerRequest', '../../../library/Server/ServerRequestType', '../../../library/Server/ServerConnection'], function(require, exports, $, Dictionary, CoursesModel, SectionsModel, SectionTypesModel, ServerRequest, ServerRequestType, ServerConnection) {
+define(["require", "exports", 'jquery', '../../../library/DataStructures/Dictionary', '../../../library/Server/ServerRequest', '../../../library/Server/ServerRequestType', '../../../library/Server/ServerConnection', './UserProfilesServerDataToModelConverter'], function(require, exports, $, Dictionary, ServerRequest, ServerRequestType, ServerConnection, UserProfilesServerDataToModelConverter) {
     var UserProfilesServerCommunicator = (function () {
         function UserProfilesServerCommunicator() {
             this._serverConnection = new ServerConnection(1);
@@ -27,31 +27,9 @@ define(["require", "exports", 'jquery', '../../../library/DataStructures/Diction
                 });
                 return serverRequest;
             };
-            var courseDataToModel = function (data, index) {
-                return new CoursesModel({
-                    courseId: data.course_id.toString(),
-                    title: data.course_title,
-                    description: data.course_description,
-                    courseListings: data.course_listings.split(/\s*\/\s*/),
-                    primaryListing: data.course_primary_listing,
-                    sectionsModels: data.sections.map(sectionDataToModel)
-                });
-            };
-            var sectionDataToModel = function (data, index) {
-                return new SectionsModel({
-                    sectionId: data.section_id.toString(),
-                    title: data.section_name,
-                    sectionTypesModel: new SectionTypesModel({
-                        code: data.section_type_code,
-                        displayText: data.section_type_code
-                    })
-                });
-            };
             this.serverConnection.sendRequest(createServerRequest()).done(function (data) {
-                profile.username = data.username;
-                profile.displayName = data.display_name;
-                profile.enrolledCoursesModels = data.enrolled_courses.map(courseDataToModel);
-                profile.eventTypes = new Dictionary(data.event_types);
+                var converter = new UserProfilesServerDataToModelConverter(profile);
+                profile = converter.updateUserProfilesModelWithServerData(data);
                 deferred.resolve(profile);
             }).fail(function (data) {
                 deferred.resolve(profile);

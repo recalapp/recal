@@ -1,5 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
-define(["require", "exports", 'jquery', './DashboardViewController', '../common/UserProfiles/UserProfilesModel', '../../library/CoreUI/View'], function(require, exports, $, DashboardViewController, UserProfilesModel, View) {
+define(["require", "exports", 'jquery', './DashboardViewController', '../common/UserProfiles/UserProfilesModel', '../common/UserProfiles/UserProfilesServerDataToModelConverter', '../../library/CoreUI/View'], function(require, exports, $, DashboardViewController, UserProfilesModel, UserProfilesServerDataToModelConverter, View) {
     var DashboardInitializer = (function () {
         function DashboardInitializer() {
             this._rootViewController = null;
@@ -33,6 +33,8 @@ define(["require", "exports", 'jquery', './DashboardViewController', '../common/
             this.user = new UserProfilesModel({
                 username: USER_NETID
             });
+            var converter = new UserProfilesServerDataToModelConverter(this.user);
+            this.user = converter.updateUserProfilesModelWithServerData(JSON.parse(USER_PROFILE));
 
             // set up Dashboard View Controller
             var dashboardView = View.fromJQuery($('body'));

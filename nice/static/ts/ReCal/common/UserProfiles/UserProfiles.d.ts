@@ -18,6 +18,8 @@ export interface IUserProfilesModel
     enrolledCoursesModels?: ICoursesModel[]; // null initially
     enrolledSectionsModels?: ISectionsModel[]; // computed based on enrolledCourses
     eventTypes?: Dictionary<string, string>; // mapping from type code to type display for this user (can be different in the future for each user)
+    agendaVisibleEventTypeCodes?: string[];
+    calendarVisibleEventTypeCodes?: string[];
 }
 
 export interface IUserProfilesServerCommunicator
