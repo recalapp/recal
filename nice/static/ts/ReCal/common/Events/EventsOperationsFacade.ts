@@ -232,6 +232,15 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     {
         this.eventsVisibilityManager.unhideEventWithId(eventId);
     }
+
+    /**
+     * Indicate whether or not hidden events should be shown.
+     * @param shouldShow
+     */
+    public showHiddenEvents(shouldShow: boolean): void
+    {
+        this.eventsVisibilityManager.enabled = shouldShow;
+    }
 }
 
 export = EventsOperationsFacade;

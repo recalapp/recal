@@ -218,6 +218,14 @@ define(["require", "exports", './EventsModificationsManager', './EventsRetriever
         EventsOperationsFacade.prototype.unhideEventWithId = function (eventId) {
             this.eventsVisibilityManager.unhideEventWithId(eventId);
         };
+
+        /**
+        * Indicate whether or not hidden events should be shown.
+        * @param shouldShow
+        */
+        EventsOperationsFacade.prototype.showHiddenEvents = function (shouldShow) {
+            this.eventsVisibilityManager.enabled = shouldShow;
+        };
         return EventsOperationsFacade;
     })();
 

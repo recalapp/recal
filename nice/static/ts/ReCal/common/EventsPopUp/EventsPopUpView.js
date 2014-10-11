@@ -34,6 +34,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this._lastEditedJQuery = null;
             this._closeButton = null;
             this._hideButton = null;
+            this._unhideButton = null;
 
             // TODO set up buttons
             // set up close button
@@ -51,6 +52,13 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
                 ev.preventDefault(); // prevent from going to recal.io/#
 
                 _this.handleHideButtonClick(ev);
+            });
+
+            this._unhideButton = FocusableView.fromJQuery(this.findJQuery('#unhide-button'));
+            this.unhideButton.attachEventHandler(BrowserEvents.click, function (ev) {
+                ev.preventDefault();
+
+                _this.handleUnhideButtonClick(ev);
             });
         }
         Object.defineProperty(EventsPopUpView.prototype, "encodeDecodeProxy", {
@@ -380,12 +388,24 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             configurable: true
         });
 
+        Object.defineProperty(EventsPopUpView.prototype, "unhideButton", {
+            get: function () {
+                return this._unhideButton;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         EventsPopUpView.prototype.handleCloseButtonClick = function (ev) {
             this.triggerEvent(ReCalCommonBrowserEvents.popUpShouldClose);
         };
 
         EventsPopUpView.prototype.handleHideButtonClick = function (ev) {
             this.triggerEvent(ReCalCommonBrowserEvents.eventShouldHide);
+        };
+
+        EventsPopUpView.prototype.handleUnhideButtonClick = function (ev) {
+            this.triggerEvent(ReCalCommonBrowserEvents.eventShouldUnhide);
         };
 
         EventsPopUpView.prototype.refresh = function () {

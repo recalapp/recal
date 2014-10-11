@@ -16,6 +16,7 @@ import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpCo
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
+import IEventsPopUpView = EventsPopUp.IEventsPopUpView;
 import IPopUpView = PopUp.IPopUpView;
 import IView = CoreUI.IView;
 
@@ -119,7 +120,18 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                     return;
                 }
                 this.eventsOperationsFacade.hideEventWithId(extra.view.eventsModel.eventId);
+                this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
                 this.removePopUpView(extra.view);
+            });
+        this.view.attachEventHandler(ReCalCommonBrowserEvents.eventShouldUnhide,
+            EventsPopUpView.cssSelector(),
+            (ev: JQueryEventObject, extra: { view: IEventsPopUpView })=>
+            {
+                if (extra.view.parentView !== this.canvasView)
+                {
+                    return;
+                }
+                this.eventsOperationsFacade.unhideEventWithId(extra.view.eventsModel.eventId);
             });
     }
 

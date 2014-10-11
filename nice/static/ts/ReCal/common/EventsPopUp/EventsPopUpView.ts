@@ -276,6 +276,9 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
     private _hideButton: FocusableView = null;
     public get hideButton(): FocusableView { return this._hideButton; }
 
+    private _unhideButton: FocusableView = null;
+    public get unhideButton(): FocusableView { return this._unhideButton; }
+
     constructor($element: JQuery, cssClass: string)
     {
         super($element, cssClass);
@@ -295,7 +298,14 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
             ev.preventDefault(); // prevent from going to recal.io/#
 
             this.handleHideButtonClick(ev);
-        })
+        });
+
+        this._unhideButton = <FocusableView> FocusableView.fromJQuery(this.findJQuery('#unhide-button'));
+        this.unhideButton.attachEventHandler(BrowserEvents.click, (ev: JQueryEventObject)=>{
+            ev.preventDefault();
+
+            this.handleUnhideButtonClick(ev);
+        });
     }
 
     public handleCloseButtonClick(ev: JQueryEventObject)
@@ -306,6 +316,11 @@ class EventsPopUpView extends PopUpView implements IEventsPopUpView
     public handleHideButtonClick(ev: JQueryEventObject)
     {
         this.triggerEvent(ReCalCommonBrowserEvents.eventShouldHide);
+    }
+
+    public handleUnhideButtonClick(ev: JQueryEventObject)
+    {
+        this.triggerEvent(ReCalCommonBrowserEvents.eventShouldUnhide);
     }
 
     public refresh(): void

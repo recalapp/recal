@@ -13,6 +13,10 @@ import EventsVisibilityManagerDependencies = Events.EventsVisibilityManagerDepen
  */
 class EventsVisibilityManager
 {
+    private _enabled = true;
+    public get enabled(): boolean { return this._enabled; }
+    public set enabled(value: boolean) { this._enabled = value; }
+
     private _hiddenEventIds = new Set<string>();
     private get hiddenEventIds(): Set<string> { return this._hiddenEventIds; }
 
@@ -58,7 +62,7 @@ class EventsVisibilityManager
     {
         // TODO calculate visibility based on other information, such as user 
         // preferences.
-        return this.hiddenEventIds.contains(eventId);
+        return this.enabled && this.hiddenEventIds.contains(eventId);
     }
 
 

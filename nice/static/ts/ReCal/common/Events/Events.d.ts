@@ -147,4 +147,10 @@ export interface IEventsOperationsFacade
      * hasn't been hidden.
      */
     unhideEventWithId(eventId: string): void;
+
+    /**
+     * Indicate whether or not hidden events should be shown.
+     * @param shouldShow
+     */
+    showHiddenEvents(shouldShow: boolean): void;
 }
