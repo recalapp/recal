@@ -51,6 +51,44 @@ class UserProfilesModel implements  IUserProfilesModel
         }, []);
     }
 
+    private _agendaVisibleEventTypeCodes: Set<string> = null;
+    private get agendaVisibleEventTypeCodesSet(): Set<string>
+    {
+        if (!this._agendaVisibleEventTypeCodes)
+        {
+            this._agendaVisibleEventTypeCodes = new Set<string>();
+        }
+        return this._agendaVisibleEventTypeCodes;
+    }
+    public get agendaVisibleEventTypeCodes(): string[]
+    {
+        return this.agendaVisibleEventTypeCodesSet.toArray();
+    }
+    public set agendaVisibleEventTypeCodes(value: string[])
+    {
+        value = value || [];
+        this._agendaVisibleEventTypeCodes = new Set<string>(value);
+    }
+
+    private _calendarVisibleEventTypeCodes: Set<string> = null;
+    private get calendarVisibleEventTypeCodesSet(): Set<string>
+    {
+        if (!this._calendarVisibleEventTypeCodes)
+        {
+            this._calendarVisibleEventTypeCodes = new Set<string>();
+        }
+        return this._calendarVisibleEventTypeCodes;
+    }
+    public get calendarVisibleEventTypeCodes(): string[]
+    {
+        return this.calendarVisibleEventTypeCodesSet.toArray();
+    }
+    public set calendarVisibleEventTypeCodes(value: string[])
+    {
+        value = value || [];
+        this._calendarVisibleEventTypeCodes = new Set<string>(value);
+    }
+
     constructor(copy?: IUserProfilesModel)
     {
         if (copy)

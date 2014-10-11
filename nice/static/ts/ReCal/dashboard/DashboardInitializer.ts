@@ -6,6 +6,7 @@ import CoreUI = require('../../library/CoreUI/CoreUI');
 import DashboardViewController = require('./DashboardViewController');
 import UserProfiles = require('../common/UserProfiles/UserProfiles');
 import UserProfilesModel = require('../common/UserProfiles/UserProfilesModel');
+import UserProfilesServerDataToModelConverter = require('../common/UserProfiles/UserProfilesServerDataToModelConverter');
 import View = require('../../library/CoreUI/View');
 
 import IUserProfilesModel = UserProfiles.IUserProfilesModel;
@@ -13,6 +14,7 @@ import IView = CoreUI.IView;
 import IViewController = CoreUI.IViewController;
 
 declare var USER_NETID: string;
+declare var USER_PROFILE: string;
 
 class DashboardInitializer
 {
@@ -37,6 +39,8 @@ class DashboardInitializer
         this.user = new UserProfilesModel({
             username: USER_NETID
         });
+        var converter = new UserProfilesServerDataToModelConverter(this.user);
+        this.user = converter.updateUserProfilesModelWithServerData(JSON.parse(USER_PROFILE));
 
         // set up Dashboard View Controller
         var dashboardView: IView = View.fromJQuery($('body'));

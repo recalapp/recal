@@ -5,6 +5,8 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary', '../
             this._username = null;
             this._displayName = null;
             this._enrolledCoursesModels = new Set();
+            this._agendaVisibleEventTypeCodes = null;
+            this._calendarVisibleEventTypeCodes = null;
             if (copy) {
                 this.username = copy.username;
                 if (copy.displayName) {
@@ -71,6 +73,50 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary', '../
                 return this.enrolledCoursesModels.reduce(function (sectionsModels, coursesModel, index) {
                     return sectionsModels.concat(coursesModel.sectionsModels);
                 }, []);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(UserProfilesModel.prototype, "agendaVisibleEventTypeCodesSet", {
+            get: function () {
+                if (!this._agendaVisibleEventTypeCodes) {
+                    this._agendaVisibleEventTypeCodes = new Set();
+                }
+                return this._agendaVisibleEventTypeCodes;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(UserProfilesModel.prototype, "agendaVisibleEventTypeCodes", {
+            get: function () {
+                return this.agendaVisibleEventTypeCodesSet.toArray();
+            },
+            set: function (value) {
+                value = value || [];
+                this._agendaVisibleEventTypeCodes = new Set(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(UserProfilesModel.prototype, "calendarVisibleEventTypeCodesSet", {
+            get: function () {
+                if (!this._calendarVisibleEventTypeCodes) {
+                    this._calendarVisibleEventTypeCodes = new Set();
+                }
+                return this._calendarVisibleEventTypeCodes;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(UserProfilesModel.prototype, "calendarVisibleEventTypeCodes", {
+            get: function () {
+                return this.calendarVisibleEventTypeCodesSet.toArray();
+            },
+            set: function (value) {
+                value = value || [];
+                this._calendarVisibleEventTypeCodes = new Set(value);
             },
             enumerable: true,
             configurable: true

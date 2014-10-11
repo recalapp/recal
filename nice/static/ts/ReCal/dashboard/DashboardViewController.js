@@ -236,10 +236,9 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
         });
 
         DashboardViewController.prototype.initialize = function () {
-            var _this = this;
-            this.userProfilesServerCommunicator.updateUserProfile(this.user).done(function (user) {
-                _this._user = user;
-            });
+            //this.userProfilesServerCommunicator.updateUserProfile(this.user).done((user: IUserProfilesModel)=>{
+            //    this._user = user;
+            //        });
             this.setUpEventsServerCommunicationIndicators();
             this.initializeSidebar();
             this.initializePopUpCanvas();

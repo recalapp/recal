@@ -2,46 +2,18 @@
 import $ = require('jquery');
 
 import Dictionary = require('../../../library/DataStructures/Dictionary');
-import Courses = require('../Courses/Courses');
-import CoursesModel = require('../Courses/CoursesModel');
-import SectionsModel = require('../Courses/SectionsModel');
-import SectionTypesModel = require('../Courses/SectionTypesModel');
 import Server = require('../../../library/Server/Server');
+import ServerData = require('./ServerData');
 import ServerRequest = require('../../../library/Server/ServerRequest');
 import ServerRequestType = require('../../../library/Server/ServerRequestType');
 import ServerConnection = require('../../../library/Server/ServerConnection');
 import UserProfiles = require('./UserProfiles');
+import UserProfilesServerDataToModelConverter = require('./UserProfilesServerDataToModelConverter');
 
-import ICoursesModel = Courses.ICoursesModel;
-import ISectionsModel = Courses.ISectionsModel;
-import ISectionTypesModel = Courses.ISectionTypesModel;
 import IServerConnection = Server.IServerConnection;
 import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 import IUserProfilesServerCommunicator = UserProfiles.IUserProfilesServerCommunicator;
-
-interface UserProfileInfoServerData
-{
-    username: string;
-    display_name: string;
-    enrolled_courses: CourseInfoServerData[];
-    event_types: any;
-}
-interface CourseInfoServerData
-{
-    course_description: string;
-    course_title: string;
-    course_professor: string;
-    course_listings: string;
-    course_primary_listing: string;
-    course_id: number;
-    sections: SectionInfoServerData[];
-}
-interface SectionInfoServerData
-{
-    section_type_code: string;
-    section_id: number;
-    section_name: string;
-}
+import UserProfileInfoServerData = ServerData.UserProfileInfoServerData;
 
 class UserProfilesServerCommunicator implements IUserProfilesServerCommunicator
 {
@@ -66,35 +38,15 @@ class UserProfilesServerCommunicator implements IUserProfilesServerCommunicator
             });
             return serverRequest;
         };
-        var courseDataToModel = (data: CourseInfoServerData, index: number)=>{
-            return new CoursesModel({
-                courseId: data.course_id.toString(),
-                title: data.course_title,
-                description: data.course_description,
-                courseListings: data.course_listings.split(/\s*\/\s*/),
-                primaryListing: data.course_primary_listing,
-                sectionsModels: data.sections.map(sectionDataToModel)
-            });
-        };
-        var sectionDataToModel = (data: SectionInfoServerData, index: number)=>{
-            return new SectionsModel({
-                sectionId: data.section_id.toString(),
-                title: data.section_name,
-                sectionTypesModel: new SectionTypesModel({
-                    code: data.section_type_code,
-                    displayText: data.section_type_code,
-                }),
-            });
-        };
         this.serverConnection.sendRequest(createServerRequest())
-            .done((data: UserProfileInfoServerData)=>{
-                profile.username = data.username;
-                profile.displayName = data.display_name;
-                profile.enrolledCoursesModels = data.enrolled_courses.map(courseDataToModel);
-                profile.eventTypes = new Dictionary<string, string>(data.event_types);
+            .done((data: UserProfileInfoServerData)=>
+            {
+                var converter = new UserProfilesServerDataToModelConverter(profile);
+                profile = converter.updateUserProfilesModelWithServerData(data);
                 deferred.resolve(profile);
             })
-            .fail((data: any)=>{
+            .fail((data: any)=>
+            {
                 deferred.resolve(profile);
             });
         return deferred.promise();

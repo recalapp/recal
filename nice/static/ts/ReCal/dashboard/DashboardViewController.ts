@@ -239,9 +239,9 @@ class DashboardViewController extends ViewController
 
     private initialize(): void
     {
-        this.userProfilesServerCommunicator.updateUserProfile(this.user).done((user: IUserProfilesModel)=>{
-            this._user = user;
-        });
+        //this.userProfilesServerCommunicator.updateUserProfile(this.user).done((user: IUserProfilesModel)=>{
+        //    this._user = user;
+//        });
         this.setUpEventsServerCommunicationIndicators();
         this.initializeSidebar();
         this.initializePopUpCanvas();

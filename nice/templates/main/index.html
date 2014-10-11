@@ -149,6 +149,8 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 IS_MOBILE = true;
 {% endif %}
 
+var USER_PROFILE = '{% autoescape off %}{{ user_profile }}{% endautoescape %}';
+
 
 </script>
 {% endblock %}

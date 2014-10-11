@@ -28,6 +28,8 @@ class SettingsViewController extends ViewController
     {
         this.view.possibleCourses = this.user.enrolledCoursesModels;
         this.view.possibleEventTypes = this.user.eventTypes;
+        this.view.agendaSelectedEventTypes = this.user.agendaVisibleEventTypeCodes;
+        this.view.calendarSelectedEventTypes = this.user.calendarVisibleEventTypeCodes;
     }
 }
 
