@@ -89,6 +89,7 @@ class SettingsView extends View
     {
         value = value || false;
         this._isLocalTimezone = value;
+        this.renderTimezoneOptionsView();
     }
 
     private _possibleCourses: Set<ICoursesModel> = null;
@@ -292,7 +293,7 @@ class SettingsView extends View
         });
         courseVisibilitySegmentedControl.attachEventHandler(BrowserEvents.segmentedControlSelectionChange, (ev: JQueryEventObject, extra: any)=>{
             var choices = courseVisibilitySegmentedControl.choices;
-            this._visibleCourses = new Set<string>(this.possibleCourses.filter((course: ICoursesModel)=>{
+            this._visibleCourses = new Set<ICoursesModel>(this.possibleCourses.filter((course: ICoursesModel)=>{
                 return choices.filter((choice)=>{
                     return choice.identifier === course.courseId && choice.selected;
                 }).length !== 0;

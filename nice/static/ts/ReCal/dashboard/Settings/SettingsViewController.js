@@ -45,6 +45,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../comm
             this.view.attachEventHandler(BrowserEvents.bootstrapModalHide, function () {
                 _this.user.agendaVisibleEventTypeCodes = _this.view.agendaSelectedEventTypes;
                 _this.user.calendarVisibleEventTypeCodes = _this.view.calendarSelectedEventTypes;
+                window.timezone = _this.view.isLocalTimezone ? null : 'America/New_York';
                 _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.settingsDidChange);
             });
             this.view.attachEventHandler(BrowserEvents.bootstrapModalShow, function () {
@@ -52,6 +53,8 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../comm
                 _this.view.possibleEventTypes = _this.user.eventTypes;
                 _this.view.agendaSelectedEventTypes = _this.user.agendaVisibleEventTypeCodes;
                 _this.view.calendarSelectedEventTypes = _this.user.calendarVisibleEventTypeCodes;
+                var timezone = window.timezone;
+                _this.view.isLocalTimezone = (timezone === null || timezone === undefined);
             });
         };
         return SettingsViewController;

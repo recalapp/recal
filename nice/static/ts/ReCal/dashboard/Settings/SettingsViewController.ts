@@ -38,6 +38,7 @@ class SettingsViewController extends ViewController
         this.view.attachEventHandler(BrowserEvents.bootstrapModalHide, ()=>{
             this.user.agendaVisibleEventTypeCodes = this.view.agendaSelectedEventTypes;
             this.user.calendarVisibleEventTypeCodes = this.view.calendarSelectedEventTypes;
+            (<any>window).timezone = this.view.isLocalTimezone ? null : 'America/New_York';
             this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.settingsDidChange);
         });
         this.view.attachEventHandler(BrowserEvents.bootstrapModalShow, ()=>{
@@ -45,6 +46,10 @@ class SettingsViewController extends ViewController
             this.view.possibleEventTypes = this.user.eventTypes;
             this.view.agendaSelectedEventTypes = this.user.agendaVisibleEventTypeCodes;
             this.view.calendarSelectedEventTypes = this.user.calendarVisibleEventTypeCodes;
+            var timezone: string = (<any>window).timezone;
+            this.view.isLocalTimezone = (
+                timezone === null || timezone === undefined
+                );
         });
     }
 }

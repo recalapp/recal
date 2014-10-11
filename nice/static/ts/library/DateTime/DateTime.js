@@ -118,10 +118,11 @@ define(["require", "exports", 'moment', '../Core/ComparableResult', '../Core/Inv
         };
 
         DateTime.prototype._tryMakeTimeZone = function () {
-            if (DateTime._timeZone === null) {
+            var timeZone = window.timezone;
+            if (timeZone === null || timeZone === undefined) {
                 return this._momentObject;
             }
-            return this._momentObject.tz(DateTime._timeZone);
+            return this._momentObject.clone().tz(timeZone);
         };
 
         DateTime.prototype.calendar = function () {
@@ -165,8 +166,6 @@ define(["require", "exports", 'moment', '../Core/ComparableResult', '../Core/Inv
             }
             return this.compareTo(other) === 0 /* equal */;
         };
-        DateTime._timeZone = null;
-
         DateTime._max = new DateTime();
         DateTime._min = new DateTime();
         return DateTime;
