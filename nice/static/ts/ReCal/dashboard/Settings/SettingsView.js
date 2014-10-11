@@ -121,6 +121,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             set: function (value) {
                 value = value || false;
                 this._isLocalTimezone = value;
+                this.renderTimezoneOptionsView();
             },
             enumerable: true,
             configurable: true

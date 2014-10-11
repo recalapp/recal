@@ -12,7 +12,6 @@ import Time = require('./Time');
 class DateTime implements Comparable, DateInterface, Time
 {
     private _momentObject: Moment = moment();
-    private static _timeZone: string = null;
 
     private static _max: DateTime = new DateTime();
     private static _min: DateTime = new DateTime();
@@ -125,11 +124,12 @@ class DateTime implements Comparable, DateInterface, Time
 
     private _tryMakeTimeZone(): Moment
     {
-        if (DateTime._timeZone === null)
+        var timeZone: string = (<any>window).timezone;
+        if (timeZone === null || timeZone === undefined)
         {
             return this._momentObject;
         }
-        return this._momentObject.tz(DateTime._timeZone);
+        return this._momentObject.clone().tz(timeZone);
     }
 
     public calendar(): string
