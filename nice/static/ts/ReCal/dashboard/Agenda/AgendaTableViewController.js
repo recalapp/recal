@@ -50,6 +50,10 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 _this.reload();
             });
 
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.settingsDidChange, function () {
+                _this.reload();
+            });
+
             // when settings close
             //$('#' + SE_id).on('close', (ev: JQueryEventObject)=>
             //{
@@ -149,12 +153,18 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
         });
 
         AgendaTableViewController.prototype.reload = function () {
+            var _this = this;
             // TODO Agenda_filter
             // TODO EventSectionRangeProvider
             if (this._loading) {
                 return;
             }
             this._loading = true;
+            var agendaEventTypesWhitelist = new Set(this.user.agendaVisibleEventTypeCodes);
+            var filterId = function (eventId) {
+                var eventTypeCode = _this.eventsOperationsFacade.getEventById(eventId).eventTypeCode;
+                return agendaEventTypesWhitelist.contains(eventTypeCode);
+            };
             this.indicatorsManager.showIndicator(this.INDICATOR_INDENTIFIER, 0 /* persistent */, this.INDICATOR_DISPLAY_TEXT);
             this._eventSectionArray = new Array();
 
@@ -170,7 +180,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            var eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+            var eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate).filter(filterId);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('Yesterday', eventIds));
             }
@@ -182,7 +192,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+            eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate).filter(filterId);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('Today', eventIds));
             }
@@ -194,7 +204,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+            eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate).filter(filterId);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('This Week', eventIds));
             }
@@ -207,7 +217,7 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             endDate.hours = 0;
             endDate.minutes = 0;
             endDate.seconds = 0;
-            eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+            eventIds = this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate).filter(filterId);
             if (eventIds.length > 0) {
                 this._eventSectionArray.push(new EventSection('This Month', eventIds));
             }

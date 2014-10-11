@@ -13,6 +13,8 @@ class ReCalCommonBrowserEvents
     static eventsWillBeginDownloading = 'eventsWillBeginDownloading';
     static eventsDidFinishDownloading = 'eventsDidFinishDownloading';
     static eventsDidFailDownloading = 'eventsDidFailDownloading';
+
+    static settingsDidChange = 'settingsDidChange';
 }
 
 export = ReCalCommonBrowserEvents;
