@@ -2,6 +2,7 @@
 
 import $ = require('jquery');
 
+import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import Settings = require('./Settings');
 import SettingsView = require('./SettingsView');
@@ -26,10 +27,16 @@ class SettingsViewController extends ViewController
 
     private initialize(): void
     {
-        this.view.possibleCourses = this.user.enrolledCoursesModels;
-        this.view.possibleEventTypes = this.user.eventTypes;
-        this.view.agendaSelectedEventTypes = this.user.agendaVisibleEventTypeCodes;
-        this.view.calendarSelectedEventTypes = this.user.calendarVisibleEventTypeCodes;
+        this.view.attachEventHandler(BrowserEvents.bootstrapModalHide, ()=>{
+            this.user.agendaVisibleEventTypeCodes = this.view.agendaSelectedEventTypes;
+            this.user.calendarVisibleEventTypeCodes = this.view.calendarSelectedEventTypes;
+        });
+        this.view.attachEventHandler(BrowserEvents.bootstrapModalShow, ()=>{
+            this.view.possibleCourses = this.user.enrolledCoursesModels;
+            this.view.possibleEventTypes = this.user.eventTypes;
+            this.view.agendaSelectedEventTypes = this.user.agendaVisibleEventTypeCodes;
+            this.view.calendarSelectedEventTypes = this.user.calendarVisibleEventTypeCodes;
+        });
     }
 }
 
