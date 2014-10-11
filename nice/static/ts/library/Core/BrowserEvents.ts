@@ -15,6 +15,8 @@ class BrowserEvents
 
     // bootstrap
     static bootstrapPopoverHidden = 'hidden.bs.popover';
+    static bootstrapModalShow = 'show.bs.modal';
+    static bootstrapModalHide = 'hide.bs.modal';
 
     // view
     static viewWasAppended = 'viewWasAppended';

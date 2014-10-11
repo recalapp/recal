@@ -15,6 +15,8 @@ define(["require", "exports"], function(require, exports) {
         BrowserEvents.actionSheetDidSelectChoice = 'actionSheetDidSelectChoice';
 
         BrowserEvents.bootstrapPopoverHidden = 'hidden.bs.popover';
+        BrowserEvents.bootstrapModalShow = 'show.bs.modal';
+        BrowserEvents.bootstrapModalHide = 'hide.bs.modal';
 
         BrowserEvents.viewWasAppended = 'viewWasAppended';
         BrowserEvents.viewWasRemoved = 'viewWasRemoved';

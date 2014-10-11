@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/CoreUI/ViewController'], function(require, exports, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, ViewController) {
     var SettingsViewController = (function (_super) {
         __extends(SettingsViewController, _super);
         function SettingsViewController(view, dependencies) {
@@ -31,10 +31,17 @@ define(["require", "exports", '../../../library/CoreUI/ViewController'], functio
         });
 
         SettingsViewController.prototype.initialize = function () {
-            this.view.possibleCourses = this.user.enrolledCoursesModels;
-            this.view.possibleEventTypes = this.user.eventTypes;
-            this.view.agendaSelectedEventTypes = this.user.agendaVisibleEventTypeCodes;
-            this.view.calendarSelectedEventTypes = this.user.calendarVisibleEventTypeCodes;
+            var _this = this;
+            this.view.attachEventHandler(BrowserEvents.bootstrapModalHide, function () {
+                _this.user.agendaVisibleEventTypeCodes = _this.view.agendaSelectedEventTypes;
+                _this.user.calendarVisibleEventTypeCodes = _this.view.calendarSelectedEventTypes;
+            });
+            this.view.attachEventHandler(BrowserEvents.bootstrapModalShow, function () {
+                _this.view.possibleCourses = _this.user.enrolledCoursesModels;
+                _this.view.possibleEventTypes = _this.user.eventTypes;
+                _this.view.agendaSelectedEventTypes = _this.user.agendaVisibleEventTypeCodes;
+                _this.view.calendarSelectedEventTypes = _this.user.calendarVisibleEventTypeCodes;
+            });
         };
         return SettingsViewController;
     })(ViewController);
