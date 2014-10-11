@@ -12,6 +12,8 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../comm
             _super.call(this, view);
             this._user = null;
             this._globalBrowserEventsManager = null;
+            this._eventsOperationsFacade = null;
+            this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this._user = dependencies.user;
             this.initialize();
@@ -32,6 +34,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../comm
             configurable: true
         });
 
+        Object.defineProperty(SettingsViewController.prototype, "eventsOperationsFacade", {
+            get: function () {
+                return this._eventsOperationsFacade;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(SettingsViewController.prototype, "view", {
             get: function () {
                 return this._view;
@@ -46,6 +56,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../comm
                 _this.user.agendaVisibleEventTypeCodes = _this.view.agendaSelectedEventTypes;
                 _this.user.calendarVisibleEventTypeCodes = _this.view.calendarSelectedEventTypes;
                 window.timezone = _this.view.isLocalTimezone ? null : 'America/New_York';
+                _this.eventsOperationsFacade.showHiddenEvents(!_this.view.eventsHidden);
                 _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.settingsDidChange);
             });
             this.view.attachEventHandler(BrowserEvents.bootstrapModalShow, function () {

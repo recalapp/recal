@@ -61,11 +61,13 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
     private _eventsPopUpViewFactory: IEventsPopUpViewFactory = null;
     private get eventsPopUpViewFactory(): IEventsPopUpViewFactory { return this._eventsPopUpViewFactory; }
 
-    constructor(sidebarView: ISidebarView, dependencies: ReCalSidebar.ReCalSidebarViewControllerDependencies)
+    constructor(sidebarView: ISidebarView,
+                dependencies: ReCalSidebar.ReCalSidebarViewControllerDependencies)
     {
         super(sidebarView);
         this._eventsPopUpViewFactory = dependencies.eventsPopUpViewFactory;
-        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
+        this._globalBrowserEventsManager =
+        dependencies.globalBrowserEventsManager;
         this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
         this.initializePopUp();
     }
@@ -81,26 +83,28 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
     private initializePopUp(): void
     {
         // add listener for when PopUpView objects begin dragging.
-        this.view.attachEventHandler(BrowserEvents.popUpWillDrag, (ev: JQueryEventObject, extra: any) =>
-        {
-            var popUpView: IEventsPopUpView = <IEventsPopUpView> extra.view;
-            // when we begin dragging, we remove from sidebar and trigger this 
-            // event, allowing other controllers to add this PopUpView to their 
-            // view
-            var boundingRect = popUpView.boundingRect;
-            var width = popUpView.width;
-            var height = popUpView.height;
-            this.removePopUpView(popUpView, false);
-            this.view.triggerEvent(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar, {
-                popUpView: popUpView,
-                boundingRect: boundingRect,
-                width: width,
-                height: height
-            });
-            // now also update the event selection state by pinning the event
-            this.eventsOperationsFacade.pinEventWithId(popUpView.eventsModel.eventId);
+        this.view.attachEventHandler(BrowserEvents.popUpWillDrag,
+            (ev: JQueryEventObject, extra: any) =>
+            {
+                var popUpView: IEventsPopUpView = <IEventsPopUpView> extra.view;
+                // when we begin dragging, we remove from sidebar and trigger this
+                // event, allowing other controllers to add this PopUpView to their
+                // view
+                var boundingRect = popUpView.boundingRect;
+                var width = popUpView.width;
+                var height = popUpView.height;
+                this.removePopUpView(popUpView, false);
+                this.view.triggerEvent(ReCalCommonBrowserEvents.popUpWillDetachFromSidebar,
+                    {
+                        popUpView: popUpView,
+                        boundingRect: boundingRect,
+                        width: width,
+                        height: height
+                    });
+                // now also update the event selection state by pinning the event
+                this.eventsOperationsFacade.pinEventWithId(popUpView.eventsModel.eventId);
 
-        });
+            });
 
         // register popup as a droppable object
         this.view.registerDroppable(EventsPopUpView.cssSelector());
@@ -130,7 +134,8 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
             ReCalCommonBrowserEvents.eventSelectionChanged,
             (ev: JQueryEventObject, extra: any) =>
             {
-                if (extra === null || extra === undefined || extra.eventIds === null || extra.eventIds === undefined)
+                if (extra === null || extra === undefined || extra.eventIds
+                    === null || extra.eventIds === undefined)
                 {
                     // can't tell anything. must check everything.
                     return;
@@ -148,19 +153,22 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 if (mainEventId !== null)
                 {
                     // this event is supposed to be main
-                    if (this.currentPopUpView === null || this.currentPopUpView === undefined)
+                    if (this.currentPopUpView === null || this.currentPopUpView
+                        === undefined)
                     {
                         // create the popup view
                         var newPopUpView = this.eventsPopUpViewFactory.createEventsPopUp();
                         // set events model
-                        newPopUpView.eventsModel = this.eventsOperationsFacade.getEventById(mainEventId);
+                        newPopUpView.eventsModel =
+                        this.eventsOperationsFacade.getEventById(mainEventId);
                         this.addPopUpView(newPopUpView);
                     }
                     else
                     {
                         // set events model
                         var eventsModel = this.eventsOperationsFacade.getEventById(mainEventId);
-                        if (this.currentPopUpView.eventsModel.eventId !== eventsModel.eventId)
+                        if (this.currentPopUpView.eventsModel.eventId
+                            !== eventsModel.eventId)
                         {
                             var oldId = this.currentPopUpView.eventsModel.eventId;
                             this.currentPopUpView.eventsModel = eventsModel;
@@ -173,7 +181,9 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
                 {
                     // event is no longer main. if it matches our current
                     // popup, then remove the popup
-                    if (this.currentPopUpView && eventIds.indexOf(this.currentPopUpView.eventsModel.eventId) >= 0)
+                    if (this.currentPopUpView
+                        && eventIds.indexOf(this.currentPopUpView.eventsModel.eventId)
+                            >= 0)
                     {
                         // everything in eventIds is not main, so we can safely remove this main popup
                         this.removePopUpView(this.currentPopUpView, true);
@@ -190,15 +200,25 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
             });
         this.view.attachEventHandler(
             ReCalCommonBrowserEvents.editablePopUpDidSave,
-            EventsPopUpView.cssSelector(), (ev: JQueryEventObject, extra: { modifiedEventsModel: IEventsModel }) =>
+            EventsPopUpView.cssSelector(), (ev: JQueryEventObject,
+                                            extra: { modifiedEventsModel: IEventsModel }) =>
             {
                 var modifiedEventsModel = extra.modifiedEventsModel;
                 this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
             });
         this.view.attachEventHandler(ReCalCommonBrowserEvents.eventShouldHide,
-            EventsPopUpView.cssSelector(), (ev: JQueryEventObject, extra: { view: EventsPopUpView })=>{
+            EventsPopUpView.cssSelector(),
+            (ev: JQueryEventObject, extra: { view: EventsPopUpView })=>
+            {
                 this.eventsOperationsFacade.hideEventWithId(extra.view.eventsModel.eventId);
+                this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
                 this.removePopUpView(extra.view, true);
+            });
+        this.view.attachEventHandler(ReCalCommonBrowserEvents.eventShouldUnhide,
+            EventsPopUpView.cssSelector(),
+            (ev: JQueryEventObject, extra: { view: IEventsPopUpView })=>
+            {
+                this.eventsOperationsFacade.unhideEventWithId(extra.view.eventsModel.eventId);
             });
     }
 
@@ -222,7 +242,8 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
     /**
      * Remove the popup from sidebar
      */
-    private removePopUpView(popUpView: IEventsPopUpView, animated: boolean): void
+    private removePopUpView(popUpView: IEventsPopUpView,
+                            animated: boolean): void
     {
         if (this.currentPopUpView === popUpView)
         {
@@ -230,7 +251,8 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
         }
         if (this.view.containsStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView)))
         {
-            this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView), animated);
+            this.view.popStackViewWithIdentifier(this.getIdentifierForPopUpView(popUpView),
+                animated);
         }
     }
 

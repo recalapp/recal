@@ -7,6 +7,7 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
     */
     var EventsVisibilityManager = (function () {
         function EventsVisibilityManager(dependencies) {
+            this._enabled = true;
             this._hiddenEventIds = new Set();
             /**
             * Global Browser Events Manager
@@ -14,6 +15,17 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
             this._globalBrowserEventsManager = null;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         }
+        Object.defineProperty(EventsVisibilityManager.prototype, "enabled", {
+            get: function () {
+                return this._enabled;
+            },
+            set: function (value) {
+                this._enabled = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(EventsVisibilityManager.prototype, "hiddenEventIds", {
             get: function () {
                 return this._hiddenEventIds;
@@ -56,7 +68,7 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
         EventsVisibilityManager.prototype.eventIdIsHidden = function (eventId) {
             // TODO calculate visibility based on other information, such as user
             // preferences.
-            return this.hiddenEventIds.contains(eventId);
+            return this.enabled && this.hiddenEventIds.contains(eventId);
         };
 
         /**

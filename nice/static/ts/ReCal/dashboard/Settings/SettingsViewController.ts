@@ -3,6 +3,7 @@
 import $ = require('jquery');
 
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
+import Events = require('../../common/Events/Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import ReCalCommonBrowserEvents = require('../../common/ReCalCommonBrowserEvents');
 import Settings = require('./Settings');
@@ -10,6 +11,7 @@ import SettingsView = require('./SettingsView');
 import UserProfiles = require('../../common/UserProfiles/UserProfiles');
 import ViewController = require('../../../library/CoreUI/ViewController');
 
+import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 
 class SettingsViewController extends ViewController
@@ -23,11 +25,15 @@ class SettingsViewController extends ViewController
         return this._globalBrowserEventsManager;
     }
 
+    private _eventsOperationsFacade: IEventsOperationsFacade = null;
+    private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
+
     public get view(): SettingsView { return <SettingsView> this._view; }
 
     constructor(view: SettingsView, dependencies: Settings.SettingsViewControllerDependencies)
     {
         super(view);
+        this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
         this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         this._user = dependencies.user;
         this.initialize();
@@ -39,6 +45,7 @@ class SettingsViewController extends ViewController
             this.user.agendaVisibleEventTypeCodes = this.view.agendaSelectedEventTypes;
             this.user.calendarVisibleEventTypeCodes = this.view.calendarSelectedEventTypes;
             (<any>window).timezone = this.view.isLocalTimezone ? null : 'America/New_York';
+            this.eventsOperationsFacade.showHiddenEvents(!this.view.eventsHidden);
             this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.settingsDidChange);
         });
         this.view.attachEventHandler(BrowserEvents.bootstrapModalShow, ()=>{

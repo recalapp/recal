@@ -106,7 +106,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     return;
                 }
                 _this.eventsOperationsFacade.hideEventWithId(extra.view.eventsModel.eventId);
+                _this.eventsOperationsFacade.deselectEventWithId(extra.view.eventsModel.eventId);
                 _this.removePopUpView(extra.view);
+            });
+            this.view.attachEventHandler(ReCalCommonBrowserEvents.eventShouldUnhide, EventsPopUpView.cssSelector(), function (ev, extra) {
+                if (extra.view.parentView !== _this.canvasView) {
+                    return;
+                }
+                _this.eventsOperationsFacade.unhideEventWithId(extra.view.eventsModel.eventId);
             });
         };
 
