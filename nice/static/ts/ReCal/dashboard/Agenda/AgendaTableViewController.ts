@@ -87,6 +87,9 @@ class AgendaTableViewController extends TableViewController
                 this.reload();
             });
 
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.settingsDidChange, ()=>{
+            this.reload();
+        });
         // when settings close
         //$('#' + SE_id).on('close', (ev: JQueryEventObject)=>
         //{
@@ -172,6 +175,11 @@ class AgendaTableViewController extends TableViewController
             return;
         }
         this._loading = true;
+        var agendaEventTypesWhitelist = new Set<string>(this.user.agendaVisibleEventTypeCodes);
+        var filterId = (eventId:string)=>{
+            var eventTypeCode = this.eventsOperationsFacade.getEventById(eventId).eventTypeCode;
+            return agendaEventTypesWhitelist.contains(eventTypeCode);
+        };
         this.indicatorsManager.showIndicator(this.INDICATOR_INDENTIFIER, IndicatorsType.persistent, this.INDICATOR_DISPLAY_TEXT);
         this._eventSectionArray = new Array<EventSection>();
 
@@ -188,7 +196,7 @@ class AgendaTableViewController extends TableViewController
         endDate.minutes = 0;
         endDate.seconds = 0;
         var eventIds: string[] = this.eventsOperationsFacade.getEventIdsInRange(startDate,
-            endDate);
+            endDate).filter(filterId);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Yesterday',
@@ -203,7 +211,7 @@ class AgendaTableViewController extends TableViewController
         endDate.minutes = 0;
         endDate.seconds = 0;
         eventIds =
-        this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate).filter(filterId);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('Today', eventIds));
@@ -217,7 +225,7 @@ class AgendaTableViewController extends TableViewController
         endDate.minutes = 0;
         endDate.seconds = 0;
         eventIds =
-        this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate).filter(filterId);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('This Week',
@@ -233,7 +241,7 @@ class AgendaTableViewController extends TableViewController
         endDate.minutes = 0;
         endDate.seconds = 0;
         eventIds =
-        this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate);
+        this.eventsOperationsFacade.getEventIdsInRange(startDate, endDate).filter(filterId);
         if (eventIds.length > 0)
         {
             this._eventSectionArray.push(new EventSection('This Month',

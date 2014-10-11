@@ -5,18 +5,28 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../common/ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, ReCalCommonBrowserEvents, ViewController) {
     var SettingsViewController = (function (_super) {
         __extends(SettingsViewController, _super);
         function SettingsViewController(view, dependencies) {
             _super.call(this, view);
             this._user = null;
+            this._globalBrowserEventsManager = null;
+            this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this._user = dependencies.user;
             this.initialize();
         }
         Object.defineProperty(SettingsViewController.prototype, "user", {
             get: function () {
                 return this._user;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(SettingsViewController.prototype, "globalBrowserEventsManager", {
+            get: function () {
+                return this._globalBrowserEventsManager;
             },
             enumerable: true,
             configurable: true
@@ -35,6 +45,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
             this.view.attachEventHandler(BrowserEvents.bootstrapModalHide, function () {
                 _this.user.agendaVisibleEventTypeCodes = _this.view.agendaSelectedEventTypes;
                 _this.user.calendarVisibleEventTypeCodes = _this.view.calendarSelectedEventTypes;
+                _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.settingsDidChange);
             });
             this.view.attachEventHandler(BrowserEvents.bootstrapModalShow, function () {
                 _this.view.possibleCourses = _this.user.enrolledCoursesModels;

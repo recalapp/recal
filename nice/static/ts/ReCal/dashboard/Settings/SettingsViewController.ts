@@ -4,6 +4,7 @@ import $ = require('jquery');
 
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
+import ReCalCommonBrowserEvents = require('../../common/ReCalCommonBrowserEvents');
 import Settings = require('./Settings');
 import SettingsView = require('./SettingsView');
 import UserProfiles = require('../../common/UserProfiles/UserProfiles');
@@ -16,11 +17,18 @@ class SettingsViewController extends ViewController
     private _user: IUserProfilesModel = null;
     private get user(): IUserProfilesModel { return this._user; }
 
+    private _globalBrowserEventsManager: GlobalBrowserEventsManager = null;
+    private get globalBrowserEventsManager(): GlobalBrowserEventsManager
+    {
+        return this._globalBrowserEventsManager;
+    }
+
     public get view(): SettingsView { return <SettingsView> this._view; }
 
     constructor(view: SettingsView, dependencies: Settings.SettingsViewControllerDependencies)
     {
         super(view);
+        this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
         this._user = dependencies.user;
         this.initialize();
     }
@@ -30,6 +38,7 @@ class SettingsViewController extends ViewController
         this.view.attachEventHandler(BrowserEvents.bootstrapModalHide, ()=>{
             this.user.agendaVisibleEventTypeCodes = this.view.agendaSelectedEventTypes;
             this.user.calendarVisibleEventTypeCodes = this.view.calendarSelectedEventTypes;
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.settingsDidChange);
         });
         this.view.attachEventHandler(BrowserEvents.bootstrapModalShow, ()=>{
             this.view.possibleCourses = this.user.enrolledCoursesModels;

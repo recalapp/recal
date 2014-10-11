@@ -15,6 +15,8 @@ define(["require", "exports"], function(require, exports) {
         ReCalCommonBrowserEvents.eventsWillBeginDownloading = 'eventsWillBeginDownloading';
         ReCalCommonBrowserEvents.eventsDidFinishDownloading = 'eventsDidFinishDownloading';
         ReCalCommonBrowserEvents.eventsDidFailDownloading = 'eventsDidFailDownloading';
+
+        ReCalCommonBrowserEvents.settingsDidChange = 'settingsDidChange';
         return ReCalCommonBrowserEvents;
     })();
 
