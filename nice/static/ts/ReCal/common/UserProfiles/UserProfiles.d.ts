@@ -17,6 +17,7 @@ export interface IUserProfilesModel
     displayName?: string; // null initially?
     enrolledCoursesModels?: ICoursesModel[]; // null initially
     enrolledSectionsModels?: ISectionsModel[]; // computed based on enrolledCourses
+    hiddenCoursesModels?: ICoursesModel[];
     eventTypes?: Dictionary<string, string>; // mapping from type code to type display for this user (can be different in the future for each user)
     agendaVisibleEventTypeCodes?: string[];
     calendarVisibleEventTypeCodes?: string[];

@@ -51,6 +51,25 @@ class UserProfilesModel implements  IUserProfilesModel
         }, []);
     }
 
+    private _hiddenCoursesModels: Set<ICoursesModel> = null;
+    private get hiddenCoursesModelsSet(): Set<ICoursesModel>
+    {
+        if (!this._hiddenCoursesModels)
+        {
+            this._hiddenCoursesModels = new Set<ICoursesModel>();
+        }
+        return this._hiddenCoursesModels;
+    }
+    public get hiddenCoursesModels(): ICoursesModel[]
+    {
+        return this.hiddenCoursesModelsSet.toArray();
+    }
+    public set hiddenCoursesModels(value: ICoursesModel[])
+    {
+        value = value || [];
+        this._hiddenCoursesModels = new Set<ICoursesModel>(value);
+    }
+
     private _agendaVisibleEventTypeCodes: Set<string> = null;
     private get agendaVisibleEventTypeCodesSet(): Set<string>
     {

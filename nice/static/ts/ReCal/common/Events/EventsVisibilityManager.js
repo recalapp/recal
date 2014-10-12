@@ -68,7 +68,7 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
         EventsVisibilityManager.prototype.eventIdIsHidden = function (eventId) {
             // TODO calculate visibility based on other information, such as user
             // preferences.
-            return this.enabled && this.hiddenEventIds.contains(eventId);
+            return (this.enabled && this.hiddenEventIds.contains(eventId));
         };
 
         /**

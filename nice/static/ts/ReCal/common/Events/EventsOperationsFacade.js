@@ -1,7 +1,7 @@
 define(["require", "exports", './EventsModificationsManager', './EventsRetriever', './EventsSelectionManager', './EventsServerCommunicator', './EventsStoreCoordinator', './EventsVisibilityManager'], function(require, exports, EventsModificationsManager, EventsRetriever, EventsSelectionManager, EventsServerCommunicator, EventsStoreCoordinator, EventsVisibilityManager) {
     /**
     * IEventsOperationsFacade is the class responsible for all operations
-    * related to events in the persepective of any events client. That is, to
+    * related to events in the perspective of any events client. That is, to
     * any non-model classes, IEventsOperationsFacade will serve as the single
     * gateway to getting information about events.
     */
@@ -225,6 +225,14 @@ define(["require", "exports", './EventsModificationsManager', './EventsRetriever
         */
         EventsOperationsFacade.prototype.showHiddenEvents = function (shouldShow) {
             this.eventsVisibilityManager.enabled = shouldShow;
+        };
+
+        /**
+        * Set the blacklist for courses
+        * @param courseIds
+        */
+        EventsOperationsFacade.prototype.setCourseBlacklist = function (courseIds) {
+            this.eventsRetriever.courseBlacklist = courseIds;
         };
         return EventsOperationsFacade;
     })();

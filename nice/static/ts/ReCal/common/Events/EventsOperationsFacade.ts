@@ -13,7 +13,7 @@ import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 
 /**
  * IEventsOperationsFacade is the class responsible for all operations
- * related to events in the persepective of any events client. That is, to
+ * related to events in the perspective of any events client. That is, to
  * any non-model classes, IEventsOperationsFacade will serve as the single
  * gateway to getting information about events.
  */
@@ -240,6 +240,15 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     public showHiddenEvents(shouldShow: boolean): void
     {
         this.eventsVisibilityManager.enabled = shouldShow;
+    }
+
+    /**
+     * Set the blacklist for courses
+     * @param courseIds
+     */
+    public setCourseBlacklist(courseIds: string[]): void
+    {
+        this.eventsRetriever.courseBlacklist = courseIds;
     }
 }
 
