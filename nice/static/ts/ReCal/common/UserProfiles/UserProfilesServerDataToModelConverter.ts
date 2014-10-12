@@ -1,3 +1,4 @@
+import Color = require('../../../library/Color/Color');
 import Courses = require('../Courses/Courses');
 import CoursesModel = require('../Courses/CoursesModel');
 import Dictionary = require('../../../library/DataStructures/Dictionary');
@@ -31,6 +32,7 @@ class UserProfilesServerDataToModelConverter
         return new SectionsModel({
             sectionId: data.section_id.toString(),
             title: data.section_name,
+            color: Color.fromHex(data.section_color),
             sectionTypesModel: new SectionTypesModel({
                 code: data.section_type_code,
                 displayText: data.section_type_code,

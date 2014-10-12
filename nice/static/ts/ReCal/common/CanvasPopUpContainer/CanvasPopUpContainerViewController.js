@@ -22,10 +22,17 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             * Events Operations Facade
             */
             this._eventsOperationsFacade = null;
+            /**
+            * The current logged in user, needed to get the list of sections
+            * @type {IUserProfilesModel}
+            * @private
+            */
+            this._user = null;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this._canvasView = dependencies.canvasView;
             this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
             this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+            this._user = dependencies.user;
             this.initialize();
         }
         Object.defineProperty(CanvasPopUpContainerViewController.prototype, "globalBrowserEventsManager", {
@@ -55,6 +62,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
         Object.defineProperty(CanvasPopUpContainerViewController.prototype, "eventsOperationsFacade", {
             get: function () {
                 return this._eventsOperationsFacade;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(CanvasPopUpContainerViewController.prototype, "user", {
+            get: function () {
+                return this._user;
             },
             enumerable: true,
             configurable: true
@@ -100,6 +115,9 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                     return;
                 }
                 _this.eventsOperationsFacade.commitModifiedEvent(extra.modifiedEventsModel);
+
+                // in case this is a new event, in which case it would not have been selected before
+                _this.eventsOperationsFacade.selectEventWithId(extra.modifiedEventsModel.eventId);
             });
             this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.eventShouldHide, EventsPopUpView.cssSelector(), function (ev, extra) {
                 if (extra.view.parentView !== _this.canvasView) {

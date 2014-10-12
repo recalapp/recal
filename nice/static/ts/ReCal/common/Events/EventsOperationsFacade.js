@@ -193,6 +193,13 @@ define(["require", "exports", './EventsModificationsManager', './EventsRetriever
         * Event Modification
         *************************************************************************/
         /**
+        * Creates a new events model.
+        */
+        EventsOperationsFacade.prototype.createNewEventsModelForUser = function (user) {
+            return this.eventsModificationsManager.createNewEventsModelForUser(user);
+        };
+
+        /**
         * Tells the events module that an event has been modified to be
         * modifiedEventsModel
         */

@@ -42,7 +42,7 @@ class EventsPopUpViewFactory
     /**
      * Create a new events PopUp
      */
-    public createEventsPopUp(): EventsPopUp.IEventsPopUpView
+    public createEventsPopUp(): EventsPopUp.IEditableEventsPopUpView
     {
         var eventsPopUpView = new EditableEventsPopUpView(this.viewTemplateRetriever.retrieveTemplate('#popup-template'), EditableEventsPopUpView.cssClass,
             {

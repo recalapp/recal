@@ -3,7 +3,7 @@ import Events = require('../../common/Events/Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import Indicators = require('../../../library/Indicators/Indicators');
 import Table = require('../../../library/Table/Table');
-import UserProfiles = require('../../Common/UserProfiles/UserProfiles');
+import UserProfiles = require('../../common/UserProfiles/UserProfiles');
 
 import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;

@@ -28,9 +28,16 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             */
             this._eventsOperationsFacade = null;
             this._eventsPopUpViewFactory = null;
+            /**
+            * The current logged in user, needed to get the list of sections
+            * @type {IUserProfilesModel}
+            * @private
+            */
+            this._user = null;
             this._eventsPopUpViewFactory = dependencies.eventsPopUpViewFactory;
             this._globalBrowserEventsManager = dependencies.globalBrowserEventsManager;
             this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+            this._user = dependencies.user;
             this.initializePopUp();
         }
         Object.defineProperty(ReCalSidebarViewController.prototype, "currentPopUpView", {
@@ -64,6 +71,14 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
         Object.defineProperty(ReCalSidebarViewController.prototype, "eventsPopUpViewFactory", {
             get: function () {
                 return this._eventsPopUpViewFactory;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(ReCalSidebarViewController.prototype, "user", {
+            get: function () {
+                return this._user;
             },
             enumerable: true,
             configurable: true
@@ -174,6 +189,9 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             this.view.attachEventHandler(ReCalCommonBrowserEvents.editablePopUpDidSave, EventsPopUpView.cssSelector(), function (ev, extra) {
                 var modifiedEventsModel = extra.modifiedEventsModel;
                 _this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
+
+                // select again, in case the event being saved is a new event
+                _this.eventsOperationsFacade.selectEventWithId(modifiedEventsModel.eventId);
             });
             this.view.attachEventHandler(ReCalCommonBrowserEvents.eventShouldHide, EventsPopUpView.cssSelector(), function (ev, extra) {
                 _this.eventsOperationsFacade.hideEventWithId(extra.view.eventsModel.eventId);
@@ -182,6 +200,25 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
             });
             this.view.attachEventHandler(ReCalCommonBrowserEvents.eventShouldUnhide, EventsPopUpView.cssSelector(), function (ev, extra) {
                 _this.eventsOperationsFacade.unhideEventWithId(extra.view.eventsModel.eventId);
+            });
+
+            // when add event button was clicked
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventShouldBeAdded, function () {
+                var newEventsModel = _this.eventsOperationsFacade.createNewEventsModelForUser(_this.user);
+                if (_this.currentPopUpView === null || _this.currentPopUpView === undefined) {
+                    // create the popup view
+                    var newPopUpView = _this.eventsPopUpViewFactory.createEventsPopUp();
+
+                    // set events model
+                    newPopUpView.eventsModel = newEventsModel;
+                    _this.addPopUpView(newPopUpView);
+                } else {
+                    var oldId = _this.currentPopUpView.eventsModel.eventId;
+                    _this.currentPopUpView.eventsModel = newEventsModel;
+                    _this.eventsOperationsFacade.deselectEventWithId(oldId);
+                }
+                _this.currentPopUpView.isModified = true;
+                _this.currentPopUpView.focus();
             });
         };
 

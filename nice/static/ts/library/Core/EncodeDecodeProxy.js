@@ -3,7 +3,7 @@ define(["require", "exports", 'jquery'], function(require, exports, $) {
         function EncodeDecodeProxy() {
         }
         EncodeDecodeProxy.prototype.titleCaseEncode = function (content) {
-            return string.replace(/\w\S*/g, function (txt) {
+            return content.toString().replace(/\w\S*/g, function (txt) {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
         };

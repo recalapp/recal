@@ -1,7 +1,7 @@
 import ComparableResult = require('./ComparableResult');
-import Equalable = require('./Equalable');
+import Equatable = require('./Equatable');
 
-interface Comparable extends Equalable
+interface Comparable extends Equatable
 {
     compareTo(other: Comparable): ComparableResult;
 }

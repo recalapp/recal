@@ -16,6 +16,7 @@ import ReCalCommonBrowserEvents = require('../../common/ReCalCommonBrowserEvents
 import Set = require('../../../library/DataStructures/Set');
 import Table = require('../../../library/Table/Table');
 import TableViewController = require('../../../library/Table/TableViewController');
+import UserProfiles = require('../../common/UserProfiles/UserProfiles');
 
 import AgendaTableViewControllerDependencies = Agenda.AgendaTableViewControllerDependencies;
 import IAgendaTableViewCell = Agenda.IAgendaTableViewCell;
@@ -25,6 +26,7 @@ import IIndicatorsManager = Indicators.IIndicatorsManager;
 import ITableView = Table.ITableView;
 import ITableViewCell = Table.ITableViewCell;
 import ITableViewHeaderView = Table.ITableViewHeaderView;
+import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
 declare var SE_id;
@@ -153,8 +155,17 @@ class AgendaTableViewController extends TableViewController
                                 {
                                     return false; // break;
                                 }
+                                changedEventIds.remove(eventId);
                             }
                         });
+                    changedEventIds.toArray().filter((eventId)=>{ return this.eventsOperationsFacade.eventIdIsSelected(eventId); } ).map((eventId)=>{
+                        // these are the ids that were not selected before, but must be selected now.
+                        var indexPath = this.getIndexPathForEventId(eventId);
+                        if (indexPath !== null)
+                        {
+                            this.view.selectCellAtIndexPath(indexPath);
+                        }
+                    });
                 }
                 else
                 {
@@ -164,6 +175,30 @@ class AgendaTableViewController extends TableViewController
 
         // reload
         this.reload();
+    }
+
+    private getIndexPathForEventId(eventId: string): IndexPath
+    {
+        var indexPath: IndexPath = null;
+        for (var section = 0; section < this._eventSectionArray.length; ++section)
+        {
+            if (indexPath !== null)
+            {
+                break;
+            }
+            var eventSection = this._eventSectionArray[section];
+            indexPath = eventSection.eventIds.reduce((indexPath: IndexPath, curEventId: string, row: number)=>{
+                if (indexPath === null)
+                {
+                    if (curEventId === eventId)
+                    {
+                        indexPath = new IndexPath(section, row);
+                    }
+                }
+                return indexPath;
+            }, indexPath);
+        }
+        return indexPath;
     }
 
     public reload(): void

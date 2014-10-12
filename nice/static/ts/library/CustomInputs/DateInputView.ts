@@ -31,7 +31,7 @@ class DateInputView extends FocusableView implements IDateInputView
     private MAX_YEARS = 2100;
     private MIN_YEARS = 2000;
 
-    private _daysCountDict = new Dictionary<string, number>({
+    private _daysCountDict = new Dictionary<string, number>((a, b)=>{return a === b;}, {
         1: 31,
         2: 29, // TODO handle leap year
         3: 31,

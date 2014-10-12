@@ -51,7 +51,9 @@ define(["require", "exports", '../Core/AssertionException', '../Core/BrowserEven
             _super.call(this, $element, cssClass);
             this.MAX_YEARS = 2100;
             this.MIN_YEARS = 2000;
-            this._daysCountDict = new Dictionary({
+            this._daysCountDict = new Dictionary(function (a, b) {
+                return a === b;
+            }, {
                 1: 31,
                 2: 29,
                 3: 31,

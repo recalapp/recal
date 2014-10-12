@@ -1,3 +1,4 @@
+import Color = require('../../../library/Color/Color');
 export interface ICoursesModel
 {
     courseId: string;
@@ -13,6 +14,7 @@ export interface ISectionsModel
     sectionId: string;
     title: string;
     sectionTypesModel: ISectionTypesModel;
+    color: Color;
 }
 export interface ISectionTypesModel
 {

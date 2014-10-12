@@ -1,7 +1,7 @@
-import Equalable = require('../Core/Equalable');
+import Equatable = require('../Core/Equatable');
 import Dictionary = require('./Dictionary');
 
-class Set<T> implements Equalable
+class Set<T> implements Equatable
 {
     private _dict = new Dictionary<T, Boolean>();
     private _size = 0;

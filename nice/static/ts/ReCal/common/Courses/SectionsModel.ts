@@ -1,3 +1,4 @@
+import Color = require('../../../library/Color/Color');
 import Courses = require('./Courses');
 import SectionTypesModel = require('./SectionTypesModel');
 
@@ -23,6 +24,10 @@ class SectionsModel implements ISectionsModel
 
     public set title(value: string) { this._title = value; }
 
+    private _color: Color = null;
+    public get color(): Color { return this._color; }
+    public set color(value: Color) { this._color = value; }
+
     private _sectionTypesModel: ISectionTypesModel = null;
     public get sectionTypesModel(): ISectionTypesModel
     { return this._sectionTypesModel; }
@@ -43,6 +48,7 @@ class SectionsModel implements ISectionsModel
         this.sectionId = copy.sectionId;
         this.title = copy.title;
         this.sectionTypesModel = new SectionTypesModel(copy.sectionTypesModel);
+        this.color = copy.color;
     }
 }
 export = SectionsModel;

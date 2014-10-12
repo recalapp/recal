@@ -4,6 +4,10 @@ define(["require", "exports"], function(require, exports) {
             this._section = _section;
             this._item = _item;
         }
+        IndexPath.prototype.equals = function (other) {
+            return this.section === other.section && this.item === other.item;
+        };
+
         Object.defineProperty(IndexPath.prototype, "section", {
             get: function () {
                 return this._section;

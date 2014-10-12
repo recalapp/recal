@@ -76,9 +76,9 @@ class EditableEventsPopUpView extends EventsPopUpView
     }
 
     private _isModified: boolean = null;
-    private get isModified(): boolean { return this._isModified; }
+    public get isModified(): boolean { return this._isModified; }
 
-    private set isModified(value: boolean)
+    public set isModified(value: boolean)
     {
         if (this._isModified !== value)
         {

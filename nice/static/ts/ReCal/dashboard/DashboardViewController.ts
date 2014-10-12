@@ -3,6 +3,7 @@
 import $ = require('jquery');
 
 import AgendaTableViewController = require('./Agenda/AgendaTableViewController');
+import BrowserEvents = require('../../library/Core/BrowserEvents');
 import Calendar = require('../../library/Calendar/Calendar');
 import CalendarView = require('../../library/Calendar/CalendarView');
 import CanvasPopUpContainer = require('../common/CanvasPopUpContainer/CanvasPopUpContainer');
@@ -15,6 +16,7 @@ import Events = require('../common/Events/Events');
 import EventsPopUp = require('../common/EventsPopUp/EventsPopUp');
 import EventsPopUpViewFactory = require('../common/EventsPopUp/EventsPopUpViewFactory');
 import EventsOperationsFacade = require('../common/Events/EventsOperationsFacade');
+import FocusableView = require('../../library/CoreUI/FocusableView');
 import GlobalBrowserEventsManager = require('../../library/Core/GlobalBrowserEventsManager');
 import Indicators = require('../../library/Indicators/Indicators');
 import IndicatorsContainerView = require('../../library/Indicators/IndicatorsContainerView');
@@ -42,6 +44,7 @@ import ICalendarView = Calendar.ICalendarView;
 import ICalendarViewController = Calendar.ICalendarViewController;
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController;
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
+import IFocusableView = CoreUI.IFocusableView;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IEventsPopUpViewFactory = EventsPopUp.IEventsPopUpViewFactory;
 import IIndicatorsManager = Indicators.IIndicatorsManager;
@@ -145,6 +148,16 @@ class DashboardViewController extends ViewController
         return this._indicatorsManager;
     }
 
+    private _addEventButton: IFocusableView = null;
+    private get addEventButton(): IFocusableView
+    {
+        if (!this._addEventButton)
+        {
+            this._addEventButton = <FocusableView> FocusableView.fromJQuery(this.view.findJQuery('#add-button'));
+        }
+        return this._addEventButton;
+    }
+
     /**
      * Events Pop Up View Factory
      * @type {IEventsPopUpViewFactory}
@@ -243,6 +256,7 @@ class DashboardViewController extends ViewController
         //    this._user = user;
 //        });
         this.setUpEventsServerCommunicationIndicators();
+        this.initializeNavigationBar();
         this.initializeSidebar();
         this.initializePopUpCanvas();
         this.initializeCalendar();
@@ -273,6 +287,13 @@ class DashboardViewController extends ViewController
             errorDownloading = true;
             this.indicatorsManager.showIndicator("events_download", IndicatorsType.error, "Error connecting.");
         })
+    }
+
+    private initializeNavigationBar(): void
+    {
+        this.addEventButton.attachEventHandler(BrowserEvents.click, (ev: JQueryEventObject)=>{
+            this.view.triggerEvent(ReCalCommonBrowserEvents.eventShouldBeAdded);
+        });
     }
 
     private initializeCalendar(): void
@@ -317,6 +338,7 @@ class DashboardViewController extends ViewController
                 globalBrowserEventsManager: this.globalBrowserEventsManager,
                 eventsPopUpViewFactory: this.eventsPopUpViewFactory,
                 eventsOperationsFacade: this.eventsOperationsFacade,
+                user: this.user,
             });
         this.addChildViewController(sidebarVC);
         this.sidebarViewController = sidebarVC;
@@ -334,6 +356,7 @@ class DashboardViewController extends ViewController
                 clickToEditViewFactory: this.clickToEditViewFactory,
                 eventsOperationsFacade: this.eventsOperationsFacade,
                 globalBrowserEventsManager: this.globalBrowserEventsManager,
+                user: this.user,
             });
         this.addChildViewController(popUpCanvasVC);
         this.canvasPopUpContainerViewController = popUpCanvasVC;
@@ -341,7 +364,7 @@ class DashboardViewController extends ViewController
 
     private initializeSettings(): void
     {
-        var settingsView = SettingsView.fromJQuery(this.view.findJQuery('#settingsModal'));
+        var settingsView = <SettingsView> SettingsView.fromJQuery(this.view.findJQuery('#settingsModal'));
         this.settingsViewController = new SettingsViewController(settingsView, {
             eventsOperationsFacade: this.eventsOperationsFacade,
             globalBrowserEventsManager: this.globalBrowserEventsManager,

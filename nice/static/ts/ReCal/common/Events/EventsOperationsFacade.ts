@@ -7,9 +7,11 @@ import EventsServerCommunicator = require('./EventsServerCommunicator');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
 import EventsVisibilityManager = require('./EventsVisibilityManager');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
+import UserProfiles = require('../UserProfiles/UserProfiles');
 
 import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
+import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 
 /**
  * IEventsOperationsFacade is the class responsible for all operations
@@ -203,6 +205,14 @@ class EventsOperationsFacade implements IEventsOperationsFacade
     /***************************************************************************
      * Event Modification
      *************************************************************************/
+    /**
+     * Creates a new events model.
+     */
+    public createNewEventsModelForUser(user: IUserProfilesModel): IEventsModel
+    {
+        return this.eventsModificationsManager.createNewEventsModelForUser(user);
+    }
+
     /**
      * Tells the events module that an event has been modified to be
      * modifiedEventsModel

@@ -1,4 +1,4 @@
-define(["require", "exports", '../Courses/CoursesModel', '../../../library/DataStructures/Dictionary', '../Courses/SectionsModel', '../Courses/SectionTypesModel'], function(require, exports, CoursesModel, Dictionary, SectionsModel, SectionTypesModel) {
+define(["require", "exports", '../../../library/Color/Color', '../Courses/CoursesModel', '../../../library/DataStructures/Dictionary', '../Courses/SectionsModel', '../Courses/SectionTypesModel'], function(require, exports, Color, CoursesModel, Dictionary, SectionsModel, SectionTypesModel) {
     var UserProfilesServerDataToModelConverter = (function () {
         function UserProfilesServerDataToModelConverter(_user) {
             this._user = _user;
@@ -15,6 +15,7 @@ define(["require", "exports", '../Courses/CoursesModel', '../../../library/DataS
             return new SectionsModel({
                 sectionId: data.section_id.toString(),
                 title: data.section_name,
+                color: Color.fromHex(data.section_color),
                 sectionTypesModel: new SectionTypesModel({
                     code: data.section_type_code,
                     displayText: data.section_type_code

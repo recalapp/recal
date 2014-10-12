@@ -34,10 +34,15 @@ export interface IEventsPopUpView extends IPopUpView
     possibleEventTypes: Dictionary<string, string>;
 }
 
+export interface IEditableEventsPopUpView extends IEventsPopUpView
+{
+    isModified: boolean;
+}
+
 export interface IEventsPopUpViewFactory
 {
     /**
      * Create a new events PopUp
      */
-    createEventsPopUp(): IEventsPopUpView;
+    createEventsPopUp(): IEditableEventsPopUpView;
 }

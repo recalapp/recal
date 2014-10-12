@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../../library/Indicators/IndicatorsType', '../../common/ReCalCommonBrowserEvents', '../../../library/DataStructures/Set', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, IndicatorsType, ReCalCommonBrowserEvents, Set, TableViewController) {
+define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableViewHeaderView', '../../../library/DateTime/DateTime', '../../../library/DataStructures/IndexPath', '../../../library/Indicators/IndicatorsType', '../../common/ReCalCommonBrowserEvents', '../../../library/DataStructures/Set', '../../../library/Table/TableViewController'], function(require, exports, $, AgendaTableViewCell, AgendaTableViewHeaderView, DateTime, IndexPath, IndicatorsType, ReCalCommonBrowserEvents, Set, TableViewController) {
     var AgendaTableViewController = (function (_super) {
         __extends(AgendaTableViewController, _super);
         function AgendaTableViewController(tableView, dependencies) {
@@ -102,6 +102,16 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                             if (foundCount == changedSize) {
                                 return false;
                             }
+                            changedEventIds.remove(eventId);
+                        }
+                    });
+                    changedEventIds.toArray().filter(function (eventId) {
+                        return _this.eventsOperationsFacade.eventIdIsSelected(eventId);
+                    }).map(function (eventId) {
+                        // these are the ids that were not selected before, but must be selected now.
+                        var indexPath = _this.getIndexPathForEventId(eventId);
+                        if (indexPath !== null) {
+                            _this.view.selectCellAtIndexPath(indexPath);
                         }
                     });
                 } else {
@@ -151,6 +161,25 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
             enumerable: true,
             configurable: true
         });
+
+        AgendaTableViewController.prototype.getIndexPathForEventId = function (eventId) {
+            var indexPath = null;
+            for (var section = 0; section < this._eventSectionArray.length; ++section) {
+                if (indexPath !== null) {
+                    break;
+                }
+                var eventSection = this._eventSectionArray[section];
+                indexPath = eventSection.eventIds.reduce(function (indexPath, curEventId, row) {
+                    if (indexPath === null) {
+                        if (curEventId === eventId) {
+                            indexPath = new IndexPath(section, row);
+                        }
+                    }
+                    return indexPath;
+                }, indexPath);
+            }
+            return indexPath;
+        };
 
         AgendaTableViewController.prototype.reload = function () {
             var _this = this;

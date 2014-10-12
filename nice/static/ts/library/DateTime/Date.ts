@@ -1,4 +1,5 @@
-interface Date
+import Comparable = require('../Core/Comparable');
+interface Date extends Comparable
 {
     year: number;
     month: number;

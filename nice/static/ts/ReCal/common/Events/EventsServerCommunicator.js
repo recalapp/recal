@@ -172,6 +172,7 @@ define(["require", "exports", '../../../library/Color/Color', '../../../library/
         EventsServerCommunicator.prototype.getLegacyEventObjectFromEventsModel = function (eventsModel) {
             return {
                 event_id: eventsModel.eventId,
+                event_group_id: eventsModel.eventGroupId,
                 event_title: eventsModel.title,
                 event_description: eventsModel.description,
                 event_location: eventsModel.location,
@@ -181,9 +182,8 @@ define(["require", "exports", '../../../library/Color/Color', '../../../library/
                 event_start: eventsModel.startDate.unix.toString(),
                 event_end: eventsModel.endDate.unix.toString(),
                 modified_time: eventsModel.lastEdited.unix.toString(),
-                event_group_id: eventsModel.eventGroupId,
                 section_color: eventsModel.sectionColor.hexValue,
-                revisionId: eventsModel.revisionId
+                revision_id: eventsModel.revisionId
             };
         };
         return EventsServerCommunicator;
