@@ -20,6 +20,7 @@ class EventsModel implements Events.IEventsModel
         this.eventGroupId = arg.eventGroupId;
         this.sectionColor = arg.sectionColor;
         this.revisionId = arg.sectionId;
+        this.courseId = arg.courseId;
     }
 
     private _eventId: string = null;

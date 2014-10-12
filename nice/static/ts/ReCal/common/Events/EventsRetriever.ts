@@ -4,6 +4,7 @@ import Events = require('./Events');
 import EventsModel = require('./EventsModel');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
 import EventsVisibilityManager = require('./EventsVisibilityManager');
+import Set = require('../../../library/DataStructures/Set');
 
 import IEventsModel = Events.IEventsModel;
 
@@ -18,6 +19,25 @@ class EventsRetriever
 
     private _eventsVisibilityManager: EventsVisibilityManager = null;
     private get eventsVisibilityManager(): EventsVisibilityManager { return this._eventsVisibilityManager; }
+
+    private _courseBlacklist: Set<string> = null;
+    private get courseBlacklistSet(): Set<string>
+    {
+        if (!this._courseBlacklist)
+        {
+            this._courseBlacklist = new Set<string>();
+        }
+        return this._courseBlacklist;
+    }
+    public get courseBlacklist(): string[]
+    {
+        return this.courseBlacklistSet.toArray();
+    }
+    public set courseBlacklist(value: string[])
+    {
+        value = value || [];
+        this._courseBlacklist = new Set<string>(value);
+    }
 
     constructor(dependencies: Events.EventsRetrieverDependencies)
     {
@@ -46,8 +66,8 @@ class EventsRetriever
             start.compareTo(eventsModel.startDate) === ComparableResult.less
                 && end.compareTo(eventsModel.startDate)
                 === ComparableResult.greater
-                && !this.eventsVisibilityManager.eventIdIsHidden(eventId);
-
+                && !this.eventsVisibilityManager.eventIdIsHidden(eventId)
+                && !this.courseBlacklistSet.contains(eventsModel.courseId);
             ret.stop =
             end.compareTo(eventsModel.startDate) === ComparableResult.less;
             return ret;

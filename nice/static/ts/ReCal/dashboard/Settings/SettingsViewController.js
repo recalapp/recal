@@ -5,7 +5,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../../library/Core/BrowserEvents', '../../common/ReCalCommonBrowserEvents', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, ReCalCommonBrowserEvents, ViewController) {
+define(["require", "exports", '../../../library/Core/BrowserEvents', '../../common/ReCalCommonBrowserEvents', '../../../library/DataStructures/Set', '../../../library/CoreUI/ViewController'], function(require, exports, BrowserEvents, ReCalCommonBrowserEvents, Set, ViewController) {
     var SettingsViewController = (function (_super) {
         __extends(SettingsViewController, _super);
         function SettingsViewController(view, dependencies) {
@@ -56,6 +56,13 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../comm
                 _this.user.agendaVisibleEventTypeCodes = _this.view.agendaSelectedEventTypes;
                 _this.user.calendarVisibleEventTypeCodes = _this.view.calendarSelectedEventTypes;
                 window.timezone = _this.view.isLocalTimezone ? null : 'America/New_York';
+                var visibleCourses = new Set(_this.view.visibleCourses);
+                _this.user.hiddenCoursesModels = _this.user.enrolledCoursesModels.filter(function (course) {
+                    return !visibleCourses.contains(course);
+                });
+                _this.eventsOperationsFacade.setCourseBlacklist(_this.user.hiddenCoursesModels.map(function (course) {
+                    return course.courseId;
+                }));
                 _this.eventsOperationsFacade.showHiddenEvents(!_this.view.eventsHidden);
                 _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.settingsDidChange);
             });
@@ -66,6 +73,10 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../comm
                 _this.view.calendarSelectedEventTypes = _this.user.calendarVisibleEventTypeCodes;
                 var timezone = window.timezone;
                 _this.view.isLocalTimezone = (timezone === null || timezone === undefined);
+                var hiddenCourses = new Set(_this.user.hiddenCoursesModels);
+                _this.view.visibleCourses = _this.user.enrolledCoursesModels.filter(function (course) {
+                    return !hiddenCourses.contains(course);
+                });
             });
         };
         return SettingsViewController;

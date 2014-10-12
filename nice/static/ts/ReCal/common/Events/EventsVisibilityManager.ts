@@ -62,7 +62,7 @@ class EventsVisibilityManager
     {
         // TODO calculate visibility based on other information, such as user 
         // preferences.
-        return this.enabled && this.hiddenEventIds.contains(eventId);
+        return (this.enabled && this.hiddenEventIds.contains(eventId));
     }
 
 

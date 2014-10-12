@@ -3,14 +3,17 @@
 import $ = require('jquery');
 
 import BrowserEvents = require('../../../library/Core/BrowserEvents');
+import Courses = require('../../common/Courses/Courses');
 import Events = require('../../common/Events/Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import ReCalCommonBrowserEvents = require('../../common/ReCalCommonBrowserEvents');
+import Set = require('../../../library/DataStructures/Set');
 import Settings = require('./Settings');
 import SettingsView = require('./SettingsView');
 import UserProfiles = require('../../common/UserProfiles/UserProfiles');
 import ViewController = require('../../../library/CoreUI/ViewController');
 
+import ICoursesModel = Courses.ICoursesModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 
@@ -45,6 +48,9 @@ class SettingsViewController extends ViewController
             this.user.agendaVisibleEventTypeCodes = this.view.agendaSelectedEventTypes;
             this.user.calendarVisibleEventTypeCodes = this.view.calendarSelectedEventTypes;
             (<any>window).timezone = this.view.isLocalTimezone ? null : 'America/New_York';
+            var visibleCourses = new Set<ICoursesModel>(this.view.visibleCourses);
+            this.user.hiddenCoursesModels = this.user.enrolledCoursesModels.filter((course)=>{ return !visibleCourses.contains(course); });
+            this.eventsOperationsFacade.setCourseBlacklist(this.user.hiddenCoursesModels.map((course)=>{ return course.courseId; }));
             this.eventsOperationsFacade.showHiddenEvents(!this.view.eventsHidden);
             this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.settingsDidChange);
         });
@@ -57,6 +63,8 @@ class SettingsViewController extends ViewController
             this.view.isLocalTimezone = (
                 timezone === null || timezone === undefined
                 );
+            var hiddenCourses = new Set<ICoursesModel>(this.user.hiddenCoursesModels);
+            this.view.visibleCourses = this.user.enrolledCoursesModels.filter((course)=>{ return !hiddenCourses.contains(course); });
         });
     }
 }

@@ -5,6 +5,7 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary', '../
             this._username = null;
             this._displayName = null;
             this._enrolledCoursesModels = new Set();
+            this._hiddenCoursesModels = null;
             this._agendaVisibleEventTypeCodes = null;
             this._calendarVisibleEventTypeCodes = null;
             if (copy) {
@@ -73,6 +74,28 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary', '../
                 return this.enrolledCoursesModels.reduce(function (sectionsModels, coursesModel, index) {
                     return sectionsModels.concat(coursesModel.sectionsModels);
                 }, []);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(UserProfilesModel.prototype, "hiddenCoursesModelsSet", {
+            get: function () {
+                if (!this._hiddenCoursesModels) {
+                    this._hiddenCoursesModels = new Set();
+                }
+                return this._hiddenCoursesModels;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(UserProfilesModel.prototype, "hiddenCoursesModels", {
+            get: function () {
+                return this.hiddenCoursesModelsSet.toArray();
+            },
+            set: function (value) {
+                value = value || [];
+                this._hiddenCoursesModels = new Set(value);
             },
             enumerable: true,
             configurable: true

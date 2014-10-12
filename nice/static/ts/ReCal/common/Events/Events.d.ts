@@ -153,4 +153,10 @@ export interface IEventsOperationsFacade
      * @param shouldShow
      */
     showHiddenEvents(shouldShow: boolean): void;
+
+    /**
+     * Set the blacklist for courses
+     * @param courseIds
+     */
+    setCourseBlacklist(courseIds: string[]): void;
 }

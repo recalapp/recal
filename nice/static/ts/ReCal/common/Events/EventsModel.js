@@ -27,6 +27,7 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
             this.eventGroupId = arg.eventGroupId;
             this.sectionColor = arg.sectionColor;
             this.revisionId = arg.sectionId;
+            this.courseId = arg.courseId;
         }
         Object.defineProperty(EventsModel.prototype, "eventId", {
             get: function () {
