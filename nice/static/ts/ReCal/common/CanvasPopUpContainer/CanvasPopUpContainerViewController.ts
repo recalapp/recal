@@ -3,21 +3,25 @@ import ClickToEdit = require('../../../library/ClickToEdit/ClickToEdit');
 import CanvasPopUpContainer = require('./CanvasPopUpContainer');
 import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Events = require('../../common/Events/Events');
+import EventsPopUp = require('../EventsPopUp/EventsPopUp');
 import EventsPopUpView = require('../EventsPopUp/EventsPopUpView');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import InvalidActionException = require('../../../library/Core/InvalidActionException');
 import PopUp = require('../../../library/PopUp/PopUp');
 import PopUpView = require('../../../library/PopUp/PopUpView');
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
+import UserProfiles = require('../UserProfiles/UserProfiles');
 import ViewController = require('../../../library/CoreUI/ViewController');
 
 import CanvasPopUpContainerViewControllerDependencies = CanvasPopUpContainer.CanvasPopUpContainerViewControllerDependencies
 import ICanvasPopUpContainerViewController = CanvasPopUpContainer.ICanvasPopUpContainerViewController
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsModel = Events.IEventsModel;
+import IEditableEventsPopUpView = EventsPopUp.IEditableEventsPopUpView;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IEventsPopUpView = EventsPopUp.IEventsPopUpView;
 import IPopUpView = PopUp.IPopUpView;
+import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 import IView = CoreUI.IView;
 
 class CanvasPopUpContainerViewController extends ViewController implements ICanvasPopUpContainerViewController
@@ -43,6 +47,13 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
     private _eventsOperationsFacade: IEventsOperationsFacade = null;
     private get eventsOperationsFacade(): IEventsOperationsFacade { return this._eventsOperationsFacade; }
 
+    /**
+     * The current logged in user, needed to get the list of sections
+     * @type {IUserProfilesModel}
+     * @private
+     */
+    private _user: IUserProfilesModel = null;
+    private get user(): IUserProfilesModel { return this._user; }
 
     constructor(view: IView, dependencies: CanvasPopUpContainerViewControllerDependencies)
     {
@@ -51,6 +62,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
         this._canvasView = dependencies.canvasView;
         this._clickToEditViewFactory = dependencies.clickToEditViewFactory;
         this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+        this._user = dependencies.user;
         this.initialize();
     }
 
@@ -61,7 +73,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
             ReCalCommonBrowserEvents.popUpWillDetachFromSidebar,
             (ev: JQueryEventObject, extra: any) =>
             {
-                var popUpView: IPopUpView = extra.popUpView;
+                var popUpView: IEditableEventsPopUpView = extra.popUpView;
                 this.addPopUpView(popUpView);
                 popUpView.css({
                     top: extra.boundingRect.top,
@@ -76,7 +88,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
         this.canvasView.attachEventHandler(BrowserEvents.sidebarViewDidDrop,
             EventsPopUpView.cssSelector(), (ev: JQueryEventObject, extra: any) =>
             {
-                var popUpView: IPopUpView = extra.view;
+                var popUpView: IEditableEventsPopUpView = extra.view;
                 this.removePopUpView(popUpView);
                 this.canvasView.triggerEvent(
                     ReCalCommonBrowserEvents.popUpWasDroppedInSidebar,
@@ -109,6 +121,8 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                     return;
                 }
                 this.eventsOperationsFacade.commitModifiedEvent(extra.modifiedEventsModel);
+                // in case this is a new event, in which case it would not have been selected before
+                this.eventsOperationsFacade.selectEventWithId(extra.modifiedEventsModel.eventId);
             });
         this.canvasView.attachEventHandler(
             ReCalCommonBrowserEvents.eventShouldHide,

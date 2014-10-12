@@ -28,4 +28,3 @@ require.config({
 });
 
 require(['./main']);
-//# sourceMappingURL=config.js.map

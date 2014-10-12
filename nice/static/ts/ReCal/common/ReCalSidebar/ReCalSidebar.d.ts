@@ -15,19 +15,17 @@ import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowser
 import PopUp = require('../../../library/PopUp/PopUp');
 import UserProfiles = require('../../common/UserProfiles/UserProfiles');
 
-import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IViewController = CoreUI.IViewController;
 import IPopUpView = PopUp.IPopUpView;
-import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
+import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 
 export interface ReCalSidebarViewControllerDependencies
 {
-    //clickToEditViewFactory: IClickToEditViewFactory;
     eventsOperationsFacade: IEventsOperationsFacade;
     eventsPopUpViewFactory: EventsPopUp.IEventsPopUpViewFactory;
     globalBrowserEventsManager: GlobalBrowserEventsManager;
-    //viewTemplateRetriever: IViewTemplateRetriever;
+    user: IUserProfilesModel;
 }
 
 export interface IReCalSidebarViewController extends IViewController

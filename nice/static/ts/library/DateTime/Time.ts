@@ -1,4 +1,5 @@
-interface Time
+import Comparable = require('../Core/Comparable');
+interface Time extends Comparable
 {
     hours: number;
     minutes: number;

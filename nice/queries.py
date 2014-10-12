@@ -32,12 +32,25 @@ def get_user_profile_info(netid, **kwargs):
         if section.course not in all_courses:
             all_courses.append(section.course)
 
+    def construct_section_dict_for_profile(section):
+        try:
+            section_color = User_Section_Table.objects.filter(
+                user=User.objects.get(username=netid).profile
+            ).get(
+                section=section.id
+            ).color
+        except:
+            color_choices = len(User_Section_Table.COLOR_CHOICES)
+            section_color = User_Section_Table.COLOR_CHOICES[randrange(0,color_choices)][0]
+        section_dict = construct_section_dict(section)
+        section_dict['section_color'] = section_color
+        return section_dict
+
     def construct_course_dict_for_profile(course):
         sections_array = []
         for section in course.section_set.all():
             if section in all_sections:
-                sections_array.append(construct_section_dict(section))
-
+                sections_array.append(construct_section_dict_for_profile(section))
         return {
             'course_id': course.id,
             'course_title': course.title,

@@ -1,5 +1,10 @@
-class IndexPath
+import Equatable = require('../Core/Equatable');
+class IndexPath implements Equatable
 {
+    equals(other: IndexPath): boolean
+    {
+        return this.section === other.section && this.item === other.item;
+    }
     constructor(private _section, private _item)
     {
     }

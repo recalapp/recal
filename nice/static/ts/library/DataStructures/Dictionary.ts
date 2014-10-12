@@ -8,7 +8,16 @@ class Dictionary<K, V>
 {
     private _dict = {};
 
-    constructor(primitiveObject?: any)
+    private get eq(): (a: K, b: K)=> boolean
+    {
+        if (!this._eq)
+        {
+            this._eq = (a, b) => { return a === b; }
+        }
+        return this._eq;
+    }
+
+    constructor(private _eq?: (a: K, b: K)=> boolean, primitiveObject?: any)
     {
         // assumes key is a string, as var in returns a string by default
         if (primitiveObject)
@@ -45,7 +54,7 @@ class Dictionary<K, V>
             var bin = this.getOrCreateBin(key);
             for (var i = 0; i < bin.length; ++i)
             {
-                if (bin[i].key === key)
+                if (this.eq(bin[i].key, key))
                 {
                     var ret = bin[i].value;
                     bin.splice(i, i + 1);
@@ -78,7 +87,7 @@ class Dictionary<K, V>
             var bin = this._dict[key.toString()];
             for (var i = 0; i < bin.length; ++i)
             {
-                if (bin[i].key === key)
+                if (this.eq(bin[i].key, key))
                 {
                     return bin[i];
                 }

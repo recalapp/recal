@@ -21,7 +21,7 @@ import IView = CoreUI.IView;
 
 class TableView extends View implements ITableView
 {
-    private _cellDict = new Dictionary<IndexPath, ITableViewCell>();
+    private _cellDict = new Dictionary<IndexPath, ITableViewCell>((index1, index2)=>{ return index1.equals(index2); });
     private _headerDict = new Dictionary<Number, ITableViewHeaderView>();
     private _dataSource: TableViewDataSource = null;
     private _delegate: TableViewDelegate = null;

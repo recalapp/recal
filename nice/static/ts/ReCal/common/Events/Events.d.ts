@@ -4,6 +4,9 @@ import EventsModificationsManager = require('./EventsModificationsManager');
 import EventsStoreCoordinator = require('./EventsStoreCoordinator');
 import EventsVisibilityManager = require('./EventsVisibilityManager');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
+import UserProfiles = require('../UserProfiles/UserProfiles');
+
+import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 
 export interface EventsOperationsFacadeDependencies
 {
@@ -127,6 +130,12 @@ export interface IEventsOperationsFacade
     /***************************************************************************
      * Event Modification
      *************************************************************************/
+
+    /**
+     * Creates a new events model.
+     */
+    createNewEventsModelForUser(user: IUserProfilesModel): IEventsModel;
+
     /**
      * Tells the events module that an event has been modified to be
      * modifiedEventsModel

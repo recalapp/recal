@@ -4,6 +4,7 @@ define(["require", "exports", './SectionTypesModel'], function(require, exports,
             this._coursesModel = null;
             this._sectionId = null;
             this._title = null;
+            this._color = null;
             this._sectionTypesModel = null;
             if (!copy) {
                 return;
@@ -14,6 +15,7 @@ define(["require", "exports", './SectionTypesModel'], function(require, exports,
             this.sectionId = copy.sectionId;
             this.title = copy.title;
             this.sectionTypesModel = new SectionTypesModel(copy.sectionTypesModel);
+            this.color = copy.color;
         }
         Object.defineProperty(SectionsModel.prototype, "coursesModel", {
             get: function () {
@@ -50,6 +52,17 @@ define(["require", "exports", './SectionTypesModel'], function(require, exports,
             configurable: true
         });
 
+
+        Object.defineProperty(SectionsModel.prototype, "color", {
+            get: function () {
+                return this._color;
+            },
+            set: function (value) {
+                this._color = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         Object.defineProperty(SectionsModel.prototype, "sectionTypesModel", {
             get: function () {

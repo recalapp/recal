@@ -9,10 +9,12 @@ import CoreUI = require('../../../library/CoreUI/CoreUI');
 import Events = require('../../common/Events/Events');
 import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowserEventsManager');
 import PopUp = require('../../../library/PopUp/PopUp');
+import UserProfiles = require('../UserProfiles/UserProfiles');
 
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
 import IPopUpView = PopUp.IPopUpView;
+import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 import IView = CoreUI.IView;
 import IViewController = CoreUI.IViewController;
 
@@ -26,6 +28,7 @@ export interface CanvasPopUpContainerViewControllerDependencies
       * to be the same view as the view managed by controller.
       */
     canvasView: IView;
+    user: IUserProfilesModel;
 }
 
 export interface ICanvasPopUpContainerViewController extends IViewController

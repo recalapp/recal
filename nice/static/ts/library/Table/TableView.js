@@ -11,7 +11,9 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
         function TableView($element, cssClass) {
             var _this = this;
             _super.call(this, $element, cssClass);
-            this._cellDict = new Dictionary();
+            this._cellDict = new Dictionary(function (index1, index2) {
+                return index1.equals(index2);
+            });
             this._headerDict = new Dictionary();
             this._dataSource = null;
             this._delegate = null;

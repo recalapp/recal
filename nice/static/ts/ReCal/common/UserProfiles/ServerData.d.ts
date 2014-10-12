@@ -22,4 +22,5 @@ export interface SectionInfoServerData
     section_type_code: string;
     section_id: number;
     section_name: string;
+    section_color: string;
 }

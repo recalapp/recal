@@ -13,15 +13,18 @@ import GlobalBrowserEventsManager = require('../../../library/Core/GlobalBrowser
 import ReCalCommonBrowserEvents = require('../ReCalCommonBrowserEvents');
 import ReCalSidebar = require('./ReCalSidebar');
 import Sidebar = require('../../../library/Sidebar/Sidebar');
+import UserProfiles = require('../UserProfiles/UserProfiles');
 import ViewController = require('../../../library/CoreUI/ViewController');
 
 import IClickToEditViewFactory = ClickToEdit.IClickToEditViewFactory;
 import IEventsModel = Events.IEventsModel;
 import IEventsOperationsFacade = Events.IEventsOperationsFacade;
-import IEventsPopUpView = EventsPopUp.IEventsPopUpView
+import IEventsPopUpView = EventsPopUp.IEventsPopUpView;
+import IEditableEventsPopUpView = EventsPopUp.IEditableEventsPopUpView;
 import IEventsPopUpViewFactory = EventsPopUp.IEventsPopUpViewFactory;
 import IReCalSidebarViewController = ReCalSidebar.IReCalSidebarViewController;
 import ISidebarView = Sidebar.ISidebarView;
+import IUserProfilesModel = UserProfiles.IUserProfilesModel;
 import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 
 /************************************************************************
@@ -35,13 +38,13 @@ import IViewTemplateRetriever = CoreUI.IViewTemplateRetriever;
 class ReCalSidebarViewController extends ViewController implements IReCalSidebarViewController
 {
     private static SIDEBAR_POPUP_PREFIX = 'sidebar_popup_';
-    private _currentPopUpView: IEventsPopUpView = null;
-    private get currentPopUpView(): IEventsPopUpView
+    private _currentPopUpView: IEditableEventsPopUpView = null;
+    private get currentPopUpView(): IEditableEventsPopUpView
     {
         return this._currentPopUpView;
     }
 
-    private set currentPopUpView(value: IEventsPopUpView)
+    private set currentPopUpView(value: IEditableEventsPopUpView)
     {
         this._currentPopUpView = value;
     }
@@ -61,6 +64,14 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
     private _eventsPopUpViewFactory: IEventsPopUpViewFactory = null;
     private get eventsPopUpViewFactory(): IEventsPopUpViewFactory { return this._eventsPopUpViewFactory; }
 
+    /**
+     * The current logged in user, needed to get the list of sections
+     * @type {IUserProfilesModel}
+     * @private
+     */
+    private _user: IUserProfilesModel = null;
+    private get user(): IUserProfilesModel { return this._user; }
+
     constructor(sidebarView: ISidebarView,
                 dependencies: ReCalSidebar.ReCalSidebarViewControllerDependencies)
     {
@@ -69,6 +80,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
         this._globalBrowserEventsManager =
         dependencies.globalBrowserEventsManager;
         this._eventsOperationsFacade = dependencies.eventsOperationsFacade;
+        this._user = dependencies.user;
         this.initializePopUp();
     }
 
@@ -114,7 +126,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
             ReCalCommonBrowserEvents.popUpWasDroppedInSidebar,
             (ev: JQueryEventObject, extra: any) =>
             {
-                var popUpView: IEventsPopUpView = <IEventsPopUpView> extra.popUpView;
+                var popUpView: IEditableEventsPopUpView = <IEditableEventsPopUpView> extra.popUpView;
                 var oldId = null;
                 if (this.currentPopUpView)
                 {
@@ -205,6 +217,8 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
             {
                 var modifiedEventsModel = extra.modifiedEventsModel;
                 this.eventsOperationsFacade.commitModifiedEvent(modifiedEventsModel);
+                // select again, in case the event being saved is a new event
+                this.eventsOperationsFacade.selectEventWithId(modifiedEventsModel.eventId);
             });
         this.view.attachEventHandler(ReCalCommonBrowserEvents.eventShouldHide,
             EventsPopUpView.cssSelector(),
@@ -220,6 +234,29 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
             {
                 this.eventsOperationsFacade.unhideEventWithId(extra.view.eventsModel.eventId);
             });
+        // when add event button was clicked
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventShouldBeAdded,
+            ()=>
+            {
+                var newEventsModel = this.eventsOperationsFacade.createNewEventsModelForUser(this.user);
+                if (this.currentPopUpView === null || this.currentPopUpView
+                    === undefined)
+                {
+                    // create the popup view
+                    var newPopUpView = this.eventsPopUpViewFactory.createEventsPopUp();
+                    // set events model
+                    newPopUpView.eventsModel = newEventsModel;
+                    this.addPopUpView(newPopUpView);
+                }
+                else
+                {
+                    var oldId = this.currentPopUpView.eventsModel.eventId;
+                    this.currentPopUpView.eventsModel = newEventsModel;
+                    this.eventsOperationsFacade.deselectEventWithId(oldId);
+                }
+                this.currentPopUpView.isModified = true;
+                this.currentPopUpView.focus();
+            });
     }
 
     /**
@@ -227,7 +264,7 @@ class ReCalSidebarViewController extends ViewController implements IReCalSidebar
      * must be detached from its previous parent first. If there is an
      * existing PopUpView object, it is removed first and replaced.
      */
-    private addPopUpView(popUpView: IEventsPopUpView): void
+    private addPopUpView(popUpView: IEditableEventsPopUpView): void
     {
         // ensure there is only one main popup (for now)
         if (this.currentPopUpView !== null)

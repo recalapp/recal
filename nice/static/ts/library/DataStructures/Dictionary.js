@@ -7,7 +7,8 @@ define(["require", "exports"], function(require, exports) {
         return Wrapper;
     })();
     var Dictionary = (function () {
-        function Dictionary(primitiveObject) {
+        function Dictionary(_eq, primitiveObject) {
+            this._eq = _eq;
             this._dict = {};
             // assumes key is a string, as var in returns a string by default
             if (primitiveObject) {
@@ -17,6 +18,19 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
         }
+        Object.defineProperty(Dictionary.prototype, "eq", {
+            get: function () {
+                if (!this._eq) {
+                    this._eq = function (a, b) {
+                        return a === b;
+                    };
+                }
+                return this._eq;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         /**
         * Set the value in the dictionary, and return the old value (null
         * no old value)
@@ -36,7 +50,7 @@ define(["require", "exports"], function(require, exports) {
             if (this.contains(key)) {
                 var bin = this.getOrCreateBin(key);
                 for (var i = 0; i < bin.length; ++i) {
-                    if (bin[i].key === key) {
+                    if (this.eq(bin[i].key, key)) {
                         var ret = bin[i].value;
                         bin.splice(i, i + 1);
                         return ret;
@@ -62,7 +76,7 @@ define(["require", "exports"], function(require, exports) {
             if (key.toString() in this._dict) {
                 var bin = this._dict[key.toString()];
                 for (var i = 0; i < bin.length; ++i) {
-                    if (bin[i].key === key) {
+                    if (this.eq(bin[i].key, key)) {
                         return bin[i];
                     }
                 }
