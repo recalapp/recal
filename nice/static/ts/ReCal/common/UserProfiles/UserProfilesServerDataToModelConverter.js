@@ -44,7 +44,9 @@ define(["require", "exports", '../../../library/Color/Color', '../Courses/Course
             this.user.enrolledCoursesModels = data.enrolled_courses.map(function (courseData) {
                 return _this.convertCourseDataToModel(courseData);
             });
-            this.user.eventTypes = new Dictionary(data.event_types);
+            this.user.eventTypes = new Dictionary(function (a, b) {
+                return a === b;
+            }, data.event_types);
             this.user.agendaVisibleEventTypeCodes = data.agenda_pref;
             this.user.calendarVisibleEventTypeCodes = data.calendar_pref;
             return this.user;

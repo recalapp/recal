@@ -6,7 +6,7 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "jquery/jquery.d.ts": {
-      "commit": "11c40b45e06105c6115932d868cd7e0a73bda719"
+      "commit": "bba33bcb0b363ae41db8517a09d1a4d07828616b"
     },
     "requirejs/require.d.ts": {
       "commit": "4cf10109b729a39130cb13bb3d4a069e6a2c2eb1"
@@ -22,6 +22,9 @@
     },
     "fullCalendar/fullCalendar.d.ts": {
       "commit": "11c40b45e06105c6115932d868cd7e0a73bda719"
+    },
+    "jquery.cookie/jquery.cookie.d.ts": {
+      "commit": "bba33bcb0b363ae41db8517a09d1a4d07828616b"
     }
   }
 }

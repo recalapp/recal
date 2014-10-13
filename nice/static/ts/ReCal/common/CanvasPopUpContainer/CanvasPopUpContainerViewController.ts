@@ -122,7 +122,7 @@ class CanvasPopUpContainerViewController extends ViewController implements ICanv
                 }
                 this.eventsOperationsFacade.commitModifiedEvent(extra.modifiedEventsModel);
                 // in case this is a new event, in which case it would not have been selected before
-                this.eventsOperationsFacade.selectEventWithId(extra.modifiedEventsModel.eventId);
+                this.eventsOperationsFacade.pinEventWithId(extra.modifiedEventsModel.eventId);
             });
         this.canvasView.attachEventHandler(
             ReCalCommonBrowserEvents.eventShouldHide,

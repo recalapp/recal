@@ -92,12 +92,6 @@ class AgendaTableViewController extends TableViewController
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.settingsDidChange, ()=>{
             this.reload();
         });
-        // when settings close
-        //$('#' + SE_id).on('close', (ev: JQueryEventObject)=>
-        //{
-        //    // TODO check if visible
-        //    this.reload();
-//        });
 
         // when switching between agenda and calendar
         $('#agenda.tab-pane').each((index: number, pane: any)=>
@@ -172,6 +166,14 @@ class AgendaTableViewController extends TableViewController
                     // TODO cannot tell what changed. update everything. need a way to map to all events in events manager
                 }
             });
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventIdChanged, (ev: JQueryEventObject, extra: {oldId: string; newId: string})=>{
+            var indexPath = this.getIndexPathForEventId(extra.oldId);
+            if (indexPath !== null)
+            {
+                this._eventSectionArray[indexPath.section].eventIds[indexPath.item] = extra.newId;
+                this.view.refresh(); // no need to call reload, as only the id changed
+            }
+        });
 
         // reload
         this.reload();

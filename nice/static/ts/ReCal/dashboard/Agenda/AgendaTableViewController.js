@@ -54,12 +54,6 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                 _this.reload();
             });
 
-            // when settings close
-            //$('#' + SE_id).on('close', (ev: JQueryEventObject)=>
-            //{
-            //    // TODO check if visible
-            //    this.reload();
-            //        });
             // when switching between agenda and calendar
             $('#agenda.tab-pane').each(function (index, pane) {
                 $(pane).on('transitionend', function (ev) {
@@ -116,6 +110,13 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
                     });
                 } else {
                     // TODO cannot tell what changed. update everything. need a way to map to all events in events manager
+                }
+            });
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventIdChanged, function (ev, extra) {
+                var indexPath = _this.getIndexPathForEventId(extra.oldId);
+                if (indexPath !== null) {
+                    _this._eventSectionArray[indexPath.section].eventIds[indexPath.item] = extra.newId;
+                    _this.view.refresh(); // no need to call reload, as only the id changed
                 }
             });
 

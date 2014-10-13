@@ -8,7 +8,7 @@ class ErrorIndicatorView extends IndicatorView
 {
     private static get template(): JQuery
     {
-        var $template = $('<div class="indicator alert alert-dismissable alert-success">');
+        var $template = $('<div class="indicator alert alert-dismissable alert-danger">');
         $template.append($('<span id="loading-content">'));
         return $template;
     }

@@ -8,6 +8,13 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
     var EventsVisibilityManager = (function () {
         function EventsVisibilityManager(dependencies) {
             this._enabled = true;
+            /**
+            * A boolean to keep track of whether visibility has changed since reset
+            * was last called
+            * @type {boolean}
+            * @private
+            */
+            this._visibilityChanged = false;
             this._hiddenEventIds = new Set();
             /**
             * Global Browser Events Manager
@@ -26,9 +33,24 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
             configurable: true
         });
 
-        Object.defineProperty(EventsVisibilityManager.prototype, "hiddenEventIds", {
+        Object.defineProperty(EventsVisibilityManager.prototype, "visibilityChanged", {
+            get: function () {
+                return this._visibilityChanged;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(EventsVisibilityManager.prototype, "hiddenEventIdsSet", {
             get: function () {
                 return this._hiddenEventIds;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(EventsVisibilityManager.prototype, "hiddenEventIds", {
+            get: function () {
+                return this.hiddenEventIdsSet.toArray();
             },
             enumerable: true,
             configurable: true
@@ -47,8 +69,11 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
         * explicitly clicks on the hide button.
         */
         EventsVisibilityManager.prototype.hideEventWithId = function (eventId) {
-            this.hiddenEventIds.add(eventId);
-            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
+            if (!this.hiddenEventIdsSet.contains(eventId)) {
+                this.hiddenEventIdsSet.add(eventId);
+                this._visibilityChanged = true;
+                this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
+            }
         };
 
         /**
@@ -56,8 +81,9 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
         * hasn't been hidden.
         */
         EventsVisibilityManager.prototype.unhideEventWithId = function (eventId) {
-            if (this.hiddenEventIds.contains(eventId)) {
-                this.hiddenEventIds.remove(eventId);
+            if (this.hiddenEventIdsSet.contains(eventId)) {
+                this.hiddenEventIdsSet.remove(eventId);
+                this._visibilityChanged = true;
                 this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
             }
         };
@@ -68,7 +94,7 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
         EventsVisibilityManager.prototype.eventIdIsHidden = function (eventId) {
             // TODO calculate visibility based on other information, such as user
             // preferences.
-            return (this.enabled && this.hiddenEventIds.contains(eventId));
+            return (this.enabled && this.hiddenEventIdsSet.contains(eventId));
         };
 
         /**
@@ -77,6 +103,7 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
         */
         EventsVisibilityManager.prototype.resetEventVisibilityToHiddenEventIds = function (hiddenIds) {
             this._hiddenEventIds = new Set(hiddenIds);
+            this._visibilityChanged = false;
         };
         return EventsVisibilityManager;
     })();

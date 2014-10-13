@@ -263,9 +263,15 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
         DashboardViewController.prototype.setUpEventsServerCommunicationIndicators = function () {
             var _this = this;
             var errorDownloading = false;
+            var errorUploading = false;
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsWillBeginDownloading, function () {
                 if (!errorDownloading) {
                     _this.indicatorsManager.showIndicator("events_download", 0 /* persistent */, "Loading events...");
+                }
+            });
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsWillBeginUploading, function () {
+                if (!errorUploading) {
+                    _this.indicatorsManager.showIndicator("events_upload", 0 /* persistent */, "Syncing changes...");
                 }
             });
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFinishDownloading, function () {
@@ -275,10 +281,22 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
                     _this.indicatorsManager.showIndicator("events_success", 1 /* temporary */, "Connected :)");
                 }
             });
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFinishUploading, function () {
+                _this.indicatorsManager.hideIndicatorWithIdentifier("events_upload");
+                if (errorUploading) {
+                    errorUploading = false;
+                    _this.indicatorsManager.showIndicator("events_success", 1 /* temporary */, "Connected :)");
+                }
+            });
             this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailDownloading, function () {
                 _this.indicatorsManager.hideIndicatorWithIdentifier("events_download");
                 errorDownloading = true;
-                _this.indicatorsManager.showIndicator("events_download", 2 /* error */, "Error connecting.");
+                _this.indicatorsManager.showIndicator("events_download", 2 /* error */, "Could not download");
+            });
+            this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailUploading, function () {
+                _this.indicatorsManager.hideIndicatorWithIdentifier("events_upload");
+                errorDownloading = true;
+                _this.indicatorsManager.showIndicator("events_upload", 2 /* error */, "Could not sync");
             });
         };
 

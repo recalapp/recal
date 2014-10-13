@@ -112,7 +112,8 @@ class EventsSelectionManager
     {
         if (!this.eventIdIsSelected(eventId))
         {
-            throw new InvalidActionException('Event Id must first be selected before pinning');
+            // the case where we go straight to pinning, skipping the select step
+            this.selectedIds.add(eventId);
         }
         this.pinnedIds.add(eventId);
         this.triggerSelectionChangeBrowserEvent([eventId]);
