@@ -8,8 +8,7 @@ Procedure:
 - Parse it for courses, sections, and lecture times (as recurring events)
 """
 
-from nice.models import *
-from nice.queries import *
+from course_selection.models import *
 from lxml import etree
 import HTMLParser
 import string
@@ -150,7 +149,6 @@ def parse_course(course, subject):
 
     course_object.title = title
     course_object.description = description
-    course_object.professor = ''
     course_object.save()
 
     course_count += 1
