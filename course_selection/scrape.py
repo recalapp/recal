@@ -40,7 +40,6 @@ DEP_PREFIX = TERM_PREFIX + "&subject="
 PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_4'
 
 CURRENT_SEMESTER = ''
-community_user = get_community_user()
 
 DAYS = {'M': 0, 'T': 1, 'W': 2, 'Th': 3, 'F': 4, 'Sa': 5, 'S':6}
 
@@ -67,7 +66,6 @@ def get_current_semester():
             start_date = term.find('start_date').text
             end_date = term.find('end_date').text
             end_date = datetime.strptime(end_date, "%Y-%m-%d")
-            end_date += timedelta(weeks=30)
             curr_sem = Semester(
                 start_date = start_date, 
                 end_date = end_date, 
@@ -209,101 +207,6 @@ def create_or_update_sections(course, course_object):
         if created:
             new_section_count += 1
         section_count += 1
-
-        # add events
-        create_or_update_events(section, section_object)
-
-# section is the class Node in the xml tree, 
-# section_object is a section django object
-def create_or_update_events(section, section_object):
-    """ Create all events for a given section
-
-    """
-    global new_event_count
-
-    # check if this section has a schedule attached to it
-    try:
-        schedule = section.find('schedule')
-        meetings = schedule.find('meetings')
-    except:
-        print 'no schedule or meetings for ' + str(section_object.course)
-        return
-
-    # now we check if there is already an event for this section
-    section_registrar_id = section.find('class_number')
-    section_type = section.find('type_name').text
-
-    # the dates are in the format:
-    # YYYY-MM-DD
-    str_start_date = schedule.find('start_date').text
-    str_end_date = schedule.find('end_date').text
-    end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
-    # FOR PROJECT SUBMISSION, POSTPONE end_date so that there are events
-    # in agenda/calendar for grading
-    end_date = end_date + timedelta(weeks=30)
-
-    for meeting in meetings:
-        days = []
-        for day in meeting.find('days'):
-            days.append(DAYS[day.text])
-
-        # The event_start of any event must fall on a day the event occurs.
-        day_offset = timedelta(days=0)
-        if len(days) > 0:
-            day_offset = timedelta(days=days[0])
-
-        # the times are in the format:
-        # HH:MM AM/PM
-        str_end_time = meeting.find('end_time').text
-        str_end_date_time = str_start_date + str_end_time
-        end_date_time = datetime.strptime(str_end_date_time, '%Y-%m-%d%I:%M %p') + day_offset
-
-        str_start_time = meeting.find('start_time').text
-        str_start_date_time = str_start_date + str_start_time
-        start_date_time = datetime.strptime(str_start_date_time, '%Y-%m-%d%I:%M %p') + day_offset
-
-        try:
-            location = meeting.find('building').find('name').text + ' ' + meeting.find('room').text
-        except:
-            location = ''
-
-        # create event_group
-        event_type = section_object.section_type[0:2]
-        type_is_valid = False
-        for choice in Event_Revision.TYPE_CHOICES:
-            if event_type == choice[0]:
-                type_is_valid = True
-                break
-
-        if not type_is_valid:
-            # print 'new section type: ' + section_type
-            # Force everything unseen before into a Lecture
-            event_type = 'LE'
-
-        event_title = section_type
-
-        # we need start_date_time, end_time, end_date
-        # start_date_time is start_date and start_time
-        # create event_group_revision
-        modify_events(community_user.username, [{
-            'event_start': start_date_time,
-            'event_end' : end_date_time,
-            'event_title': event_title,
-            'event_description': 'Add a description...',
-            'event_type': event_type,
-            # -1 for new event
-            'event_id': -1,
-            'event_location': location,
-            'section_id': section_object.pk,
-            'recurring': True,
-            'recurrence_days' : days,
-            # we assume the class is weekly
-            'recurrence_interval': 1,
-            'recurrence_end': end_date, # or None?
-        }], auto_approve=True)
-        
-        # create event
-        new_event_count += 1
 
 def remove_namespace(doc, namespace):
     """Hack to remove namespace in the document in place.

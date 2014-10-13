@@ -12,7 +12,7 @@
                     <a href="#">Nice</a>
                 </li>
                 <li class="dropdown pull-right">
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Dyland Xue<strong class="caret"></strong></a>
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">{{ username }}<strong class="caret"></strong></a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="#">Preferences</a>
@@ -27,37 +27,14 @@
     </div>
     <div class="row clearfix">
         <div class="col-md-4 column">
-            <nav class="navbar" id="searchBar" role="navigation">
-                    <form class="navbar-form navbar-left" role="search">
-                        <div class="form-group">
-                            <input type="text" class="form-control" />
-                        </div> <button type="submit" class="btn btn-default pull-right">Submit</button>
-                    </form>
-
-            </nav>
-            <div class="panel-group" id="panel-637263">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-637263" href="#panel-element-763539">Collapsible Group Item #1</a>
-                    </div>
-                    <div id="panel-element-763539" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            Anim pariatur cliche...
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-637263" href="#panel-element-244436">Collapsible Group Item #2</a>
-                    </div>
-                    <div id="panel-element-244436" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            Anim pariatur cliche...
-                        </div>
-                    </div>
-                </div>
+            <div id="searchBar">
+                <form class="form-search" action="/course_selection/search/" method="get">
+                    <input type="text" placeholder="Ex: COS 126, Sims, WWS, etc." style="height: 40px; width: 85%;">
+                    <button type="submit" class="btn btn-default pull-right">Submit</button>
+                </form>
             </div>
         </div>
+
         <div class="col-md-4 column">
             <div class="row clearfix">
                 <div class="col-md-12 column">
@@ -70,6 +47,10 @@
             </div>
         </div>
         <div class="col-md-4 column">
+            <h1 class="panel-title"> My Courses </h1>
+            <div id="courseQueue">
+                <div class="panel panel-default">ECO362</div>
+            </div>
         </div>
     </div>
 </div>
