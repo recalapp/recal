@@ -66,6 +66,7 @@ class SettingsViewController extends ViewController
             var hiddenCourses = new Set<ICoursesModel>(this.user.hiddenCoursesModels);
             this.view.visibleCourses = this.user.enrolledCoursesModels.filter((course)=>{ return !hiddenCourses.contains(course); });
         });
+        (<any>window).timezone = 'America/New_York';
     }
 }
 

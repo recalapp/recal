@@ -78,6 +78,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../comm
                     return !hiddenCourses.contains(course);
                 });
             });
+            window.timezone = 'America/New_York';
         };
         return SettingsViewController;
     })(ViewController);

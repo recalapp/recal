@@ -1,4 +1,5 @@
 import Color = require('../../../library/Color/Color');
+import ComparableResult = require('../../../library/Core/ComparableResult');
 import DateTime = require('../../../library/DateTime/DateTime');
 import Dictionary = require('../../../library/DataStructures/Dictionary');
 import Events = require('./Events');
@@ -60,24 +61,25 @@ class EventsServerCommunicator
     private pushAndPullEvents(): void
     {
         // TODO finish implementing.
+        this.pushModifiedEvents(); // serverConnection takes care of queueing
         this.pullEvents();
     }
 
-    public pushModifiedEvents(): void
+    public pushModifiedEvents()
     {
-        // TODO queueing logic does not make sense. We don't want a queue. If a
-        // push request is going on, we don't want to do anything.
-        if (!this.eventsModificationsManager.hasModifiedEvents())
+        if (!this.eventsModificationsManager.hasModifiedEvents() && !this.eventsVisibilityManager.visibilityChanged)
         {
             return;
         }
         var createServerRequest = ()=>
         {
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginUploading);
             var paramsDict = new Dictionary<string, string>();
             var modifiedEvents = this.eventsModificationsManager.getModifiedEvents().map((eventsModel: IEventsModel)=>{
                 return this.getLegacyEventObjectFromEventsModel(eventsModel);
             });
-            paramsDict.set("events", JSON.stringify(modifiedEvents));
+            paramsDict.set('events', JSON.stringify(modifiedEvents));
+            paramsDict.set('hidden', JSON.stringify(this.eventsVisibilityManager.hiddenEventIds));
             // TODO hidden events
             var request = new ServerRequest({
                 url: "/put",
@@ -89,7 +91,10 @@ class EventsServerCommunicator
         };
         this.serverConnection.sendRequestLazilyConstructed(createServerRequest)
             .done((data: {changed_ids: EventIdChangeMap; deleted_ids: string[]})=>{
+                // clear modifications history
                 this.eventsModificationsManager.clearModificationsHistory();
+                // clear hidden events history
+                this.eventsVisibilityManager.resetEventVisibilityToHiddenEventIds(this.eventsVisibilityManager.hiddenEventIds);
                 for (var oldId in data.changed_ids)
                 {
                     var newId = data.changed_ids[oldId][0];
@@ -97,9 +102,10 @@ class EventsServerCommunicator
                     this.eventsStoreCoordinator.remapEventId(oldId, newId, newGroupId);
                 }
                 this.eventsStoreCoordinator.clearLocalEventsWithIds(data.deleted_ids);
+                this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFinishUploading);
             })
             .fail(()=>{
-
+                this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFailUploading);
             });
     }
 
@@ -107,6 +113,7 @@ class EventsServerCommunicator
     {
         var createServerRequest = ()=>
         {
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginDownloading);
             var serverRequest = new ServerRequest({
                 url: '/get/' + this.lastConnected.unix,
                 async: true,
@@ -115,31 +122,36 @@ class EventsServerCommunicator
             });
             return serverRequest;
         };
-        this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginDownloading);
         this.serverConnection.sendRequestLazilyConstructed(createServerRequest)
             .done((data: {events: LegacyEventObject[]; hidden_events: string[]}) =>
             {
-                if (this.eventsModificationsManager.hasModifiedEvents())
+                if (this.eventsModificationsManager.hasModifiedEvents() || this.eventsVisibilityManager.visibilityChanged)
                 {
+                    this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFinishDownloading);
                     return; // cancel pull if there are modified events
                 }
-                if (this.lastConnected.unix === 0)
-                {
-                    this.eventsStoreCoordinator.clearLocalEvents();
-                }
-                this.lastConnected = new DateTime();
-                var eventsModels = new Array<IEventsModel>();
-                for (var i = 0; i < data.events.length; ++i)
-                {
-                    // TODO handle uncommitted and updated events
-                    eventsModels.push(this.getEventsModelFromLegacyEventObject(data.events[i]));
-                }
-                this.eventsStoreCoordinator.addLocalEvents(eventsModels);
+                // no events have been modified. check for events that have been deleted.
+                var shouldDelete = this.eventsStoreCoordinator.getEventIdsWithFilter((eventId: string)=>{
+                    return {
+                                keep: this.eventsStoreCoordinator.getEventById(eventId).lastEdited.compareTo(this.lastConnected) === ComparableResult.greater,
+                                stop: false,
+                           };
+                });
+                this.eventsStoreCoordinator.clearLocalEventsWithIds(shouldDelete);
+
+                // handle downloaded content
                 // hidden events
                 if (data.hidden_events)
                 {
                     this.eventsVisibilityManager.resetEventVisibilityToHiddenEventIds(data.hidden_events);
                 }
+                this.lastConnected = new DateTime();
+                var eventsModels = data.events.map((eventDict: LegacyEventObject)=>{
+                    // TODO handle the case where this event is currently being modified on the client (popup)
+                    return this.getEventsModelFromLegacyEventObject(eventDict);
+                });
+                this.eventsStoreCoordinator.addLocalEvents(eventsModels);
+
                 this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFinishDownloading);
             }).fail((data: any) =>
             {

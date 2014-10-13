@@ -17,8 +17,18 @@ class EventsVisibilityManager
     public get enabled(): boolean { return this._enabled; }
     public set enabled(value: boolean) { this._enabled = value; }
 
+    /**
+     * A boolean to keep track of whether visibility has changed since reset
+     * was last called
+     * @type {boolean}
+     * @private
+     */
+    private _visibilityChanged = false;
+    public get visibilityChanged(): boolean { return this._visibilityChanged; }
+
     private _hiddenEventIds = new Set<string>();
-    private get hiddenEventIds(): Set<string> { return this._hiddenEventIds; }
+    private get hiddenEventIdsSet(): Set<string> { return this._hiddenEventIds; }
+    public get hiddenEventIds(): string[] { return this.hiddenEventIdsSet.toArray(); }
 
     /**
      * Global Browser Events Manager
@@ -38,8 +48,12 @@ class EventsVisibilityManager
      */
     public hideEventWithId(eventId: string): void
     {
-        this.hiddenEventIds.add(eventId);
-        this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
+        if (!this.hiddenEventIdsSet.contains(eventId))
+        {
+            this.hiddenEventIdsSet.add(eventId);
+            this._visibilityChanged = true;
+            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
+        }
     }
 
     /**
@@ -48,9 +62,10 @@ class EventsVisibilityManager
      */
     public unhideEventWithId(eventId: string): void
     {
-        if (this.hiddenEventIds.contains(eventId))
+        if (this.hiddenEventIdsSet.contains(eventId))
         {
-            this.hiddenEventIds.remove(eventId);
+            this.hiddenEventIdsSet.remove(eventId);
+            this._visibilityChanged = true;
             this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDataChanged);
         }
     }
@@ -62,7 +77,7 @@ class EventsVisibilityManager
     {
         // TODO calculate visibility based on other information, such as user 
         // preferences.
-        return (this.enabled && this.hiddenEventIds.contains(eventId));
+        return (this.enabled && this.hiddenEventIdsSet.contains(eventId));
     }
 
 
@@ -73,6 +88,7 @@ class EventsVisibilityManager
     public resetEventVisibilityToHiddenEventIds(hiddenIds: string[])
     {
         this._hiddenEventIds = new Set<string>(hiddenIds);
+        this._visibilityChanged = false;
     }
 }
 

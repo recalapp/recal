@@ -19,7 +19,7 @@ define(["require", "exports", 'jquery', './IndicatorView'], function(require, ex
         }
         Object.defineProperty(ErrorIndicatorView, "template", {
             get: function () {
-                var $template = $('<div class="indicator alert alert-dismissable alert-success">');
+                var $template = $('<div class="indicator alert alert-dismissable alert-danger">');
                 $template.append($('<span id="loading-content">'));
                 return $template;
             },

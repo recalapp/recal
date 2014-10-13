@@ -188,7 +188,7 @@ def modify_events(netid, events, auto_approve=False):
         user = User.objects.get(username=netid).profile
     except:
         raise Exception("Invalid user")
-    
+
     changed_ids = {}
     deleted_ids = []
 

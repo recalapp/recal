@@ -62,7 +62,7 @@ class UserProfilesServerDataToModelConverter
         data.enrolled_courses.map((courseData)=>{
             return this.convertCourseDataToModel(courseData);
         });
-        this.user.eventTypes = new Dictionary<string, string>(data.event_types);
+        this.user.eventTypes = new Dictionary<string, string>((a, b)=>{return a === b;},data.event_types);
         this.user.agendaVisibleEventTypeCodes = data.agenda_pref;
         this.user.calendarVisibleEventTypeCodes = data.calendar_pref;
         return this.user;

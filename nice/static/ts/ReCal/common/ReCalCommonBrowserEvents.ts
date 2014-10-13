@@ -13,8 +13,11 @@ class ReCalCommonBrowserEvents
     static eventShouldUnhide = 'eventShouldUnhide';
     static eventsDataChanged = 'eventsDataChanged';
     static eventsWillBeginDownloading = 'eventsWillBeginDownloading';
+    static eventsWillBeginUploading = 'eventsWillBeginUploading';
     static eventsDidFinishDownloading = 'eventsDidFinishDownloading';
+    static eventsDidFinishUploading = 'eventsDidFinishUploading';
     static eventsDidFailDownloading = 'eventsDidFailDownloading';
+    static eventsDidFailUploading = 'eventsDidFailUploading';
 
     static settingsDidChange = 'settingsDidChange';
 }

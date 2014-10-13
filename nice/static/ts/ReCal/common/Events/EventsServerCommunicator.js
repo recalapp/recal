@@ -1,4 +1,4 @@
-define(["require", "exports", '../../../library/Color/Color', '../../../library/DateTime/DateTime', '../../../library/DataStructures/Dictionary', './EventsModel', '../ReCalCommonBrowserEvents', '../../../library/Timer/RepeatingTimer', '../../../library/Server/ServerConnection', '../../../library/Server/ServerRequest', '../../../library/Server/ServerRequestType'], function(require, exports, Color, DateTime, Dictionary, EventsModel, ReCalCommonBrowserEvents, RepeatingTimer, ServerConnection, ServerRequest, ServerRequestType) {
+define(["require", "exports", '../../../library/Color/Color', '../../../library/Core/ComparableResult', '../../../library/DateTime/DateTime', '../../../library/DataStructures/Dictionary', './EventsModel', '../ReCalCommonBrowserEvents', '../../../library/Timer/RepeatingTimer', '../../../library/Server/ServerConnection', '../../../library/Server/ServerRequest', '../../../library/Server/ServerRequestType'], function(require, exports, Color, ComparableResult, DateTime, Dictionary, EventsModel, ReCalCommonBrowserEvents, RepeatingTimer, ServerConnection, ServerRequest, ServerRequestType) {
     var EventsServerCommunicator = (function () {
         function EventsServerCommunicator(dependencies) {
             var _this = this;
@@ -76,22 +76,23 @@ define(["require", "exports", '../../../library/Color/Color', '../../../library/
 
         EventsServerCommunicator.prototype.pushAndPullEvents = function () {
             // TODO finish implementing.
+            this.pushModifiedEvents(); // serverConnection takes care of queueing
             this.pullEvents();
         };
 
         EventsServerCommunicator.prototype.pushModifiedEvents = function () {
             var _this = this;
-            // TODO queueing logic does not make sense. We don't want a queue. If a
-            // push request is going on, we don't want to do anything.
-            if (!this.eventsModificationsManager.hasModifiedEvents()) {
+            if (!this.eventsModificationsManager.hasModifiedEvents() && !this.eventsVisibilityManager.visibilityChanged) {
                 return;
             }
             var createServerRequest = function () {
+                _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginUploading);
                 var paramsDict = new Dictionary();
                 var modifiedEvents = _this.eventsModificationsManager.getModifiedEvents().map(function (eventsModel) {
                     return _this.getLegacyEventObjectFromEventsModel(eventsModel);
                 });
-                paramsDict.set("events", JSON.stringify(modifiedEvents));
+                paramsDict.set('events', JSON.stringify(modifiedEvents));
+                paramsDict.set('hidden', JSON.stringify(_this.eventsVisibilityManager.hiddenEventIds));
 
                 // TODO hidden events
                 var request = new ServerRequest({
@@ -103,20 +104,27 @@ define(["require", "exports", '../../../library/Color/Color', '../../../library/
                 return request;
             };
             this.serverConnection.sendRequestLazilyConstructed(createServerRequest).done(function (data) {
+                // clear modifications history
                 _this.eventsModificationsManager.clearModificationsHistory();
+
+                // clear hidden events history
+                _this.eventsVisibilityManager.resetEventVisibilityToHiddenEventIds(_this.eventsVisibilityManager.hiddenEventIds);
                 for (var oldId in data.changed_ids) {
                     var newId = data.changed_ids[oldId][0];
                     var newGroupId = data.changed_ids[oldId][1];
                     _this.eventsStoreCoordinator.remapEventId(oldId, newId, newGroupId);
                 }
                 _this.eventsStoreCoordinator.clearLocalEventsWithIds(data.deleted_ids);
+                _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFinishUploading);
             }).fail(function () {
+                _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFailUploading);
             });
         };
 
         EventsServerCommunicator.prototype.pullEvents = function () {
             var _this = this;
             var createServerRequest = function () {
+                _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginDownloading);
                 var serverRequest = new ServerRequest({
                     url: '/get/' + _this.lastConnected.unix,
                     async: true,
@@ -125,26 +133,33 @@ define(["require", "exports", '../../../library/Color/Color', '../../../library/
                 });
                 return serverRequest;
             };
-            this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsWillBeginDownloading);
             this.serverConnection.sendRequestLazilyConstructed(createServerRequest).done(function (data) {
-                if (_this.eventsModificationsManager.hasModifiedEvents()) {
+                if (_this.eventsModificationsManager.hasModifiedEvents() || _this.eventsVisibilityManager.visibilityChanged) {
+                    _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFinishDownloading);
                     return;
                 }
-                if (_this.lastConnected.unix === 0) {
-                    _this.eventsStoreCoordinator.clearLocalEvents();
-                }
-                _this.lastConnected = new DateTime();
-                var eventsModels = new Array();
-                for (var i = 0; i < data.events.length; ++i) {
-                    // TODO handle uncommitted and updated events
-                    eventsModels.push(_this.getEventsModelFromLegacyEventObject(data.events[i]));
-                }
-                _this.eventsStoreCoordinator.addLocalEvents(eventsModels);
 
+                // no events have been modified. check for events that have been deleted.
+                var shouldDelete = _this.eventsStoreCoordinator.getEventIdsWithFilter(function (eventId) {
+                    return {
+                        keep: _this.eventsStoreCoordinator.getEventById(eventId).lastEdited.compareTo(_this.lastConnected) === 1 /* greater */,
+                        stop: false
+                    };
+                });
+                _this.eventsStoreCoordinator.clearLocalEventsWithIds(shouldDelete);
+
+                // handle downloaded content
                 // hidden events
                 if (data.hidden_events) {
                     _this.eventsVisibilityManager.resetEventVisibilityToHiddenEventIds(data.hidden_events);
                 }
+                _this.lastConnected = new DateTime();
+                var eventsModels = data.events.map(function (eventDict) {
+                    // TODO handle the case where this event is currently being modified on the client (popup)
+                    return _this.getEventsModelFromLegacyEventObject(eventDict);
+                });
+                _this.eventsStoreCoordinator.addLocalEvents(eventsModels);
+
                 _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFinishDownloading);
             }).fail(function (data) {
                 _this.globalBrowserEventsManager.triggerEvent(ReCalCommonBrowserEvents.eventsDidFailDownloading);

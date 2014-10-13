@@ -267,11 +267,19 @@ class DashboardViewController extends ViewController
     private setUpEventsServerCommunicationIndicators()
     {
         var errorDownloading = false;
+        var errorUploading = false;
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsWillBeginDownloading, ()=>{
             if (!errorDownloading)
             {
                 this.indicatorsManager.showIndicator("events_download",
                     IndicatorsType.persistent, "Loading events...");
+            }
+        });
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsWillBeginUploading, ()=>{
+            if (!errorUploading)
+            {
+                this.indicatorsManager.showIndicator("events_upload",
+                    IndicatorsType.persistent, "Syncing changes...");
             }
         });
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFinishDownloading, ()=>{
@@ -282,11 +290,24 @@ class DashboardViewController extends ViewController
                 this.indicatorsManager.showIndicator("events_success", IndicatorsType.temporary, "Connected :)");
             }
         });
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFinishUploading, ()=>{
+            this.indicatorsManager.hideIndicatorWithIdentifier("events_upload");
+            if (errorUploading)
+            {
+                errorUploading = false;
+                this.indicatorsManager.showIndicator("events_success", IndicatorsType.temporary, "Connected :)");
+            }
+        });
         this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailDownloading, ()=>{
             this.indicatorsManager.hideIndicatorWithIdentifier("events_download");
             errorDownloading = true;
-            this.indicatorsManager.showIndicator("events_download", IndicatorsType.error, "Error connecting.");
-        })
+            this.indicatorsManager.showIndicator("events_download", IndicatorsType.error, "Could not download");
+        });
+        this.globalBrowserEventsManager.attachGlobalEventHandler(ReCalCommonBrowserEvents.eventsDidFailUploading, ()=>{
+            this.indicatorsManager.hideIndicatorWithIdentifier("events_upload");
+            errorDownloading = true;
+            this.indicatorsManager.showIndicator("events_upload", IndicatorsType.error, "Could not sync");
+        });
     }
 
     private initializeNavigationBar(): void

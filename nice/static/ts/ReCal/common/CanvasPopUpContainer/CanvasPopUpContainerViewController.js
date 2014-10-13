@@ -117,7 +117,7 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../EventsP
                 _this.eventsOperationsFacade.commitModifiedEvent(extra.modifiedEventsModel);
 
                 // in case this is a new event, in which case it would not have been selected before
-                _this.eventsOperationsFacade.selectEventWithId(extra.modifiedEventsModel.eventId);
+                _this.eventsOperationsFacade.pinEventWithId(extra.modifiedEventsModel.eventId);
             });
             this.canvasView.attachEventHandler(ReCalCommonBrowserEvents.eventShouldHide, EventsPopUpView.cssSelector(), function (ev, extra) {
                 if (extra.view.parentView !== _this.canvasView) {
