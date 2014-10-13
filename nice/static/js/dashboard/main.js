@@ -3,7 +3,6 @@
  * Think of this module as the main() function. 
  * It is the first thing that gets called
  **************************************************/
-$(init)
 var NAV_ID = ["agendatab", "calendartab"];
 var TAB_ID = ["agenda", "calendar"];
 var SECTION_MAP;
@@ -14,49 +13,10 @@ var COURSE_FILTER_BLACKLIST;
 
 function init()
 {
-    pinnedIDs = new Set();
-
-    // time zone
-    moment.tz.add({
-        "zones": {
-            "America/New_York": [
-                "-4:56:2 - LMT 1883_10_18_12_3_58 -4:56:2",
-                "-5 US E%sT 1920 -5",
-                "-5 NYC E%sT 1942 -5",
-                "-5 US E%sT 1946 -5",
-                "-5 NYC E%sT 1967 -5",
-                "-5 US E%sT"
-            ]
-        },
-        "rules": {
-            "US": [
-                "1918 1919 2 0 8 2 0 1 D",
-                "1918 1919 9 0 8 2 0 0 S",
-                "1942 1942 1 9 7 2 0 1 W",
-                "1945 1945 7 14 7 23 1 1 P",
-                "1945 1945 8 30 7 2 0 0 S",
-                "1967 2006 9 0 8 2 0 0 S",
-                "1967 1973 3 0 8 2 0 1 D",
-                "1974 1974 0 6 7 2 0 1 D",
-                "1975 1975 1 23 7 2 0 1 D",
-                "1976 1986 3 0 8 2 0 1 D",
-                "1987 2006 3 1 0 2 0 1 D",
-                "2007 9999 2 8 0 2 0 1 D",
-                "2007 9999 10 1 0 2 0 0 S"
-            ],
-            "NYC": [
-                "1920 1920 2 0 8 2 0 1 D",
-                "1920 1920 9 0 8 2 0 0 S",
-                "1921 1966 3 0 8 2 0 1 D",
-                "1921 1954 8 0 8 2 0 0 S",
-                "1955 1966 9 0 8 2 0 0 S"
-            ]
-        },
-        "links": {}
-    });
+    //pinnedIDs = new Set();
 
     // initializing
-    LO_init();
+    //LO_init();
     RF_init();
     
     // set up ajax, so it shows loading indicator and send csrf properly
@@ -74,23 +34,23 @@ function init()
             var loadingID = settings.loadingID;
             if (typeof loadingID == 'undefined')
                 loadingID = settings.url;
-            LO_showLoading(loadingID);
+            //LO_showLoading(loadingID);
         },
     });
     $(document).ajaxSuccess(function(event, xhr, settings){
         var loadingID = settings.loadingID;
         if (typeof loadingID == 'undefined')
             loadingID = settings.url;
-        LO_hideLoading(loadingID);
+        //LO_hideLoading(loadingID);
     });
     $(document).ajaxError(function(event, xhr, settings){
         var loadingID = settings.loadingID;
         if (typeof loadingID == 'undefined')
             loadingID = settings.url;
-        LO_hideLoading(loadingID, false);
+        //LO_hideLoading(loadingID, false);
         if (settings.loadingIndicator == false)
             return;
-        LO_showError(loadingID);
+        //LO_showError(loadingID);
     });
 
     // more inits
@@ -124,13 +84,13 @@ function init()
    
     
     // more inits
-    SB_init();
+    //SB_init();
     SR_init();
-    EventsMan_init();
-    PopUp_init();
-    NO_init();
-    Agenda_init();
-    Cal_init();
+    //EventsMan_init();
+    //PopUp_init();
+    //NO_init();
+    //Agenda_init();
+    //Cal_init();
     SE_init();
     Tutorial_Setup();
 
@@ -145,15 +105,15 @@ function init()
     });
 
     // if event id changes, manage the ui module accordingly
-    EventsMan_addEventIDsChangeListener(function(oldID, newID){
-        if (UI_isMain(oldID))
-            UI_setMain(newID);
-        else if (UI_isPinned(oldID))
-        {
-            UI_unpin(oldID);
-            UI_pin(newID);
-        }
-    });
+    // EventsMan_addEventIDsChangeListener(function(oldID, newID){
+    //     if (UI_isMain(oldID))
+    //         UI_setMain(newID);
+    //     else if (UI_isPinned(oldID))
+    //     {
+    //         UI_unpin(oldID);
+    //         UI_pin(newID);
+    //     }
+    // });
 
     // load the correct theme
     if (THEME == 'w')
@@ -171,14 +131,14 @@ function init()
     adaptSize();
 
     // check for unapproved revisions
-    UR_pullUnapprovedRevisions();
+    // UR_pullUnapprovedRevisions();
 
     // check for unapproved revisions at 10 seconds interval
     RF_addRecurringFunction(function(isInterval){
         updatePoints();
     }, 5 * 1000, 2 * 60 * 1000);
     RF_addRecurringFunction(function(isInterval){
-        UR_pullUnapprovedRevisions();
+        // UR_pullUnapprovedRevisions();
     }, 10 * 1000, 5 * 60 * 1000);
 }
 
@@ -204,9 +164,7 @@ function adaptSize()
     {
         $('#sb-left-container').removeClass('col-xs-4 col-xs-12 col-xs-8');
         $('#sb-left-container').addClass('col-xs-12');
-        $('.agenda-container').children('.col-xs-4').removeClass('col-xs-4 col-xs-offset-1').addClass('col-xs-12');
     } else {
-        $('.agenda-container').children('.col-xs-12').addClass('col-xs-4 col-xs-offset-1').removeClass('col-xs-12');
     }
 }
 

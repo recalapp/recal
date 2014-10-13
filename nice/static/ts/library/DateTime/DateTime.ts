@@ -1,0 +1,190 @@
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../typings-manual/typings.d.ts" />
+
+/// <amd-dependency path="moment-timezone" />
+import moment = require('moment');
+import Comparable = require('../Core/Comparable');
+import ComparableResult = require('../Core/ComparableResult');
+import DateInterface = require('./Date');
+import InvalidActionException = require('../Core/InvalidActionException');
+import Time = require('./Time');
+
+class DateTime implements Comparable, DateInterface, Time
+{
+    private _momentObject: Moment = moment();
+
+    private static _max: DateTime = new DateTime();
+    private static _min: DateTime = new DateTime();
+
+    static get max(): DateTime
+    {
+        return DateTime._max;
+    }
+    static get min(): DateTime
+    {
+        return DateTime._min;
+    }
+
+    get year(): number
+    {
+        return this._momentObject.year();
+    }
+    set year(value: number)
+    {
+        this._momentObject.year(value)
+    }
+    get month(): number
+    {
+        return this._momentObject.month();
+    }
+    set month(value: number)
+    {
+        this._momentObject.month(value);
+    }
+    get date(): number
+    {
+        return this._momentObject.date();
+    }
+    set date(value: number)
+    {
+        this._momentObject.date(value);
+    }
+    get day(): number
+    {
+        return this._momentObject.day();
+    }
+    set day(value: number)
+    {
+        this._momentObject.day(value);
+    }
+    get hours(): number
+    {
+        return this._momentObject.hours();
+    }
+    set hours(value: number)
+    {
+        value %= 24; // prevent bubbling effect. confusing for 24 hours
+        this._momentObject.hours(value);
+    }
+    get minutes(): number
+    {
+        return this._momentObject.minutes();
+    }
+    set minutes(value: number)
+    {
+        this._momentObject.minutes(value);
+    }
+    get seconds(): number
+    {
+        return this._momentObject.seconds();
+    }
+    set seconds(value: number)
+    {
+        this._momentObject.seconds(value);
+    }
+    get unix(): number
+    {
+        return this._momentObject.unix();
+    }
+    set unix(value: number)
+    {
+        this._momentObject = moment.unix(value);
+    }
+
+
+    constructor();
+    constructor(toCopy: DateTime);
+    constructor(momentObject: Moment);
+    constructor(toParse: Date);
+    constructor(arg?: any)
+    {
+        if (arg)
+        {
+            if (arg instanceof Date)
+            {
+                this._momentObject = moment(<Date>arg);
+            }
+            else if (arg instanceof DateTime)
+            {
+                this.unix = arg.unix;
+            }
+            else
+            {
+                this.unix = (<Moment>arg).unix();
+            }
+        }
+    }
+
+    public static fromUnix(unix: number): DateTime
+    {
+        var result = new DateTime();
+        result._momentObject = moment.unix(unix);
+        return result;
+    }
+
+    private _tryMakeTimeZone(): Moment
+    {
+        var timeZone: string = (<any>window).timezone;
+        if (timeZone === null || timeZone === undefined)
+        {
+            return this._momentObject;
+        }
+        return this._momentObject.clone().tz(timeZone);
+    }
+
+    public calendar(): string
+    {
+        return this._tryMakeTimeZone().calendar();
+    }
+
+    public format(format?: string): string
+    {
+        return this._tryMakeTimeZone().format(format);
+    }
+
+    public toJsDate(): Date
+    {
+        return this._tryMakeTimeZone().toDate();
+    }
+
+    public compareTo(other: DateTime): ComparableResult
+    {
+        if (other === null || other === undefined)
+        {
+            throw new InvalidActionException('Cannot compare a DateTime with a null or undefined object');
+        }
+        if (this === other || this.unix === other.unix)
+        {
+            // catches all cases of equal, including when they are both max or both min
+            return ComparableResult.equal;
+        }
+        if (this === DateTime.max)
+        {
+            return ComparableResult.greater;
+        }
+        if (this === DateTime.min)
+        {
+            return ComparableResult.less;
+        }
+        if (other === DateTime.max)
+        {
+            return ComparableResult.less;
+        }
+        if (other === DateTime.min)
+        {
+            return ComparableResult.greater;
+        }
+        return this.unix - other.unix > 0 ? ComparableResult.greater : ComparableResult.less;
+    }
+
+    public equals(other: DateTime): boolean
+    {
+        if (other === null || other === undefined)
+        {
+            return false; // don't throw exception - it's just not equal
+        }
+        return this.compareTo(other) === ComparableResult.equal;
+    }
+}
+
+export = DateTime;

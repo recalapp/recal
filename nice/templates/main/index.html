@@ -8,13 +8,17 @@
 {% include 'main/sidebar.html' %}
 <div class="main-content tab-content">
     <div class="tab-pane fade left {% if nav_page == 0 %} active in {% endif %} container-fluid" id="agenda">
-        {% include 'main/agenda-placeholder.html' %}
+        <div class="row">
+            <div class="col-xs-4 col-xs-offset-1 container-fluid" id="agendaui">
+                {% include 'main/agenda-placeholder.html' %}
+            </div>
+        </div>
     </div>         
     <div class="tab-pane fade right {% if nav_page == 1 %} active in {% endif %} container-fluid" id="calendar">
         {% include 'main/calendar.html' %}
     </div>
 </div>
-<div id="content_bounds"></div>
+<div id="popup-canvas"></div>
 <div id="indicators-container">
 </div>
 
@@ -64,17 +68,15 @@
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <div id="timezone_options" class="row">
+                    <div id="timezone-options" class="row">
                     </div>
-                    <div id="course_options" class="row">
+                    <div id="course-options" class="row">
                     </div>
-                    <div id="theme_options" class="row">
+                    <div id="hidden-options" class="row">
                     </div>
-                    <div id="hidden_options" class="row">
+                    <div id="agenda-options" class="row">
                     </div>
-                    <div id="agenda_options" class="row">
-                    </div>
-                    <div id="calendar_options" class="row">
+                    <div id="calendar-options" class="row">
                     </div>
                 </div>
             </div>
@@ -90,8 +92,11 @@
 <div id='agenda-template' class='hide'>
 {% include 'main/agenda.html' %}
 </div>
+<div id='agenda-header-template' class='hide'>
+{% include 'main/agenda-header.html' %}
+</div>
 <div id='popup-template' class='hide'>
-{% include 'main/popup.html' %}
+{% include 'main/popup_new.html' %}
 </div>
 
 
@@ -99,8 +104,8 @@
 
 {% block link_or_script_blocking %}
 <base href="{{ base_url }}">
-<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/fullcalendar.css' %}">
-<link rel="stylesheet" href="{% static 'bower_components/jqueryui/themes/base/minified/jquery-ui.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/dist/fullcalendar.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-darkness/jquery-ui.min.css' %}">
 <!-- <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"> -->
 <link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
@@ -108,6 +113,7 @@
 
 <link rel="stylesheet" href="{% static 'css/landing/landing.css' %}">
 <link rel="stylesheet" href="{% static 'compiled/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'less/popup.css' %}">
 
 <!--<script src="{% static 'js/global.js' %}"></script>
 <script src="{% static 'js/dashboard/global.js' %}"></script>-->
@@ -143,20 +149,15 @@ AGENDA_FILTER = ['AS', 'RS', 'EX', 'PR', 'LE', 'LA', 'OH'];
 IS_MOBILE = true;
 {% endif %}
 
+var USER_PROFILE = '{% autoescape off %}{{ user_profile }}{% endautoescape %}';
+
 
 </script>
 {% endblock %}
 
 {% block link_or_script_nonblocking %}
-<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'bower_components/jqueryui/ui/minified/jquery-ui.min.js' %}"></script>
-<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'bower_components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
-<script src="{% static 'bower_components/fullcalendar/fullcalendar.min.js' %}"></script>
-<script src="{% static 'bower_components/jquery.cookie/jquery.cookie.js' %}"></script>
-<script src="{% static 'bower_components/momentjs/min/moment.min.js' %}"></script>
-<script src="{% static 'bower_components/moment-timezone/min/moment-timezone.min.js' %}"></script>
-<script src="{% static 'compiled/dashboard.js' %}"></script>
+<script src="{% static 'bower_components/requirejs/require.js' %}" data-main="{% static 'ts/ReCal/dashboard/config' %}"></script>
+<!--<script src="{% static 'bower_components/requirejs/require.js' %}" data-main="{% static 'ts/ReCal/dashboard/main-built' %}"></script>-->
 {% endblock %}
 
 

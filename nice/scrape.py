@@ -38,7 +38,7 @@ TERM_PREFIX = FEED_PREFIX + "?term=" + str(TERM_CODE)
 DEP_PREFIX = TERM_PREFIX + "&subject="
 
 # for now hardwire the namespaces--too annoying
-PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_3'
+PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_4'
 
 CURRENT_SEMESTER = ''
 community_user = get_community_user()
@@ -67,6 +67,8 @@ def get_current_semester():
             term = tree.getroot().find('term')
             start_date = term.find('start_date').text
             end_date = term.find('end_date').text
+            end_date = datetime.strptime(end_date, "%Y-%m-%d")
+            end_date += timedelta(weeks=30)
             curr_sem = Semester(
                 start_date = start_date, 
                 end_date = end_date, 
@@ -240,7 +242,7 @@ def create_or_update_events(section, section_object):
     end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
     # FOR PROJECT SUBMISSION, POSTPONE end_date so that there are events
     # in agenda/calendar for grading
-    end_date = end_date + timedelta(weeks=1)
+    end_date = end_date + timedelta(weeks=30)
 
     for meeting in meetings:
         days = []

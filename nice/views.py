@@ -67,8 +67,14 @@ def gather_dashboard(request):
         'theme': theme,
         'base_url': request.build_absolute_uri(),
         'all_sections': json.dumps(all_sections),
+        'user_profile': json.dumps(queries.get_user_profile_info(request.user.username))
     })
 
+def testpage(request):
+    return render(request, 'testpage/index.html', {})
+
+def unit_tests(request):
+    return render(request, 'unittests/index.html', {})
 
 @ensure_csrf_cookie
 def index(request):
@@ -312,7 +318,6 @@ def events_json(request, start_date=None, end_date=None, last_updated=None):
     Used in dashboard.
     """
     try:
-        print request.GET
         term_code = request.META.get('HTTP_TERM_CODE',get_cur_semester().term_code)
         netid = request.user.username
         if start_date:
@@ -351,6 +356,13 @@ def events_by_course_json(request, last_updated=0, start_date=None, end_date=Non
     events = queries.get_events_by_course_ids(course_ids, last_updated=last_updated, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
     
+@login_required
+@require_GET
+def user_profile_info(request):
+    netid = request.user.username
+    ret = queries.get_user_profile_info(netid)
+    return HttpResponse(json.dumps(ret), content_type="application/javascript")
+
 
 @login_required
 @require_GET

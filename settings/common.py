@@ -141,7 +141,7 @@ CACHES = {
 }
 
 ########## GLOBAL VARIABLES
-CURR_TERM = 1144 # Use helper method nice.models.get_cur_semester() to get current Semester object.
+CURR_TERM = 1152 # Use helper method nice.models.get_cur_semester() to get current Semester object.
 
 ### Reputation system
 

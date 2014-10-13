@@ -15,6 +15,75 @@ import settings.common as settings
 
 ### User event interaction: read and write ###
 
+def get_user_profile_info(netid, **kwargs):
+    """
+    Return all user profile info, including displayName, username, enrolledSections
+    :param netid:
+    :return:
+    """
+    try:
+        user = User.objects.get(username=netid).profile
+    except Exception, e:
+        return {}
+    term_code = kwargs.pop('term_code', get_cur_semester().term_code)
+    all_sections = user.sections.filter(course__semester__term_code=term_code)
+    all_courses = []
+    for section in all_sections:
+        if section.course not in all_courses:
+            all_courses.append(section.course)
+
+    def construct_section_dict_for_profile(section):
+        try:
+            section_color = User_Section_Table.objects.filter(
+                user=User.objects.get(username=netid).profile
+            ).get(
+                section=section.id
+            ).color
+        except:
+            color_choices = len(User_Section_Table.COLOR_CHOICES)
+            section_color = User_Section_Table.COLOR_CHOICES[randrange(0,color_choices)][0]
+        section_dict = construct_section_dict(section)
+        section_dict['section_color'] = section_color
+        return section_dict
+
+    def construct_course_dict_for_profile(course):
+        sections_array = []
+        for section in course.section_set.all():
+            if section in all_sections:
+                sections_array.append(construct_section_dict_for_profile(section))
+        return {
+            'course_id': course.id,
+            'course_title': course.title,
+            'course_listings': course.course_listings(),
+            'course_primary_listing': course.primary_listing(),
+            'course_professor': course.professor,
+            'course_description': course.description,
+            'sections': sections_array
+        }
+    
+    def construct_type_map(type_choices):
+        ret = {}
+        for type_code, type_display in type_choices:
+            ret[type_code] = type_display
+        return ret
+
+    courses_dict_array = [construct_course_dict_for_profile(x)
+                          for x in all_courses]
+    agenda_pref = ['AS', 'RS', 'EX', 'LE', 'LA', 'OH', 'PR']
+    if user.ui_agenda_pref:
+        agenda_pref = json.loads(user.ui_agenda_pref)
+    calendar_pref = ['AS', 'RS', 'EX', 'LE', 'LA', 'OH', 'PR']
+    if user.ui_calendar_pref:
+        calendar_pref = json.loads(user.ui_calendar_pref)
+    return {
+        'display_name': unicode(user),
+        'username': netid,
+        'enrolled_courses': courses_dict_array,
+        'event_types': construct_type_map(Event_Revision.TYPE_CHOICES),
+        'calendar_pref': calendar_pref,
+        'agenda_pref': agenda_pref
+    }
+
 def get_events(netid, escape=False, **kwargs):
     """
     Fetches events this user should see. Returns a list of their compressed event dictionaries.
@@ -119,7 +188,7 @@ def modify_events(netid, events, auto_approve=False):
         user = User.objects.get(username=netid).profile
     except:
         raise Exception("Invalid user")
-    
+
     changed_ids = {}
     deleted_ids = []
 
