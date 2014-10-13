@@ -11,6 +11,7 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
         __extends(ClickToEditBaseView, _super);
         function ClickToEditBaseView($element, cssClass) {
             _super.call(this, $element, cssClass);
+            this.logicalValue = null;
             if (!this._$el.is('p, h1, h2, h3, h4, h5, h6, span')) {
                 throw new InvalidArgumentException('ClickToEdit must be p, h1, h2, h3, h4, h5, h6, or span');
             }
@@ -46,11 +47,12 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
             options.onblur = 'submit';
             options.callback = function (value, settings) {
                 _this.triggerEvent(BrowserEvents.clickToEditComplete, {
-                    value: value
+                    value: _this.logicalValue
                 });
             };
             this._$el.editable(function (value, settings) {
                 var processed = _this.processFormValue(value, settings);
+                _this.logicalValue = value;
                 return processed;
             }, options);
             this.attachEventHandler(BrowserEvents.click, function () {
