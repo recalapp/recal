@@ -13,6 +13,8 @@ import View = require('../CoreUI/View');
 
 class ClickToEditBaseView extends FocusableView implements ClickToEdit.IClickToEditView
 {
+    private logicalValue: string = null;
+
     private static _encodeDecodeProxy: EncodeDecodeProxy = null;
     public get encodeDecodeProxy(): EncodeDecodeProxy
     {
@@ -49,12 +51,13 @@ class ClickToEditBaseView extends FocusableView implements ClickToEdit.IClickToE
         options.onblur = 'submit';
         options.callback = (value: string, settings: any)=>{
             this.triggerEvent(BrowserEvents.clickToEditComplete, {
-                value: value,
+                value: this.logicalValue,
             });
         };
         this._$el.editable((value: string, settings: any)=>
         {
             var processed = this.processFormValue(value, settings);
+            this.logicalValue = value;
             return processed;
         }, options);
         this.attachEventHandler(BrowserEvents.click, () =>
