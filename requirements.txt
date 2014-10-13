@@ -8,11 +8,15 @@ dj-static==0.0.5
 django-debug-toolbar==1.0.1
 django-grappelli==2.5.3
 django-security==0.1.22b
+django-tastypie==0.12.0
 django-view-cache-utils==0.1.1
 docutils==0.11
 gunicorn==18.0
 lxml==3.3.4
 psycopg2==2.5.1
+python-dateutil==2.2
+python-mimeparse==0.1.4
+six==1.8.0
 sqlparse==0.1.11
 static==0.4
 wsgiref==0.1.2

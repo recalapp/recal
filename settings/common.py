@@ -49,9 +49,11 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'south',
     'security',
+    'tastypie',
     'cas',
     'colorfield',
-    'nice'
+    'nice',
+    'course_selection'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -67,7 +69,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware'
 )
 
-ROOT_URLCONF = 'nice.urls'
+ROOT_URLCONF = 'urls'
 
 WSGI_APPLICATION = 'nice.wsgi.application'
 
@@ -82,7 +84,7 @@ CAS_SERVER_URL = 'https://fed.princeton.edu/cas/'
 
 CAS_REDIRECT_URL = '/'
 
-LOGIN_URL = '/login'
+LOGIN_URL = 'nice/login'
 
 ########## END AUTHENTICATION CONFIGURATION
 
