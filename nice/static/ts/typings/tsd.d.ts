@@ -6,3 +6,4 @@
 /// <reference path="fullCalendar/fullCalendar.d.ts" />
 /// <reference path="jquery.cookie/jquery.cookie.d.ts" />
 /// <reference path="angularjs/angular.d.ts" />
+/// <reference path="angularjs/angular-resource.d.ts" />

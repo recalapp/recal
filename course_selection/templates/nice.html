@@ -7,7 +7,7 @@
 <div class="container">
     {% include 'header.html' %}
    <div class="row clearfix">
-        <div class="col-md-4 column">
+        <div class="col-md-4 column" ng-controller="SearchCtrl">
             {% include 'course-search.html' %}
         </div>
 
@@ -33,7 +33,7 @@
 <link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
 <link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
 
-<link rel="stylesheet" href="{% static 'less/nice.css' %}">
+<link rel="stylesheet" href="../static/less/nice.css">
 {% endblock %}
 
 {% block link_or_script_nonblocking %}

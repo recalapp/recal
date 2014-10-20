@@ -1,9 +1,10 @@
 import Application = require('../Application');
-import Course = require('../models/Course');
+import ICourse = require('../interfaces/ICourse');
 import SearchCtrl = require('../controllers/SearchCtrl');
 
 interface ICourseSearchScope extends ng.IScope {
-    courses: Course[];
+    message;
+    courses;
     vm: SearchCtrl;
 }
 
