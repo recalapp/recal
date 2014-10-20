@@ -146,4 +146,3 @@ define(["require", "exports", 'jquery', "../Core/BrowserEvents", '../CoreUI/Focu
     
     return ClickToEditBaseView;
 });
-//# sourceMappingURL=ClickToEditBaseView.js.map

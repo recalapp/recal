@@ -380,4 +380,3 @@ define(["require", "exports", './Agenda/AgendaTableViewController', '../../libra
     
     return DashboardViewController;
 });
-//# sourceMappingURL=DashboardViewController.js.map

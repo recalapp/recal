@@ -53,11 +53,11 @@ class DashboardInitializer
             var origin = protocol + sr_origin;
             // Allow absolute or scheme relative URLs to same origin
             return (url == origin || url.slice(0, origin.length + 1) == origin
-                + '/') ||
-                   (url == sr_origin || url.slice(0, sr_origin.length + 1)
-                       == sr_origin + '/') ||
+                    + '/') ||
+                (url == sr_origin || url.slice(0, sr_origin.length + 1)
+                 == sr_origin + '/') ||
                 // or any other URL that isn't scheme relative or absolute i.e relative.
-                   !(/^(\/\/|http:|https:).*/.test(url));
+                !(/^(\/\/|http:|https:).*/.test(url));
         };
 
         $.ajaxSetup({
@@ -78,14 +78,14 @@ class DashboardInitializer
         });
         var converter = new UserProfilesServerDataToModelConverter(this.user);
         this.user =
-        converter.updateUserProfilesModelWithServerData(JSON.parse(USER_PROFILE));
+            converter.updateUserProfilesModelWithServerData(JSON.parse(USER_PROFILE));
 
         // set up Dashboard View Controller
         var dashboardView: IView = View.fromJQuery($('body'));
         var dashboardVC: DashboardViewController = new DashboardViewController(dashboardView,
-            {
-                user: this.user,
-            });
+                {
+                    user: this.user,
+                });
 
         this.rootViewController = dashboardVC;
 

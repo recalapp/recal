@@ -35,4 +35,3 @@ define(["require", "exports", './SegmentedControlBaseView'], function(require, e
     
     return SegmentedControlMultipleSelectView;
 });
-//# sourceMappingURL=SegmentedControlMultipleSelectView.js.map

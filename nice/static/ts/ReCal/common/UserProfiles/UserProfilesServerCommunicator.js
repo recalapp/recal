@@ -42,4 +42,3 @@ define(["require", "exports", 'jquery', '../../../library/DataStructures/Diction
     
     return UserProfilesServerCommunicator;
 });
-//# sourceMappingURL=UserProfilesServerCommunicator.js.map

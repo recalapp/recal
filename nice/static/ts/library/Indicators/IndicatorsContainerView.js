@@ -63,4 +63,3 @@ define(["require", "exports", '../DataStructures/Dictionary', '../Core/InvalidAc
     
     return IndicatorsContainerView;
 });
-//# sourceMappingURL=IndicatorsContainerView.js.map

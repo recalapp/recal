@@ -80,4 +80,3 @@ define(["require", "exports", './SectionTypesModel'], function(require, exports,
     
     return SectionsModel;
 });
-//# sourceMappingURL=SectionsModel.js.map

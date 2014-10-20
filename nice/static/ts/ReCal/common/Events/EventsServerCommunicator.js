@@ -209,4 +209,3 @@ define(["require", "exports", '../../../library/Color/Color', '../../../library/
     
     return EventsServerCommunicator;
 });
-//# sourceMappingURL=EventsServerCommunicator.js.map

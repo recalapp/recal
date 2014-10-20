@@ -5,3 +5,4 @@
 /// <reference path="moment/moment.d.ts" />
 /// <reference path="fullCalendar/fullCalendar.d.ts" />
 /// <reference path="jquery.cookie/jquery.cookie.d.ts" />
+/// <reference path="angularjs/angular.d.ts" />

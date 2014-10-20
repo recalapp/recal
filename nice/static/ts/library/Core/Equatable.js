@@ -4,4 +4,3 @@ define(["require", "exports"], function(require, exports) {
     }; // provide a default implementation
     
 });
-//# sourceMappingURL=Equatable.js.map

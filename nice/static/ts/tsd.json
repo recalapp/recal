@@ -6,7 +6,7 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "jquery/jquery.d.ts": {
-      "commit": "bba33bcb0b363ae41db8517a09d1a4d07828616b"
+      "commit": "4dd796bb15c51e5bc0efd74605fbc9de46773ca5"
     },
     "requirejs/require.d.ts": {
       "commit": "4cf10109b729a39130cb13bb3d4a069e6a2c2eb1"
@@ -25,6 +25,9 @@
     },
     "jquery.cookie/jquery.cookie.d.ts": {
       "commit": "bba33bcb0b363ae41db8517a09d1a4d07828616b"
+    },
+    "angularjs/angular.d.ts": {
+      "commit": "4dd796bb15c51e5bc0efd74605fbc9de46773ca5"
     }
   }
 }

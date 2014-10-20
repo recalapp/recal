@@ -8,4 +8,3 @@ define(["require", "exports"], function(require, exports) {
     
     return NotificationType;
 });
-//# sourceMappingURL=NotificationType.js.map

@@ -96,4 +96,3 @@ define(["require", "exports", '../Core/InvalidArgumentException'], function(requ
     
     return Color;
 });
-//# sourceMappingURL=Color.js.map

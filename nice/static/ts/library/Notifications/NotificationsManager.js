@@ -66,4 +66,3 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
     
     return NotificationsManager;
 });
-//# sourceMappingURL=NotificationsManager.js.map

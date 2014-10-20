@@ -72,4 +72,3 @@ define(["require", "exports", 'jquery', '../CoreUI/FocusableView', './SegmentedC
     
     return SegmentedControlChoiceView;
 });
-//# sourceMappingURL=SegmentedControlChoiceView.js.map

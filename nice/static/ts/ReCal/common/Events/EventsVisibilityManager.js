@@ -111,4 +111,3 @@ define(["require", "exports", '../ReCalCommonBrowserEvents', '../../../library/D
     
     return EventsVisibilityManager;
 });
-//# sourceMappingURL=EventsVisibilityManager.js.map

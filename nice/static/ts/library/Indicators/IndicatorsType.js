@@ -8,4 +8,3 @@ define(["require", "exports"], function(require, exports) {
     
     return IndicatorsType;
 });
-//# sourceMappingURL=IndicatorsType.js.map

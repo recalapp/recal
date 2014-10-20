@@ -349,4 +349,3 @@ define(["require", "exports", '../../../library/ActionSheet/ActionSheetType', '.
     
     return EditableEventsPopUpView;
 });
-//# sourceMappingURL=EditableEventsPopUpView.js.map

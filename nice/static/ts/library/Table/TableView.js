@@ -220,4 +220,3 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
     
     return TableView;
 });
-//# sourceMappingURL=TableView.js.map

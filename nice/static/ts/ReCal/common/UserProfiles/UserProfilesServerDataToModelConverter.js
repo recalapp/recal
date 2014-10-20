@@ -57,4 +57,3 @@ define(["require", "exports", '../../../library/Color/Color', '../Courses/Course
     
     return UserProfilesServerDataToModelConverter;
 });
-//# sourceMappingURL=UserProfilesServerDataToModelConverter.js.map

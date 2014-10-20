@@ -30,4 +30,3 @@ define(["require", "exports", './ErrorIndicatorView', "./IndicatorsType", '../Co
     
     return IndicatorViewFactory;
 });
-//# sourceMappingURL=IndicatorViewFactory.js.map

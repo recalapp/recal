@@ -105,4 +105,3 @@ define(["require", "exports", 'jquery', '../Core/BrowserEvents', '../DataStructu
     
     return SidebarStackViewContainer;
 });
-//# sourceMappingURL=SidebarStackViewContainer.js.map

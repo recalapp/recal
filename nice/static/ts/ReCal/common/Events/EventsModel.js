@@ -187,4 +187,3 @@ define(["require", "exports", '../../../library/DateTime/DateTime'], function(re
     
     return EventsModel;
 });
-//# sourceMappingURL=EventsModel.js.map

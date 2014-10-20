@@ -150,4 +150,3 @@ define(["require", "exports", '../../../library/DataStructures/Dictionary', '../
     
     return UserProfilesModel;
 });
-//# sourceMappingURL=UserProfilesModel.js.map

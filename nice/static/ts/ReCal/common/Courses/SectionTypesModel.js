@@ -37,4 +37,3 @@ define(["require", "exports"], function(require, exports) {
     
     return SectionTypesModel;
 });
-//# sourceMappingURL=SectionTypesModel.js.map

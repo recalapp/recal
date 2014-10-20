@@ -11,4 +11,3 @@ define(["require", "exports", '../Core/InvalidArgumentException'], function(requ
     
     return Timer;
 });
-//# sourceMappingURL=Timer.js.map

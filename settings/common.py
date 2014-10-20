@@ -132,9 +132,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 STATICFILES_DIRS = (
     normpath(join(DJANGO_ROOT, 'nice', 'static')),
+    normpath(join(DJANGO_ROOT, 'course_selection', 'static')),
 )
 
-TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'nice', 'templates'))]
+TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'nice', 'templates')),
+                 normpath(join(DJANGO_ROOT, 'course_selection', 'templates'))]
 
 CACHES = {
     'default': {

@@ -41,4 +41,3 @@ define(["require", "exports", 'jquery', './IndicatorView'], function(require, ex
     
     return PersistentIndicatorView;
 });
-//# sourceMappingURL=PersistentIndicatorView.js.map

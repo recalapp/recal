@@ -45,4 +45,3 @@ define(["require", "exports", './SegmentedControlBaseView'], function(require, e
     
     return SegmentedControlSingleSelectView;
 });
-//# sourceMappingURL=SegmentedControlSingleSelectView.js.map

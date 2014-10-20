@@ -74,4 +74,3 @@ define(["require", "exports", 'jquery', './ClickToEditBaseView', './ClickToEditC
     
     return ClickToEditViewFactory;
 });
-//# sourceMappingURL=ClickToEditViewFactory.js.map

@@ -43,4 +43,3 @@ define(["require", "exports", './NotificationsManager'], function(require, expor
     
     return SidebarNotificationsManager;
 });
-//# sourceMappingURL=SidebarNotificationsManager.js.map

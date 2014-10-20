@@ -80,4 +80,3 @@ define(["require", "exports", 'jquery', './DashboardViewController', '../common/
     
     return DashboardInitializer;
 });
-//# sourceMappingURL=DashboardInitializer.js.map

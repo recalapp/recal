@@ -62,4 +62,3 @@ define(["require", "exports", './EditableEventsPopUpView'], function(require, ex
     
     return EventsPopUpViewFactory;
 });
-//# sourceMappingURL=EventsPopUpViewFactory.js.map

@@ -96,4 +96,3 @@ define(["require", "exports", '../../../library/Core/InvalidArgumentException', 
     
     return CoursesModel;
 });
-//# sourceMappingURL=CoursesModel.js.map

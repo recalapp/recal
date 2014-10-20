@@ -86,4 +86,3 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../comm
     
     return SettingsViewController;
 });
-//# sourceMappingURL=SettingsViewController.js.map

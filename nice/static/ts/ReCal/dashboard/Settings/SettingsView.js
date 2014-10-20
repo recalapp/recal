@@ -360,4 +360,3 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
     
     return SettingsView;
 });
-//# sourceMappingURL=SettingsView.js.map

@@ -20,4 +20,3 @@ define(["require", "exports", './Exception'], function(require, exports, Excepti
     
     return AbstractMethodException;
 });
-//# sourceMappingURL=AbstractMethodException.js.map

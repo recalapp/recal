@@ -420,4 +420,3 @@ define(["require", "exports", 'jquery', './AgendaTableViewCell', './AgendaTableV
     
     return AgendaTableViewController;
 });
-//# sourceMappingURL=AgendaTableViewController.js.map

@@ -434,4 +434,3 @@ define(["require", "exports", '../../../library/Core/BrowserEvents', '../../../l
     
     return EventsPopUpView;
 });
-//# sourceMappingURL=EventsPopUpView.js.map

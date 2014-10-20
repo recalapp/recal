@@ -34,4 +34,3 @@ define(["require", "exports", '../CoreUI/View'], function(require, exports, View
     
     return IndicatorView;
 });
-//# sourceMappingURL=IndicatorView.js.map

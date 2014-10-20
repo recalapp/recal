@@ -71,4 +71,3 @@ define(["require", "exports", '../../../library/Core/ComparableResult', '../../.
     
     return EventsRetriever;
 });
-//# sourceMappingURL=EventsRetriever.js.map

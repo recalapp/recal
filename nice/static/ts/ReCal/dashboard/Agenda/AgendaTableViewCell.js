@@ -115,4 +115,3 @@ define(["require", "exports", '../../../library/Color/Color', '../../../library/
     
     return AgendaTableViewCell;
 });
-//# sourceMappingURL=AgendaTableViewCell.js.map

@@ -37,4 +37,3 @@ define(["require", "exports", '../CoreUI/View'], function(require, exports, View
     
     return TableViewHeaderView;
 });
-//# sourceMappingURL=TableViewHeaderView.js.map
