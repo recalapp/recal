@@ -11,4 +11,4 @@ popup.css: popup.less
 	$(COMPILE) $(ARGS) popup.less > popup.css
 
 nice.css: nice.less
-	$(COMPILE) $(ARGS) nice.less > nice.css
+	$(COMPILE) $(ARGS) nice.less > nice_test.css

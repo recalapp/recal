@@ -1,25 +1,30 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-define(["require", "exports"], function(require, exports) {
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define(["require", "exports", './Service'], function(require, exports, Service) {
     'use strict';
 
-    var CourseResource = (function () {
+    var CourseResource = (function (_super) {
+        __extends(CourseResource, _super);
         function CourseResource($resource) {
+            _super.call(this);
             this.$resource = $resource;
         }
         CourseResource.prototype.query = function () {
-            return this.$resource('testurl');
         };
 
         CourseResource.prototype.get = function () {
-            return this.$resource('testurl', { method: 'GET', params: { phoneId: 'phones' }, isArray: false });
         };
 
         CourseResource.prototype.put = function (courses) {
-            null;
         };
         CourseResource.$inject = ['$resource'];
         return CourseResource;
-    })();
+    })(Service);
 
     
     return CourseResource;

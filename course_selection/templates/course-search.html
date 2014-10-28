@@ -1,22 +1,22 @@
 {% verbatim %}
-<div class="row">
-    <div id="searchBar">
-        <form class="form-search">
-            <input type="text" ng-model="query" placeholder="Ex: COS 126, Sims, WWS, etc." style="height: 40px; width: 100%;">
-        </form>
+<div id="searchColumn" class="col-md-4 column" ng-controller="SearchCtrl">
+    <div class="row" id="searchBarContainer">
+            <form class="form-search">
+                <input id="searchBar" type="text" ng-model="query" placeholder="Ex: COS 126, Sims, WWS, etc.">
+            </form>
     </div>
-</div>
-<div class="row">
-    <div id="accordion" class="panel-group">
-        <div class="panel panel-default" ng-repeat="course in courses | filter: query ">
-            <div class="panel-heading">
-                <h4 class="course-panel-title" data-toggle="collapse" data-target="#collapse-{{$index}}">
-                    {{ course.title }}
-                </h4>
-            </div>
-            <div id="collapse-{{$index}}" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <p>{{ course.description }}</p>
+    <div class="row" id="coursePanelsContainer">
+        <div id="accordion" class="panel-group">
+            <div class="panel panel-default" ng-repeat="course in courses | filter: query ">
+                <div class="panel-heading course-panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse-{{$index}}">
+                    <h4 class="course-panel-title">
+                        {{ course.title }}
+                    </h4>
+                </div>
+                <div id="collapse-{{$index}}" class="panel-collapse collapse ">
+                    <div class="panel-body course-panel-body">
+                        <p>{{ course.description }}</p>
+                    </div>
                 </div>
             </div>
         </div>

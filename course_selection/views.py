@@ -19,6 +19,6 @@ from datetime import datetime
 import json
 
 def index(request):
-    return render(request, 'nice.html', {
+    return render(request, 'index.html', {
         'username': unicode(request.user.profile)    
     })

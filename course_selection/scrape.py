@@ -199,18 +199,67 @@ def create_or_update_sections(course, course_object):
     for section in classes:
         section_name = section.find('section').text
         section_type = section.find('type_name').text
+
+        # check if this section has a schedule attached to it
+        try:
+            schedule = section.find('schedule')
+            meetings = schedule.find('meetings')
+        except:
+            # TODO: CAN'T DO THIS: STILL NEED TO CREATE OBJECT BEFORE RETURNS
+            print 'no schedule or meetings for ' + str(section_object.course)
+            return
+
+        # now we check if there is already an event for this section
+        section_registrar_id = section.find('class_number')
+        section_type = section.find('type_name').text
+
+        # the dates are in the format:
+        # YYYY-MM-DD
+        str_start_date = schedule.find('start_date').text
+        str_end_date = schedule.find('end_date').text
+        end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
+        # FOR PROJECT SUBMISSION, POSTPONE end_date so that there are events
+        # in agenda/calendar for grading
+        end_date = end_date + timedelta(weeks=30)
+
+        for meeting in meetings:
+            days = []
+            for day in meeting.find('days'):
+                days.append(DAYS[day.text])
+
+                # The event_start of any event must fall on a day the event occurs.
+                day_offset = timedelta(days=0)
+                if len(days) > 0:
+                    day_offset = timedelta(days=days[0])
+
+                # the times are in the format:
+                # HH:MM AM/PM
+                str_end_time = meeting.find('end_time').text
+                str_end_date_time = str_start_date + str_end_time
+                end_date_time = datetime.strptime(str_end_date_time, '%Y-%m-%d%I:%M %p') + day_offset
+
+                str_start_time = meeting.find('start_time').text
+                str_start_date_time = str_start_date + str_start_time
+                start_date_time = datetime.strptime(str_start_date_time, '%Y-%m-%d%I:%M %p') + day_offset
+
+            try:
+                location = meeting.find('building').find('name').text + ' ' + meeting.find('room').text
+            except:
+                location = ''
+
         section_object, created = Section.objects.get_or_create(
             course = course_object,
             name = section_name,
             section_type = section_type[0:3].upper()
         )
+
         if created:
             new_section_count += 1
         section_count += 1
 
 def remove_namespace(doc, namespace):
     """Hack to remove namespace in the document in place.
-    
+
     """
     ns = u'{%s}' % namespace
     nsl = len(ns)

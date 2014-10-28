@@ -2,26 +2,25 @@
 
 import ICourse = require('../interfaces/ICourse');
 import ICourseResource = require('../interfaces/ICourseResource');
+import Service = require('./Service');
 
 'use strict';
 
-class CourseResource {
+class CourseResource extends Service {
 
     static $inject = ['$resource']
 
     constructor(private $resource: ng.resource.IResourceService) {
+        super();
     }
 
     public query() {
-        return this.$resource('testurl');
     }
 
     public get() {
-        return this.$resource('testurl', {method:'GET', params:{phoneId:'phones'}, isArray:false});
     }
 
     public put(courses: ICourse[]) {
-        null;
     }
 }
 

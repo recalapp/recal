@@ -64,9 +64,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'security.middleware.XssProtectMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'cas.middleware.CASMiddleware',
     'minidetector.Middleware',
-    'django.middleware.gzip.GZipMiddleware'
 )
 
 ROOT_URLCONF = 'urls'
@@ -131,8 +131,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 STATICFILES_DIRS = (
-    normpath(join(DJANGO_ROOT, 'nice', 'static')),
     normpath(join(DJANGO_ROOT, 'course_selection', 'static')),
+    normpath(join(DJANGO_ROOT, 'nice', 'static')),
 )
 
 TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'nice', 'templates')),

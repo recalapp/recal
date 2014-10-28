@@ -1,0 +1,22 @@
+#about-content{
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    -webkit-transition: top 0.2s ease-in-out, opacity 0.2s linear;
+    transition: top 0.2s ease-in-out, opacity 0.2s linear;
+    z-index: 100000000;
+}
+#about-content.about-hidden{
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    top: 80%;
+}
+#about-close-button{
+    position: fixed;
+    top: 5%;
+    right: 5%;
+    z-index: 10000000;
+    font-size: 50px;
+}

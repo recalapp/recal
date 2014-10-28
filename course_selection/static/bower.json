@@ -17,9 +17,13 @@
     "moment-timezone": "~0.2.0",
     "momentjs": "~2.7.0",
     "requirejs": "~2.1.14",
-    "angular": "~1.2.26"
+    "angular": "~1.2.26",
+    "angular-ui-calendar": "*"
   },
   "resolutions": {
-    "angular": "~1.2.26"
+    "angular": "~1.2.26",
+    "fullcalendar": "~2.0.2",
+    "jquery-ui": "~1.11.0",
+    "jquery": "~2.1.1"
   }
 }

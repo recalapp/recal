@@ -1,0 +1,5 @@
+class Service
+{
+}
+
+export = Service;
