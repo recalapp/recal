@@ -1,5 +1,6 @@
-define(["require", "exports", '../Module'], function(require, exports, Module) {
+define(["require", "exports", '../Module', './CourseResource'], function(require, exports, Module, CourseResource) {
     var niceServices = new Module('niceServices', []);
+    niceServices.addService('CourseResource', CourseResource);
 
     
     return niceServices;

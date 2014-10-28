@@ -5,3 +5,4 @@ define(["require", "exports", '../Module', './CourseSearchFilter'], function(req
     
     return niceFilters;
 });
+//# sourceMappingURL=Filters.js.map
