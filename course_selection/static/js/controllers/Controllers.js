@@ -6,4 +6,3 @@ define(["require", "exports", './SearchCtrl', './CalendarCtrl', '../Module'], fu
     
     return niceControllers;
 });
-//# sourceMappingURL=Controllers.js.map

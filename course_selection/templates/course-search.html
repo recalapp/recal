@@ -7,13 +7,13 @@
     </div>
     <div class="row" id="coursePanelsContainer">
         <div id="accordion" class="panel-group">
-            <div class="panel panel-default" ng-repeat="course in courses | filter: query ">
+            <div class="panel panel-default" ng-mouseover="" ng-repeat="course in courses | filter: query ">
                 <div class="panel-heading course-panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse-{{$index}}">
                     <h4 class="course-panel-title">
                         {{ course.title }}
                     </h4>
                 </div>
-                <div id="collapse-{{$index}}" class="panel-collapse collapse ">
+                <div id="collapse-{{$index}}" class="panel-collapse collapse">
                     <div class="panel-body course-panel-body">
                         <p>{{ course.description }}</p>
                     </div>

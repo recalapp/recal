@@ -25,13 +25,45 @@ module.exports = function(grunt) {
             options: {
                 module: 'amd', //or commonjs
                 target: 'es5', //or es3
-                basePath: 'path/to/typescript/files',
-                sourceMap: true,
-                declaration: true,
+                sourceMap: false,
+                declaration: false,
                 watch: true
             }
         }
     },
+    less: {
+        development: {
+            options: {
+                paths: ["less/"],
+                watch: true
+            },
+            files: {
+                "less/course-search.css" : "less/course-search.less",
+                "less/nice.css" : "less/nice.less"
+            }
+        },
+    },
+    watch: {
+        less: {
+            files: ["./less/*.less"],
+            tasks: ["less"],
+            options: {
+                nospawn: true
+            }
+        },
+        typescript: {
+            files: ["./js/**/*.ts"],
+            tasks: ["typescript"]
+        }
+    },
+    concurrent: {
+        options: {
+            logConcurrentOutput: true
+        },
+        dev: {
+            tasks: ["watch:less", "watch:typescript"]
+        }
+    }
   });
 
   // These plugins provide necessary tasks.
@@ -39,8 +71,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-typescript');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-concurrent');
 
   // Default task.
-  grunt.registerTask('default', ['typescript']);
+  grunt.registerTask('default', ["concurrent:dev"]);
 
 };

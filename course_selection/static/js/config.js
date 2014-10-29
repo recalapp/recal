@@ -1,3 +1,4 @@
+/// <reference path="../../../nice/static/ts/typings/tsd.d.ts" />
 function staticPath(path) {
     return '../' + path;
 }
@@ -50,4 +51,3 @@ require([
     angular.bootstrap(document, ['nice']);
 });
 
-//# sourceMappingURL=config.js.map
