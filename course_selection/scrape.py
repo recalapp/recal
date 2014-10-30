@@ -47,7 +47,8 @@ new_course_count = 0
 course_count = 0
 new_section_count = 0
 section_count = 0
-new_event_count = 0
+new_meeting_count = 0
+meeting_count = 0
 
 def get_current_semester():
     """ get semester according to TERM_CODE
@@ -101,7 +102,8 @@ def scrape_all():
     print str(course_count) + " total courses"
     print str(new_section_count) + " new sections"
     print str(section_count) + " total sections"
-    print str(new_event_count) + " new events"
+    print str(new_meeting_count) + " new meetings"
+    print str(meeting_count) + " total meetings"
 
 # goes through the listings for this department
 def scrape(department):
@@ -194,6 +196,8 @@ def create_or_update_sections(course, course_object):
     """
     global new_section_count
     global section_count
+    global new_meeting_count
+    global meeting_count
     # add sections
     classes = course.find('classes')
     for section in classes:
@@ -213,40 +217,6 @@ def create_or_update_sections(course, course_object):
         section_registrar_id = section.find('class_number')
         section_type = section.find('type_name').text
 
-        # the dates are in the format:
-        # YYYY-MM-DD
-        str_start_date = schedule.find('start_date').text
-        str_end_date = schedule.find('end_date').text
-        end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
-        # FOR PROJECT SUBMISSION, POSTPONE end_date so that there are events
-        # in agenda/calendar for grading
-        end_date = end_date + timedelta(weeks=30)
-
-        for meeting in meetings:
-            days = []
-            for day in meeting.find('days'):
-                days.append(DAYS[day.text])
-
-                # The event_start of any event must fall on a day the event occurs.
-                day_offset = timedelta(days=0)
-                if len(days) > 0:
-                    day_offset = timedelta(days=days[0])
-
-                # the times are in the format:
-                # HH:MM AM/PM
-                str_end_time = meeting.find('end_time').text
-                str_end_date_time = str_start_date + str_end_time
-                end_date_time = datetime.strptime(str_end_date_time, '%Y-%m-%d%I:%M %p') + day_offset
-
-                str_start_time = meeting.find('start_time').text
-                str_start_date_time = str_start_date + str_start_time
-                start_date_time = datetime.strptime(str_start_date_time, '%Y-%m-%d%I:%M %p') + day_offset
-
-            try:
-                location = meeting.find('building').find('name').text + ' ' + meeting.find('room').text
-            except:
-                location = ''
-
         section_object, created = Section.objects.get_or_create(
             course = course_object,
             name = section_name,
@@ -256,6 +226,36 @@ def create_or_update_sections(course, course_object):
         if created:
             new_section_count += 1
         section_count += 1
+
+        ## generate meetings for this section
+        for meeting in meetings:
+            days = ""
+            for day in meeting.find('days'):
+                days += day.text + " "
+
+            # the times are in the format:
+            # HH:MM AM/PM
+            str_end_time = meeting.find('end_time').text
+            str_start_time = meeting.find('start_time').text
+
+            try:
+                building = meeting.find('building').find('name').text 
+                room = meeting.find('room').text
+                location = building + " " + room
+            except:
+                location = ""
+
+            meeting_object, created = Meeting.objects.get_or_create(
+                section = section_object,
+                start_time = str_start_time,
+                end_time = str_end_time,
+                days = days,
+                location = location
+            )
+
+            if created:
+                new_meeting_count += 1
+            meeting_count += 1
 
 def remove_namespace(doc, namespace):
     """Hack to remove namespace in the document in place.

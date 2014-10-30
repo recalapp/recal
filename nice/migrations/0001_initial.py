@@ -1,269 +1,242 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+from django.conf import settings
+import colorfield.fields
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Semester'
-        db.create_table(u'nice_semester', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('start_date', self.gf('django.db.models.fields.DateField')()),
-            ('end_date', self.gf('django.db.models.fields.DateField')()),
-        ))
-        db.send_create_signal(u'nice', ['Semester'])
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Adding model 'Course'
-        db.create_table(u'nice_course', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('semester', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.Semester'])),
-            ('dept', self.gf('django.db.models.fields.CharField')(max_length=3)),
-            ('number', self.gf('django.db.models.fields.CharField')(max_length=3)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')()),
-            ('professor', self.gf('django.db.models.fields.CharField')(max_length=100)),
-        ))
-        db.send_create_signal(u'nice', ['Course'])
-
-        # Adding model 'Section'
-        db.create_table(u'nice_section', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('course', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.Course'])),
-            ('name', self.gf('django.db.models.fields.CharField')(default='all_students', max_length=100)),
-            ('isDefault', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal(u'nice', ['Section'])
-
-        # Adding model 'User_Section_Table'
-        db.create_table(u'nice_user_section_table', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.User_Profile'])),
-            ('section', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.Section'])),
-            ('add_date', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal(u'nice', ['User_Section_Table'])
-
-        # Adding model 'Event_Group'
-        db.create_table(u'nice_event_group', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('section', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.Section'])),
-        ))
-        db.send_create_signal(u'nice', ['Event_Group'])
-
-        # Adding model 'Event_Group_Revision'
-        db.create_table(u'nice_event_group_revision', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('event_group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.Event_Group'])),
-            ('start_date', self.gf('django.db.models.fields.DateField')()),
-            ('end_date', self.gf('django.db.models.fields.DateField')()),
-            ('modified_user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.User_Profile'])),
-            ('modified_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('approved', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('recurrence_days', self.gf('django.db.models.fields.CharField')(default=None, max_length=300, null=True, blank=True)),
-            ('recurrence_interval', self.gf('django.db.models.fields.IntegerField')(default=None, null=True, blank=True)),
-        ))
-        db.send_create_signal(u'nice', ['Event_Group_Revision'])
-
-        # Adding model 'Event'
-        db.create_table(u'nice_event', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.Event_Group'])),
-        ))
-        db.send_create_signal(u'nice', ['Event'])
-
-        # Adding model 'Event_Revision'
-        db.create_table(u'nice_event_revision', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('event', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.Event'])),
-            ('event_title', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('event_type', self.gf('django.db.models.fields.CharField')(max_length=2)),
-            ('event_start', self.gf('django.db.models.fields.DateTimeField')()),
-            ('event_end', self.gf('django.db.models.fields.DateTimeField')()),
-            ('event_description', self.gf('django.db.models.fields.TextField')()),
-            ('event_location', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('modified_user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.User_Profile'])),
-            ('modified_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('approved', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal(u'nice', ['Event_Revision'])
-
-        # Adding model 'User_Profile'
-        db.create_table(u'nice_user_profile', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='profile', unique=True, to=orm['auth.User'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('lastActivityTime', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal(u'nice', ['User_Profile'])
-
-        # Adding model 'Event_Visibility'
-        db.create_table(u'nice_event_visibility', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('event', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.Event'])),
-            ('test', self.gf('django.db.models.fields.CharField')(max_length=1, null=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nice.User_Profile'])),
-            ('is_hidden', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('is_complete', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal(u'nice', ['Event_Visibility'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Semester'
-        db.delete_table(u'nice_semester')
-
-        # Deleting model 'Course'
-        db.delete_table(u'nice_course')
-
-        # Deleting model 'Section'
-        db.delete_table(u'nice_section')
-
-        # Deleting model 'User_Section_Table'
-        db.delete_table(u'nice_user_section_table')
-
-        # Deleting model 'Event_Group'
-        db.delete_table(u'nice_event_group')
-
-        # Deleting model 'Event_Group_Revision'
-        db.delete_table(u'nice_event_group_revision')
-
-        # Deleting model 'Event'
-        db.delete_table(u'nice_event')
-
-        # Deleting model 'Event_Revision'
-        db.delete_table(u'nice_event_revision')
-
-        # Deleting model 'User_Profile'
-        db.delete_table(u'nice_user_profile')
-
-        # Deleting model 'Event_Visibility'
-        db.delete_table(u'nice_event_visibility')
-
-
-    models = {
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'nice.course': {
-            'Meta': {'object_name': 'Course'},
-            'dept': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
-            'description': ('django.db.models.fields.TextField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'number': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
-            'professor': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'semester': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.Semester']"})
-        },
-        u'nice.event': {
-            'Meta': {'object_name': 'Event'},
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.Event_Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
-        u'nice.event_group': {
-            'Meta': {'object_name': 'Event_Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'section': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.Section']"})
-        },
-        u'nice.event_group_revision': {
-            'Meta': {'object_name': 'Event_Group_Revision'},
-            'approved': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'end_date': ('django.db.models.fields.DateField', [], {}),
-            'event_group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.Event_Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'modified_user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.User_Profile']"}),
-            'recurrence_days': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '300', 'null': 'True', 'blank': 'True'}),
-            'recurrence_interval': ('django.db.models.fields.IntegerField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
-            'start_date': ('django.db.models.fields.DateField', [], {})
-        },
-        u'nice.event_revision': {
-            'Meta': {'object_name': 'Event_Revision'},
-            'approved': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'event': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.Event']"}),
-            'event_description': ('django.db.models.fields.TextField', [], {}),
-            'event_end': ('django.db.models.fields.DateTimeField', [], {}),
-            'event_location': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'event_start': ('django.db.models.fields.DateTimeField', [], {}),
-            'event_title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'event_type': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'modified_user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.User_Profile']"})
-        },
-        u'nice.event_visibility': {
-            'Meta': {'object_name': 'Event_Visibility'},
-            'event': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.Event']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_complete': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_hidden': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'test': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.User_Profile']"})
-        },
-        u'nice.section': {
-            'Meta': {'object_name': 'Section'},
-            'course': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.Course']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'isDefault': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'name': ('django.db.models.fields.CharField', [], {'default': "'all_students'", 'max_length': '100'})
-        },
-        u'nice.semester': {
-            'Meta': {'object_name': 'Semester'},
-            'end_date': ('django.db.models.fields.DateField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'start_date': ('django.db.models.fields.DateField', [], {})
-        },
-        u'nice.user_profile': {
-            'Meta': {'object_name': 'User_Profile'},
-            'events': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['nice.Event']", 'null': 'True', 'through': u"orm['nice.Event_Visibility']", 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'lastActivityTime': ('django.db.models.fields.DateTimeField', [], {}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'sections': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['nice.Section']", 'null': 'True', 'through': u"orm['nice.User_Section_Table']", 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': u"orm['auth.User']"})
-        },
-        u'nice.user_section_table': {
-            'Meta': {'object_name': 'User_Section_Table'},
-            'add_date': ('django.db.models.fields.DateTimeField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'section': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.Section']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nice.User_Profile']"})
-        }
-    }
-
-    complete_apps = ['nice']
+    operations = [
+        migrations.CreateModel(
+            name='Course',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.TextField()),
+                ('description', models.TextField()),
+                ('professor', models.CharField(max_length=100, null=True, blank=True)),
+                ('registrar_id', models.CharField(max_length=20)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Course_Listing',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('dept', models.CharField(max_length=10)),
+                ('number', models.CharField(max_length=10)),
+                ('is_primary', models.BooleanField(default=False)),
+                ('course', models.ForeignKey(to='nice.Course')),
+            ],
+            options={
+                'ordering': ['dept', 'number'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Event',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Event_Group',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('registrar_id', models.CharField(max_length=10, null=True, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Event_Group_Revision',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('start_date', models.DateField()),
+                ('end_date', models.DateField()),
+                ('modified_time', models.DateTimeField()),
+                ('approved', models.BooleanField(default=True)),
+                ('recurrence_days', models.CharField(default=None, max_length=300, null=True, blank=True)),
+                ('recurrence_interval', models.IntegerField(default=None, null=True, blank=True)),
+                ('event_group', models.ForeignKey(to='nice.Event_Group')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Event_Revision',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('event_title', models.CharField(max_length=100)),
+                ('event_type', models.CharField(max_length=2, choices=[(b'AS', b'assignment'), (b'EX', b'exam'), (b'LA', b'lab'), (b'LE', b'lecture'), (b'OH', b'office hours'), (b'PR', b'precept'), (b'RS', b'review session'), (b'ST', b'studio')])),
+                ('event_start', models.DateTimeField()),
+                ('event_end', models.DateTimeField()),
+                ('event_description', models.TextField()),
+                ('event_location', models.CharField(max_length=100)),
+                ('modified_time', models.DateTimeField()),
+                ('approved', models.CharField(default=b'S_PE', max_length=4, choices=[(b'S_AP', b'Approved'), (b'S_PE', b'Pending'), (b'S_RE', b'Rejected')])),
+                ('event', models.ForeignKey(to='nice.Event')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='NetID_Name_Table',
+            fields=[
+                ('netid', models.CharField(max_length=100, serialize=False, primary_key=True)),
+                ('first_name', models.CharField(max_length=100)),
+                ('last_name', models.CharField(max_length=100)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PointChange',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('when', models.DateTimeField()),
+                ('score', models.IntegerField()),
+                ('relationship', models.IntegerField(default=9, choices=[(1, b'an Approved Submission'), (2, b'a Rejected Submission'), (3, b'an Upvote'), (4, b'a Downvote'), (5, b'an Upvote of an Approved Submission'), (6, b'an Upvote of a Rejected Submission'), (7, b'a Downvote of a Rejected Submission'), (8, b'a Downvote of an Approved Submission'), (9, b'Other')])),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Section',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(default=b'all_students', max_length=100)),
+                ('isDefault', models.BooleanField(default=False)),
+                ('section_type', models.CharField(max_length=3, choices=[(b'ALL', b'all students'), (b'CLA', b'class'), (b'DRI', b'drill'), (b'LAB', b'lab'), (b'LEC', b'lecture'), (b'PRE', b'precept'), (b'SEM', b'seminar'), (b'STU', b'studio')])),
+                ('course', models.ForeignKey(to='nice.Course')),
+            ],
+            options={
+                'ordering': ['course', 'name'],
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Semester',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('start_date', models.DateField()),
+                ('end_date', models.DateField()),
+                ('term_code', models.CharField(default=b'1144', max_length=4)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='User_Profile',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100, null=True, blank=True)),
+                ('lastActivityTime', models.DateTimeField()),
+                ('ui_state_restoration', models.TextField(null=True, blank=True)),
+                ('hidden_events', models.TextField(null=True, blank=True)),
+                ('ui_agenda_pref', models.TextField(null=True, blank=True)),
+                ('ui_calendar_pref', models.TextField(null=True, blank=True)),
+                ('ui_pref', models.TextField(null=True, blank=True)),
+                ('current_points', models.IntegerField(default=0, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='User_Section_Table',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('color', colorfield.fields.ColorField(default=b'#8441A5', max_length=7)),
+                ('add_date', models.DateTimeField()),
+                ('section', models.ForeignKey(to='nice.Section')),
+                ('user', models.ForeignKey(to='nice.User_Profile')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Vote',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('when', models.DateTimeField()),
+                ('score', models.IntegerField(default=1)),
+                ('voted_on', models.ForeignKey(to='nice.Event_Revision')),
+                ('voter', models.ForeignKey(to='nice.User_Profile')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='user_profile',
+            name='sections',
+            field=models.ManyToManyField(to='nice.Section', null=True, through='nice.User_Section_Table', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='user_profile',
+            name='user',
+            field=models.OneToOneField(related_name='profile', to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='pointchange',
+            name='user',
+            field=models.ForeignKey(to='nice.User_Profile'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='pointchange',
+            name='why',
+            field=models.ForeignKey(blank=True, to='nice.Event_Revision', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='event_revision',
+            name='modified_user',
+            field=models.ForeignKey(to='nice.User_Profile'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='event_group_revision',
+            name='modified_user',
+            field=models.ForeignKey(to='nice.User_Profile'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='event_group',
+            name='section',
+            field=models.ForeignKey(to='nice.Section'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='event',
+            name='group',
+            field=models.ForeignKey(to='nice.Event_Group'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='course',
+            name='semester',
+            field=models.ForeignKey(to='nice.Semester'),
+            preserve_default=True,
+        ),
+    ]

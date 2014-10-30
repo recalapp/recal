@@ -13,7 +13,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie # send regardless of
 from view_cache_utils import cache_page_with_prefix
 from django.template import Template, Context
 import hashlib
-from security.views import *
 
 from nice.models import *
 from nice import queries

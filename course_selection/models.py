@@ -96,6 +96,13 @@ class Section(models.Model):
     class Meta:
         ordering = ['course', 'name']
 
+class Meeting(models.Model):
+    section = models.ForeignKey(Section)
+    start_time = models.CharField(max_length=20)
+    end_time = models.CharField(max_length=20)
+    days = models.CharField(max_length=10)
+    location = models.CharField(max_length=50)
+    
 class Course_Listing(models.Model):
     course = models.ForeignKey(Course)
     # Even though the max_length should be 3~4, there are extreme cases.
