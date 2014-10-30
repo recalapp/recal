@@ -13,6 +13,7 @@ v1_api = Api(api_name='v1')
 v1_api.register(CourseResource())
 v1_api.register(CourseListingResource())
 v1_api.register(SemesterResource())
+v1_api.register(SectionResource())
 
 urlpatterns = patterns(
     "",
