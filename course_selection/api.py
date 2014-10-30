@@ -23,6 +23,7 @@ class CourseListingResource(ModelResource):
 class CourseResource(ModelResource):
     semester = fields.ForeignKey(SemesterResource, 'semester', full=True)
     course_listings = fields.ToManyField(CourseListingResource, 'course_listings', null=True, full=True)
+    sections = fields.ToManyField('course_selection.api.SectionResource', 'sections', full=True)
 
     class Meta:
         queryset = Course.objects.all()
@@ -32,11 +33,21 @@ class CourseResource(ModelResource):
         cache = SimpleCache(timeout=10)
 
 class SectionResource(ModelResource):
-    course = fields.ForeignKey(CourseResource, 'course', full=True)
+    course = fields.ForeignKey(CourseResource, 'course')
+    meetings = fields.ToManyField('course_selection.api.MeetingResource', 'meetings', full=True)
 
     class Meta:
         queryset = Section.objects.all()
         resource_name = 'section'
         excludes = ['isDefault']
+        allowed_methods = ['get']
+        cache = SimpleCache(timeout=10)
+
+class MeetingResource(ModelResource):
+    section = fields.ForeignKey(SectionResource, 'section')
+
+    class Meta:
+        queryset = Meeting.objects.all()
+        resource_name = 'meeting'
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)

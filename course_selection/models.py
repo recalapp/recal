@@ -81,7 +81,7 @@ class Section(models.Model):
     )
 
     # relationships
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, related_name="sections")
 
     # fields
     name = models.CharField(max_length=100, default='')
@@ -97,7 +97,7 @@ class Section(models.Model):
         ordering = ['course', 'name']
 
 class Meeting(models.Model):
-    section = models.ForeignKey(Section)
+    section = models.ForeignKey(Section, related_name="meetings")
     start_time = models.CharField(max_length=20)
     end_time = models.CharField(max_length=20)
     days = models.CharField(max_length=10)
