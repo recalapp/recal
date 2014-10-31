@@ -4,8 +4,10 @@ var nice = new Module('nice', [
         'ngResource',
         'ui.calendar',
         'ui.bootstrap',
+        'LocalStorageModule',
         'niceFilters', 
-        'niceControllers',
-        'niceServices']);
+        'niceServices',
+        'niceControllers'
+        ]);
 
 export = nice;

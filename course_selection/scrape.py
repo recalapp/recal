@@ -231,7 +231,7 @@ def create_or_update_sections(course, course_object):
         for meeting in meetings:
             days = ""
             for day in meeting.find('days'):
-                days += day.text + " "
+                days += day.text + ' '
 
             # the times are in the format:
             # HH:MM AM/PM

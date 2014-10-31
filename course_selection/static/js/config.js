@@ -1,4 +1,3 @@
-/// <reference path="../../../nice/static/ts/typings/tsd.d.ts" />
 function staticPath(path) {
     return '../' + path;
 }
@@ -19,7 +18,8 @@ require.config({
         'angular': bowerPath('angular/angular'),
         'angular-resource': bowerPath('angular-resource/angular-resource'),
         'angular-ui-calendar': bowerPath('angular-ui-calendar/src/calendar'),
-        'angular-bootstrap': bowerPath('angular-bootstrap/ui-bootstrap-tpls')
+        'angular-bootstrap': bowerPath('angular-bootstrap/ui-bootstrap-tpls'),
+        'angular-local-storage': bowerPath('angular-local-storage/dist/angular-local-storage.min')
     },
     shim: {
         bootstrap: ['jquery'],
@@ -28,7 +28,8 @@ require.config({
         'angular-resource': ['angular'],
         'angular-ui-calendar': ['angular'],
         'angular-bootstrap': ['angular'],
-        'angularRoute': ['angular']
+        'angularRoute': ['angular'],
+        'angular-local-storage': ['angular']
     },
     priority: [
         "angular"
@@ -37,7 +38,9 @@ require.config({
 
 require([
     'angular',
+    'angular-local-storage',
     'angular-resource',
+    'moment',
     'fullcalendar',
     'angular-ui-calendar',
     'angular-bootstrap',

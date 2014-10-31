@@ -3,9 +3,11 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
         'ngResource',
         'ui.calendar',
         'ui.bootstrap',
+        'LocalStorageModule',
         'niceFilters',
-        'niceControllers',
-        'niceServices']);
+        'niceServices',
+        'niceControllers'
+    ]);
 
     
     return nice;

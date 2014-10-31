@@ -3,23 +3,26 @@ define(["require", "exports"], function(require, exports) {
 
     var CalendarCtrl = (function () {
         // dependencies are injected via AngularJS $injector
-        function CalendarCtrl($scope) {
+        function CalendarCtrl($scope, localStorageService) {
             this.$scope = $scope;
+            this.localStorageService = localStorageService;
             this.$scope.vm = this;
             this.initConfig();
             this.initEventSources();
+            this.$scope.events = localStorageService.get('events');
         }
         CalendarCtrl.prototype.initConfig = function () {
             this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
         };
 
         CalendarCtrl.prototype.initEventSources = function () {
-            var today = new Date();
-            var d = today.getDate();
-            var m = today.getMonth();
-            var y = today.getFullYear();
-
-            this.$scope.events = [];
+            this.$scope.events = [
+                {
+                    title: "test1",
+                    start: "2014-10-31T12:30:00",
+                    end: "2014-10-31T13:30:00"
+                }
+            ];
 
             this.$scope.eventSources = [this.$scope.events];
         };
@@ -34,7 +37,7 @@ define(["require", "exports"], function(require, exports) {
             defaultView: "agendaWeek",
             weekends: false,
             columnFormat: {
-                week: 'dddd'
+                week: 'dddd M/D'
             },
             allDaySlot: false,
             minTime: '08:00',
@@ -42,7 +45,8 @@ define(["require", "exports"], function(require, exports) {
         };
 
         CalendarCtrl.$inject = [
-            '$scope'
+            '$scope',
+            'localStorageService'
         ];
         return CalendarCtrl;
     })();

@@ -1,6 +1,14 @@
-define(["require", "exports", '../Module', './CourseResource'], function(require, exports, Module, CourseResource) {
-    var niceServices = new Module('niceServices', []);
-    niceServices.addService('CourseResource', CourseResource);
+/// <amd-dependency path="angular"/>
+define(["require", "exports", './ResourceBuilder', "angular"], function(require, exports, ResourceBuilder) {
+    var niceServices = angular.module('niceServices', []);
+
+    //niceServices.addService('CourseResource', CourseResource);
+    niceServices.factory('ResourceBuilder', ['$resource', function ($resource) {
+            return new ResourceBuilder($resource);
+        }]);
+    niceServices.factory('CourseResource', ["ResourceBuilder", function (builder) {
+            return builder.getCourseResource();
+        }]);
 
     
     return niceServices;

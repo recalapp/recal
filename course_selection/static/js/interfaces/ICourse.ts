@@ -1,8 +1,13 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+import ISection = require('./ISection');
+import ISemester = require('./ISemester');
 
-interface ICourse extends ng.resource.IResource<ICourse> 
-{
+interface ICourse {
     title: string;
+    description: string;
+    course_listings: string[];
+    id: number;
+    sections: Array<ISection>;
+    semester: ISemester;
 }
 
 export = ICourse;

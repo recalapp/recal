@@ -14,7 +14,7 @@ class CalendarCtrl {
         defaultView: "agendaWeek",
         weekends: false,
         columnFormat: {
-            week: 'dddd'
+            week: 'dddd M/D'
         },
         allDaySlot: false,
         minTime: '08:00',
@@ -22,15 +22,19 @@ class CalendarCtrl {
     };
 
     public static $inject = [
-        '$scope'
+        '$scope',
+        'localStorageService'
     ];
 
     // dependencies are injected via AngularJS $injector
-    constructor(private $scope) 
+    constructor(
+            private $scope,
+            private localStorageService) 
     {
         this.$scope.vm = this;
         this.initConfig();
         this.initEventSources();
+        this.$scope.events = localStorageService.get('events');
     }
 
     private initConfig() {
@@ -38,12 +42,12 @@ class CalendarCtrl {
     }
 
     private initEventSources() {
-        var today = new Date();
-        var d = today.getDate();
-        var m = today.getMonth();
-        var y = today.getFullYear();
-
         this.$scope.events = [
+        {
+            title: "test1",
+            start: "2014-10-31T12:30:00",
+            end: "2014-10-31T13:30:00"
+        }
         ];
 
         this.$scope.eventSources = [this.$scope.events];
