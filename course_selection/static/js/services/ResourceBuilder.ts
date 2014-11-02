@@ -1,6 +1,7 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
 import ICourseResource = require('../interfaces/ICourseResource');
+import TestSharingService = require('./TestSharingService');
 
 class ResourceBuilder {
     static $inject = ['$resource'];
@@ -12,6 +13,10 @@ class ResourceBuilder {
         return <any>this.$resource('/course_selection/api/v1/course/:id', {id: '@id'}, {
             query: {method: 'GET', isArray: false}
         });
+    }
+
+    public getTestSharingService() {
+        return new TestSharingService();
     }
 }
 

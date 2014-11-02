@@ -1,5 +1,5 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", './TestSharingService'], function(require, exports, TestSharingService) {
     var ResourceBuilder = (function () {
         function ResourceBuilder($resource) {
             this.$resource = $resource;
@@ -9,6 +9,10 @@ define(["require", "exports"], function(require, exports) {
             return this.$resource('/course_selection/api/v1/course/:id', { id: '@id' }, {
                 query: { method: 'GET', isArray: false }
             });
+        };
+
+        ResourceBuilder.prototype.getTestSharingService = function () {
+            return new TestSharingService();
         };
         ResourceBuilder.$inject = ['$resource'];
         return ResourceBuilder;

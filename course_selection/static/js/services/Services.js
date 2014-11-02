@@ -10,6 +10,9 @@ define(["require", "exports", './ResourceBuilder', "angular"], function(require,
     niceServices.factory('CourseResource', ["ResourceBuilder", function (builder) {
             return builder.getCourseResource();
         }]);
+    niceServices.factory('TestSharingService', ["ResourceBuilder", function (builder) {
+            return builder.getTestSharingService();
+        }]);
 
     
     return niceServices;

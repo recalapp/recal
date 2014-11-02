@@ -8,17 +8,17 @@ function bowerPath(path) {
 
 require.config({
     paths: {
-        bootstrap: bowerPath('bootstrap/dist/js/bootstrap'),
-        fullcalendar: bowerPath('fullcalendar/dist/fullcalendar'),
-        jquery: bowerPath('jquery/dist/jquery'),
+        bootstrap: bowerPath('bootstrap/dist/js/bootstrap.min'),
+        fullcalendar: bowerPath('fullcalendar/dist/fullcalendar.min'),
+        jquery: bowerPath('jquery/dist/jquery.min'),
         'jquery.cookie': bowerPath('jquery.cookie/jquery.cookie'),
-        jqueryui: bowerPath('jquery-ui/jquery-ui'),
-        moment: bowerPath('momentjs/moment'),
+        jqueryui: bowerPath('jquery-ui/jquery-ui.min'),
+        moment: bowerPath('momentjs/min/moment.min'),
         'moment-timezone': bowerPath('moment-timezone/builds/moment-timezone-with-data'),
-        'angular': bowerPath('angular/angular'),
-        'angular-resource': bowerPath('angular-resource/angular-resource'),
+        'angular': bowerPath('angular/angular.min'),
+        'angular-resource': bowerPath('angular-resource/angular-resource.min'),
         'angular-ui-calendar': bowerPath('angular-ui-calendar/src/calendar'),
-        'angular-bootstrap': bowerPath('angular-bootstrap/ui-bootstrap-tpls'),
+        'angular-bootstrap': bowerPath('angular-bootstrap/ui-bootstrap-tpls.min'),
         'angular-local-storage': bowerPath('angular-local-storage/dist/angular-local-storage.min')
     },
     shim: {

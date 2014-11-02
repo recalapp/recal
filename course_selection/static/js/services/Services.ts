@@ -1,7 +1,6 @@
 /// <amd-dependency path="angular"/>
 
 import Module = require('../Module');
-import CourseResource = require('./CourseResource');
 import ResourceBuilder = require('./ResourceBuilder');
 
 var niceServices = angular.module('niceServices', []);
@@ -9,5 +8,6 @@ var niceServices = angular.module('niceServices', []);
 niceServices.factory('ResourceBuilder', ['$resource', ($resource) => new ResourceBuilder($resource)]);
 
 niceServices.factory('CourseResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getCourseResource()]);
+niceServices.factory('TestSharingService', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getTestSharingService()]);
 
 export = niceServices;
