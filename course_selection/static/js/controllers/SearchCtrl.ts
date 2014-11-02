@@ -18,11 +18,11 @@ class SearchCtrl {
     ];
 
     private static DAYS = {
-        'M' : 0,
-        'Tu': 1,
-        'W' : 2,
-        "Th": 3,
-        'F' : 4
+        'M' : 1,
+        'T': 2,
+        'W' : 3,
+        "Th": 4,
+        'F' : 5
     }
 
     constructor(
@@ -61,10 +61,10 @@ class SearchCtrl {
             var section = course.sections[i];
             for (var j = 0; j < section.meetings.length; j++) {
                 var meeting = section.meetings[j];
-                // remove last element of the result of split, which is 
+                var days = meeting.days.split(' ');
+                // ignore last element of the result of split, which is 
                 // empty string due to the format of the input
-                var days = meeting.days.split(' ').splice(-1, 1);
-                for (var k = 0; k < days.length; k++) {
+                for (var k = 0; k < days.length - 1; k++) {
                     var day = days[k];
                     var date = this.getAgendaDate(day);
                     var start = date + ' ' + meeting.start_time;
@@ -83,9 +83,16 @@ class SearchCtrl {
 
     private getAgendaDate(day: string): string {
         var todayOffset = moment().isoWeekday();
+
+        // set todayOffset to 0 if today is a Sunday
+        // TODO: set the start of a week to Sunday in FullCalendar
+        // to get rid of this line
+        if (todayOffset == 7) {
+            todayOffset = 0;
+        }
         var dayOffset = SearchCtrl.DAYS[day];
         var diff: number = +(dayOffset - todayOffset);
-        var date = moment().subtract('days', diff).format('YYYY-MM-DD');
+        var date = moment().add('days', diff).format('YYYY-MM-DD');
         return date;
     }
 }

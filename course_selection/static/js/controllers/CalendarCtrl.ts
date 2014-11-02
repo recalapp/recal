@@ -33,8 +33,8 @@ class CalendarCtrl {
     {
         this.$scope.vm = this;
         this.initConfig();
-        this.initEventSources();
-        this.$scope.events = localStorageService.get('events');
+        //this.initEventSources();
+        this.$scope.eventSources = localStorageService.get('events');
     }
 
     private initConfig() {
@@ -50,7 +50,7 @@ class CalendarCtrl {
         }
         ];
 
-        this.$scope.eventSources = [this.$scope.events];
+        this.$scope.eventSources = [this.$scope.eventSource];
     }
 }
 

@@ -7,7 +7,7 @@
     </div>
     <div class="row" id="coursePanelsContainer">
         <div id="accordion" class="panel-group">
-            <div class="panel panel-default" ng-repeat="course in courses | filter: query "  ng-mouseover="searchCtrl.onMouseOver(course)">
+            <div class="panel panel-default" ng-repeat="course in courses | filter: query"  ng-mouseover="searchCtrl.onMouseOver(course)">
                 <div class="panel-heading course-panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse-{{$index}}">
                     <h4 class="course-panel-title">
                         {{ course.course_listings[0].dept + course.course_listings[0].number}} {{ course.title }}

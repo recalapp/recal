@@ -6,6 +6,7 @@ define(["require", "exports", './ResourceBuilder', "angular"], function(require,
     niceServices.factory('ResourceBuilder', ['$resource', function ($resource) {
             return new ResourceBuilder($resource);
         }]);
+
     niceServices.factory('CourseResource', ["ResourceBuilder", function (builder) {
             return builder.getCourseResource();
         }]);

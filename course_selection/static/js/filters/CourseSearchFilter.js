@@ -12,6 +12,7 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
         }
         CourseSearchFilter.Factory = function () {
             return function (input) {
+                return true;
             };
         };
         return CourseSearchFilter;

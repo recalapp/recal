@@ -19,5 +19,5 @@ import json
 
 def index(request):
     return render(request, 'index.html', {
-        'username': unicode(request.user.profile)    
+        # 'username': unicode(request.user.profile)    
     })

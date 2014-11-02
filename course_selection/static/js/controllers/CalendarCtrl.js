@@ -8,8 +8,9 @@ define(["require", "exports"], function(require, exports) {
             this.localStorageService = localStorageService;
             this.$scope.vm = this;
             this.initConfig();
-            this.initEventSources();
-            this.$scope.events = localStorageService.get('events');
+
+            //this.initEventSources();
+            this.$scope.eventSources = localStorageService.get('events');
         }
         CalendarCtrl.prototype.initConfig = function () {
             this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
@@ -24,7 +25,7 @@ define(["require", "exports"], function(require, exports) {
                 }
             ];
 
-            this.$scope.eventSources = [this.$scope.events];
+            this.$scope.eventSources = [this.$scope.eventSource];
         };
         CalendarCtrl.defaultUiConfig = {
             height: 800,
