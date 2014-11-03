@@ -14,7 +14,7 @@ class CalendarCtrl {
         defaultView: "agendaWeek",
         weekends: false,
         columnFormat: {
-            week: 'dddd M/D'
+            week: 'dddd'
         },
         allDaySlot: false,
         minTime: '08:00',

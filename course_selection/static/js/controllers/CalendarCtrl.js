@@ -77,7 +77,7 @@ define(["require", "exports"], function(require, exports) {
             defaultView: "agendaWeek",
             weekends: false,
             columnFormat: {
-                week: 'dddd M/D'
+                week: 'dddd'
             },
             allDaySlot: false,
             minTime: '08:00',
