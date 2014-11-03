@@ -21,3 +21,4 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
     
     return CourseSearchFilter;
 });
+//# sourceMappingURL=CourseSearchFilter.js.map

@@ -1,7 +1,14 @@
 class TestSharingService {
     static $inject = [];
+    data: string;
 
-    constructor() {}
+    constructor() {
+        this.data = "";
+    }
+
+    public update(input: string) {
+        this.data = input;
+    }
 }
 
 export = TestSharingService;

@@ -1,10 +1,13 @@
 define(["require", "exports"], function(require, exports) {
     var TestCtrl1 = (function () {
-        function TestCtrl1($scope) {
+        function TestCtrl1($scope, testSharingService) {
             this.$scope = $scope;
+            this.testSharingService = testSharingService;
+            $scope.data = testSharingService.data;
         }
         TestCtrl1.$inject = [
-            '$scope'
+            '$scope',
+            'TestSharingService'
         ];
         return TestCtrl1;
     })();
@@ -12,3 +15,4 @@ define(["require", "exports"], function(require, exports) {
     
     return TestCtrl1;
 });
+//# sourceMappingURL=TestCtrl1.js.map

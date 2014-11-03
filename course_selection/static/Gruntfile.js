@@ -25,7 +25,7 @@ module.exports = function(grunt) {
             options: {
                 module: 'amd', //or commonjs
                 target: 'es5', //or es3
-                sourceMap: false,
+                sourceMap: true,
                 declaration: false,
                 watch: true
             }

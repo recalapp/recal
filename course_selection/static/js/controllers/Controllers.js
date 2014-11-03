@@ -8,3 +8,4 @@ define(["require", "exports", './TestCtrl1', './TestCtrl2', './SearchCtrl', './C
     
     return niceControllers;
 });
+//# sourceMappingURL=Controllers.js.map

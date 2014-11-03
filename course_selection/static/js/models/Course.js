@@ -5,3 +5,4 @@ define(["require", "exports"], function(require, exports) {
         return Course;
     })();
 });
+//# sourceMappingURL=Course.js.map

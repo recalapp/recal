@@ -54,3 +54,4 @@ require([
     angular.bootstrap(document, ['nice']);
 });
 
+//# sourceMappingURL=config.js.map

@@ -1,12 +1,15 @@
 class TestCtrl1 {
     public static $inject = [
-        '$scope'
+        '$scope',
+        'TestSharingService'
         ];
 
     constructor(
-            private $scope
+            private $scope,
+            private testSharingService
             )
     {
+        $scope.data = testSharingService.data;
     }
 }
 

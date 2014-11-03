@@ -4,7 +4,7 @@ import ISemester = require('./ISemester');
 interface ICourse {
     title: string;
     description: string;
-    course_listings: string[];
+    course_listings: Array<any>;
     id: number;
     sections: Array<ISection>;
     semester: ISemester;
