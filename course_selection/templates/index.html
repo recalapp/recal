@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}Your Classes {% endblock %}
+
+{% block main_content %}
+<div id="container">
+    {% include 'header.html' %}
+    <div class="row clearfix" id="main">
+        {% include 'course-search.html' %}
+        {% include 'calendar.html' %}
+        {% include 'course-queue.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block link_or_script_blocking %}
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}"> 
+<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/dist/fullcalendar.css' %}"> 
+<link id="theme_css" rel="stylesheet" href="{% static 'cosmo/bootstrap.min.css' %}">
+
+<link rel="stylesheet" href="../static/less/nice.css">
+<link rel="stylesheet" href="../static/less/course-search.css">
+{% endblock %}
+
+{% block link_or_script_nonblocking %}
+<script src="{% static 'bower_components/requirejs/require.js' %}" data-main="../static/js/config"></script>
+{% endblock %}

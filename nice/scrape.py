@@ -98,7 +98,9 @@ def scrape_all():
     seed_page = urllib2.urlopen(COURSE_OFFERINGS)
     departments = get_department_list(seed_page)
     for department in departments:
+        print "working on " + str(department) + "..."
         scrape(department)
+        print "done with " + str(department) + "!"
     
     print str(new_course_count) + " new courses"
     print str(course_count) + " total courses"

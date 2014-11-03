@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <title>{% block title %}{% endblock %}</title>
+        {% block link_or_script_blocking %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block main_content %}
+        {% endblock %}
+        {% block link_or_script_nonblocking %}
+        {% endblock %}
+    </body>
+</html>

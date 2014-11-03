@@ -512,7 +512,7 @@ def get_community_user():
     
     The Community User is meant to own imported/scraped events.
     """
-    return User.objects.get(pk=0)
+    return User.objects.get(pk=100000)
     
 def get_cur_semester():
     import settings.common as settings

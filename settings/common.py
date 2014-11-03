@@ -47,11 +47,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
-    'south',
-    'security',
+    #'security',
+    'tastypie',
     'cas',
     'colorfield',
-    'nice'
+    'nice',
+    'course_selection'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -61,13 +62,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'security.middleware.XssProtectMiddleware',
+    #'security.middleware.XssProtectMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'cas.middleware.CASMiddleware',
     'minidetector.Middleware',
-    'django.middleware.gzip.GZipMiddleware'
 )
 
-ROOT_URLCONF = 'nice.urls'
+ROOT_URLCONF = 'urls'
 
 WSGI_APPLICATION = 'nice.wsgi.application'
 
@@ -129,16 +130,27 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 STATICFILES_DIRS = (
+    normpath(join(DJANGO_ROOT, 'course_selection', 'static')),
     normpath(join(DJANGO_ROOT, 'nice', 'static')),
 )
 
-TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'nice', 'templates'))]
+TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'nice', 'templates')),
+                 normpath(join(DJANGO_ROOT, 'course_selection', 'templates'))]
 
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache', # overwritten in prod.py
+    },
+    'resources': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache', 
+        'TIMEOUT': 60
     }
 }
+
+########## TastyPie Settings #######################
+API_LIMIT_PER_PAGE = 2000
+########## TastyPie Settings END #######################
+
 
 ########## GLOBAL VARIABLES
 CURR_TERM = 1152 # Use helper method nice.models.get_cur_semester() to get current Semester object.

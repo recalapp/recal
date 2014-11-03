@@ -47,12 +47,13 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
-# See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
-MIDDLEWARE_CLASSES += (
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-)
-
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-}
+### TODO: updated DDT, need to update these settings when deploying
+# # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
+# MIDDLEWARE_CLASSES += (
+#     'debug_toolbar.middleware.DebugToolbarMiddleware',
+# )
+# 
+# DEBUG_TOOLBAR_CONFIG = {
+#     'INTERCEPT_REDIRECTS': False,
+# }
 ########## END TOOLBAR CONFIGURATION

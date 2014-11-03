@@ -3,16 +3,11 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-import nice, cas
+import nice
 from nice import views
-urlpatterns = patterns('',
-    
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
-    url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^login/$', cas.views.login, name='cas_login'),
-    url(r'^logout/$', cas.views.logout, name='cas_logout'),
+urlpatterns = patterns(
+    '',
     url(r'^user-logout$', views.logout, name='user_logout'),
     url(r'^mobile_logged_in$', views.mobile_logged_in, name='mobile_logged_in'),
 

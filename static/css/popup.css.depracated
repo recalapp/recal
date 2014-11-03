@@ -1,0 +1,159 @@
+.popup-container{
+    width: 300px;
+    height: 350px;
+    outline-color: transparent;
+    outline-style: none;
+}
+.popup-container:not(.popup-ep){
+    position: fixed;
+    top: 100px;
+    left: 50%;
+}
+.popup-container.in-canvas{
+    position: fixed !important;
+}
+.popup-container > .panel{
+    /*max-height: 100%;*/
+}
+.popup-container > .panel > .panel-body{
+    max-height: 100%;
+    background-color: rgb(250, 250, 250);
+    padding: 0;
+    padding-top: 10px;
+}
+.popup-container > .panel > .panel-body.dark{
+    background-color: rgb(50, 50, 50);
+}
+.popup-container > .popup-ctrl{
+    position: absolute;
+    /*right: -15px;
+    top: -15px;*/
+    right: 10px;
+    top: 10px;
+    z-index: 1000;
+    margin: 0px;
+}
+.popup-container > .popup-ctrl > a{
+    /*color: rgb(30, 30, 30);*/
+    color: white;
+}
+.popup-container > .popup-ctrl > a:hover{
+    color: gray;
+}
+.popup-container > .popup-ctrl.dark > a{
+    /*color: lightgray;*/
+    color: white;
+}
+.popup-container > .popup-ctrl.dark > a:hover{
+    color: gray;
+}
+
+#popup-desc, #popup-desc-form{
+    min-height: 150px;
+}
+#popup-loc{
+    min-width: 70%;
+    min-height: 15px;
+    display: inline-block;
+}
+.popup-text-container{
+    background-color: white;
+    padding: 3px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    border-top: solid 1px rgba(0, 0, 0, 0.1); 
+    border-bottom: solid 1px rgba(0, 0, 0, 0.1); 
+}
+.popup-text-container > h5 {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.popup-text-container.dark{
+    background-color: rgb(30,30,30);
+}
+
+.panel-title {
+    max-width: 90%;
+}
+.popup-container.sb-left-content {
+    position: relative !important;
+    width: 100% !important;
+    height: 350px !important;
+    max-height: 50%;
+    left: auto !important;
+    top: auto !important;
+}
+.panel-clipped {
+    overflow: hidden;
+}
+.panel-body-scroll {
+    overflow: auto;
+}
+.panel-heading-handle {
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+.popup-ctrl-right {
+    float: right;
+}
+.hide{
+    visibility: hidden; 
+}
+
+.hide-footer{
+    opacity: 0;
+}
+.unsaved{
+    background-color: #fffb99; /* BACKGROUND COLOR FOR UNSAVED CHANGES */
+    color: black;
+}
+.popup-help-text {
+    display: block; 
+    margin: 0;
+    color: gray;
+}
+
+.popup-help-text.center{
+    text-align: center; 
+}
+
+.popup-last-edited-container{
+    padding: 0;
+    padding-left: 15px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.popup-last-edited {
+    display: block;
+    margin: 0;
+    color: gray;
+}
+
+.popup-last-edited.center{
+    text-align: center; 
+}
+
+.panel-clipped-faded-out  { /* add this class to div.panel-clipped via JS */
+	opacity: .7;
+	border: none;
+}
+.panel-heading-faded-out { /* add this class to div.panel-heading via JS */
+	border: none;
+	/* opacity: .4; */
+}
+
+#popup-canvas {
+    position: fixed;
+    z-index: -999;
+    visibility: hidden;
+    left: -50px;
+    right: -50px;
+    bottom: -50px;
+    top: -50px;
+}
