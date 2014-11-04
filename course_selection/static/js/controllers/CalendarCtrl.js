@@ -12,18 +12,19 @@ define(["require", "exports"], function(require, exports) {
             this.initConfig();
 
             //this.initEventSources();
+            this.$scope.data = testSharingService.getData();
             this.$scope.previewEvents = [];
             this.$scope.enrolledEvents = [];
             this.$scope.eventSources = [$scope.previewEvents, $scope.enrolledEvents];
 
             this.$scope.$watch(function () {
-                return _this.testSharingService.getPreviewCourse();
+                return _this.$scope.data.previewCourse;
             }, function (newCourse, oldCourse) {
                 return _this.updatePreviewCourse(newCourse, oldCourse);
             }, true);
 
             this.$scope.$watch(function () {
-                return _this.testSharingService.getEnrolledCourses();
+                return _this.$scope.data.enrolledCourses;
             }, function (newCourses, oldCourses) {
                 return _this.updateEnrolledCourses(newCourses, oldCourses);
             }, true);
@@ -41,11 +42,29 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.myCalendar.fullCalendar('refetchEvents');
         };
 
+        // TODO: optimize for better performance
         CalendarCtrl.prototype.updateEnrolledCourses = function (newCourses, oldCourses) {
+            if (newCourses === oldCourses)
+                return;
+
+            this.emptyEnrolledEvents();
+            for (var i = 0; i < newCourses.length; i++) {
+                var newEvents = this.getEventTimesAndLocations(newCourses[i]);
+                for (var j = 0; j < newEvents.length; j++) {
+                    this.$scope.enrolledEvents.push(newEvents[j]);
+                }
+            }
+
+            //this.$scope.myCalendar.fullCalendar('addEventSource', this.$scope.enrolledEvents);
+            this.$scope.myCalendar.fullCalendar('refetchEvents');
         };
 
         CalendarCtrl.prototype.emptyPreviewEvents = function () {
             this.$scope.previewEvents.length = 0;
+        };
+
+        CalendarCtrl.prototype.emptyEnrolledEvents = function () {
+            this.$scope.enrolledEvents.length = 0;
         };
 
         CalendarCtrl.prototype.initConfig = function () {

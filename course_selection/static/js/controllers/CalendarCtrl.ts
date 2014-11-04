@@ -47,13 +47,14 @@ class CalendarCtrl {
         this.$scope.vm = this;
         this.initConfig();
         //this.initEventSources();
+        this.$scope.data = testSharingService.getData();
         this.$scope.previewEvents = [];
         this.$scope.enrolledEvents = [];
         this.$scope.eventSources = [$scope.previewEvents, $scope.enrolledEvents];
 
         this.$scope.$watch(
                 () => { 
-                    return this.testSharingService.getPreviewCourse(); 
+                    return this.$scope.data.previewCourse; 
                 },
                 (newCourse, oldCourse) => { 
                     return this.updatePreviewCourse(newCourse, oldCourse); 
@@ -62,7 +63,7 @@ class CalendarCtrl {
 
         this.$scope.$watch(
                 () => { 
-                    return this.testSharingService.getEnrolledCourses(); 
+                    return this.$scope.data.enrolledCourses
                 },
                 (newCourses, oldCourses) => { 
                     return this.updateEnrolledCourses(newCourses, oldCourses); 
@@ -83,11 +84,29 @@ class CalendarCtrl {
         this.$scope.myCalendar.fullCalendar('refetchEvents');
     }
 
+    // TODO: optimize for better performance
     public updateEnrolledCourses(newCourses, oldCourses) {
+        if (newCourses === oldCourses)
+            return;
+
+        this.emptyEnrolledEvents();
+        for (var i = 0; i < newCourses.length; i++) {
+            var newEvents = this.getEventTimesAndLocations(newCourses[i]);
+            for (var j = 0; j < newEvents.length; j++) {
+                this.$scope.enrolledEvents.push(newEvents[j]);
+            }
+        }
+
+        //this.$scope.myCalendar.fullCalendar('addEventSource', this.$scope.enrolledEvents);
+        this.$scope.myCalendar.fullCalendar('refetchEvents');
     }
 
     private emptyPreviewEvents() {
         this.$scope.previewEvents.length = 0;
+    }
+
+    private emptyEnrolledEvents() {
+        this.$scope.enrolledEvents.length = 0;
     }
 
     private initConfig() {

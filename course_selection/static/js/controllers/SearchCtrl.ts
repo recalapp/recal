@@ -17,10 +17,10 @@ class SearchCtrl {
         '$scope',
         'CourseResource',
         'localStorageService',
-        'TestSharingService'
+        'TestSharingService',
     ];
 
-   private static NOT_FOUND: number = -1;
+    private static NOT_FOUND: number = -1;
 
     constructor(
             private $scope: ICourseSearchScope,
@@ -30,6 +30,7 @@ class SearchCtrl {
             ) {
         this.$scope.vm = this;
         this.loadCourses();
+        this.$scope.data = testSharingService.getData();
     }
 
     private loadCourses() {
@@ -39,18 +40,19 @@ class SearchCtrl {
     private onLoaded(data) {
         this.$scope.courses = data['objects'];
     }
-    
+
     // if user is not enrolled in course yet, add course events to previewEvents
     // else, TODO: don't do anything
     public onMouseOver(course) {
-        var idx = this.courseIdxInList(course, this.testSharingService.getEnrolledCourses());
+        var idx = this.courseIdxInList(course, this.$scope.data.enrolledCourses);
         if (idx == SearchCtrl.NOT_FOUND) {
-            this.testSharingService.setPreviewCourse(course);
+            //this.testSharingService.setPreviewCourse(course);
+            this.$scope.data.previewCourse = course;
         }
     }
 
     public onClick(course) {
-        var courses = this.testSharingService.getEnrolledCourses();
+        var courses = this.$scope.data.enrolledCourses;
         // if course is in courses, remove it
         // else add it
         var idx = this.courseIdxInList(course, courses);
@@ -60,7 +62,8 @@ class SearchCtrl {
             courses.splice(idx, 1);
         }
 
-        this.testSharingService.setEnrolledCourses(courses);
+        this.$scope.data.enrolledCourses = courses;
+        //this.testSharingService.setEnrolledCourses(courses);
     }
 
     private courseIdxInList(course, list) {

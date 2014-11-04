@@ -14,9 +14,10 @@ class QueueCtrl {
             )
     {
         this.$scope.vm = this;
+        this.$scope.data = testSharingService.getData();
         this.$scope.$watch(
                 () => { 
-                    return this.testSharingService.getEnrolledCourses(); 
+                    return this.$scope.data.enrolledCourses; 
                 },
                 (newCourses, oldCourses) => { 
                     return this.updateEnrolledCourses(newCourses, oldCourses); 

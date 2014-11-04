@@ -10,6 +10,7 @@ define(["require", "exports"], function(require, exports) {
             this.testSharingService = testSharingService;
             this.$scope.vm = this;
             this.loadCourses();
+            this.$scope.data = testSharingService.getData();
         }
         SearchCtrl.prototype.loadCourses = function () {
             var _this = this;
@@ -25,14 +26,15 @@ define(["require", "exports"], function(require, exports) {
         // if user is not enrolled in course yet, add course events to previewEvents
         // else, TODO: don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {
-            var idx = this.courseIdxInList(course, this.testSharingService.getEnrolledCourses());
+            var idx = this.courseIdxInList(course, this.$scope.data.enrolledCourses);
             if (idx == SearchCtrl.NOT_FOUND) {
-                this.testSharingService.setPreviewCourse(course);
+                //this.testSharingService.setPreviewCourse(course);
+                this.$scope.data.previewCourse = course;
             }
         };
 
         SearchCtrl.prototype.onClick = function (course) {
-            var courses = this.testSharingService.getEnrolledCourses();
+            var courses = this.$scope.data.enrolledCourses;
 
             // if course is in courses, remove it
             // else add it
@@ -43,7 +45,8 @@ define(["require", "exports"], function(require, exports) {
                 courses.splice(idx, 1);
             }
 
-            this.testSharingService.setEnrolledCourses(courses);
+            this.$scope.data.enrolledCourses = courses;
+            //this.testSharingService.setEnrolledCourses(courses);
         };
 
         SearchCtrl.prototype.courseIdxInList = function (course, list) {

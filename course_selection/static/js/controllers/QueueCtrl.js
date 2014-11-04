@@ -7,8 +7,9 @@ define(["require", "exports"], function(require, exports) {
             this.$scope = $scope;
             this.testSharingService = testSharingService;
             this.$scope.vm = this;
+            this.$scope.data = testSharingService.getData();
             this.$scope.$watch(function () {
-                return _this.testSharingService.getEnrolledCourses();
+                return _this.$scope.data.enrolledCourses;
             }, function (newCourses, oldCourses) {
                 return _this.updateEnrolledCourses(newCourses, oldCourses);
             }, true);

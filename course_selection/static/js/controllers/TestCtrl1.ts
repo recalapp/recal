@@ -1,3 +1,5 @@
+import TestSharingService = require('../services/TestSharingService');
+
 class TestCtrl1 {
     public static $inject = [
         '$scope',
@@ -9,7 +11,7 @@ class TestCtrl1 {
             private testSharingService
             )
     {
-        $scope.data = testSharingService.data;
+        $scope.data = testSharingService.getData();
     }
 }
 

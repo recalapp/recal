@@ -3,7 +3,7 @@ define(["require", "exports"], function(require, exports) {
         function TestCtrl2($scope, testSharingService) {
             this.$scope = $scope;
             this.testSharingService = testSharingService;
-            $scope.data = testSharingService.data;
+            $scope.data = testSharingService.getData();
         }
         TestCtrl2.$inject = [
             '$scope',

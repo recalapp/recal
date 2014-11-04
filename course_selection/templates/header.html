@@ -4,6 +4,22 @@
         <li>
             <a href="#">Nice</a>
         </li>
+        <div ng-controller="TestCtrl1">
+            <li>
+                <input id="test1" type="text" ng-model="data.foo">
+            </li>
+            <li>
+                <input type="text" ng-model="data.bar">
+            </li>
+        </div>
+        <div ng-controller="TestCtrl2">
+            <li>
+                <input id="test2" type="text" ng-model="data.foo">
+            </li>
+            <li>
+                <input type="text" ng-model="data.bar">
+            </li>
+        </div>
         <li class="dropdown pull-right">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle">{{ username }}<strong class="caret"></strong></a>
             <ul class="dropdown-menu">
