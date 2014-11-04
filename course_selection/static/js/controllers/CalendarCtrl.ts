@@ -45,20 +45,22 @@ class CalendarCtrl {
                 () => { 
                     return this.testSharingService.getPreviewEvents(); 
                 },
-                (newEvents, oldEvents) => { 
-                    return this.updatePreviewCourses(newEvents, oldEvents); 
+                (newData, oldData) => { 
+                    return this.updatePreviewCourses(newData, oldData); 
                 },
                 true);
     }
 
-    public updatePreviewCourses(newEvents, oldEvents) {
-        if (newEvents === oldEvents // initialization
-                || (oldEvents[0] && // preview events don't have meetings
-                    newEvents[0] && // new events don't have meetings
-                    newEvents[0].title == oldEvents[0].title))
+    public updatePreviewCourses(newData, oldData) {
+        if (newData === oldData // initialization
+                || newData.courseId === oldData.courseId)
+                
+               // (oldEvents[0] && // preview events don't have meetings
+               //     newEvents[0] && // new events don't have meetings
+               //     newEvents[0].title == oldEvents[0].title))
             return;
 
-        console.log("newEvents title: " + newEvents[0].title);
+        var newEvents = newData.eventTimesAndLocations;
         this.emptyPreviewEvents();
         for (var i = 0; i < newEvents.length; i++) {
             this.$scope.previewEvents.push(newEvents[i]);

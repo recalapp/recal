@@ -17,15 +17,18 @@ define(["require", "exports"], function(require, exports) {
 
             this.$scope.$watch(function () {
                 return _this.testSharingService.getPreviewEvents();
-            }, function (newEvents, oldEvents) {
-                return _this.updatePreviewCourses(newEvents, oldEvents);
+            }, function (newData, oldData) {
+                return _this.updatePreviewCourses(newData, oldData);
             }, true);
         }
-        CalendarCtrl.prototype.updatePreviewCourses = function (newEvents, oldEvents) {
-            if (newEvents === oldEvents || (oldEvents[0] && newEvents[0] && newEvents[0].title == oldEvents[0].title))
+        CalendarCtrl.prototype.updatePreviewCourses = function (newData, oldData) {
+            if (newData === oldData || newData.courseId === oldData.courseId)
+                // (oldEvents[0] && // preview events don't have meetings
+                //     newEvents[0] && // new events don't have meetings
+                //     newEvents[0].title == oldEvents[0].title))
                 return;
 
-            console.log("newEvents title: " + newEvents[0].title);
+            var newEvents = newData.eventTimesAndLocations;
             this.emptyPreviewEvents();
             for (var i = 0; i < newEvents.length; i++) {
                 this.$scope.previewEvents.push(newEvents[i]);

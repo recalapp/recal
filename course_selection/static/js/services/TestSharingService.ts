@@ -17,7 +17,7 @@ class TestSharingService {
         return this.previewEvents;
     }
 
-    public setEnrolledEvents(input) {
+    public setEnrolledCourses(input) {
         this.enrolledCourses = input;
     }
 

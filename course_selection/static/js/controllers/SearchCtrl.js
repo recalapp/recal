@@ -22,9 +22,36 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.courses = data['objects'];
         };
 
+        // if user is not enrolled in course yet, add course events to previewEvents
+        // else, TODO: don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {
             var eventTimesAndLocations = this.getEventTimesAndLocations(course);
             this.testSharingService.setPreviewEvents(eventTimesAndLocations);
+        };
+
+        SearchCtrl.prototype.onClick = function (course) {
+            var courses = this.testSharingService.getEnrolledCourses();
+
+            // if course is in courses, remove it
+            // else add it
+            var idx = this.courseIsInList(course, courses);
+            if (idx == SearchCtrl.NOT_FOUND) {
+                courses.push(course);
+            } else {
+                courses.splice(idx, 1);
+            }
+
+            this.testSharingService.setEnrolledCourses(courses);
+        };
+
+        SearchCtrl.prototype.courseIsInList = function (course, list) {
+            for (var i = 0; i < list.length; i++) {
+                if (course.id == list[i].id) {
+                    return i;
+                }
+            }
+
+            return SearchCtrl.NOT_FOUND;
         };
 
         SearchCtrl.prototype.getEventTimesAndLocations = function (course) {
@@ -56,7 +83,10 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
 
-            return eventTimesAndLocations;
+            return {
+                eventTimesAndLocations: eventTimesAndLocations,
+                courseId: course.id
+            };
         };
 
         SearchCtrl.prototype.getPrimaryCourseListing = function (course) {
@@ -98,6 +128,8 @@ define(["require", "exports"], function(require, exports) {
             'Th': 4,
             'F': 5
         };
+
+        SearchCtrl.NOT_FOUND = -1;
         return SearchCtrl;
     })();
 

@@ -12,7 +12,7 @@ define(["require", "exports"], function(require, exports) {
             return this.previewEvents;
         };
 
-        TestSharingService.prototype.setEnrolledEvents = function (input) {
+        TestSharingService.prototype.setEnrolledCourses = function (input) {
             this.enrolledCourses = input;
         };
 

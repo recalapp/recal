@@ -28,6 +28,8 @@ class SearchCtrl {
         'F' : 5
     }
 
+    private static NOT_FOUND: number = -1;
+
     constructor(
             private $scope: ICourseSearchScope,
             private courseResource,
@@ -46,9 +48,35 @@ class SearchCtrl {
         this.$scope.courses = data['objects'];
     }
     
+    // if user is not enrolled in course yet, add course events to previewEvents
+    // else, TODO: don't do anything
     public onMouseOver(course) {
         var eventTimesAndLocations = this.getEventTimesAndLocations(course);
         this.testSharingService.setPreviewEvents(eventTimesAndLocations);
+    }
+
+    public onClick(course) {
+        var courses = this.testSharingService.getEnrolledCourses();
+        // if course is in courses, remove it
+        // else add it
+        var idx = this.courseIsInList(course, courses);
+        if (idx == SearchCtrl.NOT_FOUND) {
+            courses.push(course);
+        } else {
+            courses.splice(idx, 1);
+        }
+
+        this.testSharingService.setEnrolledCourses(courses);
+    }
+
+    private courseIsInList(course, list) {
+        for (var i = 0; i < list.length; i++) {
+            if (course.id == list[i].id) {
+                return i;
+            }
+        }
+
+        return SearchCtrl.NOT_FOUND;
     }
 
     private getEventTimesAndLocations(course) {
@@ -81,7 +109,10 @@ class SearchCtrl {
             }
         }
 
-        return eventTimesAndLocations;
+        return {
+            eventTimesAndLocations: eventTimesAndLocations,
+            courseId: course.id
+        };
     }
 
     private getPrimaryCourseListing(course: ICourse): string {

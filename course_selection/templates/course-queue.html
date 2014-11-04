@@ -1,12 +1,16 @@
-<div id="queueColumn" class="col-md-4 column">
-<div class="row clearfix">
-    <div class="col-md-12 column">
-        <h1 class="panel-title"> My Courses </h1>
-        <div id="courseQueue">
-            <div class="panel panel-default">ECO362</div>
+{% verbatim %}
+<div id="queueColumn" class="col-md-4 column" ng-controller="QueueCtrl as queueCtrl">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h1 class="panel-title"> My Courses </h1>
+            <div id="courseQueue">
+                <div class="panel panel-default" ng-repeat="course in enrolledCourses">
+                    <h4> {{ course.title }} </h4>
+                </div>
+            </div>
         </div>
     </div>
+    <div class="row clearfix">
+    </div>
 </div>
-<div class="row clearfix">
-</div>
-</div>
+{% endverbatim %}
