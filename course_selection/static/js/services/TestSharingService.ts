@@ -9,7 +9,7 @@ class TestSharingService {
     };
 
     constructor() {
-        this.data.previewCourse = {};
+        this.data.previewCourse = null;
         this.data.enrolledCourses = [];
     }
 

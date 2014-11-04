@@ -7,7 +7,7 @@ define(["require", "exports"], function(require, exports) {
                 previewCourse: {},
                 enrolledCourses: []
             };
-            this.data.previewCourse = {};
+            this.data.previewCourse = null;
             this.data.enrolledCourses = [];
         }
         TestSharingService.prototype.getData = function () {

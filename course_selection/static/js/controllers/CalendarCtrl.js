@@ -30,7 +30,7 @@ define(["require", "exports"], function(require, exports) {
             }, true);
         }
         CalendarCtrl.prototype.updatePreviewCourse = function (newCourse, oldCourse) {
-            if (newCourse === oldCourse || newCourse.id === oldCourse.id)
+            if (newCourse === oldCourse || (newCourse !== null && oldCourse !== null && newCourse.id === oldCourse.id))
                 return;
 
             var newEvents = this.getEventsForCourse(newCourse);
@@ -72,6 +72,10 @@ define(["require", "exports"], function(require, exports) {
         };
 
         CalendarCtrl.prototype.getEventsForCourse = function (course) {
+            if (!course) {
+                return [];
+            }
+
             var inputTimeFormat = "hh:mm a";
             var outputTimeFormat = "HH:mm:ss";
             var events = [];

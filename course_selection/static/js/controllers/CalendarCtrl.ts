@@ -73,7 +73,10 @@ class CalendarCtrl {
     }
 
     public updatePreviewCourse(newCourse, oldCourse) {
-        if (newCourse === oldCourse || newCourse.id === oldCourse.id)
+        if (newCourse === oldCourse 
+                || (newCourse !== null 
+                    && oldCourse !== null 
+                    && newCourse.id === oldCourse.id))
             return;
 
         var newEvents = this.getEventsForCourse(newCourse);
@@ -115,6 +118,10 @@ class CalendarCtrl {
     }
 
     private getEventsForCourse(course) {
+        if (!course) {
+            return [];
+        }
+
         var inputTimeFormat = "hh:mm a";
         var outputTimeFormat = "HH:mm:ss";
         var events = [];

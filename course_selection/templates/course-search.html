@@ -7,7 +7,7 @@
     </div>
     <div class="row" id="coursePanelsContainer">
         <div id="accordion" class="panel-group">
-            <div class="panel panel-default course-panel" ng-repeat="course in courses | filter: query"  ng-mouseover="searchCtrl.onMouseOver(course)" ng-click="searchCtrl.onClick(course)">
+            <div class="panel panel-default course-panel" ng-repeat="course in courses | filter: query"  ng-mouseover="searchCtrl.onMouseOver(course)" ng-mouseleave="searchCtrl.onMouseLeave(course)" ng-click="searchCtrl.onClick(course)">
                 <div class="course-panel-title">
                     {{searchCtrl.getPrimaryCourseListing(course)}} {{ course.title }}
                 </div>

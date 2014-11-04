@@ -33,6 +33,13 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
+        SearchCtrl.prototype.onMouseLeave = function (course) {
+            var idx = this.courseIdxInList(course, this.$scope.data.enrolledCourses);
+            if (idx == SearchCtrl.NOT_FOUND) {
+                this.$scope.data.previewCourse = null;
+            }
+        };
+
         SearchCtrl.prototype.onClick = function (course) {
             var courses = this.$scope.data.enrolledCourses;
 

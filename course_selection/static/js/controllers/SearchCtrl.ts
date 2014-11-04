@@ -51,6 +51,13 @@ class SearchCtrl {
         }
     }
 
+    public onMouseLeave(course) {
+        var idx = this.courseIdxInList(course, this.$scope.data.enrolledCourses);
+        if (idx == SearchCtrl.NOT_FOUND) {
+            this.$scope.data.previewCourse = null;
+        }
+    }
+
     public onClick(course) {
         var courses = this.$scope.data.enrolledCourses;
         // if course is in courses, remove it
