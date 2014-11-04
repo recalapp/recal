@@ -1,3 +1,4 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 import TestSharingService = require('../services/TestSharingService');
 import ICourse = require('../interfaces/ICourse');
 
@@ -23,6 +24,14 @@ class CalendarCtrl {
         maxTime: '23:00'
     };
 
+    private static DAYS = {
+        'M' : 1,
+        'T': 2,
+        'W' : 3,
+        'Th': 4,
+        'F' : 5
+    }
+ 
     public static $inject = [
         '$scope',
         'localStorageService',
@@ -39,34 +48,42 @@ class CalendarCtrl {
         this.initConfig();
         //this.initEventSources();
         this.$scope.previewEvents = [];
-        this.$scope.eventSources = [$scope.previewEvents];
+        this.$scope.enrolledEvents = [];
+        this.$scope.eventSources = [$scope.previewEvents, $scope.enrolledEvents];
 
         this.$scope.$watch(
                 () => { 
-                    return this.testSharingService.getPreviewEvents(); 
+                    return this.testSharingService.getPreviewCourse(); 
                 },
-                (newData, oldData) => { 
-                    return this.updatePreviewCourses(newData, oldData); 
+                (newCourse, oldCourse) => { 
+                    return this.updatePreviewCourse(newCourse, oldCourse); 
+                },
+                true);
+
+        this.$scope.$watch(
+                () => { 
+                    return this.testSharingService.getEnrolledCourses(); 
+                },
+                (newCourses, oldCourses) => { 
+                    return this.updateEnrolledCourses(newCourses, oldCourses); 
                 },
                 true);
     }
 
-    public updatePreviewCourses(newData, oldData) {
-        if (newData === oldData // initialization
-                || newData.courseId === oldData.courseId)
-                
-               // (oldEvents[0] && // preview events don't have meetings
-               //     newEvents[0] && // new events don't have meetings
-               //     newEvents[0].title == oldEvents[0].title))
+    public updatePreviewCourse(newCourse, oldCourse) {
+        if (newCourse === oldCourse || newCourse.id === oldCourse.id)
             return;
 
-        var newEvents = newData.eventTimesAndLocations;
+        var newEvents = this.getEventTimesAndLocations(newCourse);
         this.emptyPreviewEvents();
         for (var i = 0; i < newEvents.length; i++) {
             this.$scope.previewEvents.push(newEvents[i]);
         }
 
         this.$scope.myCalendar.fullCalendar('refetchEvents');
+    }
+
+    public updateEnrolledCourses(newCourses, oldCourses) {
     }
 
     private emptyPreviewEvents() {
@@ -77,7 +94,63 @@ class CalendarCtrl {
         this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
     }
 
-    private removeEvent(index: number) {
+    private getEventTimesAndLocations(course) {
+        var inputTimeFormat = "hh:mm a";
+        var outputTimeFormat = "HH:mm:ss";
+        var eventTimesAndLocations = [];
+
+        var primaryListing = this.getPrimaryCourseListing(course);
+        for (var i = 0; i < course.sections.length; i++) {
+            var section = course.sections[i];
+            for (var j = 0; j < section.meetings.length; j++) {
+                var meeting = section.meetings[j];
+                var days = meeting.days.split(' ');
+                // ignore last element of the result of split, which is 
+                // empty string due to the format of the input
+                for (var k = 0; k < days.length - 1; k++) {
+                    var day = days[k];
+                    var date = this.getAgendaDate(day);
+                    var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
+                    var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
+                    var start = date + 'T' + startTime;
+                    var end = date + 'T' + endTime;
+                    eventTimesAndLocations.push({
+                        title: primaryListing + " " + section.name,
+                        start: start,
+                        end: end,
+                        location: meeting.location
+                    });
+                }
+            }
+        }
+
+        return eventTimesAndLocations;
+    }
+
+    private getPrimaryCourseListing(course: ICourse): string {
+        for (var i = 0; i < course.course_listings.length; i++) {
+            var curr = course.course_listings[i];
+            if (curr.is_primary) {
+                return curr.dept + curr.number;
+            }
+        }
+
+        return "";
+    }
+
+    private getAgendaDate(day: string): string {
+        var todayOffset = moment().isoWeekday();
+
+        // set todayOffset to 0 if today is a Sunday
+        // TODO: set the start of a week to Sunday in FullCalendar
+        // to get rid of this line
+        if (todayOffset == 7) {
+            todayOffset = 0;
+        }
+        var dayOffset = CalendarCtrl.DAYS[day];
+        var diff: number = +(dayOffset - todayOffset);
+        var date = moment().add('days', diff).format('YYYY-MM-DD');
+        return date;
     }
 
     private initEventSources() {

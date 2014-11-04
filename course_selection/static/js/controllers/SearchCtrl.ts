@@ -20,15 +20,7 @@ class SearchCtrl {
         'TestSharingService'
     ];
 
-    private static DAYS = {
-        'M' : 1,
-        'T': 2,
-        'W' : 3,
-        'Th': 4,
-        'F' : 5
-    }
-
-    private static NOT_FOUND: number = -1;
+   private static NOT_FOUND: number = -1;
 
     constructor(
             private $scope: ICourseSearchScope,
@@ -51,15 +43,17 @@ class SearchCtrl {
     // if user is not enrolled in course yet, add course events to previewEvents
     // else, TODO: don't do anything
     public onMouseOver(course) {
-        var eventTimesAndLocations = this.getEventTimesAndLocations(course);
-        this.testSharingService.setPreviewEvents(eventTimesAndLocations);
+        var idx = this.courseIdxInList(course, this.testSharingService.getEnrolledCourses());
+        if (idx == SearchCtrl.NOT_FOUND) {
+            this.testSharingService.setPreviewCourse(course);
+        }
     }
 
     public onClick(course) {
         var courses = this.testSharingService.getEnrolledCourses();
         // if course is in courses, remove it
         // else add it
-        var idx = this.courseIsInList(course, courses);
+        var idx = this.courseIdxInList(course, courses);
         if (idx == SearchCtrl.NOT_FOUND) {
             courses.push(course);
         } else {
@@ -69,7 +63,7 @@ class SearchCtrl {
         this.testSharingService.setEnrolledCourses(courses);
     }
 
-    private courseIsInList(course, list) {
+    private courseIdxInList(course, list) {
         for (var i = 0; i < list.length; i++) {
             if (course.id == list[i].id) {
                 return i;
@@ -77,42 +71,6 @@ class SearchCtrl {
         }
 
         return SearchCtrl.NOT_FOUND;
-    }
-
-    private getEventTimesAndLocations(course) {
-        var inputTimeFormat = "hh:mm a";
-        var outputTimeFormat = "HH:mm:ss";
-        var eventTimesAndLocations = [];
-
-        var primaryListing = this.getPrimaryCourseListing(course);
-        for (var i = 0; i < course.sections.length; i++) {
-            var section = course.sections[i];
-            for (var j = 0; j < section.meetings.length; j++) {
-                var meeting = section.meetings[j];
-                var days = meeting.days.split(' ');
-                // ignore last element of the result of split, which is 
-                // empty string due to the format of the input
-                for (var k = 0; k < days.length - 1; k++) {
-                    var day = days[k];
-                    var date = this.getAgendaDate(day);
-                    var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
-                    var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
-                    var start = date + 'T' + startTime;
-                    var end = date + 'T' + endTime;
-                    eventTimesAndLocations.push({
-                        title: primaryListing + " " + section.name,
-                        start: start,
-                        end: end,
-                        location: meeting.location
-                    });
-                }
-            }
-        }
-
-        return {
-            eventTimesAndLocations: eventTimesAndLocations,
-            courseId: course.id
-        };
     }
 
     private getPrimaryCourseListing(course: ICourse): string {
@@ -124,21 +82,6 @@ class SearchCtrl {
         }
 
         return "";
-    }
-
-    private getAgendaDate(day: string): string {
-        var todayOffset = moment().isoWeekday();
-
-        // set todayOffset to 0 if today is a Sunday
-        // TODO: set the start of a week to Sunday in FullCalendar
-        // to get rid of this line
-        if (todayOffset == 7) {
-            todayOffset = 0;
-        }
-        var dayOffset = SearchCtrl.DAYS[day];
-        var diff: number = +(dayOffset - todayOffset);
-        var date = moment().add('days', diff).format('YYYY-MM-DD');
-        return date;
     }
 }
 

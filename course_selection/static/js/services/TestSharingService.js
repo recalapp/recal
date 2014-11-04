@@ -2,6 +2,7 @@ define(["require", "exports"], function(require, exports) {
     var TestSharingService = (function () {
         function TestSharingService() {
             this.previewEvents = [];
+            this.previewCourse = {};
             this.enrolledCourses = [];
         }
         TestSharingService.prototype.setPreviewEvents = function (input) {
@@ -12,8 +13,16 @@ define(["require", "exports"], function(require, exports) {
             return this.previewEvents;
         };
 
-        TestSharingService.prototype.setEnrolledCourses = function (input) {
-            this.enrolledCourses = input;
+        TestSharingService.prototype.setPreviewCourse = function (course) {
+            this.previewCourse = course;
+        };
+
+        TestSharingService.prototype.getPreviewCourse = function () {
+            return this.previewCourse;
+        };
+
+        TestSharingService.prototype.setEnrolledCourses = function (courses) {
+            this.enrolledCourses = courses;
         };
 
         TestSharingService.prototype.getEnrolledCourses = function () {

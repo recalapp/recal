@@ -2,10 +2,12 @@ import ICourse = require('../interfaces/ICourse');
 
 class TestSharingService {
     private previewEvents;
+    private previewCourse;
     private enrolledCourses;
 
     constructor() {
         this.previewEvents = [];
+        this.previewCourse = {};
         this.enrolledCourses = [];
     }
 
@@ -17,8 +19,16 @@ class TestSharingService {
         return this.previewEvents;
     }
 
-    public setEnrolledCourses(input) {
-        this.enrolledCourses = input;
+    public setPreviewCourse(course) { 
+        this.previewCourse = course;
+    }
+
+    public getPreviewCourse() {
+        return this.previewCourse;
+    }
+
+    public setEnrolledCourses(courses) {
+        this.enrolledCourses = courses;
     }
 
     public getEnrolledCourses() {
