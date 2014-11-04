@@ -46,6 +46,7 @@ class CalendarCtrl {
     {
         this.$scope.vm = this;
         this.initConfig();
+
         //this.initEventSources();
         this.$scope.data = testSharingService.getData();
         this.$scope.previewEvents = [];
@@ -75,7 +76,7 @@ class CalendarCtrl {
         if (newCourse === oldCourse || newCourse.id === oldCourse.id)
             return;
 
-        var newEvents = this.getEventTimesAndLocations(newCourse);
+        var newEvents = this.getEventsForCourse(newCourse);
         this.emptyPreviewEvents();
         for (var i = 0; i < newEvents.length; i++) {
             this.$scope.previewEvents.push(newEvents[i]);
@@ -91,7 +92,7 @@ class CalendarCtrl {
 
         this.emptyEnrolledEvents();
         for (var i = 0; i < newCourses.length; i++) {
-            var newEvents = this.getEventTimesAndLocations(newCourses[i]);
+            var newEvents = this.getEventsForCourse(newCourses[i]);
             for (var j = 0; j < newEvents.length; j++) {
                 this.$scope.enrolledEvents.push(newEvents[j]);
             }
@@ -113,10 +114,10 @@ class CalendarCtrl {
         this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
     }
 
-    private getEventTimesAndLocations(course) {
+    private getEventsForCourse(course) {
         var inputTimeFormat = "hh:mm a";
         var outputTimeFormat = "HH:mm:ss";
-        var eventTimesAndLocations = [];
+        var events = [];
 
         var primaryListing = this.getPrimaryCourseListing(course);
         for (var i = 0; i < course.sections.length; i++) {
@@ -133,7 +134,7 @@ class CalendarCtrl {
                     var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
                     var start = date + 'T' + startTime;
                     var end = date + 'T' + endTime;
-                    eventTimesAndLocations.push({
+                    events.push({
                         title: primaryListing + " " + section.name,
                         start: start,
                         end: end,
@@ -143,7 +144,7 @@ class CalendarCtrl {
             }
         }
 
-        return eventTimesAndLocations;
+        return events;
     }
 
     private getPrimaryCourseListing(course: ICourse): string {

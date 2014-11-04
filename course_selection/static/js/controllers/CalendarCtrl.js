@@ -33,7 +33,7 @@ define(["require", "exports"], function(require, exports) {
             if (newCourse === oldCourse || newCourse.id === oldCourse.id)
                 return;
 
-            var newEvents = this.getEventTimesAndLocations(newCourse);
+            var newEvents = this.getEventsForCourse(newCourse);
             this.emptyPreviewEvents();
             for (var i = 0; i < newEvents.length; i++) {
                 this.$scope.previewEvents.push(newEvents[i]);
@@ -49,7 +49,7 @@ define(["require", "exports"], function(require, exports) {
 
             this.emptyEnrolledEvents();
             for (var i = 0; i < newCourses.length; i++) {
-                var newEvents = this.getEventTimesAndLocations(newCourses[i]);
+                var newEvents = this.getEventsForCourse(newCourses[i]);
                 for (var j = 0; j < newEvents.length; j++) {
                     this.$scope.enrolledEvents.push(newEvents[j]);
                 }
@@ -71,10 +71,10 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
         };
 
-        CalendarCtrl.prototype.getEventTimesAndLocations = function (course) {
+        CalendarCtrl.prototype.getEventsForCourse = function (course) {
             var inputTimeFormat = "hh:mm a";
             var outputTimeFormat = "HH:mm:ss";
-            var eventTimesAndLocations = [];
+            var events = [];
 
             var primaryListing = this.getPrimaryCourseListing(course);
             for (var i = 0; i < course.sections.length; i++) {
@@ -90,7 +90,7 @@ define(["require", "exports"], function(require, exports) {
                         var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
                         var start = date + 'T' + startTime;
                         var end = date + 'T' + endTime;
-                        eventTimesAndLocations.push({
+                        events.push({
                             title: primaryListing + " " + section.name,
                             start: start,
                             end: end,
@@ -100,7 +100,7 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
 
-            return eventTimesAndLocations;
+            return events;
         };
 
         CalendarCtrl.prototype.getPrimaryCourseListing = function (course) {

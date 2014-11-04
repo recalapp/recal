@@ -9,7 +9,7 @@
         <div id="accordion" class="panel-group">
             <div class="panel panel-default course-panel" ng-repeat="course in courses | filter: query"  ng-mouseover="searchCtrl.onMouseOver(course)" ng-click="searchCtrl.onClick(course)">
                 <div class="course-panel-title">
-                    {{ course.course_listings[0].dept + " " + course.course_listings[0].number}} {{ course.title }}
+                    {{searchCtrl.getPrimaryCourseListing(course)}} {{ course.title }}
                 </div>
             </div>
         </div>

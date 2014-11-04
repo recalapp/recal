@@ -1,0 +1,7 @@
+.fc-today {
+  background-color: #e7e8e9;
+}
+.fc-agenda-slots tr.fc-minor th,
+.fc-agenda-slots tr.fc-minor td {
+  border-top-style: none;
+}

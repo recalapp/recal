@@ -39,7 +39,8 @@ module.exports = function(grunt) {
             },
             files: {
                 "less/course-search.css" : "less/course-search.less",
-                "less/nice.css" : "less/nice.less"
+                "less/nice.css" : "less/nice.less",
+                "less/calendar.css" : "less/calendar.less"
             }
         },
     },
