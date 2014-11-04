@@ -1,5 +1,5 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-define(["require", "exports", './TestSharingService'], function(require, exports, TestSharingService) {
+define(["require", "exports", './TestSharingService', './ColorResource'], function(require, exports, TestSharingService, ColorResource) {
     var ResourceBuilder = (function () {
         function ResourceBuilder($resource) {
             this.$resource = $resource;
@@ -13,6 +13,10 @@ define(["require", "exports", './TestSharingService'], function(require, exports
 
         ResourceBuilder.prototype.getTestSharingService = function () {
             return new TestSharingService();
+        };
+
+        ResourceBuilder.prototype.getColorResource = function () {
+            return new ColorResource(this.$resource);
         };
         ResourceBuilder.$inject = ['$resource'];
         return ResourceBuilder;

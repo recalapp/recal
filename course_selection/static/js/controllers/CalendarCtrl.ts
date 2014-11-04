@@ -1,5 +1,6 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 import TestSharingService = require('../services/TestSharingService');
+import ColorResource = require('../services/ColorResource');
 import ICourse = require('../interfaces/ICourse');
 
 'use strict';
@@ -34,15 +35,15 @@ class CalendarCtrl {
  
     public static $inject = [
         '$scope',
-        'localStorageService',
-        'TestSharingService'
+        'TestSharingService',
+        'ColorResource'
     ];
 
     // dependencies are injected via AngularJS $injector
     constructor(
             private $scope,
-            private localStorageService,
-            private testSharingService) 
+            private testSharingService,
+            private colorResource) 
     {
         this.$scope.vm = this;
         this.initConfig();
@@ -51,7 +52,11 @@ class CalendarCtrl {
         this.$scope.data = testSharingService.getData();
         this.$scope.previewEvents = [];
         this.$scope.enrolledEvents = [];
-        this.$scope.eventSources = [$scope.previewEvents, $scope.enrolledEvents];
+        this.$scope.eventSources = [{
+            events: $scope.previewEvents
+        }, {
+            events: $scope.enrolledEvents
+        }];
 
         this.$scope.$watch(
                 () => { 
@@ -101,12 +106,12 @@ class CalendarCtrl {
             }
         }
 
-        //this.$scope.myCalendar.fullCalendar('addEventSource', this.$scope.enrolledEvents);
         this.$scope.myCalendar.fullCalendar('refetchEvents');
     }
 
     private emptyPreviewEvents() {
-        this.$scope.previewEvents.length = 0;
+        this.$scope.previewEvents.splice(0, this.$scope.previewEvents.length);
+        //this.$scope.previewEvents.length = 0;
     }
 
     private emptyEnrolledEvents() {

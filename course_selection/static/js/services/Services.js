@@ -13,6 +13,9 @@ define(["require", "exports", './ResourceBuilder', "angular"], function(require,
     niceServices.factory('TestSharingService', ["ResourceBuilder", function (builder) {
             return builder.getTestSharingService();
         }]);
+    niceServices.factory('ColorResource', ["ResourceBuilder", function (builder) {
+            return builder.getColorResource();
+        }]);
 
     
     return niceServices;

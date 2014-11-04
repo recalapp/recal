@@ -51,11 +51,9 @@ class SearchCtrl {
         }
     }
 
+    // TODO: what if course.id != previewCourse.id? will it ever be out of sync?
     public onMouseLeave(course) {
-        var idx = this.courseIdxInList(course, this.$scope.data.enrolledCourses);
-        if (idx == SearchCtrl.NOT_FOUND) {
-            this.$scope.data.previewCourse = null;
-        }
+        this.$scope.data.previewCourse = null;
     }
 
     public onClick(course) {

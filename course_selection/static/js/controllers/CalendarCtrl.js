@@ -3,11 +3,11 @@ define(["require", "exports"], function(require, exports) {
 
     var CalendarCtrl = (function () {
         // dependencies are injected via AngularJS $injector
-        function CalendarCtrl($scope, localStorageService, testSharingService) {
+        function CalendarCtrl($scope, testSharingService, colorResource) {
             var _this = this;
             this.$scope = $scope;
-            this.localStorageService = localStorageService;
             this.testSharingService = testSharingService;
+            this.colorResource = colorResource;
             this.$scope.vm = this;
             this.initConfig();
 
@@ -15,7 +15,12 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.data = testSharingService.getData();
             this.$scope.previewEvents = [];
             this.$scope.enrolledEvents = [];
-            this.$scope.eventSources = [$scope.previewEvents, $scope.enrolledEvents];
+            this.$scope.eventSources = [
+                {
+                    events: $scope.previewEvents
+                }, {
+                    events: $scope.enrolledEvents
+                }];
 
             this.$scope.$watch(function () {
                 return _this.$scope.data.previewCourse;
@@ -55,12 +60,12 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
 
-            //this.$scope.myCalendar.fullCalendar('addEventSource', this.$scope.enrolledEvents);
             this.$scope.myCalendar.fullCalendar('refetchEvents');
         };
 
         CalendarCtrl.prototype.emptyPreviewEvents = function () {
-            this.$scope.previewEvents.length = 0;
+            this.$scope.previewEvents.splice(0, this.$scope.previewEvents.length);
+            //this.$scope.previewEvents.length = 0;
         };
 
         CalendarCtrl.prototype.emptyEnrolledEvents = function () {
@@ -181,8 +186,8 @@ define(["require", "exports"], function(require, exports) {
 
         CalendarCtrl.$inject = [
             '$scope',
-            'localStorageService',
-            'TestSharingService'
+            'TestSharingService',
+            'ColorResource'
         ];
         return CalendarCtrl;
     })();

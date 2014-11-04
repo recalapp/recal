@@ -9,5 +9,6 @@ niceServices.factory('ResourceBuilder', ['$resource', ($resource) => new Resourc
 
 niceServices.factory('CourseResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getCourseResource()]);
 niceServices.factory('TestSharingService', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getTestSharingService()]);
+niceServices.factory('ColorResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getColorResource()]);
 
 export = niceServices;

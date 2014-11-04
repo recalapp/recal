@@ -2,6 +2,7 @@
 
 import ICourseResource = require('../interfaces/ICourseResource');
 import TestSharingService = require('./TestSharingService');
+import ColorResource = require('./ColorResource');
 
 class ResourceBuilder {
     static $inject = ['$resource'];
@@ -17,6 +18,10 @@ class ResourceBuilder {
 
     public getTestSharingService() {
         return new TestSharingService();
+    }
+
+    public getColorResource() {
+        return new ColorResource(this.$resource);
     }
 }
 
