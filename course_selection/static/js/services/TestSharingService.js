@@ -1,16 +1,27 @@
 define(["require", "exports"], function(require, exports) {
     var TestSharingService = (function () {
         function TestSharingService() {
-            this.data = "";
+            this.previewEvents = [];
+            this.enrolledCourses = [];
         }
-        TestSharingService.prototype.update = function (input) {
-            this.data = input;
+        TestSharingService.prototype.setPreviewEvents = function (input) {
+            this.previewEvents = input;
         };
-        TestSharingService.$inject = [];
+
+        TestSharingService.prototype.getPreviewEvents = function () {
+            return this.previewEvents;
+        };
+
+        TestSharingService.prototype.setEnrolledEvents = function (input) {
+            this.enrolledCourses = input;
+        };
+
+        TestSharingService.prototype.getEnrolledCourses = function () {
+            return this.enrolledCourses;
+        };
         return TestSharingService;
     })();
 
     
     return TestSharingService;
 });
-//# sourceMappingURL=TestSharingService.js.map

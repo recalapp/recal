@@ -22,4 +22,3 @@ define(["require", "exports", './Color'], function(require, exports, Color) {
     
     return ColorUtilities;
 });
-//# sourceMappingURL=ColorUtilities.js.map

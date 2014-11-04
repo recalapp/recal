@@ -38,4 +38,3 @@ define(["require", "exports", 'jquery', '../library/ActionSheet/ActionSheetType'
     
     return TestPopUpView;
 });
-//# sourceMappingURL=TestPopUpView.js.map

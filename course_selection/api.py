@@ -7,7 +7,7 @@ class SemesterResource(ModelResource):
     class Meta:
         queryset = Semester.objects.all()
         resource_name = 'semester'
-        excludes = []
+        excludes = ['id']
         allowed_methods = ['get']
 
 class CourseListingResource(ModelResource):
@@ -31,6 +31,8 @@ class CourseResource(ModelResource):
         excludes = []
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
+        limit = 0
+        max_limit = 0
 
 class SectionResource(ModelResource):
     course = fields.ForeignKey(CourseResource, 'course')
@@ -39,7 +41,7 @@ class SectionResource(ModelResource):
     class Meta:
         queryset = Section.objects.all()
         resource_name = 'section'
-        excludes = ['isDefault']
+        excludes = ['isDefault', 'id']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
 
@@ -49,5 +51,6 @@ class MeetingResource(ModelResource):
     class Meta:
         queryset = Meeting.objects.all()
         resource_name = 'meeting'
+        excludes = ['id']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)

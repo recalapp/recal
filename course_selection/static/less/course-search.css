@@ -2,6 +2,9 @@
   font-size: 40px;
   text-align: center;
 }
+.course-panel {
+  min-height: 40px;
+}
 .course-panel-title {
   font-size: 15px;
   text-align: left;

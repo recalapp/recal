@@ -3,6 +3,7 @@
 import ISection = require('../interfaces/ISection');
 import ICourseSearchScope = require('../interfaces/ICourseSearchScope');
 import CourseResource = require('../services/CourseResource');
+import TestSharingService = require('../services/TestSharingService');
 import ICourse = require('../interfaces/ICourse');
 
 'use strict';
@@ -15,32 +16,26 @@ class SearchCtrl {
     public static $inject = [
         '$scope',
         'CourseResource',
-        'localStorageService'
+        'localStorageService',
+        'TestSharingService'
     ];
 
     private static DAYS = {
         'M' : 1,
         'T': 2,
         'W' : 3,
-        "Th": 4,
+        'Th': 4,
         'F' : 5
     }
 
     constructor(
             private $scope: ICourseSearchScope,
             private courseResource,
-            private localStorageService
+            private localStorageService,
+            private testSharingService
             ) {
         this.$scope.vm = this;
         this.loadCourses();
-
-        // watching for events/changes in scope, which are caused by view/user input
-        // if you subscribe to scope or event with lifetime longer than this controller, make sure you unsubscribe.
-        // $scope.$watch('todos', () => this.onTodos(), true);
-        // $scope.$watch('location.path()', path => this.onPath(path))
-
-        // if ($location.path() === '') $location.path('/');
-        // $scope.location = $location;
     }
 
     private loadCourses() {
@@ -53,7 +48,7 @@ class SearchCtrl {
     
     public onMouseOver(course) {
         var eventTimesAndLocations = this.getEventTimesAndLocations(course);
-        this.localStorageService.set('events', eventTimesAndLocations);
+        this.testSharingService.setPreviewEvents(eventTimesAndLocations);
     }
 
     private getEventTimesAndLocations(course) {

@@ -1,10 +1,11 @@
-import niceServices = require('../services/CourseResource');
+import TestSharingService = require('../services/TestSharingService');
+import ICourse = require('../interfaces/ICourse');
 
 'use strict';
 
 class CalendarCtrl {
     private static defaultUiConfig = {
-        height: 800,
+        height: 1000,
         editable: false,
         header:{
             left: '',
@@ -16,6 +17,7 @@ class CalendarCtrl {
         columnFormat: {
             week: 'dddd'
         },
+        //slotDuration: '02:00',
         allDaySlot: false,
         minTime: '08:00',
         maxTime: '23:00'
@@ -23,13 +25,15 @@ class CalendarCtrl {
 
     public static $inject = [
         '$scope',
-        'localStorageService'
+        'localStorageService',
+        'TestSharingService'
     ];
 
     // dependencies are injected via AngularJS $injector
     constructor(
             private $scope,
-            private localStorageService) 
+            private localStorageService,
+            private testSharingService) 
     {
         this.$scope.vm = this;
         this.initConfig();
@@ -37,22 +41,30 @@ class CalendarCtrl {
         this.$scope.previewEvents = [];
         this.$scope.eventSources = [$scope.previewEvents];
 
-        this.$scope.$watch(() => {
-            return localStorageService.get('events');
-        },
-        (newEvents, oldEvents) => {
-            if (newEvents[0].title != oldEvents[0].title) {
-                console.log("oldEvents title: " + oldEvents[0].title);
-                console.log("newEvents title: " + newEvents[0].title);
-                this.emptyPreviewEvents();
-                for (var i = 0; i < newEvents.length; i++) {
-                    this.$scope.previewEvents.push(newEvents[i]);
-                }
+        this.$scope.$watch(
+                () => { 
+                    return this.testSharingService.getPreviewEvents(); 
+                },
+                (newEvents, oldEvents) => { 
+                    return this.updatePreviewCourses(newEvents, oldEvents); 
+                },
+                true);
+    }
 
-                this.$scope.myCalendar.fullCalendar('refetchEvents');
-                //this.debugEventSources();
-            }
-        }, true);
+    public updatePreviewCourses(newEvents, oldEvents) {
+        if (newEvents === oldEvents // initialization
+                || (oldEvents[0] && // preview events don't have meetings
+                    newEvents[0] && // new events don't have meetings
+                    newEvents[0].title == oldEvents[0].title))
+            return;
+
+        console.log("newEvents title: " + newEvents[0].title);
+        this.emptyPreviewEvents();
+        for (var i = 0; i < newEvents.length; i++) {
+            this.$scope.previewEvents.push(newEvents[i]);
+        }
+
+        this.$scope.myCalendar.fullCalendar('refetchEvents');
     }
 
     private emptyPreviewEvents() {
@@ -86,12 +98,6 @@ class CalendarCtrl {
                     end: "2014-11-04T13:30:00"
                 }]
                 );
-    }
-
-    public debugEventSources() {
-        for (var i = 0; i < this.$scope.eventSources[0].length; i++) {
-            console.log(i + ": " + this.$scope.eventSources[0][i]);
-        }
     }
 }
 

@@ -2,31 +2,38 @@ define(["require", "exports"], function(require, exports) {
     'use strict';
 
     var CalendarCtrl = (function () {
-        function CalendarCtrl($scope, localStorageService) {
+        // dependencies are injected via AngularJS $injector
+        function CalendarCtrl($scope, localStorageService, testSharingService) {
             var _this = this;
             this.$scope = $scope;
             this.localStorageService = localStorageService;
+            this.testSharingService = testSharingService;
             this.$scope.vm = this;
             this.initConfig();
 
+            //this.initEventSources();
             this.$scope.previewEvents = [];
             this.$scope.eventSources = [$scope.previewEvents];
 
             this.$scope.$watch(function () {
-                return localStorageService.get('events');
+                return _this.testSharingService.getPreviewEvents();
             }, function (newEvents, oldEvents) {
-                if (newEvents[0].title != oldEvents[0].title) {
-                    console.log("oldEvents title: " + oldEvents[0].title);
-                    console.log("newEvents title: " + newEvents[0].title);
-                    _this.emptyPreviewEvents();
-                    for (var i = 0; i < newEvents.length; i++) {
-                        _this.$scope.previewEvents.push(newEvents[i]);
-                    }
-
-                    _this.$scope.myCalendar.fullCalendar('refetchEvents');
-                }
+                return _this.updatePreviewCourses(newEvents, oldEvents);
             }, true);
         }
+        CalendarCtrl.prototype.updatePreviewCourses = function (newEvents, oldEvents) {
+            if (newEvents === oldEvents || (oldEvents[0] && newEvents[0] && newEvents[0].title == oldEvents[0].title))
+                return;
+
+            console.log("newEvents title: " + newEvents[0].title);
+            this.emptyPreviewEvents();
+            for (var i = 0; i < newEvents.length; i++) {
+                this.$scope.previewEvents.push(newEvents[i]);
+            }
+
+            this.$scope.myCalendar.fullCalendar('refetchEvents');
+        };
+
         CalendarCtrl.prototype.emptyPreviewEvents = function () {
             this.$scope.previewEvents.length = 0;
         };
@@ -57,14 +64,8 @@ define(["require", "exports"], function(require, exports) {
                     end: "2014-11-04T13:30:00"
                 }]);
         };
-
-        CalendarCtrl.prototype.debugEventSources = function () {
-            for (var i = 0; i < this.$scope.eventSources[0].length; i++) {
-                console.log(i + ": " + this.$scope.eventSources[0][i]);
-            }
-        };
         CalendarCtrl.defaultUiConfig = {
-            height: 800,
+            height: 1000,
             editable: false,
             header: {
                 left: '',
@@ -76,6 +77,7 @@ define(["require", "exports"], function(require, exports) {
             columnFormat: {
                 week: 'dddd'
             },
+            //slotDuration: '02:00',
             allDaySlot: false,
             minTime: '08:00',
             maxTime: '23:00'
@@ -83,7 +85,8 @@ define(["require", "exports"], function(require, exports) {
 
         CalendarCtrl.$inject = [
             '$scope',
-            'localStorageService'
+            'localStorageService',
+            'TestSharingService'
         ];
         return CalendarCtrl;
     })();
@@ -91,4 +94,3 @@ define(["require", "exports"], function(require, exports) {
     
     return CalendarCtrl;
 });
-//# sourceMappingURL=CalendarCtrl.js.map

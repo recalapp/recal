@@ -1,11 +1,13 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
     var SearchCtrl = (function () {
-        function SearchCtrl($scope, courseResource, localStorageService) {
+        function SearchCtrl($scope, courseResource, localStorageService, testSharingService) {
             this.$scope = $scope;
             this.courseResource = courseResource;
             this.localStorageService = localStorageService;
+            this.testSharingService = testSharingService;
             this.$scope.vm = this;
             this.loadCourses();
         }
@@ -22,7 +24,7 @@ define(["require", "exports"], function(require, exports) {
 
         SearchCtrl.prototype.onMouseOver = function (course) {
             var eventTimesAndLocations = this.getEventTimesAndLocations(course);
-            this.localStorageService.set('events', eventTimesAndLocations);
+            this.testSharingService.setPreviewEvents(eventTimesAndLocations);
         };
 
         SearchCtrl.prototype.getEventTimesAndLocations = function (course) {
@@ -71,6 +73,9 @@ define(["require", "exports"], function(require, exports) {
         SearchCtrl.prototype.getAgendaDate = function (day) {
             var todayOffset = moment().isoWeekday();
 
+            // set todayOffset to 0 if today is a Sunday
+            // TODO: set the start of a week to Sunday in FullCalendar
+            // to get rid of this line
             if (todayOffset == 7) {
                 todayOffset = 0;
             }
@@ -82,14 +87,15 @@ define(["require", "exports"], function(require, exports) {
         SearchCtrl.$inject = [
             '$scope',
             'CourseResource',
-            'localStorageService'
+            'localStorageService',
+            'TestSharingService'
         ];
 
         SearchCtrl.DAYS = {
             'M': 1,
             'T': 2,
             'W': 3,
-            "Th": 4,
+            'Th': 4,
             'F': 5
         };
         return SearchCtrl;
@@ -98,4 +104,3 @@ define(["require", "exports"], function(require, exports) {
     
     return SearchCtrl;
 });
-//# sourceMappingURL=SearchCtrl.js.map

@@ -1,13 +1,28 @@
+import ICourse = require('../interfaces/ICourse');
+
 class TestSharingService {
-    static $inject = [];
-    data: string;
+    private previewEvents;
+    private enrolledCourses;
 
     constructor() {
-        this.data = "";
+        this.previewEvents = [];
+        this.enrolledCourses = [];
     }
 
-    public update(input: string) {
-        this.data = input;
+    public setPreviewEvents(input) {
+        this.previewEvents = input;
+    }
+
+    public getPreviewEvents() {
+        return this.previewEvents;
+    }
+
+    public setEnrolledEvents(input) {
+        this.enrolledCourses = input;
+    }
+
+    public getEnrolledCourses() {
+        return this.enrolledCourses;
     }
 }
 

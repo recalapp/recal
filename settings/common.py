@@ -148,9 +148,9 @@ CACHES = {
 }
 
 ########## TastyPie Settings #######################
-API_LIMIT_PER_PAGE = 2000
+## this limit should be done per resource. see course_selection/api.py
+## API_LIMIT_PER_PAGE = 50
 ########## TastyPie Settings END #######################
-
 
 ########## GLOBAL VARIABLES
 CURR_TERM = 1152 # Use helper method nice.models.get_cur_semester() to get current Semester object.
