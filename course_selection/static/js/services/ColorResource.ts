@@ -4,11 +4,26 @@ class ColorResource {
     public static $inject = ['$resource'];
 
     private static defaultColors: IColor[] = [
-    {
-        selected: "#aaaaaa",
-        unselected: "#bbbbbb",
-        border: "#a1a1a1"
-    }
+        {   // green
+            selected: "rgb(45, 98, 52)",
+            unselected: "rgb(208, 222, 207)",
+            border: "rgb(45, 98, 52)"
+        },
+        { // blue
+            selected: "rgb(56, 92, 146)",
+            unselected: "rgb(213, 220, 236)",
+            border: "rgb(56, 92, 146)"
+        },
+        { // red
+            selected: "rgb(149, 73, 98)",
+            unselected: "rgb(235, 210, 219)",
+            border: "rgb(149, 73, 98)"
+        },
+        { // brown
+            selected: "rgb(137, 94, 46)",
+            unselected: "rgb(231, 220, 206)",
+            border: "rgb(137, 94, 46)",
+        }
     ];
 
     private courseColorMap = {};
@@ -29,6 +44,10 @@ class ColorResource {
         this.usableColors = ColorResource.defaultColors.slice();
     }
 
+    public addColor(color: IColor) {
+        this.usableColors.push(color);
+    }
+
     // return a random usable color in usableColors
     public nextColor() {
         if (this.usableColors.length == 0) {
@@ -36,7 +55,7 @@ class ColorResource {
         }
 
         var idx: number = Math.floor(Math.random() * this.usableColors.length);
-        var color = this.usableColors.splice(idx, 1);
+        var color = this.usableColors.splice(idx, 1)[0];
         return color;
     }
 }

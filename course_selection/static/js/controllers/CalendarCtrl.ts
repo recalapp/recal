@@ -50,11 +50,13 @@ class CalendarCtrl {
 
         //this.initEventSources();
         this.$scope.data = testSharingService.getData();
-        this.$scope.previewEvents = [];
+        this.$scope.previewEventSource = {
+            events: [],
+            color: null,
+            textColor: null
+        };
         this.$scope.enrolledEvents = [];
-        this.$scope.eventSources = [{
-            events: $scope.previewEvents
-        }, {
+        this.$scope.eventSources = [$scope.previewEventSource, {
             events: $scope.enrolledEvents
         }];
 
@@ -84,12 +86,24 @@ class CalendarCtrl {
                     && newCourse.id === oldCourse.id))
             return;
 
+        if (newCourse == null) {
+            this.colorResource.addColor(this.$scope.previewEventSource.colors);
+            this.emptyPreviewEvents();
+            this.$scope.myCalendar.fullCalendar('refetchEvents');
+            return;
+        }
+
         var newEvents = this.getEventsForCourse(newCourse);
         this.emptyPreviewEvents();
         for (var i = 0; i < newEvents.length; i++) {
-            this.$scope.previewEvents.push(newEvents[i]);
+            this.$scope.previewEventSource.events.push(newEvents[i]);
         }
 
+        this.$scope.previewEventSource.colors = this.colorResource.nextColor();
+        this.$scope.previewEventSource.color = 
+            this.$scope.previewEventSource.colors.unselected;
+        this.$scope.previewEventSource.textColor = 
+            this.$scope.previewEventSource.colors.selected;
         this.$scope.myCalendar.fullCalendar('refetchEvents');
     }
 
@@ -110,8 +124,10 @@ class CalendarCtrl {
     }
 
     private emptyPreviewEvents() {
-        this.$scope.previewEvents.splice(0, this.$scope.previewEvents.length);
-        //this.$scope.previewEvents.length = 0;
+        this.$scope.previewEventSource.events.length = 0;
+        this.$scope.previewEventSource.colors = null;
+        this.$scope.previewEventSource.color = null;
+        this.$scope.previewEventSource.textColor = null;
     }
 
     private emptyEnrolledEvents() {

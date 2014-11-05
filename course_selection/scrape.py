@@ -198,6 +198,7 @@ def create_or_update_sections(course, course_object):
     global section_count
     global new_meeting_count
     global meeting_count
+
     # add sections
     classes = course.find('classes')
     for section in classes:
@@ -216,11 +217,12 @@ def create_or_update_sections(course, course_object):
         # now we check if there is already an event for this section
         section_registrar_id = section.find('class_number')
         section_type = section.find('type_name').text
+        section_type = section_type[0:3].upper()
 
         section_object, created = Section.objects.get_or_create(
             course = course_object,
             name = section_name,
-            section_type = section_type[0:3].upper()
+            section_type = section_type
         )
 
         if created:
