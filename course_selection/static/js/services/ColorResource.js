@@ -52,6 +52,11 @@ define(["require", "exports"], function(require, exports) {
                 selected: "rgb(137, 94, 46)",
                 unselected: "rgb(231, 220, 206)",
                 border: "rgb(137, 94, 46)"
+            },
+            {
+                selected: "rgb(47, 119, 112)",
+                unselected: "rgb(209, 231, 228)",
+                border: "rgb(47, 119, 112)"
             }
         ];
         return ColorResource;

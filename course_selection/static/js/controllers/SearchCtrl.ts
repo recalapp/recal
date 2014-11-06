@@ -71,6 +71,10 @@ class SearchCtrl {
         //this.testSharingService.setEnrolledCourses(courses);
     }
 
+    public startsWith(course, viewValue) {
+        return course.title.substr(0, viewValue.length).toLowerCase() == viewValue.toLowerCase();
+    }
+
     private courseIdxInList(course, list) {
         for (var i = 0; i < list.length; i++) {
             if (course.id == list[i].id) {

@@ -64,6 +64,8 @@ class Section(models.Model):
     # Types
     TYPE_CLASS = "CLA"
     TYPE_DRILL = "DRI"
+    TYPE_EAR = "EAR"
+    TYPE_FILM = "FIL"
     TYPE_LAB = "LAB"
     TYPE_LECTURE = "LEC"
     TYPE_PRECEPT = "PRE"
@@ -73,6 +75,8 @@ class Section(models.Model):
     TYPE_CHOICES = (
         (TYPE_CLASS, "class"),
         (TYPE_DRILL, "drill"),
+        (TYPE_EAR, "ear training"),
+        (TYPE_FILM, "film"),
         (TYPE_LAB, "lab"),
         (TYPE_LECTURE, "lecture"),
         (TYPE_PRECEPT, "precept"),

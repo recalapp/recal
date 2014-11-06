@@ -2,7 +2,6 @@ define(["require", "exports"], function(require, exports) {
     'use strict';
 
     var CalendarCtrl = (function () {
-        // dependencies are injected via AngularJS $injector
         function CalendarCtrl($scope, testSharingService, colorResource) {
             var _this = this;
             this.$scope = $scope;
@@ -11,7 +10,6 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.vm = this;
             this.initConfig();
 
-            //this.initEventSources();
             this.$scope.data = testSharingService.getData();
             this.$scope.previewEventSource = {
                 events: [],
@@ -59,7 +57,6 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.myCalendar.fullCalendar('refetchEvents');
         };
 
-        // TODO: optimize for better performance
         CalendarCtrl.prototype.updateEnrolledCourses = function (newCourses, oldCourses) {
             if (newCourses === oldCourses)
                 return;
@@ -140,9 +137,6 @@ define(["require", "exports"], function(require, exports) {
         CalendarCtrl.prototype.getAgendaDate = function (day) {
             var todayOffset = moment().isoWeekday();
 
-            // set todayOffset to 0 if today is a Sunday
-            // TODO: set the start of a week to Sunday in FullCalendar
-            // to get rid of this line
             if (todayOffset == 7) {
                 todayOffset = 0;
             }
@@ -184,7 +178,6 @@ define(["require", "exports"], function(require, exports) {
             columnFormat: {
                 week: 'dddd'
             },
-            //slotDuration: '02:00',
             allDaySlot: false,
             minTime: '08:00',
             maxTime: '23:00'
@@ -209,3 +202,4 @@ define(["require", "exports"], function(require, exports) {
     
     return CalendarCtrl;
 });
+//# sourceMappingURL=CalendarCtrl.js.map

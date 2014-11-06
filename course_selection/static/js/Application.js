@@ -4,8 +4,8 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
         'ui.calendar',
         'ui.bootstrap',
         'LocalStorageModule',
-        'niceFilters',
         'niceServices',
+        'niceFilters',
         'niceControllers'
     ]);
 

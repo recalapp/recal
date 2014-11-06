@@ -19,7 +19,7 @@ require.config({
         jqueryui: bowerPath('jquery-ui/jquery-ui.min'),
         moment: bowerPath('momentjs/min/moment.min'),
         'moment-timezone': bowerPath('moment-timezone/builds/moment-timezone-with-data'),
-        'angular': bowerPath('angular/angular.min'),
+        'angular': bowerPath('angular/angular'),
         'angular-resource': bowerPath('angular-resource/angular-resource.min'),
         'angular-ui-calendar': bowerPath('angular-ui-calendar/src/calendar'),
         'angular-bootstrap': bowerPath('angular-bootstrap/ui-bootstrap-tpls.min'),

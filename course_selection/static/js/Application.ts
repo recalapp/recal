@@ -5,8 +5,8 @@ var nice = new Module('nice', [
         'ui.calendar',
         'ui.bootstrap',
         'LocalStorageModule',
-        'niceFilters', 
         'niceServices',
+        'niceFilters', 
         'niceControllers'
         ]);
 

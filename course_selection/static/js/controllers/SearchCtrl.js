@@ -54,6 +54,10 @@ define(["require", "exports"], function(require, exports) {
             //this.testSharingService.setEnrolledCourses(courses);
         };
 
+        SearchCtrl.prototype.startsWith = function (course, viewValue) {
+            return course.title.substr(0, viewValue.length).toLowerCase() == viewValue.toLowerCase();
+        };
+
         SearchCtrl.prototype.courseIdxInList = function (course, list) {
             for (var i = 0; i < list.length; i++) {
                 if (course.id == list[i].id) {
