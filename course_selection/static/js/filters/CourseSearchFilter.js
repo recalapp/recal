@@ -13,16 +13,108 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
         }
         CourseSearchFilter.Factory = function () {
             return function (courses, query) {
+                return CourseSearchFilter.search(courses, query);
+                /*
                 console.log("query: " + query);
-                var filtered = [];
-                angular.forEach(courses, function (course) {
-                    if (course.title.substr(0, query.length).toLowerCase() == query.toLowerCase()) {
-                        filtered.push(course);
-                    }
+                var filtered: ICourse[] = [];
+                angular.forEach(courses, (course) => {
+                if (course.title.substr(0, query.length).toLowerCase()
+                == query.toLowerCase()) {
+                filtered.push(course);
+                }
                 });
                 return filtered;
+                */
             };
         };
+
+        CourseSearchFilter.search = function (courses, input) {
+            if (!input) {
+                return [];
+            }
+
+            var queries = input.split(' ');
+            var results = courses;
+            for (var i = 0; i < queries.length; i++) {
+                var query = queries[i].toUpperCase();
+                if (query == '') {
+                    break;
+                }
+
+                /*
+                if (CourseSearchFilter.arrayContains(CourseSearchFilter.dists, query)) {
+                results.filter((course) => {
+                return course.distribution == query;
+                });
+                }
+                */
+                // is department
+                if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
+                    results = results.filter(function (course) {
+                        return CourseSearchFilter.isListed(course, 'course_listings', 'dept', query);
+                    });
+                } else if (query.length <= 3 && CourseSearchFilter.isNumber(query)) {
+                    results = results.filter(function (course) {
+                        return CourseSearchFilter.isListed(course, 'course_listings', 'number', query);
+                    });
+                } else if (query.length > 3) {
+                    results = results.filter(function (course) {
+                        return CourseSearchFilter.regexTest(course, query);
+                    });
+                } else {
+                    // query is too short
+                    // results = []
+                }
+            }
+
+            return results;
+        };
+
+        CourseSearchFilter.regexTest = function (course, regexStr) {
+            var re = new RegExp(regexStr, "i");
+            if (re.test(course.title)) {
+                return true;
+            }
+
+            return false;
+        };
+
+        CourseSearchFilter.isListed = function (course, first_arg, second_arg, target) {
+            if (!course[first_arg]) {
+                return false;
+            }
+
+            // listings = course_listings
+            var listings = course[first_arg];
+            for (var i = 0; i < listings.length; i++) {
+                var listing = listings[i];
+                if (CourseSearchFilter.startsWith(listing[second_arg], target)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        CourseSearchFilter.startsWith = function (s, t) {
+            return s.substring(0, t.length) === t;
+        };
+
+        CourseSearchFilter.isDepartment = function (input) {
+        };
+
+        CourseSearchFilter.isAlpha = function (s) {
+            return s.search(/[^A-Za-z\s]/) == -1;
+        };
+
+        CourseSearchFilter.isNumber = function (n) {
+            return !isNaN(parseFloat(n)) && isFinite(parseFloat(n));
+        };
+
+        CourseSearchFilter.arrayContains = function (xs, x) {
+            return xs.indexOf(x) != -1;
+        };
+        CourseSearchFilter.dists = ['LA', 'SA', 'HA', 'EM', 'QR', 'STL', 'STN'];
         return CourseSearchFilter;
     })(Filter);
 

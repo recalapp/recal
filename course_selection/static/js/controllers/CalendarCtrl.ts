@@ -22,7 +22,8 @@ class CalendarCtrl {
         //slotDuration: '02:00',
         allDaySlot: false,
         minTime: '08:00',
-        maxTime: '23:00'
+        maxTime: '23:00',
+        timeFormat: ''
     };
 
     private static DAYS = {

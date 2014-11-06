@@ -85,7 +85,9 @@ def get_department_list(seed_page):
     """
     soup = BeautifulSoup(seed_page)
     links = soup('a', href=re.compile(r'subject'))
-    return [tag.string for tag in links]
+    departments = [tag.string for tag in links]
+    #print ' '.join(departments)
+    return departments
 
 def scrape_all():
     """ scrape all events from Princeton's course webfeed
