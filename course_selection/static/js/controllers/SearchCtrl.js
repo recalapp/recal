@@ -76,6 +76,25 @@ define(["require", "exports"], function(require, exports) {
 
             return "";
         };
+
+        SearchCtrl.prototype.getAllCourseListings = function (course) {
+            if (!course) {
+                console.log("getAllCourseListings's input is " + course);
+                return '';
+            }
+
+            var listings = [];
+            for (var i = 0; i < course.course_listings.length; i++) {
+                var curr = course.course_listings[i];
+                if (curr.is_primary) {
+                    listings.unshift(curr.dept + curr.number);
+                } else {
+                    listings.push(curr.dept + curr.number);
+                }
+            }
+
+            return listings.join('/');
+        };
         SearchCtrl.$inject = [
             '$scope',
             'CourseResource',

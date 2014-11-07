@@ -14,7 +14,7 @@
                 ng-click="searchCtrl.onClick(course)">
                 <div class="course-panel-title">
                     <p class="course-listings" 
-                       ng-bind-html="searchCtrl.getPrimaryCourseListing(course) | highlight: query">
+                       ng-bind-html="searchCtrl.getAllCourseListings(course) | highlight: query">
                     </p>
                     <p class="course-title" 
                        ng-bind-html="course.title | highlight: query">
