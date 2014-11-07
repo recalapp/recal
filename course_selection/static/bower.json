@@ -18,7 +18,7 @@
     "momentjs": "~2.7.0",
     "requirejs": "~2.1.14",
     "angular": "~1.2.26",
-    "angular-ui-calendar": "*",
+    "angular-ui-calendar": "~0.9.0-beta.1",
     "angular-local-storage": "~0.1.4"
   },
   "resolutions": {
@@ -26,5 +26,8 @@
     "fullcalendar": "~2.0.2",
     "jquery-ui": "~1.11.0",
     "jquery": "~2.1.1"
+  },
+  "devDependencies": {
+    "angular-ui-calendar": "*"
   }
 }

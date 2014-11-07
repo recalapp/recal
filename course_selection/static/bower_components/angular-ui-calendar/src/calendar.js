@@ -26,8 +26,9 @@ angular.module('ui.calendar', [])
                       // In this way the function will be safely executed on the next digest.
 
                       var args = arguments;
+                      var _this = this;
                       $timeout(function(){
-                          functionToWrap.apply(this, args);
+                        functionToWrap.apply(_this, args);
                       });
                   };
               }
@@ -36,11 +37,11 @@ angular.module('ui.calendar', [])
           };
 
       this.eventsFingerprint = function(e) {
-        if (!e.__uiCalId) {
-          e.__uiCalId = eventSerialId++;
+        if (!e._id) {
+          e._id = eventSerialId++;
         }
         // This extracts all the information we need from the event. http://jsperf.com/angular-calendar-events-fingerprint/3
-        return "" + e.__uiCalId + (e.id || '') + (e.title || '') + (e.url || '') + (+e.start || '') + (+e.end || '') +
+        return "" + e._id + (e.id || '') + (e.title || '') + (e.url || '') + (+e.start || '') + (+e.end || '') +
           (e.allDay || '') + (e.className || '') + extraEventSignature(e) || '';
       };
 
@@ -215,10 +216,13 @@ angular.module('ui.calendar', [])
         }
 
         scope.destroy = function(){
+          if(scope.calendar && scope.calendar.fullCalendar){
+            scope.calendar.fullCalendar('destroy');
+          }
           if(attrs.calendar) {
-            scope.calendar = scope.$parent[attrs.calendar] =  elm.html('');
+            scope.calendar = scope.$parent[attrs.calendar] =  $(elm).html('');
           } else {
-            scope.calendar = elm.html('');
+            scope.calendar = $(elm).html('');
           }
         };
 
@@ -227,8 +231,8 @@ angular.module('ui.calendar', [])
         };
 
         eventSourcesWatcher.onAdded = function(source) {
-          scope.calendar.fullCalendar('addEventSource', source);
-          sourcesChanged = true;
+            scope.calendar.fullCalendar('addEventSource', source);
+            sourcesChanged = true;
         };
 
         eventSourcesWatcher.onRemoved = function(source) {
@@ -241,10 +245,14 @@ angular.module('ui.calendar', [])
         };
 
         eventsWatcher.onRemoved = function(event) {
-          scope.calendar.fullCalendar('removeEvents', function(e) { return e === event; });
+          scope.calendar.fullCalendar('removeEvents', function(e) { 
+            return e._id === event._id;
+          });
         };
 
         eventsWatcher.onChanged = function(event) {
+          event._start = $.fullCalendar.moment(event.start);
+          event._end = $.fullCalendar.moment(event.end);
           scope.calendar.fullCalendar('updateEvent', event);
         };
 

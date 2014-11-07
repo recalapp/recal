@@ -2,6 +2,7 @@ define(["require", "exports"], function(require, exports) {
     'use strict';
 
     var CalendarCtrl = (function () {
+        // dependencies are injected via AngularJS $injector
         function CalendarCtrl($scope, testSharingService, colorResource) {
             var _this = this;
             this.$scope = $scope;
@@ -10,17 +11,19 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.vm = this;
             this.initConfig();
 
+            //this.initEventSources();
             this.$scope.data = testSharingService.getData();
             this.$scope.previewEventSource = {
                 events: [],
                 color: null,
                 textColor: null
             };
-            this.$scope.enrolledEvents = [];
-            this.$scope.eventSources = [
-                $scope.previewEventSource, {
-                    events: $scope.enrolledEvents
-                }];
+            this.$scope.enrolledEventSource = {
+                events: [],
+                color: null,
+                textColor: null
+            };
+            this.$scope.eventSources = [$scope.previewEventSource, $scope.enrolledEventSource];
 
             this.$scope.$watch(function () {
                 return _this.$scope.data.previewCourse;
@@ -33,20 +36,33 @@ define(["require", "exports"], function(require, exports) {
             }, function (newCourses, oldCourses) {
                 return _this.updateEnrolledCourses(newCourses, oldCourses);
             }, true);
-
-            this.$scope.$watch(function () {
-                return _this.$scope.previewEventSource;
-            }, function () {
-            });
         }
+        CalendarCtrl.prototype.courseIdxInList = function (course, list) {
+            for (var i = 0; i < list.length; i++) {
+                if (course.id == list[i].id) {
+                    return i;
+                }
+            }
+
+            return CalendarCtrl.NOT_FOUND;
+        };
+
+        CalendarCtrl.prototype.courseIsInList = function (course, list) {
+            return this.courseIdxInList(course, list) != CalendarCtrl.NOT_FOUND;
+        };
+
         CalendarCtrl.prototype.updatePreviewCourse = function (newCourse, oldCourse) {
             if (newCourse === oldCourse || (newCourse !== null && oldCourse !== null && newCourse.id === oldCourse.id))
                 return;
 
             if (newCourse == null) {
+                // if (this.courseIsInList(newCourse, this.$scope.enrolledCourses)) {
+                //     return;
+                // }
                 this.colorResource.addColor(this.$scope.previewEventSource.colors);
                 this.emptyPreviewEvents();
-                this.$scope.myCalendar.fullCalendar('refetchEvents');
+
+                // this.$scope.myCalendar.fullCalendar('refetchEvents');
                 return;
             }
 
@@ -59,9 +75,10 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.previewEventSource.colors = this.colorResource.nextColor();
             this.$scope.previewEventSource.color = this.$scope.previewEventSource.colors.unselected;
             this.$scope.previewEventSource.textColor = this.$scope.previewEventSource.colors.selected;
-            this.$scope.myCalendar.fullCalendar('refetchEvents');
+            // this.$scope.myCalendar.fullCalendar('refetchEvents');
         };
 
+        // TODO: optimize for better performance
         CalendarCtrl.prototype.updateEnrolledCourses = function (newCourses, oldCourses) {
             if (newCourses === oldCourses)
                 return;
@@ -70,22 +87,32 @@ define(["require", "exports"], function(require, exports) {
             for (var i = 0; i < newCourses.length; i++) {
                 var newEvents = this.getEventsForCourse(newCourses[i]);
                 for (var j = 0; j < newEvents.length; j++) {
-                    this.$scope.enrolledEvents.push(newEvents[j]);
+                    this.$scope.enrolledEventSource.events.push(newEvents[j]);
                 }
             }
-
-            this.$scope.myCalendar.fullCalendar('refetchEvents');
+            // this.$scope.myCalendar.fullCalendar('refetchEvents');
         };
 
         CalendarCtrl.prototype.emptyPreviewEvents = function () {
             this.$scope.previewEventSource.events.length = 0;
+            console.log("in emptyPreviewEvents");
+            console.log("preview events: " + this.$scope.previewEventSource.events);
+            console.log("enrolled events: " + this.$scope.enrolledEventSource.events);
             this.$scope.previewEventSource.colors = null;
             this.$scope.previewEventSource.color = null;
             this.$scope.previewEventSource.textColor = null;
+            console.log("end emptyPreviewEvents");
         };
 
         CalendarCtrl.prototype.emptyEnrolledEvents = function () {
-            this.$scope.enrolledEvents.length = 0;
+            this.$scope.enrolledEventSource.events.length = 0;
+            console.log("in emptyEnrolledEvents");
+            console.log("preview events: " + this.$scope.previewEventSource.events);
+            console.log("enrolled events: " + this.$scope.enrolledEventSource.events);
+            this.$scope.enrolledEventSource.colors = null;
+            this.$scope.enrolledEventSource.color = null;
+            this.$scope.enrolledEventSource.textColor = null;
+            console.log("end emptyEnrolledEvents");
         };
 
         CalendarCtrl.prototype.initConfig = function () {
@@ -104,6 +131,7 @@ define(["require", "exports"], function(require, exports) {
             var primaryListing = this.getPrimaryCourseListing(course);
             for (var i = 0; i < course.sections.length; i++) {
                 var section = course.sections[i];
+
                 for (var j = 0; j < section.meetings.length; j++) {
                     var meeting = section.meetings[j];
                     var days = meeting.days.split(' ');
@@ -142,6 +170,9 @@ define(["require", "exports"], function(require, exports) {
         CalendarCtrl.prototype.getAgendaDate = function (day) {
             var todayOffset = moment().isoWeekday();
 
+            // set todayOffset to 0 if today is a Sunday
+            // TODO: set the start of a week to Sunday in FullCalendar
+            // to get rid of this line
             if (todayOffset == 7) {
                 todayOffset = 0;
             }
@@ -170,6 +201,8 @@ define(["require", "exports"], function(require, exports) {
                     end: "2014-11-04T13:30:00"
                 }]);
         };
+        CalendarCtrl.NOT_FOUND = -1;
+
         CalendarCtrl.defaultUiConfig = {
             height: 1000,
             editable: false,
@@ -183,6 +216,7 @@ define(["require", "exports"], function(require, exports) {
             columnFormat: {
                 week: 'dddd'
             },
+            //slotDuration: '02:00',
             allDaySlot: false,
             minTime: '08:00',
             maxTime: '23:00',
@@ -208,4 +242,3 @@ define(["require", "exports"], function(require, exports) {
     
     return CalendarCtrl;
 });
-//# sourceMappingURL=CalendarCtrl.js.map

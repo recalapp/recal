@@ -6,6 +6,8 @@ import ICourse = require('../interfaces/ICourse');
 'use strict';
 
 class CalendarCtrl {
+    private static NOT_FOUND: number = -1;
+
     private static defaultUiConfig = {
         height: 1000,
         editable: false,
@@ -56,10 +58,12 @@ class CalendarCtrl {
             color: null,
             textColor: null
         };
-        this.$scope.enrolledEvents = [];
-        this.$scope.eventSources = [$scope.previewEventSource, {
-            events: $scope.enrolledEvents
-        }];
+        this.$scope.enrolledEventSource = {
+            events: [],
+            color: null,
+            textColor: null
+        };
+        this.$scope.eventSources = [$scope.previewEventSource, $scope.enrolledEventSource];
 
         this.$scope.$watch(
                 () => { 
@@ -78,15 +82,20 @@ class CalendarCtrl {
                     return this.updateEnrolledCourses(newCourses, oldCourses); 
                 },
                 true);
+    }
 
-        this.$scope.$watch(
-                () => {
-                    return this.$scope.previewEventSource;
-                },
-                () => { 
-                    // this.$scope.myCalendar.fullCalendar('refetchEvents'); 
-                }
-                );
+    private courseIdxInList(course, list): number {
+        for (var i = 0; i < list.length; i++) {
+            if (course.id == list[i].id) {
+                return i;
+            }
+        }
+
+        return CalendarCtrl.NOT_FOUND;
+    }
+
+    private courseIsInList(course, list): boolean {
+        return this.courseIdxInList(course, list) != CalendarCtrl.NOT_FOUND;
     }
 
     public updatePreviewCourse(newCourse, oldCourse) {
@@ -96,10 +105,14 @@ class CalendarCtrl {
                     && newCourse.id === oldCourse.id))
             return;
 
-        if (newCourse == null) {
+        if (newCourse == null) { 
+            // if (this.courseIsInList(newCourse, this.$scope.enrolledCourses)) {
+            //     return;
+            // }
+
             this.colorResource.addColor(this.$scope.previewEventSource.colors);
             this.emptyPreviewEvents();
-            this.$scope.myCalendar.fullCalendar('refetchEvents');
+            // this.$scope.myCalendar.fullCalendar('refetchEvents');
             return;
         }
 
@@ -114,7 +127,7 @@ class CalendarCtrl {
             this.$scope.previewEventSource.colors.unselected;
         this.$scope.previewEventSource.textColor = 
             this.$scope.previewEventSource.colors.selected;
-        this.$scope.myCalendar.fullCalendar('refetchEvents');
+        // this.$scope.myCalendar.fullCalendar('refetchEvents');
     }
 
     // TODO: optimize for better performance
@@ -126,22 +139,33 @@ class CalendarCtrl {
         for (var i = 0; i < newCourses.length; i++) {
             var newEvents = this.getEventsForCourse(newCourses[i]);
             for (var j = 0; j < newEvents.length; j++) {
-                this.$scope.enrolledEvents.push(newEvents[j]);
+                this.$scope.enrolledEventSource.events.push(newEvents[j]);
             }
         }
 
-        this.$scope.myCalendar.fullCalendar('refetchEvents');
+        // this.$scope.myCalendar.fullCalendar('refetchEvents');
     }
 
     private emptyPreviewEvents() {
         this.$scope.previewEventSource.events.length = 0;
+        console.log("in emptyPreviewEvents");
+        console.log("preview events: " + this.$scope.previewEventSource.events);
+        console.log("enrolled events: " + this.$scope.enrolledEventSource.events);
         this.$scope.previewEventSource.colors = null;
         this.$scope.previewEventSource.color = null;
         this.$scope.previewEventSource.textColor = null;
+        console.log("end emptyPreviewEvents");
     }
 
     private emptyEnrolledEvents() {
-        this.$scope.enrolledEvents.length = 0;
+        this.$scope.enrolledEventSource.events.length = 0;
+        console.log("in emptyEnrolledEvents");
+        console.log("preview events: " + this.$scope.previewEventSource.events);
+        console.log("enrolled events: " + this.$scope.enrolledEventSource.events);
+        this.$scope.enrolledEventSource.colors = null;
+        this.$scope.enrolledEventSource.color = null;
+        this.$scope.enrolledEventSource.textColor = null;
+        console.log("end emptyEnrolledEvents");
     }
 
     private initConfig() {
@@ -160,9 +184,11 @@ class CalendarCtrl {
         var primaryListing = this.getPrimaryCourseListing(course);
         for (var i = 0; i < course.sections.length; i++) {
             var section = course.sections[i];
+
             for (var j = 0; j < section.meetings.length; j++) {
                 var meeting = section.meetings[j];
                 var days = meeting.days.split(' ');
+
                 // ignore last element of the result of split, which is 
                 // empty string due to the format of the input
                 for (var k = 0; k < days.length - 1; k++) {

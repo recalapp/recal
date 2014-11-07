@@ -93,7 +93,7 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
 
-            return listings.join('/');
+            return listings.join(' / ');
         };
         SearchCtrl.$inject = [
             '$scope',

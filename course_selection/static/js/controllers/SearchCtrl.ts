@@ -110,7 +110,7 @@ class SearchCtrl {
             }
         }
 
-        return listings.join('/');
+        return listings.join(' / ');
     }
 }
 

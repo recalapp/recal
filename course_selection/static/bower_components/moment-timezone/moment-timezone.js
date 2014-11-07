@@ -1,5 +1,5 @@
 //! moment-timezone.js
-//! version : 0.2.0
+//! version : 0.2.4
 //! author : Tim Wood
 //! license : MIT
 //! github.com/moment/moment-timezone
@@ -21,9 +21,18 @@
 	// Do not load moment-timezone a second time.
 	if (moment.tz !== undefined) { return moment; }
 
-	var VERSION = "0.2.0",
+	var VERSION = "0.2.4",
 		zones = {},
-		links = {};
+		links = {},
+
+		momentVersion = moment.version.split('.'),
+		major = +momentVersion[0],
+		minor = +momentVersion[1];
+
+	// Moment.js version check
+	if (major < 2 || (major === 2 && minor < 6)) {
+		logError('Moment Timezone requires Moment.js >= 2.6.0. You are using Moment.js ' + moment.version + '. See momentjs.com');
+	}
 
 	/************************************
 		Unpacking
@@ -274,9 +283,7 @@
 	function zoneExists (name) {
 		if (!zoneExists.didShowError) {
 			zoneExists.didShowError = true;
-			if (typeof console !== 'undefined' && typeof console.error === 'function') {
-				console.error("moment.tz.zoneExists('" + name + "') has been deprecated in favor of !moment.tz.zone('" + name + "')");
-			}
+				logError("moment.tz.zoneExists('" + name + "') has been deprecated in favor of !moment.tz.zone('" + name + "')");
 		}
 		return !!getZone(name);
 	}
@@ -302,7 +309,7 @@
 			out  = moment.utc.apply(null, args);
 
 		if (zone && needsOffset(out)) {
-			out.add('minutes', zone.parse(out));
+			out.add(zone.parse(out), 'minutes');
 		}
 
 		out.tz(name);
@@ -369,7 +376,7 @@
 	function resetZoneWrap (old) {
 		return function () {
 			this._z = null;
-			return old.call(this);
+			return old.apply(this, arguments);
 		};
 	}
 
@@ -378,7 +385,15 @@
 	fn.utc      = resetZoneWrap(fn.utc);
 
 	// Cloning a moment should include the _z property.
-	moment.momentProperties._z = null;
+	var momentProperties = moment.momentProperties;
+	if (Object.prototype.toString.call(momentProperties) === '[object Array]') {
+		// moment 2.8.1+
+		momentProperties.push('_z');
+		momentProperties.push('_a');
+	} else if (momentProperties) {
+		// moment 2.7.0
+		momentProperties._z = null;
+	}
 
 	// INJECT DATA
 

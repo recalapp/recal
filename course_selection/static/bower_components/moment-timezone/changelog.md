@@ -1,3 +1,16 @@
+### `0.2.4` _2014-10-20_
+* Updated data to IANA TZDB `2014i`. [#142](https://github.com/moment/moment-timezone/pull/142)
+
+### `0.2.3` _2014-10-20_
+* Updated data to IANA TZDB `2014h`. [#141](https://github.com/moment/moment-timezone/pull/141)
+
+### `0.2.2` _2014-09-04_
+* Updated data to IANA TZDB `2014g`. [#126](https://github.com/moment/moment-timezone/pull/126)
+* Added a warning when using `moment-timezone` with `moment<2.6.0`.
+
+### `0.2.1` _2014-08-02_
+* Fixed support for `moment@2.8.1+`.
+
 ### `0.2.0` _2014-07-21_
 * Added the ability to configure whether ambiguous or invalid input is rolled forward or backward. [#101](https://github.com/moment/moment-timezone/pull/101)
 * Added `moment>=2.6.0` as a dependency in `bower.json`. [#107](https://github.com/moment/moment-timezone/issues/107)
