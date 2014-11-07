@@ -1,6 +1,9 @@
 .fc-today {
   background-color: #e7e8e9;
 }
+.fc-event {
+  border-style: none;
+}
 .fc-event-title {
   text-align: center;
 }

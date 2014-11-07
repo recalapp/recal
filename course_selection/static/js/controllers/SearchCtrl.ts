@@ -56,6 +56,8 @@ class SearchCtrl {
         this.$scope.data.previewCourse = null;
     }
 
+    // TODO: what if user removes serach string => no more search results?
+    // currently results in preview course being sticky
     public onClick(course) {
         var courses = this.$scope.data.enrolledCourses;
         // if course is in courses, remove it
@@ -69,10 +71,6 @@ class SearchCtrl {
 
         this.$scope.data.enrolledCourses = courses;
         //this.testSharingService.setEnrolledCourses(courses);
-    }
-
-    public startsWith(course, viewValue) {
-        return course.title.substr(0, viewValue.length).toLowerCase() == viewValue.toLowerCase();
     }
 
     private courseIdxInList(course, list) {

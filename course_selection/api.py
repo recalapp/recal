@@ -31,7 +31,7 @@ class CourseResource(ModelResource):
         excludes = []
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
-        limit = 500
+        limit = 100
         max_limit = 0
 
 class SectionResource(ModelResource):

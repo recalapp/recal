@@ -7,25 +7,13 @@ class CourseSearchFilter extends Filter
 {
     private static dists = ['LA','SA','HA','EM','QR','STL','STN'];
 
-    public static Factory()
-    {
-        return (courses: ICourse[], query: string) => {
-            return CourseSearchFilter.search(courses, query);
-            /*
-            console.log("query: " + query);
-            var filtered: ICourse[] = [];
-            angular.forEach(courses, (course) => {
-                if (course.title.substr(0, query.length).toLowerCase()
-                        == query.toLowerCase()) {
-                    filtered.push(course);
-                }
-            });
-            return filtered;
-            */
-        }
+    static $inject = [];
+
+    constructor() {
+        super();
     }
 
-    public static search(courses: ICourse[], input: string) {
+    public filter(courses: ICourse[], input: string): ICourse[] {
         if (!input) {
             return [];
         }
@@ -39,12 +27,12 @@ class CourseSearchFilter extends Filter
             }
 
             /*
-            if (CourseSearchFilter.arrayContains(CourseSearchFilter.dists, query)) {
-                results.filter((course) => {
-                    return course.distribution == query;
-                });
-            }
-            */
+               if (CourseSearchFilter.arrayContains(CourseSearchFilter.dists, query)) {
+               results.filter((course) => {
+               return course.distribution == query;
+               });
+               }
+             */
 
             // is department
             if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
@@ -57,14 +45,12 @@ class CourseSearchFilter extends Filter
                 results = results.filter((course) => {
                     return CourseSearchFilter.isListed(course, 'course_listings', 'number', query);
                 });
-            } else if (query.length > 3) {
+            } else // if (query.length > 3) 
+            {
                 results = results.filter((course) => {
                     return CourseSearchFilter.regexTest(course, query);
                 });
-            } else {
-                // query is too short
-                // results = []
-            }
+            } 
         }
 
         return results;

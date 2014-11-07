@@ -14,8 +14,8 @@ define(["require", "exports", "angular"], function(require, exports) {
             this.app.service(name, service);
         };
 
-        Module.prototype.addFilter = function (name, filter) {
-            this.app.filter(name, filter);
+        Module.prototype.addFilter = function (name, dependenciesAndFilter) {
+            this.app.filter(name, dependenciesAndFilter);
         };
         return Module;
     })();

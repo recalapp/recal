@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
@@ -23,17 +22,13 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.courses = data['objects'];
         };
 
-        // if user is not enrolled in course yet, add course events to previewEvents
-        // else, TODO: don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {
             var idx = this.courseIdxInList(course, this.$scope.data.enrolledCourses);
             if (idx == SearchCtrl.NOT_FOUND) {
-                //this.testSharingService.setPreviewCourse(course);
                 this.$scope.data.previewCourse = course;
             }
         };
 
-        // TODO: what if course.id != previewCourse.id? will it ever be out of sync?
         SearchCtrl.prototype.onMouseLeave = function (course) {
             this.$scope.data.previewCourse = null;
         };
@@ -41,8 +36,6 @@ define(["require", "exports"], function(require, exports) {
         SearchCtrl.prototype.onClick = function (course) {
             var courses = this.$scope.data.enrolledCourses;
 
-            // if course is in courses, remove it
-            // else add it
             var idx = this.courseIdxInList(course, courses);
             if (idx == SearchCtrl.NOT_FOUND) {
                 courses.push(course);
@@ -51,11 +44,6 @@ define(["require", "exports"], function(require, exports) {
             }
 
             this.$scope.data.enrolledCourses = courses;
-            //this.testSharingService.setEnrolledCourses(courses);
-        };
-
-        SearchCtrl.prototype.startsWith = function (course, viewValue) {
-            return course.title.substr(0, viewValue.length).toLowerCase() == viewValue.toLowerCase();
         };
 
         SearchCtrl.prototype.courseIdxInList = function (course, list) {
@@ -92,3 +80,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SearchCtrl;
 });
+//# sourceMappingURL=SearchCtrl.js.map

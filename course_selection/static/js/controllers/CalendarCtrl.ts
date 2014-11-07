@@ -78,6 +78,15 @@ class CalendarCtrl {
                     return this.updateEnrolledCourses(newCourses, oldCourses); 
                 },
                 true);
+
+        this.$scope.$watch(
+                () => {
+                    return this.$scope.previewEventSource;
+                },
+                () => { 
+                    // this.$scope.myCalendar.fullCalendar('refetchEvents'); 
+                }
+                );
     }
 
     public updatePreviewCourse(newCourse, oldCourse) {

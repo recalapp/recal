@@ -6,12 +6,9 @@ define(["require", "exports"], function(require, exports) {
             this.initCourseColorMap();
             this.initUsableColors();
         }
-        // get course color map for this user, this schedule
         ColorResource.prototype.initCourseColorMap = function () {
         };
 
-        // usableColors = defaultColors - colors in courseColorMap
-        // TODO: finish this
         ColorResource.prototype.initUsableColors = function () {
             this.usableColors = ColorResource.defaultColors.slice();
         };
@@ -20,7 +17,6 @@ define(["require", "exports"], function(require, exports) {
             this.usableColors.push(color);
         };
 
-        // return a random usable color in usableColors
         ColorResource.prototype.nextColor = function () {
             if (this.usableColors.length == 0) {
                 this.initUsableColors();
@@ -65,3 +61,4 @@ define(["require", "exports"], function(require, exports) {
     
     return ColorResource;
 });
+//# sourceMappingURL=ColorResource.js.map

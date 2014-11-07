@@ -7,9 +7,18 @@
     </div>
     <div class="row" id="coursePanelsContainer">
         <div id="accordion" class="panel-group">
-            <div class="panel panel-default course-panel" ng-repeat="course in courses | courseSearchFilter:query"  ng-mouseover="searchCtrl.onMouseOver(course)" ng-mouseleave="searchCtrl.onMouseLeave(course)" ng-click="searchCtrl.onClick(course)">
+            <div class="panel panel-default course-panel" 
+                ng-repeat="course in courses | courseSearch:query"  
+                ng-mouseover="searchCtrl.onMouseOver(course)" 
+                ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                ng-click="searchCtrl.onClick(course)">
                 <div class="course-panel-title">
-                    {{searchCtrl.getPrimaryCourseListing(course)}} {{ course.title }}
+                    <p class="course-listings" 
+                       ng-bind-html="searchCtrl.getPrimaryCourseListing(course) | highlight: query">
+                    </p>
+                    <p class="course-title" 
+                       ng-bind-html="course.title | highlight: query">
+                    </p>
                 </div>
             </div>
         </div>

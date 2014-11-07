@@ -2,7 +2,6 @@
   min-height: 40px;
 }
 .course-panel-title {
-  font-size: 15px;
   text-align: left;
   padding-left: 0;
 }
@@ -22,17 +21,24 @@
   overflow: auto;
 }
 #courseQueue {
-  font-size: 15px;
+  font-size: 13px;
   text-align: center;
 }
 .course-panel-heading {
   height: 6vh;
 }
-.course-panel-body {
-  font-size: 14px;
-  overflow: auto;
-}
 #coursePanelsContainer {
   position: relative;
   height: 90vh;
+}
+.course-listings {
+  font-size: 15px;
+  margin-bottom: 0;
+}
+.course-title {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.highlighted {
+  background: yellow;
 }

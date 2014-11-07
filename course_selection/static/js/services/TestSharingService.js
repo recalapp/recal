@@ -19,3 +19,4 @@ define(["require", "exports"], function(require, exports) {
     
     return TestSharingService;
 });
+//# sourceMappingURL=TestSharingService.js.map

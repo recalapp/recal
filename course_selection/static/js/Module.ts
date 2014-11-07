@@ -22,10 +22,11 @@ class Module
         this.app.service(name, service);
     }
 
-    public addFilter(name: string, filter: Function)
+    public addFilter(name: string, dependenciesAndFilter: Array<any>)
     {
-        this.app.filter(name, filter);
+        this.app.filter(name, dependenciesAndFilter);
     }
+
 }
 
 export = Module;
