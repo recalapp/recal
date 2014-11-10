@@ -1,38 +1,40 @@
-import IColor = require('../interfaces/IColor');
+import IColorPalette = require('../interfaces/IColorPalette');
 
 class ColorResource {
     public static $inject = ['$resource'];
 
-    private static defaultColors: IColor[] = [
+    private static ALPHA: number = 0.6;
+
+    private static previewColor: IColorPalette = {
+        dark: 'rgb(84, 84, 84)',
+        light: 'rgb(210, 210, 210)'
+    };
+
+    private static defaultColors: IColorPalette[] = [
         {   // green
-            selected: "rgb(45, 98, 52)",
-            unselected: "rgb(208, 222, 207)",
-            border: "rgb(45, 98, 52)"
+            dark: "rgb(45, 98, 52)",
+            light: "rgb(208, 222, 207)",
         },
         { // blue
-            selected: "rgb(56, 92, 146)",
-            unselected: "rgb(213, 220, 236)",
-            border: "rgb(56, 92, 146)"
+            dark: "rgb(56, 92, 146)",
+            light: "rgb(213, 220, 236)",
         },
         { // red
-            selected: "rgb(149, 73, 98)",
-            unselected: "rgb(235, 210, 219)",
-            border: "rgb(149, 73, 98)"
+            dark: "rgb(149, 73, 98)",
+            light: "rgb(235, 210, 219)",
         },
         { // brown
-            selected: "rgb(137, 94, 46)",
-            unselected: "rgb(231, 220, 206)",
-            border: "rgb(137, 94, 46)",
+            dark: "rgb(137, 94, 46)",
+            light: "rgb(231, 220, 206)",
         },
         { // cyan
-            selected: "rgb(47, 119, 112)",
-            unselected: "rgb(209, 231, 228)",
-            border: "rgb(47, 119, 112)",
+            dark: "rgb(47, 119, 112)",
+            light: "rgb(209, 231, 228)",
         }
     ];
 
     private courseColorMap = {};
-    private usableColors: IColor[];
+    private usableColors: IColorPalette[];
 
     constructor(private $resource) {
         this.initCourseColorMap();
@@ -49,8 +51,25 @@ class ColorResource {
         this.usableColors = ColorResource.defaultColors.slice();
     }
 
-    public addColor(color: IColor) {
+    private toRgba(rgb: string): string {
+        return rgb.substring(0, 3) 
+            + "a" 
+            + rgb.substring(3, rgb.length - 1) 
+            + ", "
+            + ColorResource.ALPHA 
+            + rgb.substring(rgb.length - 1, rgb.length);
+    }
+
+    public toPreviewColor(color: string): string {
+        return this.toRgba(color);
+    }
+
+    public addColor(color: IColorPalette) {
         this.usableColors.push(color);
+    }
+
+    public getPreviewColor(): IColorPalette {
+        return ColorResource.previewColor;
     }
 
     // return a random usable color in usableColors

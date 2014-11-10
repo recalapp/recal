@@ -1,8 +1,8 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 import TestSharingService = require('../services/TestSharingService');
+import IColorPalette = require('../interfaces/IColorPalette');
 import ColorResource = require('../services/ColorResource');
 import ICourse = require('../interfaces/ICourse');
-import IColor = require('../interfaces/IColor');
 
 'use strict';
 
@@ -55,17 +55,16 @@ class CalendarCtrl {
         this.initConfig();
 
         this.$scope.data = testSharingService.getData();
+
+        var previewColor = this.colorResource.getPreviewColor();
         this.$scope.previewEventSource = {
             events: [],
-            color: 'rgb(210, 210, 210)',
-            textColor: 'rgb(84, 84, 84)'
+            color: this.colorResource.toPreviewColor(previewColor.light),
+            textColor: this.colorResource.toPreviewColor(previewColor.dark)
         };
-        // this.$scope.enrolledEventSource = {
-        //     events: [],
-        // };
+
         this.$scope.eventSources = [
             $scope.previewEventSource, 
-            // $scope.enrolledEventSource
         ];
 
         this.$scope.$watch(
@@ -101,7 +100,6 @@ class CalendarCtrl {
         return this.courseIdxInList(course, list) != CalendarCtrl.NOT_FOUND;
     }
 
-    // TODO: fix the color issue when the preview course becomes enrolled
     private clearPreviewCourse() {
         this.clearPreviewEvents();
     }
@@ -136,12 +134,34 @@ class CalendarCtrl {
         this.$scope.eventSources.push({
             course_id: course.id,
             events: newEvents,
-            color: colors.unselected,
-            textColor: colors.selected
+            color: this.colorResource.toPreviewColor(colors.light),
+            textColor: this.colorResource.toPreviewColor(colors.dark)
         });
     }
 
-    // TODO: optimize for better performance
+    // this relies on the fact that eventSources always start with
+    // preview Event Source
+    private removeEnrolledCourse(removedIdx: number) {
+        this.$scope.eventSources.splice(removedIdx + 1, 1);
+    }
+
+    private getRemovedCourseIdx(newCourses: ICourse[], oldCourses: ICourse[]) {
+        var removedIdx = CalendarCtrl.NOT_FOUND;
+        for (var i = 0; i < newCourses.length; i++) {
+            if (newCourses[i].id !== oldCourses[i].id) {
+                // they are different, meaning oldCourses[i] got removed
+                removedIdx = i;
+                break;
+            }
+        }
+
+        if (removedIdx == CalendarCtrl.NOT_FOUND) {
+            removedIdx = newCourses.length;
+        }
+
+        return removedIdx;
+    }
+
     public updateEnrolledCourses(newCourses, oldCourses) {
         if (newCourses === oldCourses)
             return;
@@ -150,25 +170,11 @@ class CalendarCtrl {
         if (newCourses.length == oldCourses.length + 1) {
             var course = newCourses[newCourses.length - 1];
             this.addEnrolledCourseEvents(course);
-        } else if (newCourses.length == oldCourses.length - 1) {
-            // course removed
-            var removedIdx = CalendarCtrl.NOT_FOUND;
-            for (var i = 0; i < newCourses.length; i++) {
-                if (newCourses[i].id !== oldCourses[i].id) {
-                    // they are different, meaning oldCourses[i] got removed
-                    removedIdx = i;
-                    break;
-                }
-            }
-
-            if (removedIdx == CalendarCtrl.NOT_FOUND) {
-                removedIdx = newCourses.length;
-            }
-
-            // this relies on the fact that eventSources always start with
-            // preview Event Source
-            this.$scope.eventSources.splice(removedIdx + 1, 1);
-            return;
+        } 
+        // course removed
+        else if (newCourses.length == oldCourses.length - 1) {
+            var removedIdx = this.getRemovedCourseIdx(newCourses, oldCourses);
+            return this.removeEnrolledCourse(removedIdx);
         }
     }
 
@@ -180,7 +186,7 @@ class CalendarCtrl {
         this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
     }
 
-    private getEventsForCourse(course: ICourse, color?: IColor) {
+    private getEventsForCourse(course: ICourse, color?: IColorPalette) {
         if (!course) {
             return [];
         }
@@ -211,8 +217,8 @@ class CalendarCtrl {
                         start: start,
                         end: end,
                         location: meeting.location,
-                        color: color ? color.unselected : null,
-                        textColor: color ? color.selected : null
+                        // color: color ? color.light : null,
+                        // textColor: color ? color.dark : null
                     });
                 }
             }

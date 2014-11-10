@@ -12,15 +12,14 @@ define(["require", "exports"], function(require, exports) {
             this.initConfig();
 
             this.$scope.data = testSharingService.getData();
+
+            var previewColor = this.colorResource.getPreviewColor();
             this.$scope.previewEventSource = {
                 events: [],
-                color: 'rgb(210, 210, 210)',
-                textColor: 'rgb(84, 84, 84)'
+                color: this.colorResource.toPreviewColor(previewColor.light),
+                textColor: this.colorResource.toPreviewColor(previewColor.dark)
             };
 
-            // this.$scope.enrolledEventSource = {
-            //     events: [],
-            // };
             this.$scope.eventSources = [
                 $scope.previewEventSource
             ];
@@ -51,7 +50,6 @@ define(["require", "exports"], function(require, exports) {
             return this.courseIdxInList(course, list) != CalendarCtrl.NOT_FOUND;
         };
 
-        // TODO: fix the color issue when the preview course becomes enrolled
         CalendarCtrl.prototype.clearPreviewCourse = function () {
             this.clearPreviewEvents();
         };
@@ -83,12 +81,34 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.eventSources.push({
                 course_id: course.id,
                 events: newEvents,
-                color: colors.unselected,
-                textColor: colors.selected
+                color: this.colorResource.toPreviewColor(colors.light),
+                textColor: this.colorResource.toPreviewColor(colors.dark)
             });
         };
 
-        // TODO: optimize for better performance
+        // this relies on the fact that eventSources always start with
+        // preview Event Source
+        CalendarCtrl.prototype.removeEnrolledCourse = function (removedIdx) {
+            this.$scope.eventSources.splice(removedIdx + 1, 1);
+        };
+
+        CalendarCtrl.prototype.getRemovedCourseIdx = function (newCourses, oldCourses) {
+            var removedIdx = CalendarCtrl.NOT_FOUND;
+            for (var i = 0; i < newCourses.length; i++) {
+                if (newCourses[i].id !== oldCourses[i].id) {
+                    // they are different, meaning oldCourses[i] got removed
+                    removedIdx = i;
+                    break;
+                }
+            }
+
+            if (removedIdx == CalendarCtrl.NOT_FOUND) {
+                removedIdx = newCourses.length;
+            }
+
+            return removedIdx;
+        };
+
         CalendarCtrl.prototype.updateEnrolledCourses = function (newCourses, oldCourses) {
             if (newCourses === oldCourses)
                 return;
@@ -98,24 +118,8 @@ define(["require", "exports"], function(require, exports) {
                 var course = newCourses[newCourses.length - 1];
                 this.addEnrolledCourseEvents(course);
             } else if (newCourses.length == oldCourses.length - 1) {
-                // course removed
-                var removedIdx = CalendarCtrl.NOT_FOUND;
-                for (var i = 0; i < newCourses.length; i++) {
-                    if (newCourses[i].id !== oldCourses[i].id) {
-                        // they are different, meaning oldCourses[i] got removed
-                        removedIdx = i;
-                        break;
-                    }
-                }
-
-                if (removedIdx == CalendarCtrl.NOT_FOUND) {
-                    removedIdx = newCourses.length;
-                }
-
-                // this relies on the fact that eventSources always start with
-                // preview Event Source
-                this.$scope.eventSources.splice(removedIdx + 1, 1);
-                return;
+                var removedIdx = this.getRemovedCourseIdx(newCourses, oldCourses);
+                return this.removeEnrolledCourse(removedIdx);
             }
         };
 
@@ -155,9 +159,7 @@ define(["require", "exports"], function(require, exports) {
                             title: primaryListing + " " + section.name,
                             start: start,
                             end: end,
-                            location: meeting.location,
-                            color: color ? color.unselected : null,
-                            textColor: color ? color.selected : null
+                            location: meeting.location
                         });
                     }
                 }
