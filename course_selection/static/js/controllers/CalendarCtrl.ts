@@ -10,7 +10,8 @@ class CalendarCtrl {
     private static NOT_FOUND: number = -1;
 
     private static defaultUiConfig = {
-        height: 1000,
+        height: 1200,
+        contentHeight: 'auto',
         editable: false,
         header:{
             left: '',

@@ -189,7 +189,8 @@ define(["require", "exports"], function(require, exports) {
         CalendarCtrl.NOT_FOUND = -1;
 
         CalendarCtrl.defaultUiConfig = {
-            height: 1000,
+            height: 1200,
+            contentHeight: 'auto',
             editable: false,
             header: {
                 left: '',

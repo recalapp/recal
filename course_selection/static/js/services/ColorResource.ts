@@ -11,7 +11,7 @@ class ColorResource {
     };
 
     private static defaultColors: IColorPalette[] = [
-        {   // green
+        { // green
             dark: "rgb(45, 98, 52)",
             light: "rgb(208, 222, 207)",
         },
@@ -19,9 +19,13 @@ class ColorResource {
             dark: "rgb(56, 92, 146)",
             light: "rgb(213, 220, 236)",
         },
-        { // red
+        { // pink/light red
             dark: "rgb(149, 73, 98)",
             light: "rgb(235, 210, 219)",
+        },
+        { // yellow
+            dark: "rgb(177, 127, 0)",
+            light: "rgb(250, 244, 203)",
         },
         { // brown
             dark: "rgb(137, 94, 46)",
@@ -30,6 +34,10 @@ class ColorResource {
         { // cyan
             dark: "rgb(47, 119, 112)",
             light: "rgb(209, 231, 228)",
+        },
+        { // purple
+            dark: "rgb(97, 73, 150)",
+            light: "rgb(220, 213, 226)",
         }
     ];
 

@@ -1,13 +1,18 @@
 .fc-unthemed .fc-today {
-  background-color: #e7e8e9;
+  background-color: #ffffff;
 }
 .fc-event {
-  border-style: none;
+  border-right-width: 4px;
+  border-top-style: none;
+  border-left-style: none;
+  border-bottom-style: none;
 }
 .fc-event-title {
   text-align: center;
 }
-.fc-agenda-slots tr.fc-minor th,
-.fc-agenda-slots tr.fc-minor td {
+.fc-slats td {
+  height: 1.7em;
+}
+.fc-slats .fc-minor td {
   border-top-style: none;
 }

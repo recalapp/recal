@@ -65,12 +65,20 @@ define(["require", "exports"], function(require, exports) {
                 light: "rgb(235, 210, 219)"
             },
             {
+                dark: "rgb(177, 127, 0)",
+                light: "rgb(250, 244, 203)"
+            },
+            {
                 dark: "rgb(137, 94, 46)",
                 light: "rgb(231, 220, 206)"
             },
             {
                 dark: "rgb(47, 119, 112)",
                 light: "rgb(209, 231, 228)"
+            },
+            {
+                dark: "rgb(97, 73, 150)",
+                light: "rgb(220, 213, 226)"
             }
         ];
         return ColorResource;
