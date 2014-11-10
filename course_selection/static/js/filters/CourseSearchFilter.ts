@@ -18,7 +18,8 @@ class CourseSearchFilter extends Filter
             return [];
         }
 
-        var queries: string[] = input.split(' ');
+        var breakedQueries = CourseSearchFilter.breakQuery(input);
+        var queries: string[] = breakedQueries.split(' ');
         var results: ICourse[] = courses;
         for (var i = 0; i < queries.length; i++) {
             var query = queries[i].toUpperCase();
@@ -37,15 +38,7 @@ class CourseSearchFilter extends Filter
                 results = results.filter((course) => {
                     return CourseSearchFilter.isListed(course, 'course_listings', 'number', query);
                 });
-            } else if (!CourseSearchFilter.isAlpha(query) && !CourseSearchFilter.isNumber(query)) {
-                // this query contains both numbers and letters
-                // length >= 2
-                var subQueries = CourseSearchFilter.breakQuery(query);
-                for (var j = 0; j < subQueries.length; j++) {
-                    queries.push(subQueries[j]);
-                }
-            } else
-            {
+            } else {
                 results = results.filter((course) => {
                     return CourseSearchFilter.regexTest(course, query);
                 });
@@ -55,19 +48,19 @@ class CourseSearchFilter extends Filter
         return results;
     }
 
-    private static breakQuery(query: string) : Array<string> {
-        var results = [];
-        var prev: number = 0;
-        for (var i = 0; i < query.length - 1; i++) {
-            if (CourseSearchFilter.isAlpha(query.charAt(i)) != CourseSearchFilter.isAlpha(query.charAt(i+1))) {
-                results.push(query.substring(prev, i + 1));
-                prev = i + 1;
-            }
-        }
+    private static breakQuery(input: string): string {
+        var output;
+        output = input.replace(/\D\d+\D/g, function(text){
+            return text.charAt(0) + ' ' + text.substring(1, text.length - 1) + ' ' + text.slice(-1);
+        });
+        output = output.replace(/\D\d+/g, function(text){
+            return text.charAt(0) + ' ' + text.substring(1);
+        });
+        output = output.replace(/\d+\D/g, function(text){
+            return text.substring(0, text.length - 1) + ' ' + text.slice(-1);
+        });
 
-        // push the last subQuery
-        results.push(query.substring(prev, query.length));
-        return results;
+        return output;
     }
 
     private static regexTest(course: ICourse, regexStr): boolean {

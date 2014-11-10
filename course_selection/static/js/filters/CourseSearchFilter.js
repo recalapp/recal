@@ -16,7 +16,8 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
                 return [];
             }
 
-            var queries = input.split(' ');
+            var breakedQueries = CourseSearchFilter.breakQuery(input);
+            var queries = breakedQueries.split(' ');
             var results = courses;
             for (var i = 0; i < queries.length; i++) {
                 var query = queries[i].toUpperCase();
@@ -33,13 +34,6 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
                     results = results.filter(function (course) {
                         return CourseSearchFilter.isListed(course, 'course_listings', 'number', query);
                     });
-                } else if (!CourseSearchFilter.isAlpha(query) && !CourseSearchFilter.isNumber(query)) {
-                    // this query contains both numbers and letters
-                    // length >= 2
-                    var subQueries = CourseSearchFilter.breakQuery(query);
-                    for (var j = 0; j < subQueries.length; j++) {
-                        queries.push(subQueries[j]);
-                    }
                 } else {
                     results = results.filter(function (course) {
                         return CourseSearchFilter.regexTest(course, query);
@@ -50,19 +44,19 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
             return results;
         };
 
-        CourseSearchFilter.breakQuery = function (query) {
-            var results = [];
-            var prev = 0;
-            for (var i = 0; i < query.length - 1; i++) {
-                if (CourseSearchFilter.isAlpha(query.charAt(i)) != CourseSearchFilter.isAlpha(query.charAt(i + 1))) {
-                    results.push(query.substring(prev, i + 1));
-                    prev = i + 1;
-                }
-            }
+        CourseSearchFilter.breakQuery = function (input) {
+            var output;
+            output = input.replace(/\D\d+\D/g, function (text) {
+                return text.charAt(0) + ' ' + text.substring(1, text.length - 1) + ' ' + text.slice(-1);
+            });
+            output = output.replace(/\D\d+/g, function (text) {
+                return text.charAt(0) + ' ' + text.substring(1);
+            });
+            output = output.replace(/\d+\D/g, function (text) {
+                return text.substring(0, text.length - 1) + ' ' + text.slice(-1);
+            });
 
-            // push the last subQuery
-            results.push(query.substring(prev, query.length));
-            return results;
+            return output;
         };
 
         CourseSearchFilter.regexTest = function (course, regexStr) {

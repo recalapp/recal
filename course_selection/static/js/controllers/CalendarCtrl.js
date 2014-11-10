@@ -11,12 +11,11 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.vm = this;
             this.initConfig();
 
-            //this.initEventSources();
             this.$scope.data = testSharingService.getData();
             this.$scope.previewEventSource = {
                 events: [],
-                color: null,
-                textColor: null
+                color: 'rgb(210, 210, 210)',
+                textColor: 'rgb(84, 84, 84)'
             };
 
             // this.$scope.enrolledEventSource = {
@@ -52,12 +51,8 @@ define(["require", "exports"], function(require, exports) {
             return this.courseIdxInList(course, list) != CalendarCtrl.NOT_FOUND;
         };
 
+        // TODO: fix the color issue when the preview course becomes enrolled
         CalendarCtrl.prototype.clearPreviewCourse = function () {
-            // let other courses use this color
-            if (this.$scope.previewEventSource.colors) {
-                this.colorResource.addColor(this.$scope.previewEventSource.colors);
-            }
-
             this.clearPreviewEvents();
         };
 
@@ -68,10 +63,6 @@ define(["require", "exports"], function(require, exports) {
             for (var i = 0; i < newEvents.length; i++) {
                 this.$scope.previewEventSource.events.push(newEvents[i]);
             }
-
-            this.$scope.previewEventSource.colors = this.colorResource.nextColor();
-            this.$scope.previewEventSource.color = this.$scope.previewEventSource.colors.unselected;
-            this.$scope.previewEventSource.textColor = this.$scope.previewEventSource.colors.selected;
         };
 
         CalendarCtrl.prototype.updatePreviewCourse = function (newCourse, oldCourse) {
@@ -85,6 +76,7 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
+        // TODO: need to remove preview_event_source as we add it
         CalendarCtrl.prototype.addEnrolledCourseEvents = function (course) {
             var colors = this.colorResource.nextColor();
             var newEvents = this.getEventsForCourse(course);
@@ -104,7 +96,7 @@ define(["require", "exports"], function(require, exports) {
             // course added
             if (newCourses.length == oldCourses.length + 1) {
                 var course = newCourses[newCourses.length - 1];
-                return this.addEnrolledCourseEvents(course);
+                this.addEnrolledCourseEvents(course);
             } else if (newCourses.length == oldCourses.length - 1) {
                 // course removed
                 var removedIdx = CalendarCtrl.NOT_FOUND;
@@ -120,6 +112,8 @@ define(["require", "exports"], function(require, exports) {
                     removedIdx = newCourses.length;
                 }
 
+                // this relies on the fact that eventSources always start with
+                // preview Event Source
                 this.$scope.eventSources.splice(removedIdx + 1, 1);
                 return;
             }
@@ -127,9 +121,6 @@ define(["require", "exports"], function(require, exports) {
 
         CalendarCtrl.prototype.clearPreviewEvents = function () {
             this.$scope.previewEventSource.events.length = 0;
-            this.$scope.previewEventSource.colors = null;
-            this.$scope.previewEventSource.color = null;
-            this.$scope.previewEventSource.textColor = null;
         };
 
         CalendarCtrl.prototype.initConfig = function () {
@@ -188,37 +179,10 @@ define(["require", "exports"], function(require, exports) {
 
         CalendarCtrl.prototype.getAgendaDate = function (day) {
             var todayOffset = moment().isoWeekday();
-
-            // set todayOffset to 0 if today is a Sunday
-            // TODO: set the start of a week to Sunday in FullCalendar
-            // to get rid of this line
-            // if (todayOffset == 7) {
-            //     todayOffset = 0;
-            // }
             var dayOffset = CalendarCtrl.DAYS[day];
             var diff = +(dayOffset - todayOffset);
             var date = moment().add('days', diff).format('YYYY-MM-DD');
             return date;
-        };
-
-        CalendarCtrl.prototype.initEventSources = function () {
-            this.$scope.previewEvents = [
-                {
-                    title: "test1",
-                    start: "2014-11-03T12:30:00",
-                    end: "2014-11-03T13:30:00"
-                }
-            ];
-
-            this.$scope.eventSources = [this.$scope.previewEvents];
-        };
-
-        CalendarCtrl.prototype.addEvent = function () {
-            this.$scope.previewEvents.push([{
-                    title: "test1",
-                    start: "2014-11-04T12:30:00",
-                    end: "2014-11-04T13:30:00"
-                }]);
         };
         CalendarCtrl.NOT_FOUND = -1;
 
@@ -240,7 +204,8 @@ define(["require", "exports"], function(require, exports) {
             allDaySlot: false,
             minTime: '08:00',
             maxTime: '23:00',
-            timeFormat: ''
+            timeFormat: '',
+            slotEventOverlap: false
         };
 
         CalendarCtrl.DAYS = {

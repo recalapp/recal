@@ -27,7 +27,8 @@ class CalendarCtrl {
         allDaySlot: false,
         minTime: '08:00',
         maxTime: '23:00',
-        timeFormat: ''
+        timeFormat: '',
+        slotEventOverlap: false
     };
 
     private static DAYS = {
@@ -53,12 +54,11 @@ class CalendarCtrl {
         this.$scope.vm = this;
         this.initConfig();
 
-        //this.initEventSources();
         this.$scope.data = testSharingService.getData();
         this.$scope.previewEventSource = {
             events: [],
-            color: null,
-            textColor: null
+            color: 'rgb(210, 210, 210)',
+            textColor: 'rgb(84, 84, 84)'
         };
         // this.$scope.enrolledEventSource = {
         //     events: [],
@@ -101,12 +101,8 @@ class CalendarCtrl {
         return this.courseIdxInList(course, list) != CalendarCtrl.NOT_FOUND;
     }
 
+    // TODO: fix the color issue when the preview course becomes enrolled
     private clearPreviewCourse() {
-        // let other courses use this color
-        if (this.$scope.previewEventSource.colors) {
-            this.colorResource.addColor(this.$scope.previewEventSource.colors);
-        }
-
         this.clearPreviewEvents();
     }
 
@@ -117,12 +113,6 @@ class CalendarCtrl {
         for (var i = 0; i < newEvents.length; i++) {
             this.$scope.previewEventSource.events.push(newEvents[i]);
         }
-
-        this.$scope.previewEventSource.colors = this.colorResource.nextColor();
-        this.$scope.previewEventSource.color = 
-            this.$scope.previewEventSource.colors.unselected;
-        this.$scope.previewEventSource.textColor = 
-            this.$scope.previewEventSource.colors.selected;
     }
 
     public updatePreviewCourse(newCourse, oldCourse) {
@@ -139,6 +129,7 @@ class CalendarCtrl {
         }
     }
 
+    // TODO: need to remove preview_event_source as we add it
     private addEnrolledCourseEvents(course: ICourse): void {
         var colors = this.colorResource.nextColor();
         var newEvents = this.getEventsForCourse(course);
@@ -158,7 +149,7 @@ class CalendarCtrl {
         // course added
         if (newCourses.length == oldCourses.length + 1) {
             var course = newCourses[newCourses.length - 1];
-            return this.addEnrolledCourseEvents(course);
+            this.addEnrolledCourseEvents(course);
         } else if (newCourses.length == oldCourses.length - 1) {
             // course removed
             var removedIdx = CalendarCtrl.NOT_FOUND;
@@ -174,6 +165,8 @@ class CalendarCtrl {
                 removedIdx = newCourses.length;
             }
 
+            // this relies on the fact that eventSources always start with
+            // preview Event Source
             this.$scope.eventSources.splice(removedIdx + 1, 1);
             return;
         }
@@ -181,9 +174,6 @@ class CalendarCtrl {
 
     private clearPreviewEvents() {
         this.$scope.previewEventSource.events.length = 0;
-        this.$scope.previewEventSource.colors = null;
-        this.$scope.previewEventSource.color = null;
-        this.$scope.previewEventSource.textColor = null;
     }
 
     private initConfig() {
@@ -244,39 +234,10 @@ class CalendarCtrl {
 
     private getAgendaDate(day: string): string {
         var todayOffset = moment().isoWeekday();
-
-        // set todayOffset to 0 if today is a Sunday
-        // TODO: set the start of a week to Sunday in FullCalendar
-        // to get rid of this line
-        // if (todayOffset == 7) {
-        //     todayOffset = 0;
-        // }
         var dayOffset = CalendarCtrl.DAYS[day];
         var diff: number = +(dayOffset - todayOffset);
         var date = moment().add('days', diff).format('YYYY-MM-DD');
         return date;
-    }
-
-    private initEventSources() {
-        this.$scope.previewEvents = [
-        {
-            title: "test1",
-            start: "2014-11-03T12:30:00",
-            end: "2014-11-03T13:30:00"
-        }
-        ];
-
-        this.$scope.eventSources = [this.$scope.previewEvents];
-    }
-
-    public addEvent() {
-        this.$scope.previewEvents.push(
-                [{
-                    title: "test1",
-                    start: "2014-11-04T12:30:00",
-                    end: "2014-11-04T13:30:00"
-                }]
-                );
     }
 }
 
