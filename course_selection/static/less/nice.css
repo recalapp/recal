@@ -17,11 +17,11 @@ body {
   height: 95vh;
 }
 #searchColumn {
-  width: 33vw;
+  width: 25vw;
 }
 #queueColumn {
-  width: 20vw;
+  width: 15vw;
 }
 #calendarColumn {
-  width: 47vw;
+  width: 60vw;
 }

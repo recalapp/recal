@@ -29,7 +29,10 @@ class CalendarCtrl {
         minTime: '08:00',
         maxTime: '23:00',
         timeFormat: '',
-        slotEventOverlap: false
+        slotEventOverlap: false,
+        // eventRender: (event, element) => {
+        //     element.find('.fc-title').after("<br/>" + event.location);
+        // }
     };
 
     private static DAYS = {
@@ -136,7 +139,8 @@ class CalendarCtrl {
             course_id: course.id,
             events: newEvents,
             color: this.colorResource.toPreviewColor(colors.light),
-            textColor: this.colorResource.toPreviewColor(colors.dark)
+            textColor: this.colorResource.toPreviewColor(colors.dark),
+
         });
     }
 
