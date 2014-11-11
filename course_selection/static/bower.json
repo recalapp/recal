@@ -23,11 +23,11 @@
   },
   "resolutions": {
     "angular": "~1.2.26",
-    "fullcalendar": "~2.0.2",
-    "jquery-ui": "~1.11.0",
+    "fullcalendar": "~2.1.1",
     "jquery": "~2.1.1"
   },
   "devDependencies": {
-    "angular-ui-calendar": "*"
+    "angular-ui-calendar": "*",
+    "fullcalendar": "~2.1.1"
   }
 }

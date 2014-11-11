@@ -20,6 +20,12 @@
     "moment-timezone": "~0.2.0",
     "momentjs": "~2.7.0",
     "requirejs": "~2.1.14",
-    "smalot-bootstrap-datetimepicker": "~2.2.0",
+    "smalot-bootstrap-datetimepicker": "~2.2.0"
+  },
+  "resolutions": {
+    "fullcalendar": "~2.1.1"
+  },
+  "devDependencies": {
+    "fullcalendar": "~2.1.1"
   }
 }

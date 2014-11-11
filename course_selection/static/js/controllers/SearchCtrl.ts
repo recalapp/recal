@@ -41,36 +41,50 @@ class SearchCtrl {
         this.$scope.courses = data['objects'];
     }
 
-    // if user is not enrolled in course yet, add course events to previewEvents
-    // else, TODO: don't do anything
-    public onMouseOver(course) {
+    private setPreviewCourse(course: ICourse): void {
+        this.$scope.data.previewCourse = course;
+    }
+
+    private clearPreviewCourse(): void {
+        this.setPreviewCourse(null);
+    }
+
+    private isCourseEnrolled(course: ICourse): boolean {
         var idx = this.courseIdxInList(course, this.$scope.data.enrolledCourses);
-        if (idx == SearchCtrl.NOT_FOUND) {
-            //this.testSharingService.setPreviewCourse(course);
-            this.$scope.data.previewCourse = course;
+        return idx != SearchCtrl.NOT_FOUND;
+    }
+
+    // if user is not enrolled in course yet, add course events to previewEvents
+    // else, don't do anything
+    public onMouseOver(course) {
+        if (!this.isCourseEnrolled(course)) {
+            this.setPreviewCourse(course);
         }
     }
 
     // TODO: what if course.id != previewCourse.id? will it ever be out of sync?
     public onMouseLeave(course) {
-        this.$scope.data.previewCourse = null;
+        this.clearPreviewCourse();
+    }
+
+    private unenrollCourse(course: ICourse): void {
+        var enrolledCourses = this.$scope.data.enrolledCourses;
+        var idx = this.courseIdxInList(course, enrolledCourses);
+        enrolledCourses.splice(idx, 1);
+    }
+
+    private enrollCourse(course: ICourse): void {
+        this.$scope.data.enrolledCourses.push(course);
     }
 
     // TODO: what if user removes serach string => no more search results?
     // currently results in preview course being sticky
     public onClick(course) {
-        var courses = this.$scope.data.enrolledCourses;
-        // if course is in courses, remove it
-        // else add it
-        var idx = this.courseIdxInList(course, courses);
-        if (idx == SearchCtrl.NOT_FOUND) {
-            courses.push(course);
+        if (this.isCourseEnrolled(course)) {
+            this.unenrollCourse(course);
         } else {
-            courses.splice(idx, 1);
+            this.enrollCourse(course);
         }
-
-        this.$scope.data.enrolledCourses = courses;
-        //this.testSharingService.setEnrolledCourses(courses);
     }
 
     private courseIdxInList(course, list) {

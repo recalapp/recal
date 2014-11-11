@@ -26,14 +26,6 @@ class CourseSearchFilter extends Filter
                 break;
             }
 
-            /*
-               if (CourseSearchFilter.arrayContains(CourseSearchFilter.dists, query)) {
-               results.filter((course) => {
-               return course.distribution == query;
-               });
-               }
-             */
-
             // is department
             if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
                 results = results.filter((course) => {
@@ -41,11 +33,18 @@ class CourseSearchFilter extends Filter
                 });
             } 
             // is course number
-            else if (query.length <= 3 && CourseSearchFilter.isNumber(query)) {
+            else if (query.length <= 4 && CourseSearchFilter.isNumber(query)) {
                 results = results.filter((course) => {
                     return CourseSearchFilter.isListed(course, 'course_listings', 'number', query);
                 });
-            } else // if (query.length > 3) 
+            } else if (!CourseSearchFilter.isAlpha(query) && !CourseSearchFilter.isNumber(query)) {
+                // this query contains both numbers and letters
+                // length >= 2
+                var subQueries = CourseSearchFilter.breakQuery(query);
+                for (var j = 0; j < subQueries.length; j++) {
+                    queries.push(subQueries[j]);
+                }
+            } else
             {
                 results = results.filter((course) => {
                     return CourseSearchFilter.regexTest(course, query);
@@ -53,6 +52,21 @@ class CourseSearchFilter extends Filter
             } 
         }
 
+        return results;
+    }
+
+    private static breakQuery(query: string) : Array<string> {
+        var results = [];
+        var prev: number = 0;
+        for (var i = 0; i < query.length - 1; i++) {
+            if (CourseSearchFilter.isAlpha(query.charAt(i)) != CourseSearchFilter.isAlpha(query.charAt(i+1))) {
+                results.push(query.substring(prev, i + 1));
+                prev = i + 1;
+            }
+        }
+
+        // push the last subQuery
+        results.push(query.substring(prev, query.length));
         return results;
     }
 

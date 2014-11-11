@@ -18,12 +18,13 @@ define(["require", "exports"], function(require, exports) {
                 color: null,
                 textColor: null
             };
-            this.$scope.enrolledEventSource = {
-                events: [],
-                color: null,
-                textColor: null
-            };
-            this.$scope.eventSources = [$scope.previewEventSource, $scope.enrolledEventSource];
+
+            // this.$scope.enrolledEventSource = {
+            //     events: [],
+            // };
+            this.$scope.eventSources = [
+                $scope.previewEventSource
+            ];
 
             this.$scope.$watch(function () {
                 return _this.$scope.data.previewCourse;
@@ -51,23 +52,19 @@ define(["require", "exports"], function(require, exports) {
             return this.courseIdxInList(course, list) != CalendarCtrl.NOT_FOUND;
         };
 
-        CalendarCtrl.prototype.updatePreviewCourse = function (newCourse, oldCourse) {
-            if (newCourse === oldCourse || (newCourse !== null && oldCourse !== null && newCourse.id === oldCourse.id))
-                return;
-
-            if (newCourse == null) {
-                // if (this.courseIsInList(newCourse, this.$scope.enrolledCourses)) {
-                //     return;
-                // }
+        CalendarCtrl.prototype.clearPreviewCourse = function () {
+            // let other courses use this color
+            if (this.$scope.previewEventSource.colors) {
                 this.colorResource.addColor(this.$scope.previewEventSource.colors);
-                this.emptyPreviewEvents();
-
-                // this.$scope.myCalendar.fullCalendar('refetchEvents');
-                return;
             }
 
-            var newEvents = this.getEventsForCourse(newCourse);
-            this.emptyPreviewEvents();
+            this.clearPreviewEvents();
+        };
+
+        // set the preview course to course
+        CalendarCtrl.prototype.setPreviewCourse = function (course) {
+            this.clearPreviewEvents();
+            var newEvents = this.getEventsForCourse(course);
             for (var i = 0; i < newEvents.length; i++) {
                 this.$scope.previewEventSource.events.push(newEvents[i]);
             }
@@ -75,7 +72,28 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.previewEventSource.colors = this.colorResource.nextColor();
             this.$scope.previewEventSource.color = this.$scope.previewEventSource.colors.unselected;
             this.$scope.previewEventSource.textColor = this.$scope.previewEventSource.colors.selected;
-            // this.$scope.myCalendar.fullCalendar('refetchEvents');
+        };
+
+        CalendarCtrl.prototype.updatePreviewCourse = function (newCourse, oldCourse) {
+            if (newCourse === oldCourse || (newCourse !== null && oldCourse !== null && newCourse.id === oldCourse.id))
+                return;
+
+            if (newCourse == null) {
+                return this.clearPreviewCourse();
+            } else {
+                return this.setPreviewCourse(newCourse);
+            }
+        };
+
+        CalendarCtrl.prototype.addEnrolledCourseEvents = function (course) {
+            var colors = this.colorResource.nextColor();
+            var newEvents = this.getEventsForCourse(course);
+            this.$scope.eventSources.push({
+                course_id: course.id,
+                events: newEvents,
+                color: colors.unselected,
+                textColor: colors.selected
+            });
         };
 
         // TODO: optimize for better performance
@@ -83,43 +101,42 @@ define(["require", "exports"], function(require, exports) {
             if (newCourses === oldCourses)
                 return;
 
-            this.emptyEnrolledEvents();
-            for (var i = 0; i < newCourses.length; i++) {
-                var newEvents = this.getEventsForCourse(newCourses[i]);
-                for (var j = 0; j < newEvents.length; j++) {
-                    this.$scope.enrolledEventSource.events.push(newEvents[j]);
+            // course added
+            if (newCourses.length == oldCourses.length + 1) {
+                var course = newCourses[newCourses.length - 1];
+                return this.addEnrolledCourseEvents(course);
+            } else if (newCourses.length == oldCourses.length - 1) {
+                // course removed
+                var removedIdx = CalendarCtrl.NOT_FOUND;
+                for (var i = 0; i < newCourses.length; i++) {
+                    if (newCourses[i].id !== oldCourses[i].id) {
+                        // they are different, meaning oldCourses[i] got removed
+                        removedIdx = i;
+                        break;
+                    }
                 }
+
+                if (removedIdx == CalendarCtrl.NOT_FOUND) {
+                    removedIdx = newCourses.length;
+                }
+
+                this.$scope.eventSources.splice(removedIdx + 1, 1);
+                return;
             }
-            // this.$scope.myCalendar.fullCalendar('refetchEvents');
         };
 
-        CalendarCtrl.prototype.emptyPreviewEvents = function () {
+        CalendarCtrl.prototype.clearPreviewEvents = function () {
             this.$scope.previewEventSource.events.length = 0;
-            console.log("in emptyPreviewEvents");
-            console.log("preview events: " + this.$scope.previewEventSource.events);
-            console.log("enrolled events: " + this.$scope.enrolledEventSource.events);
             this.$scope.previewEventSource.colors = null;
             this.$scope.previewEventSource.color = null;
             this.$scope.previewEventSource.textColor = null;
-            console.log("end emptyPreviewEvents");
-        };
-
-        CalendarCtrl.prototype.emptyEnrolledEvents = function () {
-            this.$scope.enrolledEventSource.events.length = 0;
-            console.log("in emptyEnrolledEvents");
-            console.log("preview events: " + this.$scope.previewEventSource.events);
-            console.log("enrolled events: " + this.$scope.enrolledEventSource.events);
-            this.$scope.enrolledEventSource.colors = null;
-            this.$scope.enrolledEventSource.color = null;
-            this.$scope.enrolledEventSource.textColor = null;
-            console.log("end emptyEnrolledEvents");
         };
 
         CalendarCtrl.prototype.initConfig = function () {
             this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
         };
 
-        CalendarCtrl.prototype.getEventsForCourse = function (course) {
+        CalendarCtrl.prototype.getEventsForCourse = function (course, color) {
             if (!course) {
                 return [];
             }
@@ -147,7 +164,9 @@ define(["require", "exports"], function(require, exports) {
                             title: primaryListing + " " + section.name,
                             start: start,
                             end: end,
-                            location: meeting.location
+                            location: meeting.location,
+                            color: color ? color.unselected : null,
+                            textColor: color ? color.selected : null
                         });
                     }
                 }
@@ -173,9 +192,9 @@ define(["require", "exports"], function(require, exports) {
             // set todayOffset to 0 if today is a Sunday
             // TODO: set the start of a week to Sunday in FullCalendar
             // to get rid of this line
-            if (todayOffset == 7) {
-                todayOffset = 0;
-            }
+            // if (todayOffset == 7) {
+            //     todayOffset = 0;
+            // }
             var dayOffset = CalendarCtrl.DAYS[day];
             var diff = +(dayOffset - todayOffset);
             var date = moment().add('days', diff).format('YYYY-MM-DD');
@@ -213,6 +232,7 @@ define(["require", "exports"], function(require, exports) {
             },
             defaultView: "agendaWeek",
             weekends: false,
+            firstDay: 1,
             columnFormat: {
                 week: 'dddd'
             },
