@@ -8,15 +8,8 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.vm = this;
             this.$scope.data = testSharingService.getData();
         }
-        QueueCtrl.prototype.getPrimaryCourseListing = function (course) {
-            for (var i = 0; i < course.course_listings.length; i++) {
-                var curr = course.course_listings[i];
-                if (curr.is_primary) {
-                    return curr.dept + curr.number;
-                }
-            }
-
-            return "";
+        // section belongs to a course that has been enrolled
+        QueueCtrl.prototype.onMouseOver = function (section) {
         };
         QueueCtrl.$inject = [
             '$scope',
@@ -28,4 +21,3 @@ define(["require", "exports"], function(require, exports) {
     
     return QueueCtrl;
 });
-//# sourceMappingURL=QueueCtrl.js.map

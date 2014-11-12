@@ -1,5 +1,5 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", '../models/Course'], function(require, exports, Course) {
     'use strict';
 
     var SearchCtrl = (function () {
@@ -20,13 +20,17 @@ define(["require", "exports"], function(require, exports) {
         };
 
         SearchCtrl.prototype.onLoaded = function (data) {
-            this.$scope.courses = data['objects'];
+            this.$scope.courses = data['objects'].map(function (course) {
+                return new Course(course.title, course.description, course.course_listings, course.id, course.sections, course.semester);
+            });
         };
 
         // if user is not enrolled in course yet, add course events to previewEvents
         // else, don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {
-            if (!this.testSharingService.isCourseEnrolled(course)) {
+            if (this.testSharingService.isCourseEnrolled(course)) {
+                this.testSharingService.clearPreviewCourse();
+            } else {
                 this.testSharingService.setPreviewCourse(course);
             }
         };
@@ -44,36 +48,6 @@ define(["require", "exports"], function(require, exports) {
             } else {
                 this.testSharingService.enrollCourse(course);
             }
-        };
-
-        SearchCtrl.prototype.getPrimaryCourseListing = function (course) {
-            for (var i = 0; i < course.course_listings.length; i++) {
-                var curr = course.course_listings[i];
-                if (curr.is_primary) {
-                    return curr.dept + curr.number;
-                }
-            }
-
-            return "";
-        };
-
-        SearchCtrl.prototype.getAllCourseListings = function (course) {
-            if (!course) {
-                console.log("getAllCourseListings's input is " + course);
-                return '';
-            }
-
-            var listings = [];
-            for (var i = 0; i < course.course_listings.length; i++) {
-                var curr = course.course_listings[i];
-                if (curr.is_primary) {
-                    listings.unshift(curr.dept + curr.number);
-                } else {
-                    listings.push(curr.dept + curr.number);
-                }
-            }
-
-            return listings.join(' / ');
         };
         SearchCtrl.$inject = [
             '$scope',

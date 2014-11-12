@@ -6,7 +6,7 @@
             <div id="courseQueue">
                 <accordion close-others=false>
                 <div ng-repeat="course in data.enrolledCourses">
-                    <accordion-group heading="{{ queueCtrl.getPrimaryCourseListing(course) }}">
+                    <accordion-group heading="{{ course.primary_listing }}">
                     <div class="row clearfix q-section-container">
                         <div class="q-section" ng-repeat="section in course.sections"> 
                             {{ section.name }} 

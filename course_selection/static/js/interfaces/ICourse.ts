@@ -9,6 +9,8 @@ interface ICourse {
     id: number;
     sections: Array<ISection>;
     semester: ISemester;
+    primary_listing: string;
+    all_listings: string;
 }
 
 export = ICourse;

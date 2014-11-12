@@ -5,6 +5,7 @@ import ICourseSearchScope = require('../interfaces/ICourseSearchScope');
 import CourseResource = require('../services/CourseResource');
 import TestSharingService = require('../services/TestSharingService');
 import ICourse = require('../interfaces/ICourse');
+import Course = require('../models/Course');
 
 'use strict';
 
@@ -38,13 +39,24 @@ class SearchCtrl {
     }
 
     private onLoaded(data) {
-        this.$scope.courses = data['objects'];
+        this.$scope.courses = data['objects'].map((course) => {
+            return new Course(
+                    course.title,
+                    course.description,
+                    course.course_listings,
+                    course.id,
+                    course.sections,
+                    course.semester
+                    );
+        });
     }
 
     // if user is not enrolled in course yet, add course events to previewEvents
     // else, don't do anything
     public onMouseOver(course) {
-        if (!this.testSharingService.isCourseEnrolled(course)) {
+        if (this.testSharingService.isCourseEnrolled(course)) {
+            this.testSharingService.clearPreviewCourse();
+        } else {
             this.testSharingService.setPreviewCourse(course);
         }
     }
@@ -62,36 +74,6 @@ class SearchCtrl {
         } else {
             this.testSharingService.enrollCourse(course);
         }
-    }
-
-    private getPrimaryCourseListing(course: ICourse): string {
-        for (var i = 0; i < course.course_listings.length; i++) {
-            var curr = course.course_listings[i];
-            if (curr.is_primary) {
-                return curr.dept + curr.number;
-            }
-        }
-
-        return "";
-    }
-
-    private getAllCourseListings(course: ICourse): string {
-        if (!course) {
-            console.log("getAllCourseListings's input is " + course);
-            return '';
-        }
-
-        var listings = [];
-        for (var i = 0; i < course.course_listings.length; i++) {
-            var curr = course.course_listings[i];
-            if (curr.is_primary) {
-                listings.unshift(curr.dept + curr.number);
-            } else {
-                listings.push(curr.dept + curr.number);
-            }
-        }
-
-        return listings.join(' / ');
     }
 }
 

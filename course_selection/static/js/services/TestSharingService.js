@@ -46,6 +46,39 @@ define(["require", "exports"], function(require, exports) {
             var idx = this.courseIdxInList(course, this.data.enrolledCourses);
             return idx != TestSharingService.NOT_FOUND;
         };
+
+        /////////////////////////////////////////////////////////////////////
+        // TODO: these should be moved to a class called Course that
+        // implements ICourse
+        TestSharingService.prototype.getPrimaryCourseListing = function (course) {
+            for (var i = 0; i < course.course_listings.length; i++) {
+                var curr = course.course_listings[i];
+                if (curr.is_primary) {
+                    return curr.dept + curr.number;
+                }
+            }
+
+            return "";
+        };
+
+        TestSharingService.prototype.getAllCourseListings = function (course) {
+            if (!course) {
+                console.log("getAllCourseListings's input is " + course);
+                return '';
+            }
+
+            var listings = [];
+            for (var i = 0; i < course.course_listings.length; i++) {
+                var curr = course.course_listings[i];
+                if (curr.is_primary) {
+                    listings.unshift(curr.dept + curr.number);
+                } else {
+                    listings.push(curr.dept + curr.number);
+                }
+            }
+
+            return listings.join(' / ');
+        };
         TestSharingService.NOT_FOUND = -1;
         return TestSharingService;
     })();
