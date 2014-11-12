@@ -14,3 +14,4 @@ define(["require", "exports", '../Module', './CourseSearchFilter', './HighlightF
     
     return niceFilters;
 });
+//# sourceMappingURL=Filters.js.map

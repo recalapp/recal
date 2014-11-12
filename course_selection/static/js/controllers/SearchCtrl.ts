@@ -41,60 +41,27 @@ class SearchCtrl {
         this.$scope.courses = data['objects'];
     }
 
-    private setPreviewCourse(course: ICourse): void {
-        this.$scope.data.previewCourse = course;
-    }
-
-    private clearPreviewCourse(): void {
-        this.setPreviewCourse(null);
-    }
-
-    private isCourseEnrolled(course: ICourse): boolean {
-        var idx = this.courseIdxInList(course, this.$scope.data.enrolledCourses);
-        return idx != SearchCtrl.NOT_FOUND;
-    }
-
     // if user is not enrolled in course yet, add course events to previewEvents
     // else, don't do anything
     public onMouseOver(course) {
-        if (!this.isCourseEnrolled(course)) {
-            this.setPreviewCourse(course);
+        if (!this.testSharingService.isCourseEnrolled(course)) {
+            this.testSharingService.setPreviewCourse(course);
         }
     }
 
     // TODO: what if course.id != previewCourse.id? will it ever be out of sync?
     public onMouseLeave(course) {
-        this.clearPreviewCourse();
-    }
-
-    private unenrollCourse(course: ICourse): void {
-        var enrolledCourses = this.$scope.data.enrolledCourses;
-        var idx = this.courseIdxInList(course, enrolledCourses);
-        enrolledCourses.splice(idx, 1);
-    }
-
-    private enrollCourse(course: ICourse): void {
-        this.$scope.data.enrolledCourses.push(course);
+        this.testSharingService.clearPreviewCourse();
     }
 
     // TODO: what if user removes serach string => no more search results?
     // currently results in preview course being sticky
     public onClick(course) {
-        if (this.isCourseEnrolled(course)) {
-            this.unenrollCourse(course);
+        if (this.testSharingService.isCourseEnrolled(course)) {
+            this.testSharingService.unenrollCourse(course);
         } else {
-            this.enrollCourse(course);
+            this.testSharingService.enrollCourse(course);
         }
-    }
-
-    private courseIdxInList(course, list) {
-        for (var i = 0; i < list.length; i++) {
-            if (course.id == list[i].id) {
-                return i;
-            }
-        }
-
-        return SearchCtrl.NOT_FOUND;
     }
 
     private getPrimaryCourseListing(course: ICourse): string {

@@ -23,60 +23,27 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.courses = data['objects'];
         };
 
-        SearchCtrl.prototype.setPreviewCourse = function (course) {
-            this.$scope.data.previewCourse = course;
-        };
-
-        SearchCtrl.prototype.clearPreviewCourse = function () {
-            this.setPreviewCourse(null);
-        };
-
-        SearchCtrl.prototype.isCourseEnrolled = function (course) {
-            var idx = this.courseIdxInList(course, this.$scope.data.enrolledCourses);
-            return idx != SearchCtrl.NOT_FOUND;
-        };
-
         // if user is not enrolled in course yet, add course events to previewEvents
         // else, don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {
-            if (!this.isCourseEnrolled(course)) {
-                this.setPreviewCourse(course);
+            if (!this.testSharingService.isCourseEnrolled(course)) {
+                this.testSharingService.setPreviewCourse(course);
             }
         };
 
         // TODO: what if course.id != previewCourse.id? will it ever be out of sync?
         SearchCtrl.prototype.onMouseLeave = function (course) {
-            this.clearPreviewCourse();
-        };
-
-        SearchCtrl.prototype.unenrollCourse = function (course) {
-            var enrolledCourses = this.$scope.data.enrolledCourses;
-            var idx = this.courseIdxInList(course, enrolledCourses);
-            enrolledCourses.splice(idx, 1);
-        };
-
-        SearchCtrl.prototype.enrollCourse = function (course) {
-            this.$scope.data.enrolledCourses.push(course);
+            this.testSharingService.clearPreviewCourse();
         };
 
         // TODO: what if user removes serach string => no more search results?
         // currently results in preview course being sticky
         SearchCtrl.prototype.onClick = function (course) {
-            if (this.isCourseEnrolled(course)) {
-                this.unenrollCourse(course);
+            if (this.testSharingService.isCourseEnrolled(course)) {
+                this.testSharingService.unenrollCourse(course);
             } else {
-                this.enrollCourse(course);
+                this.testSharingService.enrollCourse(course);
             }
-        };
-
-        SearchCtrl.prototype.courseIdxInList = function (course, list) {
-            for (var i = 0; i < list.length; i++) {
-                if (course.id == list[i].id) {
-                    return i;
-                }
-            }
-
-            return SearchCtrl.NOT_FOUND;
         };
 
         SearchCtrl.prototype.getPrimaryCourseListing = function (course) {

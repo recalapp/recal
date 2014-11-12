@@ -2,7 +2,6 @@ define(["require", "exports"], function(require, exports) {
     'use strict';
 
     var CalendarCtrl = (function () {
-        // dependencies are injected via AngularJS $injector
         function CalendarCtrl($scope, testSharingService, colorResource) {
             var _this = this;
             this.$scope = $scope;
@@ -54,7 +53,6 @@ define(["require", "exports"], function(require, exports) {
             this.clearPreviewEvents();
         };
 
-        // set the preview course to course
         CalendarCtrl.prototype.setPreviewCourse = function (course) {
             this.clearPreviewEvents();
             var newEvents = this.getEventsForCourse(course);
@@ -74,7 +72,6 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
-        // TODO: need to remove preview_event_source as we add it
         CalendarCtrl.prototype.addEnrolledCourseEvents = function (course) {
             var colors = this.colorResource.nextColor();
             var newEvents = this.getEventsForCourse(course);
@@ -86,8 +83,6 @@ define(["require", "exports"], function(require, exports) {
             });
         };
 
-        // this relies on the fact that eventSources always start with
-        // preview Event Source
         CalendarCtrl.prototype.removeEnrolledCourse = function (removedIdx) {
             this.$scope.eventSources.splice(removedIdx + 1, 1);
         };
@@ -96,7 +91,6 @@ define(["require", "exports"], function(require, exports) {
             var removedIdx = CalendarCtrl.NOT_FOUND;
             for (var i = 0; i < newCourses.length; i++) {
                 if (newCourses[i].id !== oldCourses[i].id) {
-                    // they are different, meaning oldCourses[i] got removed
                     removedIdx = i;
                     break;
                 }
@@ -113,7 +107,6 @@ define(["require", "exports"], function(require, exports) {
             if (newCourses === oldCourses)
                 return;
 
-            // course added
             if (newCourses.length == oldCourses.length + 1) {
                 var course = newCourses[newCourses.length - 1];
                 this.addEnrolledCourseEvents(course);
@@ -203,7 +196,6 @@ define(["require", "exports"], function(require, exports) {
             columnFormat: {
                 week: 'dddd'
             },
-            //slotDuration: '02:00',
             allDaySlot: false,
             minTime: '08:00',
             maxTime: '23:00',
@@ -230,3 +222,4 @@ define(["require", "exports"], function(require, exports) {
     
     return CalendarCtrl;
 });
+//# sourceMappingURL=CalendarCtrl.js.map
