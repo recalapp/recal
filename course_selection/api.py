@@ -41,7 +41,7 @@ class SectionResource(ModelResource):
     class Meta:
         queryset = Section.objects.all()
         resource_name = 'section'
-        excludes = ['isDefault', 'id']
+        excludes = ['isDefault']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
 

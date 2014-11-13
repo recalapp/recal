@@ -5,7 +5,7 @@ interface ISection {
     name: string;
     section_type: string;
     meetings: Array<IMeeting>;
-    course: string;
+    course_id: number;
 }
 
 export = ISection;

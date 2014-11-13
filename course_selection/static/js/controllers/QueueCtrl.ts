@@ -1,4 +1,5 @@
 import ICourse = require('../interfaces/ICourse');
+import ISection = require('../interfaces/ISection');
 import TestSharingService = require('../services/TestSharingService');
 
 'use strict';
@@ -19,7 +20,20 @@ class QueueCtrl {
     }
 
     // section belongs to a course that has been enrolled
-    public onMouseOver(section): void {
+    public onMouseOver(section: ISection): void {
+        if (this.testSharingService.isSectionEnrolled(section)) {
+            // nothing happens
+        } else {
+            this.testSharingService.setPreviewSection(section);
+        }
+    }
+
+    public onClick(section: ISection): void {
+        if (this.testSharingService.isSectionEnrolled(section)) {
+            this.testSharingService.unenrollSection(section);
+        } else {
+            this.testSharingService.enrollSection(section);
+        }
     }
 }
 
