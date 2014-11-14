@@ -1,5 +1,5 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-define(["require", "exports", '../models/Course'], function(require, exports, Course) {
+define(["require", "exports"], function(require, exports) {
     'use strict';
 
     var SearchCtrl = (function () {
@@ -9,22 +9,8 @@ define(["require", "exports", '../models/Course'], function(require, exports, Co
             this.localStorageService = localStorageService;
             this.testSharingService = testSharingService;
             this.$scope.vm = this;
-            this.loadCourses();
             this.$scope.data = testSharingService.getData();
         }
-        SearchCtrl.prototype.loadCourses = function () {
-            var _this = this;
-            this.courseResource.query({}, function (data) {
-                return _this.onLoaded(data);
-            });
-        };
-
-        SearchCtrl.prototype.onLoaded = function (data) {
-            this.$scope.courses = data['objects'].map(function (course) {
-                return new Course(course.title, course.description, course.course_listings, course.id, course.sections, course.semester);
-            });
-        };
-
         // if user is not enrolled in course yet, add course events to previewEvents
         // else, don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {

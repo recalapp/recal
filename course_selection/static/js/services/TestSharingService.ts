@@ -1,5 +1,7 @@
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
+import CourseResource = require('../services/CourseResource');
+import Course = require('../models/Course');
 
 class TestSharingService {
     private static NOT_FOUND: number = -1;
@@ -9,7 +11,8 @@ class TestSharingService {
         previewCourse: null,
         enrolledCourses: [],
         previewSection: null,
-        enrolledSections: null
+        enrolledSections: null,
+        courses: []
     };
 
     private preview = {
@@ -17,15 +20,46 @@ class TestSharingService {
         section: null
     }
 
-    constructor() {
+    constructor(private courseResource) {
         this.data.previewCourse = null;
         this.data.enrolledCourses = [];
         this.data.enrolledSections = {};
+        this.loadCourses();
+    }
+
+    private loadCourses() {
+        this.courseResource.query({}, (data) => this.onLoaded(data));
+    }
+
+    private onLoaded(data) {
+        this.data.courses = data['objects'].map((course) => {
+            return new Course(
+                    course.title,
+                    course.description,
+                    course.course_listings,
+                    course.id,
+                    course.sections,
+                    course.semester
+                    );
+        });
     }
 
     public getData() {
         return this.data;
     }
+
+    ///////////////////////////////////////////////////////////
+    // Course Management
+    //////////////////////////////////////////////////////////
+    public getCourseById(id: number): ICourse {
+        return this.data.courses.filter((course) => {
+                    return course.id == id;
+                })[0];
+    }
+
+    ///////////////////////////////////////////////////////////
+    // Course Enrollment Management
+    //////////////////////////////////////////////////////////
 
     public setPreviewCourse(course: ICourse): void {
         this.data.previewCourse = course;
@@ -61,8 +95,29 @@ class TestSharingService {
         var enrolledCourses = this.data.enrolledCourses;
         var idx = this.courseIdxInList(course, enrolledCourses);
         enrolledCourses.splice(idx, 1);
+
+        this.data.enrolledSections[course.id] = null;
     }
 
+    private courseIdxInList(course, list) {
+        for (var i = 0; i < list.length; i++) {
+            if (course.id == list[i].id) {
+                return i;
+            }
+        }
+
+        return TestSharingService.NOT_FOUND;
+    }
+    
+    public isCourseEnrolled(course: ICourse): boolean {
+        var idx = this.courseIdxInList(course, this.data.enrolledCourses);
+        return idx != TestSharingService.NOT_FOUND;
+    }
+
+    ///////////////////////////////////////////////////////////
+    // Section Enrollment Management
+    //////////////////////////////////////////////////////////
+    
     public setPreviewSection(section: ISection): void {
     }
 
@@ -83,20 +138,6 @@ class TestSharingService {
             && enrolledCourse[section.section_type] == section.id;
     }
 
-    private courseIdxInList(course, list) {
-        for (var i = 0; i < list.length; i++) {
-            if (course.id == list[i].id) {
-                return i;
-            }
-        }
-
-        return TestSharingService.NOT_FOUND;
-    }
-    
-    public isCourseEnrolled(course: ICourse): boolean {
-        var idx = this.courseIdxInList(course, this.data.enrolledCourses);
-        return idx != TestSharingService.NOT_FOUND;
-    }
 }
 
 export = TestSharingService;

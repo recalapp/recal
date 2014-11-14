@@ -8,4 +8,3 @@ define(["require", "exports"], function(require, exports) {
     
     return Filter;
 });
-//# sourceMappingURL=Filter.js.map

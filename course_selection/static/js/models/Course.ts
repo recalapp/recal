@@ -82,6 +82,12 @@ class Course implements ICourse {
     private inArray(s: string, arr: Array<string>): boolean {
         return arr.indexOf(s) != -1;
     }
+
+    public getSectionById(section_id: number): ISection {
+        return this.sections.filter((section) => {
+            return section.id == section_id;
+        })[0];
+    }
 }
 
 export = Course;

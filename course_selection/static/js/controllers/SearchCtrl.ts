@@ -30,25 +30,7 @@ class SearchCtrl {
             private testSharingService
             ) {
         this.$scope.vm = this;
-        this.loadCourses();
         this.$scope.data = testSharingService.getData();
-    }
-
-    private loadCourses() {
-        this.courseResource.query({}, (data) => this.onLoaded(data));
-    }
-
-    private onLoaded(data) {
-        this.$scope.courses = data['objects'].map((course) => {
-            return new Course(
-                    course.title,
-                    course.description,
-                    course.course_listings,
-                    course.id,
-                    course.sections,
-                    course.semester
-                    );
-        });
     }
 
     // if user is not enrolled in course yet, add course events to previewEvents

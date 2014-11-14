@@ -15,4 +15,3 @@ define(["require", "exports"], function(require, exports) {
     
     return TestCtrl1;
 });
-//# sourceMappingURL=TestCtrl1.js.map

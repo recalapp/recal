@@ -63,6 +63,12 @@ define(["require", "exports", '../models/Section'], function(require, exports, S
         Course.prototype.inArray = function (s, arr) {
             return arr.indexOf(s) != -1;
         };
+
+        Course.prototype.getSectionById = function (section_id) {
+            return this.sections.filter(function (section) {
+                return section.id == section_id;
+            })[0];
+        };
         return Course;
     })();
 

@@ -1,6 +1,8 @@
+/// <amd-dependency path="angular"/>
 define(["require", "exports", './ResourceBuilder', "angular"], function(require, exports, ResourceBuilder) {
     var niceServices = angular.module('niceServices', []);
 
+    //niceServices.addService('CourseResource', CourseResource);
     niceServices.factory('ResourceBuilder', ['$resource', function ($resource) {
             return new ResourceBuilder($resource);
         }]);
@@ -18,4 +20,3 @@ define(["require", "exports", './ResourceBuilder', "angular"], function(require,
     
     return niceServices;
 });
-//# sourceMappingURL=Services.js.map

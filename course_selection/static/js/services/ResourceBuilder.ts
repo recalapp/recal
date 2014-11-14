@@ -1,11 +1,15 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
 import ICourseResource = require('../interfaces/ICourseResource');
+import CourseResource = require('../services/CourseResource');
 import TestSharingService = require('./TestSharingService');
 import ColorResource = require('./ColorResource');
 
 class ResourceBuilder {
-    static $inject = ['$resource'];
+    static $inject = [
+        '$resource',
+        'CourseResource'
+    ];
     
     constructor(private $resource: ng.resource.IResourceService) {}
 
@@ -17,7 +21,7 @@ class ResourceBuilder {
     }
 
     public getTestSharingService() {
-        return new TestSharingService();
+        return new TestSharingService(this.getCourseResource());
     }
 
     public getColorResource() {
