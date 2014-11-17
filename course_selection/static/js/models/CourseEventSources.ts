@@ -8,13 +8,15 @@ class CourseEventSources implements IEventSources {
     private myCourse: ICourse;
     private myColors: IColorPalette;
     private sectionEventSources: IEventSource[];
+    public isPreview: boolean;
     public id: number;
 
-    constructor(course: ICourse, colors: IColorPalette) {
+    constructor(course: ICourse, colors: IColorPalette, isPreview?: boolean) {
         this.myCourse = course;
         this.id = course.id;
         this.myColors = colors;
         this.initEventSources();
+        this.isPreview = isPreview ? isPreview : false;
     }
 
     // create course event sources by looping over all sections

@@ -104,26 +104,26 @@ class CalendarCtrl {
         this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
     }
 
-    private clearPreviewCourse(course: ICourse) {
-        this.compositeEventSources.removeEventSources(course.id);
+    ///////////////////////////////////////////////////////////////////
+    // Course Management
+    // ////////////////////////////////////////////////////////////////
+
+    private addCourse(course: ICourse, isPreview: boolean) {
+        var myColor = isPreview ? this.colorResource.getPreviewColor() : this.colorResource.nextColor();
+        var courseEventSources = new CourseEventSources(course, myColor, isPreview);
+        this.compositeEventSources.addEventSources(courseEventSources);
     }
 
-    ///////////////////////////////////////////////////////////////////
-    // Preview Course
-    // ////////////////////////////////////////////////////////////////
-    //
-    // TODO: refactor this;
-    // a preview course should be no different from a normal course
-    // the only difference is the color
-    // set the preview course to course
+    private removeCourse(course: ICourse, isPreview: boolean) {
+        this.compositeEventSources.removeEventSources(course.id, isPreview);
+    }
+
+    private clearPreviewCourse(course: ICourse) {
+        this.removeCourse(course, true);
+    }
+    
     private setPreviewCourse(course: ICourse) {
-        var courseEventSources = new CourseEventSources(course, this.colorResource.getPreviewColor());
-        this.compositeEventSources.addEventSources(courseEventSources);
-        // this.clearPreviewEvents();
-        // var newEvents = this.getEventsForCourse(course);
-        // for (var i = 0; i < newEvents.length; i++) {
-        //     this.$scope.previewEventSource.events.push(newEvents[i]);
-        // }
+        this.addCourse(course, true);
     }
 
     public updatePreviewCourse(newCourse, oldCourse) {
@@ -141,10 +141,6 @@ class CalendarCtrl {
 
         this.$scope.eventSources = this.compositeEventSources.getEventSources();
     }
-
-    ////////////////////////////////////////////////////////
-    // Courses
-    ////////////////////////////////////////////////////////
 
     private getRemovedCourse(newCourses: ICourse[], oldCourses: ICourse[]): ICourse {
         var removedIdx = CalendarCtrl.NOT_FOUND;
@@ -169,58 +165,16 @@ class CalendarCtrl {
 
         // course added
         if (newCourses.length == oldCourses.length + 1) {
-            var colors = this.colorResource.nextColor();
             var course = newCourses[newCourses.length - 1];
-            var courseEventSources = new CourseEventSources(course, colors);
-            this.addAllSectionEventSources(course, colors);
+            this.addCourse(course, false);
         } 
         // course removed
+        // TODO: re-enable this color for use in colorResource
         else if (newCourses.length == oldCourses.length - 1) {
             var removedCourse = this.getRemovedCourse(newCourses, oldCourses);
-            return this.removeAllSectionEventSources(removedCourse);
+            this.removeCourse(removedCourse, false);
         }
     }
-
-    // private getEventsForCourse(course: ICourse, color?: IColorPalette) {
-    //     if (!course) {
-    //         return [];
-    //     }
-
-    //     var inputTimeFormat = "hh:mm a";
-    //     var outputTimeFormat = "HH:mm:ss";
-    //     var events = [];
-
-    //     for (var i = 0; i < course.sections.length; i++) {
-    //         var section = course.sections[i];
-
-    //         for (var j = 0; j < section.meetings.length; j++) {
-    //             var meeting = section.meetings[j];
-    //             var days = meeting.days.split(' ');
-
-    //             // ignore last element of the result of split, which is 
-    //             // empty string due to the format of the input
-    //             for (var k = 0; k < days.length - 1; k++) {
-    //                 var day = days[k];
-    //                 var date = this.getAgendaDate(day);
-    //                 var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
-    //                 var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
-    //                 var start = date + 'T' + startTime;
-    //                 var end = date + 'T' + endTime;
-    //                 events.push({
-    //                     title: course.primary_listing + " " + section.name,
-    //                     start: start,
-    //                     end: end,
-    //                     location: meeting.location,
-    //                     section_id: section.id
-    //                     // color: color ? color.light : null,
-    //                     // textColor: color ? color.dark : null
-    //                 });
-    //             }
-    //         }
-    //     }
-
-    //     return events;
-    // }
 
     ///////////////////////////////////////////////////////
     // Sections

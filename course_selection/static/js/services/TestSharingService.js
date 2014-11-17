@@ -2,6 +2,7 @@ define(["require", "exports", '../models/Course'], function(require, exports, Co
     var TestSharingService = (function () {
         function TestSharingService(courseResource) {
             this.courseResource = courseResource;
+            /* maybe this service shouldn't know about any course/section being previewed? */
             this.data = {
                 previewCourse: null,
                 enrolledCourses: [],
@@ -35,12 +36,18 @@ define(["require", "exports", '../models/Course'], function(require, exports, Co
             return this.data;
         };
 
+        ///////////////////////////////////////////////////////////
+        // Course Management
+        //////////////////////////////////////////////////////////
         TestSharingService.prototype.getCourseById = function (id) {
             return this.data.courses.filter(function (course) {
                 return course.id == id;
             })[0];
         };
 
+        ///////////////////////////////////////////////////////////
+        // Course Enrollment Management
+        //////////////////////////////////////////////////////////
         TestSharingService.prototype.setPreviewCourse = function (course) {
             this.data.previewCourse = course;
         };
@@ -52,6 +59,18 @@ define(["require", "exports", '../models/Course'], function(require, exports, Co
         TestSharingService.prototype.enrollCourse = function (course) {
             this.data.enrolledCourses.push(course);
 
+            // example--
+            // enrolledSections:
+            // {
+            //      1: {
+            //          LEC: null,
+            //          PRE: null
+            //      },
+            //      2: {
+            //          STU: 01,
+            //          CLA: null
+            //      }
+            // }
             this.data.enrolledSections[course.id] = {};
             for (var i = 0; i < course.section_types.length; i++) {
                 var section_type = course.section_types[i];
@@ -82,6 +101,9 @@ define(["require", "exports", '../models/Course'], function(require, exports, Co
             return idx != TestSharingService.NOT_FOUND;
         };
 
+        ///////////////////////////////////////////////////////////
+        // Section Enrollment Management
+        //////////////////////////////////////////////////////////
         TestSharingService.prototype.setPreviewSection = function (section) {
         };
 
@@ -107,4 +129,3 @@ define(["require", "exports", '../models/Course'], function(require, exports, Co
     
     return TestSharingService;
 });
-//# sourceMappingURL=TestSharingService.js.map

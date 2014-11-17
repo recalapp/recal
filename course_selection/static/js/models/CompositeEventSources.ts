@@ -5,11 +5,13 @@ class CompositeEventSources implements IEventSources {
     // my Children is a map of id to EventSources
     private myChildren: { [id: number]: IEventSources};
     private myEventSources: IEventSource[];
+    public isPreview: boolean;
     public id: number;
     // private idxMap: { [id: number] : number[] };
 
     constructor() {
-        this.id = 0;
+        this.isPreview = false;
+        this.id =  -1;
         this.myChildren = {};
         this.myEventSources = [];
         // this.idxMap = {};
@@ -23,6 +25,12 @@ class CompositeEventSources implements IEventSources {
     }
 
     public addEventSources(eventSources: IEventSources): void {
+        if (this.myChildren[eventSources.id]) {
+            // this means we are updating an eventSources
+            // should first remove it
+            this.removeEventSources(eventSources.id, true);
+        }
+
         this.myChildren[eventSources.id] = eventSources;
         var start: number = this.myEventSources.length;
         var length: number = eventSources.getEventSources().length;
@@ -32,18 +40,18 @@ class CompositeEventSources implements IEventSources {
     }
 
     // eventSourcesId is the course id
-    public removeEventSources(eventSourcesId: number): void {
-        // var start = this.idxMap[eventSourcesId][0];
-        // var end = this.idxMap[eventSourcesId][1];
-        // for (var i = start; i <= end; i++) {
-        //     var curr = this.myEventSources[i];
-        //     this.myEventSources[i] = null;
-        // }
-        var eventSources = this.myChildren[eventSourcesId].getEventSources();
+    public removeEventSources(eventSourcesId: number, isPreview: boolean): void {
+        var courseEventSources = this.myChildren[eventSourcesId];
+        // only remove if isPreview matches
+        if (courseEventSources.isPreview != isPreview) {
+            return;
+        }
+
+        var eventSources = courseEventSources.getEventSources();
         for (var i = this.myEventSources.length - 1; i >= 0; i--) {
-            var curr = this.myEventSources[i];
+            var currSectionEventSource = this.myEventSources[i];
             for (var j = 0; j < eventSources.length; j++) {
-                if (curr.id == eventSources[j].id) {
+                if (currSectionEventSource.id == eventSources[j].id) {
                     this.myEventSources.splice(i, 1);
                 }
             }
