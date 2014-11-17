@@ -1,6 +1,6 @@
 {
   "name": "fullcalendar",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Full-sized drag & drop event calendar",
   "keywords": [
     "calendar",
@@ -34,14 +34,14 @@
     "!/license.*",
     "!/readme.*"
   ],
-  "_release": "2.1.1",
+  "_release": "2.2.0",
   "_resolution": {
     "type": "version",
-    "tag": "v2.1.1",
-    "commit": "b4217b0d0f3afe702db4022643d5eed1738cf50a"
+    "tag": "v2.2.0",
+    "commit": "4916132232db3bfbe1a3ae9cbea16d7975de65ee"
   },
   "_source": "git://github.com/arshaw/fullcalendar.git",
-  "_target": "~2.1.1",
+  "_target": "~2.2.0",
   "_originalSource": "fullcalendar",
   "_direct": true
 }

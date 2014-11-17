@@ -4,7 +4,9 @@ import IColorPalette = require('../interfaces/IColorPalette');
 import ColorResource = require('../services/ColorResource');
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
-import SectionEventSource = require('../models/SectionEventSource');
+import CourseEventSources = require('../models/CourseEventSources');
+import IEventSources = require('../interfaces/IEventSources');
+import CompositeEventSources = require('../models/CompositeEventSources');
 
 'use strict';
 
@@ -42,8 +44,7 @@ class CalendarCtrl {
         // }
     };
 
-    
- 
+    private compositeEventSources: CompositeEventSources;
     public static $inject = [
         '$scope',
         'TestSharingService',
@@ -60,17 +61,15 @@ class CalendarCtrl {
         this.initConfig();
 
         this.$scope.data = testSharingService.getData();
+        // var previewColor = this.colorResource.getPreviewColor();
+        // this.$scope.previewEventSource = {
+        //     events: [],
+        //     color: this.colorResource.toPreviewColor(previewColor.light),
+        //     textColor: this.colorResource.toPreviewColor(previewColor.dark)
+        // };
 
-        var previewColor = this.colorResource.getPreviewColor();
-        this.$scope.previewEventSource = {
-            events: [],
-            color: this.colorResource.toPreviewColor(previewColor.light),
-            textColor: this.colorResource.toPreviewColor(previewColor.dark)
-        };
-
-        this.$scope.eventSources = [
-            $scope.previewEventSource, 
-        ];
+        this.compositeEventSources = new CompositeEventSources();
+        this.$scope.eventSources = this.compositeEventSources.getEventSources();
 
         this.$scope.$watch(
                 () => { 
@@ -105,34 +104,26 @@ class CalendarCtrl {
         this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
     }
 
-    private courseIdxInList(course, list): number {
-        for (var i = 0; i < list.length; i++) {
-            if (course.id == list[i].id) {
-                return i;
-            }
-        }
-
-        return CalendarCtrl.NOT_FOUND;
+    private clearPreviewCourse(course: ICourse) {
+        this.compositeEventSources.removeEventSources(course.id);
     }
 
-    private courseIsInList(course, list): boolean {
-        return this.courseIdxInList(course, list) != CalendarCtrl.NOT_FOUND;
-    }
-
-    private clearPreviewCourse() {
-        this.clearPreviewEvents();
-    }
-
+    ///////////////////////////////////////////////////////////////////
+    // Preview Course
+    // ////////////////////////////////////////////////////////////////
+    //
     // TODO: refactor this;
     // a preview course should be no different from a normal course
     // the only difference is the color
     // set the preview course to course
     private setPreviewCourse(course: ICourse) {
-        this.clearPreviewEvents();
-        var newEvents = this.getEventsForCourse(course);
-        for (var i = 0; i < newEvents.length; i++) {
-            this.$scope.previewEventSource.events.push(newEvents[i]);
-        }
+        var courseEventSources = new CourseEventSources(course, this.colorResource.getPreviewColor());
+        this.compositeEventSources.addEventSources(courseEventSources);
+        // this.clearPreviewEvents();
+        // var newEvents = this.getEventsForCourse(course);
+        // for (var i = 0; i < newEvents.length; i++) {
+        //     this.$scope.previewEventSource.events.push(newEvents[i]);
+        // }
     }
 
     public updatePreviewCourse(newCourse, oldCourse) {
@@ -143,26 +134,17 @@ class CalendarCtrl {
             return;
 
         if (newCourse == null) { 
-            return this.clearPreviewCourse();
+            this.clearPreviewCourse(oldCourse);
         } else {
-            return this.setPreviewCourse(newCourse);
+            this.setPreviewCourse(newCourse);
         }
+
+        this.$scope.eventSources = this.compositeEventSources.getEventSources();
     }
 
-    private addAllSectionEventSources(course: ICourse, colors?: IColorPalette): void {
-        for (var i = 0; i < course.section_types.length; i++) {
-            this.addAllSectionEventSourcesByType(course.id, course.section_types[i]);
-        }
-    }
-
-    private removeAllSectionEventSources(course: ICourse): void {
-        for (var i = this.$scope.eventSources.length - 1; i >= 0; i--) {
-            var curr = this.$scope.eventSources[i];
-            if (curr.course_id == course.id) {
-                this.$scope.eventSources.splice(i, 1);
-            }
-        }
-    }
+    ////////////////////////////////////////////////////////
+    // Courses
+    ////////////////////////////////////////////////////////
 
     private getRemovedCourse(newCourses: ICourse[], oldCourses: ICourse[]): ICourse {
         var removedIdx = CalendarCtrl.NOT_FOUND;
@@ -189,6 +171,7 @@ class CalendarCtrl {
         if (newCourses.length == oldCourses.length + 1) {
             var colors = this.colorResource.nextColor();
             var course = newCourses[newCourses.length - 1];
+            var courseEventSources = new CourseEventSources(course, colors);
             this.addAllSectionEventSources(course, colors);
         } 
         // course removed
@@ -198,49 +181,64 @@ class CalendarCtrl {
         }
     }
 
-    private clearPreviewEvents() {
-        this.$scope.previewEventSource.events.length = 0;
+    // private getEventsForCourse(course: ICourse, color?: IColorPalette) {
+    //     if (!course) {
+    //         return [];
+    //     }
+
+    //     var inputTimeFormat = "hh:mm a";
+    //     var outputTimeFormat = "HH:mm:ss";
+    //     var events = [];
+
+    //     for (var i = 0; i < course.sections.length; i++) {
+    //         var section = course.sections[i];
+
+    //         for (var j = 0; j < section.meetings.length; j++) {
+    //             var meeting = section.meetings[j];
+    //             var days = meeting.days.split(' ');
+
+    //             // ignore last element of the result of split, which is 
+    //             // empty string due to the format of the input
+    //             for (var k = 0; k < days.length - 1; k++) {
+    //                 var day = days[k];
+    //                 var date = this.getAgendaDate(day);
+    //                 var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
+    //                 var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
+    //                 var start = date + 'T' + startTime;
+    //                 var end = date + 'T' + endTime;
+    //                 events.push({
+    //                     title: course.primary_listing + " " + section.name,
+    //                     start: start,
+    //                     end: end,
+    //                     location: meeting.location,
+    //                     section_id: section.id
+    //                     // color: color ? color.light : null,
+    //                     // textColor: color ? color.dark : null
+    //                 });
+    //             }
+    //         }
+    //     }
+
+    //     return events;
+    // }
+
+    ///////////////////////////////////////////////////////
+    // Sections
+    // ////////////////////////////////////////////////////
+
+    private addAllSectionEventSources(course: ICourse, colors?: IColorPalette): void {
+        for (var i = 0; i < course.section_types.length; i++) {
+            // this.addAllSectionEventSourcesByType(course.id, course.section_types[i]);
+        }
     }
 
-    private getEventsForCourse(course: ICourse, color?: IColorPalette) {
-        if (!course) {
-            return [];
-        }
-
-        var inputTimeFormat = "hh:mm a";
-        var outputTimeFormat = "HH:mm:ss";
-        var events = [];
-
-        for (var i = 0; i < course.sections.length; i++) {
-            var section = course.sections[i];
-
-            for (var j = 0; j < section.meetings.length; j++) {
-                var meeting = section.meetings[j];
-                var days = meeting.days.split(' ');
-
-                // ignore last element of the result of split, which is 
-                // empty string due to the format of the input
-                for (var k = 0; k < days.length - 1; k++) {
-                    var day = days[k];
-                    var date = this.getAgendaDate(day);
-                    var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
-                    var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
-                    var start = date + 'T' + startTime;
-                    var end = date + 'T' + endTime;
-                    events.push({
-                        title: course.primary_listing + " " + section.name,
-                        start: start,
-                        end: end,
-                        location: meeting.location,
-                        section_id: section.id
-                        // color: color ? color.light : null,
-                        // textColor: color ? color.dark : null
-                    });
-                }
+    private removeAllSectionEventSources(course: ICourse): void {
+        for (var i = this.$scope.eventSources.length - 1; i >= 0; i--) {
+            var curr = this.$scope.eventSources[i];
+            if (curr.course_id == course.id) {
+                this.$scope.eventSources.splice(i, 1);
             }
         }
-
-        return events;
     }
 
     // TODO: refactor this
@@ -270,15 +268,15 @@ class CalendarCtrl {
 
                     // TODO: what if old[section_type] == null?
                     // SHOULD REMOVE ALL
-                    this.removeEventSourceByType(course_id, section_type);
+                    // this.removeEventSourceByType(course_id, section_type);
                     // we want to render all events associated with this section_type
                     if (curr[section_type] == null) {
-                        this.addAllSectionEventSourcesByType(course_id, section_type);
+                        // this.addAllSectionEventSourcesByType(course_id, section_type);
                     }
                     // we want to the events associated with the old section_id,
                     // and add the new ones
                     else {
-                        this.addEventSourceById(course_id, curr[section_type], CalendarCtrl.StatusEnum.SELECTED);
+                        // this.addEventSourceById(course_id, curr[section_type], CalendarCtrl.StatusEnum.SELECTED);
                     }
                 }
             }
@@ -290,89 +288,89 @@ class CalendarCtrl {
      * id = section_id,
      * course_id = course_id
      */
-    private addEventSourceById(course_id: number, section_id: number, status: number): void {
-        var course = this.testSharingService.getCourseById(course_id);
-        var section = course.getSectionById(section_id);
-        var sectionEvents = this.getSectionEvents(section, course);
-        this.$scope.eventSources.push({
-            events: sectionEvents,
-            course_id: course_id,
-            section_id: section_id,
-            section_type: section.section_type
-        });
-    }
+    // private addEventSourceById(course_id: number, section_id: number, status: number): void {
+    //     var course = this.testSharingService.getCourseById(course_id);
+    //     var section = course.getSectionById(section_id);
+    //     var sectionEvents = this.getSectionEvents(section, course);
+    //     this.$scope.eventSources.push({
+    //         events: sectionEvents,
+    //         course_id: course_id,
+    //         section_id: section_id,
+    //         section_type: section.section_type
+    //     });
+    // }
 
     /**
      * removes the eventSource with
      * section_id = section_id
      * course_id = course_id
      */
-    private removeEventSourceByType(course_id: number, section_type: string): void {
-        var sections = this.testSharingService.getCourseById(course_id).sections;
-        // i = 1 --> skip previewEventSource
-        for (var i = this.$scope.eventSources.length - 1; i >= 1; i--) {
-            if (this.$scope.eventSources[i].course_id == course_id
-                    && this.$scope.eventSources[i].section_type == section_type) {
-                this.$scope.eventSources.splice(i, 1);
-            }
-        }
-    }
+    // private removeEventSourceByType(course_id: number, section_type: string): void {
+    //     var sections = this.testSharingService.getCourseById(course_id).sections;
+    //     // i = 1 --> skip previewEventSource
+    //     for (var i = this.$scope.eventSources.length - 1; i >= 1; i--) {
+    //         if (this.$scope.eventSources[i].course_id == course_id
+    //                 && this.$scope.eventSources[i].section_type == section_type) {
+    //             this.$scope.eventSources.splice(i, 1);
+    //         }
+    //     }
+    // }
 
     /**
      * add event sources for each section with section_type = section_type,
      * course_id = course_id
      */
-    private addAllSectionEventSourcesByType(course_id: number, section_type: string): void {
-        var sections = this.testSharingService.getCourseById(course_id).sections;
-        for (var i = 0; i < sections.length; i++) {
-            var curr = sections[i];
-            if (curr.section_type == section_type)
-                this.addEventSourceById(course_id, curr.id, CalendarCtrl.StatusEnum.PREVIEWED);
-        }
-    }
+    // private addAllSectionEventSourcesByType(course_id: number, section_type: string): void {
+    //     var sections = this.testSharingService.getCourseById(course_id).sections;
+    //     for (var i = 0; i < sections.length; i++) {
+    //         var curr = sections[i];
+    //         if (curr.section_type == section_type)
+    //             this.addEventSourceById(course_id, curr.id, CalendarCtrl.StatusEnum.PREVIEWED);
+    //     }
+    // }
 
     /**
      * create events for each meeting in a given section
      */
-    private getSectionEvents(section: ISection, course: ICourse): Array<any> {
-        var inputTimeFormat = "hh:mm a";
-        var outputTimeFormat = "HH:mm:ss";
-        var events = [];
-        for (var j = 0; j < section.meetings.length; j++) {
-            var meeting = section.meetings[j];
-            var days = meeting.days.split(' ');
+    // private getSectionEvents(section: ISection, course: ICourse): Array<any> {
+    //     var inputTimeFormat = "hh:mm a";
+    //     var outputTimeFormat = "HH:mm:ss";
+    //     var events = [];
+    //     for (var j = 0; j < section.meetings.length; j++) {
+    //         var meeting = section.meetings[j];
+    //         var days = meeting.days.split(' ');
 
-            // ignore last element of the result of split, which is 
-            // empty string due to the format of the input
-            for (var k = 0; k < days.length - 1; k++) {
-                var day = days[k];
-                var date = this.getAgendaDate(day);
-                var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
-                var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
-                var start = date + 'T' + startTime;
-                var end = date + 'T' + endTime;
-                events.push({
-                    title: course.primary_listing + " " + section.name,
-                    start: start,
-                    end: end,
-                    location: meeting.location,
-                });
-            }
-        }
+    //         // ignore last element of the result of split, which is 
+    //         // empty string due to the format of the input
+    //         for (var k = 0; k < days.length - 1; k++) {
+    //             var day = days[k];
+    //             var date = this.getAgendaDate(day);
+    //             var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
+    //             var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
+    //             var start = date + 'T' + startTime;
+    //             var end = date + 'T' + endTime;
+    //             events.push({
+    //                 title: course.primary_listing + " " + section.name,
+    //                 start: start,
+    //                 end: end,
+    //                 location: meeting.location,
+    //             });
+    //         }
+    //     }
 
-        return events;
-    }
+    //     return events;
+    // }
 
     /**
      * gets the date of the day in the current week
      */
-    private getAgendaDate(day: string): string {
-        var todayOffset = moment().isoWeekday();
-        var dayOffset = SectionEventSource.DAYS[day];
-        var diff: number = +(dayOffset - todayOffset);
-        var date = moment().add('days', diff).format('YYYY-MM-DD');
-        return date;
-    }
+    // private getAgendaDate(day: string): string {
+    //     var todayOffset = moment().isoWeekday();
+    //     var dayOffset = SectionEventSource.DAYS[day];
+    //     var diff: number = +(dayOffset - todayOffset);
+    //     var date = moment().add('days', diff).format('YYYY-MM-DD');
+    //     return date;
+    // }
     
 }
 

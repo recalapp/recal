@@ -2,7 +2,8 @@ import IEvent = require('./IEvent');
 
 interface IEventSource {
     id: number;
-    getEvents(): IEvent[];
+    events: IEvent[];
+    color: string;
 }
 
 export = IEventSource;

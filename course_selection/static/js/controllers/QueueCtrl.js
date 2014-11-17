@@ -8,10 +8,8 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.vm = this;
             this.$scope.data = testSharingService.getData();
         }
-        // section belongs to a course that has been enrolled
         QueueCtrl.prototype.onMouseOver = function (section) {
             if (this.testSharingService.isSectionEnrolled(section)) {
-                // nothing happens
             } else {
                 this.testSharingService.setPreviewSection(section);
             }
@@ -34,3 +32,4 @@ define(["require", "exports"], function(require, exports) {
     
     return QueueCtrl;
 });
+//# sourceMappingURL=QueueCtrl.js.map

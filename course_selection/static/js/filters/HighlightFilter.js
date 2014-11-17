@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -21,7 +20,6 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
             var termsToHighlight = input.split(' ');
             text = text.replace(new RegExp('(' + termsToHighlight.join('|') + ')', 'gi'), '<span class="highlighted">$&</span>');
 
-            // return text;
             return this.$sce.trustAsHtml(text);
         };
         HighlightFilter.$inject = ['$sce'];
@@ -31,3 +29,4 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
     
     return HighlightFilter;
 });
+//# sourceMappingURL=HighlightFilter.js.map

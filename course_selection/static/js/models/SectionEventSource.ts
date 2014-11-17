@@ -3,6 +3,7 @@ import IEvent = require('../interfaces/IEvent');
 import IEventSource = require('../interfaces/IEventSource');
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
+import IColorPalette = require('../interfaces/IColorPalette');
 
 class SectionEventSource implements IEventSource {
 
@@ -15,14 +16,16 @@ class SectionEventSource implements IEventSource {
     };
 
     public id: number;
-    private myEvents: IEvent[];
+    public events: IEvent[];
+    public color: string;
 
-    constructor(section: ISection, course: ICourse) {
+    constructor(section: ISection, course: ICourse, color: string) {
         this.id = section.id;
+        this.color = color;
 
         var inputTimeFormat = "hh:mm a";
         var outputTimeFormat = "HH:mm:ss";
-        this.myEvents = [];
+        this.events = [];
         for (var j = 0; j < section.meetings.length; j++) {
             var meeting = section.meetings[j];
             var days = meeting.days.split(' ');
@@ -36,7 +39,7 @@ class SectionEventSource implements IEventSource {
                 var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
                 var start = date + 'T' + startTime;
                 var end = date + 'T' + endTime;
-                this.myEvents.push({
+                this.events.push({
                     title: course.primary_listing + " " + section.name,
                     start: start,
                     end: end,
@@ -44,10 +47,6 @@ class SectionEventSource implements IEventSource {
                 });
             }
         }
-    }
-
-    public getEvents(): IEvent[] {
-        return this.myEvents;
     }
 
     /**

@@ -1,11 +1,12 @@
 define(["require", "exports"], function(require, exports) {
     var SectionEventSource = (function () {
-        function SectionEventSource(section, course) {
+        function SectionEventSource(section, course, color) {
             this.id = section.id;
+            this.color = color;
 
             var inputTimeFormat = "hh:mm a";
             var outputTimeFormat = "HH:mm:ss";
-            this.myEvents = [];
+            this.events = [];
             for (var j = 0; j < section.meetings.length; j++) {
                 var meeting = section.meetings[j];
                 var days = meeting.days.split(' ');
@@ -17,7 +18,7 @@ define(["require", "exports"], function(require, exports) {
                     var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
                     var start = date + 'T' + startTime;
                     var end = date + 'T' + endTime;
-                    this.myEvents.push({
+                    this.events.push({
                         title: course.primary_listing + " " + section.name,
                         start: start,
                         end: end,
@@ -26,13 +27,6 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
         }
-        SectionEventSource.prototype.getEvents = function () {
-            return this.myEvents;
-        };
-
-        /**
-        * gets the date of the day in the current week
-        */
         SectionEventSource.prototype.getAgendaDate = function (day) {
             var todayOffset = moment().isoWeekday();
             var dayOffset = SectionEventSource.DAYS[day];
@@ -53,3 +47,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SectionEventSource;
 });
+//# sourceMappingURL=SectionEventSource.js.map
