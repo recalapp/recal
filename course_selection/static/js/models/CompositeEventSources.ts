@@ -1,64 +1,70 @@
+/// <reference path="../../../../nice/static/ts/typings/tsd.d.ts" />
+
 import IEventSource = require('../interfaces/IEventSource');
 import IEventSources = require('../interfaces/IEventSources');
 
 class CompositeEventSources implements IEventSources {
     // my Children is a map of id to EventSources
-    private myChildren: { [id: number]: IEventSources};
+    // TODO: create a model for [start, end, isPreview]
+    private courseIdToIndices: { [id: number]: any};
     private myEventSources: IEventSource[];
     public isPreview: boolean;
     public id: number;
-    // private idxMap: { [id: number] : number[] };
 
     constructor() {
         this.isPreview = false;
         this.id =  -1;
-        this.myChildren = {};
+        this.courseIdToIndices = {};
         this.myEventSources = [];
-        // this.idxMap = {};
     }
 
-    /**
-     * returns an array of IEventSource
-     */
+    // returns an array of IEventSource
     public getEventSources(): IEventSource[] {
         return this.myEventSources;
     }
 
     public addEventSources(eventSources: IEventSources): void {
-        if (this.myChildren[eventSources.id]) {
+        if (this.courseIdToIndices[eventSources.id]) {
             // this means we are updating an eventSources
             // should first remove it
             this.removeEventSources(eventSources.id, true);
         }
 
-        this.myChildren[eventSources.id] = eventSources;
         var start: number = this.myEventSources.length;
         var length: number = eventSources.getEventSources().length;
         var end = start + length - 1;
         this.myEventSources.push.apply(this.myEventSources, eventSources.getEventSources());
-        // this.idxMap[eventSources.id] = [start, end];
+        this.courseIdToIndices[eventSources.id] = {
+            start: start,
+            end: end,
+            isPreview: eventSources.isPreview
+        };
     }
 
-    // eventSourcesId is the course id
-    public removeEventSources(eventSourcesId: number, isPreview: boolean): void {
-        var courseEventSources = this.myChildren[eventSourcesId];
+    public removeEventSources(courseId: number, isPreview: boolean): void {
+        var indices = this.courseIdToIndices[courseId];
         // only remove if isPreview matches
-        if (courseEventSources.isPreview != isPreview) {
+        if (!indices || indices.isPreview != isPreview) {
             return;
         }
 
-        var eventSources = courseEventSources.getEventSources();
-        for (var i = this.myEventSources.length - 1; i >= 0; i--) {
-            var currSectionEventSource = this.myEventSources[i];
-            for (var j = 0; j < eventSources.length; j++) {
-                if (currSectionEventSource.id == eventSources[j].id) {
-                    this.myEventSources.splice(i, 1);
-                }
-            }
+        for (var i = indices.start; i <= indices.end; i++) {
+            this.myEventSources[i] = <any>[];
         }
 
-        delete this.myChildren[eventSourcesId];
-        // delete this.idxMap[eventSourcesId];
+        delete this.courseIdToIndices[courseId];
+    }
+    
+    public enrollInCourseSection(courseId: number, section_type: string, sectionId: number) {
+        //var courseEventSources = this.myChildren[courseId];
+        //courseEventSources.removeEventSourcesByType(section_type);
+        //courseEventSources.addEventSourceById(sectionId);
+        // courseEventSources.isPreview should be false
+        //this.removeEventSources(courseId, courseEventSources.isPreview);
+        // create a new courseEventSources
+        // remove by section type
+        // add by id
+        // add courseEventSources back
     }
 }
 

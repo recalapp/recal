@@ -11,18 +11,33 @@ define(["require", "exports", './SectionEventSource'], function(require, exports
         // create a sectionEventSource using each section
         CourseEventSources.prototype.initEventSources = function () {
             var sections = this.myCourse.sections;
-            var eventSources = [];
+            this.allSections = [];
+            this.mySections = [];
             for (var i = 0; i < sections.length; i++) {
                 var section = sections[i];
                 var eventSource = new SectionEventSource(section, this.myCourse, this.myColors.light);
-                eventSources.push(eventSource);
+                this.allSections.push(eventSource);
+                this.mySections.push(eventSource);
             }
-
-            this.sectionEventSources = eventSources;
         };
 
+        /*
+        public removeEventSourcesByType(type: string): void {
+        this.mySections.filter((sectionEventSource) => {
+        return sectionEventSource.section_type == type;
+        });
+        }
+        
+        public addEventSourceById(id: number): void {
+        for (var i = 0; i < this.allSections.length; i++) {
+        if (this.allSections[i].id == id) {
+        this.mySections.push(this.allSections[i]);
+        }
+        }
+        }
+        */
         CourseEventSources.prototype.getEventSources = function () {
-            return this.sectionEventSources;
+            return this.mySections;
         };
         return CourseEventSources;
     })();

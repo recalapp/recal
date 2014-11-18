@@ -7,3 +7,4 @@
 /// <reference path="jquery.cookie/jquery.cookie.d.ts" />
 /// <reference path="angularjs/angular.d.ts" />
 /// <reference path="angularjs/angular-resource.d.ts" />
+/// <reference path="chai/chai.d.ts" />

@@ -23,7 +23,8 @@ require.config({
         'angular-resource': bowerPath('angular-resource/angular-resource.min'),
         'angular-ui-calendar': bowerPath('angular-ui-calendar/src/calendar'),
         'angular-bootstrap': bowerPath('angular-bootstrap/ui-bootstrap-tpls.min'),
-        'angular-local-storage': bowerPath('angular-local-storage/dist/angular-local-storage.min')
+        'angular-local-storage': bowerPath('angular-local-storage/dist/angular-local-storage.min'),
+        'chai': bowerPath('chai/chai')
     },
     shim: {
         bootstrap: ['jquery'],
@@ -33,7 +34,8 @@ require.config({
         'angular-ui-calendar': ['angular'],
         'angular-bootstrap': ['angular'],
         'angularRoute': ['angular'],
-        'angular-local-storage': ['angular']
+        'angular-local-storage': ['angular'],
+        'chai': []
     },
     priority: [
 		"angular"
@@ -44,6 +46,7 @@ require(['angular',
         'angular-local-storage',
         'angular-resource', 
         'moment',
+        'chai',
         'fullcalendar',
         'angular-ui-calendar', 
         'angular-bootstrap', 
@@ -52,7 +55,7 @@ require(['angular',
         'filters/Filters',
         'services/Services',
         'jquery',
-        'bootstrap'
+        'bootstrap',
         ], function (angular) {
     angular.bootstrap(document, ['nice']);
 });

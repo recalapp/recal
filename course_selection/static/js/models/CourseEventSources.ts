@@ -7,7 +7,8 @@ import SectionEventSource = require('./SectionEventSource');
 class CourseEventSources implements IEventSources {
     private myCourse: ICourse;
     private myColors: IColorPalette;
-    private sectionEventSources: IEventSource[];
+    private allSections: IEventSource[];
+    private mySections: IEventSource[];
     public isPreview: boolean;
     public id: number;
 
@@ -23,18 +24,34 @@ class CourseEventSources implements IEventSources {
     // create a sectionEventSource using each section
     private initEventSources() {
         var sections = this.myCourse.sections;
-        var eventSources = [];
+        this.allSections = [];
+        this.mySections = [];
         for (var i = 0; i < sections.length; i++) {
             var section = sections[i];
             var eventSource: SectionEventSource = new SectionEventSource(section, this.myCourse, this.myColors.light);
-            eventSources.push(eventSource);
+            this.allSections.push(eventSource);
+            this.mySections.push(eventSource);
         }
-
-        this.sectionEventSources = eventSources;
     }
 
+    /*
+    public removeEventSourcesByType(type: string): void {
+        this.mySections.filter((sectionEventSource) => {
+            return sectionEventSource.section_type == type;
+        });
+    }
+
+    public addEventSourceById(id: number): void {
+        for (var i = 0; i < this.allSections.length; i++) {
+            if (this.allSections[i].id == id) {
+                this.mySections.push(this.allSections[i]);
+            }
+        }
+    }
+    */
+
     public getEventSources(): IEventSource[] {
-        return this.sectionEventSources;
+        return this.mySections;
     }
 }
 

@@ -109,6 +109,8 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 var removedCourse = this.getRemovedCourse(newCourses, oldCourses);
                 this.removeCourse(removedCourse, false);
             }
+
+            this.$scope.eventSources = this.compositeEventSources.getEventSources();
         };
 
         ///////////////////////////////////////////////////////
@@ -129,7 +131,15 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             }
         };
 
-        // TODO: refactor this
+        // newSections: updated enrollments
+        // {
+        // course_id: {
+        //  section_type: section_id,
+        //  section_type: section_id
+        // },
+        // course_id: {
+        // }
+        // }
         CalendarCtrl.prototype.updateEnrolledSections = function (newSections, oldSections) {
             if (newSections == oldSections) {
                 return;

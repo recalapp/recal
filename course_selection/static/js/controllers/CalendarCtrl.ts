@@ -174,6 +174,8 @@ class CalendarCtrl {
             var removedCourse = this.getRemovedCourse(newCourses, oldCourses);
             this.removeCourse(removedCourse, false);
         }
+
+        this.$scope.eventSources = this.compositeEventSources.getEventSources();
     }
 
     ///////////////////////////////////////////////////////
@@ -195,7 +197,15 @@ class CalendarCtrl {
         }
     }
 
-    // TODO: refactor this
+    // newSections: updated enrollments
+    // {
+    // course_id: {
+    //  section_type: section_id,
+    //  section_type: section_id
+    // },
+    // course_id: {
+    // }
+    // }
     public updateEnrolledSections(newSections, oldSections): void {
         if (newSections == oldSections) {
             return;
