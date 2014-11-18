@@ -11,6 +11,7 @@ define(["require", "exports", '../models/Section'], function(require, exports, S
             this.primary_listing = this.getPrimaryCourseListing();
             this.all_listings = this.getAllCourseListings();
             this.section_types = this.getSectionTypes();
+            this.colors = null;
         }
         Course.prototype.getSections = function (input) {
             var sections = [];
@@ -68,6 +69,17 @@ define(["require", "exports", '../models/Section'], function(require, exports, S
             return this.sections.filter(function (section) {
                 return section.id == section_id;
             })[0];
+        };
+
+        Course.prototype.getStyle = function () {
+            if (this.colors == null) {
+                return {};
+            } else {
+                return {
+                    'background-color': this.colors.dark,
+                    'color': 'white'
+                };
+            }
         };
         return Course;
     })();

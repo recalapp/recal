@@ -1,6 +1,7 @@
 import ISection = require('./ISection');
 import ISemester = require('./ISemester');
 import ICourseListing = require('./ICourseListing');
+import IColorPalette = require('./IColorPalette');
 
 interface ICourse {
     title: string;
@@ -12,6 +13,7 @@ interface ICourse {
     primary_listing: string;
     all_listings: string;
     section_types: Array<string>;
+    colors: IColorPalette;
     getSectionById(number): ISection;
 }
 

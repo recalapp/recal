@@ -110,11 +110,13 @@ class CalendarCtrl {
 
     private addCourse(course: ICourse, isPreview: boolean) {
         var myColor = isPreview ? this.colorResource.getPreviewColor() : this.colorResource.nextColor();
+        course.colors = isPreview ? null : myColor;
         var courseEventSources = new CourseEventSources(course, myColor, isPreview);
         this.compositeEventSources.addEventSources(courseEventSources);
     }
 
     private removeCourse(course: ICourse, isPreview: boolean) {
+        course.colors = null;
         this.compositeEventSources.removeEventSources(course.id, isPreview);
     }
 

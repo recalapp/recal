@@ -35,6 +35,18 @@ class QueueCtrl {
             this.testSharingService.enrollSection(section);
         }
     }
+
+    public setColor(course: ICourse): any 
+    {
+        if (course.colors == null) {
+            return {};
+        } else {
+            return {
+                'background-color': course.colors.dark,
+                'color': 'white'
+            };
+        }
+    }
 }
 
 export = QueueCtrl;

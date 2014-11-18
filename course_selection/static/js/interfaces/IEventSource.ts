@@ -3,7 +3,8 @@ import IEvent = require('./IEvent');
 interface IEventSource {
     id: number;
     events: IEvent[];
-    color: string;
+    textColor: string;
+    backgroundColor: string;
     section_type: string;
 }
 

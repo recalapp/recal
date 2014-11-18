@@ -44,7 +44,7 @@ define(["require", "exports"], function(require, exports) {
         };
         ColorResource.$inject = ['$resource'];
 
-        ColorResource.ALPHA = 0.6;
+        ColorResource.ALPHA = 0.8;
 
         ColorResource.previewColor = {
             dark: 'rgb(84, 84, 84)',

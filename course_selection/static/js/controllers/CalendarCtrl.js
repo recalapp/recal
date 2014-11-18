@@ -51,11 +51,13 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
         // ////////////////////////////////////////////////////////////////
         CalendarCtrl.prototype.addCourse = function (course, isPreview) {
             var myColor = isPreview ? this.colorResource.getPreviewColor() : this.colorResource.nextColor();
+            course.colors = isPreview ? null : myColor;
             var courseEventSources = new CourseEventSources(course, myColor, isPreview);
             this.compositeEventSources.addEventSources(courseEventSources);
         };
 
         CalendarCtrl.prototype.removeCourse = function (course, isPreview) {
+            course.colors = null;
             this.compositeEventSources.removeEventSources(course.id, isPreview);
         };
 

@@ -1,8 +1,10 @@
 define(["require", "exports"], function(require, exports) {
     var SectionEventSource = (function () {
-        function SectionEventSource(section, course, color) {
+        function SectionEventSource(section, course, colors) {
             this.id = section.id;
-            this.color = color;
+            this.textColor = colors.dark;
+            this.borderColor = colors.dark;
+            this.backgroundColor = colors.light;
             this.section_type = section.section_type;
 
             var inputTimeFormat = "hh:mm a";

@@ -28,7 +28,7 @@ class CourseEventSources implements IEventSources {
         this.mySections = [];
         for (var i = 0; i < sections.length; i++) {
             var section = sections[i];
-            var eventSource: SectionEventSource = new SectionEventSource(section, this.myCourse, this.myColors.light);
+            var eventSource: SectionEventSource = new SectionEventSource(section, this.myCourse, this.myColors);
             this.allSections.push(eventSource);
             this.mySections.push(eventSource);
         }

@@ -15,7 +15,7 @@ define(["require", "exports", './SectionEventSource'], function(require, exports
             this.mySections = [];
             for (var i = 0; i < sections.length; i++) {
                 var section = sections[i];
-                var eventSource = new SectionEventSource(section, this.myCourse, this.myColors.light);
+                var eventSource = new SectionEventSource(section, this.myCourse, this.myColors);
                 this.allSections.push(eventSource);
                 this.mySections.push(eventSource);
             }

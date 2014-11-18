@@ -1,3 +1,5 @@
+/// <reference path='../../../nice/static/ts/typings/tsd.d.ts' />
+/// <amd-dependency path="angular"/>
 'use strict';
 define(["require", "exports", "angular"], function(require, exports) {
     var Module = (function () {
@@ -21,4 +23,3 @@ define(["require", "exports", "angular"], function(require, exports) {
     
     return Module;
 });
-//# sourceMappingURL=Module.js.map

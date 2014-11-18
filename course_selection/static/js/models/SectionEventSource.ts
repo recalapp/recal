@@ -17,12 +17,16 @@ class SectionEventSource implements IEventSource {
 
     public id: number;
     public events: IEvent[];
-    public color: string;
+    public textColor: string;
+    public borderColor: string;
+    public backgroundColor: string;
     public section_type: string;
 
-    constructor(section: ISection, course: ICourse, color: string) {
+    constructor(section: ISection, course: ICourse, colors: IColorPalette) {
         this.id = section.id;
-        this.color = color;
+        this.textColor = colors.dark;
+        this.borderColor = colors.dark;
+        this.backgroundColor = colors.light;
         this.section_type = section.section_type;
 
         var inputTimeFormat = "hh:mm a";

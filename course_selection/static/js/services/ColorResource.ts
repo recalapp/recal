@@ -3,7 +3,7 @@ import IColorPalette = require('../interfaces/IColorPalette');
 class ColorResource {
     public static $inject = ['$resource'];
 
-    private static ALPHA: number = 0.6;
+    private static ALPHA: number = 0.8;
 
     private static previewColor: IColorPalette = {
         dark: 'rgb(84, 84, 84)',

@@ -2,6 +2,7 @@ import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
 import ISemester = require('../interfaces/ISemester');
 import ICourseListing = require('../interfaces/ICourseListing');
+import IColorPalette = require('../interfaces/IColorPalette');
 import Section = require('../models/Section');
 
 class Course implements ICourse {
@@ -14,6 +15,7 @@ class Course implements ICourse {
     public primary_listing: string;
     public all_listings: string;
     public section_types: Array<string>;
+    public colors: IColorPalette;
 
     constructor(title, description, course_listings,
             id, sections, semester) {
@@ -27,6 +29,7 @@ class Course implements ICourse {
         this.primary_listing = this.getPrimaryCourseListing();
         this.all_listings = this.getAllCourseListings();
         this.section_types = this.getSectionTypes();
+        this.colors = null;
     }
 
     private getSections(input): Array<ISection> {
@@ -87,6 +90,17 @@ class Course implements ICourse {
         return this.sections.filter((section) => {
             return section.id == section_id;
         })[0];
+    }
+
+    public getStyle(): any {
+        if (this.colors == null) {
+            return {};
+        } else {
+            return {
+                'background-color': this.colors.dark,
+                'color': 'white'
+            };
+        }
     }
 }
 

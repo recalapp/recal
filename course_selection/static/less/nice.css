@@ -1,1 +1,27 @@
-body{background-color:#fff;height:100%;width:100%;overflow:hidden}#container{padding-left:1vw;height:100vh;width:100vw}#header{height:5vh}#main{height:95vh}#searchColumn{width:25vw}#queueColumn{width:15vw}#calendarColumn{width:60vw}
+/* @body-dark-background-color: rgb(231, 232, 233); */
+body {
+  background-color: #ffffff;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+#container {
+  padding-left: 1vw;
+  height: 100vh;
+  width: 100vw;
+}
+#header {
+  height: 5vh;
+}
+#main {
+  height: 95vh;
+}
+#searchColumn {
+  width: 25vw;
+}
+#queueColumn {
+  width: 15vw;
+}
+#calendarColumn {
+  width: 60vw;
+}
