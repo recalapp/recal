@@ -6,6 +6,7 @@ define(["require", "exports"], function(require, exports) {
             this.id = -1;
             this.courseIdToIndices = {};
             this.myEventSources = [];
+            this.backupEventSources = [];
         }
         // returns an array of IEventSource
         CompositeEventSources.prototype.getEventSources = function () {
@@ -23,6 +24,7 @@ define(["require", "exports"], function(require, exports) {
             var length = eventSources.getEventSources().length;
             var end = start + length - 1;
             this.myEventSources.push.apply(this.myEventSources, eventSources.getEventSources());
+            this.backupEventSources[eventSources.id] = eventSources.getEventSources();
             this.courseIdToIndices[eventSources.id] = {
                 start: start,
                 end: end,
@@ -39,22 +41,77 @@ define(["require", "exports"], function(require, exports) {
             }
 
             for (var i = indices.start; i <= indices.end; i++) {
-                this.myEventSources[i] = [];
+                this.myEventSources[i] = {};
             }
 
             delete this.courseIdToIndices[courseId];
+            // TODO: should we remove backup?
         };
 
         CompositeEventSources.prototype.enrollInCourseSection = function (courseId, section_type, sectionId) {
-            //var courseEventSources = this.myChildren[courseId];
-            //courseEventSources.removeEventSourcesByType(section_type);
-            //courseEventSources.addEventSourceById(sectionId);
-            // courseEventSources.isPreview should be false
-            //this.removeEventSources(courseId, courseEventSources.isPreview);
-            // create a new courseEventSources
-            // remove by section type
-            // add by id
-            // add courseEventSources back
+            var courseIndices = this.courseIdToIndices[courseId];
+            if (!courseIndices) {
+                throw "trying to enroll in a section in course, but course is not found";
+                return;
+            }
+
+            var isFound = false;
+            var emptySlotIdx = -1;
+            for (var i = courseIndices.start; i <= courseIndices.end; i++) {
+                var curr = this.myEventSources[i];
+                if (!curr.id) {
+                    emptySlotIdx = i;
+                } else if (curr.section_type == section_type) {
+                    if (curr.id != sectionId) {
+                        this.myEventSources[i] = {};
+                        emptySlotIdx = i;
+                    } else {
+                        isFound = true;
+                    }
+                }
+            }
+
+            if (isFound) {
+                return;
+            }
+
+            // else, we didn't find this section, and need to add it manually
+            var eventSources = this.backupEventSources[courseId];
+            for (var j = 0; j < eventSources.length; j++) {
+                if (eventSources[j].id == sectionId) {
+                    this.myEventSources[emptySlotIdx] = eventSources[j];
+                    return;
+                }
+            }
+        };
+
+        // add all sections back
+        CompositeEventSources.prototype.previewAllCourseSection = function (courseId, section_type) {
+            var courseIndices = this.courseIdToIndices[courseId];
+            if (!courseIndices) {
+                throw "trying to preview " + section_type + " in course, but course is not found";
+                return;
+            }
+
+            for (var i = courseIndices.start; i <= courseIndices.end; i++) {
+                var curr = this.myEventSources[i];
+                if (curr.section_type == section_type) {
+                    this.myEventSources[i] = {};
+                }
+            }
+
+            // then add all back
+            var eventSources = this.backupEventSources[courseId];
+            i = courseIndices.start;
+            for (var j = 0; j < eventSources.length; j++) {
+                if (eventSources[j].section_type == section_type) {
+                    while (this.myEventSources[i].id && i <= courseIndices.end) {
+                        i++;
+                    }
+
+                    this.myEventSources[i] = eventSources[j];
+                }
+            }
         };
         return CompositeEventSources;
     })();

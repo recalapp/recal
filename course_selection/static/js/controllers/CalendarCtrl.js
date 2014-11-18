@@ -163,18 +163,16 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
 
                         console.log('section type: ' + section_type + ' has changed in course ' + course_id);
 
-                        // TODO: what if old[section_type] == null?
-                        // SHOULD REMOVE ALL
-                        // this.removeEventSourceByType(course_id, section_type);
-                        // we want to render all events associated with this section_type
                         if (curr[section_type] == null) {
-                            // this.addAllSectionEventSourcesByType(course_id, section_type);
+                            this.compositeEventSources.previewAllCourseSection(course_id, section_type);
                         } else {
-                            // this.addEventSourceById(course_id, curr[section_type], CalendarCtrl.StatusEnum.SELECTED);
+                            this.compositeEventSources.enrollInCourseSection(course_id, section_type, curr[section_type]);
                         }
                     }
                 }
             }
+
+            this.$scope.eventSources = this.compositeEventSources.getEventSources();
         };
         CalendarCtrl.NOT_FOUND = -1;
         CalendarCtrl.StatusEnum = {
