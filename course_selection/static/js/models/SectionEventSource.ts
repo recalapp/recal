@@ -16,6 +16,7 @@ class SectionEventSource implements IEventSource {
     };
 
     public id: number;
+    public course_id: number;
     public events: IEvent[];
     public textColor: string;
     public borderColor: string;
@@ -24,6 +25,7 @@ class SectionEventSource implements IEventSource {
 
     constructor(section: ISection, course: ICourse, colors: IColorPalette) {
         this.id = section.id;
+        this.course_id = course.id;
         this.textColor = colors.dark;
         this.borderColor = colors.dark;
         this.backgroundColor = colors.light;

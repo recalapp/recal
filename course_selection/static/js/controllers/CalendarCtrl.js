@@ -43,7 +43,11 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             }, true);
         }
         CalendarCtrl.prototype.initConfig = function () {
+            var _this = this;
             this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
+            this.$scope.uiConfig.eventClick = function (calEvent, jsEvent, view) {
+                return _this.onEventClick(calEvent, jsEvent, view);
+            };
         };
 
         ///////////////////////////////////////////////////////////////////
@@ -56,6 +60,10 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.compositeEventSources.addEventSources(courseEventSources);
         };
 
+        // TODO: fix adding colors after re-init in colorResource
+        // what if user adds 8 classes, colorResource re-enables all colors
+        // then user removes a course. Then we should again only allow that removed
+        // color
         CalendarCtrl.prototype.removeCourse = function (course, isPreview) {
             if (!isPreview) {
                 this.colorResource.addColor(course.colors);
@@ -179,6 +187,19 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             }
 
             this.$scope.eventSources = this.compositeEventSources.getEventSources();
+        };
+
+        CalendarCtrl.prototype.onEventClick = function (calEvent, jsEvent, view) {
+            var section = calEvent.source;
+            if (this.testSharingService.isSectionEnrolled(section)) {
+                this.testSharingService.unenrollSection(section);
+            } else {
+                this.testSharingService.enrollSection(section);
+            }
+            //console.log('SectionId: ' + calEvent.source.id);
+            //console.log('courseId: ' + calEvent.source.course_id);
+            // console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+            // console.log('View: ' + view.name);
         };
         CalendarCtrl.NOT_FOUND = -1;
         CalendarCtrl.StatusEnum = {

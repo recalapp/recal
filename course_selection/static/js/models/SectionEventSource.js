@@ -2,6 +2,7 @@ define(["require", "exports"], function(require, exports) {
     var SectionEventSource = (function () {
         function SectionEventSource(section, course, colors) {
             this.id = section.id;
+            this.course_id = course.id;
             this.textColor = colors.dark;
             this.borderColor = colors.dark;
             this.backgroundColor = colors.light;

@@ -6,6 +6,7 @@ interface IEventSource {
     textColor: string;
     backgroundColor: string;
     section_type: string;
+    course_id: number;
 }
 
 export = IEventSource;
