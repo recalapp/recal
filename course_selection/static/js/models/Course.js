@@ -12,6 +12,7 @@ define(["require", "exports", '../models/Section'], function(require, exports, S
             this.all_listings = this.getAllCourseListings();
             this.section_types = this.getSectionTypes();
             this.colors = null;
+            this.rating = +(Math.random() + 4).toPrecision(3);
         }
         Course.prototype.getSections = function (input) {
             var sections = [];

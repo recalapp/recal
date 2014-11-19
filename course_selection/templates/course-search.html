@@ -1,3 +1,4 @@
+{% load staticfiles %}
 {% verbatim %}
 <div id="searchColumn" class="col-md-4 column" ng-controller="SearchCtrl as searchCtrl">
     <div class="row" id="searchBarContainer">
@@ -23,11 +24,13 @@
                            ng-bind="course.title">
                         </div>
                     </div>
-                    <div class="course-tag">
-                    </div>
+{% endverbatim %}
+                </div>
+                <div class="course-tag"
+                    ng-bind-html="searchCtrl.getEasyPceLink(course)"
+                    >
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endverbatim %}

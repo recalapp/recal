@@ -16,3 +16,12 @@
 .q-course-title {
   font-size: 25px;
 }
+.q-panel-title {
+  font-size: 35px;
+}
+#courseQueueContainer {
+  font-size: 13px;
+  text-align: center;
+  overflow: auto;
+  height: 90vh;
+}

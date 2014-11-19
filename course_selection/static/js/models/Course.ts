@@ -16,6 +16,7 @@ class Course implements ICourse {
     public all_listings: string;
     public section_types: Array<string>;
     public colors: IColorPalette;
+    public rating: number;
 
     constructor(title, description, course_listings,
             id, sections, semester) {
@@ -30,6 +31,7 @@ class Course implements ICourse {
         this.all_listings = this.getAllCourseListings();
         this.section_types = this.getSectionTypes();
         this.colors = null;
+        this.rating = +(Math.random() + 4).toPrecision(3);
     }
 
     private getSections(input): Array<ISection> {

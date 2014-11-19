@@ -3,8 +3,9 @@ define(["require", "exports"], function(require, exports) {
     'use strict';
 
     var SearchCtrl = (function () {
-        function SearchCtrl($scope, courseResource, localStorageService, testSharingService) {
+        function SearchCtrl($scope, $sce, courseResource, localStorageService, testSharingService) {
             this.$scope = $scope;
+            this.$sce = $sce;
             this.courseResource = courseResource;
             this.localStorageService = localStorageService;
             this.testSharingService = testSharingService;
@@ -46,8 +47,15 @@ define(["require", "exports"], function(require, exports) {
                 };
             }
         };
+
+        SearchCtrl.prototype.getEasyPceLink = function (course) {
+            var color = this.setColor(course).color;
+            var link = "http://easypce.com/courses/" + course.primary_listing;
+            return this.$sce.trustAsHtml("<a target='_blank' href='" + link + "'" + "style='color: " + color + "'" + ">" + course.rating + "</a>");
+        };
         SearchCtrl.$inject = [
             '$scope',
+            '$sce',
             'CourseResource',
             'localStorageService',
             'TestSharingService'

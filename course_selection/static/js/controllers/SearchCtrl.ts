@@ -16,6 +16,7 @@ class SearchCtrl {
     // See http://docs.angularjs.org/guide/di
     public static $inject = [
         '$scope',
+        '$sce',
         'CourseResource',
         'localStorageService',
         'TestSharingService',
@@ -25,6 +26,7 @@ class SearchCtrl {
 
     constructor(
             private $scope: ICourseSearchScope,
+            private $sce,
             private courseResource,
             private localStorageService,
             private testSharingService
@@ -68,6 +70,15 @@ class SearchCtrl {
                 'color': 'white'
             };
         }
+    }
+
+    public getEasyPceLink(course: ICourse): string {
+        var color = this.setColor(course).color;
+        var link = "http://easypce.com/courses/" + course.primary_listing;
+        return this.$sce.trustAsHtml(
+                "<a target='_blank' href='" + link + "'" 
+                + "style='color: " + color + "'" 
+                + ">" + course.rating + "</a>");
     }
 }
 
