@@ -9,7 +9,7 @@
     <div class="row" id="coursePanelsContainer">
         <div id="accordion" class="panel-group">
             <div class="panel panel-default course-panel" 
-                    ng-repeat="course in data.courses | courseSearch:query | orderBy: course.primary_listing"  
+                    ng-repeat="course in data.courses | courseSearch:query | orderBy: 'primary_listing' "  
                     ng-mouseover="searchCtrl.onMouseOver(course)" 
                     ng-mouseleave="searchCtrl.onMouseLeave(course)" 
                     ng-style="searchCtrl.setColor(course)"
