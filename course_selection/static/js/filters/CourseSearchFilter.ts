@@ -24,7 +24,7 @@ class CourseSearchFilter extends Filter
         for (var i = 0; i < queries.length; i++) {
             var query = queries[i].toUpperCase();
             if (query == '') {
-                break;
+                continue;
             }
 
             // is department

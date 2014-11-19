@@ -116,6 +116,10 @@ class CalendarCtrl {
     }
 
     private removeCourse(course: ICourse, isPreview: boolean) {
+        if (!isPreview) {
+            this.colorResource.addColor(course.colors);
+        }
+
         course.colors = null;
         this.compositeEventSources.removeEventSources(course.id, isPreview);
     }

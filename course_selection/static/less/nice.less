@@ -1,15 +1,17 @@
 @body-light-background-color: rgb(241, 242, 242);
-/* @body-dark-background-color: rgb(231, 232, 233); */
-@body-dark-background-color: rgb(255, 255, 255);
+@body-dark-background-color: rgb(231, 232, 233);
 @course-title-font-size: 18px;
 @title-font-size: 40px;
 
 body {
-    background-color: @body-dark-background-color;
+    background: url('/static/images/crossword.png') repeat fixed;
     height: 100%;
     width: 100%;
     overflow: hidden;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-weight: 300;
 }
+
 
 #container {
     padding-left: 1vw;
@@ -35,4 +37,5 @@ body {
 
 #calendarColumn {
     width: 60vw;
+    background-color: 'white';
 }

@@ -35,6 +35,17 @@ define(["require", "exports"], function(require, exports) {
                 this.testSharingService.enrollCourse(course);
             }
         };
+
+        SearchCtrl.prototype.setColor = function (course) {
+            if (course.colors == null) {
+                return {};
+            } else {
+                return {
+                    'background-color': course.colors.dark,
+                    'color': 'white'
+                };
+            }
+        };
         SearchCtrl.$inject = [
             '$scope',
             'CourseResource',

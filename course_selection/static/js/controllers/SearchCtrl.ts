@@ -57,6 +57,18 @@ class SearchCtrl {
             this.testSharingService.enrollCourse(course);
         }
     }
+
+    public setColor(course: ICourse): any 
+    {
+        if (course.colors == null) {
+            return {};
+        } else {
+            return {
+                'background-color': course.colors.dark,
+                'color': 'white'
+            };
+        }
+    }
 }
 
 export = SearchCtrl;

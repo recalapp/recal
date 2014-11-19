@@ -1,10 +1,10 @@
 .fc-unthemed .fc-today {
-  background-color: #ffffff;
+  background-color: transparent;
 }
 .fc-event {
-  border-right-width: 4px;
+  border-right-style: none;
   border-top-style: none;
-  border-left-style: none;
+  border-left-width: 4px;
   border-bottom-style: none;
 }
 .fc-title {

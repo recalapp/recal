@@ -57,6 +57,10 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
         };
 
         CalendarCtrl.prototype.removeCourse = function (course, isPreview) {
+            if (!isPreview) {
+                this.colorResource.addColor(course.colors);
+            }
+
             course.colors = null;
             this.compositeEventSources.removeEventSources(course.id, isPreview);
         };

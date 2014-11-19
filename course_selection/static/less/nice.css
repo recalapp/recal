@@ -1,9 +1,10 @@
-/* @body-dark-background-color: rgb(231, 232, 233); */
 body {
-  background-color: #ffffff;
+  background: url('/static/images/crossword.png') repeat fixed;
   height: 100%;
   width: 100%;
   overflow: hidden;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
 }
 #container {
   padding-left: 1vw;
@@ -24,4 +25,5 @@ body {
 }
 #calendarColumn {
   width: 60vw;
+  background-color: 'white';
 }

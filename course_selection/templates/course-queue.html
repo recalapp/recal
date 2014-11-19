@@ -4,19 +4,19 @@
         <div class="col-md-12 column">
             <h1 class="my-panel-title"> My Courses </h1>
             <div id="courseQueue">
-                <accordion close-others=false>
-                <div ng-repeat="course in data.enrolledCourses">
-                    <accordion-group heading="{{ course.primary_listing }}">
-                    <div class="row clearfix q-section-container">
-                        <div class="q-section" 
-                            ng-click="queueCtrl.onClick(section)" 
-                            ng-repeat="section in course.sections" 
-                            ng-style="course.getStyle()"
-                            ng-bind="section.name"> 
+                <div class="panel-group">
+                    <div class="panel panel-default" ng-repeat="course in data.enrolledCourses">
+                        <div class="q-course-title" ng-bind="course.primary_listing"></div>
+                        <div class="row clearfix q-section-container">
+                            <div class="q-section" 
+                                 ng-click="queueCtrl.onClick(section)" 
+                                 ng-repeat="section in course.sections" 
+                                 ng-style="course.getStyle()"
+                                 ng-bind="section.name"> 
+                            </div>
                         </div>
                     </div>
                 </div>
-                </accordion>
             </div>
         </div>
     </div>
