@@ -1,5 +1,8 @@
 .fc-unthemed .fc-today {
-  background-color: transparent;
+  background-color: white;
+}
+#calendar {
+  background-color: white;
 }
 .fc-event {
   border-right-style: none;
@@ -7,6 +10,10 @@
   border-left-width: 4px;
   border-bottom-style: none;
   border-radius: 0;
+}
+.fc-toolbar {
+  margin-bottom: 0;
+  height: 0;
 }
 .fc-title {
   text-align: center;

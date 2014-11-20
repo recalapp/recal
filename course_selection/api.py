@@ -35,7 +35,7 @@ class CourseResource(ModelResource):
         excludes = ['registrar_id']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
-        limit = 1100
+        limit = 200
         max_limit = 0
         filtering = {
             'semester' : ALL_WITH_RELATIONS
