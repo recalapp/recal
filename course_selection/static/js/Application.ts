@@ -10,4 +10,9 @@ var nice = new Module('nice', [
         'niceControllers'
         ]);
 
+nice.app.config((localStorageServiceProvider) => {
+  localStorageServiceProvider
+    .setPrefix('nice');
+});
+
 export = nice;

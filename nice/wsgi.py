@@ -10,8 +10,8 @@ https://docs.djangoproject.com/en/1.6/howto/deployment/wsgi/
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings.prod")
 
-from nice import scrape
-from nice import names
+# from nice import scrape
+# from nice import names
 
 # initialize database with all events and netids
 # scrape.scrape_all()

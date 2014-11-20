@@ -1,7 +1,9 @@
 define(["require", "exports", './Course'], function(require, exports, Course) {
     var CourseManager = (function () {
-        function CourseManager(courseResource) {
+        function CourseManager(courseResource, localStorageService, termCode) {
             this.courseResource = courseResource;
+            this.localStorageService = localStorageService;
+            this.termCode = termCode;
             this.data = {
                 previewCourse: null,
                 enrolledCourses: [],
@@ -20,15 +22,22 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
         }
         CourseManager.prototype.loadCourses = function () {
             var _this = this;
-            this.courseResource.query({}, function (data) {
-                return _this.onLoaded(data);
-            });
+            var temp = this.localStorageService.get('courses-' + this.termCode);
+            if (temp != null && Array.isArray(temp)) {
+                this.data.courses = temp;
+            } else {
+                this.courseResource.get({ semester__term_code: this.termCode }, function (data) {
+                    _this.onLoaded(data);
+                });
+            }
         };
 
         CourseManager.prototype.onLoaded = function (data) {
             this.data.courses = data['objects'].map(function (course) {
                 return new Course(course.title, course.description, course.course_listings, course.id, course.sections, course.semester);
             });
+
+            this.localStorageService.set('courses-' + this.termCode, this.data.courses);
         };
 
         CourseManager.prototype.getData = function () {

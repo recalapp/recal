@@ -20,18 +20,33 @@ class TestSharingService {
         section: null
     }
 
-    constructor(private courseResource) {
+    constructor(
+            private courseResource,
+            private localStorageService
+            ) 
+    {
+        var termCode = 1154;
         this.data.previewCourse = null;
         this.data.enrolledCourses = [];
         this.data.enrolledSections = {};
-        this.loadCourses();
+        this.loadCourses(termCode);
     }
 
-    private loadCourses() {
-        this.courseResource.query({}, (data) => this.onLoaded(data));
+    private loadCourses(termCode: number) {
+        var temp = this.localStorageService.get('courses-' + termCode);
+        if (temp != null && Array.isArray(temp)) {
+            this.data.courses = temp;
+        } else {
+            this.courseResource.get(
+                    { semester__term_code: termCode }, 
+                    (data) => {
+                        this.onLoaded(data, termCode);
+                    }
+            );
+        }
     }
 
-    private onLoaded(data) {
+    private onLoaded(data, termCode: number) {
         this.data.courses = data['objects'].map((course) => {
             return new Course(
                     course.title,
@@ -42,6 +57,8 @@ class TestSharingService {
                     course.semester
                     );
         });
+
+        this.localStorageService.set('courses-' + termCode, this.data.courses);
     }
 
     public getData() {

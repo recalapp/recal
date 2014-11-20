@@ -9,6 +9,10 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
         'niceControllers'
     ]);
 
+    nice.app.config(function (localStorageServiceProvider) {
+        localStorageServiceProvider.setPrefix('nice');
+    });
+
     
     return nice;
 });

@@ -1,7 +1,8 @@
 define(["require", "exports", '../models/Course'], function(require, exports, Course) {
     var TestSharingService = (function () {
-        function TestSharingService(courseResource) {
+        function TestSharingService(courseResource, localStorageService) {
             this.courseResource = courseResource;
+            this.localStorageService = localStorageService;
             /* maybe this service shouldn't know about any course/section being previewed? */
             this.data = {
                 previewCourse: null,
@@ -14,22 +15,30 @@ define(["require", "exports", '../models/Course'], function(require, exports, Co
                 course: null,
                 section: null
             };
+            var termCode = 1154;
             this.data.previewCourse = null;
             this.data.enrolledCourses = [];
             this.data.enrolledSections = {};
-            this.loadCourses();
+            this.loadCourses(termCode);
         }
-        TestSharingService.prototype.loadCourses = function () {
+        TestSharingService.prototype.loadCourses = function (termCode) {
             var _this = this;
-            this.courseResource.query({}, function (data) {
-                return _this.onLoaded(data);
-            });
+            var temp = this.localStorageService.get('courses-' + termCode);
+            if (temp != null && Array.isArray(temp)) {
+                this.data.courses = temp;
+            } else {
+                this.courseResource.get({ semester__term_code: termCode }, function (data) {
+                    _this.onLoaded(data, termCode);
+                });
+            }
         };
 
-        TestSharingService.prototype.onLoaded = function (data) {
+        TestSharingService.prototype.onLoaded = function (data, termCode) {
             this.data.courses = data['objects'].map(function (course) {
                 return new Course(course.title, course.description, course.course_listings, course.id, course.sections, course.semester);
             });
+
+            this.localStorageService.set('courses-' + termCode, this.data.courses);
         };
 
         TestSharingService.prototype.getData = function () {

@@ -7,13 +7,15 @@ import CourseManager = require('../models/CourseManager');
 class TabCtrl {
     public static $inject =[
         '$scope',
-        'CourseResource'
+        'CourseResource',
+        'localStorageService'
         ];
 
     private schedules;
 
     constructor(private $scope,
-            private courseResource) {
+            private courseResource,
+            private localStorageService) {
         this.$scope.vm = this;
         this.schedules = [];
         this.$scope.schedules = this.schedules;
@@ -27,12 +29,12 @@ class TabCtrl {
  
     public addNewSchedule() {
         var id = this.schedules.length + 1;
-        var cm = new CourseManager(this.courseResource);
+        var cm = new CourseManager(this.courseResource, this.localStorageService, 1154);
         this.schedules.push({
             id: id,
             name: "Schedule " + id,
             active: true,
-            course_manager: cm
+            courseManager: cm
         });
     }
  

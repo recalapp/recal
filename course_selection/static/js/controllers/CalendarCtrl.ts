@@ -1,5 +1,4 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-import TestSharingService = require('../services/TestSharingService');
 import IColorPalette = require('../interfaces/IColorPalette');
 import ColorResource = require('../services/ColorResource');
 import ICourse = require('../interfaces/ICourse');
@@ -7,6 +6,7 @@ import ISection = require('../interfaces/ISection');
 import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
+import CourseManager = require('../models/CourseManager');
 
 'use strict';
 
@@ -45,28 +45,22 @@ class CalendarCtrl {
     };
 
     private compositeEventSources: CompositeEventSources;
+    private courseManager: CourseManager;
     public static $inject = [
         '$scope',
-        'TestSharingService',
         'ColorResource'
     ];
 
     // dependencies are injected via AngularJS $injector
     constructor(
             private $scope,
-            private testSharingService,
             private colorResource) 
     {
         this.$scope.vm = this;
         this.initConfig();
 
-        this.$scope.data = testSharingService.getData();
-        // var previewColor = this.colorResource.getPreviewColor();
-        // this.$scope.previewEventSource = {
-        //     events: [],
-        //     color: this.colorResource.toPreviewColor(previewColor.light),
-        //     textColor: this.colorResource.toPreviewColor(previewColor.dark)
-        // };
+        this.courseManager = (<any>this.$scope.$parent).schedule.courseManager;
+        this.$scope.data = this.courseManager.getData();
 
         this.compositeEventSources = new CompositeEventSources();
         this.$scope.eventSources = this.compositeEventSources.getEventSources();
@@ -260,10 +254,10 @@ class CalendarCtrl {
 
     public onEventClick(calEvent, jsEvent, view) {
         var section = calEvent.source;
-        if (this.testSharingService.isSectionEnrolled(section)) {
-            this.testSharingService.unenrollSection(section);
+        if (this.courseManager.isSectionEnrolled(section)) {
+            this.courseManager.unenrollSection(section);
         } else {
-            this.testSharingService.enrollSection(section);
+            this.courseManager.enrollSection(section);
         }
         //console.log('SectionId: ' + calEvent.source.id);
         //console.log('courseId: ' + calEvent.source.course_id);

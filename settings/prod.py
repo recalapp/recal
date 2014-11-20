@@ -43,9 +43,9 @@ INSTALLED_APPS += (
 )
 
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
-INTERNAL_IPS = ('127.0.0.1',)
-
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
+#INTERNAL_IPS = ('127.0.0.1',)
+#
+#DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 ### TODO: updated DDT, need to update these settings when deploying
 # # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation

@@ -19,7 +19,11 @@ class CourseManager {
         section: null
     }
 
-    constructor(private courseResource) {
+    constructor(
+            private courseResource,
+            private localStorageService,
+            private termCode: number
+            ) {
         this.data.previewCourse = null;
         this.data.enrolledCourses = [];
         this.data.enrolledSections = {};
@@ -27,7 +31,17 @@ class CourseManager {
     }
 
     private loadCourses() {
-        this.courseResource.query({}, (data) => this.onLoaded(data));
+        var temp = this.localStorageService.get('courses-' + this.termCode);
+        if (temp != null && Array.isArray(temp)) {
+            this.data.courses = temp;
+        } else {
+            this.courseResource.get(
+                    { semester__term_code: this.termCode }, 
+                    (data) => {
+                        this.onLoaded(data);
+                    }
+            );
+        }
     }
 
     private onLoaded(data) {
@@ -41,6 +55,8 @@ class CourseManager {
                     course.semester
                     );
         });
+
+        this.localStorageService.set('courses-' + this.termCode, this.data.courses);
     }
 
     public getData() {
