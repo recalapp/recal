@@ -1,0 +1,23 @@
+{% load staticfiles %}
+{% verbatim %}
+<div ng-controller="TabCtrl as tabCtrl">
+<tabset>
+<tab ng-repeat = "schedule in schedules"
+     heading = "{{ schedule.id }}"
+     active = schedule.active
+     >
+     <div class="row clearfix" id="main">
+{% endverbatim %}
+         {% include 'course-search.html' %}
+         {% include 'calendar.html' %}
+         {% include 'course-queue.html' %}
+     </div>
+</tab>
+<tab select="tabCtrl.addSchedule()">
+<tab-heading>
+Add new tab
+</tab-heading>
+</tab>
+</tabset>
+</div>
+
