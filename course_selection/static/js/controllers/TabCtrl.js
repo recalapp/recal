@@ -2,9 +2,10 @@ define(["require", "exports", '../models/CourseManager'], function(require, expo
     'use strict';
 
     var TabCtrl = (function () {
-        function TabCtrl($scope, courseResource) {
+        function TabCtrl($scope, courseResource, localStorageService) {
             this.$scope = $scope;
             this.courseResource = courseResource;
+            this.localStorageService = localStorageService;
             this.$scope.vm = this;
             this.schedules = [];
             this.$scope.schedules = this.schedules;
@@ -17,12 +18,12 @@ define(["require", "exports", '../models/CourseManager'], function(require, expo
 
         TabCtrl.prototype.addNewSchedule = function () {
             var id = this.schedules.length + 1;
-            var cm = new CourseManager(this.courseResource);
+            var cm = new CourseManager(this.courseResource, this.localStorageService, 1154);
             this.schedules.push({
                 id: id,
                 name: "Schedule " + id,
                 active: true,
-                course_manager: cm
+                courseManager: cm
             });
         };
 
@@ -32,7 +33,8 @@ define(["require", "exports", '../models/CourseManager'], function(require, expo
         };
         TabCtrl.$inject = [
             '$scope',
-            'CourseResource'
+            'CourseResource',
+            'localStorageService'
         ];
         return TabCtrl;
     })();

@@ -3,22 +3,16 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
 
     var CalendarCtrl = (function () {
         // dependencies are injected via AngularJS $injector
-        function CalendarCtrl($scope, testSharingService, colorResource) {
+        function CalendarCtrl($scope, colorResource) {
             var _this = this;
             this.$scope = $scope;
-            this.testSharingService = testSharingService;
             this.colorResource = colorResource;
             this.$scope.vm = this;
             this.initConfig();
 
-            this.$scope.data = testSharingService.getData();
+            this.courseManager = this.$scope.$parent.schedule.courseManager;
+            this.$scope.data = this.courseManager.getData();
 
-            // var previewColor = this.colorResource.getPreviewColor();
-            // this.$scope.previewEventSource = {
-            //     events: [],
-            //     color: this.colorResource.toPreviewColor(previewColor.light),
-            //     textColor: this.colorResource.toPreviewColor(previewColor.dark)
-            // };
             this.compositeEventSources = new CompositeEventSources();
             this.$scope.eventSources = this.compositeEventSources.getEventSources();
 
@@ -191,10 +185,10 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
 
         CalendarCtrl.prototype.onEventClick = function (calEvent, jsEvent, view) {
             var section = calEvent.source;
-            if (this.testSharingService.isSectionEnrolled(section)) {
-                this.testSharingService.unenrollSection(section);
+            if (this.courseManager.isSectionEnrolled(section)) {
+                this.courseManager.unenrollSection(section);
             } else {
-                this.testSharingService.enrollSection(section);
+                this.courseManager.enrollSection(section);
             }
             //console.log('SectionId: ' + calEvent.source.id);
             //console.log('courseId: ' + calEvent.source.course_id);
@@ -233,7 +227,6 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
 
         CalendarCtrl.$inject = [
             '$scope',
-            'TestSharingService',
             'ColorResource'
         ];
         return CalendarCtrl;

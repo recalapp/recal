@@ -8,20 +8,26 @@ import ColorResource = require('./ColorResource');
 class ResourceBuilder {
     static $inject = [
         '$resource',
-        'CourseResource'
+        'localStorageService'
     ];
     
-    constructor(private $resource: ng.resource.IResourceService) {}
+    constructor(private $resource: ng.resource.IResourceService, private localStorageService) {}
 
     // TODO: figure out how to use typescript to properly do this
     public getCourseResource(): ICourseResource {
-        return <any>this.$resource('/course_selection/api/v1/course/:id', {id: '@id'}, {
-            query: {method: 'GET', isArray: false}
-        });
+        return <any>this.$resource('/course_selection/api/v1/course/', 
+                {}, 
+                { 
+                    query: {
+                        method: 'GET', 
+                        isArray: false
+                    } 
+                }
+                );
     }
 
     public getTestSharingService() {
-        return new TestSharingService(this.getCourseResource());
+        return new TestSharingService(this.getCourseResource(), this.localStorageService);
     }
 
     public getColorResource() {

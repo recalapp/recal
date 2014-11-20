@@ -1,5 +1,6 @@
 import Application = require('../Application');
 import ICourse = require('../interfaces/ICourse');
+import CourseManager = require('../models/CourseManager');
 import SearchCtrl = require('../controllers/SearchCtrl');
 
 interface ICourseSearchScope extends ng.IScope {
@@ -8,6 +9,7 @@ interface ICourseSearchScope extends ng.IScope {
     coursesData: any;
     data: any;
     vm: SearchCtrl;
+    courseManager: CourseManager;
     onMouseOver(course: ICourse): void;
 }
 
