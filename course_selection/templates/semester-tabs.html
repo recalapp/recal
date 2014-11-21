@@ -1,0 +1,22 @@
+{% load staticfiles %}
+{% verbatim %}
+<div ng-controller="SemCtrl as semCtrl">
+    <tabset>
+        <tab ng-repeat = "semester in semesters"
+         heading = "{{ semester.title }}"
+         active = semester.active
+         >
+         <div class="row clearfix" id="main">
+             {% endverbatim %}
+             {% include 'tabs.html' %}
+{% verbatim %}
+         </div>
+        </tab>
+        <tab select="semCtrl.addSemester()">
+        <tab-heading>
+        +
+        </tab-heading>
+        </tab>
+    </tabset>
+</div>
+{% endverbatim %}

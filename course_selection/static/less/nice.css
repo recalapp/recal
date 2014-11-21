@@ -16,6 +16,7 @@ body {
 }
 #main {
   height: 95vh;
+  margin-left: 0px;
 }
 #searchColumn {
   width: 25vw;

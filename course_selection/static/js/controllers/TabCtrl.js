@@ -9,6 +9,7 @@ define(["require", "exports", '../models/CourseManager'], function(require, expo
             this.$scope.vm = this;
             this.schedules = [];
             this.$scope.schedules = this.schedules;
+            this.semester = this.$scope.$parent.semester;
         }
         TabCtrl.prototype.setAllInactive = function () {
             angular.forEach(this.schedules, function (schedule) {
@@ -18,7 +19,7 @@ define(["require", "exports", '../models/CourseManager'], function(require, expo
 
         TabCtrl.prototype.addNewSchedule = function () {
             var id = this.schedules.length + 1;
-            var cm = new CourseManager(this.courseResource, this.localStorageService, 1154);
+            var cm = new CourseManager(this.courseResource, this.localStorageService, this.semester.term_code);
             this.schedules.push({
                 id: id,
                 name: "Schedule " + id,

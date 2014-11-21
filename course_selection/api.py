@@ -8,7 +8,7 @@ class SemesterResource(ModelResource):
     class Meta:
         queryset = Semester.objects.all()
         resource_name = 'semester'
-        excludes = ['id']
+        excludes = ['']
         allowed_methods = ['get']
         filtering = {
             'term_code': ALL
@@ -20,7 +20,7 @@ class CourseListingResource(ModelResource):
     class Meta:
         queryset = Course_Listing.objects.all()
         resource_name = 'course_listing'
-        excludes = ['course', 'id']
+        excludes = ['course', '']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
 
@@ -58,6 +58,6 @@ class MeetingResource(ModelResource):
     class Meta:
         queryset = Meeting.objects.all()
         resource_name = 'meeting'
-        excludes = ['id']
+        excludes = ['']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
