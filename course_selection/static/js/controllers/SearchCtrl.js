@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
@@ -11,8 +10,6 @@ define(["require", "exports"], function(require, exports) {
             this.courseManager = this.$scope.$parent.schedule.courseManager;
             this.$scope.data = this.courseManager.getData();
         }
-        // if user is not enrolled in course yet, add course events to previewEvents
-        // else, don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {
             if (this.courseManager.isCourseEnrolled(course)) {
                 this.courseManager.clearPreviewCourse();
@@ -21,13 +18,10 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
-        // TODO: what if course.id != previewCourse.id? will it ever be out of sync?
         SearchCtrl.prototype.onMouseLeave = function (course) {
             this.courseManager.clearPreviewCourse();
         };
 
-        // TODO: what if user removes serach string => no more search results?
-        // currently results in preview course being sticky
         SearchCtrl.prototype.onClick = function (course) {
             if (this.courseManager.isCourseEnrolled(course)) {
                 this.courseManager.unenrollCourse(course);
@@ -65,3 +59,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SearchCtrl;
 });
+//# sourceMappingURL=SearchCtrl.js.map

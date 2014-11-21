@@ -44,18 +44,12 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             return this.data;
         };
 
-        ///////////////////////////////////////////////////////////
-        // Course Management
-        //////////////////////////////////////////////////////////
         CourseManager.prototype.getCourseById = function (id) {
             return this.data.courses.filter(function (course) {
                 return course.id == id;
             })[0];
         };
 
-        ///////////////////////////////////////////////////////////
-        // Course Enrollment Management
-        //////////////////////////////////////////////////////////
         CourseManager.prototype.setPreviewCourse = function (course) {
             this.data.previewCourse = course;
         };
@@ -67,18 +61,6 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
         CourseManager.prototype.enrollCourse = function (course) {
             this.data.enrolledCourses.push(course);
 
-            // example--
-            // enrolledSections:
-            // {
-            //      1: {
-            //          LEC: null,
-            //          PRE: null
-            //      },
-            //      2: {
-            //          STU: 01,
-            //          CLA: null
-            //      }
-            // }
             this.data.enrolledSections[course.id] = {};
             for (var i = 0; i < course.section_types.length; i++) {
                 var section_type = course.section_types[i];
@@ -109,9 +91,6 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             return idx != CourseManager.NOT_FOUND;
         };
 
-        ///////////////////////////////////////////////////////////
-        // Section Enrollment Management
-        //////////////////////////////////////////////////////////
         CourseManager.prototype.setPreviewSection = function (section) {
         };
 
@@ -137,3 +116,4 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
     
     return CourseManager;
 });
+//# sourceMappingURL=CourseManager.js.map

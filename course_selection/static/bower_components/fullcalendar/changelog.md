@@ -1,8 +1,25 @@
 
+v2.2.2 (2014-11-19)
+-------------------
+
+- Fixes to Google Calendar API V3 code
+	- wouldn't recognize a lone-string Google Calendar ID if periods before the @ symbol
+	- removeEventSource wouldn't work when given a Google Calendar ID
+
+
+v2.2.1 (2014-11-19)
+-------------------
+
+- Migrate Google Calendar plugin to use V3 of the API ([1526])
+
+[1526]: https://code.google.com/p/fullcalendar/issues/detail?id=1526
+
+
 v2.2.0 (2014-11-14)
 -------------------
 
-- Background event rendering ([144], [1286])
+- Background events. Event object's `rendering` property ([144], [1286])
+- `businessHours` option ([144])
 - Controlling where events can be dragged/resized and selections can go ([396], [1286], [2253])
 	- `eventOverlap`, `selectOverlap`, and similar
 	- `eventConstraint`, `selectConstraint`, and similar
@@ -11,7 +28,8 @@ v2.2.0 (2014-11-14)
 	- Associating a `duration`
 - Performance boost for moment creation
 	- Be aware, FullCalendar-specific methods now attached directly to global moment.fn
-	- Helps with (issue 2259)[2259]
+	- Helps with [issue 2259][2259]
+- Reintroduced forgotten `dropAccept` option ([2312])
 
 [144]: https://code.google.com/p/fullcalendar/issues/detail?id=144
 [396]: https://code.google.com/p/fullcalendar/issues/detail?id=396
@@ -19,6 +37,7 @@ v2.2.0 (2014-11-14)
 [2004]: https://code.google.com/p/fullcalendar/issues/detail?id=2004
 [2253]: https://code.google.com/p/fullcalendar/issues/detail?id=2253
 [2259]: https://code.google.com/p/fullcalendar/issues/detail?id=2259
+[2312]: https://code.google.com/p/fullcalendar/issues/detail?id=2312
 
 
 v2.1.1 (2014-08-29)

@@ -88,3 +88,4 @@ define(["require", "exports", '../models/Section'], function(require, exports, S
     
     return Course;
 });
+//# sourceMappingURL=Course.js.map

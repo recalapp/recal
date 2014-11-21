@@ -44,3 +44,4 @@ define(["require", "exports", '../models/CourseManager'], function(require, expo
     
     return ScheduleCtrl;
 });
+//# sourceMappingURL=ScheduleCtrl.js.map

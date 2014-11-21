@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -25,7 +24,6 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
                     continue;
                 }
 
-                // is department
                 if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
                     results = results.filter(function (course) {
                         return CourseSearchFilter.isListed(course, 'course_listings', 'dept', query);
@@ -73,7 +71,6 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
                 return false;
             }
 
-            // listings = course_listings
             var listings = course[first_arg];
             for (var i = 0; i < listings.length; i++) {
                 var listing = listings[i];
@@ -112,3 +109,4 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
     
     return CourseSearchFilter;
 });
+//# sourceMappingURL=CourseSearchFilter.js.map

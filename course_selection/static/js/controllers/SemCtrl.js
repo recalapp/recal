@@ -14,15 +14,24 @@ define(["require", "exports"], function(require, exports) {
             });
         };
 
-        SemCtrl.prototype.addNewSemester = function () {
-            var id = this.semesters.length + 1;
-            var term_code;
-            if (this.semesters.length > 0)
-                term_code = this.semesters[this.semesters.length - 1].term_code + 10;
-            else {
-                term_code = 1132;
+        SemCtrl.prototype.getNewSemesterTermCode = function () {
+            if (this.semesters.length == 0) {
+                return 1132;
             }
 
+            var lastTermCode = this.semesters[this.semesters.length - 1].term_code;
+            if (this.semesterIsFall(lastTermCode)) {
+                // fall to spring
+                return lastTermCode + 2;
+            } else {
+                // spring to fall
+                return lastTermCode + 8;
+            }
+        };
+
+        SemCtrl.prototype.addNewSemester = function () {
+            var id = this.semesters.length + 1;
+            var term_code = this.getNewSemesterTermCode();
             var title = this.getTitle(term_code);
             this.semesters.push({
                 id: id,
@@ -36,13 +45,17 @@ define(["require", "exports"], function(require, exports) {
         SemCtrl.prototype.getTitle = function (termCode) {
             var endYear = Math.floor((termCode % 1000) / 10);
             var startYear = endYear - 1;
-            var semester = (termCode % 10) == 2 ? "Fall" : "Spring";
+            var semester = this.semesterIsFall(termCode) ? "Fall" : "Spring";
             return "" + startYear + endYear + semester;
         };
 
         SemCtrl.prototype.addSemester = function () {
             this.setAllInactive();
             this.addNewSemester();
+        };
+
+        SemCtrl.prototype.semesterIsFall = function (termCode) {
+            return termCode % 10 == 2;
         };
         SemCtrl.$inject = [
             '$scope'
