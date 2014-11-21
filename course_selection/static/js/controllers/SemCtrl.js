@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 define(["require", "exports"], function(require, exports) {
     var SemCtrl = (function () {
@@ -43,3 +42,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SemCtrl;
 });
+//# sourceMappingURL=SemCtrl.js.map

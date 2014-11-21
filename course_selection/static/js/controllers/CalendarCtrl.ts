@@ -6,7 +6,7 @@ import ISection = require('../interfaces/ISection');
 import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
-import CourseManager = require('../models/CourseManager');
+import ICourseManager = require('../interfaces/ICourseManager');
 
 'use strict';
 
@@ -39,13 +39,10 @@ class CalendarCtrl {
         maxTime: '23:00',
         timeFormat: '',
         slotEventOverlap: false,
-        // eventRender: (event, element) => {
-        //     element.find('.fc-title').after("<br/>" + event.location);
-        // }
     };
 
     private compositeEventSources: CompositeEventSources;
-    private courseManager: CourseManager;
+    private courseManager: ICourseManager;
     public static $inject = [
         '$scope',
         'ColorResource'

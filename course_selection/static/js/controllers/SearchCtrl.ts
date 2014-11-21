@@ -5,7 +5,7 @@ import ICourseSearchScope = require('../interfaces/ICourseSearchScope');
 import CourseResource = require('../services/CourseResource');
 import ICourse = require('../interfaces/ICourse');
 import Course = require('../models/Course');
-import CourseManager = require('../models/CourseManager');
+import ICourseManager = require('../interfaces/ICourseManager');
 
 'use strict';
 
@@ -22,7 +22,7 @@ class SearchCtrl {
 
     private static NOT_FOUND: number = -1;
 
-    private courseManager: CourseManager;
+    private courseManager: ICourseManager;
 
     constructor(
             private $scope: ICourseSearchScope,
