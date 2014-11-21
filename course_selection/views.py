@@ -17,6 +17,7 @@ import hashlib
 from datetime import datetime
 import json
 
+@login_required
 def index(request):
     return render(request, 'index.html', {
         'username': unicode(request.user.profile)    

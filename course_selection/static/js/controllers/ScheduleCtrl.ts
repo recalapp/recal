@@ -4,7 +4,7 @@ import CourseManager = require('../models/CourseManager');
 
 'use strict';
 
-class TabCtrl {
+class ScheduleCtrl {
     public static $inject =[
         '$scope',
         'CourseResource',
@@ -21,6 +21,7 @@ class TabCtrl {
         this.schedules = [];
         this.$scope.schedules = this.schedules;
         this.semester = this.$scope.$parent.semester;
+        this.$scope.canAddNewSchedules = this.semester.current;
     }
 
     public setAllInactive() {
@@ -46,4 +47,4 @@ class TabCtrl {
     }    
 }
 
-export = TabCtrl;
+export = ScheduleCtrl;

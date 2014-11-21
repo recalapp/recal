@@ -203,7 +203,6 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
         };
 
         CalendarCtrl.defaultUiConfig = {
-            height: 1200,
             contentHeight: 'auto',
             editable: false,
             header: {

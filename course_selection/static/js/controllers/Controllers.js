@@ -1,9 +1,9 @@
-define(["require", "exports", './SearchCtrl', './CalendarCtrl', './QueueCtrl', './TabCtrl', './SemCtrl', '../Module'], function(require, exports, SearchCtrl, CalendarCtrl, QueueCtrl, TabCtrl, SemCtrl, Module) {
+define(["require", "exports", './SearchCtrl', './CalendarCtrl', './QueueCtrl', './ScheduleCtrl', './SemCtrl', '../Module'], function(require, exports, SearchCtrl, CalendarCtrl, QueueCtrl, ScheduleCtrl, SemCtrl, Module) {
     var niceControllers = new Module('niceControllers', []);
     niceControllers.addController('SearchCtrl', SearchCtrl);
     niceControllers.addController('CalendarCtrl', CalendarCtrl);
     niceControllers.addController('QueueCtrl', QueueCtrl);
-    niceControllers.addController('TabCtrl', TabCtrl);
+    niceControllers.addController('ScheduleCtrl', ScheduleCtrl);
     niceControllers.addController('SemCtrl', SemCtrl);
 
     

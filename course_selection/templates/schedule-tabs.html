@@ -1,6 +1,6 @@
 {% load staticfiles %}
 {% verbatim %}
-<div ng-controller="TabCtrl as tabCtrl">
+<div ng-controller="ScheduleCtrl as scheduleCtrl">
 <tabset>
 <tab ng-repeat = "schedule in schedules"
      heading = "{{ schedule.id }}"
@@ -12,7 +12,10 @@
          {% include 'calendar.html' %}
      </div>
 </tab>
-<tab select="tabCtrl.addSchedule()">
+<tab select="scheduleCtrl.addSchedule()"
+     disabled = !canAddNewSchedules
+     ng-hide = !canAddNewSchedules
+>
 <tab-heading>
 +
 </tab-heading>

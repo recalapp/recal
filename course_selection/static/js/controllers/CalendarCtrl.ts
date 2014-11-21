@@ -19,7 +19,6 @@ class CalendarCtrl {
     };
 
     private static defaultUiConfig = {
-        height: 1200,
         contentHeight: 'auto',
         editable: false,
         header:{

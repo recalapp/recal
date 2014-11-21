@@ -1,3 +1,4 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 define(["require", "exports"], function(require, exports) {
     var SemCtrl = (function () {
@@ -21,12 +22,22 @@ define(["require", "exports"], function(require, exports) {
             else {
                 term_code = 1132;
             }
+
+            var title = this.getTitle(term_code);
             this.semesters.push({
                 id: id,
-                title: term_code,
+                title: title,
                 active: true,
+                current: term_code >= 1152 ? true : false,
                 term_code: term_code
             });
+        };
+
+        SemCtrl.prototype.getTitle = function (termCode) {
+            var endYear = Math.floor((termCode % 1000) / 10);
+            var startYear = endYear - 1;
+            var semester = (termCode % 10) == 2 ? "Fall" : "Spring";
+            return "" + startYear + endYear + semester;
         };
 
         SemCtrl.prototype.addSemester = function () {
@@ -42,4 +53,3 @@ define(["require", "exports"], function(require, exports) {
     
     return SemCtrl;
 });
-//# sourceMappingURL=SemCtrl.js.map

@@ -28,12 +28,22 @@ class SemCtrl {
         else {
             term_code = 1132;
         }
+
+        var title = this.getTitle(term_code);
         this.semesters.push({
             id: id,
-            title: term_code,
+            title: title,
             active: true,
+            current: term_code >= 1152 ? true : false,
             term_code: term_code
         });
+    }
+
+    private getTitle(termCode: number): string {
+        var endYear = Math.floor((termCode % 1000) / 10);
+        var startYear = endYear - 1;
+        var semester = (termCode % 10) == 2 ? "Fall" : "Spring";
+        return "" + startYear + endYear + semester;
     }
  
     public addSemester() {
