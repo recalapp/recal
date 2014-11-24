@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.core.cache import cache
 from django.template import Template, Context
 from nice.models import User_Profile
+from jsonfield import JSONField
 import settings.common as settings
 import datetime
 
@@ -48,7 +49,6 @@ class Course(models.Model):
     # relationships
     semester = models.ForeignKey(Semester)
     professors = models.ManyToManyField(Professor)
-    # colors = models.ForeignKey(Color_Palette, default=Color_Palette.DEFAULT_ID)
 
     # fields
     title = models.TextField()
@@ -133,16 +133,23 @@ class Course_Listing(models.Model):
     class Meta:
         ordering = ['dept', 'number']
 
-
 class Schedule(models.Model):
     # relationships
-    courses = models.ManyToManyField(Course)
-    
-
-    # fields
-    title = models.CharField(max_length=20, default="schedule")
     semester = models.ForeignKey(Semester)
     user = models.ForeignKey('Nice_User')
+
+    # fields
+    available_colors = JSONField()
+    title = models.CharField(max_length=20, default="schedule")
+
+class Enrollment(models.Model):
+    # each course enrollment has
+    # a course, a color, and a few sections
+    # and belongs to a schedule
+    course = models.ForeignKey(Course, related_name="enrollment")
+    sections = models.ManyToManyField(Section)
+    color = models.ForeignKey(Color_Palette)
+    schedule = models.ForeignKey(Schedule)
 
 class Nice_User(AbstractBaseUser):
     netid = models.CharField(max_length=20)

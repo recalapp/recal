@@ -69,3 +69,19 @@ class ColorPaletteResource(ModelResource):
         excludes = ['']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
+
+class EnrollmentResource(ModelResource):
+    class Meta:
+        queryset = Enrollment.objects.all()
+        resource_name = 'enrollment'
+        allowed_methods = []
+
+class Schedule(ModelResource):
+    enrollments = fields.ToManyField(EnrollmentResource, 'enrollments', full=True)
+
+    class Meta:
+        queryset = Schedule.objects.all()
+        resource_name = 'schedule'
+        excludees = []
+        allowed_methods = ['get', 'post']
+        cache = SimpleCache(timeout=10)

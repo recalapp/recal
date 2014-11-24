@@ -1,6 +1,6 @@
 [
     {
-        "model": "course_selection.ColorPalette",
+        "model": "course_selection.Color_Palette",
         "pk": 1,
         "fields": {
             "dark": "2D6234",
