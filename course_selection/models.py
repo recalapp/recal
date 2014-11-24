@@ -32,10 +32,23 @@ class Semester(models.Model):
 class Professor(models.Model):
     name = models.CharField(max_length=100)
 
+class ColorPalette(models.Model):
+    DEFAULT_ID = 1
+
+    """
+    these are hex values of colors
+    """
+    light = models.CharField(max_length=6, default="FFFFFF")
+    dark = models.CharField(max_length=6, default="000000")
+
+    def __unicode__(self):
+        return "light: " + light + '\n' + "dark: " + dark
+
 class Course(models.Model):
     # relationships
     semester = models.ForeignKey(Semester)
     professors = models.ManyToManyField(Professor)
+    colors = models.ForeignKey(ColorPalette, default=ColorPalette.DEFAULT_ID)
 
     # fields
     title = models.TextField()
@@ -130,6 +143,7 @@ class Nice_User(AbstractBaseUser):
     netid = models.CharField(max_length=20)
     friends = models.ManyToManyField('self', through='Friend_Relationship',
                                      symmetrical=False)
+
 class Friend_Relationship(models.Model):
     from_user = models.ForeignKey(Nice_User, related_name='from_users')
     to_user = models.ForeignKey(Nice_User, related_name='to_users')

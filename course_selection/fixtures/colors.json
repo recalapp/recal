@@ -1,0 +1,10 @@
+[
+    {
+        "model": "course_selection.ColorPalette",
+        "pk": 1,
+        "fields": {
+            "dark": "2D6234",
+            "light": "D0DECF"
+        }
+    }
+]
