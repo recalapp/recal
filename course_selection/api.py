@@ -61,3 +61,11 @@ class MeetingResource(ModelResource):
         excludes = ['']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
+
+class ColorPaletteResource(ModelResource):
+    class Meta:
+        queryset = Color_Palette.objects.all()
+        resource_name = 'color_palette'
+        excludes = ['']
+        allowed_methods = ['get']
+        cache = SimpleCache(timeout=10)

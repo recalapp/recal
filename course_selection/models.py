@@ -32,7 +32,7 @@ class Semester(models.Model):
 class Professor(models.Model):
     name = models.CharField(max_length=100)
 
-class ColorPalette(models.Model):
+class Color_Palette(models.Model):
     DEFAULT_ID = 1
 
     """
@@ -48,7 +48,7 @@ class Course(models.Model):
     # relationships
     semester = models.ForeignKey(Semester)
     professors = models.ManyToManyField(Professor)
-    colors = models.ForeignKey(ColorPalette, default=ColorPalette.DEFAULT_ID)
+    colors = models.ForeignKey(Color_Palette, default=Color_Palette.DEFAULT_ID)
 
     # fields
     title = models.TextField()

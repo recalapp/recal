@@ -15,6 +15,7 @@ v1_api.register(CourseListingResource())
 v1_api.register(SemesterResource())
 v1_api.register(SectionResource())
 v1_api.register(MeetingResource())
+v1_api.register(ColorPaletteResource())
 
 urlpatterns = patterns(
     "",
