@@ -48,7 +48,7 @@ class Course(models.Model):
     # relationships
     semester = models.ForeignKey(Semester)
     professors = models.ManyToManyField(Professor)
-    colors = models.ForeignKey(Color_Palette, default=Color_Palette.DEFAULT_ID)
+    # colors = models.ForeignKey(Color_Palette, default=Color_Palette.DEFAULT_ID)
 
     # fields
     title = models.TextField()
@@ -135,6 +135,11 @@ class Course_Listing(models.Model):
 
 
 class Schedule(models.Model):
+    # relationships
+    courses = models.ManyToManyField(Course)
+    
+
+    # fields
     title = models.CharField(max_length=20, default="schedule")
     semester = models.ForeignKey(Semester)
     user = models.ForeignKey('Nice_User')
