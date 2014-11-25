@@ -22,7 +22,7 @@ class SemCtrl {
  
     private getNewSemesterTermCode(): number {
         if (this.semesters.length == 0) {
-            return 1132;
+            return 1152;
         }
 
         var lastTermCode = this.semesters[this.semesters.length - 1].term_code;

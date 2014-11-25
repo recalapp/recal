@@ -34,6 +34,10 @@ class SearchCtrl {
         this.$scope.data = this.courseManager.getData();
     }
 
+    public queryOnChange() {
+        this.courseManager.clearPreviewCourse();
+    }
+
     // if user is not enrolled in course yet, add course events to previewEvents
     // else, don't do anything
     public onMouseOver(course) {
@@ -49,7 +53,7 @@ class SearchCtrl {
         this.courseManager.clearPreviewCourse();
     }
 
-    // TODO: what if user removes serach string => no more search results?
+    // TODO: what if user removes search string => no more search results?
     // currently results in preview course being sticky
     public onClick(course) {
         if (this.courseManager.isCourseEnrolled(course)) {
