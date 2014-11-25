@@ -1,4 +1,4 @@
-define(["require", "exports", './TestSharingService', './ColorResource'], function(require, exports, TestSharingService, ColorResource) {
+define(["require", "exports", './ColorResource'], function(require, exports, ColorResource) {
     var ResourceBuilder = (function () {
         function ResourceBuilder($resource, localStorageService) {
             this.$resource = $resource;
@@ -13,8 +13,13 @@ define(["require", "exports", './TestSharingService', './ColorResource'], functi
             });
         };
 
-        ResourceBuilder.prototype.getTestSharingService = function () {
-            return new TestSharingService(this.getCourseResource(), this.localStorageService);
+        ResourceBuilder.prototype.getScheduleResource = function () {
+            return this.$resource('/course_selection/api/v1/schedule/', {}, {
+                query: {
+                    method: 'GET',
+                    isArray: false
+                }
+            });
         };
 
         ResourceBuilder.prototype.getColorResource = function () {

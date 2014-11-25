@@ -31,6 +31,9 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
         }
+        /**
+        * gets the date of the day in the current week
+        */
         SectionEventSource.prototype.getAgendaDate = function (day) {
             var todayOffset = moment().isoWeekday();
             var dayOffset = SectionEventSource.DAYS[day];
@@ -51,4 +54,3 @@ define(["require", "exports"], function(require, exports) {
     
     return SectionEventSource;
 });
-//# sourceMappingURL=SectionEventSource.js.map

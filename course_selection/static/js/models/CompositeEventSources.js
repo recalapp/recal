@@ -1,3 +1,4 @@
+/// <reference path="../../../../nice/static/ts/typings/tsd.d.ts" />
 define(["require", "exports"], function(require, exports) {
     var CompositeEventSources = (function () {
         function CompositeEventSources() {
@@ -7,12 +8,15 @@ define(["require", "exports"], function(require, exports) {
             this.myEventSources = [];
             this.backupEventSources = [];
         }
+        // returns an array of IEventSource
         CompositeEventSources.prototype.getEventSources = function () {
             return this.myEventSources;
         };
 
         CompositeEventSources.prototype.addEventSources = function (eventSources) {
             if (this.courseIdToIndices[eventSources.id]) {
+                // this means we are updating an eventSources
+                // should first remove it
                 this.removeEventSources(eventSources.id, true);
             }
 
@@ -31,6 +35,7 @@ define(["require", "exports"], function(require, exports) {
         CompositeEventSources.prototype.removeEventSources = function (courseId, isPreview) {
             var indices = this.courseIdToIndices[courseId];
 
+            // only remove if isPreview matches
             if (!indices || indices.isPreview != isPreview) {
                 return;
             }
@@ -40,6 +45,7 @@ define(["require", "exports"], function(require, exports) {
             }
 
             delete this.courseIdToIndices[courseId];
+            // TODO: should we remove backup?
         };
 
         CompositeEventSources.prototype.enrollInCourseSection = function (courseId, section_type, sectionId) {
@@ -69,6 +75,7 @@ define(["require", "exports"], function(require, exports) {
                 return;
             }
 
+            // else, we didn't find this section, and need to add it manually
             var eventSources = this.backupEventSources[courseId];
             for (var j = 0; j < eventSources.length; j++) {
                 if (eventSources[j].id == sectionId) {
@@ -78,6 +85,7 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
+        // add all sections back
         CompositeEventSources.prototype.previewAllCourseSection = function (courseId, section_type) {
             var courseIndices = this.courseIdToIndices[courseId];
             if (!courseIndices) {
@@ -92,6 +100,7 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
 
+            // then add all back
             var eventSources = this.backupEventSources[courseId];
             i = courseIndices.start;
             for (var j = 0; j < eventSources.length; j++) {
@@ -110,4 +119,3 @@ define(["require", "exports"], function(require, exports) {
     
     return CompositeEventSources;
 });
-//# sourceMappingURL=CompositeEventSources.js.map

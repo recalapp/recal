@@ -1,8 +1,6 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
 import ICourseResource = require('../interfaces/ICourseResource');
-import CourseResource = require('../services/CourseResource');
-import TestSharingService = require('./TestSharingService');
 import ColorResource = require('./ColorResource');
 
 class ResourceBuilder {
@@ -26,8 +24,15 @@ class ResourceBuilder {
                 );
     }
 
-    public getTestSharingService() {
-        return new TestSharingService(this.getCourseResource(), this.localStorageService);
+    public getScheduleResource() {
+        return this.$resource('/course_selection/api/v1/schedule/',
+                {},
+                {
+                    query: {
+                        method: 'GET',
+                        isArray: false
+                    }
+                });
     }
 
     public getColorResource() {
