@@ -5,6 +5,7 @@ venv
 settings/dev.py
 nice/static/bower_components/bootstrap/node_modules/*
 course_selection/static/js/*.js
+course_selection/static/js/**/*.js
 *.pyc
 staticfiles
 *.swp
