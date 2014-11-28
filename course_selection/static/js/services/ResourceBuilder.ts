@@ -1,7 +1,6 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
 import ICourseResource = require('../interfaces/ICourseResource');
-import ColorResource = require('./ColorResource');
 
 class ResourceBuilder {
     static $inject = [
@@ -33,10 +32,6 @@ class ResourceBuilder {
                         isArray: false
                     }
                 });
-    }
-
-    public getColorResource() {
-        return new ColorResource(this.$resource);
     }
 }
 

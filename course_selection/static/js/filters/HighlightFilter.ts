@@ -14,12 +14,20 @@ class HighlightFilter extends Filter
         super();
     }
 
-    public filter(text: string, input: string): string {
-        if (!text || !input) {
-            return text;
+    /*
+     * text is the text to be potentially highlighted
+     * query is the query string, possibly containing multiple queries
+     */
+    public filter(text: string, query: string): string {
+        if (!text || !query) {
+            return this.$sce.trustAsHtml(text);
         }
 
-        var termsToHighlight = input.split(' ');
+        if (query.length < 3 && !this.isCourseNumber(text)) {
+            return this.$sce.trustAsHtml(text);
+        }
+
+        var termsToHighlight = query.split(' ');
         text = text.replace(
             new RegExp('(' + termsToHighlight.join('|') + ')', 'gi'),
             '<span class="highlighted">$&</span>'
@@ -27,6 +35,13 @@ class HighlightFilter extends Filter
 
         // return text;
         return this.$sce.trustAsHtml(text);
+    }
+
+    // we want to check if the input is a title or course number
+    // because we don't want to highlight letters in titles unless
+    // the input is long
+    private isCourseNumber(input: string): boolean {
+        return input.length >= 6 && !isNaN(+input.substring(3, 6));
     }
 }
 

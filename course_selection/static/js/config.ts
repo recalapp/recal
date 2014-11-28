@@ -13,13 +13,13 @@ function bowerPath(path: String): String
 require.config({
     paths: {
         bootstrap: bowerPath('bootstrap/dist/js/bootstrap.min'),
-        fullcalendar: bowerPath('fullcalendar/dist/fullcalendar'),
+        fullcalendar: bowerPath('fullcalendar/dist/fullcalendar.min'),
         jquery: bowerPath('jquery/dist/jquery.min'),
         'jquery.cookie': bowerPath('jquery.cookie/jquery.cookie'),
         jqueryui: bowerPath('jquery-ui/jquery-ui.min'),
         moment: bowerPath('momentjs/min/moment.min'),
         'moment-timezone': bowerPath('moment-timezone/builds/moment-timezone-with-data'),
-        'angular': bowerPath('angular/angular'),
+        'angular': bowerPath('angular/angular.min'),
         'angular-animate': bowerPath('angular-animate/angular-animate.min'),
         'angular-resource': bowerPath('angular-resource/angular-resource.min'),
         'angular-ui-calendar': bowerPath('angular-ui-calendar/src/calendar'),

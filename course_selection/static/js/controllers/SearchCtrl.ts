@@ -48,13 +48,12 @@ class SearchCtrl {
         }
     }
 
-    // TODO: what if course.id != previewCourse.id? will it ever be out of sync?
+    // clear preview course on mouse leave
     public onMouseLeave(course) {
         this.courseManager.clearPreviewCourse();
     }
 
-    // TODO: what if user removes search string => no more search results?
-    // currently results in preview course being sticky
+    // toggle enrollment of course
     public onClick(course) {
         if (this.courseManager.isCourseEnrolled(course)) {
             this.courseManager.unenrollCourse(course);

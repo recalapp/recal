@@ -14,7 +14,8 @@
     <div class="row" id="coursePanelsContainer">
         <div id="accordion" class="panel-group">
             <div class="panel panel-default course-panel" 
-                    ng-repeat="course in data.courses | courseSearch:query | orderBy: 'primary_listing' "  
+                    ng-repeat="course in data.courses | courseSearch:query 
+                        | orderBy: 'primary_listing' track by course.id"  
                     ng-mouseover="searchCtrl.onMouseOver(course)" 
                     ng-mouseleave="searchCtrl.onMouseLeave(course)" 
                     ng-style="searchCtrl.setColor(course)"
@@ -22,11 +23,11 @@
                 <div>
                     <div class="course-panel-title">
                         <div class="course-listings" 
-                           ng-bind="course.all_listings"
+                           ng-bind-html="course.all_listings | highlight: query"
                            >
                         </div>
                         <div class="course-title" 
-                           ng-bind="course.title">
+                           ng-bind-html="course.title | highlight: query">
                         </div>
                     </div>
                 </div>

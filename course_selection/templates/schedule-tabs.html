@@ -5,7 +5,8 @@
 <tab ng-repeat = "schedule in schedules"
      active = schedule.active
 >
-<tab-heading> {{ schedule.id}} 
+<tab-heading class="ng-cloak"> 
+    {{ schedule.id}} 
      <a ng-click="scheduleCtrl.removeSchedule($index)" href=""><i class="fa fa-times remove-icon"></i></a>
 </tab-heading>
      <div class="row clearfix" id="main">

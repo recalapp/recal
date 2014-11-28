@@ -29,9 +29,9 @@ class CourseSearchFilter extends Filter
 
             // is department
             if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
-                if (query.length < 3) {
-                    return [];
-                }
+                // if (query.length < 3) {
+                //     return [];
+                // }
 
                 results = results.filter((course) => {
                     return CourseSearchFilter.isListed(course, 'course_listings', 'dept', query);

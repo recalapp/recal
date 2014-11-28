@@ -39,7 +39,7 @@
   margin-bottom: 5px;
 }
 .highlighted {
-  background: yellow;
+  font-weight: bold;
 }
 .course-tag {
   position: absolute;
