@@ -29,18 +29,27 @@ ALLOWED_HOSTS = [
 
 SECRET_KEY = environ.get('DJANGO_SECRET_KEY', '')
 
-environ['MEMCACHE_SERVERS'] = environ['MEMCACHIER_SERVERS'].replace(',', ';')
-environ['MEMCACHE_USERNAME'] = environ['MEMCACHIER_USERNAME']
-environ['MEMCACHE_PASSWORD'] = environ['MEMCACHIER_PASSWORD']
-
-CACHES = {
-    'default': {
+def get_cache():
+  try:
+    environ['MEMCACHE_SERVERS'] = environ['MEMCACHIER_SERVERS'].replace(',', ';')
+    environ['MEMCACHE_USERNAME'] = environ['MEMCACHIER_USERNAME']
+    environ['MEMCACHE_PASSWORD'] = environ['MEMCACHIER_PASSWORD']
+    return {
+      'default': {
         'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
         'TIMEOUT': 500,
         'BINARY': True,
         'OPTIONS': { 'tcp_nodelay': True }
+      }
     }
-}
+  except:
+    return {
+      'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+      }
+    }
+
+CACHES = get_cache()
 
 ########## TOOLBAR CONFIGURATION
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
