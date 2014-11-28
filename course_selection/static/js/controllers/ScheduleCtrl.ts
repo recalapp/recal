@@ -40,6 +40,10 @@ class ScheduleCtrl {
             courseManager: cm
         });
     }
+
+    public removeSchedule(index: number) {
+        this.schedules.splice(index, 1);
+    }
  
     public addSchedule() {
         this.setAllInactive();
