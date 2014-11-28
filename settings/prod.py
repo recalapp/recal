@@ -29,6 +29,10 @@ ALLOWED_HOSTS = [
 
 SECRET_KEY = environ.get('DJANGO_SECRET_KEY', '')
 
+os.environ['MEMCACHE_SERVERS'] = os.environ['MEMCACHIER_SERVERS'].replace(',', ';')
+os.environ['MEMCACHE_USERNAME'] = os.environ['MEMCACHIER_USERNAME']
+os.environ['MEMCACHE_PASSWORD'] = os.environ['MEMCACHIER_PASSWORD']
+
 CACHES = {
     'default': {
         'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
