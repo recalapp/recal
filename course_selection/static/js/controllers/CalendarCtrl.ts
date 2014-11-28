@@ -1,12 +1,12 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 import IColorPalette = require('../interfaces/IColorPalette');
-import ColorResource = require('../services/ColorResource');
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
 import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
 import ICourseManager = require('../interfaces/ICourseManager');
+import IColorManager = require('../interfaces/IColorManager');
 
 'use strict';
 
@@ -42,20 +42,20 @@ class CalendarCtrl {
 
     private compositeEventSources: CompositeEventSources;
     private courseManager: ICourseManager;
+    private colorManager: IColorManager;
     public static $inject = [
         '$scope',
-        'ColorResource'
     ];
 
     // dependencies are injected via AngularJS $injector
     constructor(
-            private $scope,
-            private colorResource) 
+            private $scope) 
     {
         this.$scope.vm = this;
         this.initConfig();
 
         this.courseManager = (<any>this.$scope.$parent).schedule.courseManager;
+        this.colorManager = (<any>this.$scope.$parent).schedule.colorManager;
         this.$scope.data = this.courseManager.getData();
 
         this.compositeEventSources = new CompositeEventSources();
@@ -97,24 +97,25 @@ class CalendarCtrl {
         };
     }
 
+
     ///////////////////////////////////////////////////////////////////
     // Course Management
     // ////////////////////////////////////////////////////////////////
 
     private addCourse(course: ICourse, isPreview: boolean) {
-        var myColor = isPreview ? this.colorResource.getPreviewColor() : this.colorResource.nextColor();
+        var myColor = isPreview ? this.colorManager.getPreviewColor() : this.colorManager.nextColor();
         course.colors = isPreview ? null : myColor;
         var courseEventSources = new CourseEventSources(course, myColor, isPreview);
         this.compositeEventSources.addEventSources(courseEventSources);
     }
 
-    // TODO: fix adding colors after re-init in colorResource
-    // what if user adds 8 classes, colorResource re-enables all colors
+    // TODO: fix adding colors after re-init in colorManager
+    // what if user adds 8 classes, colorManager re-enables all colors
     // then user removes a course. Then we should again only allow that removed
     // color
     private removeCourse(course: ICourse, isPreview: boolean) {
         if (!isPreview) {
-            this.colorResource.addColor(course.colors);
+            this.colorManager.addColor(course.colors);
         }
 
         course.colors = null;
@@ -172,7 +173,7 @@ class CalendarCtrl {
             this.addCourse(course, false);
         } 
         // course removed
-        // TODO: re-enable this color for use in colorResource
+        // TODO: re-enable this color for use in colorManager
         else if (newCourses.length == oldCourses.length - 1) {
             var removedCourse = this.getRemovedCourse(newCourses, oldCourses);
             this.removeCourse(removedCourse, false);
@@ -226,7 +227,7 @@ class CalendarCtrl {
                 var old = oldSections[course_id];
                 var curr = newSections[course_id];
                 for (var section_type in curr) {
-                    if (curr[section_type] == old[section_type]) {
+                    if (old != null && curr[section_type] == old[section_type]) {
                         continue;
                     }
 
