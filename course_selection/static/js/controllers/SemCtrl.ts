@@ -6,18 +6,24 @@ class SemCtrl {
         '$scope',
         ];
 
+    private static LAST_AVAILABLE_TERM_CODE = 1154;
     private semesters;
 
     constructor(private $scope) {
         this.$scope.vm = this;
         this.semesters = [];
         this.$scope.semesters = this.semesters;
+        this.$scope.canAdd = this.canAdd();
     }
 
     public setAllInactive() {
         angular.forEach(this.semesters, (semester) => {
             semester.active = false;
         });
+    }
+
+    private canAdd(): boolean {
+        return this.getNewSemesterTermCode() <= SemCtrl.LAST_AVAILABLE_TERM_CODE;
     }
  
     private getNewSemesterTermCode(): number {
@@ -46,6 +52,8 @@ class SemCtrl {
             current: term_code >= 1152 ? true : false,
             term_code: term_code
         });
+
+        this.$scope.canAdd = this.canAdd();
     }
 
     private getTitle(termCode: number): string {

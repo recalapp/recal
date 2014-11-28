@@ -43,3 +43,9 @@ body {
 .ng-cloak {
   display: none;
 }
+.semester-tab-heading {
+  cursor: pointer;
+}
+.schedule-tab-heading {
+  cursor: pointer;
+}

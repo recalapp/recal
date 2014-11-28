@@ -4,6 +4,7 @@
     <tabset>
         <tab ng-repeat = "semester in semesters"
          active = semester.active
+         class="semester-tab-heading"
          >
          <div class="row clearfix" id="main">
              {% endverbatim %}
@@ -14,7 +15,9 @@
         {{ semester.title }}
         </tab-heading>
         </tab>
-        <tab select="semCtrl.addSemester()">
+        <tab select="semCtrl.addSemester()"
+        disabled = "!canAdd"
+        class="semester-tab-heading">
         <tab-heading>
         +
         </tab-heading>
