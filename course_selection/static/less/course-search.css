@@ -19,16 +19,19 @@
   font-size: 18px;
   width: 100%;
 }
-#accordion {
-  height: 100%;
+#unenrolledCourses {
+  /* height: 100%; */
   overflow: auto;
 }
 .course-panel-heading {
   height: 6vh;
 }
-#coursePanelsContainer {
+.course-panels-container {
   position: relative;
-  height: 90vh;
+  /* height: @course-panel-container-height; */
+}
+.enrolled-courses-container {
+  min-height: 5vh;
 }
 .course-listings {
   font-size: 15px;

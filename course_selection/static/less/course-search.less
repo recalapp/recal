@@ -6,7 +6,7 @@
 @course-title-font-size: 13px;
 @title-font-size: 40px;
 
-@course-panel-container-height: 90vh;
+@course-panel-container-height: 45vh;
 @search-bar-height: 4vh;
 @course-panel-heading-height: 6vh;
 @course-panel-body-height: 19vh;
@@ -36,8 +36,8 @@
     width: 100%;
 }
 
-#accordion {
-    height: 100%;
+#unenrolledCourses {
+    /* height: 100%; */
     overflow: auto;
 }
 
@@ -45,9 +45,13 @@
     height: @course-panel-heading-height;
 }
 
-#coursePanelsContainer {
+.course-panels-container {
     position: relative;
-    height: @course-panel-container-height;
+    /* height: @course-panel-container-height; */
+}
+
+.enrolled-courses-container {
+    min-height: 5vh;
 }
 
 .course-listings {

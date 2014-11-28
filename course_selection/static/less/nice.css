@@ -15,10 +15,11 @@ body {
   height: 5vh;
 }
 #main {
-  height: 95vh;
+  height: 90vh;
   margin-left: 0px;
 }
 #searchColumn {
+  height: 85vh;
   width: 25vw;
 }
 /*
@@ -27,6 +28,7 @@ body {
 }
 */
 #calendarColumn {
+  height: 85vh;
   width: 70vw;
   min-width: 540px;
 }

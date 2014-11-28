@@ -7,12 +7,16 @@
                        type="text" 
                    ng-model="query" 
                    ng-change="searchCtrl.queryOnChange()"
+                   ng-init="query=''"
                 placeholder="Ex: COS 126, stories, WWS, etc.">
                 </input>
             </form>
     </div>
-    <div class="row" id="coursePanelsContainer">
-        <div id="accordion" class="panel-group">
+    <div class="row course-panels-container"
+         ng-hide="query.length == 0"
+        >
+        <h4> Unenrolled Courses </h4>
+        <div id="unenrolledCourses" class="panel-group">
             <div class="panel panel-default course-panel" 
                     ng-repeat="course in data.courses | courseSearch:query 
                         | orderBy: 'primary_listing' track by course.id"  
@@ -34,6 +38,34 @@
                 <div class="course-tag"
                     ng-bind-html="searchCtrl.getEasyPceLink(course)"
                     >
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row enrolled-courses-container">
+        <h4>Enrolled Courses</h4>
+        <div id="enrolledCourses" class="panel-group">
+            <div class="panel panel-default course-panel" 
+                 ng-repeat="course in data.courses | courseSearch:query 
+                 | orderBy: 'primary_listing' track by course.id"  
+                 ng-mouseover="searchCtrl.onMouseOver(course)" 
+                 ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                 ng-style="searchCtrl.setColor(course)"
+                 ng-click="searchCtrl.onClick(course)">
+                <div>
+                    <div class="course-panel-title">
+                        <div class="course-listings" 
+                             ng-bind-html="course.all_listings | highlight: query"
+                             >
+                        </div>
+                            <div class="course-title" 
+                                 ng-bind-html="course.title | highlight: query">
+                            </div>
+                    </div>
+                </div>
+                <div class="course-tag"
+                     ng-bind-html="searchCtrl.getEasyPceLink(course)"
+                     >
                 </div>
             </div>
         </div>
