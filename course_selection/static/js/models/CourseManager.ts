@@ -85,6 +85,11 @@ class CourseManager {
     }
 
     public enrollCourse(course: ICourse): void {
+        // remove from all courses
+        var idx = this.courseIdxInList(course, this.data.courses);
+        this.data.courses.splice(idx, 1);
+
+        course.enrolled = true;
         this.data.enrolledCourses.push(course);
 
         // example--
@@ -107,11 +112,16 @@ class CourseManager {
     }
 
     public unenrollCourse(course: ICourse): void {
+        // remove from enrolled courses
         var enrolledCourses = this.data.enrolledCourses;
         var idx = this.courseIdxInList(course, enrolledCourses);
         enrolledCourses.splice(idx, 1);
 
         this.data.enrolledSections[course.id] = null;
+
+        // add to unenrolled courses
+        course.enrolled = false;
+        this.data.courses.push(course);
     }
 
     private courseIdxInList(course, list) {

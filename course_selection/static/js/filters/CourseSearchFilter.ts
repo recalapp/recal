@@ -14,8 +14,17 @@ class CourseSearchFilter extends Filter
     }
 
     public filter(courses: ICourse[], input: string): ICourse[] {
+        if (courses.length == 0) {
+            return courses;
+        }
+
         if (!input) {
-            return [];
+            if (courses[0].enrolled) {
+                return courses;
+            } 
+            else {
+                return [];
+            }
         }
 
         var breakedQueries = CourseSearchFilter.breakQuery(input);

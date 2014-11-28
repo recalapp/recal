@@ -16,10 +16,11 @@ class Course implements ICourse {
     public all_listings: string;
     public section_types: Array<string>;
     public colors: IColorPalette;
+    public enrolled: boolean;
     public rating: number;
 
     constructor(title, description, course_listings,
-            id, sections, semester) {
+            id, sections, semester, enrolled?: boolean) {
         this.title = title;
         this.description = description;
         this.course_listings = course_listings;
@@ -32,6 +33,7 @@ class Course implements ICourse {
         this.section_types = this.getSectionTypes();
         this.colors = null;
         this.rating = +(Math.random() + 4).toPrecision(3);
+        this.enrolled = enrolled ? enrolled : false;
     }
 
     private getSections(input): Array<ISection> {
