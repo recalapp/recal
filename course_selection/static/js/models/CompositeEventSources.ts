@@ -6,6 +6,7 @@ import IEventSources = require('../interfaces/IEventSources');
 class CompositeEventSources implements IEventSources {
     // my Children is a map of id to EventSources
     // TODO: create a model for [start, end, isPreview]
+    private static NOT_FOUND: number = 1;
     private courseIdToIndices: { [id: number]: any};
     private myEventSources: IEventSource[];
     private backupEventSources: {[id: number]: IEventSource[]};
@@ -61,78 +62,48 @@ class CompositeEventSources implements IEventSources {
     
     public enrollInCourseSection(courseId: number, section_type: string, sectionId: number): void {
         var courseIndices = this.courseIdToIndices[courseId];
-        if (!courseIndices) {
-            throw "trying to enroll in a section in course, but course is not found";
-            return;
-        }
+        this.removeAllCourseSection(courseId, section_type);
 
-        var isFound: number = -1;
-        var emptySlotIdx = -1;
-        for (var i = courseIndices.start; i <= courseIndices.end; i++) {
-            var curr = this.myEventSources[i];
-            if (!curr.id) {
-                emptySlotIdx = i;
-            } 
-            else if (curr.section_type == section_type) {
-                // remove all other eventSources for this course
-                // with the same section type
-                if (curr.id != sectionId) {
-                    this.myEventSources[i] = <any>{};
-                    emptySlotIdx = i;
-                } else {
-                    isFound = i;
-                }
-            }
-        }
-
-        // this section was already previewed
-        if (isFound != -1) {
-            this.highlightEventSource(this.myEventSources[i]);
-            return;
-        }
-
-        // else, we didn't find this section, and need to add it manually
+        // now we add the section back
         var eventSources: IEventSource[] = this.backupEventSources[courseId];
         for (var j = 0; j < eventSources.length; j++) {
             if (eventSources[j].id == sectionId) {
-                this.myEventSources[emptySlotIdx] = eventSources[j];
-                this.highlightEventSource(this.myEventSources[emptySlotIdx]);
+                this.myEventSources[courseIndices.start + j] = eventSources[j];
                 return;
             }
         }
     }
 
-    private highlightEventSource(sectionEventSource: IEventSource) {
-        // TODO: finish this
-    }
-
-    // add all sections back
-    public previewAllCourseSection(courseId: number, section_type: string): void {
+    private removeAllCourseSection(courseId: number, section_type: string): void {
         var courseIndices = this.courseIdToIndices[courseId];
         if (!courseIndices) {
-            throw "trying to preview " + section_type + " in course, but course is not found";
+            throw "trying to remove " + section_type + " in course, but course is not found";
             return;
         }
 
-        // first remove all sections of this type
         for (var i = courseIndices.start; i <= courseIndices.end; i++) {
             var curr = this.myEventSources[i];
             if (curr.section_type == section_type) {
                 this.myEventSources[i] = <any>{};
             }
         }
+    }
 
-        // then add all back
-        var eventSources: IEventSource[] = this.backupEventSources[courseId];
-        i = courseIndices.start;
+    private highlightEventSource(sectionEventSource: IEventSource) {
+        sectionEventSource.backgroundColor = sectionEventSource.borderColor;
+        sectionEventSource.textColor = 'white';
+    }
+
+    // add all sections of type section_type back
+    public previewAllCourseSection(courseId: number, section_type: string): void {
+        this.removeAllCourseSection(courseId, section_type);
+
+        var eventSources = this.backupEventSources[courseId];
+        var courseIndices = this.courseIdToIndices[courseId];
         for (var j = 0; j < eventSources.length; j++) {
             if (eventSources[j].section_type == section_type) {
                 // add this eventSource back
-                while (this.myEventSources[i].id && i <= courseIndices.end) {
-                    i++;
-                }
-
-                this.myEventSources[i] = eventSources[j];
+                this.myEventSources[courseIndices.start + j] = eventSources[j];
             }
         }
     }

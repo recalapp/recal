@@ -4,6 +4,7 @@ interface IEventSource {
     id: number;
     events: IEvent[];
     textColor: string;
+    borderColor: string;
     backgroundColor: string;
     section_type: string;
     course_id: number;

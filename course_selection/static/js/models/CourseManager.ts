@@ -126,9 +126,9 @@ class CourseManager {
         this.data.enrolledSections[course.id] = null;
 
         // remove data set in the course object
-        course.enrolled = false;
         this.colorManager.addColor(course.colors);
         course.colors = null;
+        course.enrolled = false;
 
         // add to unenrolled courses
         this.data.courses.push(course);
