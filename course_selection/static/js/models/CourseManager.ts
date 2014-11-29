@@ -2,6 +2,7 @@ import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
 import CourseResource = require('../services/CourseResource');
 import Course = require('./Course');
+import IColorManager = require('../interfaces/IColorManager');
 
 class CourseManager {
     private static NOT_FOUND: number = -1;
@@ -22,6 +23,7 @@ class CourseManager {
     constructor(
             private courseResource,
             private localStorageService,
+            private colorManager: IColorManager,
             private termCode: number
             ) {
         this.data.previewCourse = null;
@@ -30,6 +32,9 @@ class CourseManager {
         this.loadCourses();
     }
 
+    ///////////////////////////////////////////////////////////
+    // Initialization
+    //////////////////////////////////////////////////////////
     private loadCourses() {
         var temp = this.localStorageService.get('courses-' + this.termCode);
         if (temp != null && Array.isArray(temp)) {
@@ -90,6 +95,8 @@ class CourseManager {
         this.data.courses.splice(idx, 1);
 
         course.enrolled = true;
+        course.colors = this.colorManager.nextColor();
+
         this.data.enrolledCourses.push(course);
 
         // example--
@@ -113,15 +120,23 @@ class CourseManager {
 
     public unenrollCourse(course: ICourse): void {
         // remove from enrolled courses
-        var enrolledCourses = this.data.enrolledCourses;
-        var idx = this.courseIdxInList(course, enrolledCourses);
-        enrolledCourses.splice(idx, 1);
+        this.removeFromList(course, this.data.enrolledCourses);
 
+        // remove enrolled sections for this course
         this.data.enrolledSections[course.id] = null;
 
-        // add to unenrolled courses
+        // remove data set in the course object
         course.enrolled = false;
+        this.colorManager.addColor(course.colors);
+        course.colors = null;
+
+        // add to unenrolled courses
         this.data.courses.push(course);
+    }
+
+    private removeFromList(course, list): void {
+        var idx = this.courseIdxInList(course, list);
+        list.splice(idx, 1);
     }
 
     private courseIdxInList(course, list) {

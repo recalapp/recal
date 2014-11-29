@@ -35,11 +35,12 @@ class ScheduleCtrl {
  
     public addNewSchedule() {
         var id = this.schedules.length + 1;
+        var colorManager = new ColorManager(this.$resource);
         var courseManager = new CourseManager(
                 this.courseResource, 
                 this.localStorageService, 
+                colorManager,
                 this.semester.term_code);
-        var colorManager = new ColorManager(this.$resource);
         this.schedules.push({
             id: id,
             name: "Schedule " + id,

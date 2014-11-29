@@ -103,8 +103,7 @@ class CalendarCtrl {
     // ////////////////////////////////////////////////////////////////
 
     private addCourse(course: ICourse, isPreview: boolean) {
-        var myColor = isPreview ? this.colorManager.getPreviewColor() : this.colorManager.nextColor();
-        course.colors = isPreview ? null : myColor;
+        var myColor = isPreview ? this.colorManager.getPreviewColor() : course.colors;
         var courseEventSources = new CourseEventSources(course, myColor, isPreview);
         this.compositeEventSources.addEventSources(courseEventSources);
     }
@@ -114,11 +113,6 @@ class CalendarCtrl {
     // then user removes a course. Then we should again only allow that removed
     // color
     private removeCourse(course: ICourse, isPreview: boolean) {
-        if (!isPreview) {
-            this.colorManager.addColor(course.colors);
-        }
-
-        course.colors = null;
         this.compositeEventSources.removeEventSources(course.id, isPreview);
     }
 
@@ -256,10 +250,6 @@ class CalendarCtrl {
         } else {
             this.courseManager.enrollSection(section);
         }
-        //console.log('SectionId: ' + calEvent.source.id);
-        //console.log('courseId: ' + calEvent.source.course_id);
-        // console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-        // console.log('View: ' + view.name);
     }
 }
 

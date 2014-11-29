@@ -66,7 +66,7 @@ class CompositeEventSources implements IEventSources {
             return;
         }
 
-        var isFound: boolean = false;
+        var isFound: number = -1;
         var emptySlotIdx = -1;
         for (var i = courseIndices.start; i <= courseIndices.end; i++) {
             var curr = this.myEventSources[i];
@@ -74,16 +74,20 @@ class CompositeEventSources implements IEventSources {
                 emptySlotIdx = i;
             } 
             else if (curr.section_type == section_type) {
+                // remove all other eventSources for this course
+                // with the same section type
                 if (curr.id != sectionId) {
                     this.myEventSources[i] = <any>{};
                     emptySlotIdx = i;
                 } else {
-                    isFound = true;
+                    isFound = i;
                 }
             }
         }
 
-        if (isFound) {
+        // this section was already previewed
+        if (isFound != -1) {
+            this.highlightEventSource(this.myEventSources[i]);
             return;
         }
 
@@ -92,9 +96,14 @@ class CompositeEventSources implements IEventSources {
         for (var j = 0; j < eventSources.length; j++) {
             if (eventSources[j].id == sectionId) {
                 this.myEventSources[emptySlotIdx] = eventSources[j];
+                this.highlightEventSource(this.myEventSources[emptySlotIdx]);
                 return;
             }
         }
+    }
+
+    private highlightEventSource(sectionEventSource: IEventSource) {
+        // TODO: finish this
     }
 
     // add all sections back
