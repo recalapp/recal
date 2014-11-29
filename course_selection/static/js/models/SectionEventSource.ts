@@ -67,7 +67,7 @@ class SectionEventSource implements IEventSource {
         var todayOffset = moment().isoWeekday();
         var dayOffset = SectionEventSource.DAYS[day];
         var diff: number = +(dayOffset - todayOffset);
-        var date = moment().add('days', diff).format('YYYY-MM-DD');
+        var date = moment().add(diff, 'days').format('YYYY-MM-DD');
         return date;
     }
 }

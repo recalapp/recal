@@ -23,6 +23,17 @@ class ResourceBuilder {
                 );
     }
 
+    public getColorResource() {
+        return <any>this.$resource('/course_selection/api/v1/color_palette/',
+                {},
+                {
+                    query: {
+                        method: 'GET',
+                        isArray: false
+                    }
+                });
+    }
+
     public getScheduleResource() {
         return this.$resource('/course_selection/api/v1/schedule/',
                 {},

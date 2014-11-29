@@ -10,66 +10,32 @@ class ColorManager {
         light: 'rgb(210, 210, 210)'
     };
 
-    private static defaultColors: IColorPalette[] = [
-        { // green
-            dark: "rgb(45, 98, 52)",
-            light: "rgb(208, 222, 207)",
-        },
-        { // blue
-            dark: "rgb(56, 92, 146)",
-            light: "rgb(213, 220, 236)",
-        },
-        { // pink/light red
-            dark: "rgb(149, 73, 98)",
-            light: "rgb(235, 210, 219)",
-        },
-        { // yellow
-            dark: "rgb(177, 127, 0)",
-            light: "rgb(250, 244, 203)",
-        },
-        { // brown
-            dark: "rgb(137, 94, 46)",
-            light: "rgb(231, 220, 206)",
-        },
-        { // cyan
-            dark: "rgb(47, 119, 112)",
-            light: "rgb(209, 231, 228)",
-        },
-        { // purple
-            dark: "rgb(97, 73, 150)",
-            light: "rgb(220, 213, 226)",
-        }
-    ];
-
     private courseColorMap = {};
     private usableColors: IColorPalette[];
 
-    constructor(private $resource) {
-        this.initCourseColorMap();
+    constructor(private colorResource) {
         this.initUsableColors();
+        this.initCourseColorMap();
     }
 
     // get course color map for this user, this schedule
     private initCourseColorMap() {
     }
 
-    // usableColors = defaultColors - colors in courseColorMap
     // TODO: finish this
     private initUsableColors() {
-        this.usableColors = ColorManager.defaultColors.slice();
+        this.colorResource.get({}, (data) => {
+            this.onLoaded(data);
+        });
     }
 
-    private toRgba(rgb: string): string {
-        return rgb.substring(0, 3) 
-            + "a" 
-            + rgb.substring(3, rgb.length - 1) 
-            + ", "
-            + ColorManager.ALPHA 
-            + rgb.substring(rgb.length - 1, rgb.length);
-    }
-
-    public toPreviewColor(color: string): string {
-        return this.toRgba(color);
+    private onLoaded(data) {
+        this.usableColors = data['objects'].map((color) => {
+            return {
+                dark: '#' + color.dark,
+                light: '#' + color.light
+            }
+        });
     }
 
     public addColor(color: IColorPalette) {

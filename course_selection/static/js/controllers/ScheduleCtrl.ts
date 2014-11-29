@@ -1,5 +1,4 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-import CourseResource = require('../services/CourseResource');
 import CourseManager = require('../models/CourseManager');
 import ColorManager = require('../models/ColorManager');
 
@@ -8,7 +7,7 @@ import ColorManager = require('../models/ColorManager');
 class ScheduleCtrl {
     public static $inject =[
         '$scope',
-        '$resource',
+        'ColorResource',
         'CourseResource',
         'localStorageService'
         ];
@@ -17,7 +16,7 @@ class ScheduleCtrl {
     private semester;
 
     constructor(private $scope,
-            private $resource,
+            private colorResource,
             private courseResource,
             private localStorageService) {
         this.$scope.vm = this;
@@ -35,7 +34,7 @@ class ScheduleCtrl {
  
     public addNewSchedule() {
         var id = this.schedules.length + 1;
-        var colorManager = new ColorManager(this.$resource);
+        var colorManager = new ColorManager(this.colorResource);
         var courseManager = new CourseManager(
                 this.courseResource, 
                 this.localStorageService, 
