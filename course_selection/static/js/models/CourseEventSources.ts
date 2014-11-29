@@ -34,21 +34,19 @@ class CourseEventSources implements IEventSources {
         }
     }
 
-    /*
-    public removeEventSourcesByType(type: string): void {
-        this.mySections.filter((sectionEventSource) => {
-            return sectionEventSource.section_type == type;
-        });
-    }
+    // public removeEventSourcesByType(type: string): void {
+    //     this.mySections.filter((sectionEventSource) => {
+    //         return sectionEventSource.section_type == type;
+    //     });
+    // }
 
-    public addEventSourceById(id: number): void {
-        for (var i = 0; i < this.allSections.length; i++) {
-            if (this.allSections[i].id == id) {
-                this.mySections.push(this.allSections[i]);
-            }
-        }
-    }
-    */
+    // public addEventSourceById(id: number): void {
+    //     for (var i = 0; i < this.allSections.length; i++) {
+    //         if (this.allSections[i].id == id) {
+    //             this.mySections.push(this.allSections[i]);
+    //         }
+    //     }
+    // }
 
     public getEventSources(): IEventSource[] {
         return this.mySections;

@@ -37,7 +37,7 @@ class CompositeEventSources implements IEventSources {
         var length: number = eventSources.getEventSources().length;
         var end = start + length - 1;
         this.myEventSources.push.apply(this.myEventSources, eventSources.getEventSources());
-        this.backupEventSources[eventSources.id] = eventSources.getEventSources();
+        this.backupEventSources[eventSources.id] = angular.copy(eventSources.getEventSources());
         this.courseIdToIndices[eventSources.id] = {
             start: start,
             end: end,
@@ -75,10 +75,10 @@ class CompositeEventSources implements IEventSources {
         for (var i = 0; i < eventSources.length; i++) {
             if (eventSources[i].id == sectionId) {
                 // TODO: see if this works
-                var newEventSources = JSON.parse(JSON.stringify(eventSources[i]));
+                var newEventSources = angular.copy(eventSources[i]);
                 newEventSources.backgroundColor = newEventSources.borderColor;
                 newEventSources.textColor = 'white';
-                newEventSources.__id = null;
+                // newEventSources.__id = null;
                 this.myEventSources.splice(courseIndices.start + i, 1, newEventSources);
                 return;
             }
@@ -111,10 +111,11 @@ class CompositeEventSources implements IEventSources {
 
         var eventSources = this.backupEventSources[courseId];
         var courseIndices = this.courseIdToIndices[courseId];
-        for (var j = 0; j < eventSources.length; j++) {
-            if (eventSources[j].section_type == section_type) {
+        for (var i = 0; i < eventSources.length; i++) {
+            if (eventSources[i].section_type == section_type) {
                 // add this eventSource back
-                this.myEventSources[courseIndices.start + j] = eventSources[j];
+                var newEventSources = angular.copy(eventSources[i]);
+                this.myEventSources[courseIndices.start + i] = newEventSources;
             }
         }
     }
