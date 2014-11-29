@@ -17,7 +17,7 @@ require.config({
         jquery: bowerPath('jquery/dist/jquery.min'),
         'jquery.cookie': bowerPath('jquery.cookie/jquery.cookie'),
         jqueryui: bowerPath('jquery-ui/jquery-ui.min'),
-        moment: bowerPath('momentjs/moment'),
+        moment: bowerPath('moment/moment'),
         'moment-timezone': bowerPath('moment-timezone/builds/moment-timezone-with-data'),
         'angular': bowerPath('angular/angular.min'),
         'angular-animate': bowerPath('angular-animate/angular-animate.min'),
