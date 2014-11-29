@@ -10,12 +10,13 @@ from course_selection import views
 admin.autodiscover()
 
 v1_api = Api(api_name='v1')
-v1_api.register(CourseResource())
-v1_api.register(CourseListingResource())
-v1_api.register(SemesterResource())
-v1_api.register(SectionResource())
-v1_api.register(MeetingResource())
 v1_api.register(ColorPaletteResource())
+#v1_api.register(CourseListingResource())
+v1_api.register(CourseResource())
+#v1_api.register(MeetingResource())
+v1_api.register(ScheduleResource())
+#v1_api.register(SectionResource())
+v1_api.register(SemesterResource())
 
 urlpatterns = patterns(
     "",

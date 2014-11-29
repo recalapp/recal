@@ -18,7 +18,7 @@ class CompositeEventSources implements IEventSources {
         this.id =  -1;
         this.courseIdToIndices = {};
         this.myEventSources = [];
-        this.backupEventSources = [];
+        this.backupEventSources = {};
     }
 
     // returns an array of IEventSource
@@ -28,7 +28,7 @@ class CompositeEventSources implements IEventSources {
 
     public addEventSources(eventSources: IEventSources): void {
         if (this.courseIdToIndices[eventSources.id]) {
-            // this means we are updating an eventSources
+            // this means we are updating a previewed eventSources
             // should first remove it
             this.removeEventSources(eventSources.id, true);
         }
@@ -52,23 +52,34 @@ class CompositeEventSources implements IEventSources {
             return;
         }
 
-        for (var i = indices.start; i <= indices.end; i++) {
-            this.myEventSources[i] = <any>{};
+        // if this course is previewed, then we know it is at 
+        // the end of myEventSources, we can safely splice them
+        if (isPreview) {
+            this.myEventSources.splice(indices.start, indices.end - indices.start + 1);
+        } 
+        else {
+            for (var i = indices.start; i <= indices.end; i++) {
+                this.myEventSources[i] = <any>{};
+            }
         }
 
         delete this.courseIdToIndices[courseId];
-        // TODO: should we remove backup?
     }
     
     public enrollInCourseSection(courseId: number, section_type: string, sectionId: number): void {
-        var courseIndices = this.courseIdToIndices[courseId];
         this.removeAllCourseSection(courseId, section_type);
 
         // now we add the section back
         var eventSources: IEventSource[] = this.backupEventSources[courseId];
-        for (var j = 0; j < eventSources.length; j++) {
-            if (eventSources[j].id == sectionId) {
-                this.myEventSources[courseIndices.start + j] = eventSources[j];
+        var courseIndices = this.courseIdToIndices[courseId];
+        for (var i = 0; i < eventSources.length; i++) {
+            if (eventSources[i].id == sectionId) {
+                // TODO: see if this works
+                var newEventSources = JSON.parse(JSON.stringify(eventSources[i]));
+                newEventSources.backgroundColor = newEventSources.borderColor;
+                newEventSources.textColor = 'white';
+                newEventSources.__id = null;
+                this.myEventSources.splice(courseIndices.start + i, 1, newEventSources);
                 return;
             }
         }

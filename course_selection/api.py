@@ -76,7 +76,7 @@ class EnrollmentResource(ModelResource):
         resource_name = 'enrollment'
         allowed_methods = []
 
-class Schedule(ModelResource):
+class ScheduleResource(ModelResource):
     enrollments = fields.ToManyField(EnrollmentResource, 'enrollments', full=True)
 
     class Meta:
