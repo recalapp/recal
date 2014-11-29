@@ -21,6 +21,7 @@ class SectionEventSource implements IEventSource {
     public textColor: string;
     public borderColor: string;
     public backgroundColor: string;
+    public className: string;
     public section_type: string;
 
     constructor(section: ISection, course: ICourse, colors: IColorPalette) {
@@ -30,6 +31,8 @@ class SectionEventSource implements IEventSource {
         this.borderColor = colors.dark;
         this.backgroundColor = colors.light;
         this.section_type = section.section_type;
+        // by default, a newly constructed section is previewed until enrolled"
+        this.className = "nice-preview";
 
         var inputTimeFormat = "hh:mm a";
         var outputTimeFormat = "HH:mm:ss";

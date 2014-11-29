@@ -28,3 +28,6 @@
 .fc-slats .fc-minor td {
   border-top-style: none;
 }
+.nice-preview {
+  opacity: 0.7;
+}
