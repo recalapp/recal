@@ -75,7 +75,9 @@ class CompositeEventSources implements IEventSources {
         for (var i = 0; i < eventSources.length; i++) {
             if (eventSources[i].id == sectionId) {
                 var newEventSources = angular.copy(eventSources[i]);
-                newEventSources.className = null;
+                newEventSources.textColor = 'white';
+                newEventSources.backgroundColor = newEventSources.borderColor;
+                //newEventSources.className = null;
                 this.myEventSources.splice(courseIndices.start + i, 1, newEventSources);
                 return;
             }

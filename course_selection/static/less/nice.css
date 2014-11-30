@@ -15,20 +15,15 @@ body {
   height: 5vh;
 }
 #main {
-  height: 90vh;
+  height: 85vh;
   margin-left: 0px;
 }
 #searchColumn {
   height: 85vh;
   width: 25vw;
 }
-/*
-#queueColumn {
-    width: 15vw;
-}
-*/
 #calendarColumn {
-  height: 85vh;
+  height: calc(80vh);
   width: 70vw;
   min-width: 540px;
 }

@@ -47,11 +47,21 @@
 
 .course-panels-container {
     position: relative;
-    height: @course-panel-container-height;
+    min-height: 40vh;
+    max-height: 80vh;
+    overflow: auto;
 }
 
 .enrolled-courses-container {
+    position: relative;
     min-height: 5vh;
+    max-height: 40vh;
+    overflow: auto;
+}
+
+#enrolledCourses {
+    height: 100%;
+    overflow: auto;
 }
 
 .course-listings {
@@ -84,4 +94,27 @@
     max-height: 30px;
     overflow: visible;
     z-index: 10;
+}
+
+.course-panel.ng-move,
+.course-panel.ng-enter,
+.course-panel.ng-leave {
+    -webkit-transition: 200ms linear all;
+    transition: 200ms linear all;
+}
+ 
+.course-panel.ng-leave.ng-leave-active,
+.course-panel.ng-move,
+.course-panel.ng-enter {
+  opacity:0;
+  max-height:0;
+  left: -50px;
+}
+ 
+.course-panel.ng-leave,
+.course-panel.ng-move.ng-move-active,
+.course-panel.ng-enter.ng-enter-active {
+  opacity:1;
+  max-height:400px;
+  left: 0;
 }

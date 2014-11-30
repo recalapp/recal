@@ -2,6 +2,7 @@
 @body-dark-background-color: rgb(231, 232, 233);
 @course-title-font-size: 18px;
 @title-font-size: 40px;
+@main-height: 85vh;
 
 body {
     background: url('/static/images/crossword.png') repeat fixed;
@@ -24,7 +25,7 @@ body {
 }
 
 #main {
-    height: 90vh;
+    height: @main-height;
     margin-left: 0px;
 }
 
@@ -33,14 +34,8 @@ body {
     width: 25vw;
 }
 
-/*
-#queueColumn {
-    width: 15vw;
-}
-*/
-
 #calendarColumn {
-    height: 85vh;
+    height: calc(@main-height - 5vh);
     width: 70vw;
     min-width: 540px;
 }

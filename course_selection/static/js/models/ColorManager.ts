@@ -2,9 +2,6 @@ import IColorPalette = require('../interfaces/IColorPalette');
 
 class ColorManager {
     public static $inject = ['$resource'];
-
-    private static ALPHA: number = 0.8;
-
     private static previewColor: IColorPalette = {
         id: -1,
         dark: 'rgb(84, 84, 84)',

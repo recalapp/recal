@@ -12,19 +12,16 @@
                 </input>
             </form>
     </div>
+    <h4 class="row" ng-hide="data.enrolledCourses.length == 0">Enrolled Courses</h4>
     <div class="row enrolled-courses-container"
         ng-hide="data.enrolledCourses.length == 0">
-        <h4>Enrolled Courses</h4>
         <div id="enrolledCourses" class="panel-group">
             <div class="panel panel-default course-panel" 
-                 ng-repeat="course in data.enrolledCourses | courseSearch:query
+                 ng-repeat="course in data.enrolledCourses
                  | orderBy: 'primary_listing' track by course.id"  
                  ng-mouseover="searchCtrl.onMouseOver(course)" 
                  ng-mouseleave="searchCtrl.onMouseLeave(course)" 
                  ng-style="searchCtrl.setColor(course)"
-                 tooltip-placement="top"
-                 tooltip-popup-delay='1000'
-                 tooltip="Click to unenroll"
                  ng-click="searchCtrl.onClick(course)">
                 <div>
                     <div class="course-panel-title">
@@ -44,10 +41,10 @@
             </div>
         </div>
     </div>
+    <h4 class="row" ng-hide="query.length == 0">Unenrolled Courses</h4>
     <div class="row course-panels-container"
          ng-hide="query.length == 0"
         >
-        <h4> Unenrolled Courses </h4>
         <div id="unenrolledCourses" class="panel-group">
             <div class="panel panel-default course-panel" 
                     ng-repeat="course in data.courses | courseSearch:query 
@@ -55,9 +52,6 @@
                     ng-mouseover="searchCtrl.onMouseOver(course)" 
                     ng-mouseleave="searchCtrl.onMouseLeave(course)" 
                     ng-style="searchCtrl.setColor(course)"
-                    tooltip-placement="top"
-                    tooltip-popup-delay='1000'
-                    tooltip="Click to enroll"
                     ng-click="searchCtrl.onClick(course)">
                 <div>
                     <div class="course-panel-title">
