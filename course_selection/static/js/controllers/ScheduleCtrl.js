@@ -8,11 +8,31 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             this.courseResource = courseResource;
             this.localStorageService = localStorageService;
             this.$scope.vm = this;
-            this.schedules = [];
-            this.$scope.schedules = this.schedules;
             this.semester = this.$scope.$parent.semester;
             this.$scope.canAddNewSchedules = this.semester.current;
+
+            this.schedules = [];
+            this.restoreUserSchedules();
+            this.$scope.schedules = this.schedules;
         }
+        ScheduleCtrl.prototype.restoreUserSchedules = function () {
+            var _this = this;
+            var prevSchedules = this.localStorageService.get('schedules-' + this.semester.term_code);
+            if (prevSchedules != null) {
+                this.schedules = prevSchedules.map(function (schedule) {
+                    var colorManager = new ColorManager(_this.colorResource);
+                    var courseManager = new CourseManager(_this.courseResource, _this.localStorageService, colorManager, _this.semester.term_code);
+                    return {
+                        id: schedule.id,
+                        name: schedule.name,
+                        active: schedule.active,
+                        courseManager: courseManager,
+                        colorManager: colorManager
+                    };
+                });
+            }
+        };
+
         ScheduleCtrl.prototype.setAllInactive = function () {
             angular.forEach(this.schedules, function (schedule) {
                 schedule.active = false;

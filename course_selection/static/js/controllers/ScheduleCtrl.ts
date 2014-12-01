@@ -20,10 +20,33 @@ class ScheduleCtrl {
             private courseResource,
             private localStorageService) {
         this.$scope.vm = this;
-        this.schedules = [];
-        this.$scope.schedules = this.schedules;
         this.semester = this.$scope.$parent.semester;
         this.$scope.canAddNewSchedules = this.semester.current;
+
+        this.schedules = [];
+        this.restoreUserSchedules();
+        this.$scope.schedules = this.schedules;
+    }
+
+    private restoreUserSchedules() {
+        var prevSchedules = this.localStorageService.get('schedules-' + this.semester.term_code);
+        if (prevSchedules != null) {
+            this.schedules = prevSchedules.map((schedule) => {
+                var colorManager = new ColorManager(this.colorResource);
+                var courseManager = new CourseManager(
+                        this.courseResource, 
+                        this.localStorageService, 
+                        colorManager,
+                        this.semester.term_code);
+                return {
+                    id: schedule.id,
+                    name: schedule.name,
+                    active: schedule.active,
+                    courseManager: courseManager,
+                    colorManager: colorManager
+                };
+            });
+        }
     }
 
     public setAllInactive() {
@@ -47,6 +70,7 @@ class ScheduleCtrl {
             courseManager: courseManager,
             colorManager: colorManager
         });
+
     }
 
     public removeSchedule(index: number) {

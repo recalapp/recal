@@ -4,16 +4,27 @@
 class SemCtrl {
     public static $inject =[
         '$scope',
+        'localStorageService'
         ];
 
     private static LAST_AVAILABLE_TERM_CODE = 1154;
     private semesters;
 
-    constructor(private $scope) {
+    constructor(private $scope,
+            private localStorageService) {
         this.$scope.vm = this;
         this.semesters = [];
+        this.restoreUserSemesters();
         this.$scope.semesters = this.semesters;
         this.$scope.canAdd = this.canAdd();
+
+    }
+
+    private restoreUserSemesters() {
+        var prev = this.localStorageService.get('nice-semesters');
+        if (prev != null) {
+            this.semesters = prev;
+        }
     }
 
     public setAllInactive() {
@@ -53,6 +64,7 @@ class SemCtrl {
             term_code: term_code
         });
 
+        this.localStorageService.set('nice-semesters', this.semesters);
         this.$scope.canAdd = this.canAdd();
     }
 

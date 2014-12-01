@@ -2,13 +2,22 @@
 'use strict';
 define(["require", "exports"], function(require, exports) {
     var SemCtrl = (function () {
-        function SemCtrl($scope) {
+        function SemCtrl($scope, localStorageService) {
             this.$scope = $scope;
+            this.localStorageService = localStorageService;
             this.$scope.vm = this;
             this.semesters = [];
+            this.restoreUserSemesters();
             this.$scope.semesters = this.semesters;
             this.$scope.canAdd = this.canAdd();
         }
+        SemCtrl.prototype.restoreUserSemesters = function () {
+            var prev = this.localStorageService.get('nice-semesters');
+            if (prev != null) {
+                this.semesters = prev;
+            }
+        };
+
         SemCtrl.prototype.setAllInactive = function () {
             angular.forEach(this.semesters, function (semester) {
                 semester.active = false;
@@ -46,6 +55,7 @@ define(["require", "exports"], function(require, exports) {
                 term_code: term_code
             });
 
+            this.localStorageService.set('nice-semesters', this.semesters);
             this.$scope.canAdd = this.canAdd();
         };
 
@@ -65,7 +75,8 @@ define(["require", "exports"], function(require, exports) {
             return termCode % 10 == 2;
         };
         SemCtrl.$inject = [
-            '$scope'
+            '$scope',
+            'localStorageService'
         ];
 
         SemCtrl.LAST_AVAILABLE_TERM_CODE = 1154;
