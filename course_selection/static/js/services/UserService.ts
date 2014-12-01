@@ -9,9 +9,9 @@ class UserService {
     }
 
     public getUser(netid: string): any {
-        var temp = this.localStorageService.get('nice-user');
-        if (temp != null && temp.netid == netid) {
-        }
+        // var temp = this.localStorageService.get('nice-user');
+        // if (temp != null && temp.netid == netid) {
+        // }
     }
 }
 

@@ -67,9 +67,20 @@ class SearchCtrl {
         if (course.colors == null) {
             return {};
         } else {
+            var backgroundColor;
+            var textColor;
+            if (this.courseManager.isCourseAllSectionsEnrolled(course)) {
+                backgroundColor = course.colors.dark;
+                textColor = 'white';
+            }
+            else {
+                backgroundColor = course.colors.light;
+                textColor = course.colors.dark;
+            }
+
             return {
-                'background-color': course.colors.dark,
-                'color': 'white'
+                'background-color': backgroundColor,
+                'color': textColor
             };
         }
     }

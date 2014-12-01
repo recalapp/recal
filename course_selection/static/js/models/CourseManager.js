@@ -73,7 +73,6 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             var idx = this.courseIdxInList(course, this.data.courses);
             this.data.courses.splice(idx, 1);
 
-            course.enrolled = true;
             course.colors = this.colorManager.nextColor();
 
             this.data.enrolledCourses.push(course);
@@ -107,7 +106,6 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             // remove data set in the course object
             this.colorManager.addColor(course.colors);
             course.colors = null;
-            course.enrolled = false;
 
             // add to unenrolled courses
             this.data.courses.push(course);
@@ -144,6 +142,24 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
 
         CourseManager.prototype.enrollSection = function (section) {
             this.data.enrolledSections[section.course_id][section.section_type] = section.id;
+        };
+
+        CourseManager.prototype.isCourseAllSectionsEnrolled = function (course) {
+            var allSectionsEnrolled = true;
+            if (!this.isCourseEnrolled(course)) {
+                return false;
+            }
+
+            var enrollments = this.data.enrolledSections[course.id];
+            angular.forEach(enrollments, function (value, key) {
+                // key is section_type, value is enrolled section id, if exists
+                if (!value) {
+                    allSectionsEnrolled = false;
+                    return false;
+                }
+            });
+
+            return allSectionsEnrolled;
         };
 
         CourseManager.prototype.unenrollSection = function (section) {

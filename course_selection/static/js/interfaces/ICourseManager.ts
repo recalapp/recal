@@ -17,6 +17,7 @@ interface ICourseManager {
     enrollSection(section: ISection): void;
     unenrollSection(section: ISection): void;
     isSectionEnrolled(section: ISection): boolean;
+    isCourseAllSectionsEnrolled(course: ICourse): boolean;
 }
 
 export = ICourseManager;
