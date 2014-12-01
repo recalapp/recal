@@ -152,9 +152,10 @@ class Enrollment(models.Model):
     schedule = models.ForeignKey(Schedule)
 
 class Nice_User(AbstractBaseUser):
-    netid = models.CharField(max_length=20)
+    netid = models.CharField(max_length=20, unique=True)
     friends = models.ManyToManyField('self', through='Friend_Relationship',
                                      symmetrical=False)
+    USERNAME_FIELD = 'netid'
 
 class Friend_Relationship(models.Model):
     from_user = models.ForeignKey(Nice_User, related_name='from_users')

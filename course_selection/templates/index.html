@@ -4,7 +4,7 @@
 {% block title %}Your Classes {% endblock %}
 
 {% block main_content %}
-<div id="container">
+<div id="container" ng-controller='MainCtrl as mainCtrl'>
     {% include 'header.html' %}
     {% include 'semester-tabs.html' %}
 </div>

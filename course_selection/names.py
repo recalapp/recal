@@ -8,9 +8,10 @@ import sys
 def construct_netid_map():
     path = os.path.dirname(course_selection.__file__)
     source_name = path + '/netids.txt'
-    print source_name
+    print 'reading from ' + source_name + '...'
 
-    count = 0
+    mapping_count = 0
+    user_count = 0
     try:
         with open(source_name) as f:
             content = f.read().splitlines()
@@ -29,12 +30,19 @@ def construct_netid_map():
             first_name = first_name,
             last_name = last_name
         )
+        if created:
+            mapping_count += 1
+
+        nice_user, created = Nice_User.objects.get_or_create(
+            netid = netid
+        )
 
         if created:
-            count += 1
+            user_count += 1
 
     print "number of netids found: " + str(list_length / 4)
-    print "new netids added: " + str(count)
+    print "new netids added: " + str(mapping_count)
+    print "new users added: " + str(user_count)
 
 def main(self):
     construct_netid_map()

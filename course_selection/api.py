@@ -82,6 +82,17 @@ class ScheduleResource(ModelResource):
     class Meta:
         queryset = Schedule.objects.all()
         resource_name = 'schedule'
-        excludees = []
+        excludes = []
         allowed_methods = ['get', 'post']
         cache = SimpleCache(timeout=10)
+
+class UserResource(ModelResource):
+    class Meta:
+        queryset = Nice_User.objects.all()
+        resource_name= 'user'
+        excludes = ['password']
+        allowed_methods = ['get']
+        cache = SimpleCache(timeout=10)
+        filtering = {
+            'netid': ALL_WITH_RELATIONS
+        }

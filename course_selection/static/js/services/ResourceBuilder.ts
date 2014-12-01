@@ -1,6 +1,7 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
 import ICourseResource = require('../interfaces/ICourseResource');
+import UserService = require('./UserService');
 
 class ResourceBuilder {
     static $inject = [
@@ -43,6 +44,10 @@ class ResourceBuilder {
                         isArray: false
                     }
                 });
+    }
+
+    public getUserService() {
+        return new UserService(this.$resource);
     }
 }
 

@@ -3,17 +3,27 @@
 class MainCtrl {
     public static $inject = [
         '$scope',
-        '$resource'
+        'CourseResource',
+        'UserService',
     ];
+
+    private data;
 
     constructor(
             private $scope,
-            private $resource
+            private courseResource,
+            private userService
             )
     {
+        this.data = {
+            user: null
+        };
+
+        this.loadUserData();
     }
 
     public loadUserData() {
+        this.userService.getUser('dxue', this.data);
     }
 
 }

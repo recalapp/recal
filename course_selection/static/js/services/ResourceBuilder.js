@@ -1,5 +1,5 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", './UserService'], function(require, exports, UserService) {
     var ResourceBuilder = (function () {
         function ResourceBuilder($resource, localStorageService) {
             this.$resource = $resource;
@@ -31,6 +31,10 @@ define(["require", "exports"], function(require, exports) {
                     isArray: false
                 }
             });
+        };
+
+        ResourceBuilder.prototype.getUserService = function () {
+            return new UserService(this.$resource);
         };
         ResourceBuilder.$inject = [
             '$resource',

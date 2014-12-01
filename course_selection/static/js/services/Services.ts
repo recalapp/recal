@@ -10,5 +10,6 @@ niceServices.factory('ResourceBuilder', ['$resource', 'localStorageService', ($r
 niceServices.factory('ScheduleResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getScheduleResource()]);
 niceServices.factory('CourseResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getCourseResource()]);
 niceServices.factory('ColorResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getColorResource()]);
+niceServices.factory('UserService', ['ResourceBuilder', (builder: ResourceBuilder) => builder.getUserService()]);
 
 export = niceServices;
