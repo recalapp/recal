@@ -12,7 +12,8 @@ function bowerPath(path: String): String
 
 require.config({
     paths: {
-        bootstrap: bowerPath('bootstrap/dist/js/bootstrap.min'),
+        /* this is flatstrap */
+        flatstrap: bowerPath('flatstrap/dist/js/flatstrap.min'),
         fullcalendar: bowerPath('fullcalendar/dist/fullcalendar'),
         jquery: bowerPath('jquery/dist/jquery.min'),
         'jquery.cookie': bowerPath('jquery.cookie/jquery.cookie'),
@@ -29,7 +30,7 @@ require.config({
         'chai': bowerPath('chai/chai')
     },
     shim: {
-        bootstrap: ['jquery'],
+        flatstrap: ['jquery'],
         fullcalendar: ['jqueryui'],
         'angular': { exports: 'angular', dep: ['jquery'] },
         'angular-animate': ['angular'],
@@ -61,7 +62,7 @@ require(['angular',
         'filters/Filters',
         'services/Services',
         'jquery',
-        'bootstrap',
+        'flatstrap',
         ], function (angular) {
     angular.bootstrap(document, ['nice']);
 });

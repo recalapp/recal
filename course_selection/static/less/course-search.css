@@ -16,7 +16,7 @@
 }
 #searchBar {
   height: 4vh;
-  font-size: 18px;
+  font-size: 13px;
   width: 100%;
 }
 #unenrolledCourses {
@@ -43,7 +43,7 @@
   overflow: auto;
 }
 .course-listings {
-  font-size: 15px;
+  font-size: 13px;
   margin-bottom: 0;
 }
 .course-title {
@@ -58,7 +58,7 @@
   top: 0;
   right: 0;
   height: 100%;
-  width: 10%;
+  width: calc(39px);
 }
 .course-info {
   position: absolute;

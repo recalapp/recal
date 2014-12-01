@@ -36,8 +36,22 @@ class CourseSearchFilter extends Filter
                 continue;
             }
 
+            // the next query should be the min rating
+            if (query[0] == '>') {
+                i++;
+
+                // continue if '>' is the last token
+                if (i >= queries.length || !CourseSearchFilter.isNumber(queries[i])) {
+                    continue;
+                }
+
+                var minRating = +queries[i];
+                results = results.filter((course) => {
+                    return course.rating >= minRating;
+                });
+            }
             // is department
-            if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
+            else if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
                 if (query.length < 3) {
                     return [];
                 }
@@ -63,15 +77,28 @@ class CourseSearchFilter extends Filter
 
     private static breakQuery(input: string): string {
         var output;
-        output = input.replace(/\D\d+\D/g, function(text){
-            return text.charAt(0) + ' ' + text.substring(1, text.length - 1) + ' ' + text.slice(-1);
+        // output = input.replace(/\D\d+\.?\d+\D/g, function(text){
+        //     return text.charAt(0) + ' ' + text.substring(1, text.length - 1) + ' ' + text.slice(-1);
+        // });
+        // output = output.replace(/\D\d+\.?\d+/g, function(text){
+        //     return text.charAt(0) + ' ' + text.substring(1);
+        // });
+        // output = output.replace(/\d+\.?\d+\D/g, function(text){
+        //     return text.substring(0, text.length - 1) + ' ' + text.slice(-1);
+        // });
+
+        // takes care of numbers of the form x.yz, .yz are optional
+        output = input.replace(/\d+\.?\d*/g, function(text) {
+            return ' ' + text + ' ';
         });
-        output = output.replace(/\D\d+/g, function(text){
-            return text.charAt(0) + ' ' + text.substring(1);
+
+        // takes care of numbers of the form .xyz
+        output = output.replace(/\D\.\d+/g, function(text) {
+            return ' ' + text + ' ';
         });
-        output = output.replace(/\d+\D/g, function(text){
-            return text.substring(0, text.length - 1) + ' ' + text.slice(-1);
-        });
+
+        // trim spaces
+        output = output.replace(/\s+/g, " ");
 
         return output;
     }

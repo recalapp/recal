@@ -20,11 +20,11 @@ body {
 }
 #searchColumn {
   height: 85vh;
-  width: 25vw;
+  width: 15vw;
 }
 #calendarColumn {
-  height: calc(80vh);
-  width: 70vw;
+  height: 100%;
+  width: 85vw;
   min-width: 540px;
 }
 .remove-icon {

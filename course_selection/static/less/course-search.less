@@ -1,10 +1,11 @@
 @body-light-background-color: rgb(241, 242, 242);
 
-@search-bar-font-size: 18px;
+@search-bar-font-size: 13px;
 
-@course-listing-font-size: 15px;
+@course-listing-font-size: 13px;
 @course-title-font-size: 13px;
-@title-font-size: 40px;
+@course-rating-font-size: 13px;
+@title-font-size: 30px;
 
 @course-panel-container-height: 45vh;
 @search-bar-height: 4vh;
@@ -83,7 +84,7 @@
     top: 0;
     right: 0;
     height: 100%;
-    width: 10%;
+    width: calc(3 * @course-rating-font-size);
 }
 
 .course-info {

@@ -32,7 +32,7 @@ class Course implements ICourse {
         this.all_listings = this.getAllCourseListings();
         this.section_types = this.getSectionTypes();
         this.colors = null;
-        this.rating = +(Math.random() + 4).toPrecision(3);
+        this.rating = +(Math.random() * 2 + 3).toPrecision(3);
         this.enrolled = enrolled ? enrolled : false;
     }
 
