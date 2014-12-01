@@ -1,1 +1,1 @@
-web: gunicorn nice.wsgi:application
+web: newrelic-admin run-program python ./manage.py run_gunicorn nice.wsgi:application
