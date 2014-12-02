@@ -13,6 +13,20 @@ class SemesterResource(ModelResource):
         filtering = {
             'term_code': ALL
         }
+    
+    def dehydrate(self, bundle):
+        # give the semester a readable name
+        term_code = bundle.data['term_code']
+        end_year = int(term_code[1:3])
+        start_year = end_year - 1
+        if int(term_code[-1]) == 2:
+            sem = 'Fall'
+        else:
+            sem = 'Spring'
+        name = str(start_year) + str(end_year) + sem
+
+        bundle.data['name'] = name
+        return bundle
 
 class CourseListingResource(ModelResource):
     course = fields.ForeignKey('course_selection.api.CourseResource', 'course')

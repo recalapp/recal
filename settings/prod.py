@@ -27,7 +27,7 @@ ALLOWED_HOSTS = [
     '.recal.io.', # Also allow FQDN and subdomains
 ]
 
-SECRET_KEY = environ.get('DJANGO_SECRET_KEY', '')
+SECRET_KEY = environ.get('DJANGO_SECRET_KEY', 'asdfasfshjkxhvkzjxhiu1012u4-9r0iojsof')
 
 def get_cache():
   try:
