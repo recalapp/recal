@@ -1,5 +1,6 @@
 .course-panel {
   min-height: 40px;
+  width: 100%;
   position: relative;
   overflow: visible;
   border-radius: 0 !important;
