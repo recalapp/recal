@@ -2,6 +2,11 @@
   min-height: 40px;
   position: relative;
   overflow: visible;
+  border-radius: 0;
+}
+.enrolled-course-panel {
+  border: 0;
+  border-radius: 0;
 }
 .course-panel-title {
   text-align: left;
@@ -11,7 +16,6 @@
 #searchBarContainer {
   background-color: #f1f2f2;
   height: 4vh;
-  width: 100%;
   margin-bottom: 1vh;
 }
 #searchBar {

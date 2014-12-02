@@ -9,12 +9,14 @@ var nice = new Module('nice', [
         'LocalStorageModule',
         'niceServices',
         'niceFilters', 
-        'niceControllers'
+        'niceControllers',
+        'niceDirectives'
         ]);
 
 nice.app.config((localStorageServiceProvider) => {
-  localStorageServiceProvider
-    .setPrefix('nice');
+  localStorageServiceProvider.setPrefix('nice');
+}).config((cfpLoadingBarProvider) => {
+    cfpLoadingBarProvider.latencyThreshold = 500;
 });
 
 export = nice;

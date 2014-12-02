@@ -8,69 +8,73 @@
                    ng-model="query" 
                    ng-change="searchCtrl.queryOnChange()"
                    ng-init="query=''"
+                   select-on-click
                    placeholder="Ex: COS 126, stories, WWS, >4, etc.">
                 </input>
             </form>
     </div>
-    <h4 class="row" ng-hide="data.enrolledCourses.length == 0">Enrolled Courses</h4>
-    <div class="row enrolled-courses-container"
-        ng-hide="data.enrolledCourses.length == 0">
-        <div id="enrolledCourses" class="panel-group">
-            <div class="panel panel-default course-panel" 
-                 ng-repeat="course in data.enrolledCourses
-                 | orderBy: 'primary_listing' track by course.id"  
-                 ng-mouseover="searchCtrl.onMouseOver(course)" 
-                 ng-mouseleave="searchCtrl.onMouseLeave(course)" 
-                 ng-style="searchCtrl.setColor(course)"
-                 ng-click="searchCtrl.onClick(course)">
-                <div>
-                    <div class="course-panel-title">
-                        <div class="course-listings" 
-                             ng-bind-html="course.all_listings | highlight: query"
-                             >
-                        </div>
-                            <div class="course-title" 
-                                 ng-bind-html="course.title | highlight: query">
+    <div id="searchResultsContainer">
+        <h4 class="row" ng-hide="query.length == 0">Search Results</h4>
+        <div class="row course-panels-container"
+             ng-hide="query.length == 0"
+             >
+             <div id="unenrolledCourses" class="panel-group">
+                 <div class="panel panel-default course-panel" 
+                      ng-repeat="course in data.courses | courseSearch:query 
+                      | orderBy: 'primary_listing' track by course.id"  
+                      ng-mouseover="searchCtrl.onMouseOver(course)" 
+                      ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                      ng-style="searchCtrl.setColor(course)"
+                      ng-click="searchCtrl.onClick(course)">
+                     <div>
+                         <div class="course-panel-title">
+                             <div class="course-listings" 
+                                  ng-bind-html="course.all_listings | highlight: query"
+                                  >
+                             </div>
+                                 <div class="course-title" 
+                                      ng-bind-html="course.title | highlight: query">
+                                 </div>
+                         </div>
+                     </div>
+                     <div class="course-tag"
+                          ng-bind-html="searchCtrl.getEasyPceLink(course)"
+                          >
+                     </div>
+                 </div>
+             </div>
+        </div>
+    </div>
+    <div id="enrolledCoursesContainer">
+        <h4 class="row" ng-hide="data.enrolledCourses.length == 0">Enrolled Courses</h4>
+        <div class="row enrolled-courses-container"
+             ng-hide="data.enrolledCourses.length == 0">
+            <div id="enrolledCourses" class="panel-group">
+                <div class="panel panel-default course-panel enrolled-course-panel" 
+                     ng-repeat="course in data.enrolledCourses
+                     | orderBy: 'primary_listing' track by course.id"  
+                     ng-mouseover="searchCtrl.onMouseOver(course)" 
+                     ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                     ng-style="searchCtrl.setColor(course)"
+                     ng-click="searchCtrl.onClick(course)">
+                    <div>
+                        <div class="course-panel-title">
+                            <div class="course-listings" 
+                                 ng-bind="course.all_listings"
+                                 >
                             </div>
+                                <div class="course-title" 
+                                     ng-bind="course.title">
+                                </div>
+                        </div>
                     </div>
-                </div>
-                <div class="course-tag"
-                     ng-bind-html="searchCtrl.getEasyPceLink(course)"
-                     >
+                    <div class="course-tag"
+                         ng-bind-html="searchCtrl.getEasyPceLink(course)"
+                         >
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <h4 class="row" ng-hide="query.length == 0">Search Results</h4>
-    <div class="row course-panels-container"
-         ng-hide="query.length == 0"
-        >
-        <div id="unenrolledCourses" class="panel-group">
-            <div class="panel panel-default course-panel" 
-                    ng-repeat="course in data.courses | courseSearch:query 
-                        | orderBy: 'primary_listing' track by course.id"  
-                    ng-mouseover="searchCtrl.onMouseOver(course)" 
-                    ng-mouseleave="searchCtrl.onMouseLeave(course)" 
-                    ng-style="searchCtrl.setColor(course)"
-                    ng-click="searchCtrl.onClick(course)">
-                <div>
-                    <div class="course-panel-title">
-                        <div class="course-listings" 
-                           ng-bind-html="course.all_listings | highlight: query"
-                           >
-                        </div>
-                        <div class="course-title" 
-                           ng-bind-html="course.title | highlight: query">
-                        </div>
-                    </div>
-                </div>
-                <div class="course-tag"
-                    ng-bind-html="searchCtrl.getEasyPceLink(course)"
-                    >
-                </div>
-            </div>
-        </div>
-    </div>
-    
 </div>
 {% endverbatim %}

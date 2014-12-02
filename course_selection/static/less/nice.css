@@ -46,3 +46,6 @@ body {
 .schedule-tab-heading {
   cursor: pointer;
 }
+#loading-bar .bar {
+  height: 5px;
+}

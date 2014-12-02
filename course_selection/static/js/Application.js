@@ -8,11 +8,14 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
         'LocalStorageModule',
         'niceServices',
         'niceFilters',
-        'niceControllers'
+        'niceControllers',
+        'niceDirectives'
     ]);
 
     nice.app.config(function (localStorageServiceProvider) {
         localStorageServiceProvider.setPrefix('nice');
+    }).config(function (cfpLoadingBarProvider) {
+        cfpLoadingBarProvider.latencyThreshold = 500;
     });
 
     

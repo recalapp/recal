@@ -17,6 +17,10 @@ define(["require", "exports", "angular"], function(require, exports) {
         Module.prototype.addFilter = function (name, dependenciesAndFilter) {
             this.app.filter(name, dependenciesAndFilter);
         };
+
+        Module.prototype.addDirective = function (name, dependenciesAndDirective) {
+            this.app.directive(name, dependenciesAndDirective);
+        };
         return Module;
     })();
 

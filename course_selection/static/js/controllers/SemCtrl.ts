@@ -7,6 +7,7 @@ class SemCtrl {
         'localStorageService'
         ];
 
+    // TODO: get this from the server
     private static LAST_AVAILABLE_TERM_CODE = 1154;
     private semesters;
 
@@ -44,10 +45,10 @@ class SemCtrl {
 
         var lastTermCode = this.semesters[this.semesters.length - 1].term_code;
         if (this.semesterIsFall(lastTermCode)) {
-            // fall to spring
+            // fall to spring, from 2 to 4
             return lastTermCode + 2;
         } else {
-            // spring to fall
+            // spring to fall, from 4 to 2
             return lastTermCode + 8;
         }
     }

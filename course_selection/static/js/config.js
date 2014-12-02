@@ -57,6 +57,7 @@ require([
     'controllers/Controllers',
     'filters/Filters',
     'services/Services',
+    'directives/Directives',
     'jquery',
     'flatstrap'
 ], function (angular) {

@@ -27,6 +27,10 @@ class Module
         this.app.filter(name, dependenciesAndFilter);
     }
 
+    public addDirective(name: string, dependenciesAndDirective: Array<any>) {
+        this.app.directive(name, dependenciesAndDirective);
+    }
+
 }
 
 export = Module;
