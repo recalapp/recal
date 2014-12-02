@@ -2,11 +2,10 @@
   min-height: 40px;
   position: relative;
   overflow: visible;
-  border-radius: 0;
+  border-radius: 0 !important;
 }
 .enrolled-course-panel {
   border: 0;
-  border-radius: 0;
 }
 .course-panel-title {
   text-align: left;
