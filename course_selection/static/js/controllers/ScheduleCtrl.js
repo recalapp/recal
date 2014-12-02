@@ -1,9 +1,10 @@
-define(["require", "exports", '../models/CourseManager', '../models/ColorManager'], function(require, exports, CourseManager, ColorManager) {
+define(["require", "exports", '../models/CourseManager', '../models/ColorManager', './ModalInstanceCtrl'], function(require, exports, CourseManager, ColorManager, ModalInstanceCtrl) {
     'use strict';
 
     var ScheduleCtrl = (function () {
-        function ScheduleCtrl($scope, colorResource, courseResource, localStorageService) {
+        function ScheduleCtrl($scope, $modal, colorResource, courseResource, localStorageService) {
             this.$scope = $scope;
+            this.$modal = $modal;
             this.colorResource = colorResource;
             this.courseResource = courseResource;
             this.localStorageService = localStorageService;
@@ -39,6 +40,22 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             });
         };
 
+        ScheduleCtrl.prototype.confirmRemoveSchedule = function (index) {
+            var _this = this;
+            var message = "You want to delete the schedule: " + this.schedules[index].name;
+            var modalHtml = '<div class="modal-body">' + message + '</div>';
+            modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
+
+            var modalInstance = this.$modal.open({
+                template: modalHtml,
+                controller: ModalInstanceCtrl
+            });
+
+            modalInstance.result.then(function () {
+                _this.removeSchedule(index);
+            });
+        };
+
         ScheduleCtrl.prototype.addNewSchedule = function () {
             var id = this.schedules.length + 1;
             var colorManager = new ColorManager(this.colorResource);
@@ -62,6 +79,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
         };
         ScheduleCtrl.$inject = [
             '$scope',
+            '$modal',
             'ColorResource',
             'CourseResource',
             'localStorageService'

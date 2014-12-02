@@ -1,12 +1,14 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 import CourseManager = require('../models/CourseManager');
 import ColorManager = require('../models/ColorManager');
+import ModalInstanceCtrl = require('./ModalInstanceCtrl');
 
 'use strict';
 
 class ScheduleCtrl {
     public static $inject =[
         '$scope',
+        '$modal',
         'ColorResource',
         'CourseResource',
         'localStorageService'
@@ -16,6 +18,7 @@ class ScheduleCtrl {
     private semester;
 
     constructor(private $scope,
+            private $modal,
             private colorResource,
             private courseResource,
             private localStorageService) {
@@ -52,6 +55,21 @@ class ScheduleCtrl {
     public setAllInactive() {
         angular.forEach(this.schedules, (schedule) => {
             schedule.active = false;
+        });
+    }
+
+    public confirmRemoveSchedule(index: number) {
+        var message: string = "You want to delete the schedule: " + this.schedules[index].name;
+        var modalHtml = '<div class="modal-body">' + message + '</div>';
+        modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
+
+        var modalInstance = this.$modal.open({
+            template: modalHtml,
+            controller: ModalInstanceCtrl
+        });
+
+        modalInstance.result.then(() => {
+            this.removeSchedule(index);
         });
     }
  
