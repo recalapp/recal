@@ -7,7 +7,7 @@
          class="schedule-tab-heading"
     >
     <tab-heading class="ng-cloak"> 
-        {{ schedule.id}} 
+        {{ schedule.name}} 
          <a ng-click="scheduleCtrl.confirmRemoveSchedule($index)" href="">
              <i class="fa fa-times remove-icon"></i>
          </a>
@@ -18,7 +18,7 @@
              {% include 'calendar.html' %}
          </div>
     </tab>
-    <tab select="scheduleCtrl.addSchedule()"
+    <tab select="scheduleCtrl.askForNewScheduleName()"
          disabled = !canAddNewSchedules
          ng-hide = !canAddNewSchedules
          class="schedule-tab-heading"
