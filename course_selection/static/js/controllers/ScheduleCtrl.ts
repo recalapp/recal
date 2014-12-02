@@ -1,7 +1,10 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+/// <amd-dependency path="text!../templates/NewScheduleModalHtml.html" />
 import CourseManager = require('../models/CourseManager');
 import ColorManager = require('../models/ColorManager');
-import ModalInstanceCtrl = require('./ModalInstanceCtrl');
+import RemoveScheduleModalCtrl = require('./RemoveScheduleModalCtrl');
+import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
+import NewScheduleModalHtml = require('text!../templates/NewScheduleModalHtml.html');
 
 'use strict';
 
@@ -65,12 +68,25 @@ class ScheduleCtrl {
 
         var modalInstance = this.$modal.open({
             template: modalHtml,
-            controller: ModalInstanceCtrl
+            controller: RemoveScheduleModalCtrl
         });
 
         modalInstance.result.then(() => {
             this.removeSchedule(index);
         });
+    }
+
+    public askForNewScheduleName() {
+        var modalInstance = this.$modal.open({
+            template: NewScheduleModalHtml,
+            controller: NewScheduleModalCtrl
+        });
+
+        modalInstance.result.then(() => {
+            this.addNewSchedule();
+        });
+
+        console.log(NewScheduleModalHtml);
     }
  
     public addNewSchedule() {

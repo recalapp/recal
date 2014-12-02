@@ -1,6 +1,6 @@
 define(["require", "exports"], function(require, exports) {
-    var ModalInstanceCtrl = (function () {
-        function ModalInstanceCtrl($scope, $modalInstance) {
+    var NewScheduleModalCtrl = (function () {
+        function NewScheduleModalCtrl($scope, $modalInstance) {
             var _this = this;
             this.$scope = $scope;
             this.$modalInstance = $modalInstance;
@@ -12,20 +12,20 @@ define(["require", "exports"], function(require, exports) {
                 _this.cancel();
             };
         }
-        ModalInstanceCtrl.prototype.ok = function () {
+        NewScheduleModalCtrl.prototype.ok = function () {
             this.$modalInstance.close();
         };
 
-        ModalInstanceCtrl.prototype.cancel = function () {
+        NewScheduleModalCtrl.prototype.cancel = function () {
             this.$modalInstance.dismiss('cancel');
         };
-        ModalInstanceCtrl.$inject = [
+        NewScheduleModalCtrl.$inject = [
             '$scope',
             '$modalInstance'
         ];
-        return ModalInstanceCtrl;
+        return NewScheduleModalCtrl;
     })();
 
     
-    return ModalInstanceCtrl;
+    return NewScheduleModalCtrl;
 });

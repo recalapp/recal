@@ -1,4 +1,4 @@
-define(["require", "exports", '../models/CourseManager', '../models/ColorManager', './ModalInstanceCtrl'], function(require, exports, CourseManager, ColorManager, ModalInstanceCtrl) {
+define(["require", "exports", '../models/CourseManager', '../models/ColorManager', './RemoveScheduleModalCtrl', './NewScheduleModalCtrl', 'text!../templates/NewScheduleModalHtml.html', "text!../templates/NewScheduleModalHtml.html"], function(require, exports, CourseManager, ColorManager, RemoveScheduleModalCtrl, NewScheduleModalCtrl, NewScheduleModalHtml) {
     'use strict';
 
     var ScheduleCtrl = (function () {
@@ -48,12 +48,26 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
             var modalInstance = this.$modal.open({
                 template: modalHtml,
-                controller: ModalInstanceCtrl
+                controller: RemoveScheduleModalCtrl
             });
 
             modalInstance.result.then(function () {
                 _this.removeSchedule(index);
             });
+        };
+
+        ScheduleCtrl.prototype.askForNewScheduleName = function () {
+            var _this = this;
+            var modalInstance = this.$modal.open({
+                template: NewScheduleModalHtml,
+                controller: NewScheduleModalCtrl
+            });
+
+            modalInstance.result.then(function () {
+                _this.addNewSchedule();
+            });
+
+            console.log(NewScheduleModalHtml);
         };
 
         ScheduleCtrl.prototype.addNewSchedule = function () {

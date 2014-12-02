@@ -1,4 +1,4 @@
-class ModalInstanceCtrl {
+class RemoveScheduleModalCtrl {
     public static $inject = [
         '$scope',
         '$modalInstance'
@@ -23,4 +23,4 @@ class ModalInstanceCtrl {
     }
 }
 
-export = ModalInstanceCtrl;
+export = RemoveScheduleModalCtrl;

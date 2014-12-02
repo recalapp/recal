@@ -22,7 +22,8 @@ require.config({
         'angular-bootstrap': bowerPath('angular-bootstrap/ui-bootstrap-tpls.min'),
         'angular-local-storage': bowerPath('angular-local-storage/dist/angular-local-storage.min'),
         'angular-loading-bar': bowerPath('angular-loading-bar/build/loading-bar'),
-        'chai': bowerPath('chai/chai')
+        'chai': bowerPath('chai/chai'),
+        'text': bowerPath('requirejs-text/text')
     },
     shim: {
         flatstrap: ['jquery'],

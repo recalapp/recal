@@ -33,7 +33,7 @@ body {
   color: black;
   position: absolute;
   top: 0;
-  left: 70%;
+  right: 0;
 }
 .remove-icon:hover {
   color: blue;
