@@ -1,10 +1,8 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-/// <amd-dependency path="text!../templates/NewScheduleModalHtml.html" />
 import CourseManager = require('../models/CourseManager');
 import ColorManager = require('../models/ColorManager');
 import RemoveScheduleModalCtrl = require('./RemoveScheduleModalCtrl');
 import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
-import NewScheduleModalHtml = require('text!../templates/NewScheduleModalHtml.html');
 
 'use strict';
 
@@ -78,18 +76,16 @@ class ScheduleCtrl {
 
     public askForNewScheduleName() {
         var modalInstance = this.$modal.open({
-            template: NewScheduleModalHtml,
+            templateUrl: '/static/templates/newScheduleModal.html',
             controller: NewScheduleModalCtrl
         });
 
-        modalInstance.result.then(() => {
-            this.addNewSchedule();
+        modalInstance.result.then((name) => {
+            this.addNewSchedule(name);
         });
-
-        console.log(NewScheduleModalHtml);
     }
  
-    public addNewSchedule() {
+    public addNewSchedule(scheduleName?: string) {
         var id = this.schedules.length + 1;
         var colorManager = new ColorManager(this.colorResource);
         var courseManager = new CourseManager(
@@ -99,7 +95,7 @@ class ScheduleCtrl {
                 this.semester.term_code);
         this.schedules.push({
             id: id,
-            name: "Schedule " + id,
+            name: scheduleName ? scheduleName : "Schedule " + id,
             active: true,
             courseManager: courseManager,
             colorManager: colorManager

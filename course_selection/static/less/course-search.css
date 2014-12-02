@@ -23,6 +23,7 @@
   width: 100%;
 }
 #unenrolledCourses {
+  min-height: 0;
   height: 100%;
   overflow: auto;
 }
@@ -31,7 +32,7 @@
 }
 .course-panels-container {
   position: relative;
-  min-height: 40vh;
+  min-height: 0;
   max-height: 80vh;
   overflow: auto;
 }

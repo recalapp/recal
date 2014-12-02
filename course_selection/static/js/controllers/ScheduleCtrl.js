@@ -1,4 +1,4 @@
-define(["require", "exports", '../models/CourseManager', '../models/ColorManager', './RemoveScheduleModalCtrl', './NewScheduleModalCtrl', 'text!../templates/NewScheduleModalHtml.html', "text!../templates/NewScheduleModalHtml.html"], function(require, exports, CourseManager, ColorManager, RemoveScheduleModalCtrl, NewScheduleModalCtrl, NewScheduleModalHtml) {
+define(["require", "exports", '../models/CourseManager', '../models/ColorManager', './RemoveScheduleModalCtrl', './NewScheduleModalCtrl'], function(require, exports, CourseManager, ColorManager, RemoveScheduleModalCtrl, NewScheduleModalCtrl) {
     'use strict';
 
     var ScheduleCtrl = (function () {
@@ -59,24 +59,22 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
         ScheduleCtrl.prototype.askForNewScheduleName = function () {
             var _this = this;
             var modalInstance = this.$modal.open({
-                template: NewScheduleModalHtml,
+                templateUrl: '/static/templates/newScheduleModal.html',
                 controller: NewScheduleModalCtrl
             });
 
-            modalInstance.result.then(function () {
-                _this.addNewSchedule();
+            modalInstance.result.then(function (name) {
+                _this.addNewSchedule(name);
             });
-
-            console.log(NewScheduleModalHtml);
         };
 
-        ScheduleCtrl.prototype.addNewSchedule = function () {
+        ScheduleCtrl.prototype.addNewSchedule = function (scheduleName) {
             var id = this.schedules.length + 1;
             var colorManager = new ColorManager(this.colorResource);
             var courseManager = new CourseManager(this.courseResource, this.localStorageService, colorManager, this.semester.term_code);
             this.schedules.push({
                 id: id,
-                name: "Schedule " + id,
+                name: scheduleName ? scheduleName : "Schedule " + id,
                 active: true,
                 courseManager: courseManager,
                 colorManager: colorManager
