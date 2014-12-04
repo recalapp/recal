@@ -3,7 +3,6 @@
 # dashboard
 rm -f nice/static/compiled/dashboard.js nice/static/compiled/dashboard.min.js
 cat nice/static/js/*.js nice/static/js/dashboard/*.js >> nice/static/compiled/dashboard.js
-#yuicompressor nice/static/compiled/dashboard.js -o nice/static/compiled/dashboard.min.js
 
 rm -f nice/static/compiled/dashboard.css nice/static/compiled/dashboard.min.css
 cat nice/static/css/*.css nice/static/css/dashboard/*.css >> nice/static/compiled/dashboard.css
