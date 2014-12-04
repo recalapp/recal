@@ -5,6 +5,7 @@ interface ISection {
     name: string;
     section_type: string;
     meetings: Array<IMeeting>;
+    has_meetings: boolean;
     course_id: number;
 }
 

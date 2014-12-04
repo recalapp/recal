@@ -94,6 +94,12 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 var section_type = course.section_types[i];
                 this.data.enrolledSections[course.id][section_type] = null;
             }
+
+            for (var i = 0; i < course.sections.length; i++) {
+                if (!course.sections[i].has_meetings) {
+                    this.enrollSection(course.sections[i]);
+                }
+            }
         };
 
         CourseManager.prototype.unenrollCourse = function (course) {

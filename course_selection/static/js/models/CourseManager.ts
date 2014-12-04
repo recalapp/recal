@@ -115,6 +115,28 @@ class CourseManager {
             var section_type = course.section_types[i];
             this.data.enrolledSections[course.id][section_type] = null;
         }
+
+        // if there's only one option for section_type, automatically
+        // enroll in it
+        //for (var i = 0; i < course.section_types.length; i++) {
+        //    var section_type = course.section_types[i];
+        //    var sectionsOfType = course.sections.filter((section) => {
+        //        return section.section_type == section_type;
+        //    });
+
+        //    if (sectionsOfType.length == 0) {
+        //        console.log('course ' + course.id + ' has no sections of type '
+        //                + section_type);
+        //    } else if (sectionsOfType.length == 1) {
+        //        this.enrollSection(sectionsOfType[0]);
+        //    }
+        //}
+
+        for (var i = 0; i < course.sections.length; i++) {
+            if (!course.sections[i].has_meetings) {
+                this.enrollSection(course.sections[i]);
+            }
+        }
     }
 
     public unenrollCourse(course: ICourse): void {
