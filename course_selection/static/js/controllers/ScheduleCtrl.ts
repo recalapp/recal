@@ -66,6 +66,7 @@ class ScheduleCtrl {
             templateUrl: '/static/templates/removeScheduleModal.html',
             controller: RemoveScheduleModalCtrl,
             windowClass: 'center-modal',
+            backdropClass: 'modal-backdrop',
             resolve: {
                 message: () => {
                     return message;
@@ -82,6 +83,7 @@ class ScheduleCtrl {
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/newScheduleModal.html',
             controller: NewScheduleModalCtrl,
+            backdropClass: 'modal-backdrop',
             windowClass: 'center-modal'
         });
 
