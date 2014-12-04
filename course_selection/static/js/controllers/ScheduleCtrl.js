@@ -13,7 +13,8 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             this.$scope.canAddNewSchedules = this.semester.current;
 
             this.schedules = [];
-            this.restoreUserSchedules();
+
+            // this.restoreUserSchedules();
             this.$scope.schedules = this.schedules;
         }
         ScheduleCtrl.prototype.restoreUserSchedules = function () {
@@ -43,12 +44,16 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
         ScheduleCtrl.prototype.confirmRemoveSchedule = function (index) {
             var _this = this;
             var message = "You want to delete the schedule: " + this.schedules[index].name;
-            var modalHtml = '<div class="modal-body">' + message + '</div>';
-            modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
 
             var modalInstance = this.$modal.open({
-                template: modalHtml,
-                controller: RemoveScheduleModalCtrl
+                templateUrl: '/static/templates/removeScheduleModal.html',
+                controller: RemoveScheduleModalCtrl,
+                windowClass: 'center-modal',
+                resolve: {
+                    message: function () {
+                        return message;
+                    }
+                }
             });
 
             modalInstance.result.then(function () {
@@ -56,15 +61,18 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             });
         };
 
-        ScheduleCtrl.prototype.askForNewScheduleName = function () {
+        ScheduleCtrl.prototype.askForNewScheduleName = function (prevIdx) {
             var _this = this;
             var modalInstance = this.$modal.open({
                 templateUrl: '/static/templates/newScheduleModal.html',
-                controller: NewScheduleModalCtrl
+                controller: NewScheduleModalCtrl,
+                windowClass: 'center-modal'
             });
 
             modalInstance.result.then(function (name) {
                 _this.addNewSchedule(name);
+            }, function () {
+                _this.schedules[prevIdx].active = true;
             });
         };
 

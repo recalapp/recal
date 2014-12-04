@@ -1,10 +1,13 @@
 class RemoveScheduleModalCtrl {
     public static $inject = [
         '$scope',
-        '$modalInstance'
+        '$modalInstance',
+        'message'
     ];
 
-    constructor(private $scope, private $modalInstance) {
+    constructor(private $scope, private $modalInstance, private message) {
+        this.$scope.message = message;
+
         this.$scope.ok = () => {
             this.ok();
         };

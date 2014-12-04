@@ -20,8 +20,6 @@ define(["require", "exports"], function(require, exports) {
             return data['objects'][0];
         };
 
-        // use resource to get the schedule entry
-        // then $save
         UserService.prototype.saveSchedule = function (scheduleObj) {
             var user = new this.userResource(this.user.id);
             console.log(JSON.stringify(user));
@@ -38,3 +36,4 @@ define(["require", "exports"], function(require, exports) {
     
     return UserService;
 });
+//# sourceMappingURL=UserService.js.map

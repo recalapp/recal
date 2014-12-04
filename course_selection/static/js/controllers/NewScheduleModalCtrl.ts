@@ -15,7 +15,7 @@ class NewScheduleModalCtrl {
     }
 
     public ok() {
-        this.$modalInstance.close();
+        this.$modalInstance.close(this.$scope.newName);
     }
 
     public cancel() {

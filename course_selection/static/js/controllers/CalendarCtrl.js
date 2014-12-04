@@ -2,7 +2,6 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
     'use strict';
 
     var CalendarCtrl = (function () {
-        // dependencies are injected via AngularJS $injector
         function CalendarCtrl($scope) {
             var _this = this;
             this.$scope = $scope;
@@ -22,14 +21,12 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 return _this.updatePreviewCourse(newCourse, oldCourse);
             }, true);
 
-            // collection watch
             this.$scope.$watchCollection(function () {
                 return _this.$scope.data.enrolledCourses;
             }, function (newCourses, oldCourses) {
                 return _this.updateEnrolledCourses(newCourses, oldCourses);
             });
 
-            // equality watch
             this.$scope.$watch(function () {
                 return _this.$scope.data.enrolledSections;
             }, function (newSections, oldSections) {
@@ -44,19 +41,12 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             };
         };
 
-        ///////////////////////////////////////////////////////////////////
-        // Course Management
-        // ////////////////////////////////////////////////////////////////
         CalendarCtrl.prototype.addCourse = function (course, isPreview) {
             var myColor = isPreview ? this.colorManager.getPreviewColor() : course.colors;
             var courseEventSources = new CourseEventSources(course, myColor, isPreview);
             this.compositeEventSources.addEventSources(courseEventSources);
         };
 
-        // TODO: fix adding colors after re-init in colorManager
-        // what if user adds 8 classes, colorManager re-enables all colors
-        // then user removes a course. Then we should again only allow that removed
-        // color
         CalendarCtrl.prototype.removeCourse = function (course, isPreview) {
             this.compositeEventSources.removeEventSources(course.id, isPreview);
         };
@@ -86,7 +76,6 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             var removedIdx = CalendarCtrl.NOT_FOUND;
             for (var i = 0; i < newCourses.length; i++) {
                 if (newCourses[i].id !== oldCourses[i].id) {
-                    // they are different, meaning oldCourses[i] got removed
                     removedIdx = i;
                     break;
                 }
@@ -103,7 +92,6 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             if (newCourses === oldCourses)
                 return;
 
-            // course added
             if (newCourses.length == oldCourses.length + 1) {
                 var course = newCourses[newCourses.length - 1];
                 this.addCourse(course, false);
@@ -115,12 +103,8 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.$scope.eventSources = this.compositeEventSources.getEventSources();
         };
 
-        ///////////////////////////////////////////////////////
-        // Sections
-        // ////////////////////////////////////////////////////
         CalendarCtrl.prototype.addAllSectionEventSources = function (course, colors) {
             for (var i = 0; i < course.section_types.length; i++) {
-                // this.addAllSectionEventSourcesByType(course.id, course.section_types[i]);
             }
         };
 
@@ -133,28 +117,16 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             }
         };
 
-        // newSections: updated enrollments
-        // {
-        // course_id: {
-        //  section_type: section_id,
-        //  section_type: section_id
-        // },
-        // course_id: {
-        // }
-        // }
         CalendarCtrl.prototype.updateEnrolledSections = function (newSections, oldSections) {
             if (newSections == oldSections) {
                 return;
             }
 
-            // return directly if a course has been added or removed
             if (Object.keys(newSections).length != Object.keys(oldSections).length) {
                 return;
             }
 
             for (var course_id in newSections) {
-                // hack to compare jsons, replies on the fact that the order of
-                // fields stay the same
                 if (JSON.stringify(newSections[course_id]) != JSON.stringify(oldSections[course_id])) {
                     var old = oldSections[course_id];
                     var curr = newSections[course_id];
@@ -207,7 +179,6 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             columnFormat: {
                 week: 'dddd'
             },
-            //slotDuration: '02:00',
             allDaySlot: false,
             minTime: '08:00',
             maxTime: '23:00',
@@ -224,3 +195,4 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
     
     return CalendarCtrl;
 });
+//# sourceMappingURL=CalendarCtrl.js.map

@@ -22,3 +22,4 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
     
     return niceDirectives;
 });
+//# sourceMappingURL=Directives.js.map

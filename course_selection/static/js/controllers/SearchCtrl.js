@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
@@ -15,8 +14,6 @@ define(["require", "exports"], function(require, exports) {
             this.courseManager.clearPreviewCourse();
         };
 
-        // if user is not enrolled in course yet, add course events to previewEvents
-        // else, don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {
             if (this.courseManager.isCourseEnrolled(course)) {
                 this.courseManager.clearPreviewCourse();
@@ -25,12 +22,10 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
-        // clear preview course on mouse leave
         SearchCtrl.prototype.onMouseLeave = function (course) {
             this.courseManager.clearPreviewCourse();
         };
 
-        // toggle enrollment of course
         SearchCtrl.prototype.onClick = function (course) {
             if (this.courseManager.isCourseEnrolled(course)) {
                 this.courseManager.unenrollCourse(course);
@@ -43,21 +38,16 @@ define(["require", "exports"], function(require, exports) {
             if (course.colors == null) {
                 return {};
             } else {
-                var backgroundColor;
-                var textColor;
-                if (this.courseManager.isCourseAllSectionsEnrolled(course)) {
-                    backgroundColor = course.colors.dark;
-                    textColor = 'white';
-                } else {
-                    backgroundColor = course.colors.light;
-                    textColor = course.colors.dark;
-                }
-
                 return {
-                    'background-color': backgroundColor,
-                    'color': textColor
+                    'background-color': course.colors.light,
+                    'color': course.colors.dark,
+                    'border-color': course.colors.dark
                 };
             }
+        };
+
+        SearchCtrl.prototype.isConfirmed = function (course) {
+            return this.courseManager.isCourseAllSectionsEnrolled(course);
         };
 
         SearchCtrl.prototype.getEasyPceLink = function (course) {
@@ -78,3 +68,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SearchCtrl;
 });
+//# sourceMappingURL=SearchCtrl.js.map

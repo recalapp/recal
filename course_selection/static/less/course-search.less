@@ -21,12 +21,24 @@
 }
 
 .enrolled-course-panel {
-    border: 0;
+    border-left-width: 0px;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+.unconfirmed {
+    background: url('../images/stripe.png') repeat silver;
+    opacity: 0.8;
+}
+
+.confirmed {
+    border-left-width: 4px;
 }
 
 .course-panel-title {
     text-align: left;
-    padding-left: 0;
+    padding-left: 2px;
     width: 90%;
 }
 
@@ -45,7 +57,7 @@
 #unenrolledCourses {
     min-height:0;
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 .course-panel-heading {
@@ -56,19 +68,20 @@
     position: relative;
     min-height: 0;
     max-height: 80vh;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 .enrolled-courses-container {
     position: relative;
     min-height: 5vh;
     max-height: 40vh;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 #enrolledCourses {
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .course-listings {

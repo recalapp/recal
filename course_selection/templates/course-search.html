@@ -51,6 +51,7 @@
              ng-hide="data.enrolledCourses.length == 0">
             <div id="enrolledCourses" class="panel-group">
                 <div class="panel panel-default course-panel enrolled-course-panel" 
+                     ng-class="{confirmed: searchCtrl.isConfirmed(course), unconfirmed: !searchCtrl.isConfirmed(course)}"
                      ng-repeat="course in data.enrolledCourses
                      | orderBy: 'primary_listing' track by course.id"  
                      ng-mouseover="searchCtrl.onMouseOver(course)" 

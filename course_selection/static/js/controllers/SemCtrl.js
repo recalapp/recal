@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 define(["require", "exports"], function(require, exports) {
     var SemCtrl = (function () {
@@ -35,10 +34,8 @@ define(["require", "exports"], function(require, exports) {
 
             var lastTermCode = this.semesters[this.semesters.length - 1].term_code;
             if (this.semesterIsFall(lastTermCode)) {
-                // fall to spring, from 2 to 4
                 return lastTermCode + 2;
             } else {
-                // spring to fall, from 4 to 2
                 return lastTermCode + 8;
             }
         };
@@ -86,3 +83,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SemCtrl;
 });
+//# sourceMappingURL=SemCtrl.js.map

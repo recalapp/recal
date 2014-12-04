@@ -7,9 +7,16 @@
 .fc-event {
   border-right-style: none;
   border-top-style: none;
-  border-left-width: 4px;
+  border-left-width: 0;
   border-bottom-style: none;
   border-radius: 0;
+  background: url('../images/stripe.png') repeat #c0c0c0;
+  opacity: 0.8;
+}
+.cal-confirmed {
+  background: none;
+  border-left-width: 4px;
+  opacity: 1;
 }
 .fc-event:hover {
   cursor: pointer;

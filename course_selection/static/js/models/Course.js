@@ -72,17 +72,6 @@ define(["require", "exports", '../models/Section'], function(require, exports, S
                 return section.id == section_id;
             })[0];
         };
-
-        Course.prototype.getStyle = function () {
-            if (this.colors == null) {
-                return {};
-            } else {
-                return {
-                    'background-color': this.colors.dark,
-                    'color': 'white'
-                };
-            }
-        };
         return Course;
     })();
 

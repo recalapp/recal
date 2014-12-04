@@ -1,4 +1,3 @@
-/// <reference path="../../../../nice/static/ts/typings/tsd.d.ts" />
 define(["require", "exports"], function(require, exports) {
     var CompositeEventSources = (function () {
         function CompositeEventSources() {
@@ -8,15 +7,12 @@ define(["require", "exports"], function(require, exports) {
             this.myEventSources = [];
             this.backupEventSources = {};
         }
-        // returns an array of IEventSource
         CompositeEventSources.prototype.getEventSources = function () {
             return this.myEventSources;
         };
 
         CompositeEventSources.prototype.addEventSources = function (eventSources) {
             if (this.courseIdToIndices[eventSources.id]) {
-                // this means we are updating a previewed eventSources
-                // should first remove it
                 this.removeEventSources(eventSources.id, true);
             }
 
@@ -35,13 +31,10 @@ define(["require", "exports"], function(require, exports) {
         CompositeEventSources.prototype.removeEventSources = function (courseId, isPreview) {
             var indices = this.courseIdToIndices[courseId];
 
-            // only remove if isPreview matches
             if (!indices || indices.isPreview != isPreview) {
                 return;
             }
 
-            // if this course is previewed, then we know it is at
-            // the end of myEventSources, we can safely splice them
             if (isPreview) {
                 this.myEventSources.splice(indices.start, indices.end - indices.start + 1);
             } else {
@@ -56,16 +49,13 @@ define(["require", "exports"], function(require, exports) {
         CompositeEventSources.prototype.enrollInCourseSection = function (courseId, section_type, sectionId) {
             this.removeAllCourseSection(courseId, section_type);
 
-            // now we add the section back
             var eventSources = this.backupEventSources[courseId];
             var courseIndices = this.courseIdToIndices[courseId];
             for (var i = 0; i < eventSources.length; i++) {
                 if (eventSources[i].id == sectionId) {
                     var newEventSources = angular.copy(eventSources[i]);
-                    newEventSources.textColor = 'white';
-                    newEventSources.backgroundColor = newEventSources.borderColor;
 
-                    //newEventSources.className = null;
+                    newEventSources.className = 'cal-confirmed';
                     this.myEventSources.splice(courseIndices.start + i, 1, newEventSources);
                     return;
                 }
@@ -92,7 +82,6 @@ define(["require", "exports"], function(require, exports) {
             sectionEventSource.textColor = 'white';
         };
 
-        // add all sections of type section_type back
         CompositeEventSources.prototype.previewAllCourseSection = function (courseId, section_type) {
             this.removeAllCourseSection(courseId, section_type);
 
@@ -100,7 +89,6 @@ define(["require", "exports"], function(require, exports) {
             var courseIndices = this.courseIdToIndices[courseId];
             for (var i = 0; i < eventSources.length; i++) {
                 if (eventSources[i].section_type == section_type) {
-                    // add this eventSource back
                     var newEventSources = angular.copy(eventSources[i]);
                     this.myEventSources[courseIndices.start + i] = newEventSources;
                 }
@@ -113,3 +101,4 @@ define(["require", "exports"], function(require, exports) {
     
     return CompositeEventSources;
 });
+//# sourceMappingURL=CompositeEventSources.js.map

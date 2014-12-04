@@ -14,9 +14,17 @@
 .fc-event {
     border-right-style: none;
     border-top-style: none;
-    border-left-width: @event-border-width;
+    border-left-width: 0;
     border-bottom-style: none;
     border-radius: 0;
+    background: url('../images/stripe.png') repeat silver;
+    opacity: 0.8;
+}
+
+.cal-confirmed {
+    background: none;
+    border-left-width: @event-border-width;
+    opacity: 1;
 }
 
 .fc-event:hover {

@@ -95,17 +95,6 @@ class Course implements ICourse {
             return section.id == section_id;
         })[0];
     }
-
-    public getStyle(): any {
-        if (this.colors == null) {
-            return {};
-        } else {
-            return {
-                'background-color': this.colors.dark,
-                'color': 'white'
-            };
-        }
-    }
 }
 
 export = Course;

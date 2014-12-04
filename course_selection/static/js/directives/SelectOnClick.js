@@ -21,3 +21,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SelectOnClick;
 });
+//# sourceMappingURL=SelectOnClick.js.map

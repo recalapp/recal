@@ -13,7 +13,7 @@ define(["require", "exports"], function(require, exports) {
             };
         }
         NewScheduleModalCtrl.prototype.ok = function () {
-            this.$modalInstance.close();
+            this.$modalInstance.close(this.$scope.newName);
         };
 
         NewScheduleModalCtrl.prototype.cancel = function () {

@@ -28,7 +28,7 @@ class ScheduleCtrl {
         this.$scope.canAddNewSchedules = this.semester.current;
 
         this.schedules = [];
-        this.restoreUserSchedules();
+        // this.restoreUserSchedules();
         this.$scope.schedules = this.schedules;
     }
 
@@ -61,12 +61,16 @@ class ScheduleCtrl {
 
     public confirmRemoveSchedule(index: number) {
         var message: string = "You want to delete the schedule: " + this.schedules[index].name;
-        var modalHtml = '<div class="modal-body">' + message + '</div>';
-        modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
 
         var modalInstance = this.$modal.open({
-            template: modalHtml,
-            controller: RemoveScheduleModalCtrl
+            templateUrl: '/static/templates/removeScheduleModal.html',
+            controller: RemoveScheduleModalCtrl,
+            windowClass: 'center-modal',
+            resolve: {
+                message: () => {
+                    return message;
+                }
+            }
         });
 
         modalInstance.result.then(() => {
@@ -74,14 +78,17 @@ class ScheduleCtrl {
         });
     }
 
-    public askForNewScheduleName() {
+    public askForNewScheduleName(prevIdx: number) {
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/newScheduleModal.html',
-            controller: NewScheduleModalCtrl
+            controller: NewScheduleModalCtrl,
+            windowClass: 'center-modal'
         });
 
         modalInstance.result.then((name) => {
             this.addNewSchedule(name);
+        }, () => {
+            this.schedules[prevIdx].active = true;
         });
     }
  
