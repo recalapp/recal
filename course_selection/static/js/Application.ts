@@ -17,6 +17,8 @@ nice.app.config((localStorageServiceProvider) => {
   localStorageServiceProvider.setPrefix('nice');
 }).config((cfpLoadingBarProvider) => {
     cfpLoadingBarProvider.latencyThreshold = 500;
+}).config(($resourceProvider) => {
+    $resourceProvider.defaults.stripTrailingSlashes = false;
 });
 
 export = nice;

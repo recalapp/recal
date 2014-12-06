@@ -22,13 +22,14 @@ class CourseManager {
 
     constructor(
             private courseResource,
+            private scheduleResource,
             private localStorageService,
             private colorManager: IColorManager,
             private termCode: number
             ) {
         this.data.previewCourse = null;
         this.data.enrolledCourses = [];
-        this.data.enrolledSections = {};
+        this.data.enrolledSections = new this.scheduleResource();
         this.loadCourses();
     }
 
@@ -186,6 +187,9 @@ class CourseManager {
 
     public enrollSection(section: ISection): void {
         this.data.enrolledSections[section.course_id][section.section_type] = section.id;
+
+        // try posting data here
+        this.data.enrolledSections.$save();
     }
 
     public isCourseAllSectionsEnrolled(course: ICourse): boolean {

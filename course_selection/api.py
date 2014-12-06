@@ -1,7 +1,9 @@
 from django.conf.urls import patterns, include, url
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.utils import trailing_slash
 from tastypie.cache import SimpleCache
+from tastypie.authorization import Authorization
 from tastypie import fields
 from course_selection.models import *
 
@@ -105,6 +107,13 @@ class ScheduleResource(ModelResource):
         excludes = []
         allowed_methods = ['get', 'post']
         cache = SimpleCache(timeout=10)
+        authorization = Authorization()
+
+    def obj_create(self, bundle, **kwargs):
+        return super(ScheduleResource, self).obj_create(bundle, user=bundle.request.user)
+
+    def apply_authorization_limits(self, request, object_list):
+        return object_list.filter(user=request.user)
 
 class UserResource(ModelResource):
     class Meta:
@@ -120,4 +129,18 @@ class UserResource(ModelResource):
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/(?P<netid>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/schedule%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_schedule'), name="api_get_schedule"),
         ]
+
+    def get_schedule(self, request, **kwargs):
+        try:
+            bundle = self.build_bundle(data={'pk': kwargs['pk']}, request=request)
+            obj = self.cached_obj_get(bundle=bundle, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI.")
+
+        schedule_resource = ScheduleResource()
+        return schedule_resource.get_list(request, user=4991)
+

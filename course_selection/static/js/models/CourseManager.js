@@ -1,7 +1,8 @@
 define(["require", "exports", './Course'], function(require, exports, Course) {
     var CourseManager = (function () {
-        function CourseManager(courseResource, localStorageService, colorManager, termCode) {
+        function CourseManager(courseResource, scheduleResource, localStorageService, colorManager, termCode) {
             this.courseResource = courseResource;
+            this.scheduleResource = scheduleResource;
             this.localStorageService = localStorageService;
             this.colorManager = colorManager;
             this.termCode = termCode;
@@ -18,7 +19,7 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             };
             this.data.previewCourse = null;
             this.data.enrolledCourses = [];
-            this.data.enrolledSections = {};
+            this.data.enrolledSections = new this.scheduleResource();
             this.loadCourses();
         }
         ///////////////////////////////////////////////////////////
@@ -148,6 +149,9 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
 
         CourseManager.prototype.enrollSection = function (section) {
             this.data.enrolledSections[section.course_id][section.section_type] = section.id;
+
+            // try posting data here
+            this.data.enrolledSections.$save();
         };
 
         CourseManager.prototype.isCourseAllSectionsEnrolled = function (course) {

@@ -7,7 +7,7 @@ define(["require", "exports"], function(require, exports) {
         }
         UserService.prototype.getUser = function (netid, dest) {
             var _this = this;
-            var user = this.userResource.get({ 'netid': netid });
+            var user = this.userResource.get(netid);
             user.$promise.then(function (data) {
                 dest.user = _this.onLoaded(data);
                 _this.user = _this.onLoaded(data);
@@ -20,6 +20,8 @@ define(["require", "exports"], function(require, exports) {
             return data['objects'][0];
         };
 
+        // use resource to get the schedule entry
+        // then $save
         UserService.prototype.saveSchedule = function (scheduleObj) {
             var user = new this.userResource(this.user.id);
             console.log(JSON.stringify(user));
@@ -36,4 +38,3 @@ define(["require", "exports"], function(require, exports) {
     
     return UserService;
 });
-//# sourceMappingURL=UserService.js.map

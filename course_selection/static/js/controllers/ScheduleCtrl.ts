@@ -12,6 +12,7 @@ class ScheduleCtrl {
         '$modal',
         'ColorResource',
         'CourseResource',
+        'ScheduleResource',
         'localStorageService'
         ];
 
@@ -22,6 +23,7 @@ class ScheduleCtrl {
             private $modal,
             private colorResource,
             private courseResource,
+            private scheduleResource,
             private localStorageService) {
         this.$scope.vm = this;
         this.semester = this.$scope.$parent.semester;
@@ -39,6 +41,7 @@ class ScheduleCtrl {
                 var colorManager = new ColorManager(this.colorResource);
                 var courseManager = new CourseManager(
                         this.courseResource, 
+                        this.scheduleResource,
                         this.localStorageService, 
                         colorManager,
                         this.semester.term_code);
@@ -99,6 +102,7 @@ class ScheduleCtrl {
         var colorManager = new ColorManager(this.colorResource);
         var courseManager = new CourseManager(
                 this.courseResource, 
+                this.scheduleResource,
                 this.localStorageService, 
                 colorManager,
                 this.semester.term_code);

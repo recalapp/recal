@@ -10,7 +10,7 @@ class UserService {
     }
 
     public getUser(netid: string, dest): any {
-        var user = this.userResource.get({'netid': netid});
+        var user = this.userResource.get(netid);
         user.$promise.then((data) => {
                 dest.user = this.onLoaded(data);
                 this.user = this.onLoaded(data);

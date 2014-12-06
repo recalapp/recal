@@ -36,7 +36,7 @@ class ResourceBuilder {
     }
 
     public getScheduleResource() {
-        return this.$resource('/course_selection/api/v1/schedule/',
+        return this.$resource('/course_selection/api/v1/schedule/:id',
                 {},
                 {
                     query: {
