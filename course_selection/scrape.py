@@ -221,10 +221,12 @@ def get_courses_for_term(term_code):
             section_object, created = Section.objects.get_or_create(
                 course = course_object,
                 name = section_name,
-                section_type = section_type,
-                section_enrollment = section_enrollment,
-                section_capacity = section_capacity
             )
+
+            section_object.section_type = section_type
+            section_object.section_enrollment = section_enrollment
+            section_object.section_capacity = section_capacity
+            section_object.save()
     
             if created:
                 new_section_count[0] += 1
