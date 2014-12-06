@@ -106,6 +106,8 @@ class Section(models.Model):
     """ if true, then everyone in the course is automatically enrolled in this section """
     isDefault = models.BooleanField(default=False) 
     section_type = models.CharField(max_length=3, choices=TYPE_CHOICES)
+    section_enrollment = models.IntegerField(default=0)
+    section_capacity = models.IntegerField(default=999)
 
     def __unicode__(self):
         return self.course.primary_listing() + ' - ' + self.name

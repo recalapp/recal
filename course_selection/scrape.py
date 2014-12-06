@@ -201,6 +201,8 @@ def get_courses_for_term(term_code):
         for section in classes:
             section_name = section.find('section').text
             section_type = section.find('type_name').text
+            section_capacity = section.find('capacity').text
+            section_enrollment = section.find('enrollment').text
     
             # check if this section has a schedule attached to it
             try:
@@ -219,7 +221,9 @@ def get_courses_for_term(term_code):
             section_object, created = Section.objects.get_or_create(
                 course = course_object,
                 name = section_name,
-                section_type = section_type
+                section_type = section_type,
+                section_enrollment = section_enrollment,
+                section_capacity = section_capacity
             )
     
             if created:

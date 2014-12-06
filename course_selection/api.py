@@ -1,9 +1,11 @@
 from django.conf.urls import patterns, include, url
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.utils import trailing_slash
 from tastypie.cache import SimpleCache
 from tastypie.authorization import Authorization
+from tastypie.http import HttpGone
 from tastypie import fields
 from course_selection.models import *
 
@@ -34,7 +36,21 @@ class SemesterResource(ModelResource):
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
+            url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
         ]
+
+    def get_course(self, request, **kwargs):
+        try:
+            bundle = self.build_bundle(data={'term_code': kwargs['term_code']}, request=request)
+            obj = self.cached_obj_get(bundle=bundle, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI.")
+
+        course_resource = CourseResource()
+        return course_resource.get_list(request, semester=obj.pk)
+
 
 class CourseListingResource(ModelResource):
     course = fields.ForeignKey('course_selection.api.CourseResource', 'course')
