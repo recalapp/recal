@@ -18,6 +18,7 @@ v1_api.register(ScheduleResource())
 #v1_api.register(SectionResource())
 v1_api.register(SemesterResource())
 v1_api.register(UserResource())
+v1_api.register(ProfessorResource())
 
 urlpatterns = patterns(
     "",

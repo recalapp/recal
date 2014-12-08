@@ -142,16 +142,17 @@ class Schedule(models.Model):
 
     # fields
     available_colors = JSONField()
+    enrollments = JSONField(null=True)
     title = models.CharField(max_length=20, default="schedule")
 
-class Enrollment(models.Model):
-    # each course enrollment has
-    # a course, a color, and a few sections
-    # and belongs to a schedule
-    course = models.ForeignKey(Course, related_name="enrollment")
-    sections = models.ManyToManyField(Section)
-    color = models.ForeignKey(Color_Palette)
-    schedule = models.ForeignKey(Schedule)
+#class Enrollment(models.Model):
+#    # each course enrollment has
+#    # a course, a color, and a few sections
+#    # and belongs to a schedule
+#    course = models.ForeignKey(Course, related_name="enrollment")
+#    sections = models.ManyToManyField(Section)
+#    color = models.ForeignKey(Color_Palette)
+#    schedule = models.ForeignKey(Schedule)
 
 class Nice_User(AbstractBaseUser):
     netid = models.CharField(max_length=20, unique=True)

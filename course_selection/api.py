@@ -15,6 +15,7 @@ class SemesterResource(ModelResource):
         resource_name = 'semester'
         excludes = ['']
         allowed_methods = ['get']
+        authorization = Authorization()
         filtering = {
             'term_code': ALL
         }
@@ -35,8 +36,8 @@ class SemesterResource(ModelResource):
 
     def prepend_urls(self):
         return [
-            url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
-            url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
+            #url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
+            #url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
         ]
 
     def get_course(self, request, **kwargs):
@@ -63,7 +64,7 @@ class CourseListingResource(ModelResource):
         cache = SimpleCache(timeout=10)
 
 class CourseResource(ModelResource):
-    semester = fields.ForeignKey(SemesterResource, 'semester', full=True)
+    semester = fields.ForeignKey(SemesterResource, 'semester')
     course_listings = fields.ToManyField(CourseListingResource, 'course_listings', null=True, full=True)
     sections = fields.ToManyField('course_selection.api.SectionResource', 'sections', full=True)
 
@@ -108,14 +109,16 @@ class ColorPaletteResource(ModelResource):
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
 
-class EnrollmentResource(ModelResource):
-    class Meta:
-        queryset = Enrollment.objects.all()
-        resource_name = 'enrollment'
-        allowed_methods = []
+# class EnrollmentResource(ModelResource):
+#     class Meta:
+#         queryset = Enrollment.objects.all()
+#         resource_name = 'enrollment'
+#         allowed_methods = []
 
 class ScheduleResource(ModelResource):
-    enrollments = fields.ToManyField(EnrollmentResource, 'enrollments', full=True)
+    #enrollments = fields.ToManyField(EnrollmentResource, 'enrollments', full=True, null=True)
+    semester = fields.ForeignKey(SemesterResource, 'semester')
+    user = fields.ForeignKey('course_selection.api.UserResource', 'user')
 
     class Meta:
         queryset = Schedule.objects.all()
@@ -124,12 +127,17 @@ class ScheduleResource(ModelResource):
         allowed_methods = ['get', 'post']
         cache = SimpleCache(timeout=10)
         authorization = Authorization()
+        filtering = {
+            'user': ALL_WITH_RELATIONS
+        }
 
-    def obj_create(self, bundle, **kwargs):
-        return super(ScheduleResource, self).obj_create(bundle, user=bundle.request.user)
+    # def obj_create(self, bundle, **kwargs):
+    #     import pdb; pdb.set_trace()
+    #     return super(ScheduleResource, self).obj_create(bundle, user=bundle.request.user)
 
-    def apply_authorization_limits(self, request, object_list):
-        return object_list.filter(user=request.user)
+    # def apply_authorization_limits(self, request, object_list):
+    #     import pdb; pdb.set_trace()
+    #     return object_list.filter(user=request.user)
 
 class UserResource(ModelResource):
     class Meta:
@@ -138,6 +146,7 @@ class UserResource(ModelResource):
         excludes = ['password']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
+        authorization = Authorization()
         filtering = {
             'netid': ALL_WITH_RELATIONS
         }
@@ -160,3 +169,10 @@ class UserResource(ModelResource):
         schedule_resource = ScheduleResource()
         return schedule_resource.get_list(request, user=4991)
 
+class ProfessorResource(ModelResource):
+    class Meta:
+        queryset = Professor.objects.all()
+        resource_name = 'professor'
+        excludes = []
+        allowed_methods = ['get', 'post', 'put']
+        authorization = Authorization()

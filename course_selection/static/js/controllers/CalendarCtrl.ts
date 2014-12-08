@@ -109,10 +109,6 @@ class CalendarCtrl {
         this.compositeEventSources.addEventSources(courseEventSources);
     }
 
-    // TODO: fix adding colors after re-init in colorManager
-    // what if user adds 8 classes, colorManager re-enables all colors
-    // then user removes a course. Then we should again only allow that removed
-    // color
     private removeCourse(course: ICourse, isPreview: boolean) {
         this.compositeEventSources.removeEventSources(course.id, isPreview);
     }

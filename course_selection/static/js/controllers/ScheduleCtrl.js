@@ -15,7 +15,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
             this.schedules = [];
 
-            // this.restoreUserSchedules();
             this.$scope.schedules = this.schedules;
         }
         ScheduleCtrl.prototype.restoreUserSchedules = function () {
@@ -114,3 +113,4 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
     
     return ScheduleCtrl;
 });
+//# sourceMappingURL=ScheduleCtrl.js.map
