@@ -24,7 +24,6 @@
                       | orderBy: 'primary_listing' track by course.id"  
                       ng-mouseover="searchCtrl.onMouseOver(course)" 
                       ng-mouseleave="searchCtrl.onMouseLeave(course)" 
-                      ng-style="searchCtrl.setColor(course)"
                       ng-click="searchCtrl.onClick(course)">
                      <div>
                          <div class="course-panel-title">
@@ -54,8 +53,6 @@
                      ng-class="{confirmed: searchCtrl.isConfirmed(course), unconfirmed: !searchCtrl.isConfirmed(course)}"
                      ng-repeat="course in data.enrolledCourses
                      | orderBy: 'primary_listing' track by course.id"  
-                     ng-mouseover="searchCtrl.onMouseOver(course)" 
-                     ng-mouseleave="searchCtrl.onMouseLeave(course)" 
                      ng-style="searchCtrl.setColor(course)"
                      ng-click="searchCtrl.onClick(course)">
                     <div>

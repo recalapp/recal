@@ -50,7 +50,7 @@
 .enrolled-courses-container {
   position: relative;
   min-height: 5vh;
-  max-height: 40vh;
+  max-height: 80vh;
   overflow-y: auto;
 }
 #enrolledCourses {

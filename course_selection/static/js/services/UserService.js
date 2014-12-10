@@ -2,18 +2,11 @@ define(["require", "exports"], function(require, exports) {
     var UserService = (function () {
         function UserService($resource) {
             this.$resource = $resource;
-            this.userResource = this.$resource('/course_selection/api/v1/user/:userId', { userId: '@id' }, {});
-            this.scheduleResource = this.$resource('/course_selection/api/v1/schedule', {}, {});
+            this.userResource = this.$resource('/course_selection/api/v1/user/:netid', {}, {});
+            this.scheduleResource = this.$resource('/course_selection/api/v1/schedule/:scheduleid', {}, {});
         }
-        UserService.prototype.getUser = function (netid, dest) {
-            var _this = this;
-            var user = this.userResource.get(netid);
-            user.$promise.then(function (data) {
-                dest.user = _this.onLoaded(data);
-                _this.user = _this.onLoaded(data);
-                console.log('dest.user is ' + JSON.stringify(dest.user));
-                _this.saveSchedule(null);
-            });
+        UserService.prototype.getUser = function (netid) {
+            return this.userResource.get({ 'netid': netid });
         };
 
         UserService.prototype.onLoaded = function (data) {
@@ -22,7 +15,7 @@ define(["require", "exports"], function(require, exports) {
 
         // use resource to get the schedule entry
         // then $save
-        UserService.prototype.saveSchedule = function (scheduleObj) {
+        UserService.prototype.getSchedule = function (scheduleObj) {
             var user = new this.userResource(this.user.id);
             console.log(JSON.stringify(user));
 

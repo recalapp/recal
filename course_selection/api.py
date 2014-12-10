@@ -128,7 +128,8 @@ class ScheduleResource(ModelResource):
         cache = SimpleCache(timeout=10)
         authorization = Authorization()
         filtering = {
-            'user': ALL_WITH_RELATIONS
+            'user': ALL_WITH_RELATIONS,
+            'semester': ALL_WITH_RELATIONS
         }
 
     # def obj_create(self, bundle, **kwargs):

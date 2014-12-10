@@ -7,13 +7,13 @@ define(["require", "exports", './UserService'], function(require, exports, UserS
         }
         // TODO: figure out how to use typescript to properly do this
         ResourceBuilder.prototype.getCourseResource = function () {
-            var profResource = this.$resource('/course_selection/api/v1/professor/');
-            profResource.save({ 'name1': 'test' });
-
             return this.$resource('/course_selection/api/v1/course/', {}, {
                 query: {
                     method: 'GET',
-                    isArray: false
+                    isArray: false,
+                    transformResponse: function (data, header) {
+                        return data.objects;
+                    }
                 }
             });
         };

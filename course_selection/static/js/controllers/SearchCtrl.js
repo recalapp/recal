@@ -26,6 +26,9 @@ define(["require", "exports"], function(require, exports) {
             this.courseManager.clearPreviewCourse();
         };
 
+        SearchCtrl.prototype.enrolledOnMouseOver = function (course) {
+        };
+
         SearchCtrl.prototype.onClick = function (course) {
             if (this.courseManager.isCourseEnrolled(course)) {
                 this.courseManager.unenrollCourse(course);
@@ -35,8 +38,10 @@ define(["require", "exports"], function(require, exports) {
         };
 
         SearchCtrl.prototype.setColor = function (course) {
-            if (course.colors == null) {
-                return {};
+            if (!course.colors) {
+                return {
+                    'color': 'blue'
+                };
             } else {
                 return {
                     'background-color': course.colors.light,

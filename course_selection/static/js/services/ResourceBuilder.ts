@@ -13,15 +13,15 @@ class ResourceBuilder {
 
     // TODO: figure out how to use typescript to properly do this
     public getCourseResource(): ICourseResource {
-        var profResource = <any>this.$resource('/course_selection/api/v1/professor/');
-        profResource.save({'name1': 'test'});
-
         return <any>this.$resource('/course_selection/api/v1/course/', 
                 {}, 
                 { 
                     query: {
                         method: 'GET', 
-                        isArray: false
+                        isArray: false,
+                        transformResponse: (data, header) => {
+                            return data.objects;
+                        }
                     } 
                 }
                 );

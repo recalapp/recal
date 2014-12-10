@@ -20,5 +20,5 @@ import json
 @login_required
 def index(request):
     return render(request, 'index.html', {
-        'username': unicode(request.user.profile)    
+        'username': unicode(request.user.username)    
     })

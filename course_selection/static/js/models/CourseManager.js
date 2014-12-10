@@ -19,7 +19,7 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             };
             this.data.previewCourse = null;
             this.data.enrolledCourses = [];
-            this.data.enrolledSections = new this.scheduleResource();
+            this.data.enrolledSections = {};
             this.loadCourses();
         }
         ///////////////////////////////////////////////////////////
@@ -37,8 +37,9 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             }
         };
 
-        CourseManager.prototype.onLoaded = function (data) {
-            this.data.courses = data['objects'].map(function (course) {
+        // TODO: verify that the transformresponse function works as intended
+        CourseManager.prototype.onLoaded = function (courses) {
+            this.data.courses = courses.map(function (course) {
                 return new Course(course.title, course.description, course.course_listings, course.id, course.sections, course.semester);
             });
 
@@ -149,9 +150,8 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
 
         CourseManager.prototype.enrollSection = function (section) {
             this.data.enrolledSections[section.course_id][section.section_type] = section.id;
-
             // try posting data here
-            this.data.enrolledSections.$save();
+            //this.data.enrolledSections.$save();
         };
 
         CourseManager.prototype.isCourseAllSectionsEnrolled = function (course) {

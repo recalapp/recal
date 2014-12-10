@@ -29,7 +29,7 @@ class CourseManager {
             ) {
         this.data.previewCourse = null;
         this.data.enrolledCourses = [];
-        this.data.enrolledSections = new this.scheduleResource();
+        this.data.enrolledSections = {};
         this.loadCourses();
     }
 
@@ -50,8 +50,9 @@ class CourseManager {
         }
     }
 
-    private onLoaded(data) {
-        this.data.courses = data['objects'].map((course) => {
+    // TODO: verify that the transformresponse function works as intended
+    private onLoaded(courses) {
+        this.data.courses = courses.map((course) => {
             return new Course(
                     course.title,
                     course.description,
@@ -189,7 +190,7 @@ class CourseManager {
         this.data.enrolledSections[section.course_id][section.section_type] = section.id;
 
         // try posting data here
-        this.data.enrolledSections.$save();
+        //this.data.enrolledSections.$save();
     }
 
     public isCourseAllSectionsEnrolled(course: ICourse): boolean {

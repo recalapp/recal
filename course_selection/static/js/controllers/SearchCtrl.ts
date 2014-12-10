@@ -53,6 +53,9 @@ class SearchCtrl {
         this.courseManager.clearPreviewCourse();
     }
 
+    public enrolledOnMouseOver(course) {
+    }
+
     // toggle enrollment of course
     public onClick(course) {
         if (this.courseManager.isCourseEnrolled(course)) {
@@ -62,10 +65,12 @@ class SearchCtrl {
         }
     }
 
-    public setColor(course: ICourse): any 
+    public setColor(course): any 
     {
-        if (course.colors == null) {
-            return {};
+        if (!course.colors) {
+            return {
+                'color': 'blue'
+            };
         } else {
             return {
                 'background-color': course.colors.light,

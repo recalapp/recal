@@ -4,7 +4,11 @@
 {% block title %}Your Classes {% endblock %}
 
 {% block main_content %}
-<div id="container" ng-controller='MainCtrl as mainCtrl'>
+<script type="text/javascript"> 
+   var username = "{{ username }}"
+</script>
+
+<div id="container" ng-controller='MainCtrl as mainCtrl'">
     {% include 'header.html' %}
     {% include 'semester-tabs.html' %}
 </div>
