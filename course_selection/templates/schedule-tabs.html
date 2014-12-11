@@ -5,7 +5,7 @@
     <tab ng-repeat = "schedule in schedules"
          active = schedule.active
          class="schedule-tab-heading"
-         ng-click="schedules.activeTab = $index"
+         select="scheduleCtrl.setSelectedSchedule($index)"
     >
     <tab-heading class="ng-cloak"> 
         {{ schedule.name}} 
@@ -19,7 +19,7 @@
              {% include 'calendar.html' %}
          </div>
     </tab>
-    <tab select="scheduleCtrl.askForNewScheduleName(schedules.activeTab)"
+    <tab select="scheduleCtrl.askForNewScheduleName(selectedSchedule)"
          disabled = !canAddNewSchedules
          ng-hide = !canAddNewSchedules
          class="schedule-tab-heading"

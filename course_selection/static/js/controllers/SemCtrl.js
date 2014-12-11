@@ -1,3 +1,4 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 define(["require", "exports"], function(require, exports) {
     var SemCtrl = (function () {
@@ -6,17 +7,17 @@ define(["require", "exports"], function(require, exports) {
             this.localStorageService = localStorageService;
             this.$scope.vm = this;
             this.semesters = [];
-            this.restoreUserSemesters();
+
+            // this.restoreUserSemesters();
             this.$scope.semesters = this.semesters;
             this.$scope.canAdd = this.canAdd();
         }
-        SemCtrl.prototype.restoreUserSemesters = function () {
-            var prev = this.localStorageService.get('nice-semesters');
-            if (prev != null) {
-                this.semesters = prev;
-            }
-        };
-
+        // private restoreUserSemesters() {
+        //     var prev = this.localStorageService.get('nice-semesters');
+        //     if (prev != null) {
+        //         this.semesters = prev;
+        //     }
+        // }
         SemCtrl.prototype.setAllInactive = function () {
             angular.forEach(this.semesters, function (semester) {
                 semester.active = false;
@@ -29,13 +30,15 @@ define(["require", "exports"], function(require, exports) {
 
         SemCtrl.prototype.getNewSemesterTermCode = function () {
             if (this.semesters.length == 0) {
-                return 1152;
+                return SemCtrl.CURRENT_SEMESTER_TERM_CODE;
             }
 
             var lastTermCode = this.semesters[this.semesters.length - 1].term_code;
             if (this.semesterIsFall(lastTermCode)) {
+                // fall to spring, from 2 to 4
                 return lastTermCode + 2;
             } else {
+                // spring to fall, from 4 to 12
                 return lastTermCode + 8;
             }
         };
@@ -48,19 +51,20 @@ define(["require", "exports"], function(require, exports) {
                 id: id,
                 title: title,
                 active: true,
-                current: term_code >= 1152 ? true : false,
+                current: term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE,
                 term_code: term_code
             });
 
-            this.localStorageService.set('nice-semesters', this.semesters);
+            // this.localStorageService.set('nice-semesters', this.semesters);
             this.$scope.canAdd = this.canAdd();
         };
 
         SemCtrl.prototype.getTitle = function (termCode) {
+            // take mid 2 numbers: _XX_
             var endYear = Math.floor((termCode % 1000) / 10);
             var startYear = endYear - 1;
             var semester = this.semesterIsFall(termCode) ? "Fall" : "Spring";
-            return "" + startYear + endYear + semester;
+            return "" + startYear + "-" + endYear + " " + semester;
         };
 
         SemCtrl.prototype.addSemester = function () {
@@ -76,6 +80,7 @@ define(["require", "exports"], function(require, exports) {
             'localStorageService'
         ];
 
+        SemCtrl.CURRENT_SEMESTER_TERM_CODE = 1152;
         SemCtrl.LAST_AVAILABLE_TERM_CODE = 1154;
         return SemCtrl;
     })();
@@ -83,4 +88,3 @@ define(["require", "exports"], function(require, exports) {
     
     return SemCtrl;
 });
-//# sourceMappingURL=SemCtrl.js.map

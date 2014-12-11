@@ -1,10 +1,13 @@
 class NewScheduleModalCtrl {
     public static $inject = [
         '$scope',
-        '$modalInstance'
+        '$modalInstance',
+        'canDismiss'
     ];
 
-    constructor(private $scope, private $modalInstance) {
+    constructor(private $scope, private $modalInstance, private canDismiss) {
+        this.$scope.canDismiss = this.canDismiss;
+
         this.$scope.ok = () => {
             this.ok();
         };

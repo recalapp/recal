@@ -15,7 +15,10 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
             this.schedules = [];
 
+            // this.restoreUserSchedules();
             this.$scope.schedules = this.schedules;
+
+            this.$scope.selectedSchedule = -1;
         }
         ScheduleCtrl.prototype.restoreUserSchedules = function () {
             var _this = this;
@@ -64,9 +67,18 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
         ScheduleCtrl.prototype.askForNewScheduleName = function (prevIdx) {
             var _this = this;
+            // the modal is "dismissable" if we have an open schedule
+            // already, which means prevIdx != undefined
+            var canDismiss = prevIdx != -1;
             var modalInstance = this.$modal.open({
                 templateUrl: '/static/templates/newScheduleModal.html',
                 controller: NewScheduleModalCtrl,
+                keyboard: canDismiss,
+                resolve: {
+                    canDismiss: function () {
+                        return canDismiss;
+                    }
+                },
                 backdropClass: 'modal-backdrop',
                 windowClass: 'center-modal'
             });
@@ -78,8 +90,12 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             });
         };
 
+        ScheduleCtrl.prototype.test = function (index) {
+            this.$scope.selectedSchedule = index;
+        };
+
         ScheduleCtrl.prototype.addNewSchedule = function (scheduleName) {
-            var id = this.schedules.length + 1;
+            var id = this.schedules.length;
             var colorManager = new ColorManager(this.colorResource);
             var courseManager = new CourseManager(this.courseResource, this.scheduleResource, this.localStorageService, colorManager, this.semester.term_code);
             this.schedules.push({
@@ -89,6 +105,8 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                 courseManager: courseManager,
                 colorManager: colorManager
             });
+
+            this.$scope.selectedSchedule = id;
         };
 
         ScheduleCtrl.prototype.removeSchedule = function (index) {
@@ -113,4 +131,3 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
     
     return ScheduleCtrl;
 });
-//# sourceMappingURL=ScheduleCtrl.js.map

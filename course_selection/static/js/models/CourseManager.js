@@ -25,13 +25,17 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
         ///////////////////////////////////////////////////////////
         // Initialization
         //////////////////////////////////////////////////////////
+        // TODO: figure out how to make caching behave nicely
+        // in particular, how often should i clear cache?
+        // how often should i clear local storage?
+        // do i even need local storage?
         CourseManager.prototype.loadCourses = function () {
             var _this = this;
             var temp = this.localStorageService.get('courses-' + this.termCode);
             if (temp != null && Array.isArray(temp)) {
                 this.data.courses = temp;
             } else {
-                this.courseResource.get({ semester__term_code: this.termCode }, function (data) {
+                this.courseResource.getBySemester({ semester__term_code: this.termCode }).$promise.then(function (data) {
                     _this.onLoaded(data);
                 });
             }

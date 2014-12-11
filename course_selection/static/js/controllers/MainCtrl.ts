@@ -5,7 +5,7 @@ declare var username: string;
 class MainCtrl {
     public static $inject = [
         '$scope',
-        '$resource',
+        'ScheduleResource',
         'CourseResource',
         'UserService',
     ];
@@ -15,7 +15,7 @@ class MainCtrl {
 
     constructor(
             private $scope,
-            private $resource,
+            private scheduleResource,
             private courseResource,
             private userService
             )
@@ -24,6 +24,7 @@ class MainCtrl {
     }
 
     private init() {
+        this.$scope.vm = this;
         this.username = username;
         this.data = {
             user: null,
@@ -35,10 +36,10 @@ class MainCtrl {
 
     public loadUserData() {
         this.data.user = this.userService.getUser(this.username);
-        var scheduleResource = this.$resource('/course_selection/api/v1/schedule/:id', {}, {});
-        scheduleResource.get({user__netid: this.username}).$promise.then(
+        this.scheduleResource.getByUser({user__netid: this.username}).$promise.then(
                 (schedules) => {
-                    console.log(JSON.stringify(schedules.objects));
+                    this.data.schedules = schedules;
+                    console.log(JSON.stringify(schedules));
                 });
     }
 

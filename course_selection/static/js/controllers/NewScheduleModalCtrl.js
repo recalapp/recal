@@ -1,9 +1,12 @@
 define(["require", "exports"], function(require, exports) {
     var NewScheduleModalCtrl = (function () {
-        function NewScheduleModalCtrl($scope, $modalInstance) {
+        function NewScheduleModalCtrl($scope, $modalInstance, canDismiss) {
             var _this = this;
             this.$scope = $scope;
             this.$modalInstance = $modalInstance;
+            this.canDismiss = canDismiss;
+            this.$scope.canDismiss = this.canDismiss;
+
             this.$scope.ok = function () {
                 _this.ok();
             };
@@ -21,7 +24,8 @@ define(["require", "exports"], function(require, exports) {
         };
         NewScheduleModalCtrl.$inject = [
             '$scope',
-            '$modalInstance'
+            '$modalInstance',
+            'canDismiss'
         ];
         return NewScheduleModalCtrl;
     })();
@@ -29,4 +33,3 @@ define(["require", "exports"], function(require, exports) {
     
     return NewScheduleModalCtrl;
 });
-//# sourceMappingURL=NewScheduleModalCtrl.js.map

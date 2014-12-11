@@ -19,10 +19,13 @@ class ResourceBuilder {
                     query: {
                         method: 'GET', 
                         isArray: false,
-                        transformResponse: (data, header) => {
-                            return data.objects;
-                        }
-                    } 
+                    },
+                    getBySemester: {
+                        method: 'GET',
+                        isArray: true,
+                        cache: true,
+                        transformResponse: this.transformTastypieResponse
+                    }
                 }
                 );
     }
@@ -45,8 +48,29 @@ class ResourceBuilder {
                     query: {
                         method: 'GET',
                         isArray: false
+                    },
+                    getByUser: {
+                        method: 'GET',
+                        isArray: true,
+                        transformResponse: this.transformTastypieResponse
+                    },
+
+                    update: {
+                        method: 'POST',
+                        params: {
+                        }
                     }
                 });
+    }
+
+    private transformTastypieResponse(data, header) {
+        var parsed = JSON.parse(data);
+        // data could be an array with metadata
+        if (parsed.meta && parsed.objects) {
+            return parsed.objects;
+        } else {
+            return parsed;
+        }
     }
 
     public getUserService() {

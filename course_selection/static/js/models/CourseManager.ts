@@ -36,17 +36,19 @@ class CourseManager {
     ///////////////////////////////////////////////////////////
     // Initialization
     //////////////////////////////////////////////////////////
+    // TODO: figure out how to make caching behave nicely
+    // in particular, how often should i clear cache?
+    // how often should i clear local storage?
+    // do i even need local storage?
     private loadCourses() {
         var temp = this.localStorageService.get('courses-' + this.termCode);
         if (temp != null && Array.isArray(temp)) {
             this.data.courses = temp;
         } else {
-            this.courseResource.get(
-                    { semester__term_code: this.termCode }, 
-                    (data) => {
-                        this.onLoaded(data);
-                    }
-            );
+            this.courseResource.getBySemester({ semester__term_code: this.termCode })
+                .$promise.then((data) => {
+                    this.onLoaded(data);
+                });
         }
     }
 

@@ -4,7 +4,7 @@ var niceDirectives = new Module('niceDirectives', []);
 
 niceDirectives.addDirective('selectOnClick', [function() {
     return {
-        restrict : 'A',
+        restrict: 'A',
         link(scope, element) {
             var focusedElement;
             element.on('click', function () {
@@ -18,6 +18,24 @@ niceDirectives.addDirective('selectOnClick', [function() {
             });
         }
     }
+}]);
+
+// TODO: this is not really autofocus; still requires focus="true" in the html
+niceDirectives.addDirective('autoFocus', ['$timeout', ($timeout) => {
+    return {
+        scope : {
+            trigger : '@focus'
+        },
+        link : (scope, element) => {
+            scope.$watch('trigger', (trigger) => {
+                if (trigger) {
+                    $timeout(() => {
+                        element[0].focus();
+                    });
+                }
+            });
+        }
+    };
 }]);
 
 export = niceDirectives;

@@ -10,10 +10,13 @@ define(["require", "exports", './UserService'], function(require, exports, UserS
             return this.$resource('/course_selection/api/v1/course/', {}, {
                 query: {
                     method: 'GET',
-                    isArray: false,
-                    transformResponse: function (data, header) {
-                        return data.objects;
-                    }
+                    isArray: false
+                },
+                getBySemester: {
+                    method: 'GET',
+                    isArray: true,
+                    cache: true,
+                    transformResponse: this.transformTastypieResponse
                 }
             });
         };
@@ -32,8 +35,28 @@ define(["require", "exports", './UserService'], function(require, exports, UserS
                 query: {
                     method: 'GET',
                     isArray: false
+                },
+                getByUser: {
+                    method: 'GET',
+                    isArray: true,
+                    transformResponse: this.transformTastypieResponse
+                },
+                update: {
+                    method: 'POST',
+                    params: {}
                 }
             });
+        };
+
+        ResourceBuilder.prototype.transformTastypieResponse = function (data, header) {
+            var parsed = JSON.parse(data);
+
+            // data could be an array with metadata
+            if (parsed.meta && parsed.objects) {
+                return parsed.objects;
+            } else {
+                return parsed;
+            }
         };
 
         ResourceBuilder.prototype.getUserService = function () {

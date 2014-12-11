@@ -1,14 +1,15 @@
 'use strict';
 define(["require", "exports"], function(require, exports) {
     var MainCtrl = (function () {
-        function MainCtrl($scope, $resource, courseResource, userService) {
+        function MainCtrl($scope, scheduleResource, courseResource, userService) {
             this.$scope = $scope;
-            this.$resource = $resource;
+            this.scheduleResource = scheduleResource;
             this.courseResource = courseResource;
             this.userService = userService;
             this.init();
         }
         MainCtrl.prototype.init = function () {
+            this.$scope.vm = this;
             this.username = username;
             this.data = {
                 user: null,
@@ -19,15 +20,16 @@ define(["require", "exports"], function(require, exports) {
         };
 
         MainCtrl.prototype.loadUserData = function () {
+            var _this = this;
             this.data.user = this.userService.getUser(this.username);
-            var scheduleResource = this.$resource('/course_selection/api/v1/schedule/:id', {}, {});
-            scheduleResource.get({ user__netid: this.username }).$promise.then(function (schedules) {
-                console.log(JSON.stringify(schedules.objects));
+            this.scheduleResource.getByUser({ user__netid: this.username }).$promise.then(function (schedules) {
+                _this.data.schedules = schedules;
+                console.log(JSON.stringify(schedules));
             });
         };
         MainCtrl.$inject = [
             '$scope',
-            '$resource',
+            'ScheduleResource',
             'CourseResource',
             'UserService'
         ];

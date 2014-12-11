@@ -32,6 +32,8 @@ class ScheduleCtrl {
         this.schedules = [];
         // this.restoreUserSchedules();
         this.$scope.schedules = this.schedules;
+
+        this.$scope.selectedSchedule = -1;
     }
 
     private restoreUserSchedules() {
@@ -83,9 +85,18 @@ class ScheduleCtrl {
     }
 
     public askForNewScheduleName(prevIdx: number) {
+        // the modal is "dismissable" if we have an open schedule
+        // already, which means prevIdx != undefined
+        var canDismiss = prevIdx != -1;
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/newScheduleModal.html',
             controller: NewScheduleModalCtrl,
+            keyboard: canDismiss,
+            resolve: {
+                canDismiss: () => {
+                    return canDismiss;
+                }
+            },
             backdropClass: 'modal-backdrop',
             windowClass: 'center-modal'
         });
@@ -96,9 +107,13 @@ class ScheduleCtrl {
             this.schedules[prevIdx].active = true;
         });
     }
+
+    public test(index: number) {
+        this.$scope.selectedSchedule = index;
+    }
  
     public addNewSchedule(scheduleName?: string) {
-        var id = this.schedules.length + 1;
+        var id = this.schedules.length;
         var colorManager = new ColorManager(this.colorResource);
         var courseManager = new CourseManager(
                 this.courseResource, 
@@ -114,6 +129,7 @@ class ScheduleCtrl {
             colorManager: colorManager
         });
 
+        this.$scope.selectedSchedule = id;
     }
 
     public removeSchedule(index: number) {
