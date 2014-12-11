@@ -89,57 +89,129 @@
   position: absolute;
   top: 0;
   height: 100%;
-  line-height: 100%;
   width: 20%;
+}
+.absolute-tag a,
+.absolute-tag p {
+  line-height: 100%;
+  top: 25%;
+  height: 75%;
+  width: 100%;
+  word-wrap: break-word;
   text-align: center;
+  position: absolute;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  white-space: pre-wrap;
 }
 .rightmost-tag {
   position: absolute;
   top: 0;
   height: 100%;
-  line-height: 100%;
   width: 20%;
-  text-align: center;
   right: 0;
+}
+.rightmost-tag a,
+.rightmost-tag p {
+  line-height: 100%;
+  top: 25%;
+  height: 75%;
+  width: 100%;
+  word-wrap: break-word;
+  text-align: center;
+  position: absolute;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  white-space: pre-wrap;
 }
 .second-rightmost-tag {
   position: absolute;
   top: 0;
   height: 100%;
-  line-height: 100%;
   width: 20%;
-  text-align: center;
   right: 20%;
+}
+.second-rightmost-tag a,
+.second-rightmost-tag p {
+  line-height: 100%;
+  top: 25%;
+  height: 75%;
+  width: 100%;
+  word-wrap: break-word;
+  text-align: center;
+  position: absolute;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  white-space: pre-wrap;
 }
 .enroll-tag {
   position: absolute;
   top: 0;
   height: 100%;
-  line-height: 100%;
   width: 20%;
-  text-align: center;
   right: 0;
   background-color: green;
+}
+.enroll-tag a,
+.enroll-tag p {
+  line-height: 100%;
+  top: 25%;
+  height: 75%;
+  width: 100%;
+  word-wrap: break-word;
+  text-align: center;
+  position: absolute;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  white-space: pre-wrap;
 }
 .unenroll-tag {
   position: absolute;
   top: 0;
   height: 100%;
-  line-height: 100%;
   width: 20%;
-  text-align: center;
   right: 0;
   background-color: red;
+}
+.unenroll-tag a,
+.unenroll-tag p {
+  line-height: 100%;
+  top: 25%;
+  height: 75%;
+  width: 100%;
+  word-wrap: break-word;
+  text-align: center;
+  position: absolute;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  white-space: pre-wrap;
 }
 .more-info-tag {
   position: absolute;
   top: 0;
   height: 100%;
-  line-height: 100%;
   width: 20%;
-  text-align: center;
   right: 20%;
-  background-color: blue;
+  background-color: gray;
+}
+.more-info-tag a,
+.more-info-tag p {
+  line-height: 100%;
+  top: 25%;
+  height: 75%;
+  width: 100%;
+  word-wrap: break-word;
+  text-align: center;
+  position: absolute;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  white-space: pre-wrap;
 }
 /* TODO: fix this for enrolled courses--
  * the background doesn't work
@@ -149,6 +221,20 @@
   position: relative;
   height: 100%;
   z-index: 20;
+  transition: 1s linear all;
+}
+.showTags {
+  position: absolute;
+  left: -40%;
+  right: 40%;
+}
+.showTags-add {
+  transition: 0s linear all;
+  opacity: 1;
+}
+.showTags-add.showTags-add-active {
+  transition: 1s linear all;
+  opacity: 0;
 }
 .course-panel.ng-move,
 .course-panel.ng-enter,

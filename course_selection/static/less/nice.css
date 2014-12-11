@@ -22,11 +22,11 @@ body {
 }
 #searchColumn {
   height: 85vh;
-  width: 15vw;
+  width: 20vw;
 }
 #calendarColumn {
   height: 100%;
-  width: 85vw;
+  width: 80vw;
   min-width: 540px;
 }
 .remove-icon {

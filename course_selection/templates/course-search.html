@@ -26,8 +26,12 @@
                       | orderBy: 'primary_listing' track by course.id"  
                       ng-mouseover="searchCtrl.onMouseOver(course)" 
                       ng-mouseleave="searchCtrl.onMouseLeave(course)" 
-                      ng-click="searchCtrl.onClick(course)">
-                     <div class="cover">
+                      ng-init="showButtons = false"
+                      ng-click="showButtons = !showButtons"
+                      >
+                      <div class="cover"
+                           ng-class="{showTags: showButtons}"
+                           >
                          <div>
                              <div class="course-panel-title">
                                  <div class="course-listings" 
@@ -39,12 +43,10 @@
                                      </div>
                              </div>
                          </div>
-                         <div class="course-tag"
-                              ng-bind-html="searchCtrl.getEasyPceLink(course)"
-                              ></div>
                      </div>
-                     <div class="more-info-tag"></div>
-                     <div class="enroll-tag"> Enroll </div>
+                     <div class="more-info-tag" ng-bind-html="searchCtrl.getEasyPceLink(course)"></div>
+                     <div class="enroll-tag"
+                          ng-click="searchCtrl.toggleEnrollment(course)"> <p>Enroll </p></div>
                  </div>
              </div>
         </div>
@@ -58,11 +60,13 @@
                      ng-class="{confirmed: searchCtrl.isConfirmed(course), unconfirmed: !searchCtrl.isConfirmed(course)}"
                      ng-repeat="course in data.enrolledCourses
                      | orderBy: 'primary_listing' track by course.id"  
-                     ng-click="searchCtrl.onClick(course)"
+                     ng-init="showButtons = false"
+                     ng-click="showButtons = !showButtons"
                      ng-style="searchCtrl.getBorderStyle(course)"
                      >
                     <div class="cover"
-                     ng-style="searchCtrl.setColor(course)">
+                     ng-style="searchCtrl.getBackgroundAndTextStyle(course)"
+                     ng-class="{showTags: showButtons, hideTags: !showButtons}">
                         <div>
                             <div class="course-panel-title">
                                 <div class="course-listings" 
@@ -74,12 +78,10 @@
                                     </div>
                             </div>
                         </div>
-                        <div class="course-tag"
-                             ng-bind-html="searchCtrl.getEasyPceLink(course)"
-                             ></div>
                     </div>
-                    <div class="more-info-tag"></div>
-                    <div class="unenroll-tag"> Unenroll </div>
+                     <div class="more-info-tag" ng-bind-html="searchCtrl.getEasyPceLink(course)"></div>
+                    <div class="unenroll-tag"
+                         ng-click="searchCtrl.toggleEnrollment(course)"><p>Unenroll</p></div>
                 </div>
             </div>
         </div>

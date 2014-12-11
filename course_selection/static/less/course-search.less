@@ -120,9 +120,20 @@
     position: absolute;
     top: 0;
     height: 100%;
-    line-height: 100%;
     width: 20%;
-    text-align: center;
+    a, p {
+        line-height: 100%;
+        top: 25%;
+        height: 75%;
+        width: 100%;
+        word-wrap: break-word;
+        text-align: center;
+        position: absolute;
+        font-size: 15px;
+        color: white;
+        cursor: pointer;
+        white-space: pre-wrap;
+    }
 }
 
 .rightmost-tag {
@@ -147,7 +158,7 @@
 
 .more-info-tag {
     .second-rightmost-tag();
-    background-color: blue;
+    background-color: gray;
 }
 
 /* TODO: fix this for enrolled courses--
@@ -158,6 +169,23 @@
     position: relative;
     height: 100%;
     z-index: 20;
+    transition: 1s linear all;
+}
+
+.showTags {
+    position: absolute;
+    left: -40%;
+    right: 40%;
+}
+
+.showTags-add {
+    transition: 0s linear all;
+    opacity:1;
+}
+
+.showTags-add.showTags-add-active {
+    transition: 1s linear all;
+    opacity:0;
 }
 
 .course-panel.ng-move,

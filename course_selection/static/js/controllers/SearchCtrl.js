@@ -34,7 +34,7 @@ define(["require", "exports"], function(require, exports) {
         };
 
         // toggle enrollment of course
-        SearchCtrl.prototype.onClick = function (course) {
+        SearchCtrl.prototype.toggleEnrollment = function (course) {
             if (this.courseManager.isCourseEnrolled(course)) {
                 this.courseManager.unenrollCourse(course);
             } else {
@@ -48,17 +48,11 @@ define(["require", "exports"], function(require, exports) {
             };
         };
 
-        SearchCtrl.prototype.setColor = function (course) {
-            //if (!course.colors) {
-            //    return {
-            //        'color': 'blue'
-            //    };
-            //} else {
+        SearchCtrl.prototype.getBackgroundAndTextStyle = function (course) {
             return {
                 'background-color': course.colors.light,
                 'color': course.colors.dark
             };
-            //}
         };
 
         SearchCtrl.prototype.isConfirmed = function (course) {
@@ -74,9 +68,9 @@ define(["require", "exports"], function(require, exports) {
         };
 
         SearchCtrl.prototype.getEasyPceLink = function (course) {
-            var color = this.getLinkColor(course);
+            //var color = this.getLinkColor(course);
             var link = "http://easypce.com/courses/" + course.primary_listing;
-            return this.$sce.trustAsHtml("<a target='_blank' href='" + link + "'" + "style='color: " + color + "'" + ">" + course.rating + "</a>");
+            return this.$sce.trustAsHtml("<a target='_blank' href='" + link + "'" + ">" + "More" + "</a>");
         };
         SearchCtrl.$inject = [
             '$scope',

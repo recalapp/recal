@@ -57,7 +57,7 @@ class SearchCtrl {
     }
 
     // toggle enrollment of course
-    public onClick(course) {
+    public toggleEnrollment(course) {
         if (this.courseManager.isCourseEnrolled(course)) {
             this.courseManager.unenrollCourse(course);
         } else {
@@ -71,18 +71,12 @@ class SearchCtrl {
         };
     }
 
-    public setColor(course): any 
+    public getBackgroundAndTextStyle(course): any 
     {
-        //if (!course.colors) {
-        //    return {
-        //        'color': 'blue'
-        //    };
-        //} else {
-            return {
-                'background-color': course.colors.light,
-                'color': course.colors.dark
-            };
-        //}
+        return {
+            'background-color': course.colors.light,
+            'color': course.colors.dark
+        };
     }
 
     public isConfirmed(course: ICourse) {
@@ -98,12 +92,12 @@ class SearchCtrl {
     }
 
     public getEasyPceLink(course: ICourse): string {
-        var color = this.getLinkColor(course);
+        //var color = this.getLinkColor(course);
         var link = "http://easypce.com/courses/" + course.primary_listing;
         return this.$sce.trustAsHtml(
                 "<a target='_blank' href='" + link + "'" 
-                + "style='color: " + color + "'" 
-                + ">" + course.rating + "</a>");
+                //+ "style='color: " + color + "'" 
+                + ">" + "More" + "</a>");
     }
 }
 
