@@ -99,6 +99,9 @@ class ScheduleCtrl {
             resolve: {
                 canDismiss: () => {
                     return canDismiss;
+                },
+                semester: () => {
+                    return this.semester.title;
                 }
             },
             backdropClass: 'modal-backdrop',

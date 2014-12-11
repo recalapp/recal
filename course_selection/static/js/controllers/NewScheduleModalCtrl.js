@@ -1,11 +1,13 @@
 define(["require", "exports"], function(require, exports) {
     var NewScheduleModalCtrl = (function () {
-        function NewScheduleModalCtrl($scope, $modalInstance, canDismiss) {
+        function NewScheduleModalCtrl($scope, $modalInstance, canDismiss, semester) {
             var _this = this;
             this.$scope = $scope;
             this.$modalInstance = $modalInstance;
             this.canDismiss = canDismiss;
+            this.semester = semester;
             this.$scope.canDismiss = this.canDismiss;
+            this.$scope.semester = this.semester;
 
             this.$scope.ok = function () {
                 _this.ok();
@@ -25,7 +27,8 @@ define(["require", "exports"], function(require, exports) {
         NewScheduleModalCtrl.$inject = [
             '$scope',
             '$modalInstance',
-            'canDismiss'
+            'canDismiss',
+            'semester'
         ];
         return NewScheduleModalCtrl;
     })();

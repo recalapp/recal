@@ -36,7 +36,6 @@
 #unenrolledCourses {
   min-height: 0;
   height: 100%;
-  overflow-y: auto;
 }
 .course-panel-heading {
   height: 6vh;
@@ -44,14 +43,13 @@
 .course-panels-container {
   position: relative;
   min-height: 0;
-  max-height: 80vh;
+  max-height: 70vh;
   overflow-y: auto;
 }
 .enrolled-courses-container {
   position: relative;
   min-height: 5vh;
-  max-height: 80vh;
-  overflow-y: auto;
+  max-height: 70vh;
 }
 #enrolledCourses {
   height: 100%;
@@ -247,13 +245,11 @@
 .course-panel.ng-move,
 .course-panel.ng-enter {
   opacity: 0.5;
-  max-height: 0;
   left: -60px;
 }
 .course-panel.ng-leave,
 .course-panel.ng-move.ng-move-active,
 .course-panel.ng-enter.ng-enter-active {
   opacity: 1;
-  max-height: 400px;
   left: 0;
 }

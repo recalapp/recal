@@ -78,6 +78,9 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                 resolve: {
                     canDismiss: function () {
                         return canDismiss;
+                    },
+                    semester: function () {
+                        return _this.semester.title;
                     }
                 },
                 backdropClass: 'modal-backdrop',

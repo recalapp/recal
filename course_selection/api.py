@@ -29,7 +29,7 @@ class SemesterResource(ModelResource):
             sem = 'Fall'
         else:
             sem = 'Spring'
-        name = str(start_year) + str(end_year) + sem
+        name = str(start_year) + '-' + str(end_year) + ' ' + sem
 
         bundle.data['name'] = name
         return bundle
