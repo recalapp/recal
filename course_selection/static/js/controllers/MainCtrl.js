@@ -25,14 +25,8 @@ define(["require", "exports"], function(require, exports) {
         };
 
         MainCtrl.prototype.loadUserData = function () {
-            var _this = this;
-            this.userService.getUser(this.username).$promise.then(function (user) {
-                _this.data.user = user;
-            });
-            this.scheduleResource.getByUser({ user__netid: this.username }).$promise.then(function (schedules) {
-                _this.data.schedules = schedules;
-                console.log(JSON.stringify(schedules));
-            });
+            this.data.user = this.userService.getUser(this.username);
+            this.data.schedules = this.scheduleResource.getByUser({ user__netid: this.username });
         };
         MainCtrl.$inject = [
             '$scope',

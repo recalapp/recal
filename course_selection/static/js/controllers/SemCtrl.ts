@@ -1,6 +1,8 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 
+import Semester = require('../models/Semester');
+
 class SemCtrl {
     public static $inject =[
         '$scope',
@@ -17,18 +19,42 @@ class SemCtrl {
         this.$scope.vm = this;
         this.$scope.userData = this.$scope.$parent.data;
         this.semesters = [];
-        // this.restoreUserSemesters();
+        this.restoreUserSemesters();
         this.$scope.semesters = this.semesters;
         this.$scope.canAdd = this.canAdd();
 
     }
 
-    // private restoreUserSemesters() {
-    //     var prev = this.localStorageService.get('nice-semesters');
-    //     if (prev != null) {
-    //         this.semesters = prev;
-    //     }
-    // }
+    private restoreUserSemesters() {
+        this.$scope.userData.schedules.$promise.then((schedules) => {
+            var tempSemesters = [];
+            angular.forEach(schedules, (schedule) => {
+                if (!this.semesterInArray(schedule.semester, tempSemesters)) {
+                    tempSemesters.push(schedule.semester);
+                }
+            });
+
+            tempSemesters.sort(Semester.compare);
+
+            // now add each back
+            angular.forEach(tempSemesters, (semester) => {
+                // add it back
+                //this.addSemester(semester);
+            });
+        });
+    }
+
+    private semesterInArray(semester, semesters): boolean {
+        var found = false;
+        angular.forEach(semesters, (sem) => {
+            if (sem.term_code == semester.term_code) {
+                found = true;
+                return false;
+            }
+        });
+
+        return found;
+    }
 
     public setAllInactive() {
         angular.forEach(this.semesters, (semester) => {
@@ -55,20 +81,21 @@ class SemCtrl {
         }
     }
 
-    private addNewSemester() {
-        var id = this.semesters.length + 1;
+    private getNextSemester(): Semester {
         var term_code = this.getNewSemesterTermCode();
-        var title = this.getTitle(term_code);
-        this.semesters.push({
-            id: id,
-            title: title,
-            active: true,
-            current: term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE,
-            term_code: term_code
-        });
+        return new Semester(
+                    this.getTitle(term_code), 
+                    true, 
+                    term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE, 
+                    term_code);
+    }
 
-        // this.localStorageService.set('nice-semesters', this.semesters);
-        this.$scope.canAdd = this.canAdd();
+    private addNewSemester(semester?: Semester) {
+        if (semester) {
+            this.semesters.push(semester);
+        } else {
+            this.semesters.push(this.getNextSemester());
+        }
     }
 
     private getTitle(termCode: number): string {
@@ -79,9 +106,10 @@ class SemCtrl {
         return "" + startYear + "-" + endYear + " " + semester;
     }
  
-    public addSemester() {
+    public addSemester(semester?: Semester) {
         this.setAllInactive();
-        this.addNewSemester();
+        this.addNewSemester(semester);
+        this.$scope.canAdd = this.canAdd();
     }    
 
     private semesterIsFall(termCode): boolean {

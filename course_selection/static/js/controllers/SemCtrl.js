@@ -1,6 +1,6 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", '../models/Semester'], function(require, exports, Semester) {
     var SemCtrl = (function () {
         function SemCtrl($scope, localStorageService) {
             this.$scope = $scope;
@@ -8,17 +8,42 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.vm = this;
             this.$scope.userData = this.$scope.$parent.data;
             this.semesters = [];
-
-            // this.restoreUserSemesters();
+            this.restoreUserSemesters();
             this.$scope.semesters = this.semesters;
             this.$scope.canAdd = this.canAdd();
         }
-        // private restoreUserSemesters() {
-        //     var prev = this.localStorageService.get('nice-semesters');
-        //     if (prev != null) {
-        //         this.semesters = prev;
-        //     }
-        // }
+        SemCtrl.prototype.restoreUserSemesters = function () {
+            var _this = this;
+            this.$scope.userData.schedules.$promise.then(function (schedules) {
+                var tempSemesters = [];
+                angular.forEach(schedules, function (schedule) {
+                    if (!_this.semesterInArray(schedule.semester, tempSemesters)) {
+                        tempSemesters.push(schedule.semester);
+                    }
+                });
+
+                tempSemesters.sort(Semester.compare);
+
+                // now add each back
+                angular.forEach(tempSemesters, function (semester) {
+                    // add it back
+                    //this.addSemester(semester);
+                });
+            });
+        };
+
+        SemCtrl.prototype.semesterInArray = function (semester, semesters) {
+            var found = false;
+            angular.forEach(semesters, function (sem) {
+                if (sem.term_code == semester.term_code) {
+                    found = true;
+                    return false;
+                }
+            });
+
+            return found;
+        };
+
         SemCtrl.prototype.setAllInactive = function () {
             angular.forEach(this.semesters, function (semester) {
                 semester.active = false;
@@ -44,20 +69,17 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
-        SemCtrl.prototype.addNewSemester = function () {
-            var id = this.semesters.length + 1;
+        SemCtrl.prototype.getNextSemester = function () {
             var term_code = this.getNewSemesterTermCode();
-            var title = this.getTitle(term_code);
-            this.semesters.push({
-                id: id,
-                title: title,
-                active: true,
-                current: term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE,
-                term_code: term_code
-            });
+            return new Semester(this.getTitle(term_code), true, term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE, term_code);
+        };
 
-            // this.localStorageService.set('nice-semesters', this.semesters);
-            this.$scope.canAdd = this.canAdd();
+        SemCtrl.prototype.addNewSemester = function (semester) {
+            if (semester) {
+                this.semesters.push(semester);
+            } else {
+                this.semesters.push(this.getNextSemester());
+            }
         };
 
         SemCtrl.prototype.getTitle = function (termCode) {
@@ -68,9 +90,10 @@ define(["require", "exports"], function(require, exports) {
             return "" + startYear + "-" + endYear + " " + semester;
         };
 
-        SemCtrl.prototype.addSemester = function () {
+        SemCtrl.prototype.addSemester = function (semester) {
             this.setAllInactive();
-            this.addNewSemester();
+            this.addNewSemester(semester);
+            this.$scope.canAdd = this.canAdd();
         };
 
         SemCtrl.prototype.semesterIsFall = function (termCode) {

@@ -40,15 +40,8 @@ class MainCtrl {
     }
 
     public loadUserData() {
-        this.userService.getUser(this.username).$promise.then(
-                (user) => {
-                    this.data.user = user;
-                });
-        this.scheduleResource.getByUser({user__netid: this.username}).$promise.then(
-                (schedules) => {
-                    this.data.schedules = schedules;
-                    console.log(JSON.stringify(schedules));
-                });
+        this.data.user = this.userService.getUser(this.username);
+        this.data.schedules = this.scheduleResource.getByUser({user__netid: this.username})    
     }
 
 }

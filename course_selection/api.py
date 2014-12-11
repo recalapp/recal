@@ -117,7 +117,7 @@ class ColorPaletteResource(ModelResource):
 
 class ScheduleResource(ModelResource):
     #enrollments = fields.ToManyField(EnrollmentResource, 'enrollments', full=True, null=True)
-    semester = fields.ForeignKey(SemesterResource, 'semester')
+    semester = fields.ForeignKey(SemesterResource, 'semester', full=True)
     user = fields.ForeignKey('course_selection.api.UserResource', 'user')
 
     class Meta:
