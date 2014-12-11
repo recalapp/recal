@@ -221,7 +221,7 @@
   position: relative;
   height: 100%;
   z-index: 20;
-  transition: 1s linear all;
+  transition: all linear 250ms;
 }
 .showTags {
   position: absolute;
@@ -230,24 +230,27 @@
 }
 .showTags-add {
   transition: 0s linear all;
-  opacity: 1;
+  position: absolute;
+  left: 0;
+  right: 0;
 }
-.showTags-add.showTags-add-active {
-  transition: 1s linear all;
-  opacity: 0;
+.showTags-remove {
+  position: absolute;
+  left: 0;
+  right: 0;
 }
 .course-panel.ng-move,
 .course-panel.ng-enter,
 .course-panel.ng-leave {
-  -webkit-transition: 200ms linear all;
-  transition: 200ms linear all;
+  -webkit-transition: 250ms linear all;
+  transition: 250ms linear all;
 }
 .course-panel.ng-leave.ng-leave-active,
 .course-panel.ng-move,
 .course-panel.ng-enter {
   opacity: 0;
   max-height: 0;
-  left: -50px;
+  left: -60px;
 }
 .course-panel.ng-leave,
 .course-panel.ng-move.ng-move-active,

@@ -97,7 +97,7 @@ class SearchCtrl {
         return this.$sce.trustAsHtml(
                 "<a target='_blank' href='" + link + "'" 
                 //+ "style='color: " + color + "'" 
-                + ">" + "More" + "</a>");
+                + ">" + "Info" + "</a>");
     }
 }
 

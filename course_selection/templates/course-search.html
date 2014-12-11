@@ -26,11 +26,11 @@
                       | orderBy: 'primary_listing' track by course.id"  
                       ng-mouseover="searchCtrl.onMouseOver(course)" 
                       ng-mouseleave="searchCtrl.onMouseLeave(course)" 
-                      ng-init="showButtons = false"
-                      ng-click="showButtons = !showButtons"
                       >
                       <div class="cover"
-                           ng-class="{showTags: showButtons}"
+                           ng-init="showButtons = false"
+                           ng-click="showButtons = !showButtons"
+                           ng-class="{showTags: showButtons, hideTags: !showButtons}"
                            >
                          <div>
                              <div class="course-panel-title">
@@ -60,11 +60,11 @@
                      ng-class="{confirmed: searchCtrl.isConfirmed(course), unconfirmed: !searchCtrl.isConfirmed(course)}"
                      ng-repeat="course in data.enrolledCourses
                      | orderBy: 'primary_listing' track by course.id"  
-                     ng-init="showButtons = false"
-                     ng-click="showButtons = !showButtons"
                      ng-style="searchCtrl.getBorderStyle(course)"
                      >
                     <div class="cover"
+                     ng-init="showButtons = false"
+                     ng-click="showButtons = !showButtons"
                      ng-style="searchCtrl.getBackgroundAndTextStyle(course)"
                      ng-class="{showTags: showButtons, hideTags: !showButtons}">
                         <div>

@@ -70,7 +70,7 @@ define(["require", "exports"], function(require, exports) {
         SearchCtrl.prototype.getEasyPceLink = function (course) {
             //var color = this.getLinkColor(course);
             var link = "http://easypce.com/courses/" + course.primary_listing;
-            return this.$sce.trustAsHtml("<a target='_blank' href='" + link + "'" + ">" + "More" + "</a>");
+            return this.$sce.trustAsHtml("<a target='_blank' href='" + link + "'" + ">" + "Info" + "</a>");
         };
         SearchCtrl.$inject = [
             '$scope',
