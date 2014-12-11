@@ -23,11 +23,10 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
                 });
 
                 tempSemesters.sort(Semester.compare);
-
-                // now add each back
                 angular.forEach(tempSemesters, function (semester) {
-                    // add it back
-                    //this.addSemester(semester);
+                    if (!_this.semesterInArray(semester, _this.semesters)) {
+                        _this.addSemester(new Semester(semester.name, true, semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE, semester.term_code));
+                    }
                 });
             });
         };

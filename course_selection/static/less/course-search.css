@@ -12,7 +12,7 @@
   border-bottom-width: 0;
 }
 .unconfirmed {
-  background: url('../images/stripe.png') repeat #c0c0c0;
+  background: url('../images/stripe.png') repeat #c0c0c0 !important;
   opacity: 0.8;
 }
 .confirmed {
@@ -84,6 +84,71 @@
   max-height: 30px;
   overflow: visible;
   z-index: 10;
+}
+.absolute-tag {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  line-height: 100%;
+  width: 20%;
+  text-align: center;
+}
+.rightmost-tag {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  line-height: 100%;
+  width: 20%;
+  text-align: center;
+  right: 0;
+}
+.second-rightmost-tag {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  line-height: 100%;
+  width: 20%;
+  text-align: center;
+  right: 20%;
+}
+.enroll-tag {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  line-height: 100%;
+  width: 20%;
+  text-align: center;
+  right: 0;
+  background-color: green;
+}
+.unenroll-tag {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  line-height: 100%;
+  width: 20%;
+  text-align: center;
+  right: 0;
+  background-color: red;
+}
+.more-info-tag {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  line-height: 100%;
+  width: 20%;
+  text-align: center;
+  right: 20%;
+  background-color: blue;
+}
+/* TODO: fix this for enrolled courses--
+ * the background doesn't work
+ */
+.cover {
+  background-color: white;
+  position: relative;
+  height: 100%;
+  z-index: 20;
 }
 .course-panel.ng-move,
 .course-panel.ng-enter,

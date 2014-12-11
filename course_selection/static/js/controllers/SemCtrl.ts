@@ -35,11 +35,15 @@ class SemCtrl {
             });
 
             tempSemesters.sort(Semester.compare);
-
-            // now add each back
             angular.forEach(tempSemesters, (semester) => {
-                // add it back
-                //this.addSemester(semester);
+                if (!this.semesterInArray(semester, this.semesters)) {
+                    this.addSemester(new Semester(
+                                semester.name,
+                                true,
+                                semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE,
+                                semester.term_code
+                                ));
+                }
             });
         });
     }

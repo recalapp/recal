@@ -65,27 +65,40 @@ class SearchCtrl {
         }
     }
 
+    public getBorderStyle(course): any {
+        return {
+            'border-color': course.colors.dark
+        };
+    }
+
     public setColor(course): any 
     {
-        if (!course.colors) {
-            return {
-                'color': 'blue'
-            };
-        } else {
+        //if (!course.colors) {
+        //    return {
+        //        'color': 'blue'
+        //    };
+        //} else {
             return {
                 'background-color': course.colors.light,
-                'color': course.colors.dark,
-                'border-color': course.colors.dark
+                'color': course.colors.dark
             };
-        }
+        //}
     }
 
     public isConfirmed(course: ICourse) {
         return this.courseManager.isCourseAllSectionsEnrolled(course);
     }
 
+    public getLinkColor(course) {
+        if (course.colors) {
+            return course.colors.dark;
+        } else {
+            return 'blue';
+        }
+    }
+
     public getEasyPceLink(course: ICourse): string {
-        var color = this.setColor(course).color;
+        var color = this.getLinkColor(course);
         var link = "http://easypce.com/courses/" + course.primary_listing;
         return this.$sce.trustAsHtml(
                 "<a target='_blank' href='" + link + "'" 

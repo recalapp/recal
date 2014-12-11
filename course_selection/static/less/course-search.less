@@ -28,7 +28,7 @@
 }
 
 .unconfirmed {
-    background: url('../images/stripe.png') repeat silver;
+    background: url('../images/stripe.png') repeat silver !important;
     opacity: 0.8;
 }
 
@@ -114,6 +114,50 @@
     max-height: 30px;
     overflow: visible;
     z-index: 10;
+}
+
+.absolute-tag {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    line-height: 100%;
+    width: 20%;
+    text-align: center;
+}
+
+.rightmost-tag {
+    .absolute-tag();
+    right: 0;
+}
+
+.second-rightmost-tag {
+    .absolute-tag();
+    right: 20%;
+}
+
+.enroll-tag {
+    .rightmost-tag();
+    background-color: green;
+}
+
+.unenroll-tag {
+    .rightmost-tag();
+    background-color: red;
+}
+
+.more-info-tag {
+    .second-rightmost-tag();
+    background-color: blue;
+}
+
+/* TODO: fix this for enrolled courses--
+ * the background doesn't work
+ */
+.cover {
+    background-color: white;
+    position: relative;
+    height: 100%;
+    z-index: 20;
 }
 
 .course-panel.ng-move,
