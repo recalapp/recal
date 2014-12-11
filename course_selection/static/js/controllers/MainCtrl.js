@@ -10,18 +10,25 @@ define(["require", "exports"], function(require, exports) {
         }
         MainCtrl.prototype.init = function () {
             this.$scope.vm = this;
+            this.initData();
+        };
+
+        MainCtrl.prototype.initData = function () {
             this.username = username;
             this.data = {
                 user: null,
                 schedules: null
             };
 
+            this.$scope.data = this.data;
             this.loadUserData();
         };
 
         MainCtrl.prototype.loadUserData = function () {
             var _this = this;
-            this.data.user = this.userService.getUser(this.username);
+            this.userService.getUser(this.username).$promise.then(function (user) {
+                _this.data.user = user;
+            });
             this.scheduleResource.getByUser({ user__netid: this.username }).$promise.then(function (schedules) {
                 _this.data.schedules = schedules;
                 console.log(JSON.stringify(schedules));

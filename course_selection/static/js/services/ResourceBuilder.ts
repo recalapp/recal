@@ -3,6 +3,7 @@
 import ICourseResource = require('../interfaces/ICourseResource');
 import UserService = require('./UserService');
 
+// TODO: move each to a separate file
 class ResourceBuilder {
     static $inject = [
         '$resource',

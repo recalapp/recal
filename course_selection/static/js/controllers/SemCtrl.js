@@ -6,6 +6,7 @@ define(["require", "exports"], function(require, exports) {
             this.$scope = $scope;
             this.localStorageService = localStorageService;
             this.$scope.vm = this;
+            this.$scope.userData = this.$scope.$parent.data;
             this.semesters = [];
 
             // this.restoreUserSemesters();

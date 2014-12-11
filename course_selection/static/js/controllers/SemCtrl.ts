@@ -15,6 +15,7 @@ class SemCtrl {
     constructor(private $scope,
             private localStorageService) {
         this.$scope.vm = this;
+        this.$scope.userData = this.$scope.$parent.data;
         this.semesters = [];
         // this.restoreUserSemesters();
         this.$scope.semesters = this.semesters;

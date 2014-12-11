@@ -25,17 +25,25 @@ class MainCtrl {
 
     private init() {
         this.$scope.vm = this;
+        this.initData();
+    }
+
+    private initData() {
         this.username = username;
         this.data = {
             user: null,
             schedules: null
         };
 
+        this.$scope.data = this.data;
         this.loadUserData();
     }
 
     public loadUserData() {
-        this.data.user = this.userService.getUser(this.username);
+        this.userService.getUser(this.username).$promise.then(
+                (user) => {
+                    this.data.user = user;
+                });
         this.scheduleResource.getByUser({user__netid: this.username}).$promise.then(
                 (schedules) => {
                     this.data.schedules = schedules;

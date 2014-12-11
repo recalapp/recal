@@ -8,6 +8,7 @@ import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
 
 class ScheduleCtrl {
     public static $inject =[
+        '$rootScope',
         '$scope',
         '$modal',
         'ColorResource',
@@ -19,7 +20,9 @@ class ScheduleCtrl {
     private schedules;
     private semester;
 
-    constructor(private $scope,
+    constructor(
+            private $rootScope,
+            private $scope,
             private $modal,
             private colorResource,
             private courseResource,
@@ -42,6 +45,7 @@ class ScheduleCtrl {
             this.schedules = prevSchedules.map((schedule) => {
                 var colorManager = new ColorManager(this.colorResource);
                 var courseManager = new CourseManager(
+                        this.$rootScope,
                         this.courseResource, 
                         this.scheduleResource,
                         this.localStorageService, 
@@ -116,6 +120,7 @@ class ScheduleCtrl {
         var id = this.schedules.length;
         var colorManager = new ColorManager(this.colorResource);
         var courseManager = new CourseManager(
+                this.$rootScope,
                 this.courseResource, 
                 this.scheduleResource,
                 this.localStorageService, 

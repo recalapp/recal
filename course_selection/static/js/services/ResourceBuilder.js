@@ -1,5 +1,6 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports", './UserService'], function(require, exports, UserService) {
+    // TODO: move each to a separate file
     var ResourceBuilder = (function () {
         function ResourceBuilder($resource, localStorageService) {
             this.$resource = $resource;

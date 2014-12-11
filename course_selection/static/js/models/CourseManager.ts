@@ -21,16 +21,40 @@ class CourseManager {
     }
 
     constructor(
+            private $rootScope,
             private courseResource,
             private scheduleResource,
             private localStorageService,
             private colorManager: IColorManager,
             private termCode: number
-            ) {
+            ) 
+    {
+        this.init();
+    }
+
+    private init() {
+        this.initData();
+        this.initWatches();
+    }
+
+    private initData() {
         this.data.previewCourse = null;
         this.data.enrolledCourses = [];
         this.data.enrolledSections = {};
         this.loadCourses();
+    }
+
+    private initWatches() {
+        this.$rootScope.$watch(() => {
+            return this.data.enrolledSections;
+        }, (newValue, oldValue) => {
+            if (newValue === oldValue) {
+                return;
+            }
+
+            // do stuff
+        }, true);
+
     }
 
     ///////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 define(["require", "exports", './Course'], function(require, exports, Course) {
     var CourseManager = (function () {
-        function CourseManager(courseResource, scheduleResource, localStorageService, colorManager, termCode) {
+        function CourseManager($rootScope, courseResource, scheduleResource, localStorageService, colorManager, termCode) {
+            this.$rootScope = $rootScope;
             this.courseResource = courseResource;
             this.scheduleResource = scheduleResource;
             this.localStorageService = localStorageService;
@@ -17,11 +18,32 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 course: null,
                 section: null
             };
+            this.init();
+        }
+        CourseManager.prototype.init = function () {
+            this.initData();
+            this.initWatches();
+        };
+
+        CourseManager.prototype.initData = function () {
             this.data.previewCourse = null;
             this.data.enrolledCourses = [];
             this.data.enrolledSections = {};
             this.loadCourses();
-        }
+        };
+
+        CourseManager.prototype.initWatches = function () {
+            var _this = this;
+            this.$rootScope.$watch(function () {
+                return _this.data.enrolledSections;
+            }, function (newValue, oldValue) {
+                if (newValue === oldValue) {
+                    return;
+                }
+                // do stuff
+            }, true);
+        };
+
         ///////////////////////////////////////////////////////////
         // Initialization
         //////////////////////////////////////////////////////////
