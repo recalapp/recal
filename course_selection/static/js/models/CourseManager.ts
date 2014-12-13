@@ -1,3 +1,5 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
 import Course = require('./Course');
@@ -21,7 +23,7 @@ class CourseManager {
 
     constructor(
             private $rootScope,
-            private courseResource,
+            private courseService,
             private scheduleResource,
             private localStorageService,
             private colorManager: IColorManager,
@@ -64,15 +66,9 @@ class CourseManager {
     // how often should i clear local storage?
     // do i even need local storage?
     private loadCourses() {
-        var temp = this.localStorageService.get('courses-' + this.termCode);
-        if (temp != null && Array.isArray(temp)) {
-            this.data.courses = temp;
-        } else {
-            this.courseResource.getBySemester({ semester__term_code: this.termCode })
-                .$promise.then((data) => {
-                    this.onLoaded(data);
-                });
-        }
+        this.courseService.getBySemester(this.termCode).then((data) => {
+            this.onLoaded(data);
+        });
     }
 
     // TODO: verify that the transformresponse function works as intended
@@ -87,8 +83,6 @@ class CourseManager {
                     course.semester
                     );
         });
-
-        this.localStorageService.set('courses-' + this.termCode, this.data.courses);
     }
 
     public getData() {

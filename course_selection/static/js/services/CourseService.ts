@@ -25,11 +25,10 @@ class CourseService {
         if (temp != null && Array.isArray(temp)) {
             return this.$q.when(temp);
         } else {
-            var promise = this.courseResource.getBySemester({semester__term_code: termCode});
-            promise.then((data) => {
+            return this.courseResource.getBySemester({semester__term_code: termCode})
+                .$promise.then((data) => {
                 this.localStorageService.set('courses-' + termCode, data);
             });
-            return promise;
         }
     }
 }

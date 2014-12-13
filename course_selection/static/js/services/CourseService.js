@@ -14,11 +14,9 @@ define(["require", "exports"], function(require, exports) {
             if (temp != null && Array.isArray(temp)) {
                 return this.$q.when(temp);
             } else {
-                var promise = this.courseResource.getBySemester({ semester__term_code: termCode });
-                promise.then(function (data) {
+                return this.courseResource.getBySemester({ semester__term_code: termCode }).$promise.then(function (data) {
                     _this.localStorageService.set('courses-' + termCode, data);
                 });
-                return promise;
             }
         };
         CourseService.$inject = [

@@ -1,8 +1,9 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports", './Course'], function(require, exports, Course) {
     var CourseManager = (function () {
-        function CourseManager($rootScope, courseResource, scheduleResource, localStorageService, colorManager, termCode) {
+        function CourseManager($rootScope, courseService, scheduleResource, localStorageService, colorManager, termCode) {
             this.$rootScope = $rootScope;
-            this.courseResource = courseResource;
+            this.courseService = courseService;
             this.scheduleResource = scheduleResource;
             this.localStorageService = localStorageService;
             this.colorManager = colorManager;
@@ -53,14 +54,9 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
         // do i even need local storage?
         CourseManager.prototype.loadCourses = function () {
             var _this = this;
-            var temp = this.localStorageService.get('courses-' + this.termCode);
-            if (temp != null && Array.isArray(temp)) {
-                this.data.courses = temp;
-            } else {
-                this.courseResource.getBySemester({ semester__term_code: this.termCode }).$promise.then(function (data) {
-                    _this.onLoaded(data);
-                });
-            }
+            this.courseService.getBySemester(this.termCode).then(function (data) {
+                _this.onLoaded(data);
+            });
         };
 
         // TODO: verify that the transformresponse function works as intended
@@ -68,8 +64,6 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             this.data.courses = courses.map(function (course) {
                 return new Course(course.title, course.description, course.course_listings, course.id, course.sections, course.semester);
             });
-
-            this.localStorageService.set('courses-' + this.termCode, this.data.courses);
         };
 
         CourseManager.prototype.getData = function () {
