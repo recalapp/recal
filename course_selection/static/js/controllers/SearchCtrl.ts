@@ -2,7 +2,6 @@
 
 import ISection = require('../interfaces/ISection');
 import ICourseSearchScope = require('../interfaces/ICourseSearchScope');
-import CourseResource = require('../services/CourseResource');
 import ICourse = require('../interfaces/ICourse');
 import Course = require('../models/Course');
 import ICourseManager = require('../interfaces/ICourseManager');
@@ -17,7 +16,6 @@ class SearchCtrl {
     public static $inject = [
         '$scope',
         '$sce',
-        'CourseResource',
     ];
 
     private static NOT_FOUND: number = -1;
@@ -26,8 +24,7 @@ class SearchCtrl {
 
     constructor(
             private $scope: ICourseSearchScope,
-            private $sce,
-            private courseResource
+            private $sce
             ) {
         this.$scope.vm = this;
         this.courseManager = (<any>this.$scope.$parent).schedule.courseManager;
@@ -96,7 +93,6 @@ class SearchCtrl {
         var link = "http://easypce.com/courses/" + course.primary_listing;
         return this.$sce.trustAsHtml(
                 "<a target='_blank' href='" + link + "'" 
-                //+ "style='color: " + color + "'" 
                 + ">" + "Info" + "</a>");
     }
 }

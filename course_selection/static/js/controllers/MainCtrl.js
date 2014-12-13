@@ -1,11 +1,11 @@
 'use strict';
 define(["require", "exports"], function(require, exports) {
     var MainCtrl = (function () {
-        function MainCtrl($scope, scheduleResource, courseResource, userService) {
+        function MainCtrl($scope, scheduleResource, courseResource, userResource) {
             this.$scope = $scope;
             this.scheduleResource = scheduleResource;
             this.courseResource = courseResource;
-            this.userService = userService;
+            this.userResource = userResource;
             this.init();
         }
         MainCtrl.prototype.init = function () {
@@ -25,14 +25,14 @@ define(["require", "exports"], function(require, exports) {
         };
 
         MainCtrl.prototype.loadUserData = function () {
-            this.data.user = this.userService.getUser(this.username);
+            this.data.user = this.userResource.getByNetId({ netid: this.username });
             this.data.schedules = this.scheduleResource.getByUser({ user__netid: this.username });
         };
         MainCtrl.$inject = [
             '$scope',
             'ScheduleResource',
             'CourseResource',
-            'UserService'
+            'UserResource'
         ];
         return MainCtrl;
     })();

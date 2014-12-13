@@ -1,6 +1,5 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-define(["require", "exports", './UserService'], function(require, exports, UserService) {
-    // TODO: move each to a separate file
+define(["require", "exports"], function(require, exports) {
     var ResourceBuilder = (function () {
         function ResourceBuilder($resource, localStorageService) {
             this.$resource = $resource;
@@ -8,7 +7,7 @@ define(["require", "exports", './UserService'], function(require, exports, UserS
         }
         // TODO: figure out how to use typescript to properly do this
         ResourceBuilder.prototype.getCourseResource = function () {
-            return this.$resource('/course_selection/api/v1/course/', {}, {
+            return this.$resource(ResourceBuilder.BASE_URL + 'course/', {}, {
                 query: {
                     method: 'GET',
                     isArray: false
@@ -23,7 +22,7 @@ define(["require", "exports", './UserService'], function(require, exports, UserS
         };
 
         ResourceBuilder.prototype.getColorResource = function () {
-            return this.$resource('/course_selection/api/v1/color_palette/', {}, {
+            return this.$resource(ResourceBuilder.BASE_URL + 'color_palette/', {}, {
                 query: {
                     method: 'GET',
                     isArray: false
@@ -32,7 +31,7 @@ define(["require", "exports", './UserService'], function(require, exports, UserS
         };
 
         ResourceBuilder.prototype.getScheduleResource = function () {
-            return this.$resource('/course_selection/api/v1/schedule/:id', {}, {
+            return this.$resource(ResourceBuilder.BASE_URL + 'schedule/:id', {}, {
                 query: {
                     method: 'GET',
                     isArray: false
@@ -49,6 +48,16 @@ define(["require", "exports", './UserService'], function(require, exports, UserS
             });
         };
 
+        ResourceBuilder.prototype.getUserResource = function () {
+            return this.$resource(ResourceBuilder.BASE_URL + 'user/:id', {}, {
+                getByNetId: {
+                    method: 'GET',
+                    isArray: false,
+                    transformResponse: this.getFirstObject
+                }
+            });
+        };
+
         ResourceBuilder.prototype.transformTastypieResponse = function (data, header) {
             var parsed = JSON.parse(data);
 
@@ -60,13 +69,16 @@ define(["require", "exports", './UserService'], function(require, exports, UserS
             }
         };
 
-        ResourceBuilder.prototype.getUserService = function () {
-            return new UserService(this.$resource);
+        ResourceBuilder.prototype.getFirstObject = function (data, header) {
+            var parsed = JSON.parse(data);
+            return parsed.objects[0];
         };
         ResourceBuilder.$inject = [
             '$resource',
             'localStorageService'
         ];
+
+        ResourceBuilder.BASE_URL = "/course_selection/api/v1/";
         return ResourceBuilder;
     })();
 

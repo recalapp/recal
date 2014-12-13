@@ -1,6 +1,5 @@
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
-import CourseResource = require('../services/CourseResource');
 import Course = require('./Course');
 import IColorManager = require('../interfaces/IColorManager');
 

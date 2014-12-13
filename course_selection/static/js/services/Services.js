@@ -1,4 +1,4 @@
-define(["require", "exports", './ResourceBuilder', "angular"], function(require, exports, ResourceBuilder) {
+define(["require", "exports", './ResourceBuilder', './CourseService', "angular"], function(require, exports, ResourceBuilder, CourseService) {
     var niceServices = angular.module('niceServices', []);
 
     niceServices.factory('ResourceBuilder', ['$resource', 'localStorageService', function ($resource, localStorageService) {
@@ -14,9 +14,11 @@ define(["require", "exports", './ResourceBuilder', "angular"], function(require,
     niceServices.factory('ColorResource', ["ResourceBuilder", function (builder) {
             return builder.getColorResource();
         }]);
-    niceServices.factory('UserService', ['ResourceBuilder', function (builder) {
-            return builder.getUserService();
+    niceServices.factory('UserResource', ['ResourceBuilder', function (builder) {
+            return builder.getUserResource();
         }]);
+
+    niceServices.service('CourseService', CourseService);
 
     
     return niceServices;

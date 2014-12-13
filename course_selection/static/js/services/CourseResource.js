@@ -1,31 +1,29 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-define(["require", "exports", './Service'], function(require, exports, Service) {
+define(["require", "exports"], function(require, exports) {
     'use strict';
 
-    var CourseResource = (function (_super) {
-        __extends(CourseResource, _super);
-        function CourseResource($resource) {
-            _super.call(this);
-            this.$resource = $resource;
+    var CourseService = (function () {
+        function CourseService(courseResource) {
+            this.courseResource = courseResource;
         }
-        CourseResource.prototype.query = function () {
+        CourseService.prototype.getBySemester = function (semesterTermCode) {
+            return this.courseResource.getBySemester({ semester__term_code: semesterTermCode });
         };
 
-        CourseResource.prototype.get = function () {
-        };
+        CourseService.prototype.transformTastypieResponse = function (data, header) {
+            var parsed = JSON.parse(data);
 
-        CourseResource.prototype.put = function (courses) {
+            // data could be an array with metadata
+            if (parsed.meta && parsed.objects) {
+                return parsed.objects;
+            } else {
+                return parsed;
+            }
         };
-        CourseResource.$inject = ['$resource'];
-        return CourseResource;
-    })(Service);
+        CourseService.$inject = ['CourseResource'];
+        return CourseService;
+    })();
 
     
-    return CourseResource;
+    return CourseService;
 });

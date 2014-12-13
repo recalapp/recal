@@ -3,10 +3,9 @@ define(["require", "exports"], function(require, exports) {
     'use strict';
 
     var SearchCtrl = (function () {
-        function SearchCtrl($scope, $sce, courseResource) {
+        function SearchCtrl($scope, $sce) {
             this.$scope = $scope;
             this.$sce = $sce;
-            this.courseResource = courseResource;
             this.$scope.vm = this;
             this.courseManager = this.$scope.$parent.schedule.courseManager;
             this.$scope.data = this.courseManager.getData();
@@ -74,8 +73,7 @@ define(["require", "exports"], function(require, exports) {
         };
         SearchCtrl.$inject = [
             '$scope',
-            '$sce',
-            'CourseResource'
+            '$sce'
         ];
 
         SearchCtrl.NOT_FOUND = -1;

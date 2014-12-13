@@ -127,6 +127,8 @@ class ScheduleResource(ModelResource):
         allowed_methods = ['get', 'post']
         cache = SimpleCache(timeout=10)
         authorization = Authorization()
+        limit = 0
+        max_limit = 0
         filtering = {
             'user': ALL_WITH_RELATIONS,
             'semester': ALL_WITH_RELATIONS

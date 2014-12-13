@@ -1,20 +1,20 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
 import ICourseResource = require('../interfaces/ICourseResource');
-import UserService = require('./UserService');
 
-// TODO: move each to a separate file
 class ResourceBuilder {
     static $inject = [
         '$resource',
         'localStorageService'
     ];
-    
+
+    public static BASE_URL: string = "/course_selection/api/v1/";
+
     constructor(private $resource: ng.resource.IResourceService, private localStorageService) {}
 
     // TODO: figure out how to use typescript to properly do this
-    public getCourseResource(): ICourseResource {
-        return <any>this.$resource('/course_selection/api/v1/course/', 
+    public getCourseResource() {
+        return this.$resource(ResourceBuilder.BASE_URL + 'course/', 
                 {}, 
                 { 
                     query: {
@@ -27,12 +27,11 @@ class ResourceBuilder {
                         cache: true,
                         transformResponse: this.transformTastypieResponse
                     }
-                }
-                );
+                });
     }
 
     public getColorResource() {
-        return <any>this.$resource('/course_selection/api/v1/color_palette/',
+        return this.$resource(ResourceBuilder.BASE_URL + 'color_palette/',
                 {},
                 {
                     query: {
@@ -43,7 +42,7 @@ class ResourceBuilder {
     }
 
     public getScheduleResource() {
-        return this.$resource('/course_selection/api/v1/schedule/:id',
+        return this.$resource(ResourceBuilder.BASE_URL + 'schedule/:id',
                 {},
                 {
                     query: {
@@ -64,6 +63,18 @@ class ResourceBuilder {
                 });
     }
 
+    public getUserResource() {
+        return this.$resource(ResourceBuilder.BASE_URL + 'user/:id',
+                {},
+                {
+                    getByNetId: {
+                        method: 'GET',
+                        isArray: false,
+                        transformResponse: this.getFirstObject
+                    }
+                });
+    }
+
     private transformTastypieResponse(data, header) {
         var parsed = JSON.parse(data);
         // data could be an array with metadata
@@ -74,8 +85,9 @@ class ResourceBuilder {
         }
     }
 
-    public getUserService() {
-        return new UserService(this.$resource);
+    private getFirstObject(data, header) {
+        var parsed = JSON.parse(data);
+        return parsed.objects[0];
     }
 }
 

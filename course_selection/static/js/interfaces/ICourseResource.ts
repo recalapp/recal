@@ -2,8 +2,8 @@
 
 import ICourse = require('./ICourse');
 
-interface ICourseResource extends ng.resource.IResourceClass<ICourse> 
-{
+interface ICourseResource {
+    getBySemester(termCode: string);
 }
 
 export = ICourseResource;

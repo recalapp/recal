@@ -7,7 +7,7 @@ class MainCtrl {
         '$scope',
         'ScheduleResource',
         'CourseResource',
-        'UserService',
+        'UserResource',
     ];
 
     private data;
@@ -17,7 +17,7 @@ class MainCtrl {
             private $scope,
             private scheduleResource,
             private courseResource,
-            private userService
+            private userResource
             )
     {
         this.init();
@@ -40,7 +40,7 @@ class MainCtrl {
     }
 
     public loadUserData() {
-        this.data.user = this.userService.getUser(this.username);
+        this.data.user = this.userResource.getByNetId({netid: this.username});
         this.data.schedules = this.scheduleResource.getByUser({user__netid: this.username})    
     }
 
