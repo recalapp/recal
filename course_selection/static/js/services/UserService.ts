@@ -4,8 +4,8 @@ class UserService {
     constructor(private userResource) {
     }
 
-    public getUser(netid: string): any {
-        return this.userResource.getUser({'netid': netid});
+    public getByNetId(netid: string): any {
+        return this.userResource.getByNetId({'netid': netid});
     }
 }
 
