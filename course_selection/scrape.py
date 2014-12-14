@@ -165,6 +165,11 @@ def get_courses_for_term(term_code):
         catalog = course.find('catalog_number').text
         return (sub, catalog)
 
+    def get_rating(course):
+        """ we contact easypce for the ratings"""
+        #TODO 
+        pass
+
     def create_or_update_listings(course, subject, course_object):
         """ Create or, if already exists, update a course
     
@@ -214,6 +219,9 @@ def get_courses_for_term(term_code):
                 meetings = schedule.find('meetings')
             except:
                 # TODO: CAN'T DO THIS: STILL NEED TO CREATE OBJECT BEFORE RETURNS
+                # thought in fact, these fields are never empty;
+                # for courses that don't have meetings, the stream returns
+                # meetings with invalid times
                 print 'no schedule or meetings for ' + str(section_object.course)
                 return
     
@@ -276,7 +284,4 @@ def get_courses_for_term(term_code):
             if elem.tag.startswith(ns):
                 elem.tag = elem.tag[nsl:]
 
-    def get_rating(course):
-        pass
-    
     scrape_all()
