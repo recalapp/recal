@@ -20,6 +20,8 @@ class CourseService {
             private courseResource) {
     }
 
+    // cache into local storage service
+    // wrap around with a promise
     public getBySemester(termCode: string) {
         var temp = this.localStorageService.get('courses-' + termCode);
         if (temp != null && Array.isArray(temp)) {

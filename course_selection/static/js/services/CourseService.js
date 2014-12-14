@@ -8,6 +8,8 @@ define(["require", "exports"], function(require, exports) {
             this.localStorageService = localStorageService;
             this.courseResource = courseResource;
         }
+        // cache into local storage service
+        // wrap around with a promise
         CourseService.prototype.getBySemester = function (termCode) {
             var _this = this;
             var temp = this.localStorageService.get('courses-' + termCode);

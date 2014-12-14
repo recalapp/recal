@@ -8,6 +8,9 @@ body {
   font-weight: 300;
   border-radius: 0;
 }
+#semesterContainer {
+  height: 95vh;
+}
 #container {
   padding-left: 1vw;
   height: 100vh;

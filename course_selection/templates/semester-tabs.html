@@ -1,6 +1,6 @@
 {% load staticfiles %}
 {% verbatim %}
-<div ng-controller="SemCtrl as semCtrl">
+<div ng-controller="SemCtrl as semCtrl" id="semesterContainer">
     <tabset>
         <tab ng-repeat = "semester in semesters"
          active = semester.active

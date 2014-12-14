@@ -15,76 +15,107 @@
                 </input>
             </form>
     </div>
-    <div id="searchResultsContainer">
-        <h4 class="row" ng-hide="query.length == 0">Search Results</h4>
-        <div class="row course-panels-container"
-             ng-hide="query.length == 0"
-             >
-             <div id="unenrolledCourses" class="panel-group">
-                 <div class="panel panel-default course-panel" 
-                      ng-repeat="course in data.courses | courseSearch:query 
-                      | orderBy: 'primary_listing' track by course.id"  
-                      ng-mouseover="searchCtrl.onMouseOver(course)" 
-                      ng-mouseleave="searchCtrl.onMouseLeave(course)" 
-                      >
-                      <div class="cover"
-                           ng-init="showButtons = false"
-                           ng-click="showButtons = !showButtons"
-                           ng-class="{showTags: showButtons, hideTags: !showButtons}"
-                           >
-                         <div>
-                             <div class="course-panel-title">
-                                 <div class="course-listings" 
-                                      ng-bind-html="course.all_listings | highlight: query"
-                                      >
-                                 </div>
-                                     <div class="course-title" 
-                                          ng-bind-html="course.title | highlight: query">
-                                     </div>
-                             </div>
-                         </div>
+    <div ng-show="query.length == 0 && data.enrolledCourses.length == 0">
+        <h4 class="row">Recommended Courses</h4>
+        <div class="row course-panels-container">
+            <div id="recommendedCourses" class="panel-group">
+                <div class="panel panel-default course-panel" 
+                     ng-repeat="course in data.courses | orderBy: '-rating' | limitTo: 20"  
+                     ng-mouseover="searchCtrl.onMouseOver(course)" 
+                     ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                     >
+                     <div class="cover"
+                          ng-init="showButtons = false"
+                          ng-click="showButtons = !showButtons"
+                          ng-class="{showTags: showButtons, hideTags: !showButtons}"
+                          >
+                          <div>
+                              <div class="course-panel-title">
+                                  <div class="course-listings" 
+                                       ng-bind="course.all_listings"
+                                       ></div>
+                                  <div class="course-title" 
+                                       ng-bind="course.title"></div>
+                              </div>
+                          </div>
                      </div>
                      <div class="more-info-tag" ng-bind-html="searchCtrl.getEasyPceLink(course)"></div>
                      <div class="enroll-tag"
-                          ng-click="searchCtrl.toggleEnrollment(course)"> <p>Enroll </p></div>
-                 </div>
-             </div>
-        </div>
-    </div>
-    <div id="enrolledCoursesContainer">
-        <h4 class="row" ng-hide="data.enrolledCourses.length == 0">Enrolled Courses</h4>
-        <div class="row enrolled-courses-container"
-             ng-hide="data.enrolledCourses.length == 0">
-            <div id="enrolledCourses" class="panel-group">
-                <div class="panel panel-default course-panel enrolled-course-panel" 
-                     ng-class="{confirmed: searchCtrl.isConfirmed(course), unconfirmed: !searchCtrl.isConfirmed(course)}"
-                     ng-repeat="course in data.enrolledCourses
-                     | orderBy: 'primary_listing' track by course.id"  
-                     ng-style="searchCtrl.getBorderStyle(course)"
-                     >
-                    <div class="cover"
-                     ng-init="showButtons = false"
-                     ng-click="showButtons = !showButtons"
-                     ng-style="searchCtrl.getBackgroundAndTextStyle(course)"
-                     ng-class="{showTags: showButtons, hideTags: !showButtons}">
-                        <div>
-                            <div class="course-panel-title">
-                                <div class="course-listings" 
-                                     ng-bind="course.all_listings"
-                                     >
-                                </div>
-                                    <div class="course-title" 
-                                         ng-bind="course.title">
-                                    </div>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="more-info-tag" ng-bind-html="searchCtrl.getEasyPceLink(course)"></div>
-                    <div class="unenroll-tag"
-                         ng-click="searchCtrl.toggleEnrollment(course)"><p>Unenroll</p></div>
+                          ng-click="searchCtrl.toggleEnrollment(course)"> <p>Enroll</p></div>
                 </div>
             </div>
         </div>
     </div>
+    <div id="enrolledCoursesContainer">
+        <div ng-hide="data.enrolledCourses.length == 0">
+            <h4 class="row">Enrolled Courses</h4>
+            <div class="row enrolled-courses-container">
+                <div id="enrolledCourses" class="panel-group">
+                    <div class="panel panel-default course-panel enrolled-course-panel" 
+                         ng-class="{confirmed: searchCtrl.isConfirmed(course), unconfirmed: !searchCtrl.isConfirmed(course)}"
+                         ng-repeat="course in data.enrolledCourses
+                         | orderBy: 'primary_listing' track by course.id"  
+                         ng-style="searchCtrl.getBorderStyle(course)"
+                         >
+                         <div class="cover"
+                              ng-init="showButtons = false"
+                              ng-click="showButtons = !showButtons"
+                              ng-style="searchCtrl.getBackgroundAndTextStyle(course)"
+                              ng-class="{showTags: showButtons, hideTags: !showButtons}">
+                             <div>
+                                 <div class="course-panel-title">
+                                     <div class="course-listings" 
+                                          ng-bind="course.all_listings"
+                                          >
+                                     </div>
+                                         <div class="course-title" 
+                                              ng-bind="course.title">
+                                         </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="more-info-tag" ng-bind-html="searchCtrl.getEasyPceLink(course)"></div>
+                         <div class="unenroll-tag"
+                              ng-click="searchCtrl.toggleEnrollment(course)"><p>Unenroll</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="searchResultsContainer">
+        <div ng-hide="query.length == 0">
+            <h4 class="row">Search Results</h4>
+            <div class="row course-panels-container">
+                 <div id="unenrolledCourses" class="panel-group">
+                     <div class="panel panel-default course-panel" 
+                          ng-repeat="course in data.courses | courseSearch:query 
+                          | orderBy: 'primary_listing' track by course.id"  
+                          ng-mouseover="searchCtrl.onMouseOver(course)" 
+                          ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                          >
+                          <div class="cover"
+                               ng-init="showButtons = false"
+                               ng-click="showButtons = !showButtons"
+                               ng-class="{showTags: showButtons, hideTags: !showButtons}"
+                               >
+                               <div>
+                                   <div class="course-panel-title">
+                                       <div class="course-listings" 
+                                            ng-bind-html="course.all_listings | highlight: query"
+                                            ></div>
+                                        <div class="course-title" 
+                                            ng-bind-html="course.title | highlight: query"></div>
+                                   </div>
+                               </div>
+                          </div>
+                          <div class="more-info-tag" ng-bind-html="searchCtrl.getEasyPceLink(course)"></div>
+                          <div class="enroll-tag"
+                               ng-click="searchCtrl.toggleEnrollment(course)"> <p>Enroll </p></div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
 {% endverbatim %}

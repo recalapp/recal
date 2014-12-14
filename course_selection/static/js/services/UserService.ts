@@ -1,26 +1,11 @@
 class UserService {
-    public static $inject = ['$resource'];
-    private userResource;
+    public static $inject = ['UserResource'];
 
-    constructor(private $resource) {
-        this.userResource = this.$resource('/course_selection/api/v1/user/:id',
-                {},
-                {
-                    getUser: {
-                        method: 'GET',
-                        isArray: false,
-                        transformResponse: this.getFirstObject
-                    }
-                });
+    constructor(private userResource) {
     }
 
     public getUser(netid: string): any {
         return this.userResource.getUser({'netid': netid});
-    }
-
-    private getFirstObject(data, header) {
-        var parsed = JSON.parse(data);
-        return parsed.objects[0];
     }
 }
 

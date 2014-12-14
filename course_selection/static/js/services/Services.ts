@@ -3,6 +3,8 @@
 import Module = require('../Module');
 import ResourceBuilder = require('./ResourceBuilder');
 import CourseService = require('./CourseService');
+import UserService = require('./UserService');
+import ScheduleService = require('./ScheduleService');
 
 var niceServices = angular.module('niceServices', []);
 
@@ -14,5 +16,7 @@ niceServices.factory('ColorResource', ["ResourceBuilder", (builder: ResourceBuil
 niceServices.factory('UserResource', ['ResourceBuilder', (builder: ResourceBuilder) => builder.getUserResource()]);
 
 niceServices.service('CourseService', CourseService);
+niceServices.service('UserService', UserService);
+niceServices.service('ScheduleService', ScheduleService);
 
 export = niceServices;

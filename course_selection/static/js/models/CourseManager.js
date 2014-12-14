@@ -21,6 +21,9 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             };
             this.init();
         }
+        ///////////////////////////////////////////////////////////
+        // Initialization
+        //////////////////////////////////////////////////////////
         CourseManager.prototype.init = function () {
             this.initData();
             this.initWatches();
@@ -41,28 +44,18 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 if (newValue === oldValue) {
                     return;
                 }
-                // do stuff
+                // do stuff with syncing
             }, true);
         };
 
-        ///////////////////////////////////////////////////////////
-        // Initialization
-        //////////////////////////////////////////////////////////
-        // TODO: figure out how to make caching behave nicely
-        // in particular, how often should i clear cache?
-        // how often should i clear local storage?
-        // do i even need local storage?
+        // TODO:
+        // map raw data into more flexible data structure
         CourseManager.prototype.loadCourses = function () {
             var _this = this;
-            this.courseService.getBySemester(this.termCode).then(function (data) {
-                _this.onLoaded(data);
-            });
-        };
-
-        // TODO: verify that the transformresponse function works as intended
-        CourseManager.prototype.onLoaded = function (courses) {
-            this.data.courses = courses.map(function (course) {
-                return new Course(course.title, course.description, course.course_listings, course.id, course.sections, course.semester);
+            this.courseService.getBySemester(this.termCode).then(function (courses) {
+                _this.data.courses = courses.map(function (course) {
+                    return new Course(course.title, course.description, course.course_listings, course.id, course.sections, course.semester);
+                });
             });
         };
 

@@ -33,6 +33,9 @@ class CourseManager {
         this.init();
     }
 
+    ///////////////////////////////////////////////////////////
+    // Initialization
+    //////////////////////////////////////////////////////////
     private init() {
         this.initData();
         this.initWatches();
@@ -53,35 +56,25 @@ class CourseManager {
                 return;
             }
 
-            // do stuff
+            // do stuff with syncing
         }, true);
 
     }
 
-    ///////////////////////////////////////////////////////////
-    // Initialization
-    //////////////////////////////////////////////////////////
-    // TODO: figure out how to make caching behave nicely
-    // in particular, how often should i clear cache?
-    // how often should i clear local storage?
-    // do i even need local storage?
+    // TODO:
+    // map raw data into more flexible data structure
     private loadCourses() {
-        this.courseService.getBySemester(this.termCode).then((data) => {
-            this.onLoaded(data);
-        });
-    }
-
-    // TODO: verify that the transformresponse function works as intended
-    private onLoaded(courses) {
-        this.data.courses = courses.map((course) => {
-            return new Course(
-                    course.title,
-                    course.description,
-                    course.course_listings,
-                    course.id,
-                    course.sections,
-                    course.semester
-                    );
+        this.courseService.getBySemester(this.termCode).then((courses) => {
+            this.data.courses = courses.map((course) => {
+                return new Course(
+                        course.title,
+                        course.description,
+                        course.course_listings,
+                        course.id,
+                        course.sections,
+                        course.semester
+                        );
+            });
         });
     }
 

@@ -5,9 +5,8 @@ declare var username: string;
 class MainCtrl {
     public static $inject = [
         '$scope',
-        'ScheduleResource',
-        'CourseResource',
-        'UserResource',
+        'ScheduleService',
+        'UserService',
     ];
 
     private data;
@@ -15,9 +14,8 @@ class MainCtrl {
 
     constructor(
             private $scope,
-            private scheduleResource,
-            private courseResource,
-            private userResource
+            private scheduleService,
+            private userService
             )
     {
         this.init();
@@ -40,8 +38,8 @@ class MainCtrl {
     }
 
     public loadUserData() {
-        this.data.user = this.userResource.getByNetId({netid: this.username});
-        this.data.schedules = this.scheduleResource.getByUser({user__netid: this.username})    
+        this.data.user = this.userService.getByNetId(this.username);
+        this.data.schedules = this.scheduleService.getByUser(this.username);   
     }
 
 }
