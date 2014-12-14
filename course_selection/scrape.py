@@ -160,12 +160,16 @@ def get_courses_for_term(term_code):
         # add sections and events
         create_or_update_sections(course, course_object)
     
+    def get_primary_listing(course, subject):
+        sub = subject.find('code').text
+        catalog = course.find('catalog_number').text
+        return (sub, catalog)
+
     def create_or_update_listings(course, subject, course_object):
         """ Create or, if already exists, update a course
     
         """
-        sub = subject.find('code').text
-        catalog = course.find('catalog_number').text
+        sub, catalog = get_primary_listing(course, subject)
         new_listing, created = Course_Listing.objects.get_or_create(
             course=course_object,
             dept=sub,
@@ -271,5 +275,8 @@ def get_courses_for_term(term_code):
         for elem in doc.getiterator():
             if elem.tag.startswith(ns):
                 elem.tag = elem.tag[nsl:]
+
+    def get_rating(course):
+        pass
     
     scrape_all()

@@ -52,6 +52,7 @@ class Course(models.Model):
 
     # fields
     title = models.TextField()
+    rating = models.FloatField(default=0)
     description = models.TextField()
     registrar_id = models.CharField(max_length=20)
 
