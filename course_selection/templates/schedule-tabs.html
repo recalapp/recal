@@ -7,8 +7,7 @@
          class="schedule-tab-heading"
          select="scheduleCtrl.setSelectedSchedule($index)"
     >
-    <tab-heading class="ng-cloak"> 
-        {{ schedule.name}} 
+    <tab-heading class="ng-cloak" ng-bind="schedule.name"> 
          <a ng-click="scheduleCtrl.confirmRemoveSchedule($index)" href="">
              <i class="fa fa-times remove-icon"></i>
          </a>
