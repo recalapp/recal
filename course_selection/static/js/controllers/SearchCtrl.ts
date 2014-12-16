@@ -87,14 +87,6 @@ class SearchCtrl {
             return 'blue';
         }
     }
-
-    public getEasyPceLink(course: ICourse): string {
-        //var color = this.getLinkColor(course);
-        var link = "http://easypce.com/courses/" + course.primary_listing;
-        return this.$sce.trustAsHtml(
-                "<a target='_blank' href='" + link + "'" 
-                + ">" + "Info" + "</a>");
-    }
 }
 
 export = SearchCtrl;

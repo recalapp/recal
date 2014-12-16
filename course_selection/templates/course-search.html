@@ -2,18 +2,16 @@
 <div id="searchColumn" class="col-md-4 column" 
                        ng-controller="SearchCtrl as searchCtrl">
     <div class="row" id="searchBarContainer">
-            <form class="form-search">
-                <input id="searchBar"
-                       type="text" 
-                   ng-model="query" 
-                   ng-change="searchCtrl.queryOnChange()"
-                   ng-init="query=''"
-                   select-on-click
-                   auto-focus
-                   focus="true"
-                   placeholder="Ex: COS 126, stories, WWS, >4, etc.">
-                </input>
-            </form>
+        <input id="searchBar"
+               type="text" 
+               ng-model="query" 
+               ng-change="searchCtrl.queryOnChange()"
+               ng-init="query=''"
+               select-on-click
+               auto-focus
+               focus="true"
+               placeholder="Search">
+        </input>
     </div>
     <div ng-show="query.length == 0 && data.enrolledCourses.length == 0">
         <h4 class="row">Recommended Courses</h4>
@@ -39,9 +37,9 @@
                               </div>
                           </div>
                      </div>
-                     <div class="more-info-tag" ng-bind-html="searchCtrl.getEasyPceLink(course)"></div>
+                     <div class="more-info-tag"><i class="fa fa-info"></i></div>
                      <div class="enroll-tag"
-                          ng-click="searchCtrl.toggleEnrollment(course)"> <p>Enroll</p></div>
+                          ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
                 </div>
             </div>
         </div>
@@ -74,9 +72,9 @@
                                  </div>
                              </div>
                          </div>
-                         <div class="more-info-tag" ng-bind-html="searchCtrl.getEasyPceLink(course)"></div>
+                         <div class="more-info-tag"><i class="fa fa-info"></i></div>
                          <div class="unenroll-tag"
-                              ng-click="searchCtrl.toggleEnrollment(course)"><p>Unenroll</p></div>
+                              ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-minus"></i></div>
                     </div>
                 </div>
             </div>
@@ -86,36 +84,36 @@
         <div ng-hide="query.length == 0">
             <h4 class="row">Search Results</h4>
             <div class="row course-panels-container">
-                 <div id="unenrolledCourses" class="panel-group">
-                     <div class="panel panel-default course-panel" 
-                          ng-repeat="course in data.courses | courseSearch:query 
-                          | orderBy: 'primary_listing' track by course.id"  
-                          ng-mouseover="searchCtrl.onMouseOver(course)" 
-                          ng-mouseleave="searchCtrl.onMouseLeave(course)" 
-                          >
-                          <div class="cover"
-                               ng-init="showButtons = false"
-                               ng-click="showButtons = !showButtons"
-                               ng-class="{showTags: showButtons, hideTags: !showButtons}"
-                               >
-                               <div>
-                                   <div class="course-panel-title">
-                                       <div class="course-listings" 
-                                            ng-bind-html="course.all_listings | highlight: query"
-                                            ></div>
-                                        <div class="course-title" 
-                                            ng-bind-html="course.title | highlight: query"></div>
-                                   </div>
-                               </div>
-                          </div>
-                          <div class="more-info-tag" ng-bind-html="searchCtrl.getEasyPceLink(course)"></div>
-                          <div class="enroll-tag"
-                               ng-click="searchCtrl.toggleEnrollment(course)"> <p>Enroll </p></div>
-                     </div>
-                 </div>
+                <div id="unenrolledCourses" class="panel-group">
+                    <div class="panel panel-default course-panel" 
+                         ng-repeat="course in data.courses | courseSearch:query 
+                         | orderBy: 'primary_listing' track by course.id"  
+                         ng-mouseover="searchCtrl.onMouseOver(course)" 
+                         ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                         >
+                         <div class="cover"
+                              ng-init="showButtons = false"
+                              ng-click="showButtons = !showButtons"
+                              ng-class="{showTags: showButtons, hideTags: !showButtons}"
+                              >
+                              <div>
+                                  <div class="course-panel-title">
+                                      <div class="course-listings" 
+                                           ng-bind-html="course.all_listings | highlight: query"
+                                           ></div>
+                                      <div class="course-title" 
+                                           ng-bind-html="course.title | highlight: query"></div>
+                                  </div>
+                              </div>
+                         </div>
+                         <div class="more-info-tag"><i class="fa fa-info"></i></div>
+                         <div class="enroll-tag"
+                              ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    
+
 </div>
 {% endverbatim %}

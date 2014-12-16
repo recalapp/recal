@@ -11,6 +11,11 @@
 @search-bar-height: 4vh;
 @course-panel-heading-height: 6vh;
 @course-panel-body-height: 19vh;
+@tag-width: 10%;
+
+#searchBar:focus::-webkit-input-placeholder {
+    color: transparent;
+}
 
 .course-panel {
     min-height: 40px;
@@ -116,19 +121,15 @@
     position: absolute;
     top: 0;
     height: 100%;
-    width: 20%;
-    a, p {
-        line-height: 100%;
+    width: @tag-width;
+    i {
         top: 25%;
-        height: 75%;
         width: 100%;
-        word-wrap: break-word;
-        text-align: center;
         position: absolute;
+        text-align: center;
         font-size: 15px;
         color: white;
         cursor: pointer;
-        white-space: pre-wrap;
     }
 }
 
@@ -139,7 +140,7 @@
 
 .second-rightmost-tag {
     .absolute-tag();
-    right: 20%;
+    right: @tag-width;
 }
 
 .enroll-tag {
@@ -170,8 +171,8 @@
 
 .showTags {
   position: absolute;
-  left: -40%;
-  right: 40%;
+  left: -20%;
+  right: 20%;
 }
 
 .showTags-add {

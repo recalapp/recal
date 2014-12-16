@@ -6,6 +6,8 @@ import IColorPalette = require('../interfaces/IColorPalette');
 import Section = require('../models/Section');
 
 class Course implements ICourse {
+    private static EASYPCE_BASE_URL: string = "http://easypce.com/courses/";
+
     public title: string;
     public description: string;
     public course_listings: Array<ICourseListing>;
@@ -18,6 +20,7 @@ class Course implements ICourse {
     public colors: IColorPalette;
     public enrolled: boolean;
     public rating: number;
+    public easypce_link: string;
 
     constructor(title, description, course_listings,
             id, sections, semester, enrolled?: boolean) {
@@ -34,6 +37,7 @@ class Course implements ICourse {
         this.colors = null;
         this.rating = +(Math.random() * 2 + 3).toPrecision(3);
         this.enrolled = enrolled ? enrolled : false;
+        this.easypce_link = Course.EASYPCE_BASE_URL + this.primary_listing;
     }
 
     private getSections(input): Array<ISection> {

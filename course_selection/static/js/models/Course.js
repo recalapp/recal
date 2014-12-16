@@ -14,6 +14,7 @@ define(["require", "exports", '../models/Section'], function(require, exports, S
             this.colors = null;
             this.rating = +(Math.random() * 2 + 3).toPrecision(3);
             this.enrolled = enrolled ? enrolled : false;
+            this.easypce_link = Course.EASYPCE_BASE_URL + this.primary_listing;
         }
         Course.prototype.getSections = function (input) {
             var sections = [];
@@ -72,6 +73,7 @@ define(["require", "exports", '../models/Section'], function(require, exports, S
                 return section.id == section_id;
             })[0];
         };
+        Course.EASYPCE_BASE_URL = "http://easypce.com/courses/";
         return Course;
     })();
 

@@ -70,6 +70,8 @@ class SemCtrl {
         return this.getNewSemesterTermCode() <= SemCtrl.LAST_AVAILABLE_TERM_CODE;
     }
  
+    // TODO: this will only give you semesters after
+    // the last existing semester
     private getNewSemesterTermCode(): number {
         if (this.semesters.length == 0) {
             return SemCtrl.CURRENT_SEMESTER_TERM_CODE;
