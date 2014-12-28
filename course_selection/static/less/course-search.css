@@ -85,6 +85,7 @@
   z-index: 10;
 }
 .absolute-tag {
+  cursor: pointer;
   position: absolute;
   top: 0;
   height: 100%;
@@ -100,6 +101,7 @@
   cursor: pointer;
 }
 .rightmost-tag {
+  cursor: pointer;
   position: absolute;
   top: 0;
   height: 100%;
@@ -116,6 +118,7 @@
   cursor: pointer;
 }
 .second-rightmost-tag {
+  cursor: pointer;
   position: absolute;
   top: 0;
   height: 100%;
@@ -132,6 +135,7 @@
   cursor: pointer;
 }
 .enroll-tag {
+  cursor: pointer;
   position: absolute;
   top: 0;
   height: 100%;
@@ -149,6 +153,7 @@
   cursor: pointer;
 }
 .unenroll-tag {
+  cursor: pointer;
   position: absolute;
   top: 0;
   height: 100%;
@@ -167,6 +172,7 @@
   cursor: pointer;
 }
 .more-info-tag {
+  cursor: pointer;
   position: absolute;
   top: 0;
   height: 100%;
