@@ -41,6 +41,10 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
+        SearchCtrl.prototype.getStyles = function (course) {
+            return angular.extend({}, this.getBorderStyle(course), this.getBackgroundAndTextStyle(course));
+        };
+
         SearchCtrl.prototype.getBorderStyle = function (course) {
             return {
                 'border-color': course.colors.dark

@@ -62,6 +62,11 @@ class SearchCtrl {
         }
     }
 
+    public getStyles(course): any {
+        return angular.extend({}, this.getBorderStyle(course),
+                this.getBackgroundAndTextStyle(course));
+    }
+
     public getBorderStyle(course): any {
         return {
             'border-color': course.colors.dark

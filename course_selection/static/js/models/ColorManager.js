@@ -6,7 +6,6 @@ define(["require", "exports"], function(require, exports) {
             this.initUsableColors();
             this.initCourseColorMap();
         }
-        // get course color map for this user, this schedule
         ColorManager.prototype.initCourseColorMap = function () {
         };
 
@@ -32,7 +31,6 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
-        // someone is done using this color. lower count for color
         ColorManager.prototype.addColor = function (color) {
             for (var i = 0; i < this.usableColors.length; i++) {
                 if (color.id == this.usableColors[i].id) {
@@ -46,10 +44,6 @@ define(["require", "exports"], function(require, exports) {
             return ColorManager.previewColor;
         };
 
-        // TODO: what if initUsableColors takes too long
-        // returns a color of minimum usage in the calendar in 2 passes
-        // e.g., if 2 colors out of 10 colors have been used once,
-        // this function returns one of the 8 colors not used yet.
         ColorManager.prototype.nextColor = function () {
             var currMin = Number.MAX_VALUE;
             var possibleColorIndices = [];
@@ -78,3 +72,4 @@ define(["require", "exports"], function(require, exports) {
     
     return ColorManager;
 });
+//# sourceMappingURL=ColorManager.js.map

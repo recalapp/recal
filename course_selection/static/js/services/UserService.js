@@ -13,3 +13,4 @@ define(["require", "exports"], function(require, exports) {
     
     return UserService;
 });
+//# sourceMappingURL=UserService.js.map

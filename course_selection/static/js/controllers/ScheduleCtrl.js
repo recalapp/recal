@@ -16,7 +16,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
             this.schedules = [];
 
-            // this.restoreUserSchedules();
             this.$scope.schedules = this.schedules;
 
             this.$scope.selectedSchedule = -1;
@@ -68,8 +67,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
         ScheduleCtrl.prototype.askForNewScheduleName = function (prevIdx) {
             var _this = this;
-            // the modal is "dismissable" if we have an open schedule
-            // already, which means prevIdx != undefined
             var canDismiss = prevIdx != -1;
             var modalInstance = this.$modal.open({
                 templateUrl: '/static/templates/newScheduleModal.html',
@@ -136,3 +133,4 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
     
     return ScheduleCtrl;
 });
+//# sourceMappingURL=ScheduleCtrl.js.map

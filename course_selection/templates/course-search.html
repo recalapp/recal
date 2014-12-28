@@ -21,25 +21,21 @@
                      ng-repeat="course in data.courses | orderBy: '-rating' | limitTo: 20"  
                      ng-mouseover="searchCtrl.onMouseOver(course)" 
                      ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                     ng-init="showTags = false"
+                     ng-click="showTags = !showTags"
                      >
-                     <div class="cover"
-                          ng-init="showButtons = false"
-                          ng-click="showButtons = !showButtons"
-                          ng-class="{showTags: showButtons, hideTags: !showButtons}"
-                          >
-                          <div>
-                              <div class="course-panel-title">
-                                  <div class="course-listings" 
-                                       ng-bind="course.all_listings"
-                                       ></div>
-                                  <div class="course-title" 
-                                       ng-bind="course.title"></div>
-                              </div>
-                          </div>
+                     <div class="course-panel-title">
+                         <div class="course-listings" 
+                              ng-bind="course.all_listings"></div>
+                         <div class="course-title" 
+                              ng-bind="course.title"></div>
                      </div>
-                     <div class="more-info-tag"><i class="fa fa-info"></i></div>
-                     <div class="enroll-tag"
-                          ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+                     <div ng-show="showTags">
+                         <div class="more-info-tag"
+                              ><i class="fa fa-info"></i></div>
+                         <div class="enroll-tag" 
+                              ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+                     </div>
                 </div>
             </div>
         </div>
@@ -53,28 +49,23 @@
                          ng-class="{confirmed: searchCtrl.isConfirmed(course), unconfirmed: !searchCtrl.isConfirmed(course)}"
                          ng-repeat="course in data.enrolledCourses
                          | orderBy: 'primary_listing' track by course.id"  
-                         ng-style="searchCtrl.getBorderStyle(course)"
+                         ng-style="searchCtrl.getStyles(course)"
+                         ng-init="showTags = false"
+                         ng-click="showTags = !showTags"
                          >
-                         <div class="cover"
-                              ng-init="showButtons = false"
-                              ng-click="showButtons = !showButtons"
-                              ng-style="searchCtrl.getBackgroundAndTextStyle(course)"
-                              ng-class="{showTags: showButtons, hideTags: !showButtons}">
-                             <div>
-                                 <div class="course-panel-title">
-                                     <div class="course-listings" 
-                                          ng-bind="course.all_listings"
-                                          >
-                                     </div>
-                                         <div class="course-title" 
-                                              ng-bind="course.title">
-                                         </div>
-                                 </div>
+                         <div class="course-panel-title">
+                             <div class="course-listings" 
+                                  ng-bind="course.all_listings"
+                                  ></div>
+                             <div class="course-title" 
+                                  ng-bind="course.title">
                              </div>
                          </div>
-                         <div class="more-info-tag"><i class="fa fa-info"></i></div>
-                         <div class="unenroll-tag"
-                              ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-minus"></i></div>
+                         <div ng-show="showTags">
+                             <div class="more-info-tag"><i class="fa fa-info"></i></div>
+                             <div class="unenroll-tag"
+                                  ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-minus"></i></div>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -90,25 +81,21 @@
                          | orderBy: 'primary_listing' track by course.id"  
                          ng-mouseover="searchCtrl.onMouseOver(course)" 
                          ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                         ng-init="showTags = false"
+                         ng-click="showTags = !showTags"
                          >
-                         <div class="cover"
-                              ng-init="showButtons = false"
-                              ng-click="showButtons = !showButtons"
-                              ng-class="{showTags: showButtons, hideTags: !showButtons}"
-                              >
-                              <div>
-                                  <div class="course-panel-title">
-                                      <div class="course-listings" 
-                                           ng-bind-html="course.all_listings | highlight: query"
-                                           ></div>
-                                      <div class="course-title" 
-                                           ng-bind-html="course.title | highlight: query"></div>
-                                  </div>
-                              </div>
+                         <div class="course-panel-title">
+                             <div class="course-listings" 
+                                  ng-bind="course.all_listings"></div>
+                             <div class="course-title" 
+                                  ng-bind="course.title"></div>
                          </div>
-                         <div class="more-info-tag"><i class="fa fa-info"></i></div>
-                         <div class="enroll-tag"
-                              ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+                         <div ng-show="showTags">
+                             <div class="more-info-tag"
+                                  ><i class="fa fa-info"></i></div>
+                             <div class="enroll-tag" 
+                                  ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+                         </div>
                     </div>
                 </div>
             </div>

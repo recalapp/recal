@@ -19,7 +19,6 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
             };
         }]);
 
-    // TODO: this is not really autofocus; still requires focus="true" in the html
     niceDirectives.addDirective('autoFocus', [
         '$timeout', function ($timeout) {
             return {
@@ -41,3 +40,4 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
     
     return niceDirectives;
 });
+//# sourceMappingURL=Directives.js.map

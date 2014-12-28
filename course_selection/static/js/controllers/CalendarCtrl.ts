@@ -222,9 +222,6 @@ class CalendarCtrl {
                         continue;
                     }
 
-                    console.log('section type: ' + section_type + ' has changed in course '
-                            + course_id);
-
                     if (curr[section_type] == null) {
                         this.compositeEventSources.previewAllCourseSection(course_id, section_type);
                     }
