@@ -44,18 +44,21 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 if (newValue === oldValue) {
                     return;
                 }
+
+                console.log('test');
                 // do stuff with syncing
             }, true);
         };
 
-        // TODO:
         // map raw data into more flexible data structure
+        CourseManager.prototype.transformCourse = function (rawCourse) {
+            return new Course(rawCourse.title, rawCourse.description, rawCourse.course_listings, rawCourse.id, rawCourse.sections, rawCourse.semester);
+        };
+
         CourseManager.prototype.loadCourses = function () {
             var _this = this;
             this.courseService.getBySemester(this.termCode).then(function (courses) {
-                _this.data.courses = courses.map(function (course) {
-                    return new Course(course.title, course.description, course.course_listings, course.id, course.sections, course.semester);
-                });
+                _this.data.courses = courses.map(_this.transformCourse);
             });
         };
 
@@ -137,6 +140,8 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             list.splice(idx, 1);
         };
 
+        // TODO: this is a linear traversal. Optimize if this causes
+        // performance issues
         CourseManager.prototype.courseIdxInList = function (course, list) {
             for (var i = 0; i < list.length; i++) {
                 if (course.id == list[i].id) {
@@ -163,8 +168,6 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
 
         CourseManager.prototype.enrollSection = function (section) {
             this.data.enrolledSections[section.course_id][section.section_type] = section.id;
-            // try posting data here
-            //this.data.enrolledSections.$save();
         };
 
         CourseManager.prototype.isCourseAllSectionsEnrolled = function (course) {

@@ -56,25 +56,27 @@ class CourseManager {
                 return;
             }
 
+            console.log('test');
             // do stuff with syncing
         }, true);
 
     }
 
-    // TODO:
     // map raw data into more flexible data structure
+    private transformCourse(rawCourse): ICourse {
+        return new Course(
+                rawCourse.title,
+                rawCourse.description,
+                rawCourse.course_listings,
+                rawCourse.id,
+                rawCourse.sections,
+                rawCourse.semester
+                );
+    }
+
     private loadCourses() {
         this.courseService.getBySemester(this.termCode).then((courses) => {
-            this.data.courses = courses.map((course) => {
-                return new Course(
-                        course.title,
-                        course.description,
-                        course.course_listings,
-                        course.id,
-                        course.sections,
-                        course.semester
-                        );
-            });
+            this.data.courses = courses.map(this.transformCourse); 
         });
     }
 
@@ -173,6 +175,8 @@ class CourseManager {
         list.splice(idx, 1);
     }
 
+    // TODO: this is a linear traversal. Optimize if this causes
+    // performance issues
     private courseIdxInList(course, list) {
         for (var i = 0; i < list.length; i++) {
             if (course.id == list[i].id) {
@@ -200,9 +204,6 @@ class CourseManager {
 
     public enrollSection(section: ISection): void {
         this.data.enrolledSections[section.course_id][section.section_type] = section.id;
-
-        // try posting data here
-        //this.data.enrolledSections.$save();
     }
 
     public isCourseAllSectionsEnrolled(course: ICourse): boolean {
