@@ -47,6 +47,7 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
 
                 console.log('test');
                 // do stuff with syncing
+                // this.data.enrolledCourses is up to date
             }, true);
         };
 

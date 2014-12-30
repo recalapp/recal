@@ -58,6 +58,7 @@ class CourseManager {
 
             console.log('test');
             // do stuff with syncing
+            // this.data.enrolledCourses is up to date
         }, true);
 
     }

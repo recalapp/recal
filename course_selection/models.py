@@ -24,7 +24,7 @@ class Semester(models.Model):
     def __unicode__(self):
         end_year = int(self.term_code[1:3])
         start_year = end_year - 1
-        if self.term_code[3] is '2':
+        if int(self.term_code[3]) == 2:
             sem = 'Fall'
         else:
             sem = 'Spring'
@@ -124,7 +124,7 @@ class Meeting(models.Model):
     location = models.CharField(max_length=50)
     
 class Course_Listing(models.Model):
-    course = models.ForeignKey(Course, related_name="course_listings")
+    course = models.ForeignKey(Course)#, related_name="course_listings")
     # Even though the max_length should be 3~4, there are extreme cases.
     dept = models.CharField(max_length=10)
     number = models.CharField(max_length=10)

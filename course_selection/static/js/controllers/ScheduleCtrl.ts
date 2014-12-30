@@ -33,33 +33,61 @@ class ScheduleCtrl {
         this.$scope.canAddNewSchedules = this.semester.current;
 
         this.schedules = [];
-        // this.restoreUserSchedules();
+        this.restoreUserSchedules();
         this.$scope.schedules = this.schedules;
 
         this.$scope.selectedSchedule = -1;
     }
 
     private restoreUserSchedules() {
-        var prevSchedules = this.localStorageService.get('schedules-' + this.semester.term_code);
-        if (prevSchedules != null) {
-            this.schedules = prevSchedules.map((schedule) => {
-                var colorManager = new ColorManager(this.colorResource);
-                var courseManager = new CourseManager(
-                        this.$rootScope,
-                        this.courseService, 
-                        this.scheduleResource,
-                        this.localStorageService, 
-                        colorManager,
-                        this.semester.term_code);
-                return {
-                    id: schedule.id,
-                    name: schedule.name,
-                    active: schedule.active,
-                    courseManager: courseManager,
-                    colorManager: colorManager
-                };
-            });
-        }
+        var gettingPrevSchedules = this.$scope.$parent.userData.schedules.$promise;
+        gettingPrevSchedules.then((schedules) => {
+            for (var i = 0; i < schedules.length; i++) {
+                var schedule = schedules[i];
+                if (schedule.semester.term_code == this.semester.term_code) {
+                    // TODO: recover available colors
+                    var availableColors = schedule.available_colors;
+                    var colorManager = new ColorManager(this.colorResource);
+                    var courseManager = new CourseManager(
+                            this.$rootScope,
+                            this.courseService, 
+                            this.scheduleResource,
+                            this.localStorageService, 
+                            colorManager,
+                            this.semester.term_code);
+                    var newSchedule = {
+                        id: schedule.id,
+                        title: schedule.title,
+                        active: true,
+                        courseManager: courseManager,
+                        colorManager: colorManager
+                    };
+
+                    this.setAllInactive();
+                    this.schedules.push(newSchedule);
+                }
+            }
+        });
+
+        // if (prevSchedules != null) {
+        //     this.schedules = prevSchedules.map((schedule) => {
+        //         var colorManager = new ColorManager(this.colorResource);
+        //         var courseManager = new CourseManager(
+        //                 this.$rootScope,
+        //                 this.courseService, 
+        //                 this.scheduleResource,
+        //                 this.localStorageService, 
+        //                 colorManager,
+        //                 this.semester.term_code);
+        //         return {
+        //             id: schedule.id,
+        //             name: schedule.name,
+        //             active: schedule.active,
+        //             courseManager: courseManager,
+        //             colorManager: colorManager
+        //         };
+        //     });
+        // }
     }
 
     public setAllInactive() {
@@ -69,7 +97,7 @@ class ScheduleCtrl {
     }
 
     public confirmRemoveSchedule(index: number) {
-        var message: string = "You want to delete the schedule: " + this.schedules[index].name;
+        var message: string = "You want to delete the schedule: " + this.schedules[index].title;
 
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/removeScheduleModal.html',
@@ -109,17 +137,13 @@ class ScheduleCtrl {
         });
 
         modalInstance.result.then((name) => {
-            this.addNewSchedule(name);
+            this.createSchedule(name);
         }, () => {
             this.schedules[prevIdx].active = true;
         });
     }
 
-    public test(index: number) {
-        this.$scope.selectedSchedule = index;
-    }
- 
-    public addNewSchedule(scheduleName?: string) {
+    public createSchedule(scheduleName?: string) {
         var id = this.schedules.length;
         var colorManager = new ColorManager(this.colorResource);
         var courseManager = new CourseManager(
@@ -131,7 +155,7 @@ class ScheduleCtrl {
                 this.semester.term_code);
         this.schedules.push({
             id: id,
-            name: scheduleName ? scheduleName : "Schedule " + id,
+            title: scheduleName ? scheduleName : "Schedule " + id,
             active: true,
             courseManager: courseManager,
             colorManager: colorManager
@@ -146,7 +170,7 @@ class ScheduleCtrl {
  
     public addSchedule() {
         this.setAllInactive();
-        this.addNewSchedule();
+        this.createSchedule();
     }    
 }
 

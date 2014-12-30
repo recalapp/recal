@@ -48,12 +48,12 @@ class SemCtrl {
         });
     }
 
-    private semesterInArray(semester, semesters): boolean {
+    private semesterInArray(semester, array): boolean {
         var found = false;
-        angular.forEach(semesters, (sem) => {
+        angular.forEach(array, (sem) => {
             if (sem.term_code == semester.term_code) {
                 found = true;
-                return false;
+                return false; // break loop
             }
         });
 

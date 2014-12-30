@@ -1,3 +1,4 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 define(["require", "exports", '../models/Semester'], function(require, exports, Semester) {
     var SemCtrl = (function () {
@@ -30,9 +31,9 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
             });
         };
 
-        SemCtrl.prototype.semesterInArray = function (semester, semesters) {
+        SemCtrl.prototype.semesterInArray = function (semester, array) {
             var found = false;
-            angular.forEach(semesters, function (sem) {
+            angular.forEach(array, function (sem) {
                 if (sem.term_code == semester.term_code) {
                     found = true;
                     return false;
@@ -52,6 +53,8 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
             return this.getNewSemesterTermCode() <= SemCtrl.LAST_AVAILABLE_TERM_CODE;
         };
 
+        // TODO: this will only give you semesters after
+        // the last existing semester
         SemCtrl.prototype.getNewSemesterTermCode = function () {
             if (this.semesters.length == 0) {
                 return SemCtrl.CURRENT_SEMESTER_TERM_CODE;
@@ -59,8 +62,10 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
 
             var lastTermCode = this.semesters[this.semesters.length - 1].term_code;
             if (this.semesterIsFall(lastTermCode)) {
+                // fall to spring, from 2 to 4
                 return lastTermCode + 2;
             } else {
+                // spring to fall, from 4 to 12
                 return lastTermCode + 8;
             }
         };
@@ -79,6 +84,7 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
         };
 
         SemCtrl.prototype.getTitle = function (termCode) {
+            // take mid 2 numbers: _XX_
             var endYear = Math.floor((termCode % 1000) / 10);
             var startYear = endYear - 1;
             var semester = this.semesterIsFall(termCode) ? "Fall" : "Spring";
@@ -107,4 +113,3 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
     
     return SemCtrl;
 });
-//# sourceMappingURL=SemCtrl.js.map

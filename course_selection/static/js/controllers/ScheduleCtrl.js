@@ -15,27 +15,54 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             this.$scope.canAddNewSchedules = this.semester.current;
 
             this.schedules = [];
-
+            this.restoreUserSchedules();
             this.$scope.schedules = this.schedules;
 
             this.$scope.selectedSchedule = -1;
         }
         ScheduleCtrl.prototype.restoreUserSchedules = function () {
             var _this = this;
-            var prevSchedules = this.localStorageService.get('schedules-' + this.semester.term_code);
-            if (prevSchedules != null) {
-                this.schedules = prevSchedules.map(function (schedule) {
-                    var colorManager = new ColorManager(_this.colorResource);
-                    var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.scheduleResource, _this.localStorageService, colorManager, _this.semester.term_code);
-                    return {
-                        id: schedule.id,
-                        name: schedule.name,
-                        active: schedule.active,
-                        courseManager: courseManager,
-                        colorManager: colorManager
-                    };
-                });
-            }
+            var gettingPrevSchedules = this.$scope.$parent.userData.schedules.$promise;
+            gettingPrevSchedules.then(function (schedules) {
+                for (var i = 0; i < schedules.length; i++) {
+                    var schedule = schedules[i];
+                    if (schedule.semester.term_code == _this.semester.term_code) {
+                        // TODO: recover available colors
+                        var availableColors = schedule.available_colors;
+                        var colorManager = new ColorManager(_this.colorResource);
+                        var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.scheduleResource, _this.localStorageService, colorManager, _this.semester.term_code);
+                        var newSchedule = {
+                            id: schedule.id,
+                            title: schedule.title,
+                            active: true,
+                            courseManager: courseManager,
+                            colorManager: colorManager
+                        };
+
+                        _this.setAllInactive();
+                        _this.schedules.push(newSchedule);
+                    }
+                }
+            });
+            // if (prevSchedules != null) {
+            //     this.schedules = prevSchedules.map((schedule) => {
+            //         var colorManager = new ColorManager(this.colorResource);
+            //         var courseManager = new CourseManager(
+            //                 this.$rootScope,
+            //                 this.courseService,
+            //                 this.scheduleResource,
+            //                 this.localStorageService,
+            //                 colorManager,
+            //                 this.semester.term_code);
+            //         return {
+            //             id: schedule.id,
+            //             name: schedule.name,
+            //             active: schedule.active,
+            //             courseManager: courseManager,
+            //             colorManager: colorManager
+            //         };
+            //     });
+            // }
         };
 
         ScheduleCtrl.prototype.setAllInactive = function () {
@@ -46,7 +73,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
         ScheduleCtrl.prototype.confirmRemoveSchedule = function (index) {
             var _this = this;
-            var message = "You want to delete the schedule: " + this.schedules[index].name;
+            var message = "You want to delete the schedule: " + this.schedules[index].title;
 
             var modalInstance = this.$modal.open({
                 templateUrl: '/static/templates/removeScheduleModal.html',
@@ -67,6 +94,8 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
         ScheduleCtrl.prototype.askForNewScheduleName = function (prevIdx) {
             var _this = this;
+            // the modal is "dismissable" if we have an open schedule
+            // already, which means prevIdx != undefined
             var canDismiss = prevIdx != -1;
             var modalInstance = this.$modal.open({
                 templateUrl: '/static/templates/newScheduleModal.html',
@@ -85,23 +114,19 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             });
 
             modalInstance.result.then(function (name) {
-                _this.addNewSchedule(name);
+                _this.createSchedule(name);
             }, function () {
                 _this.schedules[prevIdx].active = true;
             });
         };
 
-        ScheduleCtrl.prototype.test = function (index) {
-            this.$scope.selectedSchedule = index;
-        };
-
-        ScheduleCtrl.prototype.addNewSchedule = function (scheduleName) {
+        ScheduleCtrl.prototype.createSchedule = function (scheduleName) {
             var id = this.schedules.length;
             var colorManager = new ColorManager(this.colorResource);
             var courseManager = new CourseManager(this.$rootScope, this.courseService, this.scheduleResource, this.localStorageService, colorManager, this.semester.term_code);
             this.schedules.push({
                 id: id,
-                name: scheduleName ? scheduleName : "Schedule " + id,
+                title: scheduleName ? scheduleName : "Schedule " + id,
                 active: true,
                 courseManager: courseManager,
                 colorManager: colorManager
@@ -116,7 +141,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
         ScheduleCtrl.prototype.addSchedule = function () {
             this.setAllInactive();
-            this.addNewSchedule();
+            this.createSchedule();
         };
         ScheduleCtrl.$inject = [
             '$rootScope',
@@ -133,4 +158,3 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
     
     return ScheduleCtrl;
 });
-//# sourceMappingURL=ScheduleCtrl.js.map
