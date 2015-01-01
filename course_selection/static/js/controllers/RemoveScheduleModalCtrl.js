@@ -1,11 +1,10 @@
 define(["require", "exports"], function(require, exports) {
     var RemoveScheduleModalCtrl = (function () {
-        function RemoveScheduleModalCtrl($scope, $modalInstance, message) {
+        function RemoveScheduleModalCtrl($scope, $modalInstance, title) {
             var _this = this;
             this.$scope = $scope;
             this.$modalInstance = $modalInstance;
-            this.message = message;
-            this.$scope.message = message;
+            this.$scope.message = "You want to delete the schedule: " + title;
 
             this.$scope.ok = function () {
                 _this.ok();
@@ -25,7 +24,7 @@ define(["require", "exports"], function(require, exports) {
         RemoveScheduleModalCtrl.$inject = [
             '$scope',
             '$modalInstance',
-            'message'
+            'title'
         ];
         return RemoveScheduleModalCtrl;
     })();

@@ -52,7 +52,6 @@ class ScheduleCtrl {
                     var enrollments = JSON.parse(schedule.enrollments);
                     var availableColors = JSON.parse(schedule.available_colors);
                     var colorManager = new ColorManager(this.colorResource, availableColors, enrollments);
-
                     var courseManager = new CourseManager(
                             this.$rootScope,
                             this.courseService, 
@@ -76,25 +75,6 @@ class ScheduleCtrl {
                 }
             }
         });
-
-        // if (prevSchedules != null) {
-        //     this.schedules = prevSchedules.map((schedule) => {
-        //         var colorManager = new ColorManager(this.colorResource);
-        //         var courseManager = new CourseManager(
-        //                 this.$rootScope,
-        //                 this.courseService, 
-        //                 this.localStorageService, 
-        //                 colorManager,
-        //                 this.semester.term_code);
-        //         return {
-        //             id: schedule.id,
-        //             name: schedule.name,
-        //             active: schedule.active,
-        //             courseManager: courseManager,
-        //             colorManager: colorManager
-        //         };
-        //     });
-        // }
     }
 
     public setAllInactive() {
@@ -104,16 +84,14 @@ class ScheduleCtrl {
     }
 
     public confirmRemoveSchedule(index: number) {
-        var message: string = "You want to delete the schedule: " + this.schedules[index].title;
-
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/removeScheduleModal.html',
             controller: RemoveScheduleModalCtrl,
             windowClass: 'center-modal',
             backdropClass: 'modal-backdrop',
             resolve: {
-                message: () => {
-                    return message;
+                title: () => {
+                    return this.schedules[index].title;
                 }
             }
         });

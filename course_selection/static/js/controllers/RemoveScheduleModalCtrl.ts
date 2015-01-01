@@ -2,11 +2,11 @@ class RemoveScheduleModalCtrl {
     public static $inject = [
         '$scope',
         '$modalInstance',
-        'message'
+        'title'
     ];
 
-    constructor(private $scope, private $modalInstance, private message) {
-        this.$scope.message = message;
+    constructor(private $scope, private $modalInstance, title: string) {
+        this.$scope.message = "You want to delete the schedule: " + title;
 
         this.$scope.ok = () => {
             this.ok();

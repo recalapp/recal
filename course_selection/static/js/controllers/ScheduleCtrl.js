@@ -35,7 +35,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                         var enrollments = JSON.parse(schedule.enrollments);
                         var availableColors = JSON.parse(schedule.available_colors);
                         var colorManager = new ColorManager(_this.colorResource, availableColors, enrollments);
-
                         var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.localStorageService, colorManager, _this.semester.term_code, enrollments);
 
                         // TODO: remove color manager from schedules;
@@ -53,24 +52,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                     }
                 }
             });
-            // if (prevSchedules != null) {
-            //     this.schedules = prevSchedules.map((schedule) => {
-            //         var colorManager = new ColorManager(this.colorResource);
-            //         var courseManager = new CourseManager(
-            //                 this.$rootScope,
-            //                 this.courseService,
-            //                 this.localStorageService,
-            //                 colorManager,
-            //                 this.semester.term_code);
-            //         return {
-            //             id: schedule.id,
-            //             name: schedule.name,
-            //             active: schedule.active,
-            //             courseManager: courseManager,
-            //             colorManager: colorManager
-            //         };
-            //     });
-            // }
         };
 
         ScheduleCtrl.prototype.setAllInactive = function () {
@@ -81,16 +62,14 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
         ScheduleCtrl.prototype.confirmRemoveSchedule = function (index) {
             var _this = this;
-            var message = "You want to delete the schedule: " + this.schedules[index].title;
-
             var modalInstance = this.$modal.open({
                 templateUrl: '/static/templates/removeScheduleModal.html',
                 controller: RemoveScheduleModalCtrl,
                 windowClass: 'center-modal',
                 backdropClass: 'modal-backdrop',
                 resolve: {
-                    message: function () {
-                        return message;
+                    title: function () {
+                        return _this.schedules[index].title;
                     }
                 }
             });
