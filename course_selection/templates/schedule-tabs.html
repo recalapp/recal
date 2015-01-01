@@ -7,15 +7,17 @@
          class="schedule-tab-heading"
          select="scheduleCtrl.setSelectedSchedule($index)"
     >
-    <tab-heading class="ng-cloak" ng-bind="schedule.title"> 
-         <a ng-click="scheduleCtrl.confirmRemoveSchedule($index)" href="">
-             <i class="fa fa-times remove-icon"></i>
-         </a>
-    </tab-heading>
+        <tab-heading class="ng-cloak"> 
+            {{ schedule.title }}
+            <a ng-click="scheduleCtrl.confirmRemoveSchedule($index)" href=''>
+                <i class="fa fa-times remove-icon"></i>
+            </a>
+        </tab-heading>
          <div class="row clearfix" id="main">
-    {% endverbatim %}
-             {% include 'course-search.html' %}
-             {% include 'calendar.html' %}
+            {% endverbatim %}
+            {% include 'course-search.html' %}
+            {% include 'calendar.html' %}
+            {% verbatim %}
          </div>
     </tab>
     <tab select="scheduleCtrl.askForNewScheduleName(selectedSchedule)"
@@ -27,4 +29,4 @@
     </tab>
 </tabset>
 </div>
-
+{% endverbatim %}

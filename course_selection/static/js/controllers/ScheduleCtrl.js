@@ -20,6 +20,15 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
             this.$scope.selectedSchedule = -1;
         }
+        ScheduleCtrl.prototype.restoreEnrollments = function (enrollments) {
+            for (var i = 0; i < enrollments.length; i++) {
+                this.restoreEnrollment(enrollments[i]);
+            }
+        };
+
+        ScheduleCtrl.prototype.restoreEnrollment = function (enrollment) {
+        };
+
         ScheduleCtrl.prototype.restoreUserSchedules = function () {
             var _this = this;
             var gettingPrevSchedules = this.$scope.$parent.userData.schedules.$promise;
@@ -28,9 +37,14 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                     var schedule = schedules[i];
                     if (schedule.semester.term_code == _this.semester.term_code) {
                         // TODO: recover available colors
+                        // enroll in all courses in enrollments
                         var availableColors = schedule.available_colors;
                         var colorManager = new ColorManager(_this.colorResource);
                         var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.scheduleResource, _this.localStorageService, colorManager, _this.semester.term_code);
+
+                        // TODO: restore enrollments in course manager
+                        var enrollments = JSON.parse(schedule.enrollments);
+                        _this.restoreEnrollments(enrollments);
                         var newSchedule = {
                             id: schedule.id,
                             title: schedule.title,

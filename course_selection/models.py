@@ -142,8 +142,8 @@ class Schedule(models.Model):
     user = models.ForeignKey('Nice_User')
 
     # fields
-    available_colors = JSONField()
-    enrollments = JSONField(null=True)
+    available_colors = models.TextField(null=True)
+    enrollments = models.TextField(null=True)
     title = models.CharField(max_length=20, default="schedule")
 
 #class Enrollment(models.Model):
