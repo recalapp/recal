@@ -4,6 +4,7 @@ import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
 import Course = require('./Course');
 import IColorManager = require('../interfaces/IColorManager');
+import IEnrollment = require('../interfaces/IEnrollment');
 
 class CourseManager {
     private static NOT_FOUND: number = -1;
@@ -26,28 +27,26 @@ class CourseManager {
             private courseService,
             private localStorageService,
             private colorManager: IColorManager,
-            private termCode: number
+            private termCode: number,
+            private prevEnrollments?: Array<IEnrollment>
             ) 
     {
-        this.init();
+        this._initData(prevEnrollments);
+        this._initWatches();
     }
 
     ///////////////////////////////////////////////////////////
     // Initialization
     //////////////////////////////////////////////////////////
-    private init() {
-        this.initData();
-        this.initWatches();
-    }
 
-    private initData() {
+    private _initData(prevEnrollments?: Array<IEnrollment>) {
         this.data.previewCourse = null;
         this.data.enrolledCourses = [];
         this.data.enrolledSections = {};
-        this.loadCourses();
+        this._loadCourses(prevEnrollments);
     }
 
-    private initWatches() {
+    private _initWatches() {
         this.$rootScope.$watch(() => {
             return this.data.enrolledSections;
         }, (newValue, oldValue) => {
@@ -63,7 +62,7 @@ class CourseManager {
     }
 
     // map raw data into more flexible data structure
-    private transformCourse(rawCourse): ICourse {
+    private _transformCourse(rawCourse): ICourse {
         return new Course(
                 rawCourse.title,
                 rawCourse.description,
@@ -74,9 +73,20 @@ class CourseManager {
                 );
     }
 
-    private loadCourses() {
+    private _loadCourses(prevEnrollments?) {
         this.courseService.getBySemester(this.termCode).then((courses) => {
-            this.data.courses = courses.map(this.transformCourse); 
+            this.data.courses = courses.map(this._transformCourse); 
+        }).then(() => {
+            if (prevEnrollments) {
+                // restore prevEnrollments here
+                for (var i = 0; i < prevEnrollments.length; i++) {
+                    var enrollment = prevEnrollments[i];
+                    var course = this.getCourseById(enrollment.course_id);
+                    course.colors = enrollment.color;
+                    this._enrollCourse(course);
+                    this._enrollSections(course, enrollment.sections);
+                }
+            }
         });
     }
 
@@ -106,15 +116,12 @@ class CourseManager {
     }
 
     private _enrollCourse(course: ICourse): void {
-        var idx = this.courseIdxInList(course, this.data.courses);
+        var idx = this._courseIdxInList(course, this.data.courses);
         this.data.courses.splice(idx, 1);
-
-        course.colors = this.colorManager.nextColor();
-
         this.data.enrolledCourses.push(course);
     }
 
-    private _enrollSections(course: ICourse): void {
+    private _enrollSections(course: ICourse, sectionIds?: Array<number>): void {
         this.data.enrolledSections[course.id] = {};
         for (var i = 0; i < course.section_types.length; i++) {
             var section_type = course.section_types[i];
@@ -122,21 +129,19 @@ class CourseManager {
         }
 
         for (var i = 0; i < course.sections.length; i++) {
-            if (!course.sections[i].has_meetings) {
-                this.enrollSection(course.sections[i]);
+            var section = course.sections[i];
+            if (!section.has_meetings) {
+                this.enrollSection(section);
+            }
+
+            if (this._isInList(section.id, sectionIds)) {
+                this.enrollSection(section);
             }
         }
     }
 
     private _unenrollCourse(course: ICourse): void {
-        // remove from enrolled courses
-        this.removeFromList(course, this.data.enrolledCourses);
-
-        // remove data set in the course object
-        this.colorManager.addColor(course.colors);
-        course.colors = null;
-
-        // add to unenrolled courses
+        this._removeCourseFromList(course, this.data.enrolledCourses);
         this.data.courses.push(course);
     }
 
@@ -148,6 +153,7 @@ class CourseManager {
      * NOTE: the input course is modified
      */
     public enrollCourse(course: ICourse): void {
+        course.colors = this.colorManager.nextColor();
         this._enrollCourse(course);
         this._enrollSections(course);
     }
@@ -156,29 +162,56 @@ class CourseManager {
      * NOTE: the input course is modified
      */
     public unenrollCourse(course: ICourse): void {
+        // remove color set in the course object
+        this.colorManager.addColor(course.colors);
+        course.colors = null;
+
         this._unenrollCourse(course);
         this._unenrollSections(course);
     }
 
-    private removeFromList(course, list): void {
-        var idx = this.courseIdxInList(course, list);
+    private _removeCourseFromList(course, list): void {
+        var idx = this._courseIdxInList(course, list);
         list.splice(idx, 1);
     }
 
     // TODO: this is a linear traversal. Optimize if this causes
     // performance issues
-    private courseIdxInList(course, list) {
-        for (var i = 0; i < list.length; i++) {
-            if (course.id == list[i].id) {
-                return i;
+    private _idxInList(element, list, comp?) {
+        var idx = CourseManager.NOT_FOUND;
+        var comp = comp ? comp : this._defaultComp;
+        angular.forEach(list, (value, key) => {
+            if (comp(element, value)) {
+                idx = key;
+                return;
             }
-        }
+        });
 
-        return CourseManager.NOT_FOUND;
+        return idx;
+    }
+
+    private _defaultComp(a, b): boolean {
+        return a == b;
+    }
+
+    private _isInList(element, list, comp?): boolean {
+        return this._idxInList(element, list, comp) != CourseManager.NOT_FOUND;
+    }
+
+    private _courseComp(a: ICourse, b: ICourse): boolean {
+        return a.id == b.id;
+    }
+
+    private _sectionComp(a: ISection, b: ISection): boolean {
+        return a.id == b.id;
+    }
+
+    private _courseIdxInList(course, list): number {
+        return this._idxInList(course, list, this._courseComp);
     }
     
     public isCourseEnrolled(course: ICourse): boolean {
-        var idx = this.courseIdxInList(course, this.data.enrolledCourses);
+        var idx = this._courseIdxInList(course, this.data.enrolledCourses);
         return idx != CourseManager.NOT_FOUND;
     }
 
@@ -191,6 +224,10 @@ class CourseManager {
 
     public clearPreviewSection(section: ISection): void {
     }
+
+    // private _enrollSection(courseId, sectionId, sectionType): void {
+    //     this.data.enrolledSections[courseId][sectionType] = sectionId;
+    // }
 
     public enrollSection(section: ISection): void {
         this.data.enrolledSections[section.course_id][section.section_type] = section.id;

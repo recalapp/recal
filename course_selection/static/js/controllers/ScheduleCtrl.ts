@@ -37,15 +37,6 @@ class ScheduleCtrl {
         this.$scope.selectedSchedule = -1;
     }
 
-    private restoreEnrollments(enrollments) {
-        for (var i = 0; i < enrollments.length; i++) {
-            this.restoreEnrollment(enrollments[i]);
-        }
-    }
-
-    private restoreEnrollment(enrollment) {
-    }
-
     // focus on restoring enrollments
     // enrollments info is stored in courseManager
     // course manager is created here
@@ -59,22 +50,21 @@ class ScheduleCtrl {
                 var schedule = schedules[i];
                 if (schedule.semester.term_code == this.semester.term_code) {
                     // TODO: recover available colors
-
-                    // enroll in all courses in enrollments
                     var availableColors = schedule.available_colors;
                     var colorManager = new ColorManager(this.colorResource);
+
+                    // TODO: recover enrollments
+                    var enrollments = JSON.parse(schedule.enrollments);
                     var courseManager = new CourseManager(
                             this.$rootScope,
                             this.courseService, 
                             this.localStorageService, 
                             colorManager,
-                            this.semester.term_code);
+                            this.semester.term_code,
+                            enrollments);
 
-                    // TODO: restore enrollments in course manager
                     // TODO: remove color manager from schedules;
-                    // it's unnecessary
-                    var enrollments = JSON.parse(schedule.enrollments);
-                    this.restoreEnrollments(enrollments);
+                    // it's unnecessary--the info is in course manager already
                     var newSchedule = {
                         id: schedule.id,
                         title: schedule.title,

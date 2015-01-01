@@ -19,15 +19,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
             this.$scope.selectedSchedule = -1;
         }
-        ScheduleCtrl.prototype.restoreEnrollments = function (enrollments) {
-            for (var i = 0; i < enrollments.length; i++) {
-                this.restoreEnrollment(enrollments[i]);
-            }
-        };
-
-        ScheduleCtrl.prototype.restoreEnrollment = function (enrollment) {
-        };
-
         // focus on restoring enrollments
         // enrollments info is stored in courseManager
         // course manager is created here
@@ -42,16 +33,15 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                     var schedule = schedules[i];
                     if (schedule.semester.term_code == _this.semester.term_code) {
                         // TODO: recover available colors
-                        // enroll in all courses in enrollments
                         var availableColors = schedule.available_colors;
                         var colorManager = new ColorManager(_this.colorResource);
-                        var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.localStorageService, colorManager, _this.semester.term_code);
 
-                        // TODO: restore enrollments in course manager
-                        // TODO: remove color manager from schedules;
-                        // it's unnecessary
+                        // TODO: recover enrollments
                         var enrollments = JSON.parse(schedule.enrollments);
-                        _this.restoreEnrollments(enrollments);
+                        var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.localStorageService, colorManager, _this.semester.term_code, enrollments);
+
+                        // TODO: remove color manager from schedules;
+                        // it's unnecessary--the info is in course manager already
                         var newSchedule = {
                             id: schedule.id,
                             title: schedule.title,
