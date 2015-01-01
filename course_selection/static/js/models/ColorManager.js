@@ -3,17 +3,20 @@ define(["require", "exports"], function(require, exports) {
         function ColorManager(colorResource) {
             this.colorResource = colorResource;
             this.courseColorMap = {};
-            this.initUsableColors();
             this.initCourseColorMap();
+            this.initUsableColors();
         }
         // get course color map for this user, this schedule
         ColorManager.prototype.initCourseColorMap = function () {
+            //this.isInit = true;
         };
 
         ColorManager.prototype.initUsableColors = function () {
             var _this = this;
             this.colorResource.get({}, function (data) {
-                _this.onLoaded(data);
+                if (!_this.isInit) {
+                    _this.onLoaded(data);
+                }
             });
         };
 
@@ -66,7 +69,6 @@ define(["require", "exports"], function(require, exports) {
             this.colorToNumberOfCourses[possibleColorIndices[idx]]++;
             return this.usableColors[possibleColorIndices[idx]];
         };
-        ColorManager.$inject = ['$resource'];
         ColorManager.previewColor = {
             id: -1,
             dark: 'rgb(84, 84, 84)',

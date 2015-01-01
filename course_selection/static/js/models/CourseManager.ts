@@ -24,7 +24,6 @@ class CourseManager {
     constructor(
             private $rootScope,
             private courseService,
-            private scheduleResource,
             private localStorageService,
             private colorManager: IColorManager,
             private termCode: number
@@ -106,48 +105,21 @@ class CourseManager {
         this.setPreviewCourse(null);
     }
 
-    public enrollCourse(course: ICourse): void {
-        // remove from all courses
+    private _enrollCourse(course: ICourse): void {
         var idx = this.courseIdxInList(course, this.data.courses);
         this.data.courses.splice(idx, 1);
 
         course.colors = this.colorManager.nextColor();
 
         this.data.enrolledCourses.push(course);
+    }
 
-        // example--
-        // enrolledSections:
-        // {
-        //      1: {
-        //          LEC: null,
-        //          PRE: null
-        //      },
-        //      2: {
-        //          STU: 01,
-        //          CLA: null
-        //      }
-        // }
+    private _enrollSections(course: ICourse): void {
         this.data.enrolledSections[course.id] = {};
         for (var i = 0; i < course.section_types.length; i++) {
             var section_type = course.section_types[i];
             this.data.enrolledSections[course.id][section_type] = null;
         }
-
-        // if there's only one option for section_type, automatically
-        // enroll in it
-        //for (var i = 0; i < course.section_types.length; i++) {
-        //    var section_type = course.section_types[i];
-        //    var sectionsOfType = course.sections.filter((section) => {
-        //        return section.section_type == section_type;
-        //    });
-
-        //    if (sectionsOfType.length == 0) {
-        //        console.log('course ' + course.id + ' has no sections of type '
-        //                + section_type);
-        //    } else if (sectionsOfType.length == 1) {
-        //        this.enrollSection(sectionsOfType[0]);
-        //    }
-        //}
 
         for (var i = 0; i < course.sections.length; i++) {
             if (!course.sections[i].has_meetings) {
@@ -156,12 +128,9 @@ class CourseManager {
         }
     }
 
-    public unenrollCourse(course: ICourse): void {
+    private _unenrollCourse(course: ICourse): void {
         // remove from enrolled courses
         this.removeFromList(course, this.data.enrolledCourses);
-
-        // remove enrolled sections for this course
-        this.data.enrolledSections[course.id] = null;
 
         // remove data set in the course object
         this.colorManager.addColor(course.colors);
@@ -169,6 +138,26 @@ class CourseManager {
 
         // add to unenrolled courses
         this.data.courses.push(course);
+    }
+
+    private _unenrollSections(course: ICourse): void {
+        this.data.enrolledSections[course.id] = null;
+    }
+
+    /**
+     * NOTE: the input course is modified
+     */
+    public enrollCourse(course: ICourse): void {
+        this._enrollCourse(course);
+        this._enrollSections(course);
+    }
+
+    /**
+     * NOTE: the input course is modified
+     */
+    public unenrollCourse(course: ICourse): void {
+        this._unenrollCourse(course);
+        this._unenrollSections(course);
     }
 
     private removeFromList(course, list): void {

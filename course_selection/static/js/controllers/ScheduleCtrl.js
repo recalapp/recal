@@ -2,13 +2,12 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
     'use strict';
 
     var ScheduleCtrl = (function () {
-        function ScheduleCtrl($rootScope, $scope, $modal, colorResource, courseService, scheduleResource, localStorageService) {
+        function ScheduleCtrl($rootScope, $scope, $modal, colorResource, courseService, localStorageService) {
             this.$rootScope = $rootScope;
             this.$scope = $scope;
             this.$modal = $modal;
             this.colorResource = colorResource;
             this.courseService = courseService;
-            this.scheduleResource = scheduleResource;
             this.localStorageService = localStorageService;
             this.$scope.vm = this;
             this.semester = this.$scope.$parent.semester;
@@ -29,6 +28,12 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
         ScheduleCtrl.prototype.restoreEnrollment = function (enrollment) {
         };
 
+        // focus on restoring enrollments
+        // enrollments info is stored in courseManager
+        // course manager is created here
+        // we want to restore them here. is that right?
+        // could we pass the enrollments to courseManager?
+        // yeah
         ScheduleCtrl.prototype.restoreUserSchedules = function () {
             var _this = this;
             var gettingPrevSchedules = this.$scope.$parent.userData.schedules.$promise;
@@ -40,9 +45,11 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                         // enroll in all courses in enrollments
                         var availableColors = schedule.available_colors;
                         var colorManager = new ColorManager(_this.colorResource);
-                        var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.scheduleResource, _this.localStorageService, colorManager, _this.semester.term_code);
+                        var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.localStorageService, colorManager, _this.semester.term_code);
 
                         // TODO: restore enrollments in course manager
+                        // TODO: remove color manager from schedules;
+                        // it's unnecessary
                         var enrollments = JSON.parse(schedule.enrollments);
                         _this.restoreEnrollments(enrollments);
                         var newSchedule = {
@@ -64,7 +71,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             //         var courseManager = new CourseManager(
             //                 this.$rootScope,
             //                 this.courseService,
-            //                 this.scheduleResource,
             //                 this.localStorageService,
             //                 colorManager,
             //                 this.semester.term_code);
@@ -137,7 +143,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
         ScheduleCtrl.prototype.createSchedule = function (scheduleName) {
             var id = this.schedules.length;
             var colorManager = new ColorManager(this.colorResource);
-            var courseManager = new CourseManager(this.$rootScope, this.courseService, this.scheduleResource, this.localStorageService, colorManager, this.semester.term_code);
+            var courseManager = new CourseManager(this.$rootScope, this.courseService, this.localStorageService, colorManager, this.semester.term_code);
             this.schedules.push({
                 id: id,
                 title: scheduleName ? scheduleName : "Schedule " + id,
@@ -163,7 +169,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             '$modal',
             'ColorResource',
             'CourseService',
-            'ScheduleResource',
             'localStorageService'
         ];
         return ScheduleCtrl;

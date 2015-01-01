@@ -1,7 +1,6 @@
 import IColorPalette = require('../interfaces/IColorPalette');
 
 class ColorManager {
-    public static $inject = ['$resource'];
     private static previewColor: IColorPalette = {
         id: -1,
         dark: 'rgb(84, 84, 84)',
@@ -9,21 +8,25 @@ class ColorManager {
     };
 
     private courseColorMap = {};
+    private isInit: boolean;
     private usableColors: IColorPalette[];
     private colorToNumberOfCourses: number[];
 
     constructor(private colorResource) {
-        this.initUsableColors();
         this.initCourseColorMap();
+        this.initUsableColors();
     }
 
     // get course color map for this user, this schedule
     private initCourseColorMap() {
+        //this.isInit = true;
     }
 
     private initUsableColors() {
         this.colorResource.get({}, (data) => {
-            this.onLoaded(data);
+            if (!this.isInit) {
+                this.onLoaded(data);
+            }
         });
     }
 

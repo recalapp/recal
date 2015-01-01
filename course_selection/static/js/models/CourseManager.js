@@ -1,10 +1,9 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports", './Course'], function(require, exports, Course) {
     var CourseManager = (function () {
-        function CourseManager($rootScope, courseService, scheduleResource, localStorageService, colorManager, termCode) {
+        function CourseManager($rootScope, courseService, localStorageService, colorManager, termCode) {
             this.$rootScope = $rootScope;
             this.courseService = courseService;
-            this.scheduleResource = scheduleResource;
             this.localStorageService = localStorageService;
             this.colorManager = colorManager;
             this.termCode = termCode;
@@ -87,27 +86,16 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             this.setPreviewCourse(null);
         };
 
-        CourseManager.prototype.enrollCourse = function (course) {
-            // remove from all courses
+        CourseManager.prototype._enrollCourse = function (course) {
             var idx = this.courseIdxInList(course, this.data.courses);
             this.data.courses.splice(idx, 1);
 
             course.colors = this.colorManager.nextColor();
 
             this.data.enrolledCourses.push(course);
+        };
 
-            // example--
-            // enrolledSections:
-            // {
-            //      1: {
-            //          LEC: null,
-            //          PRE: null
-            //      },
-            //      2: {
-            //          STU: 01,
-            //          CLA: null
-            //      }
-            // }
+        CourseManager.prototype._enrollSections = function (course) {
             this.data.enrolledSections[course.id] = {};
             for (var i = 0; i < course.section_types.length; i++) {
                 var section_type = course.section_types[i];
@@ -121,12 +109,9 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             }
         };
 
-        CourseManager.prototype.unenrollCourse = function (course) {
+        CourseManager.prototype._unenrollCourse = function (course) {
             // remove from enrolled courses
             this.removeFromList(course, this.data.enrolledCourses);
-
-            // remove enrolled sections for this course
-            this.data.enrolledSections[course.id] = null;
 
             // remove data set in the course object
             this.colorManager.addColor(course.colors);
@@ -134,6 +119,26 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
 
             // add to unenrolled courses
             this.data.courses.push(course);
+        };
+
+        CourseManager.prototype._unenrollSections = function (course) {
+            this.data.enrolledSections[course.id] = null;
+        };
+
+        /**
+        * NOTE: the input course is modified
+        */
+        CourseManager.prototype.enrollCourse = function (course) {
+            this._enrollCourse(course);
+            this._enrollSections(course);
+        };
+
+        /**
+        * NOTE: the input course is modified
+        */
+        CourseManager.prototype.unenrollCourse = function (course) {
+            this._unenrollCourse(course);
+            this._unenrollSections(course);
         };
 
         CourseManager.prototype.removeFromList = function (course, list) {

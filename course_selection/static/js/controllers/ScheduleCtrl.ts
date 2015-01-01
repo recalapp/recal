@@ -13,7 +13,6 @@ class ScheduleCtrl {
         '$modal',
         'ColorResource',
         'CourseService',
-        'ScheduleResource',
         'localStorageService'
         ];
 
@@ -26,7 +25,6 @@ class ScheduleCtrl {
             private $modal,
             private colorResource,
             private courseService,
-            private scheduleResource,
             private localStorageService) {
         this.$scope.vm = this;
         this.semester = this.$scope.$parent.semester;
@@ -48,6 +46,12 @@ class ScheduleCtrl {
     private restoreEnrollment(enrollment) {
     }
 
+    // focus on restoring enrollments
+    // enrollments info is stored in courseManager
+    // course manager is created here
+    // we want to restore them here. is that right?
+    // could we pass the enrollments to courseManager?
+    // yeah
     private restoreUserSchedules() {
         var gettingPrevSchedules = this.$scope.$parent.userData.schedules.$promise;
         gettingPrevSchedules.then((schedules) => {
@@ -62,12 +66,13 @@ class ScheduleCtrl {
                     var courseManager = new CourseManager(
                             this.$rootScope,
                             this.courseService, 
-                            this.scheduleResource,
                             this.localStorageService, 
                             colorManager,
                             this.semester.term_code);
 
                     // TODO: restore enrollments in course manager
+                    // TODO: remove color manager from schedules;
+                    // it's unnecessary
                     var enrollments = JSON.parse(schedule.enrollments);
                     this.restoreEnrollments(enrollments);
                     var newSchedule = {
@@ -90,7 +95,6 @@ class ScheduleCtrl {
         //         var courseManager = new CourseManager(
         //                 this.$rootScope,
         //                 this.courseService, 
-        //                 this.scheduleResource,
         //                 this.localStorageService, 
         //                 colorManager,
         //                 this.semester.term_code);
@@ -164,7 +168,6 @@ class ScheduleCtrl {
         var courseManager = new CourseManager(
                 this.$rootScope,
                 this.courseService, 
-                this.scheduleResource,
                 this.localStorageService, 
                 colorManager,
                 this.semester.term_code);
