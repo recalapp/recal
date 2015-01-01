@@ -9,7 +9,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             this.colorResource = colorResource;
             this.courseService = courseService;
             this.localStorageService = localStorageService;
-            this.$scope.vm = this;
             this.semester = this.$scope.$parent.semester;
             this.$scope.canAddNewSchedules = this.semester.current;
 
@@ -32,12 +31,11 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                 for (var i = 0; i < schedules.length; i++) {
                     var schedule = schedules[i];
                     if (schedule.semester.term_code == _this.semester.term_code) {
-                        // TODO: recover available colors
-                        var availableColors = schedule.available_colors;
-                        var colorManager = new ColorManager(_this.colorResource);
-
-                        // TODO: recover enrollments
+                        // recover available colors and enrollments
                         var enrollments = JSON.parse(schedule.enrollments);
+                        var availableColors = JSON.parse(schedule.available_colors);
+                        var colorManager = new ColorManager(_this.colorResource, availableColors, enrollments);
+
                         var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.localStorageService, colorManager, _this.semester.term_code, enrollments);
 
                         // TODO: remove color manager from schedules;

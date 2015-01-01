@@ -1,4 +1,5 @@
 import IColorPalette = require('../interfaces/IColorPalette');
+import IEnrollment = require('../interfaces/IEnrollment');
 
 class ColorManager {
     private static previewColor: IColorPalette = {
@@ -7,27 +8,29 @@ class ColorManager {
         light: 'rgb(210, 210, 210)'
     };
 
-    private courseColorMap = {};
-    private isInit: boolean;
     private usableColors: IColorPalette[];
     private colorToNumberOfCourses: number[];
 
-    constructor(private colorResource) {
-        this.initCourseColorMap();
-        this.initUsableColors();
+    constructor(
+            private colorResource,
+            private availableColors?: Array<IColorPalette>,
+            private enrollments?: Array<IEnrollment>
+            ) {
+        this.initUsableColors(availableColors, enrollments);
     }
 
-    // get course color map for this user, this schedule
-    private initCourseColorMap() {
-        //this.isInit = true;
-    }
-
-    private initUsableColors() {
-        this.colorResource.get({}, (data) => {
-            if (!this.isInit) {
+    private initUsableColors(
+            availableColors?: Array<IColorPalette>, 
+            enrollments?: Array<IEnrollment>) {
+        if (availableColors && enrollments) {
+            this.usableColors = availableColors;
+            this._initColorToNumberOfCourses(enrollments);
+        }
+        else {
+            this.colorResource.get({}).$promise.then((data) => {
                 this.onLoaded(data);
-            }
-        });
+            });
+        }
     }
 
     private onLoaded(data) {
@@ -39,9 +42,26 @@ class ColorManager {
             }
         });
 
+        this._initColorToNumberOfCourses();
+    }
+
+    // say enrollments = [a, b, c], where a, b, c are course enrollments containing
+    // a colors property. 
+    private _initColorToNumberOfCourses(enrollments?: Array<IEnrollment>) {
         this.colorToNumberOfCourses = new Array(this.usableColors.length);
         for (var i = 0; i < this.colorToNumberOfCourses.length; i++) {
             this.colorToNumberOfCourses[i] = 0;
+        }
+
+        if (enrollments) {
+            for (var i = 0; i < this.usableColors.length; i++) {
+                for (var j = 0; j < enrollments.length; j++) {
+                    if (this.usableColors[i].id == enrollments[j].color.id) {
+                        this.colorToNumberOfCourses[i]++;
+                        break;
+                    }
+                }
+            }
         }
     }
 

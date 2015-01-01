@@ -26,7 +26,6 @@ class ScheduleCtrl {
             private colorResource,
             private courseService,
             private localStorageService) {
-        this.$scope.vm = this;
         this.semester = this.$scope.$parent.semester;
         this.$scope.canAddNewSchedules = this.semester.current;
 
@@ -49,12 +48,11 @@ class ScheduleCtrl {
             for (var i = 0; i < schedules.length; i++) {
                 var schedule = schedules[i];
                 if (schedule.semester.term_code == this.semester.term_code) {
-                    // TODO: recover available colors
-                    var availableColors = schedule.available_colors;
-                    var colorManager = new ColorManager(this.colorResource);
-
-                    // TODO: recover enrollments
+                    // recover available colors and enrollments
                     var enrollments = JSON.parse(schedule.enrollments);
+                    var availableColors = JSON.parse(schedule.available_colors);
+                    var colorManager = new ColorManager(this.colorResource, availableColors, enrollments);
+
                     var courseManager = new CourseManager(
                             this.$rootScope,
                             this.courseService, 
