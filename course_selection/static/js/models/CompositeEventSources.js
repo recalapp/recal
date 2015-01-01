@@ -53,8 +53,8 @@ define(["require", "exports"], function(require, exports) {
             delete this.courseIdToIndices[courseId];
         };
 
-        CompositeEventSources.prototype.enrollInCourseSection = function (courseId, section_type, sectionId) {
-            this.removeAllCourseSection(courseId, section_type);
+        CompositeEventSources.prototype.enrollInCourseSection = function (courseId, sectionType, sectionId) {
+            this.removeAllCourseSection(courseId, sectionType);
 
             // now we add the section back
             var eventSources = this.backupEventSources[courseId];

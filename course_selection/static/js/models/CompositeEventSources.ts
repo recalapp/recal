@@ -66,8 +66,8 @@ class CompositeEventSources implements IEventSources {
         delete this.courseIdToIndices[courseId];
     }
     
-    public enrollInCourseSection(courseId: number, section_type: string, sectionId: number): void {
-        this.removeAllCourseSection(courseId, section_type);
+    public enrollInCourseSection(courseId: number, sectionType: string, sectionId: number): void {
+        this.removeAllCourseSection(courseId, sectionType);
 
         // now we add the section back
         var eventSources: IEventSource[] = this.backupEventSources[courseId];

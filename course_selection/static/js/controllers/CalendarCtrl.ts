@@ -44,6 +44,11 @@ class CalendarCtrl {
     private compositeEventSources: CompositeEventSources;
     private courseManager: ICourseManager;
     private colorManager: IColorManager;
+
+    // TODO: hack for watches not updating on first run
+    private courseWatchInitRun: boolean; 
+    private sectionWatchInitRun: boolean; 
+
     public static $inject = [
         '$scope',
     ];
@@ -52,8 +57,9 @@ class CalendarCtrl {
     constructor(
             private $scope) 
     {
-        this.$scope.vm = this;
         this.initConfig();
+        this.courseWatchInitRun = true;
+        this.sectionWatchInitRun = true;
 
         this.courseManager = (<any>this.$scope.$parent).schedule.courseManager;
         this.colorManager = (<any>this.$scope.$parent).schedule.colorManager;
@@ -71,7 +77,7 @@ class CalendarCtrl {
                 },
                 true);
 
-        // collection watch
+        // only watch for addition or removal in the array
         this.$scope.$watchCollection(
                 () => { 
                     return this.$scope.data.enrolledCourses;
@@ -80,7 +86,7 @@ class CalendarCtrl {
                     return this.updateEnrolledCourses(newCourses, oldCourses); 
                 });
 
-        // equality watch
+        // equality watch for every property
         this.$scope.$watch(
                 () => {
                     return this.$scope.data.enrolledSections;
@@ -155,6 +161,18 @@ class CalendarCtrl {
     }
 
     public updateEnrolledCourses(newCourses, oldCourses) {
+        // TODO: hack for first run not updating properly
+        // without this line, if oldCourses start with a previous courses,
+        // it will not get updated
+        if (this.courseWatchInitRun) {
+            this.courseWatchInitRun = false;
+            for (var i = 0; i < newCourses.length; i++) {
+                this.addCourse(newCourses[i], false);
+            }
+
+            return;
+        }
+
         if (newCourses === oldCourses)
             return;
 
@@ -202,6 +220,22 @@ class CalendarCtrl {
     // }
     // }
     public updateEnrolledSections(newSections, oldSections): void {
+        if (this.sectionWatchInitRun) {
+            this.sectionWatchInitRun = false;
+            angular.forEach(newSections, (enrollments, courseId) => {
+                // enrollments = { section_type: section_id / null }
+                angular.forEach(enrollments, (enrolledSectionId, sectionType) => {
+                    if (enrolledSectionId == null) {
+                        this.compositeEventSources.previewAllCourseSection(courseId, sectionType);
+                    }
+                    else {
+                        this.compositeEventSources.enrollInCourseSection(courseId, sectionType, enrolledSectionId);
+                    }
+                });
+            });
+        }
+
+
         if (newSections == oldSections) {
             return;
         }
