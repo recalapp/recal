@@ -18,28 +18,26 @@ class MainCtrl {
             private userService
             )
     {
-        this.init();
+        this._init();
     }
 
-    private init() {
-        this.$scope.vm = this;
-        this.initData();
+    private _init() {
+        this._initData();
     }
 
-    private initData() {
+    private _initData() {
         this.username = username;
         this.data = {
             user: null,
             schedules: null
         };
 
-        this.$scope.data = this.data;
         this.loadUserData();
+        this.$scope.data = this.data;
     }
-
+    
     public loadUserData() {
-        this.data.user = this.userService.getByNetId(this.username);
-        this.data.schedules = this.scheduleService.getByUser(this.username);   
+        this.data = this.userService.data;
     }
 
 }

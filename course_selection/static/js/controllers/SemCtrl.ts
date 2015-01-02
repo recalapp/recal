@@ -6,7 +6,8 @@ import Semester = require('../models/Semester');
 class SemCtrl {
     public static $inject =[
         '$scope',
-        'localStorageService'
+        'localStorageService',
+        'UserService'
         ];
 
     // TODO: get this from the server
@@ -15,9 +16,8 @@ class SemCtrl {
     private semesters;
 
     constructor(private $scope,
-            private localStorageService) {
-        this.$scope.vm = this;
-        this.$scope.userData = this.$scope.$parent.data;
+            private localStorageService,
+            private userService) {
         this.semesters = [];
         this.restoreUserSemesters();
         this.$scope.semesters = this.semesters;
@@ -26,7 +26,7 @@ class SemCtrl {
     }
 
     private restoreUserSemesters() {
-        this.$scope.userData.schedules.$promise.then((schedules) => {
+        this.userService.schedules.$promise.then((schedules) => {
             var tempSemesters = [];
             angular.forEach(schedules, (schedule) => {
                 if (!this.semesterInArray(schedule.semester, tempSemesters)) {

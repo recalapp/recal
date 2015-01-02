@@ -1,12 +1,13 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports", './Course'], function(require, exports, Course) {
     var CourseManager = (function () {
-        function CourseManager($rootScope, courseService, localStorageService, colorManager, termCode, prevEnrollments) {
+        function CourseManager($rootScope, courseService, localStorageService, userService, colorManager, semester, prevEnrollments) {
             this.$rootScope = $rootScope;
             this.courseService = courseService;
             this.localStorageService = localStorageService;
+            this.userService = userService;
             this.colorManager = colorManager;
-            this.termCode = termCode;
+            this.semester = semester;
             this.prevEnrollments = prevEnrollments;
             this.data = {
                 previewCourse: null,
@@ -42,9 +43,52 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 }
 
                 console.log('test');
+
                 // do stuff with syncing
                 // this.data.enrolledCourses is up to date
+                // now we have to think about how to post information
+                // we need to construct data here
+                // we need to post stuff in the form of
+                // {
+                //  semester: ...
+                //  user: ...
+                //  available_colors: [{
+                //  }],
+                //  enrollments: []
+                // }
+                var enrollments = _this._constructEnrollments(newValue);
+                var temp = '';
             }, true);
+        };
+
+        CourseManager.prototype._constructEnrollments = function (enrolledSections) {
+            var _this = this;
+            var enrollments = [];
+            angular.forEach(enrolledSections, function (courseEnrollment, courseId) {
+                var enrollment = {
+                    course_id: null,
+                    color: null,
+                    sections: []
+                };
+
+                enrollment.course_id = +courseId;
+
+                // TODO: is it dangerous to do this?
+                // 1: there should be a better function than filter for the job
+                // 2: what if course.colors changes? does that affect this enrollment object?
+                enrollment.color = _this.data.enrolledCourses.filter(function (course) {
+                    return course.id == +courseId;
+                })[0].colors;
+                angular.forEach(courseEnrollment, function (sectionId, sectionType) {
+                    if (sectionId != null) {
+                        enrollment.sections.push(sectionId);
+                    }
+                });
+
+                enrollments.push(enrollment);
+            });
+
+            return enrollments;
         };
 
         // map raw data into more flexible data structure
@@ -54,7 +98,7 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
 
         CourseManager.prototype._loadCourses = function (prevEnrollments) {
             var _this = this;
-            this.courseService.getBySemester(this.termCode).then(function (courses) {
+            this.courseService.getBySemester(this.semester.term_code).then(function (courses) {
                 _this.data.courses = courses.map(_this._transformCourse);
             }).then(function () {
                 if (prevEnrollments) {

@@ -5,27 +5,25 @@ define(["require", "exports"], function(require, exports) {
             this.$scope = $scope;
             this.scheduleService = scheduleService;
             this.userService = userService;
-            this.init();
+            this._init();
         }
-        MainCtrl.prototype.init = function () {
-            this.$scope.vm = this;
-            this.initData();
+        MainCtrl.prototype._init = function () {
+            this._initData();
         };
 
-        MainCtrl.prototype.initData = function () {
+        MainCtrl.prototype._initData = function () {
             this.username = username;
             this.data = {
                 user: null,
                 schedules: null
             };
 
-            this.$scope.data = this.data;
             this.loadUserData();
+            this.$scope.data = this.data;
         };
 
         MainCtrl.prototype.loadUserData = function () {
-            this.data.user = this.userService.getByNetId(this.username);
-            this.data.schedules = this.scheduleService.getByUser(this.username);
+            this.data = this.userService.data;
         };
         MainCtrl.$inject = [
             '$scope',
@@ -38,4 +36,3 @@ define(["require", "exports"], function(require, exports) {
     
     return MainCtrl;
 });
-//# sourceMappingURL=MainCtrl.js.map

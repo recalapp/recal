@@ -13,7 +13,8 @@ class ScheduleCtrl {
         '$modal',
         'ColorResource',
         'CourseService',
-        'localStorageService'
+        'localStorageService',
+        'UserService'
         ];
 
     private schedules;
@@ -25,25 +26,19 @@ class ScheduleCtrl {
             private $modal,
             private colorResource,
             private courseService,
-            private localStorageService) {
+            private localStorageService,
+            private userService) {
         this.semester = this.$scope.$parent.semester;
         this.$scope.canAddNewSchedules = this.semester.current;
 
         this.schedules = [];
-        this.restoreUserSchedules();
+        this._restoreUserSchedules();
         this.$scope.schedules = this.schedules;
-
         this.$scope.selectedSchedule = -1;
     }
 
-    // focus on restoring enrollments
-    // enrollments info is stored in courseManager
-    // course manager is created here
-    // we want to restore them here. is that right?
-    // could we pass the enrollments to courseManager?
-    // yeah
-    private restoreUserSchedules() {
-        var gettingPrevSchedules = this.$scope.$parent.userData.schedules.$promise;
+    private _restoreUserSchedules() {
+        var gettingPrevSchedules = this.userService.schedules.$promise;
         gettingPrevSchedules.then((schedules) => {
             for (var i = 0; i < schedules.length; i++) {
                 var schedule = schedules[i];
@@ -56,8 +51,9 @@ class ScheduleCtrl {
                             this.$rootScope,
                             this.courseService, 
                             this.localStorageService, 
+                            this.userService,
                             colorManager,
-                            this.semester.term_code,
+                            this.semester,
                             enrollments);
 
                     // TODO: remove color manager from schedules;
@@ -70,14 +66,14 @@ class ScheduleCtrl {
                         colorManager: colorManager
                     };
 
-                    this.setAllInactive();
+                    this._setAllInactive();
                     this.schedules.push(newSchedule);
                 }
             }
         });
     }
 
-    public setAllInactive() {
+    private _setAllInactive() {
         angular.forEach(this.schedules, (schedule) => {
             schedule.active = false;
         });
@@ -97,7 +93,7 @@ class ScheduleCtrl {
         });
 
         modalInstance.result.then(() => {
-            this.removeSchedule(index);
+            this._removeSchedule(index);
         });
     }
 
@@ -122,21 +118,22 @@ class ScheduleCtrl {
         });
 
         modalInstance.result.then((name) => {
-            this.createSchedule(name);
+            this._createSchedule(name);
         }, () => {
             this.schedules[prevIdx].active = true;
         });
     }
 
-    public createSchedule(scheduleName?: string) {
+    private _createSchedule(scheduleName?: string) {
         var id = this.schedules.length;
         var colorManager = new ColorManager(this.colorResource);
         var courseManager = new CourseManager(
                 this.$rootScope,
                 this.courseService, 
                 this.localStorageService, 
+                this.userService,
                 colorManager,
-                this.semester.term_code);
+                this.semester);
         this.schedules.push({
             id: id,
             title: scheduleName ? scheduleName : "Schedule " + id,
@@ -148,13 +145,13 @@ class ScheduleCtrl {
         this.$scope.selectedSchedule = id;
     }
 
-    public removeSchedule(index: number) {
+    private _removeSchedule(index: number) {
         this.schedules.splice(index, 1);
     }
  
     public addSchedule() {
-        this.setAllInactive();
-        this.createSchedule();
+        this._setAllInactive();
+        this._createSchedule();
     }    
 }
 

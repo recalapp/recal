@@ -2,11 +2,10 @@
 'use strict';
 define(["require", "exports", '../models/Semester'], function(require, exports, Semester) {
     var SemCtrl = (function () {
-        function SemCtrl($scope, localStorageService) {
+        function SemCtrl($scope, localStorageService, userService) {
             this.$scope = $scope;
             this.localStorageService = localStorageService;
-            this.$scope.vm = this;
-            this.$scope.userData = this.$scope.$parent.data;
+            this.userService = userService;
             this.semesters = [];
             this.restoreUserSemesters();
             this.$scope.semesters = this.semesters;
@@ -14,7 +13,7 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
         }
         SemCtrl.prototype.restoreUserSemesters = function () {
             var _this = this;
-            this.$scope.userData.schedules.$promise.then(function (schedules) {
+            this.userService.schedules.$promise.then(function (schedules) {
                 var tempSemesters = [];
                 angular.forEach(schedules, function (schedule) {
                     if (!_this.semesterInArray(schedule.semester, tempSemesters)) {
@@ -102,7 +101,8 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
         };
         SemCtrl.$inject = [
             '$scope',
-            'localStorageService'
+            'localStorageService',
+            'UserService'
         ];
 
         SemCtrl.CURRENT_SEMESTER_TERM_CODE = 1152;

@@ -10,6 +10,5 @@ niceControllers.addController('SearchCtrl', SearchCtrl);
 niceControllers.addController('CalendarCtrl', CalendarCtrl);
 niceControllers.addController('ScheduleCtrl', ScheduleCtrl);
 niceControllers.addController('SemCtrl', SemCtrl);
-niceControllers.addController('MainCtrl', MainCtrl);
 
 export = niceControllers;
