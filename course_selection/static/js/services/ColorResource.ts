@@ -5,7 +5,7 @@ import Service = require('./Service');
 
 'use strict';
 
-class ColorResource implements ICourseResource {
+class ColorResource {
 
     public static $inject = ['$resource'];
     public static BASE_URL: string = "/course_selection/api/v1/course/";

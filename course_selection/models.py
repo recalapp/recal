@@ -43,7 +43,7 @@ class Color_Palette(models.Model):
     dark = models.CharField(max_length=7, default="#000000")
 
     def __unicode__(self):
-        return "light: " + light + '\n' + "dark: " + dark
+        return "light: " + self.light + '\n' + "dark: " + self.dark
 
 class Course(models.Model):
     # relationships

@@ -38,8 +38,8 @@ class ColorManager {
         }
     }
 
-    // say enrollments = [a, b, c], where a, b, c are course enrollments containing
-    // a colors property. 
+    // we keep track of how many courses are using a color palette
+    // to initialize this mapping, we load the enrollments from previous sessions
     private _initColorToNumberOfCourses(enrollments?: Array<IEnrollment>) {
         this.colorToNumberOfCourses = new Array(this._usableColors.length);
         for (var i = 0; i < this.colorToNumberOfCourses.length; i++) {

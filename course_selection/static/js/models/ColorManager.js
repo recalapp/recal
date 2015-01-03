@@ -25,8 +25,8 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
-        // say enrollments = [a, b, c], where a, b, c are course enrollments containing
-        // a colors property.
+        // we keep track of how many courses are using a color palette
+        // to initialize this mapping, we load the enrollments from previous sessions
         ColorManager.prototype._initColorToNumberOfCourses = function (enrollments) {
             this.colorToNumberOfCourses = new Array(this._usableColors.length);
             for (var i = 0; i < this.colorToNumberOfCourses.length; i++) {
