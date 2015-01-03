@@ -32,7 +32,7 @@ class SectionEventSource implements IEventSource {
         this.backgroundColor = colors.light;
         this.section_type = section.section_type;
         // by default, a newly constructed section is previewed until enrolled"
-        // this.className = "nice-preview";
+        this.className = "cal-unconfirmed";
 
         var inputTimeFormat = "hh:mm a";
         var outputTimeFormat = "HH:mm:ss";
