@@ -31,22 +31,11 @@ class ColorManager {
             this._initColorToNumberOfCourses(enrollments);
         }
         else {
-            this.colorResource.get({}).$promise.then((data) => {
-                this.onLoaded(data);
+            this.colorResource.query({}).$promise.then((colors) => {
+                this._usableColors = colors;
+                this._initColorToNumberOfCourses();
             });
         }
-    }
-
-    private onLoaded(data) {
-        this._usableColors = data['objects'].map((color) => {
-            return {
-                id: color.id,
-                dark: "#" + color.dark,
-                light: "#" + color.light
-            }
-        });
-
-        this._initColorToNumberOfCourses();
     }
 
     // say enrollments = [a, b, c], where a, b, c are course enrollments containing

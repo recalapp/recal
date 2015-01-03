@@ -1,12 +1,11 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
-import ICourse = require('../interfaces/ICourse');
-import ICourseResource = require('../interfaces/ICourseResource');
+import IColorPalette = require('../interfaces/IColorPalette');
 import Service = require('./Service');
 
 'use strict';
 
-class CourseResource implements ICourseResource {
+class ColorResource implements ICourseResource {
 
     public static $inject = ['$resource'];
     public static BASE_URL: string = "/course_selection/api/v1/course/";
@@ -20,7 +19,7 @@ class CourseResource implements ICourseResource {
     private resource;
 
     constructor(private $resource: ng.resource.IResourceService) {
-        this.resource = $resource(CourseResource.BASE_URL, {},
+        this.resource = $resource(ColorResource.BASE_URL, {},
                 {
                     query: {
                         method: 'GET', 
@@ -54,4 +53,4 @@ class CourseResource implements ICourseResource {
     }
 }
 
-export = CourseResource;
+export = ColorResource;

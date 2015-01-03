@@ -36,7 +36,8 @@ class ResourceBuilder {
                 {
                     query: {
                         method: 'GET',
-                        isArray: false
+                        isArray: true,
+                        transformResponse: this.transformTastypieResponse
                     }
                 });
     }

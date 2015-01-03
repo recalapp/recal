@@ -25,7 +25,8 @@ define(["require", "exports"], function(require, exports) {
             return this.$resource(ResourceBuilder.BASE_URL + 'color_palette/', {}, {
                 query: {
                     method: 'GET',
-                    isArray: false
+                    isArray: true,
+                    transformResponse: this.transformTastypieResponse
                 }
             });
         };

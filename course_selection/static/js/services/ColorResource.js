@@ -2,10 +2,10 @@
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
-    var CourseResource = (function () {
-        function CourseResource($resource) {
+    var ColorResource = (function () {
+        function ColorResource($resource) {
             this.$resource = $resource;
-            this.resource = $resource(CourseResource.BASE_URL, {}, {
+            this.resource = $resource(ColorResource.BASE_URL, {}, {
                 query: {
                     method: 'GET',
                     isArray: false
@@ -18,15 +18,15 @@ define(["require", "exports"], function(require, exports) {
                 }
             });
         }
-        CourseResource.prototype.query = function () {
+        ColorResource.prototype.query = function () {
             return this.resource.query();
         };
 
-        CourseResource.prototype.getBySemester = function (semesterTermCode) {
+        ColorResource.prototype.getBySemester = function (semesterTermCode) {
             return this.resource.getBySemester({ semester__term_code: semesterTermCode });
         };
 
-        CourseResource.prototype.transformTastypieResponse = function (data, header) {
+        ColorResource.prototype.transformTastypieResponse = function (data, header) {
             var parsed = JSON.parse(data);
 
             // data could be an array with metadata
@@ -36,17 +36,17 @@ define(["require", "exports"], function(require, exports) {
                 return parsed;
             }
         };
-        CourseResource.$inject = ['$resource'];
-        CourseResource.BASE_URL = "/course_selection/api/v1/course/";
+        ColorResource.$inject = ['$resource'];
+        ColorResource.BASE_URL = "/course_selection/api/v1/course/";
 
-        CourseResource.previewColor = {
+        ColorResource.previewColor = {
             id: -1,
             dark: 'rgb(84, 84, 84)',
             light: 'rgb(210, 210, 210)'
         };
-        return CourseResource;
+        return ColorResource;
     })();
 
     
-    return CourseResource;
+    return ColorResource;
 });

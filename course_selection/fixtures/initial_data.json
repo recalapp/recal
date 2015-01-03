@@ -3,56 +3,56 @@
         "model": "course_selection.Color_Palette",
         "pk": 1,
         "fields": {
-            "dark": "2D6234",
-            "light": "D0DECF"
+            "dark": "#2D6234",
+            "light": "#D0DECF"
         }
     },
     {
         "model": "course_selection.Color_Palette",
         "pk": 2,
         "fields": {
-            "dark": "385C92",
-            "light": "d5dcec"
+            "dark": "#385C92",
+            "light": "#d5dcec"
         }
     },
     {
         "model": "course_selection.Color_Palette",
         "pk": 3,
         "fields": {
-            "dark": "954962",
-            "light": "ebd2db"
+            "dark": "#954962",
+            "light": "#ebd2db"
         }
     },
     {
         "model": "course_selection.Color_Palette",
         "pk": 4,
         "fields": {
-            "dark": "b17f00",
-            "light": "faf4cb"
+            "dark": "#b17f00",
+            "light": "#faf4cb"
         }
     },
     {
         "model": "course_selection.Color_Palette",
         "pk": 5,
         "fields": {
-            "dark": "895e2e",
-            "light": "e7dcce"
+            "dark": "#895e2e",
+            "light": "#e7dcce"
         }
     },
     {
         "model": "course_selection.Color_Palette",
         "pk": 6,
         "fields": {
-            "dark": "2f7770",
-            "light": "d1e7e4"
+            "dark": "#2f7770",
+            "light": "#d1e7e4"
         }
     },
     {
         "model": "course_selection.Color_Palette",
         "pk": 7,
         "fields": {
-            "dark": "614996",
-            "light": "dcd5e2"
+            "dark": "#614996",
+            "light": "#dcd5e2"
         }
     }
 ]

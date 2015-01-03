@@ -39,8 +39,8 @@ class Color_Palette(models.Model):
     """
     these are hex values of colors
     """
-    light = models.CharField(max_length=6, default="FFFFFF")
-    dark = models.CharField(max_length=6, default="000000")
+    light = models.CharField(max_length=7, default="#FFFFFF")
+    dark = models.CharField(max_length=7, default="#000000")
 
     def __unicode__(self):
         return "light: " + light + '\n' + "dark: " + dark

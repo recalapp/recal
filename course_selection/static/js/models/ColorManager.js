@@ -18,22 +18,11 @@ define(["require", "exports"], function(require, exports) {
                 this._usableColors = availableColors;
                 this._initColorToNumberOfCourses(enrollments);
             } else {
-                this.colorResource.get({}).$promise.then(function (data) {
-                    _this.onLoaded(data);
+                this.colorResource.query({}).$promise.then(function (colors) {
+                    _this._usableColors = colors;
+                    _this._initColorToNumberOfCourses();
                 });
             }
-        };
-
-        ColorManager.prototype.onLoaded = function (data) {
-            this._usableColors = data['objects'].map(function (color) {
-                return {
-                    id: color.id,
-                    dark: "#" + color.dark,
-                    light: "#" + color.light
-                };
-            });
-
-            this._initColorToNumberOfCourses();
         };
 
         // say enrollments = [a, b, c], where a, b, c are course enrollments containing
