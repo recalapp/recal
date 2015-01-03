@@ -62,6 +62,7 @@ define(["require", "exports"], function(require, exports) {
             return this.courseManager.isCourseAllSectionsEnrolled(course);
         };
 
+        // TODO: this function no longer works due to course.colors never being null
         SearchCtrl.prototype.getLinkColor = function (course) {
             if (course.colors) {
                 return course.colors.dark;

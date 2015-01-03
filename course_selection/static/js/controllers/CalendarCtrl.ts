@@ -43,7 +43,6 @@ class CalendarCtrl {
 
     private compositeEventSources: CompositeEventSources;
     private courseManager: ICourseManager;
-    private colorManager: IColorManager;
 
     // TODO: hack for watches not updating on first run
     private courseWatchInitRun: boolean; 
@@ -62,7 +61,6 @@ class CalendarCtrl {
         this.sectionWatchInitRun = true;
 
         this.courseManager = (<any>this.$scope.$parent).schedule.courseManager;
-        this.colorManager = (<any>this.$scope.$parent).schedule.colorManager;
         this.$scope.data = this.courseManager.getData();
 
         this.compositeEventSources = new CompositeEventSources();
@@ -110,8 +108,7 @@ class CalendarCtrl {
     // ////////////////////////////////////////////////////////////////
 
     private addCourse(course: ICourse, isPreview: boolean) {
-        var myColor = isPreview ? this.colorManager.getPreviewColor() : course.colors;
-        var courseEventSources = new CourseEventSources(course, myColor, isPreview);
+        var courseEventSources = new CourseEventSources(course, course.colors, isPreview);
         this.compositeEventSources.addEventSources(courseEventSources);
     }
 
@@ -182,7 +179,6 @@ class CalendarCtrl {
             this.addCourse(course, false);
         } 
         // course removed
-        // TODO: re-enable this color for use in colorManager
         else if (newCourses.length == oldCourses.length - 1) {
             var removedCourse = this.getRemovedCourse(newCourses, oldCourses);
             this.removeCourse(removedCourse, false);

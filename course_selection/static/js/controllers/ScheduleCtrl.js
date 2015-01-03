@@ -88,7 +88,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                         return canDismiss;
                     },
                     semester: function () {
-                        return _this.semester.title;
+                        return _this.semester.name;
                     }
                 },
                 backdropClass: 'modal-backdrop',
@@ -105,7 +105,13 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
         ScheduleCtrl.prototype._createSchedule = function (scheduleName) {
             var id = this.schedules.length;
             var colorManager = new ColorManager(this.colorResource);
-            var courseManager = new CourseManager(this.$rootScope, this.courseService, this.localStorageService, colorManager, new this.scheduleResource());
+            var newSchedule = new this.scheduleResource();
+            newSchedule.semester = this.semester;
+            newSchedule.user = this.userService.user;
+            newSchedule.availableColors = JSON.stringify(colorManager.availableColors);
+            newSchedule.enrollments = JSON.stringify([]);
+            newSchedule.$save();
+            var courseManager = new CourseManager(this.$rootScope, this.courseService, this.localStorageService, colorManager, newSchedule);
             this.schedules.push({
                 id: id,
                 title: scheduleName ? scheduleName : "Schedule " + id,

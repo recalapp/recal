@@ -5,6 +5,7 @@ import ResourceBuilder = require('./ResourceBuilder');
 import CourseService = require('./CourseService');
 import UserService = require('./UserService');
 import ScheduleService = require('./ScheduleService');
+import SemesterService = require('./SemesterService');
 
 var niceServices = angular.module('niceServices', []);
 
@@ -14,9 +15,11 @@ niceServices.factory('ScheduleResource', ["ResourceBuilder", (builder: ResourceB
 niceServices.factory('CourseResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getCourseResource()]);
 niceServices.factory('ColorResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getColorResource()]);
 niceServices.factory('UserResource', ['ResourceBuilder', (builder: ResourceBuilder) => builder.getUserResource()]);
+niceServices.factory('SemesterResource', ['ResourceBuilder', (builder: ResourceBuilder) => builder.getSemesterResource()]);
 
 niceServices.service('CourseService', CourseService);
 niceServices.service('UserService', UserService);
 niceServices.service('ScheduleService', ScheduleService);
+niceServices.service('SemesterService', SemesterService);
 
 export = niceServices;

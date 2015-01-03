@@ -85,6 +85,7 @@ class SearchCtrl {
         return this.courseManager.isCourseAllSectionsEnrolled(course);
     }
 
+    // TODO: this function no longer works due to course.colors never being null
     public getLinkColor(course) {
         if (course.colors) {
             return course.colors.dark;

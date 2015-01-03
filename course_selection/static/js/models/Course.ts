@@ -1,3 +1,4 @@
+import ColorResource = require('../services/ColorResource');
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
 import ISemester = require('../interfaces/ISemester');
@@ -34,7 +35,7 @@ class Course implements ICourse {
         this.primary_listing = this.getPrimaryCourseListing();
         this.all_listings = this.getAllCourseListings();
         this.section_types = this.getSectionTypes();
-        this.colors = null;
+        this.colors = ColorResource.previewColor;
         this.rating = +(Math.random() * 2 + 3).toPrecision(3);
         this.enrolled = enrolled ? enrolled : false;
         this.easypce_link = Course.EASYPCE_BASE_URL + this.primary_listing;

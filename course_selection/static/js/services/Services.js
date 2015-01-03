@@ -1,4 +1,5 @@
-define(["require", "exports", './ResourceBuilder', './CourseService', './UserService', './ScheduleService', "angular"], function(require, exports, ResourceBuilder, CourseService, UserService, ScheduleService) {
+/// <amd-dependency path="angular"/>
+define(["require", "exports", './ResourceBuilder', './CourseService', './UserService', './ScheduleService', './SemesterService', "angular"], function(require, exports, ResourceBuilder, CourseService, UserService, ScheduleService, SemesterService) {
     var niceServices = angular.module('niceServices', []);
 
     niceServices.factory('ResourceBuilder', ['$resource', 'localStorageService', function ($resource, localStorageService) {
@@ -17,12 +18,15 @@ define(["require", "exports", './ResourceBuilder', './CourseService', './UserSer
     niceServices.factory('UserResource', ['ResourceBuilder', function (builder) {
             return builder.getUserResource();
         }]);
+    niceServices.factory('SemesterResource', ['ResourceBuilder', function (builder) {
+            return builder.getSemesterResource();
+        }]);
 
     niceServices.service('CourseService', CourseService);
     niceServices.service('UserService', UserService);
     niceServices.service('ScheduleService', ScheduleService);
+    niceServices.service('SemesterService', SemesterService);
 
     
     return niceServices;
 });
-//# sourceMappingURL=Services.js.map

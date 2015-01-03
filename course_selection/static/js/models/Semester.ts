@@ -4,7 +4,7 @@ class Semester {
     }
 
     constructor(
-            public title: string,
+            public name: string,
             public active: boolean,
             public current: boolean,
             public term_code: number)

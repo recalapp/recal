@@ -11,7 +11,6 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.sectionWatchInitRun = true;
 
             this.courseManager = this.$scope.$parent.schedule.courseManager;
-            this.colorManager = this.$scope.$parent.schedule.colorManager;
             this.$scope.data = this.courseManager.getData();
 
             this.compositeEventSources = new CompositeEventSources();
@@ -49,8 +48,7 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
         // Course Management
         // ////////////////////////////////////////////////////////////////
         CalendarCtrl.prototype.addCourse = function (course, isPreview) {
-            var myColor = isPreview ? this.colorManager.getPreviewColor() : course.colors;
-            var courseEventSources = new CourseEventSources(course, myColor, isPreview);
+            var courseEventSources = new CourseEventSources(course, course.colors, isPreview);
             this.compositeEventSources.addEventSources(courseEventSources);
         };
 

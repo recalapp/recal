@@ -18,17 +18,19 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 course: null,
                 section: null
             };
-            this._initData(schedule);
+            var prevEnrollments = schedule.enrollments ? JSON.parse(schedule.enrollments) : null;
+            this._initData(prevEnrollments);
             this._initWatches();
         }
         ///////////////////////////////////////////////////////////
         // Initialization
         //////////////////////////////////////////////////////////
-        CourseManager.prototype._initData = function (schedule) {
+        CourseManager.prototype._initData = function (prevEnrollments) {
             this.data.previewCourse = null;
             this.data.enrolledCourses = [];
             this.data.enrolledSections = {};
-            this._loadCourses(JSON.parse(schedule.enrollments));
+
+            this._loadCourses(prevEnrollments);
         };
 
         CourseManager.prototype._initWatches = function () {
@@ -51,7 +53,7 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 var enrollments = _this._constructEnrollments(newValue);
                 _this.schedule.enrollments = JSON.stringify(enrollments);
                 _this.schedule.$update().then(function () {
-                    console.log('data posted');
+                    console.log('schedule updated');
                 });
             }, true);
         };

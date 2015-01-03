@@ -11,6 +11,12 @@ class CourseResource implements ICourseResource {
     public static $inject = ['$resource'];
     public static BASE_URL: string = "/course_selection/api/v1/course/";
 
+    public static previewColor: IColorPalette = {
+        id: -1,
+        dark: 'rgb(84, 84, 84)',
+        light: 'rgb(210, 210, 210)'
+    };
+
     private resource;
 
     constructor(private $resource: ng.resource.IResourceService) {

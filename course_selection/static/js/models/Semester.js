@@ -1,7 +1,7 @@
 define(["require", "exports"], function(require, exports) {
     var Semester = (function () {
-        function Semester(title, active, current, term_code) {
-            this.title = title;
+        function Semester(name, active, current, term_code) {
+            this.name = name;
             this.active = active;
             this.current = current;
             this.term_code = term_code;

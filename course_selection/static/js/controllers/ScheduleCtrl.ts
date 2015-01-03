@@ -111,7 +111,7 @@ class ScheduleCtrl {
                     return canDismiss;
                 },
                 semester: () => {
-                    return this.semester.title;
+                    return this.semester.name;
                 }
             },
             backdropClass: 'modal-backdrop',
@@ -128,12 +128,18 @@ class ScheduleCtrl {
     private _createSchedule(scheduleName?: string) {
         var id = this.schedules.length;
         var colorManager = new ColorManager(this.colorResource);
+        var newSchedule = new this.scheduleResource();
+        newSchedule.semester = this.semester;
+        newSchedule.user = this.userService.user;
+        newSchedule.availableColors = JSON.stringify(colorManager.availableColors);
+        newSchedule.enrollments = JSON.stringify([]);
+        newSchedule.$save();
         var courseManager = new CourseManager(
                 this.$rootScope,
                 this.courseService, 
                 this.localStorageService, 
                 colorManager,
-                new this.scheduleResource());
+                newSchedule);
         this.schedules.push({
             id: id,
             title: scheduleName ? scheduleName : "Schedule " + id,

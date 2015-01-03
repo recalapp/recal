@@ -75,6 +75,18 @@ class ResourceBuilder {
                 });
     }
 
+    public getSemesterResource() {
+        return this.$resource(ResourceBuilder.BASE_URL + 'semester/',
+                {},
+                {
+                    getByTermCode: {
+                        method: 'GET',
+                        isArray: false,
+                        transformResponse: this.getFirstObject
+                    }
+                });
+    }
+
     private transformTastypieResponse(data, header) {
         var parsed = JSON.parse(data);
         // data could be an array with metadata

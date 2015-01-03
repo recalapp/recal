@@ -7,7 +7,8 @@ class SemCtrl {
     public static $inject =[
         '$scope',
         'localStorageService',
-        'UserService'
+        'UserService',
+        'SemesterService'
         ];
 
     // TODO: get this from the server
@@ -17,12 +18,12 @@ class SemCtrl {
 
     constructor(private $scope,
             private localStorageService,
-            private userService) {
+            private userService,
+            private semesterService) {
         this.semesters = [];
         this.restoreUserSemesters();
         this.$scope.semesters = this.semesters;
         this.$scope.canAdd = this.canAdd();
-
     }
 
     private restoreUserSemesters() {
@@ -37,12 +38,9 @@ class SemCtrl {
             tempSemesters.sort(Semester.compare);
             angular.forEach(tempSemesters, (semester) => {
                 if (!this.semesterInArray(semester, this.semesters)) {
-                    this.addSemester(new Semester(
-                                semester.name,
-                                true,
-                                semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE,
-                                semester.term_code
-                                ));
+                    semester.active = true;
+                    semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
+                    this.addSemester(semester);
                 }
             });
         });
@@ -72,6 +70,8 @@ class SemCtrl {
  
     // TODO: this will only give you semesters after
     // the last existing semester
+    // for example, if the only semester the user has is 1415Fall,
+    // he will not be able to add semesters from previous years
     private getNewSemesterTermCode(): number {
         if (this.semesters.length == 0) {
             return SemCtrl.CURRENT_SEMESTER_TERM_CODE;
@@ -87,20 +87,20 @@ class SemCtrl {
         }
     }
 
-    private getNextSemester(): Semester {
+    private getNextSemester() {
         var term_code = this.getNewSemesterTermCode();
-        return new Semester(
-                    this.getTitle(term_code), 
-                    true, 
-                    term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE, 
-                    term_code);
+        return this.semesterService.getByTermCode(term_code);
     }
 
-    private addNewSemester(semester?: Semester) {
+    private addNewSemester(semester?) {
         if (semester) {
             this.semesters.push(semester);
         } else {
-            this.semesters.push(this.getNextSemester());
+            this.getNextSemester().then((semester) => {
+                semester.active = true;
+                semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
+                this.semesters.push(semester);
+            });
         }
     }
 
@@ -112,7 +112,7 @@ class SemCtrl {
         return "" + startYear + "-" + endYear + " " + semester;
     }
  
-    public addSemester(semester?: Semester) {
+    public addSemester(semester?) {
         this.setAllInactive();
         this.addNewSemester(semester);
         this.$scope.canAdd = this.canAdd();

@@ -2,10 +2,11 @@
 'use strict';
 define(["require", "exports", '../models/Semester'], function(require, exports, Semester) {
     var SemCtrl = (function () {
-        function SemCtrl($scope, localStorageService, userService) {
+        function SemCtrl($scope, localStorageService, userService, semesterService) {
             this.$scope = $scope;
             this.localStorageService = localStorageService;
             this.userService = userService;
+            this.semesterService = semesterService;
             this.semesters = [];
             this.restoreUserSemesters();
             this.$scope.semesters = this.semesters;
@@ -24,7 +25,9 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
                 tempSemesters.sort(Semester.compare);
                 angular.forEach(tempSemesters, function (semester) {
                     if (!_this.semesterInArray(semester, _this.semesters)) {
-                        _this.addSemester(new Semester(semester.name, true, semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE, semester.term_code));
+                        semester.active = true;
+                        semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
+                        _this.addSemester(semester);
                     }
                 });
             });
@@ -54,6 +57,8 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
 
         // TODO: this will only give you semesters after
         // the last existing semester
+        // for example, if the only semester the user has is 1415Fall,
+        // he will not be able to add semesters from previous years
         SemCtrl.prototype.getNewSemesterTermCode = function () {
             if (this.semesters.length == 0) {
                 return SemCtrl.CURRENT_SEMESTER_TERM_CODE;
@@ -71,14 +76,19 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
 
         SemCtrl.prototype.getNextSemester = function () {
             var term_code = this.getNewSemesterTermCode();
-            return new Semester(this.getTitle(term_code), true, term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE, term_code);
+            return this.semesterService.getByTermCode(term_code);
         };
 
         SemCtrl.prototype.addNewSemester = function (semester) {
+            var _this = this;
             if (semester) {
                 this.semesters.push(semester);
             } else {
-                this.semesters.push(this.getNextSemester());
+                this.getNextSemester().then(function (semester) {
+                    semester.active = true;
+                    semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
+                    _this.semesters.push(semester);
+                });
             }
         };
 
@@ -102,7 +112,8 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
         SemCtrl.$inject = [
             '$scope',
             'localStorageService',
-            'UserService'
+            'UserService',
+            'SemesterService'
         ];
 
         SemCtrl.CURRENT_SEMESTER_TERM_CODE = 1152;

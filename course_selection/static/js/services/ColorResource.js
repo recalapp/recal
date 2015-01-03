@@ -1,3 +1,4 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
@@ -28,6 +29,7 @@ define(["require", "exports"], function(require, exports) {
         CourseResource.prototype.transformTastypieResponse = function (data, header) {
             var parsed = JSON.parse(data);
 
+            // data could be an array with metadata
             if (parsed.meta && parsed.objects) {
                 return parsed.objects;
             } else {
@@ -36,10 +38,15 @@ define(["require", "exports"], function(require, exports) {
         };
         CourseResource.$inject = ['$resource'];
         CourseResource.BASE_URL = "/course_selection/api/v1/course/";
+
+        CourseResource.previewColor = {
+            id: -1,
+            dark: 'rgb(84, 84, 84)',
+            light: 'rgb(210, 210, 210)'
+        };
         return CourseResource;
     })();
 
     
     return CourseResource;
 });
-//# sourceMappingURL=ColorResource.js.map
