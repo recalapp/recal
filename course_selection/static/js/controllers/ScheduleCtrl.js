@@ -2,7 +2,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
     'use strict';
 
     var ScheduleCtrl = (function () {
-        function ScheduleCtrl($rootScope, $scope, $modal, colorResource, courseService, localStorageService, userService) {
+        function ScheduleCtrl($rootScope, $scope, $modal, colorResource, courseService, localStorageService, userService, scheduleResource) {
             this.$rootScope = $rootScope;
             this.$scope = $scope;
             this.$modal = $modal;
@@ -10,6 +10,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             this.courseService = courseService;
             this.localStorageService = localStorageService;
             this.userService = userService;
+            this.scheduleResource = scheduleResource;
             this.semester = this.$scope.$parent.semester;
             this.$scope.canAddNewSchedules = this.semester.current;
 
@@ -29,7 +30,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                         var enrollments = JSON.parse(schedule.enrollments);
                         var availableColors = JSON.parse(schedule.available_colors);
                         var colorManager = new ColorManager(_this.colorResource, availableColors, enrollments);
-                        var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.localStorageService, _this.userService, colorManager, _this.semester, enrollments);
+                        var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.localStorageService, colorManager, schedule);
 
                         // TODO: remove color manager from schedules;
                         // it's unnecessary--the info is in course manager already
@@ -104,7 +105,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
         ScheduleCtrl.prototype._createSchedule = function (scheduleName) {
             var id = this.schedules.length;
             var colorManager = new ColorManager(this.colorResource);
-            var courseManager = new CourseManager(this.$rootScope, this.courseService, this.localStorageService, this.userService, colorManager, this.semester);
+            var courseManager = new CourseManager(this.$rootScope, this.courseService, this.localStorageService, colorManager, new this.scheduleResource());
             this.schedules.push({
                 id: id,
                 title: scheduleName ? scheduleName : "Schedule " + id,
@@ -131,7 +132,8 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             'ColorResource',
             'CourseService',
             'localStorageService',
-            'UserService'
+            'UserService',
+            'ScheduleResource'
         ];
         return ScheduleCtrl;
     })();

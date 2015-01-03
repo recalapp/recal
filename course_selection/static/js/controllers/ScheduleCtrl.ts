@@ -1,6 +1,7 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 import CourseManager = require('../models/CourseManager');
 import ColorManager = require('../models/ColorManager');
+import IColorManager = require('../interfaces/IColorManager');
 import RemoveScheduleModalCtrl = require('./RemoveScheduleModalCtrl');
 import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
 
@@ -14,7 +15,8 @@ class ScheduleCtrl {
         'ColorResource',
         'CourseService',
         'localStorageService',
-        'UserService'
+        'UserService',
+        'ScheduleResource'
         ];
 
     private schedules;
@@ -27,7 +29,8 @@ class ScheduleCtrl {
             private colorResource,
             private courseService,
             private localStorageService,
-            private userService) {
+            private userService,
+            private scheduleResource) {
         this.semester = this.$scope.$parent.semester;
         this.$scope.canAddNewSchedules = this.semester.current;
 
@@ -46,15 +49,13 @@ class ScheduleCtrl {
                     // recover available colors and enrollments
                     var enrollments = JSON.parse(schedule.enrollments);
                     var availableColors = JSON.parse(schedule.available_colors);
-                    var colorManager = new ColorManager(this.colorResource, availableColors, enrollments);
+                    var colorManager: IColorManager = new ColorManager(this.colorResource, availableColors, enrollments);
                     var courseManager = new CourseManager(
                             this.$rootScope,
                             this.courseService, 
                             this.localStorageService, 
-                            this.userService,
                             colorManager,
-                            this.semester,
-                            enrollments);
+                            schedule);
 
                     // TODO: remove color manager from schedules;
                     // it's unnecessary--the info is in course manager already
@@ -131,9 +132,8 @@ class ScheduleCtrl {
                 this.$rootScope,
                 this.courseService, 
                 this.localStorageService, 
-                this.userService,
                 colorManager,
-                this.semester);
+                new this.scheduleResource());
         this.schedules.push({
             id: id,
             title: scheduleName ? scheduleName : "Schedule " + id,

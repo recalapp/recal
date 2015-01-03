@@ -1,14 +1,12 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports", './Course'], function(require, exports, Course) {
     var CourseManager = (function () {
-        function CourseManager($rootScope, courseService, localStorageService, userService, colorManager, semester, prevEnrollments) {
+        function CourseManager($rootScope, courseService, localStorageService, colorManager, schedule) {
             this.$rootScope = $rootScope;
             this.courseService = courseService;
             this.localStorageService = localStorageService;
-            this.userService = userService;
             this.colorManager = colorManager;
-            this.semester = semester;
-            this.prevEnrollments = prevEnrollments;
+            this.schedule = schedule;
             this.data = {
                 previewCourse: null,
                 enrolledCourses: [],
@@ -20,17 +18,17 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 course: null,
                 section: null
             };
-            this._initData(prevEnrollments);
+            this._initData(schedule);
             this._initWatches();
         }
         ///////////////////////////////////////////////////////////
         // Initialization
         //////////////////////////////////////////////////////////
-        CourseManager.prototype._initData = function (prevEnrollments) {
+        CourseManager.prototype._initData = function (schedule) {
             this.data.previewCourse = null;
             this.data.enrolledCourses = [];
             this.data.enrolledSections = {};
-            this._loadCourses(prevEnrollments);
+            this._loadCourses(JSON.parse(schedule.enrollments));
         };
 
         CourseManager.prototype._initWatches = function () {
@@ -42,12 +40,6 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                     return;
                 }
 
-                console.log('test');
-
-                // do stuff with syncing
-                // this.data.enrolledCourses is up to date
-                // now we have to think about how to post information
-                // we need to construct data here
                 // we need to post stuff in the form of
                 // {
                 //  semester: ...
@@ -57,7 +49,10 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 //  enrollments: []
                 // }
                 var enrollments = _this._constructEnrollments(newValue);
-                var temp = '';
+                _this.schedule.enrollments = JSON.stringify(enrollments);
+                _this.schedule.$update().then(function () {
+                    console.log('data posted');
+                });
             }, true);
         };
 
@@ -98,7 +93,7 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
 
         CourseManager.prototype._loadCourses = function (prevEnrollments) {
             var _this = this;
-            this.courseService.getBySemester(this.semester.term_code).then(function (courses) {
+            this.courseService.getBySemester(this.schedule.semester.term_code).then(function (courses) {
                 _this.data.courses = courses.map(_this._transformCourse);
             }).then(function () {
                 if (prevEnrollments) {

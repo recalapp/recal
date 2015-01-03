@@ -8,13 +8,17 @@ class ColorManager {
         light: 'rgb(210, 210, 210)'
     };
 
-    private usableColors: IColorPalette[];
+    private _usableColors: IColorPalette[];
+    public get availableColors() {
+        return this._usableColors;
+    }
+
     private colorToNumberOfCourses: number[];
 
     constructor(
             private colorResource,
-            private availableColors?: Array<IColorPalette>,
-            private enrollments?: Array<IEnrollment>
+            availableColors?: Array<IColorPalette>,
+            enrollments?: Array<IEnrollment>
             ) {
         this.initUsableColors(availableColors, enrollments);
     }
@@ -23,7 +27,7 @@ class ColorManager {
             availableColors?: Array<IColorPalette>, 
             enrollments?: Array<IEnrollment>) {
         if (availableColors && enrollments) {
-            this.usableColors = availableColors;
+            this._usableColors = availableColors;
             this._initColorToNumberOfCourses(enrollments);
         }
         else {
@@ -34,11 +38,11 @@ class ColorManager {
     }
 
     private onLoaded(data) {
-        this.usableColors = data['objects'].map((color) => {
+        this._usableColors = data['objects'].map((color) => {
             return {
                 id: color.id,
-                dark: '#' + color.dark,
-                light: '#' + color.light
+                dark: "#" + color.dark,
+                light: "#" + color.light
             }
         });
 
@@ -48,15 +52,15 @@ class ColorManager {
     // say enrollments = [a, b, c], where a, b, c are course enrollments containing
     // a colors property. 
     private _initColorToNumberOfCourses(enrollments?: Array<IEnrollment>) {
-        this.colorToNumberOfCourses = new Array(this.usableColors.length);
+        this.colorToNumberOfCourses = new Array(this._usableColors.length);
         for (var i = 0; i < this.colorToNumberOfCourses.length; i++) {
             this.colorToNumberOfCourses[i] = 0;
         }
 
         if (enrollments) {
-            for (var i = 0; i < this.usableColors.length; i++) {
+            for (var i = 0; i < this._usableColors.length; i++) {
                 for (var j = 0; j < enrollments.length; j++) {
-                    if (this.usableColors[i].id == enrollments[j].color.id) {
+                    if (this._usableColors[i].id == enrollments[j].color.id) {
                         this.colorToNumberOfCourses[i]++;
                         break;
                     }
@@ -67,8 +71,8 @@ class ColorManager {
 
     // someone is done using this color. lower count for color
     public addColor(color: IColorPalette) {
-        for (var i = 0; i < this.usableColors.length; i++) {
-            if (color.id == this.usableColors[i].id) {
+        for (var i = 0; i < this._usableColors.length; i++) {
+            if (color.id == this._usableColors[i].id) {
                 this.colorToNumberOfCourses[i]--;
                 return;
             }
@@ -86,7 +90,7 @@ class ColorManager {
     public nextColor(): IColorPalette {
         var currMin = Number.MAX_VALUE;
         var possibleColorIndices = [];
-        for (var i = 0; i < this.usableColors.length; i++) {
+        for (var i = 0; i < this._usableColors.length; i++) {
             if (this.colorToNumberOfCourses[i] < currMin) {
                 currMin = this.colorToNumberOfCourses[i];
                 possibleColorIndices = [i];
@@ -97,7 +101,7 @@ class ColorManager {
 
         var idx: number = Math.floor(Math.random() * possibleColorIndices.length);
         this.colorToNumberOfCourses[possibleColorIndices[idx]]++;
-        return this.usableColors[possibleColorIndices[idx]];
+        return this._usableColors[possibleColorIndices[idx]];
     }
 }
 

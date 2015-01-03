@@ -26,13 +26,11 @@ class CourseManager {
             private $rootScope,
             private courseService,
             private localStorageService,
-            private userService,
             private colorManager: IColorManager,
-            private semester,
-            private prevEnrollments?: Array<IEnrollment>
+            private schedule
             ) 
     {
-        this._initData(prevEnrollments);
+        this._initData(schedule);
         this._initWatches();
     }
 
@@ -40,11 +38,11 @@ class CourseManager {
     // Initialization
     //////////////////////////////////////////////////////////
 
-    private _initData(prevEnrollments?: Array<IEnrollment>) {
+    private _initData(schedule) {
         this.data.previewCourse = null;
         this.data.enrolledCourses = [];
         this.data.enrolledSections = {};
-        this._loadCourses(prevEnrollments);
+        this._loadCourses(JSON.parse(schedule.enrollments));
     }
 
     private _initWatches() {
@@ -55,11 +53,6 @@ class CourseManager {
                 return;
             }
 
-            console.log('test');
-            // do stuff with syncing
-            // this.data.enrolledCourses is up to date
-            // now we have to think about how to post information
-            // we need to construct data here
             // we need to post stuff in the form of
             // {
             //  semester: ...
@@ -70,7 +63,10 @@ class CourseManager {
             // }
 
             var enrollments = this._constructEnrollments(newValue);
-            var temp = '';
+            this.schedule.enrollments = JSON.stringify(enrollments);
+            this.schedule.$update().then(() => {
+                console.log('data posted');
+            });
         }, true);
 
     }
@@ -117,7 +113,7 @@ class CourseManager {
     }
 
     private _loadCourses(prevEnrollments?) {
-        this.courseService.getBySemester(this.semester.term_code).then((courses) => {
+        this.courseService.getBySemester(this.schedule.semester.term_code).then((courses) => {
             this.data.courses = courses.map(this._transformCourse); 
         }).then(() => {
             if (prevEnrollments) {

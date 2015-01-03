@@ -2,14 +2,20 @@ define(["require", "exports"], function(require, exports) {
     var ColorManager = (function () {
         function ColorManager(colorResource, availableColors, enrollments) {
             this.colorResource = colorResource;
-            this.availableColors = availableColors;
-            this.enrollments = enrollments;
             this.initUsableColors(availableColors, enrollments);
         }
+        Object.defineProperty(ColorManager.prototype, "availableColors", {
+            get: function () {
+                return this._usableColors;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         ColorManager.prototype.initUsableColors = function (availableColors, enrollments) {
             var _this = this;
             if (availableColors && enrollments) {
-                this.usableColors = availableColors;
+                this._usableColors = availableColors;
                 this._initColorToNumberOfCourses(enrollments);
             } else {
                 this.colorResource.get({}).$promise.then(function (data) {
@@ -19,11 +25,11 @@ define(["require", "exports"], function(require, exports) {
         };
 
         ColorManager.prototype.onLoaded = function (data) {
-            this.usableColors = data['objects'].map(function (color) {
+            this._usableColors = data['objects'].map(function (color) {
                 return {
                     id: color.id,
-                    dark: '#' + color.dark,
-                    light: '#' + color.light
+                    dark: "#" + color.dark,
+                    light: "#" + color.light
                 };
             });
 
@@ -33,15 +39,15 @@ define(["require", "exports"], function(require, exports) {
         // say enrollments = [a, b, c], where a, b, c are course enrollments containing
         // a colors property.
         ColorManager.prototype._initColorToNumberOfCourses = function (enrollments) {
-            this.colorToNumberOfCourses = new Array(this.usableColors.length);
+            this.colorToNumberOfCourses = new Array(this._usableColors.length);
             for (var i = 0; i < this.colorToNumberOfCourses.length; i++) {
                 this.colorToNumberOfCourses[i] = 0;
             }
 
             if (enrollments) {
-                for (var i = 0; i < this.usableColors.length; i++) {
+                for (var i = 0; i < this._usableColors.length; i++) {
                     for (var j = 0; j < enrollments.length; j++) {
-                        if (this.usableColors[i].id == enrollments[j].color.id) {
+                        if (this._usableColors[i].id == enrollments[j].color.id) {
                             this.colorToNumberOfCourses[i]++;
                             break;
                         }
@@ -52,8 +58,8 @@ define(["require", "exports"], function(require, exports) {
 
         // someone is done using this color. lower count for color
         ColorManager.prototype.addColor = function (color) {
-            for (var i = 0; i < this.usableColors.length; i++) {
-                if (color.id == this.usableColors[i].id) {
+            for (var i = 0; i < this._usableColors.length; i++) {
+                if (color.id == this._usableColors[i].id) {
                     this.colorToNumberOfCourses[i]--;
                     return;
                 }
@@ -71,7 +77,7 @@ define(["require", "exports"], function(require, exports) {
         ColorManager.prototype.nextColor = function () {
             var currMin = Number.MAX_VALUE;
             var possibleColorIndices = [];
-            for (var i = 0; i < this.usableColors.length; i++) {
+            for (var i = 0; i < this._usableColors.length; i++) {
                 if (this.colorToNumberOfCourses[i] < currMin) {
                     currMin = this.colorToNumberOfCourses[i];
                     possibleColorIndices = [i];
@@ -82,7 +88,7 @@ define(["require", "exports"], function(require, exports) {
 
             var idx = Math.floor(Math.random() * possibleColorIndices.length);
             this.colorToNumberOfCourses[possibleColorIndices[idx]]++;
-            return this.usableColors[possibleColorIndices[idx]];
+            return this._usableColors[possibleColorIndices[idx]];
         };
         ColorManager.previewColor = {
             id: -1,
