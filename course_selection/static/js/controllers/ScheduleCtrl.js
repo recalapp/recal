@@ -109,6 +109,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             newSchedule.semester = this.semester;
             newSchedule.user = this.userService.user;
             newSchedule.enrollments = JSON.stringify([]);
+            newSchedule.title = scheduleName ? scheduleName : "Schedule" + id;
             colorManager.availableColors.$promise.then(function (colors) {
                 newSchedule.available_colors = JSON.stringify(colors);
                 newSchedule.$save();
@@ -117,7 +118,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             var courseManager = new CourseManager(this.$rootScope, this.courseService, this.localStorageService, colorManager, newSchedule);
             this.schedules.push({
                 id: id,
-                title: scheduleName ? scheduleName : "Schedule " + id,
+                title: newSchedule.title,
                 active: true,
                 courseManager: courseManager,
                 colorManager: colorManager
@@ -126,8 +127,10 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             this.$scope.selectedSchedule = id;
         };
 
+        // TODO: this is a workaround
+        // shouldn't have to access the schedule like this
         ScheduleCtrl.prototype._removeSchedule = function (index) {
-            this.schedules[index].$delete();
+            this.schedules[index].courseManager.schedule.$remove();
             this.schedules.splice(index, 1);
         };
 

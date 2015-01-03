@@ -132,6 +132,7 @@ class ScheduleCtrl {
         newSchedule.semester = this.semester;
         newSchedule.user = this.userService.user;
         newSchedule.enrollments = JSON.stringify([]);
+        newSchedule.title = scheduleName ? scheduleName : "Schedule" + id;
         colorManager.availableColors.$promise.then((colors) => {
             newSchedule.available_colors = JSON.stringify(colors);
             newSchedule.$save();
@@ -145,7 +146,7 @@ class ScheduleCtrl {
                 newSchedule);
         this.schedules.push({
             id: id,
-            title: scheduleName ? scheduleName : "Schedule " + id,
+            title: newSchedule.title,
             active: true,
             courseManager: courseManager,
             colorManager: colorManager
@@ -154,8 +155,10 @@ class ScheduleCtrl {
         this.$scope.selectedSchedule = id;
     }
 
+    // TODO: this is a workaround
+    // shouldn't have to access the schedule like this
     private _removeSchedule(index: number) {
-        this.schedules[index].$delete();
+        this.schedules[index].courseManager.schedule.$remove();
         this.schedules.splice(index, 1);
     }
  

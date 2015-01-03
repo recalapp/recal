@@ -124,7 +124,7 @@ class ScheduleResource(ModelResource):
         queryset = Schedule.objects.all()
         resource_name = 'schedule'
         excludes = []
-        allowed_methods = ['get', 'post', 'put']
+        allowed_methods = ['get', 'post', 'put', 'delete']
         cache = SimpleCache(timeout=10)
         authorization = Authorization()
         always_return_data = True
