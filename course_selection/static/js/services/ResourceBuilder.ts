@@ -44,7 +44,7 @@ class ResourceBuilder {
 
     public getScheduleResource() {
         return this.$resource(ResourceBuilder.BASE_URL + 'schedule/:id',
-                {},
+                {id: '@id'},
                 {
                     query: {
                         method: 'GET',
@@ -55,9 +55,8 @@ class ResourceBuilder {
                         isArray: true,
                         transformResponse: this.transformTastypieResponse
                     },
-
                     update: {
-                        method: 'POST',
+                        method: 'PUT',
                         params: {
                         }
                     }

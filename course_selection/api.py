@@ -124,9 +124,10 @@ class ScheduleResource(ModelResource):
         queryset = Schedule.objects.all()
         resource_name = 'schedule'
         excludes = []
-        allowed_methods = ['get', 'post']
+        allowed_methods = ['get', 'post', 'put']
         cache = SimpleCache(timeout=10)
         authorization = Authorization()
+        always_return_data = True
         limit = 0
         max_limit = 0
         filtering = {

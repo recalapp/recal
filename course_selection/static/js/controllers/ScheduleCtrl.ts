@@ -131,9 +131,12 @@ class ScheduleCtrl {
         var newSchedule = new this.scheduleResource();
         newSchedule.semester = this.semester;
         newSchedule.user = this.userService.user;
-        newSchedule.availableColors = JSON.stringify(colorManager.availableColors);
         newSchedule.enrollments = JSON.stringify([]);
-        newSchedule.$save();
+        colorManager.availableColors.$promise.then((colors) => {
+            newSchedule.available_colors = JSON.stringify(colors);
+            newSchedule.$save();
+        });
+
         var courseManager = new CourseManager(
                 this.$rootScope,
                 this.courseService, 
@@ -152,6 +155,7 @@ class ScheduleCtrl {
     }
 
     private _removeSchedule(index: number) {
+        this.schedules[index].$delete();
         this.schedules.splice(index, 1);
     }
  

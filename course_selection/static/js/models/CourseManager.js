@@ -52,7 +52,7 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 // }
                 var enrollments = _this._constructEnrollments(newValue);
                 _this.schedule.enrollments = JSON.stringify(enrollments);
-                _this.schedule.$update().then(function () {
+                _this.schedule.$update().then(function (updatedSchedule) {
                     console.log('schedule updated');
                 });
             }, true);

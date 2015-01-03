@@ -8,7 +8,7 @@ class ColorManager {
         light: 'rgb(210, 210, 210)'
     };
 
-    private _usableColors: IColorPalette[];
+    private _usableColors; 
     public get availableColors() {
         return this._usableColors;
     }
@@ -31,8 +31,8 @@ class ColorManager {
             this._initColorToNumberOfCourses(enrollments);
         }
         else {
-            this.colorResource.query({}).$promise.then((colors) => {
-                this._usableColors = colors;
+            this._usableColors = this.colorResource.query({});
+            this._usableColors.$promise.then((colors) => {
                 this._initColorToNumberOfCourses();
             });
         }

@@ -30,14 +30,14 @@ class SemCtrl {
         this.userService.schedules.$promise.then((schedules) => {
             var tempSemesters = [];
             angular.forEach(schedules, (schedule) => {
-                if (!this.semesterInArray(schedule.semester, tempSemesters)) {
+                if (!this._semesterInArray(schedule.semester, tempSemesters)) {
                     tempSemesters.push(schedule.semester);
                 }
             });
 
             tempSemesters.sort(Semester.compare);
             angular.forEach(tempSemesters, (semester) => {
-                if (!this.semesterInArray(semester, this.semesters)) {
+                if (!this._semesterInArray(semester, this.semesters)) {
                     semester.active = true;
                     semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
                     this.addSemester(semester);
@@ -46,7 +46,7 @@ class SemCtrl {
         });
     }
 
-    private semesterInArray(semester, array): boolean {
+    private _semesterInArray(semester, array): boolean {
         var found = false;
         angular.forEach(array, (sem) => {
             if (sem.term_code == semester.term_code) {
@@ -97,15 +97,17 @@ class SemCtrl {
             this.semesters.push(semester);
         } else {
             this.getNextSemester().then((semester) => {
-                semester.active = true;
-                semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
-                this.semesters.push(semester);
+                if (!this._semesterInArray(semester, this.semesters)) {
+                    semester.active = true;
+                    semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
+                    this.semesters.push(semester);
+                }
             });
         }
     }
 
     private getTitle(termCode: number): string {
-        // take mid 2 numbers: _XX_
+        // take mid 2 numbers: _XX_ for year
         var endYear = Math.floor((termCode % 1000) / 10);
         var startYear = endYear - 1;
         var semester = this.semesterIsFall(termCode) ? "Fall" : "Spring";
@@ -118,6 +120,8 @@ class SemCtrl {
         this.$scope.canAdd = this.canAdd();
     }    
 
+    // term codes for the fall semester ends with 2
+    // '''''''''''''''''''spring semester ends with 4
     private semesterIsFall(termCode): boolean {
         return termCode % 10 == 2;
     }

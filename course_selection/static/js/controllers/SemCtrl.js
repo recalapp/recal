@@ -17,14 +17,14 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
             this.userService.schedules.$promise.then(function (schedules) {
                 var tempSemesters = [];
                 angular.forEach(schedules, function (schedule) {
-                    if (!_this.semesterInArray(schedule.semester, tempSemesters)) {
+                    if (!_this._semesterInArray(schedule.semester, tempSemesters)) {
                         tempSemesters.push(schedule.semester);
                     }
                 });
 
                 tempSemesters.sort(Semester.compare);
                 angular.forEach(tempSemesters, function (semester) {
-                    if (!_this.semesterInArray(semester, _this.semesters)) {
+                    if (!_this._semesterInArray(semester, _this.semesters)) {
                         semester.active = true;
                         semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
                         _this.addSemester(semester);
@@ -33,7 +33,7 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
             });
         };
 
-        SemCtrl.prototype.semesterInArray = function (semester, array) {
+        SemCtrl.prototype._semesterInArray = function (semester, array) {
             var found = false;
             angular.forEach(array, function (sem) {
                 if (sem.term_code == semester.term_code) {
@@ -85,15 +85,17 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
                 this.semesters.push(semester);
             } else {
                 this.getNextSemester().then(function (semester) {
-                    semester.active = true;
-                    semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
-                    _this.semesters.push(semester);
+                    if (!_this._semesterInArray(semester, _this.semesters)) {
+                        semester.active = true;
+                        semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
+                        _this.semesters.push(semester);
+                    }
                 });
             }
         };
 
         SemCtrl.prototype.getTitle = function (termCode) {
-            // take mid 2 numbers: _XX_
+            // take mid 2 numbers: _XX_ for year
             var endYear = Math.floor((termCode % 1000) / 10);
             var startYear = endYear - 1;
             var semester = this.semesterIsFall(termCode) ? "Fall" : "Spring";
@@ -106,6 +108,8 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
             this.$scope.canAdd = this.canAdd();
         };
 
+        // term codes for the fall semester ends with 2
+        // '''''''''''''''''''spring semester ends with 4
         SemCtrl.prototype.semesterIsFall = function (termCode) {
             return termCode % 10 == 2;
         };

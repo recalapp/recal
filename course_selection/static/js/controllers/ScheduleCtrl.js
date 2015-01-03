@@ -26,11 +26,14 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                 for (var i = 0; i < schedules.length; i++) {
                     var schedule = schedules[i];
                     if (schedule.semester.term_code == _this.semester.term_code) {
+                        // recover available colors and enrollments
                         var enrollments = JSON.parse(schedule.enrollments);
                         var availableColors = JSON.parse(schedule.available_colors);
                         var colorManager = new ColorManager(_this.colorResource, availableColors, enrollments);
                         var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.localStorageService, colorManager, schedule);
 
+                        // TODO: remove color manager from schedules;
+                        // it's unnecessary--the info is in course manager already
                         var newSchedule = {
                             id: schedule.id,
                             title: schedule.title,
@@ -73,6 +76,8 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
         ScheduleCtrl.prototype.askForNewScheduleName = function (prevIdx) {
             var _this = this;
+            // the modal is "dismissable" if we have an open schedule
+            // already, which means prevIdx != undefined
             var canDismiss = prevIdx != -1;
             var modalInstance = this.$modal.open({
                 templateUrl: '/static/templates/newScheduleModal.html',
@@ -103,9 +108,12 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             var newSchedule = new this.scheduleResource();
             newSchedule.semester = this.semester;
             newSchedule.user = this.userService.user;
-            newSchedule.availableColors = JSON.stringify(colorManager.availableColors);
             newSchedule.enrollments = JSON.stringify([]);
-            newSchedule.$save();
+            colorManager.availableColors.$promise.then(function (colors) {
+                newSchedule.available_colors = JSON.stringify(colors);
+                newSchedule.$save();
+            });
+
             var courseManager = new CourseManager(this.$rootScope, this.courseService, this.localStorageService, colorManager, newSchedule);
             this.schedules.push({
                 id: id,
@@ -119,6 +127,7 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
         };
 
         ScheduleCtrl.prototype._removeSchedule = function (index) {
+            this.schedules[index].$delete();
             this.schedules.splice(index, 1);
         };
 
@@ -142,4 +151,3 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
     
     return ScheduleCtrl;
 });
-//# sourceMappingURL=ScheduleCtrl.js.map

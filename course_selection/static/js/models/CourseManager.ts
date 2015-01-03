@@ -66,7 +66,7 @@ class CourseManager {
 
             var enrollments = this._constructEnrollments(newValue);
             this.schedule.enrollments = JSON.stringify(enrollments);
-            this.schedule.$update().then(() => {
+            this.schedule.$update().then((updatedSchedule) => {
                 console.log('schedule updated');
             });
         }, true);

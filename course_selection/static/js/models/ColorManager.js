@@ -18,8 +18,8 @@ define(["require", "exports"], function(require, exports) {
                 this._usableColors = availableColors;
                 this._initColorToNumberOfCourses(enrollments);
             } else {
-                this.colorResource.query({}).$promise.then(function (colors) {
-                    _this._usableColors = colors;
+                this._usableColors = this.colorResource.query({});
+                this._usableColors.$promise.then(function (colors) {
                     _this._initColorToNumberOfCourses();
                 });
             }

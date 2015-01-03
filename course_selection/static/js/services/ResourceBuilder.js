@@ -32,7 +32,7 @@ define(["require", "exports"], function(require, exports) {
         };
 
         ResourceBuilder.prototype.getScheduleResource = function () {
-            return this.$resource(ResourceBuilder.BASE_URL + 'schedule/:id', {}, {
+            return this.$resource(ResourceBuilder.BASE_URL + 'schedule/:id', { id: '@id' }, {
                 query: {
                     method: 'GET',
                     isArray: false
@@ -43,7 +43,7 @@ define(["require", "exports"], function(require, exports) {
                     transformResponse: this.transformTastypieResponse
                 },
                 update: {
-                    method: 'POST',
+                    method: 'PUT',
                     params: {}
                 }
             });
