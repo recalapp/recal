@@ -6,7 +6,8 @@ class RemoveScheduleModalCtrl {
     ];
 
     constructor(private $scope, private $modalInstance, title: string) {
-        this.$scope.message = "You want to delete the schedule: " + title;
+        this.$scope.confirmation = "Confirm that you want to delete the schedule: ";
+        this.$scope.title = title;
 
         this.$scope.ok = () => {
             this.ok();

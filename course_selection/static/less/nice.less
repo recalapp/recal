@@ -83,17 +83,24 @@ body {
 
 .button-add-tab {
     background: none;
-    color: @tab-light-color;
+    padding: 5px 10vh;
+    border-radius: 0;
+    margin-right: 0;
+    color: black;
     padding: 5px 25px;
+    outline: none !important;
+    //font-weight:bold;
     &:hover {
-        color: @tab-dark-color;
+        color: @body-dark-text-color;
         text-decoration: none;
-        background-color: #eee;
+        background-color: @body-dark-background-color;
         cursor: pointer;
     }
 }
 
 .nav-tabs {
+    border-bottom: none;
+
     > li {
         // Actual tabs (as links)
         > a {
@@ -102,6 +109,7 @@ body {
             font-weight: bold;
             color: black;
             //background-color: @body-medium-background-color;
+            border-style: none;
             border-radius: 0;
             &:hover {
                 background-color: @body-dark-background-color;
@@ -117,6 +125,7 @@ body {
             &:focus {
                 //background-color: @tab-light-background-color;
                 border-bottom-color: transparent;
+                border-style: none;
                 cursor: default;
             }
         }

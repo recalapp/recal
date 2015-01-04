@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 define(["require", "exports", '../models/Semester'], function(require, exports, Semester) {
     var SemCtrl = (function () {
@@ -64,10 +63,6 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
             return this.getNewSemesterTermCode() <= SemCtrl.LAST_AVAILABLE_TERM_CODE;
         };
 
-        // TODO: this will only give you semesters after
-        // the last existing semester
-        // for example, if the only semester the user has is 1415Fall,
-        // he will not be able to add semesters from previous years
         SemCtrl.prototype.getNewSemesterTermCode = function () {
             if (this.semesters.length == 0) {
                 return SemCtrl.CURRENT_SEMESTER_TERM_CODE;
@@ -75,10 +70,8 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
 
             var lastTermCode = +this.semesters[this.semesters.length - 1].term_code;
             if (this.semesterIsFall(lastTermCode)) {
-                // fall to spring, from 2 to 4
                 return lastTermCode + 2;
             } else {
-                // spring to fall, from 4 to 12
                 return lastTermCode + 8;
             }
         };
@@ -104,7 +97,6 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
         };
 
         SemCtrl.prototype.getTitle = function (termCode) {
-            // take mid 2 numbers: _XX_ for year
             var endYear = Math.floor((termCode % 1000) / 10);
             var startYear = endYear - 1;
             var semester = this.semesterIsFall(termCode) ? "Fall" : "Spring";
@@ -116,8 +108,6 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
             this.addNewSemester(semester);
         };
 
-        // term codes for the fall semester ends with 2
-        // '''''''''''''''''''spring semester ends with 4
         SemCtrl.prototype.semesterIsFall = function (termCode) {
             return termCode % 10 == 2;
         };
@@ -136,3 +126,4 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
     
     return SemCtrl;
 });
+//# sourceMappingURL=SemCtrl.js.map

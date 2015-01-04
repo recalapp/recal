@@ -80,3 +80,4 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
     
     return Course;
 });
+//# sourceMappingURL=Course.js.map

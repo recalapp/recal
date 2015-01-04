@@ -57,20 +57,28 @@ body {
 }
 .button-add-tab {
   background: none;
-  color: #2f79b9;
+  padding: 5px 10vh;
+  border-radius: 0;
+  margin-right: 0;
+  color: black;
   padding: 5px 25px;
+  outline: none !important;
 }
 .button-add-tab:hover {
-  color: #235380;
+  color: #404040;
   text-decoration: none;
-  background-color: #eee;
+  background-color: rgba(0, 0, 0, 0.08);
   cursor: pointer;
+}
+.nav-tabs {
+  border-bottom: none;
 }
 .nav-tabs > li > a {
   padding: 5px 10vh;
   margin-right: 0;
   font-weight: bold;
   color: black;
+  border-style: none;
   border-radius: 0;
 }
 .nav-tabs > li > a:hover {
@@ -83,6 +91,7 @@ body {
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
   border-bottom-color: transparent;
+  border-style: none;
   cursor: default;
 }
 /* scrollbar */
