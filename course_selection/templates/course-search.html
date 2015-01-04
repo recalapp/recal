@@ -22,19 +22,21 @@
                      ng-mouseover="searchCtrl.onMouseOver(course)" 
                      ng-mouseleave="searchCtrl.onMouseLeave(course)" 
                      ng-init="showTags = false"
-                     ng-click="showTags = !showTags"
                      >
-                     <div class="course-panel-title">
-                         <div class="course-listings" 
-                              ng-bind="course.all_listings"></div>
-                         <div class="course-title" 
-                              ng-bind="course.title"></div>
-                     </div>
-                     <div ng-show="showTags">
-                         <div class="more-info-tag"
-                              ><i class="fa fa-info"></i></div>
-                         <div class="enroll-tag" 
-                              ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+                     <div ng-mouseenter="showTags = true" 
+                          ng-mouseleave="showTags = false">
+                         <div class="course-panel-title">
+                             <div class="course-listings" 
+                                  ng-bind="course.all_listings"></div>
+                             <div class="course-title" 
+                                  ng-bind="course.title"></div>
+                         </div>
+                         <div ng-show="showTags">
+                             <div class="more-info-tag"
+                                  ><i class="fa fa-info"></i></div>
+                             <div class="enroll-tag" 
+                                  ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+                         </div>
                      </div>
                 </div>
             </div>
@@ -51,7 +53,8 @@
                          | orderBy: 'primary_listing' track by course.id"  
                          ng-style="searchCtrl.getStyles(course)"
                          ng-init="showTags = false"
-                         ng-click="showTags = !showTags"
+                         ng-mouseenter="showTags = true" 
+                         ng-mouseleave="showTags = false"
                          >
                          <div class="course-panel-title">
                              <div class="course-listings" 
@@ -79,10 +82,9 @@
                     <div class="panel panel-default course-panel" 
                          ng-repeat="course in data.courses | courseSearch:query 
                          | orderBy: 'primary_listing' track by course.id"  
-                         ng-mouseover="searchCtrl.onMouseOver(course)" 
-                         ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                         ng-mouseover="searchCtrl.onMouseOver(course); showTags=true" 
+                         ng-mouseleave="searchCtrl.onMouseLeave(course); showTags=false" 
                          ng-init="showTags = false"
-                         ng-click="showTags = !showTags"
                          >
                          <div class="course-panel-title">
                              <div class="course-listings" 
