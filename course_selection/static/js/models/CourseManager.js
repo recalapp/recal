@@ -158,6 +158,7 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
 
         CourseManager.prototype._unenrollSections = function (course) {
             this.data.enrolledSections[course.id] = null;
+            delete this.data.enrolledSections[course.id];
         };
 
         /**

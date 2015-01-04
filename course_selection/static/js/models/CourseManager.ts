@@ -179,6 +179,7 @@ class CourseManager {
 
     private _unenrollSections(course: ICourse): void {
         this.data.enrolledSections[course.id] = null;
+        delete this.data.enrolledSections[course.id];
     }
 
     /**
