@@ -42,7 +42,7 @@ body {
   right: 0;
 }
 .remove-icon:hover {
-  color: blue;
+  color: #235380;
 }
 .ng-cloak {
   display: none;
@@ -58,11 +58,11 @@ body {
 }
 .button-add-tab {
   background: none;
-  color: blue;
+  color: #2f79b9;
   padding: 10px 15px;
 }
 .button-add-tab:hover {
-  color: #555;
+  color: #235380;
   text-decoration: none;
   background-color: #eee;
   cursor: pointer;

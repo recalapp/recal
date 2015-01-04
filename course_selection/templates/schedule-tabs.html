@@ -6,10 +6,15 @@
          active = schedule.active
          class="schedule-tab-heading"
          select="scheduleCtrl.onSelect($index)"
+         ng-mouseenter="showRemoveButton=true"
+         ng-mouseleave="showRemoveButton=false"
     >
-        <tab-heading class="ng-cloak"> 
+        <tab-heading class="ng-cloak"
+        > 
             {{ schedule.title }}
-            <a ng-click="scheduleCtrl.confirmRemoveSchedule($index)" href=''>
+            <a ng-click="scheduleCtrl.confirmRemoveSchedule($index)" 
+               ng-show="showRemoveButton"
+                href=''>
                 <i class="fa fa-times remove-icon"></i>
             </a>
         </tab-heading>
@@ -21,9 +26,9 @@
          </div>
     </tab>
     <button class="btn button-add-tab"
-         ng-click="scheduleCtrl.askForNewScheduleName(selectedSchedule)"
-         ng-hide = !canAddNewSchedules>
-    +
+            ng-click="scheduleCtrl.askForNewScheduleName(selectedSchedule)"
+            ng-show = canAddNewSchedules>
+        +
     </button>
 </tabset>
 </div>

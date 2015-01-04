@@ -15,13 +15,11 @@
         {{ semester.name }}
         </tab-heading>
         </tab>
-        <tab select="semCtrl.addSemester()"
-        ng-show = "canAdd"
-        class="semester-tab-heading">
-        <tab-heading>
-        +
-        </tab-heading>
-        </tab>
+        <button class="btn button-add-tab"
+                ng-click="semCtrl.addSemester()"
+                ng-show = "canAdd">
+            +
+        </button>
     </tabset>
 </div>
 {% endverbatim %}

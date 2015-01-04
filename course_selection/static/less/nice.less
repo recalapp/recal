@@ -1,5 +1,7 @@
 @body-light-background-color: rgb(241, 242, 242);
 @body-dark-background-color: rgb(231, 232, 233);
+@tab-light-color: rgb(47, 121, 185);
+@tab-dark-color: rgb(35, 83, 128);
 @body-dark-text-color: rgb(64,64,64);
 @main-height: 85vh;
 
@@ -53,7 +55,7 @@ body {
     top: 0;
     right: 0;
     &:hover {
-        color: blue;
+        color: @tab-dark-color;
     }
 }
 
@@ -75,10 +77,10 @@ body {
 
 .button-add-tab {
     background: none;
-    color: blue;
+    color: @tab-light-color;
     padding: 10px 15px;
     &:hover {
-        color: #555;
+        color: @tab-dark-color;
         text-decoration: none;
         background-color: #eee;
         cursor: pointer;
