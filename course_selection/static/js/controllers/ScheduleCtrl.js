@@ -129,7 +129,11 @@ define(["require", "exports", '../models/Schedule', '../models/CourseManager', '
             this.$scope.selectedSchedule = id;
         };
 
-        ScheduleCtrl.prototype.setSelectedSchedule = function (index) {
+        ScheduleCtrl.prototype.onSelect = function ($index) {
+            this._setSelectedSchedule($index);
+        };
+
+        ScheduleCtrl.prototype._setSelectedSchedule = function (index) {
             this.$scope.selectedSchedule = index;
         };
 

@@ -158,7 +158,11 @@ class ScheduleCtrl {
         this.$scope.selectedSchedule = id;
     }
 
-    public setSelectedSchedule(index: number) {
+    public onSelect($index: number) {
+        this._setSelectedSchedule($index);
+    }
+
+    private _setSelectedSchedule(index: number) {
         this.$scope.selectedSchedule = index;
     }
 

@@ -47,6 +47,7 @@ class CalendarCtrl {
     // TODO: hack for watches not updating on first run
     private courseWatchInitRun: boolean; 
     private sectionWatchInitRun: boolean; 
+    private calendarWatchInitRun: boolean; 
 
     public static $inject = [
         '$scope',
@@ -56,15 +57,28 @@ class CalendarCtrl {
     constructor(
             private $scope) 
     {
-        this.initConfig();
         this.courseWatchInitRun = true;
         this.sectionWatchInitRun = true;
+        this.calendarWatchInitRun = true;
 
         this.courseManager = (<any>this.$scope.$parent).schedule.courseManager;
         this.$scope.data = this.courseManager.getData();
 
         this.compositeEventSources = new CompositeEventSources();
         this.$scope.eventSources = this.compositeEventSources.getEventSources();
+
+        // only initialize config if this schedule is active
+        this.$scope.$watch(
+                () => {
+                    return this.$scope.$parent.schedule.active;
+                },
+                (newValue, oldValue) => {
+                    if (this.calendarWatchInitRun 
+                            && newValue == true) {
+                        this.initConfig();
+                        this.calendarWatchInitRun = false;
+                    }
+                });
 
         this.$scope.$watch(
                 () => { 
@@ -75,7 +89,7 @@ class CalendarCtrl {
                 },
                 true);
 
-        // only watch for addition or removal in the array
+        // use watchCollection to only watch for addition or removal in the array
         this.$scope.$watchCollection(
                 () => { 
                     return this.$scope.data.enrolledCourses;

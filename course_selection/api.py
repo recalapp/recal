@@ -40,17 +40,17 @@ class SemesterResource(ModelResource):
             #url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
         ]
 
-    def get_course(self, request, **kwargs):
-        try:
-            bundle = self.build_bundle(data={'term_code': kwargs['term_code']}, request=request)
-            obj = self.cached_obj_get(bundle=bundle, **self.remove_api_resource_names(kwargs))
-        except ObjectDoesNotExist:
-            return HttpGone()
-        except MultipleObjectsReturned:
-            return HttpMultipleChoices("More than one resource is found at this URI.")
+    #def get_course(self, request, **kwargs):
+    #    try:
+    #        bundle = self.build_bundle(data={'term_code': kwargs['term_code']}, request=request)
+    #        obj = self.cached_obj_get(bundle=bundle, **self.remove_api_resource_names(kwargs))
+    #    except ObjectDoesNotExist:
+    #        return HttpGone()
+    #    except MultipleObjectsReturned:
+    #        return HttpMultipleChoices("More than one resource is found at this URI.")
 
-        course_resource = CourseResource()
-        return course_resource.get_list(request, semester=obj.pk)
+    #    course_resource = CourseResource()
+    #    return course_resource.get_list(request, semester=obj.pk)
 
 
 class CourseListingResource(ModelResource):

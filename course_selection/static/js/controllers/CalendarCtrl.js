@@ -6,9 +6,9 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
         function CalendarCtrl($scope) {
             var _this = this;
             this.$scope = $scope;
-            this.initConfig();
             this.courseWatchInitRun = true;
             this.sectionWatchInitRun = true;
+            this.calendarWatchInitRun = true;
 
             this.courseManager = this.$scope.$parent.schedule.courseManager;
             this.$scope.data = this.courseManager.getData();
@@ -16,13 +16,23 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.compositeEventSources = new CompositeEventSources();
             this.$scope.eventSources = this.compositeEventSources.getEventSources();
 
+            // only initialize config if this schedule is active
+            this.$scope.$watch(function () {
+                return _this.$scope.$parent.schedule.active;
+            }, function (newValue, oldValue) {
+                if (_this.calendarWatchInitRun && newValue == true) {
+                    _this.initConfig();
+                    _this.calendarWatchInitRun = false;
+                }
+            });
+
             this.$scope.$watch(function () {
                 return _this.$scope.data.previewCourse;
             }, function (newCourse, oldCourse) {
                 return _this.updatePreviewCourse(newCourse, oldCourse);
             }, true);
 
-            // only watch for addition or removal in the array
+            // use watchCollection to only watch for addition or removal in the array
             this.$scope.$watchCollection(function () {
                 return _this.$scope.data.enrolledCourses;
             }, function (newCourses, oldCourses) {

@@ -5,7 +5,7 @@
     <tab ng-repeat = "schedule in schedules"
          active = schedule.active
          class="schedule-tab-heading"
-         select="scheduleCtrl.setSelectedSchedule($index)"
+         select="scheduleCtrl.onSelect($index)"
     >
         <tab-heading class="ng-cloak"> 
             {{ schedule.title }}
