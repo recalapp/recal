@@ -4,10 +4,11 @@
 .course-panel {
   min-height: 40px;
   width: 100%;
-  margin-top: 1px !important;
+  margin-top: 0px !important;
   position: relative;
   overflow: visible;
   border-radius: 0 !important;
+  border-bottom: none;
 }
 .enrolled-course-panel {
   border-left-width: 4px;
@@ -64,7 +65,7 @@
 }
 .course-title {
   font-size: 13px;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
 }
 .highlighted {
   font-weight: bold;

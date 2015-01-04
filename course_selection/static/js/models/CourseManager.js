@@ -42,20 +42,10 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                     return;
                 }
 
-                // we need to post stuff in the form of
-                // {
-                //  semester: ...
-                //  user: ...
-                //  available_colors: [{
-                //  }],
-                //  enrollments: []
-                // }
                 var enrollments = _this._constructEnrollments(newValue);
                 _this.schedule.enrollments = JSON.stringify(enrollments);
                 _this.schedule.$update().then(function (updatedSchedule) {
                     console.log('schedule updated');
-                    console.log('updated enrollments: ');
-                    console.log(updatedSchedule.enrollments);
                 });
             }, true);
         };

@@ -55,21 +55,10 @@ class CourseManager {
                 return;
             }
 
-            // we need to post stuff in the form of
-            // {
-            //  semester: ...
-            //  user: ...
-            //  available_colors: [{
-            //  }],
-            //  enrollments: []
-            // }
-
             var enrollments = this._constructEnrollments(newValue);
             this.schedule.enrollments = JSON.stringify(enrollments);
             this.schedule.$update().then((updatedSchedule) => {
                 console.log('schedule updated');
-                console.log('updated enrollments: ');
-                console.log(updatedSchedule.enrollments);
             });
         }, true);
 

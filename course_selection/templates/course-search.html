@@ -19,8 +19,8 @@
             <div id="recommendedCourses" class="panel-group">
                 <div class="panel panel-default course-panel" 
                      ng-repeat="course in data.courses | orderBy: '-rating' | limitTo: 20"  
-                     ng-mouseover="searchCtrl.onMouseOver(course)" 
-                     ng-mouseleave="searchCtrl.onMouseLeave(course)" 
+                     ng-mouseover="showTags=true; searchCtrl.onMouseOver(course)" 
+                     ng-mouseleave="showTags=false; searchCtrl.onMouseLeave(course)" 
                      ng-init="showTags = false"
                      >
                      <div ng-mouseenter="showTags = true" 
@@ -82,8 +82,8 @@
                     <div class="panel panel-default course-panel" 
                          ng-repeat="course in data.courses | courseSearch:query 
                          | orderBy: 'primary_listing' track by course.id"  
-                         ng-mouseover="searchCtrl.onMouseOver(course); showTags=true" 
-                         ng-mouseleave="searchCtrl.onMouseLeave(course); showTags=false" 
+                         ng-mouseover="showTags=true; searchCtrl.onMouseOver(course)" 
+                         ng-mouseleave="showTags=false; searchCtrl.onMouseLeave(course)" 
                          ng-init="showTags = false"
                          >
                          <div class="course-panel-title">
