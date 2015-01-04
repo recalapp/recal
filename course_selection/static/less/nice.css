@@ -7,6 +7,7 @@ body {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
   border-radius: 0;
+  color: #404040;
 }
 #semesterContainer {
   height: 95vh;

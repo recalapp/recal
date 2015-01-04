@@ -1,4 +1,5 @@
-define(["require", "exports", '../models/CourseManager', '../models/ColorManager', './RemoveScheduleModalCtrl', './NewScheduleModalCtrl'], function(require, exports, CourseManager, ColorManager, RemoveScheduleModalCtrl, NewScheduleModalCtrl) {
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+define(["require", "exports", '../models/Schedule', '../models/CourseManager', '../models/ColorManager', './RemoveScheduleModalCtrl', './NewScheduleModalCtrl'], function(require, exports, Schedule, CourseManager, ColorManager, RemoveScheduleModalCtrl, NewScheduleModalCtrl) {
     'use strict';
 
     var ScheduleCtrl = (function () {
@@ -46,6 +47,8 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
                         _this.schedules.push(newSchedule);
                     }
                 }
+
+                _this.schedules.sort(Schedule.compare);
             });
         };
 
@@ -117,7 +120,6 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
 
             var courseManager = new CourseManager(this.$rootScope, this.courseService, this.localStorageService, colorManager, newSchedule);
             this.schedules.push({
-                id: id,
                 title: newSchedule.title,
                 active: true,
                 courseManager: courseManager,
@@ -125,6 +127,10 @@ define(["require", "exports", '../models/CourseManager', '../models/ColorManager
             });
 
             this.$scope.selectedSchedule = id;
+        };
+
+        ScheduleCtrl.prototype.setSelectedSchedule = function (index) {
+            this.$scope.selectedSchedule = index;
         };
 
         // TODO: this is a workaround

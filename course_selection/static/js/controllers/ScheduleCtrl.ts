@@ -1,4 +1,6 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+
+import Schedule = require('../models/Schedule');
 import CourseManager = require('../models/CourseManager');
 import ColorManager = require('../models/ColorManager');
 import IColorManager = require('../interfaces/IColorManager');
@@ -71,6 +73,8 @@ class ScheduleCtrl {
                     this.schedules.push(newSchedule);
                 }
             }
+
+            this.schedules.sort(Schedule.compare);
         });
     }
 
@@ -145,7 +149,6 @@ class ScheduleCtrl {
                 colorManager,
                 newSchedule);
         this.schedules.push({
-            id: id,
             title: newSchedule.title,
             active: true,
             courseManager: courseManager,
@@ -153,6 +156,10 @@ class ScheduleCtrl {
         });
 
         this.$scope.selectedSchedule = id;
+    }
+
+    public setSelectedSchedule(index: number) {
+        this.$scope.selectedSchedule = index;
     }
 
     // TODO: this is a workaround

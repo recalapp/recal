@@ -3,7 +3,7 @@ function staticPath(path) {
 }
 
 function bowerPath(path) {
-    return staticPath('bower_components/' + path);
+    return staticPath('course_selection/bower_components/' + path);
 }
 
 require.config({

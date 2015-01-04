@@ -1,22 +1,20 @@
 .fc-unthemed .fc-today {
   background-color: white;
 }
-#calendar {
+.calendar {
   background-color: white;
 }
 .fc-event {
   border-right-style: none;
   border-top-style: none;
-  border-left-width: 0;
+  border-left-width: 4px;
   border-bottom-style: none;
   border-radius: 0;
+}
+.cal-unconfirmed {
   background: url('../images/stripe.png') repeat #c0c0c0;
   opacity: 0.8;
-}
-.cal-confirmed {
-  background: none;
-  border-left-width: 4px;
-  opacity: 1;
+  border-left-color: transparent !important;
 }
 .fc-event:hover {
   cursor: pointer;
@@ -35,6 +33,12 @@
 .fc-slats .fc-minor td {
   border-top-style: none;
 }
+/*
 .fc-ltr .fc-axis {
-  color: gray;
+	color: @calendar-dark-font-color;
 }
+
+.fc-day-header {
+	color: @calendar-dark-font-color;
+}
+*/
