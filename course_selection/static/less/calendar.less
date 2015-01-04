@@ -3,6 +3,7 @@
 @background-color: rgb(255, 255, 255);
 @calendar-dark-font-color: rgb(64, 64, 64);
 @event-border-width: 4px;
+@unconfirmed-opacity: 0.8;
 
 .fc-unthemed .fc-today {
     background-color: white;
@@ -18,19 +19,20 @@
     border-left-width: @event-border-width;
     border-bottom-style: none;
     border-radius: 0;
+
+    &:hover {
+        cursor: pointer;
+        overflow: visible;
+    }
 }
 
 .cal-unconfirmed {
     background: url('../images/stripe.png') repeat silver;
-    opacity: 0.8;
+    opacity: @unconfirmed-opacity;
     border-left-color: transparent !important;
 }
 
 .cal-confirmed {
-}
-
-.fc-event:hover {
-    cursor: pointer;
 }
 
 .fc-toolbar {
@@ -38,9 +40,14 @@
     height: 0;
 }
 
-.fc-title {
-    text-align: center;
-    font-weight: bold;
+.fc-time-grid-event {
+    .fc-time, .fc-title {
+        padding: 0 3px;
+    }
+
+    .fc-title {
+        font-weight: bold;
+    }
 }
 
 .fc-slats td {
@@ -49,6 +56,10 @@
 
 .fc-slats .fc-minor td {
     border-top-style: none;
+}
+
+.fc-axis {
+    display:none;
 }
 
 /*

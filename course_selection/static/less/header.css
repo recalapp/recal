@@ -1,0 +1,40 @@
+#header {
+  background-color: rgba(47, 47, 47, 0.98);
+  width: 100%;
+  height: 5vh;
+}
+#header-inner {
+  height: 100%;
+  max-width: 80vw;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+#logo {
+  height: 100%;
+  float: left;
+}
+#logo > a {
+  text-decoration: none;
+  position: absolute;
+  top: 10%;
+  display: block;
+  height: 100%;
+  text-align: center;
+  font-size: 1.5em;
+  color: white;
+}
+#username {
+  height: 100%;
+  width: 10vh;
+  line-height: 100%;
+  font-size: 1.25em;
+}
+#username > a {
+  display: block;
+  text-decoration: none;
+  line-height: 5vh;
+  color: #999;
+}
+.group {
+  position: relative;
+}

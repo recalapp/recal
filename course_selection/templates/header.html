@@ -1,39 +1,19 @@
-<div class="row clearfix" id="header">
-<div class="col-md-12 column">
-    <ul class="nav nav-tabs">
-        <li>
-            <a href="#">ReCal</a>
-        </li>
-        <!--
-        <div ng-controller="TestCtrl1">
+<div id="header" class="group">
+<div id="header-inner" class="group">
+    <div id="logo">
+        <a href="#">ReCal</a>
+    </div>
+    <div id="username" class="dropdown pull-right">
+        <a href="#" data-toggle="dropdown" class="dropdown-toggle">{{ username }}<strong class="caret"></strong></a>
+        <ul class="dropdown-menu">
             <li>
-                <input id="test1" type="text" ng-model="data.foo">
+                <a href="#">Preferences</a>
             </li>
             <li>
-                <input type="text" ng-model="data.bar">
+                <a href="#">Logout</a>
             </li>
-        </div>
-        <div ng-controller="TestCtrl2">
-            <li>
-                <input id="test2" type="text" ng-model="data.foo">
-            </li>
-            <li>
-                <input type="text" ng-model="data.bar">
-            </li>
-        </div>
-        --!>
-        <li class="dropdown pull-right">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle">{{ username }}<strong class="caret"></strong></a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a href="#">Preferences</a>
-                </li>
-                <li>
-                    <a href="#">Logout</a>
-                </li>
-            </ul>
-        </li>
+        </ul>
+    </div>
     </ul>
 </div>
 </div>
-

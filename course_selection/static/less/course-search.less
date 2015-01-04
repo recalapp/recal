@@ -1,6 +1,8 @@
 @body-light-background-color: rgb(241, 242, 242);
+@body-dark-text-color: rgb(64,64,64);
 
 @search-bar-font-size: 13px;
+@search-bar-color: #bbb;
 
 @course-listing-font-size: 13px;
 @course-title-font-size: 13px;
@@ -56,11 +58,22 @@
 }
 
 #searchBar {
+    background-image: url('../images/search.png');
+    background-repeat: no-repeat;
+    background-size: 14px 14px;
+    background-position: 7px 50%;
+    padding: 5px 5px 5px 25px;
+    color: @search-bar-color;
     height: @search-bar-height;
     font-size: @search-bar-font-size;
-    border-radius: 3px;
-    border-width: 1px;
+    border-radius: 4px;
+    border-width: 0px;
     width: 100%;
+
+    &:focus {
+        outline: none;
+        color: @body-dark-text-color;
+    }
 }
 
 #unenrolledCourses {

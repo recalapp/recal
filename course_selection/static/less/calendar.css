@@ -11,20 +11,24 @@
   border-bottom-style: none;
   border-radius: 0;
 }
+.fc-event:hover {
+  cursor: pointer;
+  overflow: visible;
+}
 .cal-unconfirmed {
   background: url('../images/stripe.png') repeat #c0c0c0;
   opacity: 0.8;
   border-left-color: transparent !important;
 }
-.fc-event:hover {
-  cursor: pointer;
-}
 .fc-toolbar {
   margin-bottom: 0;
   height: 0;
 }
-.fc-title {
-  text-align: center;
+.fc-time-grid-event .fc-time,
+.fc-time-grid-event .fc-title {
+  padding: 0 3px;
+}
+.fc-time-grid-event .fc-title {
   font-weight: bold;
 }
 .fc-slats td {
@@ -32,6 +36,9 @@
 }
 .fc-slats .fc-minor td {
   border-top-style: none;
+}
+.fc-axis {
+  display: none;
 }
 /*
 .fc-ltr .fc-axis {

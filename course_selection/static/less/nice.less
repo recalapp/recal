@@ -1,12 +1,19 @@
-@body-light-background-color: rgb(241, 242, 242);
-@body-dark-background-color: rgb(231, 232, 233);
+@body-light-background-color: #f0f0f0;
+@body-medium-background-color: rgba(0, 0, 0, 0.05);
+@body-dark-background-color: rgba(0, 0, 0, 0.08);
+
 @tab-light-color: rgb(47, 121, 185);
 @tab-dark-color: rgb(35, 83, 128);
+
+@tab-light-background-color: rgb(211, 211, 211);
+@tab-medium-background-color: rgb(194, 194, 194);
+@tab-dark-background-color: rgb(184, 184, 184);
+
 @body-dark-text-color: rgb(64,64,64);
 @main-height: 80vh;
 
 body {
-    background: url('/static/images/crossword.png') repeat fixed;
+    background-color: @body-light-background-color;
     height: 100%;
     width: 100%;
     overflow-x: hidden;
@@ -19,16 +26,13 @@ body {
 
 #semesterContainer {
     height: 95vh;
+    max-width: 80vw;
+    margin: 0 auto;
 }
 
 #container {
-    padding-left: 1vw;
-    height: 100vh;
-    width: 100vw;
-}
-
-#header {
-    height: 5vh;
+    height: 100%;
+    width: 100%;
 }
 
 #main {
@@ -38,22 +42,24 @@ body {
 
 #searchColumn {
     height: 85vh;
-    width: 20vw;
-    /*background: url('/static/images/use_your_illusion.png') repeat fixed; */
+    width: 25%;
+    margin-top: 5px;
 }
 
 #calendarColumn {
     height: 100%;
-    width: 75vw;
+    width: 75%;
     min-width: 540px;
+    margin-top: 5px;
 }
 
 .remove-icon {
     font-size: 1em;
     color: #555;
+
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 25%;
+    right: 5px;
     &:hover {
         color: @tab-dark-color;
     }
@@ -78,12 +84,42 @@ body {
 .button-add-tab {
     background: none;
     color: @tab-light-color;
-    padding: 10px 15px;
+    padding: 5px 25px;
     &:hover {
         color: @tab-dark-color;
         text-decoration: none;
         background-color: #eee;
         cursor: pointer;
+    }
+}
+
+.nav-tabs {
+    > li {
+        // Actual tabs (as links)
+        > a {
+            padding: 5px 10vh;
+            margin-right: 0;
+            font-weight: bold;
+            color: black;
+            //background-color: @body-medium-background-color;
+            border-radius: 0;
+            &:hover {
+                background-color: @body-dark-background-color;
+            }
+        }
+
+        // Active state, and its :hover to override normal :hover
+        &.active > a {
+            color: @body-dark-text-color;
+            //background-color: @tab-light-background-color;
+            &,
+            &:hover,
+            &:focus {
+                //background-color: @tab-light-background-color;
+                border-bottom-color: transparent;
+                cursor: default;
+            }
+        }
     }
 }
 

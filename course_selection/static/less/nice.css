@@ -1,5 +1,5 @@
 body {
-  background: url('/static/images/crossword.png') repeat fixed;
+  background-color: #f0f0f0;
   height: 100%;
   width: 100%;
   overflow-x: hidden;
@@ -11,14 +11,12 @@ body {
 }
 #semesterContainer {
   height: 95vh;
+  max-width: 80vw;
+  margin: 0 auto;
 }
 #container {
-  padding-left: 1vw;
-  height: 100vh;
-  width: 100vw;
-}
-#header {
-  height: 5vh;
+  height: 100%;
+  width: 100%;
 }
 #main {
   height: 80vh;
@@ -26,20 +24,21 @@ body {
 }
 #searchColumn {
   height: 85vh;
-  width: 20vw;
-  /*background: url('/static/images/use_your_illusion.png') repeat fixed; */
+  width: 25%;
+  margin-top: 5px;
 }
 #calendarColumn {
   height: 100%;
-  width: 75vw;
+  width: 75%;
   min-width: 540px;
+  margin-top: 5px;
 }
 .remove-icon {
   font-size: 1em;
   color: #555;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 25%;
+  right: 5px;
 }
 .remove-icon:hover {
   color: #235380;
@@ -59,13 +58,32 @@ body {
 .button-add-tab {
   background: none;
   color: #2f79b9;
-  padding: 10px 15px;
+  padding: 5px 25px;
 }
 .button-add-tab:hover {
   color: #235380;
   text-decoration: none;
   background-color: #eee;
   cursor: pointer;
+}
+.nav-tabs > li > a {
+  padding: 5px 10vh;
+  margin-right: 0;
+  font-weight: bold;
+  color: black;
+  border-radius: 0;
+}
+.nav-tabs > li > a:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+.nav-tabs > li.active > a {
+  color: #404040;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  border-bottom-color: transparent;
+  cursor: default;
 }
 /* scrollbar */
 ::-webkit-scrollbar {
