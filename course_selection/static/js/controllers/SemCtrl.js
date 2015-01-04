@@ -3,6 +3,7 @@
 define(["require", "exports", '../models/Semester'], function(require, exports, Semester) {
     var SemCtrl = (function () {
         function SemCtrl($scope, localStorageService, userService, semesterService) {
+            var _this = this;
             this.$scope = $scope;
             this.localStorageService = localStorageService;
             this.userService = userService;
@@ -11,6 +12,14 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
             this.restoreUserSemesters();
             this.$scope.semesters = this.semesters;
             this.$scope.canAdd = this.canAdd();
+
+            this.$scope.$watchCollection(function () {
+                return _this.$scope.semesters;
+            }, function (newValue, oldValue) {
+                if (newValue != oldValue) {
+                    _this.$scope.canAdd = _this.canAdd();
+                }
+            });
         }
         SemCtrl.prototype.restoreUserSemesters = function () {
             var _this = this;
@@ -105,7 +114,6 @@ define(["require", "exports", '../models/Semester'], function(require, exports, 
         SemCtrl.prototype.addSemester = function (semester) {
             this.setAllInactive();
             this.addNewSemester(semester);
-            this.$scope.canAdd = this.canAdd();
         };
 
         // term codes for the fall semester ends with 2

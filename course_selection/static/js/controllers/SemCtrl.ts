@@ -24,6 +24,15 @@ class SemCtrl {
         this.restoreUserSemesters();
         this.$scope.semesters = this.semesters;
         this.$scope.canAdd = this.canAdd();
+
+        this.$scope.$watchCollection(
+                () => {
+                    return this.$scope.semesters;
+                }, (newValue, oldValue) => {
+                    if (newValue != oldValue) {
+                        this.$scope.canAdd = this.canAdd();
+                    }
+                });
     }
 
     private restoreUserSemesters() {
@@ -117,7 +126,6 @@ class SemCtrl {
     public addSemester(semester?) {
         this.setAllInactive();
         this.addNewSemester(semester);
-        this.$scope.canAdd = this.canAdd();
     }    
 
     // term codes for the fall semester ends with 2
