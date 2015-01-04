@@ -18,6 +18,7 @@ define(["require", "exports"], function(require, exports) {
             } else {
                 return this.courseResource.getBySemester({ semester__term_code: termCode }).$promise.then(function (data) {
                     _this.localStorageService.set('courses-' + termCode, data);
+                    return data;
                 });
             }
         };

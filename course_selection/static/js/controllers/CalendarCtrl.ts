@@ -67,10 +67,10 @@ class CalendarCtrl {
         this.compositeEventSources = new CompositeEventSources();
         this.$scope.eventSources = this.compositeEventSources.getEventSources();
 
-        // only initialize config if this schedule is active
+        // only initialize config if this schedule is visible
         this.$scope.$watch(
                 () => {
-                    return this.$scope.$parent.schedule.active;
+                    return this._isVisible();
                 },
                 (newValue, oldValue) => {
                     if (this.calendarWatchInitRun 
@@ -107,6 +107,10 @@ class CalendarCtrl {
                     return this.updateEnrolledSections(newSections, oldSections);
                 },
                 true);
+    }
+
+    private _isVisible() {
+        return this.$scope.myCalendar && this.$scope.myCalendar.is(":visible");
     }
 
     private initConfig() {

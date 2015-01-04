@@ -30,6 +30,7 @@ class CourseService {
             return this.courseResource.getBySemester({semester__term_code: termCode})
                 .$promise.then((data) => {
                 this.localStorageService.set('courses-' + termCode, data);
+                return data;
             });
         }
     }

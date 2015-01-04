@@ -103,17 +103,11 @@ class ScheduleCtrl {
     }
 
     public askForNewScheduleName(prevIdx: number) {
-        // the modal is "dismissable" if we have an open schedule
-        // already, which means prevIdx != undefined
-        var canDismiss = prevIdx != -1;
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/newScheduleModal.html',
             controller: NewScheduleModalCtrl,
-            keyboard: canDismiss,
+            keyboard: true,
             resolve: {
-                canDismiss: () => {
-                    return canDismiss;
-                },
                 semester: () => {
                     return this.semester.name;
                 }

@@ -36,7 +36,7 @@ body {
 }
 .remove-icon {
   font-size: 1em;
-  color: black;
+  color: #555;
   position: absolute;
   top: 0;
   right: 0;
@@ -55,6 +55,17 @@ body {
 }
 #loading-bar .bar {
   height: 5px;
+}
+.button-add-tab {
+  background: none;
+  color: blue;
+  padding: 10px 15px;
+}
+.button-add-tab:hover {
+  color: #555;
+  text-decoration: none;
+  background-color: #eee;
+  cursor: pointer;
 }
 /* scrollbar */
 ::-webkit-scrollbar {

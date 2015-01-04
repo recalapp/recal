@@ -16,9 +16,9 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.compositeEventSources = new CompositeEventSources();
             this.$scope.eventSources = this.compositeEventSources.getEventSources();
 
-            // only initialize config if this schedule is active
+            // only initialize config if this schedule is visible
             this.$scope.$watch(function () {
-                return _this.$scope.$parent.schedule.active;
+                return _this._isVisible();
             }, function (newValue, oldValue) {
                 if (_this.calendarWatchInitRun && newValue == true) {
                     _this.initConfig();
@@ -46,6 +46,10 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 return _this.updateEnrolledSections(newSections, oldSections);
             }, true);
         }
+        CalendarCtrl.prototype._isVisible = function () {
+            return this.$scope.myCalendar && this.$scope.myCalendar.is(":visible");
+        };
+
         CalendarCtrl.prototype.initConfig = function () {
             var _this = this;
             this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;

@@ -79,17 +79,11 @@ define(["require", "exports", '../models/Schedule', '../models/CourseManager', '
 
         ScheduleCtrl.prototype.askForNewScheduleName = function (prevIdx) {
             var _this = this;
-            // the modal is "dismissable" if we have an open schedule
-            // already, which means prevIdx != undefined
-            var canDismiss = prevIdx != -1;
             var modalInstance = this.$modal.open({
                 templateUrl: '/static/templates/newScheduleModal.html',
                 controller: NewScheduleModalCtrl,
-                keyboard: canDismiss,
+                keyboard: true,
                 resolve: {
-                    canDismiss: function () {
-                        return canDismiss;
-                    },
                     semester: function () {
                         return _this.semester.name;
                     }

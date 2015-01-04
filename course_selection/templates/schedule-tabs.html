@@ -20,13 +20,11 @@
             {% verbatim %}
          </div>
     </tab>
-    <tab select="scheduleCtrl.askForNewScheduleName(selectedSchedule)"
-         disabled = !canAddNewSchedules
-         ng-hide = !canAddNewSchedules
-         class="schedule-tab-heading"
-    >
-    <tab-heading>+</tab-heading>
-    </tab>
+    <button class="btn button-add-tab"
+         ng-click="scheduleCtrl.askForNewScheduleName(selectedSchedule)"
+         ng-hide = !canAddNewSchedules>
+    +
+    </button>
 </tabset>
 </div>
 {% endverbatim %}

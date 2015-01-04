@@ -77,7 +77,7 @@ class SemCtrl {
             return SemCtrl.CURRENT_SEMESTER_TERM_CODE;
         }
 
-        var lastTermCode = this.semesters[this.semesters.length - 1].term_code;
+        var lastTermCode: number = +this.semesters[this.semesters.length - 1].term_code;
         if (this.semesterIsFall(lastTermCode)) {
             // fall to spring, from 2 to 4
             return lastTermCode + 2;
