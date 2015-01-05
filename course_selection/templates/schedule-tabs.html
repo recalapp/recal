@@ -13,7 +13,7 @@
         > 
             {{ schedule.title }}
             <a ng-click="scheduleCtrl.confirmRemoveSchedule($index)" 
-               ng-show="showRemoveButton"
+               ng-show="scheduleCtrl.canRemove() && showRemoveButton"
                 href=''>
                 <i class="fa fa-times remove-icon"></i>
             </a>

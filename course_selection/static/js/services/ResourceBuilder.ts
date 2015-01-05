@@ -83,6 +83,11 @@ class ResourceBuilder {
                         method: 'GET',
                         isArray: false,
                         transformResponse: this.getFirstObject
+                    },
+                    query: {
+                        method: 'GET',
+                        isArray: true,
+                        transformResponse: this.transformTastypieResponse
                     }
                 });
     }

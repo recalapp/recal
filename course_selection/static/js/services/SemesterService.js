@@ -1,3 +1,4 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
@@ -5,6 +6,10 @@ define(["require", "exports"], function(require, exports) {
         function SemesterService(semesterResource) {
             this.semesterResource = semesterResource;
         }
+        SemesterService.prototype.allSemesters = function () {
+            return this.semesterResource.query();
+        };
+
         SemesterService.prototype.getByTermCode = function (termCode) {
             return this.semesterResource.getByTermCode({ term_code: termCode }).$promise;
         };
@@ -17,4 +22,3 @@ define(["require", "exports"], function(require, exports) {
     
     return SemesterService;
 });
-//# sourceMappingURL=SemesterService.js.map

@@ -13,6 +13,10 @@ class SemesterService {
     constructor(private semesterResource) {
     }
 
+    public allSemesters() {
+        return this.semesterResource.query();
+    }
+
     public getByTermCode(termCode: string) {
         return this.semesterResource.getByTermCode({term_code: termCode}).$promise;
     }

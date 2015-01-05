@@ -21,7 +21,8 @@ class SemCtrl {
             private userService,
             private semesterService) {
         this.semesters = [];
-        this.restoreUserSemesters();
+        //this.restoreUserSemesters();
+        this._initSemesters();
         this.$scope.semesters = this.semesters;
         this.$scope.canAdd = this.canAdd();
 
@@ -33,6 +34,21 @@ class SemCtrl {
                         this.$scope.canAdd = this.canAdd();
                     }
                 });
+    }
+
+    private _initSemesters() {
+        this.semesterService.allSemesters().$promise.then((semesters) => {
+            semesters.sort(Semester.compare);
+            angular.forEach(semesters, (semester) => {
+                if (!this._semesterInArray(semester, this.semesters)) {
+                    semester.active = true;
+                    semester.current = semester.term_code >= SemCtrl.CURRENT_SEMESTER_TERM_CODE;
+                    if (semester.current) {
+                        this.addSemester(semester);
+                    }
+                }
+            });
+        });
     }
 
     private restoreUserSemesters() {

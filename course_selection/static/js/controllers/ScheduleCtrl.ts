@@ -75,6 +75,10 @@ class ScheduleCtrl {
             }
 
             this.schedules.sort(Schedule.compare);
+        }).then(() => {
+            if (this.schedules.length == 0) {
+                this.addSchedule();
+            }
         });
     }
 
@@ -124,13 +128,13 @@ class ScheduleCtrl {
     }
 
     private _createSchedule(scheduleName?: string) {
-        var id = this.schedules.length;
+        var index = this.schedules.length;
         var colorManager = new ColorManager(this.colorResource);
         var newSchedule = new this.scheduleResource();
         newSchedule.semester = this.semester;
         newSchedule.user = this.userService.user;
         newSchedule.enrollments = JSON.stringify([]);
-        newSchedule.title = scheduleName ? scheduleName : "Schedule" + id;
+        newSchedule.title = scheduleName ? scheduleName : "Add a new schedule ––>";
         colorManager.availableColors.$promise.then((colors) => {
             newSchedule.available_colors = JSON.stringify(colors);
             newSchedule.$save();
@@ -149,7 +153,7 @@ class ScheduleCtrl {
             colorManager: colorManager
         });
 
-        this.$scope.selectedSchedule = id;
+        this.$scope.selectedSchedule = index;
     }
 
     public onSelect($index: number) {
@@ -166,11 +170,16 @@ class ScheduleCtrl {
         this.schedules[index].courseManager.schedule.$remove();
         this.schedules.splice(index, 1);
     }
+
+    public canRemove() {
+        return this.schedules.length > 1;
+    }
  
     public addSchedule() {
         this._setAllInactive();
         this._createSchedule();
     }    
+
 }
 
 export = ScheduleCtrl;
