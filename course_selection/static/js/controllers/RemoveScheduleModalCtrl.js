@@ -4,7 +4,7 @@ define(["require", "exports"], function(require, exports) {
             var _this = this;
             this.$scope = $scope;
             this.$modalInstance = $modalInstance;
-            this.$scope.confirmation = "Confirm that you want to delete the schedule: ";
+            this.$scope.confirmation = "Delete the schedule: ";
             this.$scope.title = title;
 
             this.$scope.ok = function () {
