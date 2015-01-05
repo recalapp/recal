@@ -84,7 +84,7 @@ def index(request):
         return redirect('landing')
         #return redirect('cas_login')
     if not user_profile_filled_out(request.user):
-        return redirect('edit_profile')
+        return redirect('course_selection')
     return gather_dashboard(request)
 
 
