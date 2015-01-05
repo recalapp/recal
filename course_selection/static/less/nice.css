@@ -52,9 +52,6 @@ body {
 .schedule-tab-heading {
   cursor: pointer;
 }
-#loading-bar .bar {
-  height: 5px;
-}
 #loading-bar-spinner {
   display: inline;
   position: absolute;
