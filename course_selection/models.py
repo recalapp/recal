@@ -146,7 +146,7 @@ class Schedule(models.Model):
     # fields
     available_colors = models.TextField(null=True)
     enrollments = models.TextField(null=True)
-    title = models.CharField(max_length=20, default="schedule")
+    title = models.CharField(max_length=100, default="schedule")
 
 #class Enrollment(models.Model):
 #    # each course enrollment has

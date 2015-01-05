@@ -23,7 +23,7 @@ class SearchCtrl {
     private courseManager: ICourseManager;
 
     constructor(
-            private $scope: ICourseSearchScope,
+            private $scope,
             private $sce
             ) {
         this.$scope.vm = this;
@@ -34,6 +34,19 @@ class SearchCtrl {
     public queryOnChange() {
         this.courseManager.clearPreviewCourse();
     }
+
+    /*
+    private _initState() {
+        this.$scope.state = "loading";
+        this.$scope.$watch(() => {
+            return this.$scope.data.courses;
+        }, () => {
+            if (this.$scope.data.courses.length == 0) {
+                this.$scope.state = "loading";
+            };
+        });
+    }
+    */
 
     // if user is not enrolled in course yet, add course events to previewEvents
     // else, don't do anything
