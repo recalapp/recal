@@ -16,6 +16,7 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
         localStorageServiceProvider.setPrefix('nice');
     }).config(function (cfpLoadingBarProvider) {
         cfpLoadingBarProvider.latencyThreshold = 500;
+        cfpLoadingBarProvider.includeSpinner = false;
     }).config(function ($resourceProvider) {
         $resourceProvider.defaults.stripTrailingSlashes = false;
     });
@@ -23,4 +24,3 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
     
     return nice;
 });
-//# sourceMappingURL=Application.js.map

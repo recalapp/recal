@@ -52,6 +52,13 @@
   min-height: 0;
   height: 100%;
 }
+#loading-message-container {
+  position: relative;
+}
+.loading-courses-message {
+  display: inline;
+  margin-left: 15px;
+}
 .course-panel-heading {
   height: 6vh;
 }

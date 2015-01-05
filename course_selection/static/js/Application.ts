@@ -14,10 +14,13 @@ var nice = new Module('nice', [
         ]);
 
 nice.app.config((localStorageServiceProvider) => {
-  localStorageServiceProvider.setPrefix('nice');
-}).config((cfpLoadingBarProvider) => {
+    localStorageServiceProvider.setPrefix('nice');
+})
+.config((cfpLoadingBarProvider) => {
     cfpLoadingBarProvider.latencyThreshold = 500;
-}).config(($resourceProvider) => {
+    cfpLoadingBarProvider.includeSpinner = false;
+})
+.config(($resourceProvider) => {
     $resourceProvider.defaults.stripTrailingSlashes = false;
 });
 

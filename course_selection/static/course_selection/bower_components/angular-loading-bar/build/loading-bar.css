@@ -65,11 +65,11 @@
 }
 
 #loading-bar-spinner {
-  display: block;
-  position: fixed;
-  z-index: 10002;
-  top: 10px;
-  left: 10px;
+    display: block;
+    position: fixed;
+    z-index: 10002;
+    top: 10px;
+    left: 10px;
 }
 
 #loading-bar-spinner .spinner-icon {

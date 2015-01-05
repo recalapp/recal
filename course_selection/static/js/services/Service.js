@@ -8,4 +8,3 @@ define(["require", "exports"], function(require, exports) {
     
     return Service;
 });
-//# sourceMappingURL=Service.js.map
