@@ -9,7 +9,7 @@
          ng-mouseover="showRemoveButton=true"
          ng-mouseleave="showRemoveButton=false"
     >
-        <tab-heading class="ng-cloak"
+        <tab-heading ng-cloak
         > 
             {{ schedule.title }}
             <a ng-click="scheduleCtrl.confirmRemoveSchedule($index)" 
@@ -30,6 +30,7 @@
             tooltip="Add a new schedule"
             tooltip-placement="right"
             tooltip-popup-delay="500"
+            ng-cloak
             ng-show = canAddNewSchedules>
         <i class="fa fa-plus"></i>
     </button>

@@ -9,18 +9,19 @@
          <div class="row clearfix" id="main">
              {% endverbatim %}
              {% include 'schedule-tabs.html' %}
-{% verbatim %}
+             {% verbatim %}
          </div>
-        <tab-heading>
-        {{ semester.name }}
-        </tab-heading>
+            <tab-heading ng-bind="semester.name">
+            </tab-heading>
         </tab>
         <button class="btn button-add-tab"
                 ng-click="semCtrl.addSemester()"
                 tooltip="Add a new semester"
                 tooltip-placement="right"
                 tooltip-popup-delay="500"
-                ng-show = "canAdd">
+                ng-show = "canAdd"
+                ng-cloak
+                >
             <i class="fa fa-plus"></i>
         </button>
     </tabset>

@@ -1,5 +1,6 @@
 {% verbatim %}
 <div id="searchColumn" class="col-md-4 column" 
+                       ng-cloak
                        ng-controller="SearchCtrl as searchCtrl">
     <div class="row" id="searchBarContainer">
         <input id="searchBar"
@@ -18,7 +19,7 @@
         <h4 class="loading-courses-message">Loading Courses...</h4>
     </div>
 
-    <div ng-show="query.length == 0 && data.enrolledCourses.length == 0 && data.courses.length != 0">
+    <div ng-show="query.length == 0 && data.enrolledCourses.length == 0 && data.courses.length != 0" ng-cloak>
         <h4 class="row">Recommended Courses</h4>
         <div class="row course-panels-container">
             <div id="recommendedCourses" class="panel-group">
