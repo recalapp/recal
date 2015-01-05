@@ -17,6 +17,7 @@ interface ICourse {
     enrolled: boolean;
     colors: IColorPalette;
     getSectionById(number): ISection;
+    resetColor(): void;
 }
 
 export = ICourse;

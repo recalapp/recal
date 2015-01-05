@@ -53,6 +53,14 @@ class Course implements ICourse {
 
         return sections;
     }
+
+    public resetColor() {
+        this.colors = this._getDefaultColor();
+    }
+
+    private _getDefaultColor() {
+        return ColorResource.previewColor;
+    }
     
     private getPrimaryCourseListing(): string {
         for (var i = 0; i < this.course_listings.length; i++) {

@@ -27,6 +27,14 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
             return sections;
         };
 
+        Course.prototype.resetColor = function () {
+            this.colors = this._getDefaultColor();
+        };
+
+        Course.prototype._getDefaultColor = function () {
+            return ColorResource.previewColor;
+        };
+
         Course.prototype.getPrimaryCourseListing = function () {
             for (var i = 0; i < this.course_listings.length; i++) {
                 var curr = this.course_listings[i];

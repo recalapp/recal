@@ -179,7 +179,7 @@ class CalendarCtrl {
         // TODO: hack for first run not updating properly
         // without this line, if oldCourses start with a previous courses,
         // it will not get updated
-        if (this.courseWatchInitRun) {
+        if (this.courseWatchInitRun && newCourses.length > 0) {
             this.courseWatchInitRun = false;
             for (var i = 0; i < newCourses.length; i++) {
                 this.addCourse(newCourses[i], false);
@@ -234,7 +234,12 @@ class CalendarCtrl {
     // }
     // }
     public updateEnrolledSections(newSections, oldSections): void {
+        // check if this is the first run && newSections is not empty
         if (this.sectionWatchInitRun) {
+            if (Object.getOwnPropertyNames(newSections).length == 0) {
+                return;
+            }
+
             this.sectionWatchInitRun = false;
             angular.forEach(newSections, (enrollments, courseId) => {
                 // enrollments = { section_type: section_id / null }
@@ -247,6 +252,8 @@ class CalendarCtrl {
                     }
                 });
             });
+
+            return;
         }
 
 

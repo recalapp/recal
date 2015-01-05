@@ -142,13 +142,22 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             for (var i = 0; i < course.sections.length; i++) {
                 var section = course.sections[i];
                 if (!section.has_meetings) {
-                    this.enrollSection(section);
+                    if (this._isTheOnlySectionOfType(course, section)) {
+                        this.enrollSection(section);
+                    }
                 }
 
                 if (this._isInList(section.id, sectionIds)) {
                     this.enrollSection(section);
                 }
             }
+        };
+
+        CourseManager.prototype._isTheOnlySectionOfType = function (course, section) {
+            var filtered = course.sections.filter(function (temp) {
+                return temp.section_type == section.section_type;
+            });
+            return filtered.length == 1 && filtered[0].id == section.id;
         };
 
         CourseManager.prototype._unenrollCourse = function (course) {
@@ -176,7 +185,7 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
         CourseManager.prototype.unenrollCourse = function (course) {
             // remove color set in the course object
             this.colorManager.addColor(course.colors);
-            course.colors = null;
+            course.resetColor();
 
             this._unenrollCourse(course);
             this._unenrollSections(course);

@@ -163,13 +163,22 @@ class CourseManager {
         for (var i = 0; i < course.sections.length; i++) {
             var section = course.sections[i];
             if (!section.has_meetings) {
-                this.enrollSection(section);
+                if (this._isTheOnlySectionOfType(course, section)) {
+                    this.enrollSection(section);
+                }
             }
 
             if (this._isInList(section.id, sectionIds)) {
                 this.enrollSection(section);
             }
         }
+    }
+
+    private _isTheOnlySectionOfType(course: ICourse, section: ISection) {
+        var filtered = course.sections.filter((temp) => {
+            return temp.section_type == section.section_type;
+        });
+        return filtered.length == 1 && filtered[0].id == section.id;
     }
 
     private _unenrollCourse(course: ICourse): void {
@@ -197,7 +206,7 @@ class CourseManager {
     public unenrollCourse(course: ICourse): void {
         // remove color set in the course object
         this.colorManager.addColor(course.colors);
-        course.colors = null;
+        course.resetColor();
 
         this._unenrollCourse(course);
         this._unenrollSections(course);
