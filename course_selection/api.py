@@ -68,6 +68,11 @@ class CourseResource(ModelResource):
     course_listings = fields.ToManyField(CourseListingResource, 'course_listings', null=True, full=True)
     sections = fields.ToManyField('course_selection.api.SectionResource', 'sections', full=True)
 
+    def alter_list_data_to_serialize(self, request, data):
+        if request.GET.get('meta_only'):
+            return {'meta': data['meta']}
+        return data
+
     class Meta:
         queryset = Course.objects.all()
         resource_name = 'course'

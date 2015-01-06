@@ -5,6 +5,7 @@ beautifulsoup4==4.3.2
 dj-database-url==0.2.2
 dj-static==0.0.6
 django-debug-toolbar==1.2.2
+django-extensions==1.4.9
 django-grappelli==2.6.3
 django-pylibmc-sasl==0.2.4
 django-security==0.1.22b
