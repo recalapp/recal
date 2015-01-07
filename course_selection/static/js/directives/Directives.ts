@@ -1,6 +1,8 @@
 import Module = require('../Module');
-
 var niceDirectives = new Module('niceDirectives', []);
+
+import IScheduleManager = require('../interfaces/IScheduleManager');
+import ICourse = require('../interfaces/ICourse');
 
 niceDirectives.addDirective('selectOnClick', [function() {
     return {
@@ -36,6 +38,50 @@ niceDirectives.addDirective('autoFocus', ['$timeout', ($timeout) => {
             });
         }
     };
+}]);
+
+niceDirectives.addDirective('coursePanel', [function() {
+    return {
+        restrict: 'E',
+        link: (scope, element, attrs) => {
+            var scheduleManager: IScheduleManager;
+            var course: ICourse;
+
+            function onMouseLeave() {
+                scheduleManager.clearPreviewCourse();
+            }
+
+            function onMouseOver() {
+                if (scheduleManager.isCourseEnrolled(course)) {
+                    scheduleManager.clearPreviewCourse();
+                } else {
+                    scheduleManager.setPreviewCourse(course);
+                }
+            }
+
+            element.on('click', () => {
+            });
+
+            element.on('mouseover', () => {
+                onMouseOver();
+            });
+
+            element.on('mouseleave', () => {
+                onMouseLeave();
+            });
+
+            element.on('blur', () => {
+            });
+
+            element.on('$destroy', () => {
+            });
+        },
+        scope: {
+            course: '=',
+            scheduleManager: '=',
+        },
+        templateUrl: '/static/templates/coursePanelDirective.html'
+    }
 }]);
 
 export = niceDirectives;

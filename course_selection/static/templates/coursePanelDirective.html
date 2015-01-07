@@ -1,0 +1,16 @@
+<div ng-mouseenter="showTags = true" 
+     ng-mouseleave="showTags = false">
+    <div class="course-panel-title">
+        <div class="course-listings" 
+             ng-bind="course.all_listings"></div>
+        <div class="course-title" 
+             ng-bind="course.title"></div>
+    </div>
+    <div ng-show="showTags">
+        <div class="more-info-tag"
+             ><i class="fa fa-info"></i></div>
+        <div class="enroll-tag" 
+             ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+    </div>
+</div>
+

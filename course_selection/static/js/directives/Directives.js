@@ -19,6 +19,7 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
             };
         }]);
 
+    // TODO: this is not really autofocus; still requires focus="true" in the html
     niceDirectives.addDirective('autoFocus', [
         '$timeout', function ($timeout) {
             return {
@@ -37,7 +38,50 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
             };
         }]);
 
+    niceDirectives.addDirective('coursePanel', [function () {
+            return {
+                restrict: 'E',
+                link: function (scope, element, attrs) {
+                    var scheduleManager;
+                    var course;
+
+                    function onMouseLeave() {
+                        scheduleManager.clearPreviewCourse();
+                    }
+
+                    function onMouseOver() {
+                        if (scheduleManager.isCourseEnrolled(course)) {
+                            scheduleManager.clearPreviewCourse();
+                        } else {
+                            scheduleManager.setPreviewCourse(course);
+                        }
+                    }
+
+                    element.on('click', function () {
+                    });
+
+                    element.on('mouseover', function () {
+                        onMouseOver();
+                    });
+
+                    element.on('mouseleave', function () {
+                        onMouseLeave();
+                    });
+
+                    element.on('blur', function () {
+                    });
+
+                    element.on('$destroy', function () {
+                    });
+                },
+                scope: {
+                    course: '=',
+                    scheduleManager: '='
+                },
+                templateUrl: '/static/templates/coursePanelDirective.html'
+            };
+        }]);
+
     
     return niceDirectives;
 });
-//# sourceMappingURL=Directives.js.map
