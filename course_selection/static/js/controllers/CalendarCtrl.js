@@ -10,8 +10,8 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.sectionWatchInitRun = true;
             this.calendarWatchInitRun = true;
 
-            this.courseManager = this.$scope.$parent.schedule.courseManager;
-            this.$scope.data = this.courseManager.getData();
+            this.scheduleManager = this.$scope.$parent.schedule.scheduleManager;
+            this.$scope.data = this.scheduleManager.getData();
 
             this.compositeEventSources = new CompositeEventSources();
             this.$scope.eventSources = this.compositeEventSources.getEventSources();
@@ -220,10 +220,10 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
 
         CalendarCtrl.prototype.onEventClick = function (calEvent, jsEvent, view) {
             var section = calEvent.source;
-            if (this.courseManager.isSectionEnrolled(section)) {
-                this.courseManager.unenrollSection(section);
+            if (this.scheduleManager.isSectionEnrolled(section)) {
+                this.scheduleManager.unenrollSection(section);
             } else {
-                this.courseManager.enrollSection(section);
+                this.scheduleManager.enrollSection(section);
             }
         };
         CalendarCtrl.NOT_FOUND = -1;

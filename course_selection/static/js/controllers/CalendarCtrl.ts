@@ -41,7 +41,7 @@ class CalendarCtrl {
     };
 
     private compositeEventSources: CompositeEventSources;
-    private courseManager: ICourseManager;
+    private scheduleManager: ICourseManager;
 
     // TODO: hack for watches not updating on first run
     private courseWatchInitRun: boolean; 
@@ -60,8 +60,8 @@ class CalendarCtrl {
         this.sectionWatchInitRun = true;
         this.calendarWatchInitRun = true;
 
-        this.courseManager = (<any>this.$scope.$parent).schedule.courseManager;
-        this.$scope.data = this.courseManager.getData();
+        this.scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
+        this.$scope.data = this.scheduleManager.getData();
 
         this.compositeEventSources = new CompositeEventSources();
         this.$scope.eventSources = this.compositeEventSources.getEventSources();
@@ -293,10 +293,10 @@ class CalendarCtrl {
 
     public onEventClick(calEvent, jsEvent, view) {
         var section = calEvent.source;
-        if (this.courseManager.isSectionEnrolled(section)) {
-            this.courseManager.unenrollSection(section);
+        if (this.scheduleManager.isSectionEnrolled(section)) {
+            this.scheduleManager.unenrollSection(section);
         } else {
-            this.courseManager.enrollSection(section);
+            this.scheduleManager.enrollSection(section);
         }
     }
 }

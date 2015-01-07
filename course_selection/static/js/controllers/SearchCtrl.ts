@@ -20,19 +20,19 @@ class SearchCtrl {
 
     private static NOT_FOUND: number = -1;
 
-    private courseManager: ICourseManager;
+    private scheduleManager: ICourseManager;
 
     constructor(
             private $scope,
             private $sce
             ) {
         this.$scope.vm = this;
-        this.courseManager = (<any>this.$scope.$parent).schedule.courseManager;
-        this.$scope.data = this.courseManager.getData();
+        this.scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
+        this.$scope.data = this.scheduleManager.getData();
     }
 
     public queryOnChange() {
-        this.courseManager.clearPreviewCourse();
+        this.scheduleManager.clearPreviewCourse();
     }
 
     /*
@@ -51,16 +51,16 @@ class SearchCtrl {
     // if user is not enrolled in course yet, add course events to previewEvents
     // else, don't do anything
     public onMouseOver(course) {
-        if (this.courseManager.isCourseEnrolled(course)) {
-            this.courseManager.clearPreviewCourse();
+        if (this.scheduleManager.isCourseEnrolled(course)) {
+            this.scheduleManager.clearPreviewCourse();
         } else {
-            this.courseManager.setPreviewCourse(course);
+            this.scheduleManager.setPreviewCourse(course);
         }
     }
 
     // clear preview course on mouse leave
     public onMouseLeave(course) {
-        this.courseManager.clearPreviewCourse();
+        this.scheduleManager.clearPreviewCourse();
     }
 
     public enrolledOnMouseOver(course) {
@@ -68,10 +68,10 @@ class SearchCtrl {
 
     // toggle enrollment of course
     public toggleEnrollment(course) {
-        if (this.courseManager.isCourseEnrolled(course)) {
-            this.courseManager.unenrollCourse(course);
+        if (this.scheduleManager.isCourseEnrolled(course)) {
+            this.scheduleManager.unenrollCourse(course);
         } else {
-            this.courseManager.enrollCourse(course);
+            this.scheduleManager.enrollCourse(course);
         }
     }
 
@@ -95,7 +95,7 @@ class SearchCtrl {
     }
 
     public isConfirmed(course: ICourse) {
-        return this.courseManager.isCourseAllSectionsEnrolled(course);
+        return this.scheduleManager.isCourseAllSectionsEnrolled(course);
     }
 
     // TODO: this function no longer works due to course.colors never being null

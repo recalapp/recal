@@ -1,9 +1,6 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
 import Schedule = require('../models/Schedule');
-import CourseManager = require('../models/CourseManager');
-import ColorManager = require('../models/ColorManager');
-import IColorManager = require('../interfaces/IColorManager');
 import RemoveScheduleModalCtrl = require('./RemoveScheduleModalCtrl');
 import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
 
@@ -11,12 +8,8 @@ import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
 
 class ScheduleCtrl {
     public static $inject =[
-        '$rootScope',
         '$scope',
         '$modal',
-        'ColorResource',
-        'CourseService',
-        'localStorageService',
         'UserService',
         'ScheduleResource',
         'ScheduleManagerService'
@@ -26,12 +19,8 @@ class ScheduleCtrl {
     private semester;
 
     constructor(
-            private $rootScope,
             private $scope,
             private $modal,
-            private colorResource,
-            private courseService,
-            private localStorageService,
             private userService,
             private scheduleResource,
             private scheduleManagerService
@@ -55,7 +44,7 @@ class ScheduleCtrl {
                         id: schedule.id,
                         title: schedule.title,
                         active: true,
-                        courseManager: this.scheduleManagerService.newScheduleManager(schedule),
+                        scheduleManager: this.scheduleManagerService.newScheduleManager(schedule),
                     };
 
                     this._setAllInactive();
@@ -126,7 +115,7 @@ class ScheduleCtrl {
         this.schedules.push({
             title: newSchedule.title,
             active: true,
-            courseManager: this.scheduleManagerService.newScheduleManager(newSchedule)
+            scheduleManager: this.scheduleManagerService.newScheduleManager(newSchedule)
         });
 
         this.$scope.selectedSchedule = index;
@@ -143,7 +132,7 @@ class ScheduleCtrl {
     // TODO: this is a workaround
     // shouldn't have to access the schedule like this
     private _removeSchedule(index: number) {
-        this.schedules[index].courseManager.schedule.$remove();
+        this.schedules[index].scheduleManager.schedule.$remove();
         this.schedules.splice(index, 1);
     }
 

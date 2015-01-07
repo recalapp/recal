@@ -3,13 +3,9 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
     'use strict';
 
     var ScheduleCtrl = (function () {
-        function ScheduleCtrl($rootScope, $scope, $modal, colorResource, courseService, localStorageService, userService, scheduleResource, scheduleManagerService) {
-            this.$rootScope = $rootScope;
+        function ScheduleCtrl($scope, $modal, userService, scheduleResource, scheduleManagerService) {
             this.$scope = $scope;
             this.$modal = $modal;
-            this.colorResource = colorResource;
-            this.courseService = courseService;
-            this.localStorageService = localStorageService;
             this.userService = userService;
             this.scheduleResource = scheduleResource;
             this.scheduleManagerService = scheduleManagerService;
@@ -32,7 +28,7 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                             id: schedule.id,
                             title: schedule.title,
                             active: true,
-                            courseManager: _this.scheduleManagerService.newScheduleManager(schedule)
+                            scheduleManager: _this.scheduleManagerService.newScheduleManager(schedule)
                         };
 
                         _this._setAllInactive();
@@ -105,7 +101,7 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
             this.schedules.push({
                 title: newSchedule.title,
                 active: true,
-                courseManager: this.scheduleManagerService.newScheduleManager(newSchedule)
+                scheduleManager: this.scheduleManagerService.newScheduleManager(newSchedule)
             });
 
             this.$scope.selectedSchedule = index;
@@ -122,7 +118,7 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
         // TODO: this is a workaround
         // shouldn't have to access the schedule like this
         ScheduleCtrl.prototype._removeSchedule = function (index) {
-            this.schedules[index].courseManager.schedule.$remove();
+            this.schedules[index].scheduleManager.schedule.$remove();
             this.schedules.splice(index, 1);
         };
 
@@ -135,12 +131,8 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
             this._createSchedule();
         };
         ScheduleCtrl.$inject = [
-            '$rootScope',
             '$scope',
             '$modal',
-            'ColorResource',
-            'CourseService',
-            'localStorageService',
             'UserService',
             'ScheduleResource',
             'ScheduleManagerService'

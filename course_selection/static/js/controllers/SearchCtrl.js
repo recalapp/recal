@@ -1,3 +1,4 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
@@ -6,33 +7,49 @@ define(["require", "exports"], function(require, exports) {
             this.$scope = $scope;
             this.$sce = $sce;
             this.$scope.vm = this;
-            this.courseManager = this.$scope.$parent.schedule.courseManager;
-            this.$scope.data = this.courseManager.getData();
+            this.scheduleManager = this.$scope.$parent.schedule.scheduleManager;
+            this.$scope.data = this.scheduleManager.getData();
         }
         SearchCtrl.prototype.queryOnChange = function () {
-            this.courseManager.clearPreviewCourse();
+            this.scheduleManager.clearPreviewCourse();
         };
 
+        /*
+        private _initState() {
+        this.$scope.state = "loading";
+        this.$scope.$watch(() => {
+        return this.$scope.data.courses;
+        }, () => {
+        if (this.$scope.data.courses.length == 0) {
+        this.$scope.state = "loading";
+        };
+        });
+        }
+        */
+        // if user is not enrolled in course yet, add course events to previewEvents
+        // else, don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {
-            if (this.courseManager.isCourseEnrolled(course)) {
-                this.courseManager.clearPreviewCourse();
+            if (this.scheduleManager.isCourseEnrolled(course)) {
+                this.scheduleManager.clearPreviewCourse();
             } else {
-                this.courseManager.setPreviewCourse(course);
+                this.scheduleManager.setPreviewCourse(course);
             }
         };
 
+        // clear preview course on mouse leave
         SearchCtrl.prototype.onMouseLeave = function (course) {
-            this.courseManager.clearPreviewCourse();
+            this.scheduleManager.clearPreviewCourse();
         };
 
         SearchCtrl.prototype.enrolledOnMouseOver = function (course) {
         };
 
+        // toggle enrollment of course
         SearchCtrl.prototype.toggleEnrollment = function (course) {
-            if (this.courseManager.isCourseEnrolled(course)) {
-                this.courseManager.unenrollCourse(course);
+            if (this.scheduleManager.isCourseEnrolled(course)) {
+                this.scheduleManager.unenrollCourse(course);
             } else {
-                this.courseManager.enrollCourse(course);
+                this.scheduleManager.enrollCourse(course);
             }
         };
 
@@ -54,9 +71,10 @@ define(["require", "exports"], function(require, exports) {
         };
 
         SearchCtrl.prototype.isConfirmed = function (course) {
-            return this.courseManager.isCourseAllSectionsEnrolled(course);
+            return this.scheduleManager.isCourseAllSectionsEnrolled(course);
         };
 
+        // TODO: this function no longer works due to course.colors never being null
         SearchCtrl.prototype.getLinkColor = function (course) {
             if (course.colors) {
                 return course.colors.dark;
@@ -76,4 +94,3 @@ define(["require", "exports"], function(require, exports) {
     
     return SearchCtrl;
 });
-//# sourceMappingURL=SearchCtrl.js.map
