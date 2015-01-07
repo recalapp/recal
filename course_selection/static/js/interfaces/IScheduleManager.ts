@@ -1,7 +1,7 @@
 import ICourse = require('./ICourse');
 import ISection = require('./ISection');
 
-interface ICourseManager {
+interface IScheduleManager {
     getData(): any;
 
     getCourseById(id: number): ICourse;
@@ -20,4 +20,4 @@ interface ICourseManager {
     isCourseAllSectionsEnrolled(course: ICourse): boolean;
 }
 
-export = ICourseManager;
+export = IScheduleManager;

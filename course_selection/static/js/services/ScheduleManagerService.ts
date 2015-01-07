@@ -1,6 +1,6 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
-import CourseManager = require('../models/CourseManager');
+import ScheduleManager = require('../models/ScheduleManager');
 
 'use strict';
 
@@ -20,7 +20,7 @@ class ScheduleManagerService {
             ) {}
 
     public newScheduleManager(schedule: any) {
-        return new CourseManager(
+        return new ScheduleManager(
                 this.$rootScope,
                 this.courseService,
                 this.localStorageService,

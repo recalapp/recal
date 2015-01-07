@@ -1,5 +1,4 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-define(["require", "exports", '../models/CourseManager'], function(require, exports, CourseManager) {
+define(["require", "exports", '../models/ScheduleManager'], function(require, exports, ScheduleManager) {
     'use strict';
 
     var ScheduleManagerService = (function () {
@@ -10,7 +9,7 @@ define(["require", "exports", '../models/CourseManager'], function(require, expo
             this.colorResource = colorResource;
         }
         ScheduleManagerService.prototype.newScheduleManager = function (schedule) {
-            return new CourseManager(this.$rootScope, this.courseService, this.localStorageService, this.colorResource, schedule);
+            return new ScheduleManager(this.$rootScope, this.courseService, this.localStorageService, this.colorResource, schedule);
         };
         ScheduleManagerService.$inject = [
             '$rootScope',
@@ -24,3 +23,4 @@ define(["require", "exports", '../models/CourseManager'], function(require, expo
     
     return ScheduleManagerService;
 });
+//# sourceMappingURL=ScheduleManagerService.js.map

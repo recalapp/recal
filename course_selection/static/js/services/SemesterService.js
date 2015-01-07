@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 define(["require", "exports"], function(require, exports) {
     var SemesterService = (function () {
@@ -21,3 +20,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SemesterService;
 });
+//# sourceMappingURL=SemesterService.js.map

@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
@@ -8,15 +7,12 @@ define(["require", "exports"], function(require, exports) {
             this.localStorageService = localStorageService;
             this.courseResource = courseResource;
         }
-        // cache into local storage service
-        // wrap around with a promise
         CourseService.prototype.getBySemester = function (termCode) {
             var _this = this;
             var temp = this.localStorageService.get('courses-' + termCode);
             if (temp != null && Array.isArray(temp)) {
                 return this.$q.when(temp);
             } else {
-                // TODO: here we are assuming that there are less than 2000 courses
                 var proms = [];
                 for (var i = 0; i < 10; i++) {
                     proms.push(this.courseResource.getBySemester({
@@ -46,3 +42,4 @@ define(["require", "exports"], function(require, exports) {
     
     return CourseService;
 });
+//# sourceMappingURL=CourseService.js.map

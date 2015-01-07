@@ -7,7 +7,7 @@ import ColorManager = require('../models/ColorManager');
 import IColorManager = require('../interfaces/IColorManager');
 import IEnrollment = require('../interfaces/IEnrollment');
 
-class CourseManager {
+class ScheduleManager {
     private static NOT_FOUND: number = -1;
 
     private data = {
@@ -236,7 +236,7 @@ class CourseManager {
     // TODO: this is a linear traversal. Optimize if this causes
     // performance issues
     private _idxInList(element, list, comp?) {
-        var idx = CourseManager.NOT_FOUND;
+        var idx = ScheduleManager.NOT_FOUND;
         var comp = comp ? comp : this._defaultComp;
         angular.forEach(list, (value, key) => {
             if (comp(element, value)) {
@@ -253,7 +253,7 @@ class CourseManager {
     }
 
     private _isInList(element, list, comp?): boolean {
-        return this._idxInList(element, list, comp) != CourseManager.NOT_FOUND;
+        return this._idxInList(element, list, comp) != ScheduleManager.NOT_FOUND;
     }
 
     private _courseComp(a: ICourse, b: ICourse): boolean {
@@ -270,7 +270,7 @@ class CourseManager {
     
     public isCourseEnrolled(course: ICourse): boolean {
         var idx = this._courseIdxInList(course, this.data.enrolledCourses);
-        return idx != CourseManager.NOT_FOUND;
+        return idx != ScheduleManager.NOT_FOUND;
     }
 
     ///////////////////////////////////////////////////////////
@@ -321,4 +321,4 @@ class CourseManager {
 
 }
 
-export = CourseManager;
+export = ScheduleManager;

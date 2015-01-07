@@ -1,7 +1,7 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports", './Course', '../models/ColorManager'], function(require, exports, Course, ColorManager) {
-    var CourseManager = (function () {
-        function CourseManager($rootScope, courseService, localStorageService, colorResource, schedule) {
+    var ScheduleManager = (function () {
+        function ScheduleManager($rootScope, courseService, localStorageService, colorResource, schedule) {
             this.$rootScope = $rootScope;
             this.courseService = courseService;
             this.localStorageService = localStorageService;
@@ -27,7 +27,7 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
         ///////////////////////////////////////////////////////////
         // Initialization
         //////////////////////////////////////////////////////////
-        CourseManager.prototype._initData = function (prevEnrollments) {
+        ScheduleManager.prototype._initData = function (prevEnrollments) {
             this.data.previewCourse = null;
             this.data.enrolledCourses = [];
             this.data.enrolledSections = {};
@@ -35,7 +35,7 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             this._loadCourses(prevEnrollments);
         };
 
-        CourseManager.prototype._initColorManager = function (availableColors, prevEnrollments) {
+        ScheduleManager.prototype._initColorManager = function (availableColors, prevEnrollments) {
             var _this = this;
             this.colorManager = new ColorManager(this.colorResource, availableColors, prevEnrollments);
 
@@ -47,7 +47,7 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             }
         };
 
-        CourseManager.prototype._initWatches = function () {
+        ScheduleManager.prototype._initWatches = function () {
             var _this = this;
             this.$rootScope.$watch(function () {
                 return _this.data.enrolledSections;
@@ -64,7 +64,7 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             }, true);
         };
 
-        CourseManager.prototype._constructEnrollments = function (enrolledSections) {
+        ScheduleManager.prototype._constructEnrollments = function (enrolledSections) {
             var _this = this;
             var enrollments = [];
             angular.forEach(enrolledSections, function (courseEnrollment, courseId) {
@@ -95,11 +95,11 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
         };
 
         // map raw data into more flexible data structure
-        CourseManager.prototype._transformCourse = function (rawCourse) {
+        ScheduleManager.prototype._transformCourse = function (rawCourse) {
             return new Course(rawCourse.title, rawCourse.description, rawCourse.course_listings, rawCourse.id, rawCourse.sections, rawCourse.semester);
         };
 
-        CourseManager.prototype._loadCourses = function (prevEnrollments) {
+        ScheduleManager.prototype._loadCourses = function (prevEnrollments) {
             var _this = this;
             this.courseService.getBySemester(this.schedule.semester.term_code).then(function (courses) {
                 _this.data.courses = courses.map(_this._transformCourse);
@@ -116,14 +116,14 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             });
         };
 
-        CourseManager.prototype.getData = function () {
+        ScheduleManager.prototype.getData = function () {
             return this.data;
         };
 
         ///////////////////////////////////////////////////////////
         // Course Management
         //////////////////////////////////////////////////////////
-        CourseManager.prototype.getCourseById = function (id) {
+        ScheduleManager.prototype.getCourseById = function (id) {
             return this.data.courses.filter(function (course) {
                 return course.id == id;
             })[0];
@@ -132,21 +132,21 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
         ///////////////////////////////////////////////////////////
         // Course Enrollment Management
         //////////////////////////////////////////////////////////
-        CourseManager.prototype.setPreviewCourse = function (course) {
+        ScheduleManager.prototype.setPreviewCourse = function (course) {
             this.data.previewCourse = course;
         };
 
-        CourseManager.prototype.clearPreviewCourse = function () {
+        ScheduleManager.prototype.clearPreviewCourse = function () {
             this.setPreviewCourse(null);
         };
 
-        CourseManager.prototype._enrollCourse = function (course) {
+        ScheduleManager.prototype._enrollCourse = function (course) {
             var idx = this._courseIdxInList(course, this.data.courses);
             this.data.courses.splice(idx, 1);
             this.data.enrolledCourses.push(course);
         };
 
-        CourseManager.prototype._enrollSections = function (course, sectionIds) {
+        ScheduleManager.prototype._enrollSections = function (course, sectionIds) {
             this.data.enrolledSections[course.id] = {};
             for (var i = 0; i < course.section_types.length; i++) {
                 var section_type = course.section_types[i];
@@ -167,19 +167,19 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             }
         };
 
-        CourseManager.prototype._isTheOnlySectionOfType = function (course, section) {
+        ScheduleManager.prototype._isTheOnlySectionOfType = function (course, section) {
             var filtered = course.sections.filter(function (temp) {
                 return temp.section_type == section.section_type;
             });
             return filtered.length == 1 && filtered[0].id == section.id;
         };
 
-        CourseManager.prototype._unenrollCourse = function (course) {
+        ScheduleManager.prototype._unenrollCourse = function (course) {
             this._removeCourseFromList(course, this.data.enrolledCourses);
             this.data.courses.push(course);
         };
 
-        CourseManager.prototype._unenrollSections = function (course) {
+        ScheduleManager.prototype._unenrollSections = function (course) {
             this.data.enrolledSections[course.id] = null;
             delete this.data.enrolledSections[course.id];
         };
@@ -187,7 +187,7 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
         /**
         * NOTE: the input course is modified
         */
-        CourseManager.prototype.enrollCourse = function (course) {
+        ScheduleManager.prototype.enrollCourse = function (course) {
             course.colors = this.colorManager.nextColor();
             this._enrollCourse(course);
             this._enrollSections(course);
@@ -196,7 +196,7 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
         /**
         * NOTE: the input course is modified
         */
-        CourseManager.prototype.unenrollCourse = function (course) {
+        ScheduleManager.prototype.unenrollCourse = function (course) {
             // remove color set in the course object
             this.colorManager.addColor(course.colors);
             course.resetColor();
@@ -205,15 +205,15 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             this._unenrollSections(course);
         };
 
-        CourseManager.prototype._removeCourseFromList = function (course, list) {
+        ScheduleManager.prototype._removeCourseFromList = function (course, list) {
             var idx = this._courseIdxInList(course, list);
             list.splice(idx, 1);
         };
 
         // TODO: this is a linear traversal. Optimize if this causes
         // performance issues
-        CourseManager.prototype._idxInList = function (element, list, comp) {
-            var idx = CourseManager.NOT_FOUND;
+        ScheduleManager.prototype._idxInList = function (element, list, comp) {
+            var idx = ScheduleManager.NOT_FOUND;
             var comp = comp ? comp : this._defaultComp;
             angular.forEach(list, function (value, key) {
                 if (comp(element, value)) {
@@ -225,48 +225,48 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             return idx;
         };
 
-        CourseManager.prototype._defaultComp = function (a, b) {
+        ScheduleManager.prototype._defaultComp = function (a, b) {
             return a == b;
         };
 
-        CourseManager.prototype._isInList = function (element, list, comp) {
-            return this._idxInList(element, list, comp) != CourseManager.NOT_FOUND;
+        ScheduleManager.prototype._isInList = function (element, list, comp) {
+            return this._idxInList(element, list, comp) != ScheduleManager.NOT_FOUND;
         };
 
-        CourseManager.prototype._courseComp = function (a, b) {
+        ScheduleManager.prototype._courseComp = function (a, b) {
             return a.id == b.id;
         };
 
-        CourseManager.prototype._sectionComp = function (a, b) {
+        ScheduleManager.prototype._sectionComp = function (a, b) {
             return a.id == b.id;
         };
 
-        CourseManager.prototype._courseIdxInList = function (course, list) {
+        ScheduleManager.prototype._courseIdxInList = function (course, list) {
             return this._idxInList(course, list, this._courseComp);
         };
 
-        CourseManager.prototype.isCourseEnrolled = function (course) {
+        ScheduleManager.prototype.isCourseEnrolled = function (course) {
             var idx = this._courseIdxInList(course, this.data.enrolledCourses);
-            return idx != CourseManager.NOT_FOUND;
+            return idx != ScheduleManager.NOT_FOUND;
         };
 
         ///////////////////////////////////////////////////////////
         // Section Enrollment Management
         //////////////////////////////////////////////////////////
-        CourseManager.prototype.setPreviewSection = function (section) {
+        ScheduleManager.prototype.setPreviewSection = function (section) {
         };
 
-        CourseManager.prototype.clearPreviewSection = function (section) {
+        ScheduleManager.prototype.clearPreviewSection = function (section) {
         };
 
         // private _enrollSection(courseId, sectionId, sectionType): void {
         //     this.data.enrolledSections[courseId][sectionType] = sectionId;
         // }
-        CourseManager.prototype.enrollSection = function (section) {
+        ScheduleManager.prototype.enrollSection = function (section) {
             this.data.enrolledSections[section.course_id][section.section_type] = section.id;
         };
 
-        CourseManager.prototype.isCourseAllSectionsEnrolled = function (course) {
+        ScheduleManager.prototype.isCourseAllSectionsEnrolled = function (course) {
             var allSectionsEnrolled = true;
             if (!this.isCourseEnrolled(course)) {
                 return false;
@@ -284,18 +284,18 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             return allSectionsEnrolled;
         };
 
-        CourseManager.prototype.unenrollSection = function (section) {
+        ScheduleManager.prototype.unenrollSection = function (section) {
             this.data.enrolledSections[section.course_id][section.section_type] = null;
         };
 
-        CourseManager.prototype.isSectionEnrolled = function (section) {
+        ScheduleManager.prototype.isSectionEnrolled = function (section) {
             var enrolledCourse = this.data.enrolledSections[section.course_id];
             return enrolledCourse != null && enrolledCourse[section.section_type] == section.id;
         };
-        CourseManager.NOT_FOUND = -1;
-        return CourseManager;
+        ScheduleManager.NOT_FOUND = -1;
+        return ScheduleManager;
     })();
 
     
-    return CourseManager;
+    return ScheduleManager;
 });

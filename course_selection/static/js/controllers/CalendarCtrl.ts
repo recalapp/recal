@@ -5,7 +5,7 @@ import ISection = require('../interfaces/ISection');
 import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
-import ICourseManager = require('../interfaces/ICourseManager');
+import IScheduleManager = require('../interfaces/IScheduleManager');
 
 'use strict';
 
@@ -41,7 +41,7 @@ class CalendarCtrl {
     };
 
     private compositeEventSources: CompositeEventSources;
-    private scheduleManager: ICourseManager;
+    private scheduleManager: IScheduleManager;
 
     // TODO: hack for watches not updating on first run
     private courseWatchInitRun: boolean; 
