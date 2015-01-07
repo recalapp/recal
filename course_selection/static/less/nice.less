@@ -2,14 +2,13 @@
 @body-medium-background-color: rgba(0, 0, 0, 0.05);
 @body-dark-background-color: rgba(0, 0, 0, 0.08);
 
-@tab-light-color: rgb(47, 121, 185);
-@tab-dark-color: rgb(35, 83, 128);
-
 @tab-light-background-color: rgb(211, 211, 211);
 @tab-medium-background-color: rgb(194, 194, 194);
 @tab-dark-background-color: rgb(184, 184, 184);
+
 @remove-hover-background-color: rgba(184, 184, 184, 0.5);
 
+@tooltip-background-color: rgba(47,47,47,0.98);
 @body-dark-text-color: rgb(64,64,64);
 @main-height: 80vh;
 
@@ -139,6 +138,15 @@ body {
             }
         }
     }
+}
+
+/* tooltip */
+.tooltip.right .tooltip-arrow {
+    border-left-color: @tooltip-background-color;
+}
+
+.tooltip-inner {
+    background-color: @tooltip-background-color;
 }
 
 /* scrollbar */

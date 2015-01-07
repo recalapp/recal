@@ -103,6 +103,13 @@ body {
   border-style: none;
   cursor: default;
 }
+/* tooltip */
+.tooltip.right .tooltip-arrow {
+  border-left-color: rgba(47, 47, 47, 0.98);
+}
+.tooltip-inner {
+  background-color: rgba(47, 47, 47, 0.98);
+}
 /* scrollbar */
 ::-webkit-scrollbar {
   width: 0.2em;
