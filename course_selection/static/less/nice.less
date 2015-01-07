@@ -8,6 +8,7 @@
 @tab-light-background-color: rgb(211, 211, 211);
 @tab-medium-background-color: rgb(194, 194, 194);
 @tab-dark-background-color: rgb(184, 184, 184);
+@remove-hover-background-color: rgba(184, 184, 184, 0.5);
 
 @body-dark-text-color: rgb(64,64,64);
 @main-height: 80vh;
@@ -61,7 +62,8 @@ body {
     top: 25%;
     right: 5px;
     &:hover {
-        color: @tab-dark-color;
+        background-color: @remove-hover-background-color;
+        border-radius: 2px;
     }
 }
 
