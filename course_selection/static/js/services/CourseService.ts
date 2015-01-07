@@ -27,11 +27,23 @@ class CourseService {
         if (temp != null && Array.isArray(temp)) {
             return this.$q.when(temp);
         } else {
-            // TODO: fix this: on heroku, we get internal server error if requesting for all the courses at once
-            return this.courseResource.getBySemester({semester__term_code: termCode})
-                .$promise.then((data) => {
-                this.localStorageService.set('courses-' + termCode, data);
-                return data;
+            // TODO: here we are assuming that there are less than 2000 courses
+            var proms = [];
+            for (var i = 0; i < 10; i++) {
+                proms.push(this.courseResource.getBySemester({
+                    semester__term_code: termCode, 
+                    offset: i * 200,
+                    limit: 200
+                }).$promise);
+            }
+
+            return this.$q.all(proms).then((arrayOfArraysOfCourses) => {
+                var courseArray = arrayOfArraysOfCourses.reduce(
+                        (accum, curr, index, array) => {
+                            return accum.concat(curr);
+                        });
+                this.localStorageService.set('courses-' + termCode, courseArray);
+                return courseArray;
             });
         }
     }
