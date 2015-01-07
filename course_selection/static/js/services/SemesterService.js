@@ -1,6 +1,6 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+'use strict';
 define(["require", "exports"], function(require, exports) {
-    'use strict';
-
     var SemesterService = (function () {
         function SemesterService(semesterResource) {
             this.semesterResource = semesterResource;
@@ -21,4 +21,3 @@ define(["require", "exports"], function(require, exports) {
     
     return SemesterService;
 });
-//# sourceMappingURL=SemesterService.js.map

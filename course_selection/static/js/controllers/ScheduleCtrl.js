@@ -1,8 +1,9 @@
-define(["require", "exports", '../models/Schedule', '../models/CourseManager', '../models/ColorManager', './RemoveScheduleModalCtrl', './NewScheduleModalCtrl'], function(require, exports, Schedule, CourseManager, ColorManager, RemoveScheduleModalCtrl, NewScheduleModalCtrl) {
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl', './NewScheduleModalCtrl'], function(require, exports, Schedule, RemoveScheduleModalCtrl, NewScheduleModalCtrl) {
     'use strict';
 
     var ScheduleCtrl = (function () {
-        function ScheduleCtrl($rootScope, $scope, $modal, colorResource, courseService, localStorageService, userService, scheduleResource) {
+        function ScheduleCtrl($rootScope, $scope, $modal, colorResource, courseService, localStorageService, userService, scheduleResource, scheduleManagerService) {
             this.$rootScope = $rootScope;
             this.$scope = $scope;
             this.$modal = $modal;
@@ -11,6 +12,7 @@ define(["require", "exports", '../models/Schedule', '../models/CourseManager', '
             this.localStorageService = localStorageService;
             this.userService = userService;
             this.scheduleResource = scheduleResource;
+            this.scheduleManagerService = scheduleManagerService;
             this.semester = this.$scope.$parent.semester;
             this.$scope.canAddNewSchedules = this.semester.current;
 
@@ -26,17 +28,11 @@ define(["require", "exports", '../models/Schedule', '../models/CourseManager', '
                 for (var i = 0; i < schedules.length; i++) {
                     var schedule = schedules[i];
                     if (schedule.semester.term_code == _this.semester.term_code) {
-                        var enrollments = JSON.parse(schedule.enrollments);
-                        var availableColors = JSON.parse(schedule.available_colors);
-                        var colorManager = new ColorManager(_this.colorResource, availableColors, enrollments);
-                        var courseManager = new CourseManager(_this.$rootScope, _this.courseService, _this.localStorageService, colorManager, schedule);
-
                         var newSchedule = {
                             id: schedule.id,
                             title: schedule.title,
                             active: true,
-                            courseManager: courseManager,
-                            colorManager: colorManager
+                            courseManager: _this.scheduleManagerService.newScheduleManager(schedule)
                         };
 
                         _this._setAllInactive();
@@ -101,23 +97,15 @@ define(["require", "exports", '../models/Schedule', '../models/CourseManager', '
 
         ScheduleCtrl.prototype._createSchedule = function (scheduleName) {
             var index = this.schedules.length;
-            var colorManager = new ColorManager(this.colorResource);
             var newSchedule = new this.scheduleResource();
             newSchedule.semester = this.semester;
             newSchedule.user = this.userService.user;
             newSchedule.enrollments = JSON.stringify([]);
             newSchedule.title = scheduleName ? scheduleName : "Add a new schedule ––>";
-            colorManager.availableColors.$promise.then(function (colors) {
-                newSchedule.available_colors = JSON.stringify(colors);
-                newSchedule.$save();
-            });
-
-            var courseManager = new CourseManager(this.$rootScope, this.courseService, this.localStorageService, colorManager, newSchedule);
             this.schedules.push({
                 title: newSchedule.title,
                 active: true,
-                courseManager: courseManager,
-                colorManager: colorManager
+                courseManager: this.scheduleManagerService.newScheduleManager(newSchedule)
             });
 
             this.$scope.selectedSchedule = index;
@@ -131,6 +119,8 @@ define(["require", "exports", '../models/Schedule', '../models/CourseManager', '
             this.$scope.selectedSchedule = index;
         };
 
+        // TODO: this is a workaround
+        // shouldn't have to access the schedule like this
         ScheduleCtrl.prototype._removeSchedule = function (index) {
             this.schedules[index].courseManager.schedule.$remove();
             this.schedules.splice(index, 1);
@@ -152,7 +142,8 @@ define(["require", "exports", '../models/Schedule', '../models/CourseManager', '
             'CourseService',
             'localStorageService',
             'UserService',
-            'ScheduleResource'
+            'ScheduleResource',
+            'ScheduleManagerService'
         ];
         return ScheduleCtrl;
     })();
@@ -160,4 +151,3 @@ define(["require", "exports", '../models/Schedule', '../models/CourseManager', '
     
     return ScheduleCtrl;
 });
-//# sourceMappingURL=ScheduleCtrl.js.map

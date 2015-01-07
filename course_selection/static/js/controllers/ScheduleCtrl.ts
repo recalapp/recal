@@ -18,7 +18,8 @@ class ScheduleCtrl {
         'CourseService',
         'localStorageService',
         'UserService',
-        'ScheduleResource'
+        'ScheduleResource',
+        'ScheduleManagerService'
         ];
 
     private schedules;
@@ -32,7 +33,9 @@ class ScheduleCtrl {
             private courseService,
             private localStorageService,
             private userService,
-            private scheduleResource) {
+            private scheduleResource,
+            private scheduleManagerService
+            ) {
         this.semester = this.$scope.$parent.semester;
         this.$scope.canAddNewSchedules = this.semester.current;
 
@@ -48,25 +51,11 @@ class ScheduleCtrl {
             for (var i = 0; i < schedules.length; i++) {
                 var schedule = schedules[i];
                 if (schedule.semester.term_code == this.semester.term_code) {
-                    // recover available colors and enrollments
-                    var enrollments = JSON.parse(schedule.enrollments);
-                    var availableColors = JSON.parse(schedule.available_colors);
-                    var colorManager: IColorManager = new ColorManager(this.colorResource, availableColors, enrollments);
-                    var courseManager = new CourseManager(
-                            this.$rootScope,
-                            this.courseService, 
-                            this.localStorageService, 
-                            colorManager,
-                            schedule);
-
-                    // TODO: remove color manager from schedules;
-                    // it's unnecessary--the info is in course manager already
                     var newSchedule = {
                         id: schedule.id,
                         title: schedule.title,
                         active: true,
-                        courseManager: courseManager,
-                        colorManager: colorManager
+                        courseManager: this.scheduleManagerService.newScheduleManager(schedule),
                     };
 
                     this._setAllInactive();
@@ -129,28 +118,15 @@ class ScheduleCtrl {
 
     private _createSchedule(scheduleName?: string) {
         var index = this.schedules.length;
-        var colorManager = new ColorManager(this.colorResource);
         var newSchedule = new this.scheduleResource();
         newSchedule.semester = this.semester;
         newSchedule.user = this.userService.user;
         newSchedule.enrollments = JSON.stringify([]);
         newSchedule.title = scheduleName ? scheduleName : "Add a new schedule ––>";
-        colorManager.availableColors.$promise.then((colors) => {
-            newSchedule.available_colors = JSON.stringify(colors);
-            newSchedule.$save();
-        });
-
-        var courseManager = new CourseManager(
-                this.$rootScope,
-                this.courseService, 
-                this.localStorageService, 
-                colorManager,
-                newSchedule);
         this.schedules.push({
             title: newSchedule.title,
             active: true,
-            courseManager: courseManager,
-            colorManager: colorManager
+            courseManager: this.scheduleManagerService.newScheduleManager(newSchedule)
         });
 
         this.$scope.selectedSchedule = index;

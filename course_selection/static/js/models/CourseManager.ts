@@ -3,6 +3,7 @@
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
 import Course = require('./Course');
+import ColorManager = require('../models/ColorManager');
 import IColorManager = require('../interfaces/IColorManager');
 import IEnrollment = require('../interfaces/IEnrollment');
 
@@ -22,16 +23,20 @@ class CourseManager {
         section: null
     }
 
+    private colorManager: IColorManager;
+
     constructor(
             private $rootScope,
             private courseService,
             private localStorageService,
-            private colorManager: IColorManager,
+            private colorResource,
             private schedule
             ) 
     {
         var prevEnrollments = schedule.enrollments ? JSON.parse(schedule.enrollments) : null;
+        var availableColors = schedule.available_colors ? JSON.parse(schedule.available_colors) : null;
         this._initData(prevEnrollments);
+        this._initColorManager(availableColors, prevEnrollments);
         this._initWatches();
     }
 
@@ -45,6 +50,17 @@ class CourseManager {
         this.data.enrolledSections = {};
 
         this._loadCourses(prevEnrollments);
+    }
+
+    private _initColorManager(availableColors: Array<any>, prevEnrollments: Array<IEnrollment>) {
+        this.colorManager = new ColorManager(this.colorResource, availableColors, prevEnrollments);
+
+        if (!availableColors) {
+            this.colorManager.availableColors.$promise.then((colors) => {
+                this.schedule.available_colors = JSON.stringify(colors);
+                this.schedule.$save();
+            });
+        }
     }
 
     private _initWatches() {

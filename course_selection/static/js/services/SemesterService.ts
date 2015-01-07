@@ -1,7 +1,5 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 
-import Service = require('./Service');
-
 'use strict';
 
 class SemesterService {

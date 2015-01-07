@@ -1,11 +1,11 @@
 /// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
-define(["require", "exports", './Course'], function(require, exports, Course) {
+define(["require", "exports", './Course', '../models/ColorManager'], function(require, exports, Course, ColorManager) {
     var CourseManager = (function () {
-        function CourseManager($rootScope, courseService, localStorageService, colorManager, schedule) {
+        function CourseManager($rootScope, courseService, localStorageService, colorResource, schedule) {
             this.$rootScope = $rootScope;
             this.courseService = courseService;
             this.localStorageService = localStorageService;
-            this.colorManager = colorManager;
+            this.colorResource = colorResource;
             this.schedule = schedule;
             this.data = {
                 previewCourse: null,
@@ -19,7 +19,9 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
                 section: null
             };
             var prevEnrollments = schedule.enrollments ? JSON.parse(schedule.enrollments) : null;
+            var availableColors = schedule.available_colors ? JSON.parse(schedule.available_colors) : null;
             this._initData(prevEnrollments);
+            this._initColorManager(availableColors, prevEnrollments);
             this._initWatches();
         }
         ///////////////////////////////////////////////////////////
@@ -31,6 +33,18 @@ define(["require", "exports", './Course'], function(require, exports, Course) {
             this.data.enrolledSections = {};
 
             this._loadCourses(prevEnrollments);
+        };
+
+        CourseManager.prototype._initColorManager = function (availableColors, prevEnrollments) {
+            var _this = this;
+            this.colorManager = new ColorManager(this.colorResource, availableColors, prevEnrollments);
+
+            if (!availableColors) {
+                this.colorManager.availableColors.$promise.then(function (colors) {
+                    _this.schedule.available_colors = JSON.stringify(colors);
+                    _this.schedule.$save();
+                });
+            }
         };
 
         CourseManager.prototype._initWatches = function () {

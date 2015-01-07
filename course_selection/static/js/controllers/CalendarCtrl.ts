@@ -6,7 +6,6 @@ import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
 import ICourseManager = require('../interfaces/ICourseManager');
-import IColorManager = require('../interfaces/IColorManager');
 
 'use strict';
 
