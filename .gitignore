@@ -1,4 +1,3 @@
-*.map
 .idea
 .DS_Store
 venv

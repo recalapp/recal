@@ -1,0 +1,1 @@
+{"version":3,"file":"Schedule.js","sourceRoot":"","sources":["Schedule.ts"],"names":["Schedule","Schedule.constructor","Schedule.compare"],"mappings":"AAAA;IAAA;QAAAA;QAMAC,CAACA;AAAAD,QAHGA,mBAAAA,UAAeA,CAAWA,EAAEA,CAAWA;YACnCE,OAAOA,CAACA,CAACA,EAAEA,GAAGA,CAACA,CAACA,EAAEA;QACtBA,CAACA;QACLF,gBAACA;IAADA,CAACA,IAAA;;;IAED,eAAkB;GAClB"}
