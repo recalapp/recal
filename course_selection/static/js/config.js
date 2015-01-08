@@ -9,11 +9,11 @@ function bowerPath(path) {
 require.config({
     paths: {
         flatstrap: bowerPath('flatstrap/dist/js/flatstrap.min'),
-        fullcalendar: bowerPath('fullcalendar/dist/fullcalendar'),
+        fullcalendar: bowerPath('fullcalendar/dist/fullcalendar.min'),
         jquery: bowerPath('jquery/dist/jquery.min'),
         'jquery.cookie': bowerPath('jquery.cookie/jquery.cookie'),
         jqueryui: bowerPath('jquery-ui/jquery-ui.min'),
-        moment: bowerPath('moment/moment'),
+        moment: bowerPath('moment/min/moment.min'),
         'moment-timezone': bowerPath('moment-timezone/builds/moment-timezone-with-data'),
         'angular': bowerPath('angular/angular.min'),
         'angular-animate': bowerPath('angular-animate/angular-animate.min'),
