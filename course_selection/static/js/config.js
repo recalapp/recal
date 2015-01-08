@@ -22,7 +22,6 @@ require.config({
         'angular-bootstrap': bowerPath('angular-bootstrap/ui-bootstrap-tpls.min'),
         'angular-local-storage': bowerPath('angular-local-storage/dist/angular-local-storage.min'),
         'angular-loading-bar': bowerPath('angular-loading-bar/build/loading-bar'),
-        'chai': bowerPath('chai/chai'),
         'text': bowerPath('requirejs-text/text')
     },
     shim: {
@@ -35,8 +34,7 @@ require.config({
         'angular-bootstrap': ['angular'],
         'angularRoute': ['angular'],
         'angular-local-storage': ['angular'],
-        'angular-loading-bar': ['angular'],
-        'chai': []
+        'angular-loading-bar': ['angular']
     },
     priority: [
         "angular"
@@ -50,7 +48,6 @@ require([
     'angular-loading-bar',
     'angular-resource',
     'moment',
-    'chai',
     'fullcalendar',
     'angular-ui-calendar',
     'angular-bootstrap',
