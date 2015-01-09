@@ -95,7 +95,7 @@
                          >
                          <div class="course-panel-title">
                              <div class="course-listings" 
-                                  ng-bind="course.all_listings"></div>
+                                  ng-bind-html="course.all_listings | highlight: query"></div>
                              <div class="course-title" 
                                   ng-bind="course.title"></div>
                          </div>
