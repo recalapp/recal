@@ -38,19 +38,6 @@ class SearchCtrl {
         this._scheduleManager.clearPreviewCourse();
     }
 
-    /*
-    private _initState() {
-        this.$scope.state = "loading";
-        this.$scope.$watch(() => {
-            return this.$scope.data.courses;
-        }, () => {
-            if (this.$scope.data.courses.length == 0) {
-                this.$scope.state = "loading";
-            };
-        });
-    }
-    */
-
     // if user is not enrolled in course yet, add course events to previewEvents
     // else, don't do anything
     public onMouseOver(course) {

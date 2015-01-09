@@ -10,6 +10,8 @@ class ScheduleCtrl {
     public static $inject =[
         '$scope',
         '$modal',
+        '$element',
+        'hotkeys',
         'UserService',
         'ScheduleResource',
         'ScheduleManagerService'
@@ -21,6 +23,8 @@ class ScheduleCtrl {
     constructor(
             private $scope,
             private $modal,
+            private $element,
+            private hotkeys,
             private userService,
             private scheduleResource,
             private scheduleManagerService
@@ -32,6 +36,18 @@ class ScheduleCtrl {
         this._restoreUserSchedules();
         this.$scope.schedules = this.schedules;
         this.$scope.selectedSchedule = -1;
+
+        hotkeys.add({
+            combo: 'mod+f',
+            description: 'search',
+            callback: (event, hotkey) => {
+                // TODO: this is a hack using jQuery...
+                // looks for the visible search bar and focuses
+                event.preventDefault();
+                $('.searchBar').filter(':visible').focus();
+            }
+        });
+
     }
 
     private _restoreUserSchedules() {

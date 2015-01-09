@@ -15,10 +15,6 @@
 @course-panel-body-height: 19vh;
 @tag-width: 10%;
 
-#searchBar:focus::-webkit-input-placeholder {
-    color: transparent;
-}
-
 .course-panel {
     min-height: 40px;
     width: 100%;
@@ -57,7 +53,7 @@
     margin-bottom: 1vh;
 }
 
-#searchBar {
+.searchBar {
     background-image: url('../images/search.png');
     background-repeat: no-repeat;
     background-size: 14px 14px;
@@ -74,6 +70,10 @@
         outline: none;
         color: @body-dark-text-color;
     }
+}
+
+.searchBar:focus::-webkit-input-placeholder {
+    color: transparent;
 }
 
 #unenrolledCourses {

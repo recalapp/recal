@@ -5,6 +5,7 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
         'ngAnimate',
         'ui.calendar',
         'ui.bootstrap',
+        'cfp.hotkeys',
         'LocalStorageModule',
         'niceServices',
         'niceFilters',
@@ -24,4 +25,3 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
     
     return nice;
 });
-//# sourceMappingURL=Application.js.map

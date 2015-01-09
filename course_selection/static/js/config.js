@@ -21,6 +21,7 @@ require.config({
         'angular-ui-calendar': bowerPath('angular-ui-calendar/src/calendar'),
         'angular-bootstrap': bowerPath('angular-bootstrap/ui-bootstrap-tpls.min'),
         'angular-local-storage': bowerPath('angular-local-storage/dist/angular-local-storage.min'),
+        'angular-hotkeys': bowerPath('angular-hotkeys/build/hotkeys'),
         'angular-loading-bar': bowerPath('angular-loading-bar/build/loading-bar'),
         'text': bowerPath('requirejs-text/text')
     },
@@ -33,6 +34,7 @@ require.config({
         'angular-ui-calendar': ['angular'],
         'angular-bootstrap': ['angular'],
         'angularRoute': ['angular'],
+        'angular-hotkeys': ['angular'],
         'angular-local-storage': ['angular'],
         'angular-loading-bar': ['angular']
     },
@@ -45,6 +47,7 @@ require([
     'angular',
     'angular-animate',
     'angular-local-storage',
+    'angular-hotkeys',
     'angular-loading-bar',
     'angular-resource',
     'moment',

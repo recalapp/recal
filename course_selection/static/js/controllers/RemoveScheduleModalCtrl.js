@@ -33,4 +33,3 @@ define(["require", "exports"], function(require, exports) {
     
     return RemoveScheduleModalCtrl;
 });
-//# sourceMappingURL=RemoveScheduleModalCtrl.js.map

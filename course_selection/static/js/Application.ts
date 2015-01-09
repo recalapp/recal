@@ -6,6 +6,7 @@ var nice = new Module('nice', [
         'ngAnimate',
         'ui.calendar',
         'ui.bootstrap',
+        'cfp.hotkeys',
         'LocalStorageModule',
         'niceServices',
         'niceFilters', 
