@@ -20,7 +20,8 @@
     "angular": "~1.2.26",
     "angular-ui-calendar": "~0.9.0-beta.1",
     "angular-local-storage": "~0.1.4",
-    "chai": "~1.10.0"
+    "chai": "~1.10.0",
+    "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5"
   },
   "resolutions": {
     "angular": "~1.2.26"
