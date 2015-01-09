@@ -11,8 +11,13 @@ body {
 }
 #semesterContainer {
   height: 95vh;
-  max-width: 80vw;
+  max-width: 100%;
   margin: 0 auto;
+}
+@media screen and (min-width: 1024px) {
+  #semesterContainer {
+    max-width: 1024px;
+  }
 }
 #container {
   height: 100%;
@@ -28,7 +33,7 @@ body {
   margin-top: 5px;
 }
 #calendarColumn {
-  height: 100%;
+  height: 85vh;
   width: 75%;
   min-width: 540px;
   margin-top: 5px;
