@@ -5,9 +5,14 @@
 }
 #header-inner {
   height: 100%;
-  max-width: 80vw;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 12px;
+}
+@media screen and (min-width: 1024px) {
+  #header-inner {
+    max-width: 1024px;
+  }
 }
 #logo {
   height: 100%;

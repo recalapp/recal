@@ -64,7 +64,7 @@ class CourseListingResource(ModelResource):
         cache = SimpleCache(timeout=10)
 
 class CourseResource(ModelResource):
-    semester = fields.ForeignKey(SemesterResource, 'semester')
+    semester = fields.ForeignKey(SemesterResource, 'semester', full=True)
     course_listings = fields.ToManyField(CourseListingResource, 'course_listings', null=True, full=True)
     sections = fields.ToManyField('course_selection.api.SectionResource', 'sections', full=True)
 
