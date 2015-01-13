@@ -65,7 +65,7 @@ class CourseListingResource(ModelResource):
 
 class CourseResource(ModelResource):
     semester = fields.ForeignKey(SemesterResource, 'semester', full=True)
-    course_listings = fields.ToManyField(CourseListingResource, 'course_listings', null=True, full=True)
+    course_listings = fields.ToManyField(CourseListingResource, 'course_listing_set', null=True, full=True)
     sections = fields.ToManyField('course_selection.api.SectionResource', 'sections', full=True)
 
     def alter_list_data_to_serialize(self, request, data):

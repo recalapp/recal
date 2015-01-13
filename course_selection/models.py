@@ -126,7 +126,7 @@ class Meeting(models.Model):
 class Course_Listing(models.Model):
     # TODO: this line causes admin site to fail, commenting out related_name
     # causes tastypie to fail
-    course = models.ForeignKey(Course, related_name="course_listings")
+    course = models.ForeignKey(Course, related_name="course_listing_set")
     # Even though the max_length should be 3~4, there are extreme cases.
     dept = models.CharField(max_length=10)
     number = models.CharField(max_length=10)
