@@ -38,8 +38,10 @@
                                   ng-bind="course.title"></div>
                          </div>
                          <div ng-show="showTags">
-                             <div class="more-info-tag"
-                                  ><i class="fa fa-info"></i></div>
+                             <a class="more-info-tag"
+                                  target="_blank"
+                                  ng-href="{{ course.easypce_link }}"
+                                  ><i class="fa fa-info"></i></a>
                              <div class="enroll-tag" 
                                   ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
                          </div>
@@ -72,7 +74,11 @@
                              </div>
                          </div>
                          <div ng-show="showTags">
-                             <div class="more-info-tag"><i class="fa fa-info"></i></div>
+                             <a class="more-info-tag"
+                                  target="_blank"
+                                  ng-href="{{ course.easypce_link }}"
+                                 ><i class="fa fa-info"
+                                     ></i></a>
                              <div class="unenroll-tag"
                                   ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-minus"></i></div>
                          </div>
@@ -100,8 +106,10 @@
                                   ng-bind="course.title"></div>
                          </div>
                          <div ng-show="showTags">
-                             <div class="more-info-tag"
-                                  ><i class="fa fa-info"></i></div>
+                             <a class="more-info-tag"
+                                  target="_blank"
+                                  ng-href="{{ course.easypce_link }}"
+                                  ><i class="fa fa-info"></i></a>
                              <div class="enroll-tag" 
                                   ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
                          </div>
