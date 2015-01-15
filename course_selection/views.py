@@ -17,8 +17,38 @@ import hashlib
 from datetime import datetime
 import json
 
+from models import *
+
 @login_required
 def index(request):
     return render(request, 'index.html', {
         'username': unicode(request.user.username)    
     })
+
+# TODO: test this function and finish it
+def construct_course_dict(course):
+    return {
+        'id': course.id,
+        'description': course.description,
+        'title': course.title,
+        'semester': unicode(course.semester),
+    }
+
+def get_courses_by_term_code(term_code):
+    all_courses = Course.objects
+    filtered = all_courses.filter(Q(semester__term_code = term_code))
+    results = []
+    for course in filtered:
+        results.append(construct_course_dict(course))
+    return results
+
+@login_required
+@require_GET
+def get_courses_json(request):
+    """
+    Returns list of courses for a semester
+    """
+    term_code = request.GET.get('semester__term_code', '')
+    results = get_courses_by_term_code(term_code)
+    data = json.dumps(results)
+    return HttpResponse(data, 'application/json', status=200)

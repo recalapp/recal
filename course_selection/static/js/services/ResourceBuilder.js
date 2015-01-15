@@ -1,9 +1,11 @@
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     var ResourceBuilder = (function () {
         function ResourceBuilder($resource, localStorageService) {
             this.$resource = $resource;
             this.localStorageService = localStorageService;
         }
+        // TODO: figure out how to use typescript to properly do this
         ResourceBuilder.prototype.getCourseResource = function () {
             return this.$resource(ResourceBuilder.BASE_URL + 'course/', {}, {
                 query: {
@@ -75,6 +77,7 @@ define(["require", "exports"], function(require, exports) {
         ResourceBuilder.prototype.transformTastypieResponse = function (data, header) {
             var parsed = JSON.parse(data);
 
+            // data could be an array with metadata
             if (parsed.meta && parsed.objects) {
                 return parsed.objects;
             } else {
@@ -98,4 +101,3 @@ define(["require", "exports"], function(require, exports) {
     
     return ResourceBuilder;
 });
-//# sourceMappingURL=ResourceBuilder.js.map

@@ -24,5 +24,6 @@ urlpatterns = patterns(
     "",
     url(r'^$', views.index, name="course_selection"),
     url(r'^api/', include(v1_api.urls)),
+    url(r'^api/static/courses', views.get_courses_json, name='get-courses-json'),
 )
 
