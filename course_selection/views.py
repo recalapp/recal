@@ -71,7 +71,7 @@ def hydrate_course_dict(course):
         'id': course.id,
         'title': course.title,
         'sections': sections,
-        'semester': unicode(course.semester),
+        'semester': hydrate_semester(course.semester),
     }
 
 def get_courses_by_term_code(term_code):
@@ -84,11 +84,11 @@ def get_courses_by_term_code(term_code):
 
 @login_required
 @require_GET
-@cache_page_with_prefix(60 * 60, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
+@cache_page_with_prefix(60 * 60 * 24, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
 def get_courses_json(request):
     """
     Returns list of courses for a semester
-    Cached for 1 minute by ?semester__term_code
+    Cached for 1 day by ?semester__term_code
     """
     term_code = request.GET.get('semester__term_code', '')
     results = get_courses_by_term_code(term_code)
