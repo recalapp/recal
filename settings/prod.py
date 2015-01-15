@@ -35,12 +35,17 @@ def get_cache():
     environ['MEMCACHE_USERNAME'] = environ['MEMCACHIER_USERNAME']
     environ['MEMCACHE_PASSWORD'] = environ['MEMCACHIER_PASSWORD']
     return {
-      'default': {
-        'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
-        'TIMEOUT': 500,
-        'BINARY': True,
-        'OPTIONS': { 'tcp_nodelay': True }
-      }
+        'default': {
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'my_cache_table',
+            'TIMEOUT': 60 * 60
+        },
+        'memcache': {
+            'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+            'TIMEOUT': 500,
+            'BINARY': True,
+            'OPTIONS': { 'tcp_nodelay': True }
+        }
     }
   except:
     return {
