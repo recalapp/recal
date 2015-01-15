@@ -28,7 +28,7 @@ class Semester(models.Model):
             sem = 'Fall'
         else:
             sem = 'Spring'
-        return str(start_year) + str(end_year) + sem
+        return str(start_year) + "-" + str(end_year) + " " + sem
 
 class Professor(models.Model):
     name = models.CharField(max_length=100)

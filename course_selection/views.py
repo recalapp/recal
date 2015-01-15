@@ -25,13 +25,53 @@ def index(request):
         'username': unicode(request.user.username)    
     })
 
-# TODO: test this function and finish it
-def construct_course_dict(course):
+def hydrate_meeting_dict(meeting):
     return {
-        'id': course.id,
+        'days': meeting.days,
+        'start_time': meeting.start_time,
+        'end_time': meeting.end_time,
+        'location': meeting.location
+    }
+
+def hydrate_section_dict(section, course):
+    meetings = [hydrate_meeting_dict(meeting) for meeting in section.meetings.all()]
+    return {
+        'id': section.id,
+        'name': section.name,
+        'section_type': section.section_type,
+        'section_capacity': section.section_capacity,
+        'section_enrollment': section.section_enrollment,
+        'course': "/course_selection/api/v1/course/" + str(course.id) + "/",
+        'meetings': meetings
+    }
+
+def hydrate_course_listing_dict(course_listing):
+    return {
+        'dept': course_listing.dept,
+        'number': course_listing.number,
+        'is_primary': course_listing.is_primary,
+    }
+
+def hydrate_semester(semester):
+    return {
+        'id': semester.id,
+        'start_date': unicode(semester.start_date),
+        'end_date': unicode(semester.end_date),
+        'name': unicode(semester),
+        'term_code': semester.term_code
+    }
+
+# TODO: test this function and finish it
+def hydrate_course_dict(course):
+    sections = [hydrate_section_dict(section, course) for section in course.sections.all()]
+    course_listings = [hydrate_course_listing_dict(cl) for cl in course.course_listing_set.all()]
+    return {
+        'course_listings': course_listings,
         'description': course.description,
+        'id': course.id,
         'title': course.title,
-        'semester': unicode(course.semester),
+        'sections': sections,
+        'semester': hydrate_semester(course.semester),
     }
 
 def get_courses_by_term_code(term_code):
@@ -39,16 +79,19 @@ def get_courses_by_term_code(term_code):
     filtered = all_courses.filter(Q(semester__term_code = term_code))
     results = []
     for course in filtered:
-        results.append(construct_course_dict(course))
+        results.append(hydrate_course_dict(course))
     return results
 
 @login_required
 @require_GET
+@cache_page_with_prefix(60 * 60, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
 def get_courses_json(request):
     """
     Returns list of courses for a semester
+    Cached for 1 minute by ?semester__term_code
     """
     term_code = request.GET.get('semester__term_code', '')
     results = get_courses_by_term_code(term_code)
     data = json.dumps(results)
     return HttpResponse(data, 'application/json', status=200)
+
