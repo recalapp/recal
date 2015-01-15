@@ -71,7 +71,7 @@ def hydrate_course_dict(course):
         'id': course.id,
         'title': course.title,
         'sections': sections,
-        'semester': hydrate_semester(course.semester),
+        'semester': unicode(course.semester),
     }
 
 def get_courses_by_term_code(term_code):
