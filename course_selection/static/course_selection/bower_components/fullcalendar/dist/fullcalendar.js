@@ -1,5 +1,5 @@
 /*!
- * FullCalendar v2.2.5
+ * FullCalendar v2.2.4
  * Docs & License: http://arshaw.com/fullcalendar/
  * (c) 2013 Adam Shaw
  */
@@ -128,7 +128,7 @@ var rtlDefaults = {
 
 ;;
 
-var fc = $.fullCalendar = { version: "2.2.5" };
+var fc = $.fullCalendar = { version: "2.2.4" };
 var fcViews = fc.views = {};
 
 
@@ -6924,7 +6924,7 @@ function Calendar(element, instanceOptions) {
 	t.option = option;
 	t.trigger = trigger;
 	t.isValidViewType = isValidViewType;
-	t.getViewButtonText = getViewButtonText;
+	t.getDefaultViewButtonText = getDefaultViewButtonText;
 
 
 
@@ -6934,7 +6934,7 @@ function Calendar(element, instanceOptions) {
 
 
 	var localeData = createObject( // make a cheap copy
-		getMomentLocaleData(options.lang) // will fall back to en
+		getMomentLocaleData(options.lang)
 	);
 
 	if (options.monthNames) {
@@ -7066,14 +7066,6 @@ function Calendar(element, instanceOptions) {
 
 		return end;
 	};
-
-
-	// Produces a human-readable string for the given duration.
-	// Side-effect: changes the locale of the given duration.
-	function humanizeDuration(duration) {
-		return (duration.locale || duration.lang).call(duration, options.lang) // works moment-pre-2.8
-			.humanize();
-	}
 
 
 	
@@ -7271,15 +7263,12 @@ function Calendar(element, instanceOptions) {
 
 	// Gets information about how to create a view
 	function getViewSpec(requestedViewType) {
-		var allDefaultButtonText = options.defaultButtonText || {};
-		var allButtonText = options.buttonText || {};
-		var hash = options.views || {}; // the `views` option object
+		var hash = options.views || {};
 		var viewType = requestedViewType;
 		var viewOptionsChain = [];
 		var viewOptions;
 		var viewClass;
-		var duration, unit, unitIsSingle = false;
-		var buttonText;
+		var duration;
 
 		if (viewSpecCache[requestedViewType]) {
 			return viewSpecCache[requestedViewType];
@@ -7308,33 +7297,20 @@ function Calendar(element, instanceOptions) {
 
 		if (viewClass) {
 
+			// options that are specified per the view's duration, like "week" or "day"
 			duration = viewOptions.duration || viewClass.duration;
 			if (duration) {
 				duration = moment.duration(duration);
-				unit = computeIntervalUnit(duration);
-				unitIsSingle = computeIntervalAs(unit, duration) === 1;
+				$.each(intervalUnits, function(i, unit) {
+					if (hash[unit] && computeIntervalAs(unit, duration) === 1) {
+						viewOptions = $.extend({}, hash[unit], viewOptions); // lowest priority
+					}
+				});
 			}
-
-			// options that are specified per the view's duration, like "week" or "day"
-			if (unitIsSingle && hash[unit]) {
-				viewOptions = $.extend({}, hash[unit], viewOptions); // lowest priority
-			}
-
-			// compute the final text for the button representing this view
-			buttonText =
-				allButtonText[requestedViewType] || // init options, like "agendaWeek"
-				(unitIsSingle ? allButtonText[unit] : null) || // init options, like "week"
-				allDefaultButtonText[requestedViewType] || // lang data, like "agendaWeek"
-				(unitIsSingle ? allDefaultButtonText[unit] : null) || // lang data, like "week"
-				viewOptions.buttonText ||
-				viewClass.buttonText ||
-				(duration ? humanizeDuration(duration) : null) ||
-				requestedViewType;
 
 			return (viewSpecCache[requestedViewType] = {
 				'class': viewClass,
-				options: viewOptions,
-				buttonText: buttonText
+				options: viewOptions
 			});
 		}
 	}
@@ -7346,12 +7322,15 @@ function Calendar(element, instanceOptions) {
 	}
 
 
-	// Gets the text that should be displayed on a view's button in the header
-	function getViewButtonText(viewType) {
+	// Gets the text that should be displayed on a view's button in the header, by default.
+	// Values in the global `buttonText` option will eventually override this value.
+	function getDefaultViewButtonText(viewType) {
 		var spec = getViewSpec(viewType);
 
-		if (spec) {
-			return spec.buttonText;
+		if (spec) { // valid view?
+			return smartProperty(options.defaultButtonText, viewType) || // takes precedence. defined by languages
+				spec.options.buttonText || // defined by custom view options
+				viewType; // last resort
 		}
 	}
 	
@@ -7730,7 +7709,7 @@ function Header(calendar, options) {
 					var themeIcon;
 					var normalIcon;
 					var defaultText;
-					var viewText; // highest priority
+					var defaultViewText;
 					var customText;
 					var innerHtml;
 					var classes;
@@ -7751,7 +7730,7 @@ function Header(calendar, options) {
 								calendar.changeView(buttonName);
 							};
 							viewsWithButtons.push(buttonName);
-							viewText = calendar.getViewButtonText(buttonName);
+							defaultViewText = calendar.getDefaultViewButtonText(buttonName);
 						}
 						if (buttonClick) {
 
@@ -7761,8 +7740,8 @@ function Header(calendar, options) {
 							defaultText = smartProperty(options.defaultButtonText, buttonName); // from languages
 							customText = smartProperty(options.buttonText, buttonName);
 
-							if (viewText || customText) {
-								innerHtml = htmlEscape(viewText || customText);
+							if (customText) {
+								innerHtml = htmlEscape(customText);
 							}
 							else if (themeIcon && options.theme) {
 								innerHtml = "<span class='ui-icon ui-icon-" + themeIcon + "'></span>";
@@ -7771,7 +7750,7 @@ function Header(calendar, options) {
 								innerHtml = "<span class='fc-icon fc-icon-" + normalIcon + "'></span>";
 							}
 							else {
-								innerHtml = htmlEscape(defaultText || buttonName);
+								innerHtml = htmlEscape(defaultViewText || defaultText || buttonName);
 							}
 
 							classes = [

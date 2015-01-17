@@ -1,15 +1,14 @@
 {
   "name": "requirejs-text",
   "homepage": "https://github.com/requirejs/text",
-  "version": "2.0.12",
-  "_release": "2.0.12",
+  "version": "2.0.13",
+  "_release": "2.0.13",
   "_resolution": {
     "type": "version",
-    "tag": "2.0.12",
-    "commit": "d00ad05dd5e00d80c84e9c548c2ba7f8dd3a6011"
+    "tag": "2.0.13",
+    "commit": "ddc6884c882a305264a27de02abbd77adb0c1d06"
   },
   "_source": "git://github.com/requirejs/text.git",
   "_target": "~2.0.12",
-  "_originalSource": "requirejs-text",
-  "_direct": true
+  "_originalSource": "requirejs-text"
 }
