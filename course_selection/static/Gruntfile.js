@@ -71,6 +71,7 @@ module.exports = function(grunt) {
                 "less/calendar.css" : "less/calendar.less",
                 "less/queue.css" : "less/queue.less",
                 "less/modal.css" : "less/modal.less",
+                "less/main.css" : "less/main.less",
             }
         },
     },
