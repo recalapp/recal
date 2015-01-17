@@ -1,15 +1,25 @@
 @footer-height: 80px;
-@footer-background-color: rgb(184, 184, 184);
+@footer-background-color: #ffffff;
+@footer-border-color: #e5e5e5;
+@footer-text-color: #999;
 
 #footer {
-    background-color: @footer-background-color;
-    width: 100%;
-    height: @footer-height;
+    border-top: 1px solid @footer-border-color;
 }
 
 #footer-inner {
-    height: 100%;
-    max-width: 80vw;
+    background-color: @footer-background-color;
+    color: @footer-text-color;
     margin: 0 auto;
+    max-width: 1024px;
     padding: 0 12px;
+
+    a {
+        font-weight: bold;
+    }
+
+    p {
+        clear: left;
+        line-height: 1.6;
+    }
 }

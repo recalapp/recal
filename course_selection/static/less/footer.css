@@ -1,11 +1,17 @@
 #footer {
-  background-color: #b8b8b8;
-  width: 100%;
-  height: 80px;
+  border-top: 1px solid #e5e5e5;
 }
 #footer-inner {
-  height: 100%;
-  max-width: 80vw;
+  background-color: #ffffff;
+  color: #999999;
   margin: 0 auto;
+  max-width: 1024px;
   padding: 0 12px;
+}
+#footer-inner a {
+  font-weight: bold;
+}
+#footer-inner p {
+  clear: left;
+  line-height: 1.6;
 }

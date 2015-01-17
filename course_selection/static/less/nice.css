@@ -1,5 +1,4 @@
 body {
-  background-color: #f0f0f0;
   height: 100%;
   width: 100%;
   overflow-x: hidden;
@@ -8,6 +7,9 @@ body {
   font-weight: 300;
   border-radius: 0;
   color: #404040;
+}
+#wrap {
+  background-color: #f0f0f0;
 }
 #semesterContainer {
   height: 95vh;
