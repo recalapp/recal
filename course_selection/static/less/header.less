@@ -1,5 +1,6 @@
 @header-height: 5vh;
 @header-background-color: rgba(47,47,47,0.98);
+@max-min-width: 1440px;
 
 #header {
     background-color: @header-background-color;
@@ -13,8 +14,8 @@
     margin: 0 auto;
     padding: 0 12px;
 
-    @media screen and (min-width: 1024px) {
-        max-width: 1024px;
+    @media screen and (min-width: @max-min-width) {
+        max-width: @max-min-width;
     }
 }
 

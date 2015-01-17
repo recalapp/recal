@@ -16,9 +16,9 @@ body {
   max-width: 100%;
   margin: 0 auto;
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1440px) {
   #semesterContainer {
-    max-width: 1024px;
+    max-width: 1440px;
   }
 }
 #container {
@@ -142,9 +142,9 @@ body {
   margin: 0 auto;
   padding: 0 12px;
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1440px) {
   #header-inner {
-    max-width: 1024px;
+    max-width: 1440px;
   }
 }
 #logo {
@@ -183,7 +183,7 @@ body {
   background-color: #ffffff;
   color: #999999;
   margin: 0 auto;
-  max-width: 1024px;
+  max-width: 1440px;
   padding: 0 12px;
 }
 #footer-inner a {

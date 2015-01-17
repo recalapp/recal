@@ -1,0 +1,761 @@
+---
+FieldType: Button
+FieldName: add2
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: Yes
+---
+FieldType: Button
+FieldName: drop2
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: change2
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: add3
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: drop3
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: change3
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: add4
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: drop4
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: change4
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: add5
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: drop5
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: change5
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: add6
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: drop6
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: change6
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: grad2
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: gr2
+---
+FieldType: Button
+FieldName: dept0
+FieldFlags: 0
+FieldValue: dp0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: dp0
+---
+FieldType: Button
+FieldName: dept2
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: dp2
+---
+FieldType: Button
+FieldName: dept3
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: dp3
+---
+FieldType: Button
+FieldName: dept4
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: dp4
+---
+FieldType: Button
+FieldName: dept5
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: dp5
+---
+FieldType: Button
+FieldName: dept6
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: dp6
+---
+FieldType: Text
+FieldName: required
+FieldFlags: 1
+FieldValue: ***SIGNATURE REQUIRED***
+FieldValueDefault: ***SIGNATURE REQUIRED***
+FieldJustification: Left
+FieldMaxLength: 40
+---
+FieldType: Text
+FieldName: date
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: last
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 40
+---
+FieldType: Text
+FieldName: first
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 25
+---
+FieldType: Text
+FieldName: middle
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 1
+---
+FieldType: Text
+FieldName: dept
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 25
+---
+FieldType: Text
+FieldName: acad
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 9
+---
+FieldType: Button
+FieldName: termf
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: terms
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: pg1
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: ab
+---
+FieldType: Button
+FieldName: pg2
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: bse
+---
+FieldType: Button
+FieldName: pg3
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: gr
+---
+FieldType: Button
+FieldName: pg4
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Text
+FieldName: college
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 10
+---
+FieldType: Text
+FieldName: crs1
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 9
+---
+FieldType: Text
+FieldName: crs2
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 9
+---
+FieldType: Text
+FieldName: crs3
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 9
+---
+FieldType: Text
+FieldName: crs4
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 9
+---
+FieldType: Text
+FieldName: crs5
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 9
+---
+FieldType: Text
+FieldName: crs6
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 9
+---
+FieldType: Text
+FieldName: clsnbr1a
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr2a
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr3a
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr4a
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr5a
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr6a
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: daytm1a
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm2a
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm3a
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm4a
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm5a
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm6a
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: clsnbr1b
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr2b
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr3b
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr4b
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr5b
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr6b
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: daytm1b
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm2b
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm3b
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm4b
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm5b
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm6b
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: clsnbr1c
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr2c
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr3c
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr4c
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr5c
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: clsnbr6c
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: daytm1c
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm2c
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm3c
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm4c
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm5c
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: daytm6c
+FieldFlags: 4096
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 20
+---
+FieldType: Text
+FieldName: grd1
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 8
+---
+FieldType: Text
+FieldName: dist1
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: grd2
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 8
+---
+FieldType: Text
+FieldName: dist2
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: grd3
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 8
+---
+FieldType: Text
+FieldName: dist3
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: grd4
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 8
+---
+FieldType: Text
+FieldName: dist4
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: grd5
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 8
+---
+FieldType: Text
+FieldName: dist5
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: grd6
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 8
+---
+FieldType: Text
+FieldName: dist6
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: rvs
+FieldFlags: 1
+FieldValue: Revised 7/22/2004
+FieldValueDefault: Revised 7/22/2004
+FieldJustification: Right
+---
+FieldType: Button
+FieldName: add1
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: add1
+---
+FieldType: Button
+FieldName: drop1
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: drop1
+---
+FieldType: Button
+FieldName: change1
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: change1
+---
+FieldType: Button
+FieldName: dept1
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: dp1
+---
+FieldType: Button
+FieldName: ex1
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Button
+FieldName: ex2
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldStateOption: Off
+FieldStateOption: sp
+---
+FieldType: Text
+FieldName: advisor
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 70
+---
+FieldType: Text
+FieldName: theadvisor
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 70
+---
+FieldType: Text
+FieldName: notedot
+FieldFlags: 1
+FieldValue: **
+FieldValueDefault: **
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: note2
+FieldFlags: 1
+FieldValue: Grade Option Changes must be personally submitted to the Office of the Registrar.
+FieldValueDefault: Grade Option Changes must be personally submitted to the Office of the Registrar.
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: note3
+FieldFlags: 1
+FieldValue: Precepts, film, ear training, and drills are not scheduled through SCORE. Students will have the opportunity to enroll in these components at the beginning of the term in the respective academic departments.
+FieldValueDefault: Precepts, film, ear training, and drills are not scheduled through SCORE. Students will have the opportunity to enroll in these components at the beginning of the term in the respective academic departments.
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: notedot3
+FieldFlags: 1
+FieldValue: ***
+FieldValueDefault: ***
+FieldJustification: Left
+---
+FieldType: Text
+FieldName: class
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 4
+---
+FieldType: Text
+FieldName: uid
+FieldFlags: 0
+FieldValue: 
+FieldJustification: Left
+FieldMaxLength: 4

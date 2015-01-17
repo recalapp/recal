@@ -16,9 +16,9 @@ body {
   max-width: 100%;
   margin: 0 auto;
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1440px) {
   #semesterContainer {
-    max-width: 1024px;
+    max-width: 1440px;
   }
 }
 #container {
