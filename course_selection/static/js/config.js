@@ -23,6 +23,7 @@ require.config({
         'angular-local-storage': bowerPath('angular-local-storage/dist/angular-local-storage.min'),
         'angular-hotkeys': bowerPath('angular-hotkeys/build/hotkeys.min'),
         'angular-loading-bar': bowerPath('angular-loading-bar/build/loading-bar'),
+        'qtip': bowerPath('qtip2/jquery.qtip.min'),
         'text': bowerPath('requirejs-text/text')
     },
     shim: {
@@ -60,6 +61,7 @@ require([
     'services/Services',
     'directives/Directives',
     'jquery',
+    'qtip',
     'flatstrap'
 ], function (angular) {
     angular.bootstrap(document, ['nice']);

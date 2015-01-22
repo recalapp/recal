@@ -11,7 +11,7 @@
   "dependencies": {
     "bootstrap": "~3.2.0",
     "fontawesome": "~4.0.3",
-    "fullcalendar": "~2.2.4",
+    "fullcalendar": "2.2.4",
     "jquery-ui": "~1.11.0",
     "jquery": "~2.1.1",
     "moment-timezone": "~0.2.0",
@@ -24,7 +24,8 @@
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5"
   },
   "resolutions": {
-    "angular": "~1.2.26"
+    "angular": "~1.2.26",
+    "jquery": "~2.1.1"
   },
   "devDependencies": {
     "angular-ui-calendar": "*",
@@ -32,6 +33,8 @@
     "angular-loading-bar": "~0.6.0",
     "angular-animate": "~1.2.7",
     "angular-mocks": "~1.3.5",
-    "angular-bootstrap": "~0.12.0"
+    "angular-bootstrap": "~0.12.0",
+    "angular-qtip2-directive": "~0.1.2",
+    "qtip2": "~2.2.1"
   }
 }

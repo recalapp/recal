@@ -1,0 +1,9 @@
+{
+  "name": "angular-qtip2-directive",
+  "version": "0.1.2",
+  "main": "qtip2.js",
+  "dependencies": {
+    "jquery": "~2.0.3",
+    "qtip2": "~2.2.0"
+  }
+}
