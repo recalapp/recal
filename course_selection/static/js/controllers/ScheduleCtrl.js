@@ -1,4 +1,5 @@
-define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl', './NewScheduleModalCtrl'], function(require, exports, Schedule, RemoveScheduleModalCtrl, NewScheduleModalCtrl) {
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl', './ChangeScheduleTitleModalCtrl', './NewScheduleModalCtrl'], function(require, exports, Schedule, RemoveScheduleModalCtrl, ChangeScheduleTitleModalCtrl, NewScheduleModalCtrl) {
     'use strict';
 
     var ScheduleCtrl = (function () {
@@ -22,6 +23,8 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                 combo: 'mod+f',
                 description: 'search',
                 callback: function (event, hotkey) {
+                    // TODO: this is a hack using jQuery...
+                    // looks for the visible search bar and focuses
                     event.preventDefault();
                     $('.searchBar').filter(':visible').focus();
                 }
@@ -36,7 +39,7 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                     if (schedule.semester.term_code == _this.semester.term_code) {
                         var newSchedule = {
                             id: schedule.id,
-                            title: schedule.title,
+                            scheduleObject: schedule,
                             active: true,
                             scheduleManager: _this.scheduleManagerService.newScheduleManager(schedule)
                         };
@@ -60,6 +63,29 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
             });
         };
 
+        // TODO: refactor the modals for deleting and changing a modal
+        ScheduleCtrl.prototype.changeScheduleTitle = function (index) {
+            var _this = this;
+            var modalInstance = this.$modal.open({
+                templateUrl: '/static/templates/changeScheduleTitleModal.html',
+                controller: ChangeScheduleTitleModalCtrl,
+                windowClass: 'center-modal',
+                backdropClass: 'modal-backdrop',
+                resolve: {
+                    title: function () {
+                        return _this.schedules[index].scheduleObject.title;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (title) {
+                _this.schedules[index].scheduleObject.title = title;
+                _this.schedules[index].scheduleObject.$update(function (newSchedule) {
+                    console.log('title updated: ' + newSchedule.title);
+                });
+            });
+        };
+
         ScheduleCtrl.prototype.confirmRemoveSchedule = function (index) {
             var _this = this;
             var modalInstance = this.$modal.open({
@@ -69,7 +95,7 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                 backdropClass: 'modal-backdrop',
                 resolve: {
                     title: function () {
-                        return _this.schedules[index].title;
+                        return _this.schedules[index].scheduleObject.title;
                     }
                 }
             });
@@ -107,9 +133,9 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
             newSchedule.semester = this.semester;
             newSchedule.user = this.userService.user;
             newSchedule.enrollments = JSON.stringify([]);
-            newSchedule.title = scheduleName ? scheduleName : "Add a new schedule ––>";
+            newSchedule.title = scheduleName ? scheduleName : "New Schedule";
             this.schedules.push({
-                title: newSchedule.title,
+                scheduleObject: newSchedule,
                 active: true,
                 scheduleManager: this.scheduleManagerService.newScheduleManager(newSchedule)
             });
@@ -125,6 +151,8 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
             this.$scope.selectedSchedule = index;
         };
 
+        // TODO: this is a workaround
+        // shouldn't have to access the schedule like this
         ScheduleCtrl.prototype._removeSchedule = function (index) {
             this.schedules[index].scheduleManager.schedule.$remove();
             this.schedules.splice(index, 1);
@@ -153,4 +181,3 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
     
     return ScheduleCtrl;
 });
-//# sourceMappingURL=ScheduleCtrl.js.map

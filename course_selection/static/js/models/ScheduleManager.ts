@@ -77,7 +77,6 @@ class ScheduleManager {
                 console.log('schedule updated');
             });
         }, true);
-
     }
 
     private _constructEnrollments(enrolledSections) {

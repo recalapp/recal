@@ -40,6 +40,16 @@ body {
   min-width: 540px;
   margin-top: 5px;
 }
+.edit-icon {
+  font-size: 1em;
+  color: #555;
+  position: absolute;
+  top: 25%;
+  right: 20px;
+}
+.edit-icon:hover {
+  cursor: pointer;
+}
 .remove-icon {
   font-size: 1em;
   color: #555;
@@ -48,6 +58,7 @@ body {
   right: 5px;
 }
 .remove-icon:hover {
+  cursor: pointer;
   background-color: rgba(184, 184, 184, 0.5);
   border-radius: 2px;
 }

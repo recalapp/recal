@@ -2,6 +2,7 @@
 
 import Schedule = require('../models/Schedule');
 import RemoveScheduleModalCtrl = require('./RemoveScheduleModalCtrl');
+import ChangeScheduleTitleModalCtrl = require('./ChangeScheduleTitleModalCtrl');
 import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
 
 'use strict';
@@ -58,7 +59,7 @@ class ScheduleCtrl {
                 if (schedule.semester.term_code == this.semester.term_code) {
                     var newSchedule = {
                         id: schedule.id,
-                        title: schedule.title,
+                        scheduleObject: schedule,
                         active: true,
                         scheduleManager: this.scheduleManagerService.newScheduleManager(schedule),
                     };
@@ -82,6 +83,28 @@ class ScheduleCtrl {
         });
     }
 
+    // TODO: refactor the modals for deleting and changing a modal
+    public changeScheduleTitle(index: number) {
+        var modalInstance = this.$modal.open({
+            templateUrl: '/static/templates/changeScheduleTitleModal.html',
+            controller: ChangeScheduleTitleModalCtrl,
+            windowClass: 'center-modal',
+            backdropClass: 'modal-backdrop',
+            resolve: {
+                title: () => {
+                    return this.schedules[index].scheduleObject.title;
+                }
+            }
+        });
+
+        modalInstance.result.then((title) => {
+            this.schedules[index].scheduleObject.title = title;
+            this.schedules[index].scheduleObject.$update((newSchedule) => {
+                console.log('title updated: ' + newSchedule.title);
+            });
+        });
+    }
+    
     public confirmRemoveSchedule(index: number) {
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/removeScheduleModal.html',
@@ -90,7 +113,7 @@ class ScheduleCtrl {
             backdropClass: 'modal-backdrop',
             resolve: {
                 title: () => {
-                    return this.schedules[index].title;
+                    return this.schedules[index].scheduleObject.title;
                 }
             }
         });
@@ -127,9 +150,9 @@ class ScheduleCtrl {
         newSchedule.semester = this.semester;
         newSchedule.user = this.userService.user;
         newSchedule.enrollments = JSON.stringify([]);
-        newSchedule.title = scheduleName ? scheduleName : "Add a new schedule ––>";
+        newSchedule.title = scheduleName ? scheduleName : "New Schedule";
         this.schedules.push({
-            title: newSchedule.title,
+            scheduleObject: newSchedule,
             active: true,
             scheduleManager: this.scheduleManagerService.newScheduleManager(newSchedule)
         });

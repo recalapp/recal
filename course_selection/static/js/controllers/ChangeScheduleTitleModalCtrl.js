@@ -1,10 +1,10 @@
 define(["require", "exports"], function(require, exports) {
-    var RemoveScheduleModalCtrl = (function () {
-        function RemoveScheduleModalCtrl($scope, $modalInstance, title) {
+    var ChangeScheduleTitleModalCtrl = (function () {
+        function ChangeScheduleTitleModalCtrl($scope, $modalInstance, title) {
             var _this = this;
             this.$scope = $scope;
             this.$modalInstance = $modalInstance;
-            this.$scope.confirmation = "Delete the schedule: ";
+            this.$scope.confirmation = "Schedule Title: ";
             this.$scope.title = title;
 
             this.$scope.ok = function () {
@@ -15,21 +15,21 @@ define(["require", "exports"], function(require, exports) {
                 _this.cancel();
             };
         }
-        RemoveScheduleModalCtrl.prototype.ok = function () {
-            this.$modalInstance.close();
+        ChangeScheduleTitleModalCtrl.prototype.ok = function () {
+            this.$modalInstance.close(this.$scope.title);
         };
 
-        RemoveScheduleModalCtrl.prototype.cancel = function () {
+        ChangeScheduleTitleModalCtrl.prototype.cancel = function () {
             this.$modalInstance.dismiss('cancel');
         };
-        RemoveScheduleModalCtrl.$inject = [
+        ChangeScheduleTitleModalCtrl.$inject = [
             '$scope',
             '$modalInstance',
             'title'
         ];
-        return RemoveScheduleModalCtrl;
+        return ChangeScheduleTitleModalCtrl;
     })();
 
     
-    return RemoveScheduleModalCtrl;
+    return ChangeScheduleTitleModalCtrl;
 });
