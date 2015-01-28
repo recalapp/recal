@@ -4,6 +4,7 @@ from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.utils import trailing_slash
 from tastypie.cache import SimpleCache
+from tastypie.cache import NoCache
 from tastypie.authorization import Authorization
 from tastypie.http import HttpGone
 from tastypie import fields
@@ -130,7 +131,7 @@ class ScheduleResource(ModelResource):
         resource_name = 'schedule'
         excludes = []
         allowed_methods = ['get', 'post', 'put', 'delete']
-        cache = NoCache
+        cache = NoCache()
         authorization = Authorization()
         always_return_data = True
         limit = 0
