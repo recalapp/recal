@@ -130,7 +130,7 @@ class ScheduleResource(ModelResource):
         resource_name = 'schedule'
         excludes = []
         allowed_methods = ['get', 'post', 'put', 'delete']
-        cache = SimpleCache(timeout=10)
+        cache = NoCache
         authorization = Authorization()
         always_return_data = True
         limit = 0
