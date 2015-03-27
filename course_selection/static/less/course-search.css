@@ -1,3 +1,4 @@
+/* all course panels, including enrolled and search results */
 .course-panel {
   min-height: 40px;
   width: 100%;
@@ -7,21 +8,28 @@
   border-radius: 0 !important;
   border-bottom: none;
 }
+/* enrolled panels are marked with a left bar */
 .enrolled-course-panel {
   border-left-width: 4px;
   border-right-width: 0;
   border-top-width: 0;
   border-bottom-width: 0;
 }
-.unconfirmed {
-  background: url('../images/stripe.png') repeat #c0c0c0;
-  opacity: 0.8;
-  border-left-color: transparent !important;
-}
 .course-panel-title {
   text-align: left;
   padding-left: 2px;
   width: 80%;
+}
+.course-panels-container {
+  position: relative;
+  min-height: 0;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.enrolled-courses-container {
+  position: relative;
+  min-height: 5vh;
+  max-height: 70vh;
 }
 #searchBarContainer {
   background-color: #f1f2f2;
@@ -59,26 +67,15 @@
   display: inline;
   margin-left: 15px;
 }
-.course-panel-heading {
-  height: 6vh;
-}
-.course-panels-container {
-  position: relative;
-  min-height: 0;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-.enrolled-courses-container {
-  position: relative;
-  min-height: 5vh;
-  max-height: 70vh;
-}
 #enrolledCourses {
   height: 100%;
 }
 .course-listings {
   font-size: 13px;
   margin-bottom: 0;
+}
+.course-panel-heading {
+  height: 6vh;
 }
 .course-title {
   font-size: 13px;
@@ -93,6 +90,11 @@
   right: 0;
   height: 100%;
   width: calc(39px);
+}
+.unconfirmed {
+  background: url('../images/stripe.png') repeat #c0c0c0;
+  opacity: 0.8;
+  border-left-color: transparent !important;
 }
 .course-info {
   position: absolute;
@@ -215,8 +217,8 @@
 .course-panel.ng-move,
 .course-panel.ng-enter,
 .course-panel.ng-leave {
-  -webkit-transition: 400ms linear all;
-  transition: 400ms linear all;
+  -webkit-transition: 200ms linear all;
+  transition: 200ms linear all;
 }
 .course-panel.ng-leave.ng-leave-active,
 .course-panel.ng-move,
@@ -238,7 +240,7 @@
     transition:0.1s linear all;
     opacity: 1;
 }
-.ng-hide-add.ng-hide-add-active { 
+.ng-hide-add.ng-hide-add-active {
     opacity: 0;
 }
 
@@ -249,7 +251,7 @@
     transition:0.1s linear all;
     opacity: 0;
 }
-.ng-hide-remove.ng-hide-remove-active { 
+.ng-hide-remove.ng-hide-remove-active {
     opacity: 1;
 }
 */
