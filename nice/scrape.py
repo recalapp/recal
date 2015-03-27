@@ -70,8 +70,8 @@ def get_current_semester():
             end_date = datetime.strptime(end_date, "%Y-%m-%d")
             end_date += timedelta(weeks=30)
             curr_sem = Semester(
-                start_date = start_date, 
-                end_date = end_date, 
+                start_date = start_date,
+                end_date = end_date,
                 term_code = str(TERM_CODE)
             )
             curr_sem.save()
@@ -101,7 +101,7 @@ def scrape_all():
         print "working on " + str(department) + "..."
         scrape(department)
         print "done with " + str(department) + "!"
-    
+
     print str(new_course_count) + " new courses"
     print str(course_count) + " total courses"
     print str(new_section_count) + " new sections"
@@ -130,8 +130,8 @@ def scrape(department):
 ## If the course with this ID exists in the database, we update the course
 ## Otherwise, create new course with the information
 def parse_course(course, subject):
-    """ create a course with basic information. 
-    
+    """ create a course with basic information.
+
     """
     global new_course_count
     global course_count
@@ -141,10 +141,10 @@ def parse_course(course, subject):
     if not description:
         description = ''
     description = h.unescape(description)
-        
+
     guid = course.find('guid').text
 
-    # if we have a course with this registrar_id, get it 
+    # if we have a course with this registrar_id, get it
     course_object, created = Course.objects.get_or_create(
         registrar_id = guid,
         semester = get_current_semester(),
@@ -193,7 +193,7 @@ def create_or_update_listings(course, subject, course_object):
             number=course_listing[1],
             is_primary=False
         )
-        
+
 def create_or_update_sections(course, course_object):
     """ Given a course, create or, if already exists, update all sections
 
@@ -217,7 +217,7 @@ def create_or_update_sections(course, course_object):
         # add events
         create_or_update_events(section, section_object)
 
-# section is the class Node in the xml tree, 
+# section is the class Node in the xml tree,
 # section_object is a section django object
 def create_or_update_events(section, section_object):
     """ Create all events for a given section
@@ -305,13 +305,13 @@ def create_or_update_events(section, section_object):
             'recurrence_interval': 1,
             'recurrence_end': end_date, # or None?
         }], auto_approve=True)
-        
+
         # create event
         new_event_count += 1
 
 def remove_namespace(doc, namespace):
     """Hack to remove namespace in the document in place.
-    
+
     """
     ns = u'{%s}' % namespace
     nsl = len(ns)
