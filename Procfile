@@ -1,1 +1,1 @@
-web: gunicorn nice.wsgi:application
+web: NEW_RELIC_CONFIG_FILE=./newrelic.ini newrelic-admin run-program gunicorn nice.wsgi:application
