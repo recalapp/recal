@@ -8,6 +8,8 @@ import IScheduleManager = require('../interfaces/IScheduleManager');
 
 'use strict';
 
+declare var angular;
+
 class SearchCtrl {
     // $inject annotation.
     // It provides $injector with information about dependencies to be injected into constructor
@@ -73,7 +75,7 @@ class SearchCtrl {
         };
     }
 
-    public getBackgroundAndTextStyle(course): any 
+    public getBackgroundAndTextStyle(course): any
     {
         return {
             'background-color': course.colors.light,

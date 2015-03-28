@@ -1,3 +1,4 @@
+/// <reference path="../../../nice/static/ts/typings/tsd.d.ts" />
 function staticPath(path) {
     return '../' + path;
 }
@@ -8,6 +9,7 @@ function bowerPath(path) {
 
 require.config({
     paths: {
+        /* this is flatstrap */
         flatstrap: bowerPath('flatstrap/dist/js/flatstrap.min'),
         fullcalendar: bowerPath('fullcalendar/dist/fullcalendar.min'),
         jquery: bowerPath('jquery/dist/jquery.min'),
@@ -24,6 +26,7 @@ require.config({
         'angular-hotkeys': bowerPath('angular-hotkeys/build/hotkeys.min'),
         'angular-loading-bar': bowerPath('angular-loading-bar/build/loading-bar'),
         'qtip': bowerPath('qtip2/jquery.qtip.min'),
+        /* 'chai': bowerPath('chai/chai'), */
         'text': bowerPath('requirejs-text/text')
     },
     shim: {
@@ -67,4 +70,3 @@ require([
     angular.bootstrap(document, ['nice']);
 });
 
-//# sourceMappingURL=config.js.map
