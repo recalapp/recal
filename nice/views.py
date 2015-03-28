@@ -51,7 +51,7 @@ def gather_dashboard(request):
         all_sections[section.id] = unicode(section)
 
     return render(request, "main/index.html", {
-        'username': request.user.username, 
+        'username': request.user.username,
         'formatted_name': unicode(request.user.profile),
         'point_count': request.user.profile.pprint_point_count(),
         'nav_page': page,
@@ -139,7 +139,7 @@ def point_award_history(request):
         reason = filter(lambda x: x[0] == p.relationship, p.REL_CHOICES)[0][1]
         event_title = unicode(p.why)
         results.append(event_title, p.score, reason)
-    return HttpResponse(json.dumps(results), 'application/json', status=200) 
+    return HttpResponse(json.dumps(results), 'application/json', status=200)
 
 
 
@@ -148,7 +148,7 @@ def landing(request):
     Displays the landing page.
     """
     if request.mobile:
-        return render(request, 'landing/mobile.html', None) 
+        return render(request, 'landing/mobile.html', None)
     return render(request, 'landing/index.html', None)
 
 def logout(request):
@@ -199,7 +199,7 @@ def auto(request):
 def edit_profile(request):
     '''
     Change which courses you are enrolled in, and edit your name.
-    
+
     '''
     user_profile_filled_out(request.user) # create profile if not already create
     profile = request.user.profile
@@ -215,7 +215,7 @@ def edit_profile(request):
             profile.save()
         except Exception, e:
             pass
-        
+
     cur_sem = get_cur_semester()
     theme = 'w'
     if request.user.profile.ui_pref:
@@ -233,7 +233,7 @@ def edit_profile(request):
         'theme': theme,
     })
 
-	
+
 @staff_member_required
 def tester_login(request):
     '''
@@ -248,7 +248,7 @@ def tester_login(request):
     To generate passwords for the fixtures file, use: http://stackoverflow.com/a/5096323
     '''
     return redirect('/') # Send to home page
-    
+
 
 ############################################################
 ############################################################
@@ -276,7 +276,7 @@ def get_classes(request):
     """
     q = request.GET.get('term', '')
     results = queries.search_classes(q)
-    data = json.dumps(results) 
+    data = json.dumps(results)
     return HttpResponse(data, 'application/json', status=200)
 
 @login_required
@@ -305,7 +305,7 @@ def enroll_sections(request):
                 enrollment.save()
     for enrollment in prev_enrollment:
         enrollment.delete()
-    
+
     return HttpResponse('', status=200) # success
 
 
@@ -354,7 +354,7 @@ def events_by_course_json(request, last_updated=0, start_date=None, end_date=Non
     last_updated = timezone.make_aware(datetime.fromtimestamp(float(last_updated)), timezone.get_default_timezone())
     events = queries.get_events_by_course_ids(course_ids, last_updated=last_updated, start_date=start_date, end_date=end_date)
     return HttpResponse(json.dumps(events), content_type='application/javascript')
-    
+
 @login_required
 @require_GET
 def user_profile_info(request):
@@ -459,8 +459,8 @@ def modify_events(request):
         except Exception, e:
             print 'Modify events error: ', e
             return HttpResponse('fail', status=500) # 500 Internal Server Error
-        
-        
+
+
     if 'hidden' in request.POST:
         user = request.user.profile
         try:
@@ -470,8 +470,8 @@ def modify_events(request):
             user.save()
         except Exception, e:
             print 'Hide events error: ', e
-            return HttpResponse('fail', status=500) # 500 Internal Server Error        
-    
+            return HttpResponse('fail', status=500) # 500 Internal Server Error
+
     return HttpResponse(json.dumps(ret), content_type='application/javascript', status=201) # 201 Created
 
 @login_required
@@ -566,7 +566,7 @@ def hidden_events(request):
     netid = request.user.username
     hidden_events = queries.get_hidden_events(netid)
     return HttpResponse(json.dumps(hidden_events), content_type='application/javascript')
-    
+
 @login_required
 @require_POST
 def similar_events(request):
@@ -576,7 +576,7 @@ def similar_events(request):
 
     if 'event_dict' not in request.POST:
         return HttpResponse('fail', status=400) # Bad Request
-    
+
     json_dict = request.POST['event_dict']
     ed = queries.parse_json_event_dict(json_dict)
     results = queries.get_similar_events(ed) # these are revisions
@@ -584,7 +584,7 @@ def similar_events(request):
     filtered_edicts = [fed for fed in event_dicts if fed is not None] # will have None for events without any approved revisions
 
     return HttpResponse(json.dumps(filtered_edicts), content_type='application/javascript')
-    
+
 
 ############################################################
 ############################################################
@@ -601,5 +601,3 @@ def user_profile_filled_out(user):
     except User_Profile.DoesNotExist:
         profile = User_Profile.objects.create(user=user, lastActivityTime=get_current_utc())
         return False # just created, but not filled out yet
-        
-

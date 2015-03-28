@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 import html2text
 import getpass
 
+# returns a mechanize browser logged into easypce
 def login():
     # these fields are NOT encrypted. Be careful with them
     username = raw_input("netid: ")
@@ -52,10 +53,13 @@ def login():
 
 # a course_average_tag looks like:
 # <span class="average"><br><br> 4.17<span style="font-size:40%;">/5</span> </br></br></span>
-def get_course_rating(course_page):
+def get_course_rating_from_page(course_page):
     soup = BeautifulSoup(course_page)
     average_tag = soup.find_all("span", "average")[0]
     return average_tag.contents[0].contents[0].contents[0]
+
+def get_course_page_from_course(course):
+    
 
 # test
 def main():
