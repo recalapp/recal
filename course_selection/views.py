@@ -95,6 +95,19 @@ def get_courses_json(request):
     data = json.dumps(results)
     return HttpResponse(data, 'application/json', status=200)
 
+@login_required
+def mobile_logged_in(request):
+    """Custom log in page handler for iOS app.
+
+    If logged in (i.e. on the way back from CAS), returns username.
+    The way to use this is to go to /login?next=mobile_logged_in
+    
+    The mobile app detects that we're logged in as soon as the URL changes to /mobile_logged_in.
+    At that point it stops and grabs the username from the displayed page.
+
+    """
+    return HttpResponse(request.user.username + " " + unicode(request.user.id))
+
 
 #############################################################################
 # course enrollment form generation

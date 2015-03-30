@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-from nice import views
 import nice, cas
 
 urlpatterns = patterns(
@@ -13,8 +12,7 @@ urlpatterns = patterns(
     url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', include(admin.site.urls)),
     url(r'^course_selection/', include('course_selection.urls')),
-    url(r'^', include('course_selection.urls')),
-    url(r'^mobile_logged_in$', views.mobile_logged_in, name='mobile_logged_in'),
+    url(r'^', include('course_selection.urls'))
     #url(r'^', include('nice.urls'))
 )
 
