@@ -130,7 +130,7 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
                     });
 
                     scope.$on("$destroy", function () {
-                        $(element).qtip('destroy', true); // Immediately destroy all tooltips belonging to the selected elements
+                        // $(element).qtip('destroy', true); // Immediately destroy all tooltips belonging to the selected elements
                     });
 
                     $('[my-qtip2]').css("display", "inline-block");

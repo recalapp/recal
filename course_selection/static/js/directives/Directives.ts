@@ -1,8 +1,8 @@
 import Module = require('../Module');
-var niceDirectives = new Module('niceDirectives', []);
-
 import IScheduleManager = require('../interfaces/IScheduleManager');
 import ICourse = require('../interfaces/ICourse');
+
+var niceDirectives = new Module('niceDirectives', []);
 
 niceDirectives.addDirective('selectOnClick', [function() {
     return {
@@ -134,7 +134,7 @@ niceDirectives.addDirective("qtip", [function () {
             });
 
             scope.$on("$destroy", function () {
-                $(element).qtip('destroy', true); // Immediately destroy all tooltips belonging to the selected elements
+                // $(element).qtip('destroy', true); // Immediately destroy all tooltips belonging to the selected elements
             });
 
             $('[my-qtip2]').css("display", "inline-block");

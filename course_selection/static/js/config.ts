@@ -51,24 +51,24 @@ require.config({
 	]
 });
 
-require(['angular', 
+require(['angular',
         'angular-animate',
         'angular-local-storage',
         'angular-hotkeys',
-        'angular-loading-bar', 
-        'angular-resource', 
+        'angular-loading-bar',
+        'angular-resource',
         'moment',
         /* 'chai', */
         'fullcalendar',
-        'angular-ui-calendar', 
-        'angular-bootstrap', 
-        'Application', 
+        'angular-ui-calendar',
+        'angular-bootstrap',
+        'Application',
         'controllers/Controllers',
         'filters/Filters',
         'services/Services',
         'directives/Directives',
         'jquery',
-        'qtip', 
+        'qtip',
         'flatstrap'
         ], function (angular) {
     angular.bootstrap(document, ['nice']);
