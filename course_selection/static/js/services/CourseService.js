@@ -17,6 +17,8 @@ define(["require", "exports"], function(require, exports) {
                 return this.$q.when(temp);
             } else {
                 return this.$http.get(CourseService.API_URL + "?semester__term_code=" + termCode).then(function (response) {
+                    // TODO: should disable local storage for now, since it basically acts as a
+                    // cache with indefinite timeout
                     _this.localStorageService.set('courses-' + termCode, response.data);
                     return response.data;
                 });

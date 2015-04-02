@@ -30,6 +30,8 @@ class CourseService {
             return this.$q.when(temp);
         } else {
             return this.$http.get(CourseService.API_URL + "?semester__term_code=" + termCode).then((response) => {
+                // TODO: should disable local storage for now, since it basically acts as a
+                // cache with indefinite timeout
                 this.localStorageService.set('courses-' + termCode, response.data);
                 return response.data;
             });
