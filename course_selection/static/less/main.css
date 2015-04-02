@@ -231,13 +231,12 @@ body {
 .course-panels-container {
   position: relative;
   min-height: 0;
-  max-height: 70vh;
   overflow-y: auto;
 }
 .enrolled-courses-container {
   position: relative;
   min-height: 5vh;
-  max-height: 70vh;
+  overflow-y: auto;
 }
 #searchBarContainer {
   background-color: #f1f2f2;

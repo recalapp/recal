@@ -16,6 +16,7 @@ class SearchCtrl {
     public static $inject = [
         '$scope',
         '$sce',
+        '$filter'
     ];
 
     private static NOT_FOUND: number = -1;
@@ -27,15 +28,26 @@ class SearchCtrl {
 
     constructor(
             private $scope,
-            private $sce
+            private $sce,
+            private $filter
             ) {
         this.$scope.vm = this;
         this._scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
         this.$scope.data = this._scheduleManager.getData();
-    }
+        this.$scope.filteredCourses = this.$scope.data.courses;
 
-    public queryOnChange() {
-        this._scheduleManager.clearPreviewCourse();
+        this.$scope.$watch(() => {
+            return this.$scope.query;
+        }, (newVal, oldVal) => {
+            this._scheduleManager.clearPreviewCourse();
+
+            this.$scope.filteredCourses = this.$filter("courseSearch")(this.$scope.data.courses, newVal);
+
+            var enrolledLength = this.$scope.data.enrolledCourses.length;
+            var searchResultLength = this.$scope.filteredCourses.length;
+
+            this.updateContainerHeight(enrolledLength + searchResultLength);
+        });
     }
 
     // if user is not enrolled in course yet, add course events to previewEvents
@@ -62,18 +74,39 @@ class SearchCtrl {
         }
     }
 
-    public getStyles(course): any {
-        return angular.extend({}, this.getBorderStyle(course),
-                this.getBackgroundAndTextStyle(course));
+    // TODO: do this the angular way
+    // or even better, use css for this
+    public updateContainerHeight(numOfDisplayedCourses: number) {
+        var THRESHOLD = 12;
+        var ENROLLED_CONTAINER_HEIGHT = '20vh';
+        var SEARCH_CONTAINER_HEIGHT = '50vh';
+        var MAX_HEIGHT = '80vh';
+
+        var enrolledPanelsContainer = $("#enrolledPanelsContainer");
+        var searchPanelsContainer = $("#searchPanelsContainer");
+
+        if (numOfDisplayedCourses > THRESHOLD)
+        {
+            enrolledPanelsContainer.css({'max-height': ENROLLED_CONTAINER_HEIGHT});
+            searchPanelsContainer.css({'max-height': SEARCH_CONTAINER_HEIGHT});
+        } else {
+            enrolledPanelsContainer.css({'max-height': MAX_HEIGHT});
+            searchPanelsContainer.css({'max-height': MAX_HEIGHT});
+        }
     }
 
-    public getBorderStyle(course): any {
+    public getCourseStyles(course): any {
+        return angular.extend({}, this.getCourseBorderStyle(course),
+                this.getCourseBackgroundAndTextStyle(course));
+    }
+
+    public getCourseBorderStyle(course): any {
         return {
             'border-color': course.colors.dark
         };
     }
 
-    public getBackgroundAndTextStyle(course): any
+    public getCourseBackgroundAndTextStyle(course): any
     {
         return {
             'background-color': course.colors.light,
