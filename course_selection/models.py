@@ -1,13 +1,11 @@
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, User
 from django.core.cache import cache
 from django.template import Template, Context
-from nice.models import User_Profile
 from jsonfield import JSONField
 import settings.common as settings
-import datetime
 
 class Semester(models.Model):
     # fields
@@ -162,6 +160,27 @@ class Nice_User(AbstractBaseUser):
     friends = models.ManyToManyField('self', through='Friend_Relationship',
                                      symmetrical=False)
     USERNAME_FIELD = 'netid'
+
+# create user profile as soon as a user is added
+def make_new_nice_user(sender, instance, created, **kwargs):  
+    # see http://stackoverflow.com/a/965883/130164
+    # Use a try because the first user (super user) is created before other tables are created.
+    # That is, this fails during syncdb upon initial database setup, because it creates a superuser before User_Profile table is added (we add that by running migrations after).
+    try:
+        if created:
+            nice_user, created = Nice_User.objects.get_or_create(netid=instance.username) 
+            if created:
+                try:
+                    nice_user.save()
+                except Exception, e:
+                    if settings.DEBUG:
+                        raise e
+    except Exception, e:
+        if settings.DEBUG:
+            raise e
+     
+post_save.connect(make_new_nice_user, sender=User)
+
 
 class Friend_Relationship(models.Model):
     from_user = models.ForeignKey(Nice_User, related_name='from_users')
