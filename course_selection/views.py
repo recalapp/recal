@@ -97,8 +97,9 @@ def get_courses_by_term_code(term_code):
 
 @login_required
 @require_GET
-@cache_page_with_prefix(60 * 5, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
+#@cache_page_with_prefix(60 * 5, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
 def get_courses_json(request):
+    #TODO: add cache
     """
     Returns list of courses for a semester
     Cached for 5 minutes by ?semester__term_code
@@ -119,6 +120,7 @@ def mobile_logged_in(request):
     At that point it stops and grabs the username from the displayed page.
 
     """
+    # TODO: retrieve Nice_User corresponding to request.user
     return HttpResponse(request.user.username + " " + unicode(request.user.id))
 
 
