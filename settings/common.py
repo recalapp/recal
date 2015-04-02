@@ -144,7 +144,7 @@ CACHES = {
     },
     'resources': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache', 
-        'TIMEOUT': 1
+        'TIMEOUT': 60
     }
 }
 
@@ -154,7 +154,7 @@ CACHES = {
 ########## TastyPie Settings END #######################
 
 ########## GLOBAL VARIABLES
-CURR_TERM = 1152 # Use helper method nice.models.get_cur_semester() to get current Semester object.
+CURR_TERM = 1154 # Use helper method nice.models.get_cur_semester() to get current Semester object.
 
 ### Reputation system
 
