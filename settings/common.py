@@ -134,8 +134,9 @@ STATICFILES_DIRS = (
     normpath(join(DJANGO_ROOT, 'nice', 'static')),
 )
 
-TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'nice', 'templates')),
-                 normpath(join(DJANGO_ROOT, 'course_selection', 'templates'))]
+TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'course_selection', 'templates')),
+                #normpath(join(DJANGO_ROOT, 'nice', 'templates')) 
+                 ]
 
 CACHES = {
     'default': {

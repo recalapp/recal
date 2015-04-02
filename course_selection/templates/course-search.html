@@ -1,11 +1,11 @@
 {% verbatim %}
-<div id="searchColumn" class="col-md-4 column" 
+<div id="searchColumn" class="col-md-4 column"
                        ng-cloak
                        ng-controller="SearchCtrl as searchCtrl">
     <div class="row" id="searchBarContainer">
         <input class="searchBar"
-               type="text" 
-               ng-model="query" 
+               type="text"
+               ng-model="query"
                ng-change="searchCtrl.queryOnChange()"
                ng-init="query=''"
                select-on-click
@@ -23,18 +23,19 @@
         <h4 class="row">Recommended Courses</h4>
         <div class="row course-panels-container">
             <div id="recommendedCourses" class="panel-group">
-                <div class="panel panel-default course-panel" 
-                     ng-repeat="course in data.courses | orderBy: '-rating' | limitTo: 20"  
-                     ng-mouseover="showTags=true; searchCtrl.onMouseOver(course)" 
-                     ng-mouseleave="showTags=false; searchCtrl.onMouseLeave(course)" 
+                <div class="panel panel-default course-panel"
+                     ng-repeat="course in data.courses | orderBy: '-rating' | limitTo: 20"
+                     ng-mouseover="showTags=true; searchCtrl.onMouseOver(course)"
+                     ng-mouseleave="showTags=false; searchCtrl.onMouseLeave(course)"
                      ng-init="showTags = false"
+                     ng-dbclick="searchCtrl.toggleEnrollment(course)"
                      >
-                     <div ng-mouseenter="showTags = true" 
+                     <div ng-mouseenter="showTags = true"
                           ng-mouseleave="showTags = false">
                          <div class="course-panel-title">
-                             <div class="course-listings" 
+                             <div class="course-listings"
                                   ng-bind="course.all_listings"></div>
-                             <div class="course-title" 
+                             <div class="course-title"
                                   ng-bind="course.title"></div>
                          </div>
                          <div ng-show="showTags">
@@ -42,7 +43,7 @@
                                   target="_blank"
                                   ng-href="{{ course.easypce_link }}"
                                   ><i class="fa fa-info"></i></a>
-                             <div class="enroll-tag" 
+                             <div class="enroll-tag"
                                   ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
                          </div>
                      </div>
@@ -56,20 +57,21 @@
             <h4 class="row">Enrolled Courses</h4>
             <div class="row enrolled-courses-container">
                 <div id="enrolledCourses" class="panel-group">
-                    <div class="panel panel-default course-panel enrolled-course-panel" 
+                    <div class="panel panel-default course-panel enrolled-course-panel"
                          ng-class="{confirmed: searchCtrl.isConfirmed(course), unconfirmed: !searchCtrl.isConfirmed(course)}"
                          ng-repeat="course in data.enrolledCourses
-                         | orderBy: 'primary_listing' track by course.id"  
+                         | orderBy: 'primary_listing' track by course.id"
                          ng-style="searchCtrl.getStyles(course)"
                          ng-init="showTags = false"
-                         ng-mouseenter="showTags = true" 
+                         ng-mouseenter="showTags = true"
                          ng-mouseleave="showTags = false"
+                         ng-dbclick="searchCtrl.toggleEnrollment(course)"
                          >
                          <div class="course-panel-title">
-                             <div class="course-listings" 
+                             <div class="course-listings"
                                   ng-bind="course.all_listings"
                                   ></div>
-                             <div class="course-title" 
+                             <div class="course-title"
                                   ng-bind="course.title">
                              </div>
                          </div>
@@ -92,17 +94,18 @@
             <h4 class="row">Search Results</h4>
             <div class="row course-panels-container">
                 <div id="unenrolledCourses" class="panel-group">
-                    <div class="panel panel-default course-panel" 
-                         ng-repeat="course in data.courses | courseSearch:query 
-                         | orderBy: 'primary_listing' track by course.id"  
-                         ng-mouseover="showTags=true; searchCtrl.onMouseOver(course)" 
-                         ng-mouseleave="showTags=false; searchCtrl.onMouseLeave(course)" 
+                    <div class="panel panel-default course-panel"
+                         ng-repeat="course in data.courses | courseSearch:query
+                         | orderBy: 'primary_listing' track by course.id"
+                         ng-mouseover="showTags=true; searchCtrl.onMouseOver(course)"
+                         ng-mouseleave="showTags=false; searchCtrl.onMouseLeave(course)"
                          ng-init="showTags = false"
+                         ng-dbclick="searchCtrl.toggleEnrollment(course)"
                          >
                          <div class="course-panel-title">
-                             <div class="course-listings" 
+                             <div class="course-listings"
                                   ng-bind-html="course.all_listings | highlight: query"></div>
-                             <div class="course-title" 
+                             <div class="course-title"
                                   ng-bind="course.title"></div>
                          </div>
                          <div ng-show="showTags">
@@ -110,7 +113,7 @@
                                   target="_blank"
                                   ng-href="{{ course.easypce_link }}"
                                   ><i class="fa fa-info"></i></a>
-                             <div class="enroll-tag" 
+                             <div class="enroll-tag"
                                   ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
                          </div>
                     </div>

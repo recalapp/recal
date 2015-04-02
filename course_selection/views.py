@@ -19,11 +19,23 @@ import json
 
 from models import *
 
-@login_required
+# @ensure_csrf_cookie
 def index(request):
+    """
+    Home page. Show landing page or course selection page, depending on user's state.
+    """
+    if not request.user.is_authenticated():
+        return redirect('landing')
+    
     return render(request, 'index.html', {
         'username': unicode(request.user.username)    
     })
+
+def landing(request):
+    """
+    Displays the landing page.
+    """
+    return render(request, 'landing/index.html', None)
 
 def hydrate_meeting_dict(meeting):
     return {

@@ -1,0 +1,131 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Pick your Princeton Fall 2015 courses on ReCal.">
+    <meta name="author" content="ReCal">
+    <link rel="shortcut icon" href="{% static 'landing/img/ico/favicon.ico' %}">
+
+    <title>Fall 2015 Course Selection | ReCal</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static 'landing/css/bootstrap.css' %}"> 
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}"> 
+    <link rel="stylesheet" href="{% static 'landing/css/font-awesome.min.css' %}"> 
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">RECAL</a>
+        </div>
+        <div class="navbar-collapse collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li><a href="/login?next=/">LOGIN</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+	<!-- *****************************************************************************************************************
+	 HEADERWRAP
+	 ***************************************************************************************************************** -->
+	<div id="headerwrap">
+	    <div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<h5>RIP ICE 2010 &mdash; 2015</h5>
+					<h1>Frustrated with TigerHub?</h1>
+					<h3>Use ReCal to pick your courses.</h3>
+					<h5>
+						<a href="/login?next=/" class="btn btn-warning btn-lg">Log in to Select Courses</a>
+					</h5>
+				</div>
+				<div class="col-lg-8 col-lg-offset-2 himg">
+                    <img src="{% static 'landing/img/browser2_border.png' %}" class="img-responsive">
+				</div>
+			</div><!-- /row -->
+	    </div> <!-- /container -->
+	</div><!-- /headerwrap -->
+
+	
+	
+	 
+	<!-- *****************************************************************************************************************
+	 MIDDLE CONTENT
+	 ***************************************************************************************************************** -->
+
+	 <div class="container mtb">
+	 	<div class="row">
+	 		<div class="col-lg-4 col-lg-offset-2">
+		 		<h4>Why ReCal instead of TigerHub?</h4>
+		 		<p>We're so proud of the University for releasing TigerHub, but we know it's a work in progress. We started using the nicer course selection interface from our old COS 333 project &mdash; named ReCal, short for Rethinking Calendar &mdash; so we figured we'd release it while TigerHub is being improved.</p>
+		 		<p>ReCal is faster, sleeker, and easier to use.</p>
+ 				<p style="text-align:center;"><a href="/login?next=/" class="btn btn-theme">Start finding courses &rarr;</a></p>
+	 		</div>
+	 		
+	 		<div class="col-lg-4 col-lg-offset-1">
+	 			<h4>Coming in Fall 2015:</h4>
+	 			<!--<div class="hline"></div>-->
+	 			<p>We'll be launching the full ReCal project. The idea: </p>
+	 			<p>Everyone can track deadlines, exam times, and office hours in one shared class calendar, so changes are instant and it's always up to date. No more searching through Blackboard or email for when office hours are this week or when the next homework is due.</p>
+	 		</div>
+	 		
+	 	</div><! --/row -->
+	 </div><! --/container -->
+	 
+
+	<!-- *****************************************************************************************************************
+	 FOOTER
+	 ***************************************************************************************************************** -->
+	 <div id="footerwrap">
+	 	<div class="container">
+		 	<div class="row">
+		 		<div class="col-xs-12">
+		 			<!--<h4>About</h4>
+		 			<div class="hline-w"></div>-->
+		 			<p style="text-align:center;">Made with love by dxue@, naphats@, and maximz@.</p>
+		 		</div>
+		 	
+		 	</div><! --/row -->
+	 	</div><! --/container -->
+	 </div><! --/footerwrap -->
+	 
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>    
+    <script src="{% static 'landing/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'landing/js/retina-1.1.0.js' %}"></script>
+    <!--
+    <script src="{% static 'landing/js/jquery.hoverdir.js' %} "></script>
+    <script src="{% static 'landing/js/jquery.hoverex.min.js' %} "></script>
+    <script src="{% static 'landing/js/jquery.prettyPhoto.js' %} "></script>
+    <script src="{% static 'landing/js/jquery.isotope.min.js' %} "></script>
+    <script src="{% static 'landing/js/custom.js' %} "></script>
+-->
+
+
+  </body>
+</html>
