@@ -152,10 +152,12 @@ def get_courses_for_term(term_code):
         if created:
             new_course_count[0] += 1 # for debugging
         else:
-            # for now let's not update the listings/sections when run again
-            return
+            # TODO: now we should update the listings/sections when we run again
+            pass
+            #return
     
         # handle course listings
+        # TODO: Test is this works properly on second run
         create_or_update_listings(course, subject, course_object)
         # add sections and events
         create_or_update_sections(course, course_object)
