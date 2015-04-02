@@ -15,7 +15,7 @@ class Course implements ICourse {
     public description: string;
     public course_listings: Array<ICourseListing>;
     public id: number;
-    public registrar_id: number;
+    public registrar_id: string;
     public sections: Array<ISection>;
     public semester: ISemester;
     public primary_listing: string;
@@ -36,7 +36,7 @@ class Course implements ICourse {
 
         // chop off the first 4 digits for registar_id
         // the first 4 digits are the term code
-        this.registrar_id = registrar_id.substring(registrar_id.length - Course.REGISTRAR_ID_DIGITS);
+        this.registrar_id = registrar_id ? registrar_id.substring(registrar_id.length - Course.REGISTRAR_ID_DIGITS) : "";
 
         this.semester = semester;
 

@@ -8,7 +8,7 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
 
             // chop off the first 4 digits for registar_id
             // the first 4 digits are the term code
-            this.registrar_id = registrar_id.substring(registrar_id.length - Course.REGISTRAR_ID_DIGITS);
+            this.registrar_id = registrar_id ? registrar_id.substring(registrar_id.length - Course.REGISTRAR_ID_DIGITS) : "";
 
             this.semester = semester;
 
