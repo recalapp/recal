@@ -190,8 +190,10 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 return;
             }
 
-            // return directly if a course has been added or removed
-            if (Object.keys(newSections).length != Object.keys(oldSections).length) {
+            // return directly if a course has been removed
+            // if added, still need to check if any sections are enrolled
+            // due to being the only possible section of that type
+            if (Object.keys(newSections).length < Object.keys(oldSections).length) {
                 return;
             }
 

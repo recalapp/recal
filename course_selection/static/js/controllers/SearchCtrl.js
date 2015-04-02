@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
@@ -22,8 +21,6 @@ define(["require", "exports"], function(require, exports) {
             this._scheduleManager.clearPreviewCourse();
         };
 
-        // if user is not enrolled in course yet, add course events to previewEvents
-        // else, don't do anything
         SearchCtrl.prototype.onMouseOver = function (course) {
             if (this._scheduleManager.isCourseEnrolled(course)) {
                 this._scheduleManager.clearPreviewCourse();
@@ -32,12 +29,10 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
-        // clear preview course on mouse leave
         SearchCtrl.prototype.onMouseLeave = function (course) {
             this._scheduleManager.clearPreviewCourse();
         };
 
-        // toggle enrollment of course
         SearchCtrl.prototype.toggleEnrollment = function (course) {
             if (this._scheduleManager.isCourseEnrolled(course)) {
                 this._scheduleManager.unenrollCourse(course);
@@ -67,7 +62,6 @@ define(["require", "exports"], function(require, exports) {
             return this._scheduleManager.isCourseAllSectionsEnrolled(course);
         };
 
-        // TODO: this function no longer works due to course.colors never being null
         SearchCtrl.prototype.getLinkColor = function (course) {
             if (course.colors) {
                 return course.colors.dark;
@@ -87,3 +81,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SearchCtrl;
 });
+//# sourceMappingURL=SearchCtrl.js.map

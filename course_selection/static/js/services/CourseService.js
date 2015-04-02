@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     'use strict';
 
@@ -8,8 +7,6 @@ define(["require", "exports"], function(require, exports) {
             this.$http = $http;
             this.localStorageService = localStorageService;
         }
-        // cache into local storage service
-        // wrap around with a promise
         CourseService.prototype.getBySemester = function (termCode) {
             var _this = this;
             var temp = this.localStorageService.get('courses-' + termCode);
@@ -35,3 +32,4 @@ define(["require", "exports"], function(require, exports) {
     
     return CourseService;
 });
+//# sourceMappingURL=CourseService.js.map

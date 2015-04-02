@@ -169,6 +169,8 @@ class ScheduleManager {
     }
 
     private _enrollSections(course: ICourse, sectionIds?: Array<number>): void {
+        // TODO: assert invariants
+
         this.data.enrolledSections[course.id] = {};
         for (var i = 0; i < course.section_types.length; i++) {
             var section_type = course.section_types[i];
@@ -177,14 +179,20 @@ class ScheduleManager {
 
         for (var i = 0; i < course.sections.length; i++) {
             var section = course.sections[i];
-            if (!section.has_meetings) {
+            // got rid of the logic for sections that have no meetings
+            // it should be implied because the only available section
+            // is automatically enrolled
+            // if (!section.has_meetings) {
+            // }
+
+            if (!sectionIds) {
                 if (this._isTheOnlySectionOfType(course, section)) {
                     this.enrollSection(section);
                 }
-            }
-
-            if (this._isInList(section.id, sectionIds)) {
-                this.enrollSection(section);
+            } else {
+                if (this._isInList(section.id, sectionIds)) {
+                    this.enrollSection(section);
+                }
             }
         }
     }
