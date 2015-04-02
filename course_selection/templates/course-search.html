@@ -67,7 +67,9 @@
                          ng-mouseleave="showTags = false"
                          ng-dbclick="searchCtrl.toggleEnrollment(course)"
                          >
-                         <div class="course-panel-title">
+                         <div class="course-panel-title"
+                              ng-dbclick="searchCtrl.toggleEnrollment(course)"
+                             >
                              <div class="course-listings"
                                   ng-bind="course.all_listings"
                                   ></div>

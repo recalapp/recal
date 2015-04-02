@@ -219,10 +219,14 @@ def get_courses_for_term(term_code):
                 meetings = schedule.find('meetings')
             except:
                 # TODO: CAN'T DO THIS: STILL NEED TO CREATE OBJECT BEFORE RETURNS
+                # TODO UPDATE: changed section_object to section
+                # this could happen at the beginning of the semester
+                # 
+                #
                 # thought in fact, these fields are never empty;
                 # for courses that don't have meetings, the stream returns
                 # meetings with invalid times
-                print 'no schedule or meetings for ' + str(section_object.course)
+                print 'no schedule or meetings for ' + str(section)
                 return
     
             # now we check if there is already an event for this section
