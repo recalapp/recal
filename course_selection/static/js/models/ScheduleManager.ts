@@ -115,6 +115,7 @@ class ScheduleManager {
                 rawCourse.description,
                 rawCourse.course_listings,
                 rawCourse.id,
+                rawCourse.registrar_id,
                 rawCourse.sections,
                 rawCourse.semester
                 );

@@ -1,10 +1,15 @@
 define(["require", "exports", '../services/ColorResource', '../models/Section'], function(require, exports, ColorResource, Section) {
     var Course = (function () {
-        function Course(title, description, course_listings, id, sections, semester, enrolled) {
+        function Course(title, description, course_listings, id, registrar_id, sections, semester, enrolled) {
             this.title = title;
             this.description = description;
             this.course_listings = course_listings;
             this.id = id;
+
+            // chop off the first 4 digits for registar_id
+            // the first 4 digits are the term code
+            this.registrar_id = registrar_id.substring(registrar_id.length - Course.REGISTRAR_ID_DIGITS);
+
             this.semester = semester;
 
             this.sections = this.getSections(sections);
@@ -15,7 +20,12 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
             this.rating = +(Math.random() * 2 + 3).toPrecision(3);
             this.enrolled = enrolled ? enrolled : false;
             this.easypce_link = Course.EASYPCE_BASE_URL + this.primary_listing;
+            this.registrar_link = this.getRegistrarLink();
         }
+        Course.prototype.getRegistrarLink = function () {
+            return Course.REGISTRAR_BASE_URL + "courseid=" + this.registrar_id + "&term=" + this.semester.term_code;
+        };
+
         Course.prototype.getSections = function (input) {
             var sections = [];
             for (var i = 0; i < input.length; i++) {
@@ -82,10 +92,11 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
             })[0];
         };
         Course.EASYPCE_BASE_URL = "http://easypce.com/courses/";
+        Course.REGISTRAR_BASE_URL = "https://registrar.princeton.edu/course-offerings/course_details.xml?";
+        Course.REGISTRAR_ID_DIGITS = 6;
         return Course;
     })();
 
     
     return Course;
 });
-//# sourceMappingURL=Course.js.map

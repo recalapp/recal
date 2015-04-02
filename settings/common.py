@@ -144,7 +144,7 @@ CACHES = {
     },
     'resources': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache', 
-        'TIMEOUT': 60
+        'TIMEOUT': 1
     }
 }
 

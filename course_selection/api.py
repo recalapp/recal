@@ -77,7 +77,7 @@ class CourseResource(ModelResource):
     class Meta:
         queryset = Course.objects.all()
         resource_name = 'course'
-        excludes = ['registrar_id']
+        excludes = ['']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
         limit = 0

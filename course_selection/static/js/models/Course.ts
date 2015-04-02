@@ -8,11 +8,14 @@ import Section = require('../models/Section');
 
 class Course implements ICourse {
     private static EASYPCE_BASE_URL: string = "http://easypce.com/courses/";
+    private static REGISTRAR_BASE_URL: string = "https://registrar.princeton.edu/course-offerings/course_details.xml?";
+    private static REGISTRAR_ID_DIGITS: number = 6;
 
     public title: string;
     public description: string;
     public course_listings: Array<ICourseListing>;
     public id: number;
+    public registrar_id: number;
     public sections: Array<ISection>;
     public semester: ISemester;
     public primary_listing: string;
@@ -22,13 +25,19 @@ class Course implements ICourse {
     public enrolled: boolean;
     public rating: number;
     public easypce_link: string;
+    public registrar_link: string;
 
     constructor(title, description, course_listings,
-            id, sections, semester, enrolled?: boolean) {
+            id, registrar_id, sections, semester, enrolled?: boolean) {
         this.title = title;
         this.description = description;
         this.course_listings = course_listings;
         this.id = id;
+
+        // chop off the first 4 digits for registar_id
+        // the first 4 digits are the term code
+        this.registrar_id = registrar_id.substring(registrar_id.length - Course.REGISTRAR_ID_DIGITS);
+
         this.semester = semester;
 
         this.sections = this.getSections(sections);
@@ -39,6 +48,12 @@ class Course implements ICourse {
         this.rating = +(Math.random() * 2 + 3).toPrecision(3);
         this.enrolled = enrolled ? enrolled : false;
         this.easypce_link = Course.EASYPCE_BASE_URL + this.primary_listing;
+        this.registrar_link = this.getRegistrarLink();
+    }
+
+    private getRegistrarLink(): string {
+        return Course.REGISTRAR_BASE_URL + "courseid=" 
+            + this.registrar_id + "&term=" + this.semester.term_code;
     }
 
     private getSections(input): Array<ISection> {
