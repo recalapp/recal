@@ -21,9 +21,14 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
             this.enrolled = enrolled ? enrolled : false;
             this.easypce_link = Course.EASYPCE_BASE_URL + this.primary_listing;
             this.registrar_link = this.getRegistrarLink();
+            this.evaluation_link = this.getEvaluationLink();
         }
         Course.prototype.getRegistrarLink = function () {
             return Course.REGISTRAR_BASE_URL + "courseid=" + this.registrar_id + "&term=" + this.semester.term_code;
+        };
+
+        Course.prototype.getEvaluationLink = function () {
+            return Course.EVALUATION_BASE_URL + "terminfo=" + this.semester.term_code + "&courseinfo=" + this.registrar_id;
         };
 
         Course.prototype.getSections = function (input) {
@@ -93,6 +98,7 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
         };
         Course.EASYPCE_BASE_URL = "http://easypce.com/courses/";
         Course.REGISTRAR_BASE_URL = "https://registrar.princeton.edu/course-offerings/course_details.xml?";
+        Course.EVALUATION_BASE_URL = "https://reg-captiva.princeton.edu/chart/index.php?";
         Course.REGISTRAR_ID_DIGITS = 6;
         return Course;
     })();

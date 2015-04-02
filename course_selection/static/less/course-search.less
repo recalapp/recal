@@ -37,7 +37,7 @@
 .course-panel-title {
     text-align: left;
     padding-left: 2px;
-    width: 80%;
+    width: 100% - 3 * @tag-width;
 }
 
 .course-panels-container {
@@ -173,6 +173,10 @@
     right: @tag-width;
 }
 
+.third-rightmost-tag {
+    .absolute-tag();
+    right: 2 * @tag-width;
+}
 .enroll-tag {
     .rightmost-tag();
     background-color: green;
@@ -184,6 +188,11 @@
     z-index: 10;
 }
 
+.eval-tag {
+    .third-rightmost-tag();
+    background-color: orange;
+    z-index: 10;
+}
 .more-info-tag {
     .second-rightmost-tag();
     background-color: gray;

@@ -18,7 +18,7 @@
 .course-panel-title {
   text-align: left;
   padding-left: 2px;
-  width: 80%;
+  width: 70%;
 }
 .course-panels-container {
   position: relative;
@@ -155,6 +155,23 @@
   color: white;
   cursor: pointer;
 }
+.third-rightmost-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  right: 20%;
+}
+.third-rightmost-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
 .enroll-tag {
   cursor: pointer;
   position: absolute;
@@ -184,6 +201,25 @@
   z-index: 10;
 }
 .unenroll-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+.eval-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  right: 20%;
+  background-color: orange;
+  z-index: 10;
+}
+.eval-tag i {
   top: 25%;
   width: 100%;
   position: absolute;
