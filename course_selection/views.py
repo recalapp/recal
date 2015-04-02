@@ -26,9 +26,19 @@ def index(request):
     """
     if not request.user.is_authenticated():
         return redirect('landing')
-    
+
     return render(request, 'index.html', {
-        'username': unicode(request.user.username)    
+        'username': unicode(request.user.username)
+    })
+
+@login_required
+def course_evaluations(request, semester_id, course_id):
+    """
+    Course evaluations, an iFrame to registrar's
+    """
+    return render(request, 'course_evaluations.html', {
+        'semester_id': semester_id,
+        'course_id': course_id
     })
 
 def landing(request):
@@ -115,7 +125,7 @@ def mobile_logged_in(request):
 
     If logged in (i.e. on the way back from CAS), returns username.
     The way to use this is to go to /login?next=mobile_logged_in
-    
+
     The mobile app detects that we're logged in as soon as the URL changes to /mobile_logged_in.
     At that point it stops and grabs the username from the displayed page.
 
@@ -130,7 +140,7 @@ def mobile_logged_in(request):
 
 # from django.utils.translation import ugettext as _
 # from pdf import get_template
-#  
+#
 # def get_worksheet_pdf(request, template_name='course_enrollment_worksheet.pdf', **kwargs):
 #     """
 #     returns a filled out course enrollment form
@@ -143,12 +153,12 @@ def mobile_logged_in(request):
 #         'first': unicode(user.first_name),
 #         'last': unicode(user.last_name)
 #     }
-#  
+#
 #     response = HttpResponse(content_type='application/pdf')
 #     response['Content-Disposition'] = \
 #         'attachment; filename=course_enrollment_worksheet.pdf'
-#  
+#
 #     template = get_template(template_name)
 #     response.write(template.render(context))
-#  
+#
 #     return response

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}Course Evaluations{% endblock %}
+
+{% block main_content %}
+<iframe src="https://reg-captiva.princeton.edu/chart/index.php?terminfo={{semester_id}}&courseinfo={{course_id}}">
+
+</iframe>
+{% endblock %}
+
+{% block link_or_script_blocking %}
+{% endblock %}
+
+{% block link_or_script_nonblocking %}
+{% endblock %}
