@@ -154,6 +154,8 @@ def get_courses_for_term(term_code):
         else:
             # TODO: now we should update the listings/sections when we run again
             pass
+            # this could be a cross_listing
+            #print "course is not created: " + str(guid)
             #return
     
         # handle course listings
