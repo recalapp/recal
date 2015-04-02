@@ -1,19 +1,19 @@
-@footer-height: 80px;
-@footer-background-color: #ffffff;
+@footer-height: 40px;
+@footer-background-color: rgba(42, 52, 65, 0.95);
 @footer-border-color: #e5e5e5;
-@footer-text-color: #999;
+@footer-text-color: #DDD;
 @max-min-width: 1440px;
 
 #footer {
     border-top: 1px solid @footer-border-color;
+    background-color: @footer-background-color;
 }
 
 #footer-inner {
-    background-color: @footer-background-color;
     color: @footer-text-color;
     margin: 0 auto;
     max-width: @max-min-width;
-    padding: 0 12px;
+    padding: 0 0;
 
     a {
         font-weight: bold;
@@ -21,6 +21,7 @@
 
     p {
         clear: left;
-        line-height: 1.6;
+        line-height: 3;
+        margin: 0;
     }
 }

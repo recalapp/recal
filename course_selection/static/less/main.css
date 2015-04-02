@@ -190,20 +190,21 @@ body {
 }
 #footer {
   border-top: 1px solid #e5e5e5;
+  background-color: rgba(42, 52, 65, 0.95);
 }
 #footer-inner {
-  background-color: #ffffff;
-  color: #999999;
+  color: #dddddd;
   margin: 0 auto;
   max-width: 1440px;
-  padding: 0 12px;
+  padding: 0 0;
 }
 #footer-inner a {
   font-weight: bold;
 }
 #footer-inner p {
   clear: left;
-  line-height: 1.6;
+  line-height: 3;
+  margin: 0;
 }
 /* all course panels, including enrolled and search results */
 .course-panel {
