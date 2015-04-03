@@ -21,6 +21,8 @@ class CourseAdmin(admin.ModelAdmin):
 
 admin.site.register(Semester, SemesterAdmin)
 admin.site.register(Schedule)
+admin.site.register(Section)
+admin.site.register(Meeting)
 admin.site.register(Nice_User)
 admin.site.register(Professor)
 admin.site.register(Color_Palette)

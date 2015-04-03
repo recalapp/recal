@@ -120,6 +120,9 @@ class Meeting(models.Model):
     end_time = models.CharField(max_length=20)
     days = models.CharField(max_length=10)
     location = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return unicode(self.section) + ' - ' + self.location
     
 class Course_Listing(models.Model):
     # TODO: this line causes admin site to fail, commenting out related_name
