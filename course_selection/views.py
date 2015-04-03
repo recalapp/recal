@@ -131,7 +131,8 @@ def mobile_logged_in(request):
 
     """
     # TODO: retrieve Nice_User corresponding to request.user
-    return HttpResponse(request.user.username + " " + unicode(request.user.id))
+    nice_user = Nice_User.objects.get(netid = request.user.username)
+    return HttpResponse(request.user.username + " " + unicode(nice_user.id))
 
 
 #############################################################################
