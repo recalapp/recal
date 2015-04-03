@@ -1,1 +1,57 @@
-.fc-unthemed .fc-today{background-color:#fff}.calendar{background-color:#fff}.fc-event{border-right-style:none;border-top-style:none;border-left-width:4px;border-bottom-style:none;border-radius:0}.fc-event:hover{cursor:pointer;overflow:visible}.fc-event:hover .fc-location{visibility:visible}.fc-event .fc-location{visibility:hidden}.cal-unconfirmed{background:url('../images/stripe.png') repeat #c0c0c0;opacity:.8;border-left-color:transparent !important}.fc-toolbar{margin-bottom:0;height:0}.fc-time-grid-event .fc-time,.fc-time-grid-event .fc-title{padding:0 3px}.fc-time-grid-event .fc-title{font-weight:bold}.fc-slats td{height:2.6vh}.fc-slats .fc-minor td{border-top-style:none}.fc-axis{display:none}
+.fc-unthemed .fc-today {
+  background-color: white;
+}
+.calendar {
+  background-color: white;
+}
+.fc-event {
+  border-right-style: none;
+  border-top-style: none;
+  border-left-width: 4px;
+  border-bottom-style: none;
+  border-radius: 0;
+}
+.fc-event:hover {
+  cursor: pointer;
+  overflow: visible;
+}
+.fc-event:hover .fc-location {
+  visibility: visible;
+}
+.fc-event .fc-location {
+  visibility: hidden;
+}
+.cal-unconfirmed {
+  background: url('../images/stripe.png') repeat #c0c0c0;
+  opacity: 0.8;
+  border-left-color: transparent !important;
+}
+.fc-toolbar {
+  margin-bottom: 0;
+  height: 0;
+}
+.fc-time-grid-event .fc-time,
+.fc-time-grid-event .fc-title {
+  padding: 0 3px;
+}
+.fc-time-grid-event .fc-title {
+  font-weight: bold;
+}
+.fc-slats td {
+  height: 2.6vh;
+}
+.fc-slats .fc-minor td {
+  border-top-style: none;
+}
+.fc-axis {
+  display: none;
+}
+/*
+.fc-ltr .fc-axis {
+	color: @calendar-dark-font-color;
+}
+
+.fc-day-header {
+	color: @calendar-dark-font-color;
+}
+*/

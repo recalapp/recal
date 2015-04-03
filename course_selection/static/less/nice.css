@@ -1,1 +1,144 @@
-body{height:100%;width:100%;overflow-x:hidden;overflow-y:scroll;font-family:"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;font-weight:300;border-radius:0;color:#404040}#wrap{background-color:#f0f0f0}#semesterContainer{height:95vh;max-width:100%;padding:0 20px;margin:0 auto}@media screen and (min-width:1440px){#semesterContainer{max-width:1440px}}#container{height:100%;width:100%}#main{height:80vh;margin-left:0}#searchColumn{height:85vh;width:25%;margin-top:5px}#calendarColumn{height:85vh;width:75%;margin-top:5px}.edit-icon{font-size:1em;color:#555;position:absolute;top:25%;right:20px}.edit-icon:hover{cursor:pointer}.remove-icon{font-size:1em;color:#555;position:absolute;top:25%;right:5px}.remove-icon:hover{cursor:pointer;background-color:rgba(184,184,184,0.5);border-radius:2px}[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none !important}.semester-tab-heading{cursor:pointer}.schedule-tab-heading{cursor:pointer}#loading-bar-spinner{display:inline;position:absolute;top:0;left:-10px}.button-add-tab{background:none;padding:5px 10vh;border-radius:0;margin-right:0;color:#000;padding:5px 25px;outline:none !important}.button-add-tab:hover{color:#404040;text-decoration:none;background-color:rgba(0,0,0,0.08);cursor:pointer}.nav-tabs{border-bottom:none}.nav-tabs>li>a{padding:5px 10vh;margin-right:0;font-weight:bold;color:#000;border-style:none;border-radius:0}.nav-tabs>li>a:hover{background-color:rgba(0,0,0,0.08)}.nav-tabs>li.active>a{color:#404040}.nav-tabs>li.active>a,.nav-tabs>li.active>a:hover,.nav-tabs>li.active>a:focus{border-bottom-color:transparent;border-style:none;cursor:default}.tooltip.right .tooltip-arrow{border-left-color:rgba(47,47,47,0.98)}.tooltip-inner{background-color:rgba(47,47,47,0.98)}::-webkit-scrollbar{width:.2em;height:.2em}::-webkit-scrollbar-button{background:#ccc}::-webkit-scrollbar-track-piece{background:#eee}::-webkit-scrollbar-thumb{background:#888}
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+  border-radius: 0;
+  color: #404040;
+}
+#wrap {
+  background-color: #f0f0f0;
+}
+#semesterContainer {
+  height: 95vh;
+  max-width: 100%;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+@media screen and (min-width: 1440px) {
+  #semesterContainer {
+    max-width: 1440px;
+  }
+}
+#container {
+  height: 100%;
+  width: 100%;
+}
+#main {
+  height: 80vh;
+  margin-left: 0px;
+}
+#searchColumn {
+  height: 85vh;
+  width: 25%;
+  margin-top: 5px;
+}
+#calendarColumn {
+  height: 85vh;
+  width: 75%;
+  margin-top: 5px;
+}
+.edit-icon {
+  font-size: 1em;
+  color: #555;
+  position: absolute;
+  top: 25%;
+  right: 20px;
+}
+.edit-icon:hover {
+  cursor: pointer;
+}
+.remove-icon {
+  font-size: 1em;
+  color: #555;
+  position: absolute;
+  top: 25%;
+  right: 5px;
+}
+.remove-icon:hover {
+  cursor: pointer;
+  background-color: rgba(184, 184, 184, 0.5);
+  border-radius: 2px;
+}
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
+}
+.semester-tab-heading {
+  cursor: pointer;
+}
+.schedule-tab-heading {
+  cursor: pointer;
+}
+#loading-bar-spinner {
+  display: inline;
+  position: absolute;
+  top: 0;
+  left: -10px;
+}
+.button-add-tab {
+  background: none;
+  padding: 5px 10vh;
+  border-radius: 0;
+  margin-right: 0;
+  color: black;
+  padding: 5px 25px;
+  outline: none !important;
+}
+.button-add-tab:hover {
+  color: #404040;
+  text-decoration: none;
+  background-color: rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+.nav-tabs {
+  border-bottom: none;
+}
+.nav-tabs > li > a {
+  padding: 5px 10vh;
+  margin-right: 0;
+  font-weight: bold;
+  color: black;
+  border-style: none;
+  border-radius: 0;
+}
+.nav-tabs > li > a:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+.nav-tabs > li.active > a {
+  color: #404040;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  border-bottom-color: transparent;
+  border-style: none;
+  cursor: default;
+}
+/* tooltip */
+.tooltip.right .tooltip-arrow {
+  border-left-color: rgba(47, 47, 47, 0.98);
+}
+.tooltip-inner {
+  background-color: rgba(47, 47, 47, 0.98);
+}
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 0.2em;
+  height: 0.2em;
+}
+::-webkit-scrollbar-button {
+  background: #cccccc;
+}
+::-webkit-scrollbar-track-piece {
+  background: #eeeeee;
+}
+::-webkit-scrollbar-thumb {
+  background: #888888;
+}
