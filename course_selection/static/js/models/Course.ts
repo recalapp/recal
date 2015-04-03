@@ -9,7 +9,6 @@ import Section = require('../models/Section');
 class Course implements ICourse {
     private static EASYPCE_BASE_URL: string = "http://easypce.com/courses/";
     private static REGISTRAR_BASE_URL: string = "https://registrar.princeton.edu/course-offerings/course_details.xml?";
-    private static EVALUATION_BASE_URL: string = "https://reg-captiva.princeton.edu/chart/index.php?";
     private static REGISTRAR_ID_DIGITS: number = 6;
 
     public title: string;
@@ -60,9 +59,10 @@ class Course implements ICourse {
     }
 
     private getEvaluationLink(): string {
-        return Course.EVALUATION_BASE_URL 
-            + "terminfo=" + this.semester.term_code
-            + "&courseinfo=" + this.registrar_id;
+        return 'course_evaluations/'
+            + this.semester.term_code 
+            + '/' 
+            + this.registrar_id;
     }
 
     private getSections(input): Array<ISection> {
