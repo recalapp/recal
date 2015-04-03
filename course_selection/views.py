@@ -48,7 +48,6 @@ def landing(request):
     return render(request, 'landing/index.html', None)
 
 def hydrate_meeting_dict(meeting):
-    print meeting
     return {
         'days': meeting.days,
         'start_time': meeting.start_time,
