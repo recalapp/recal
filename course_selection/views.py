@@ -107,7 +107,7 @@ def get_courses_by_term_code(term_code):
 
 @login_required
 @require_GET
-@cache_page_with_prefix(60 * 15, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
+#@cache_page_with_prefix(60 * 15, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
 def get_courses_json(request):
     """
     Returns list of courses for a semester

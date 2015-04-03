@@ -62,11 +62,12 @@ class UserAuthorization(Authorization):
 
 class UserObjectsOnlyAuthorization(Authorization):
     def read_list(self, object_list, bundle):
-        filtered = [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
-        if len(filtered) > 0:
-            return filtered
-        else:
-            raise Unauthorized("Sorry, no peeking!")
+        return object_list
+        # filtered = [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        # if len(filtered) > 0:
+        #     return filtered
+        # else:
+        #     raise Unauthorized("Sorry, no peeking!")
 
     def read_detail(self, object_list, bundle):
         # Is the requested object owned by the user?
@@ -80,11 +81,13 @@ class UserObjectsOnlyAuthorization(Authorization):
         return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
 
     def create_detail(self, object_list, bundle):
-        return bundle.obj.user.netid == bundle.request.user.username
+        return True
+        #return bundle.obj.user.netid == bundle.request.user.username
         #return bundle.obj.user == bundle.request.user
 
     def update_list(self, object_list, bundle):
-        return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        return object_list
+        # return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
 
         #allowed = []
 
@@ -96,16 +99,18 @@ class UserObjectsOnlyAuthorization(Authorization):
         #return allowed
 
     def update_detail(self, object_list, bundle):
-        return bundle.obj.user.netid == bundle.request.user.username
+        return True
+        #return bundle.obj.user.netid == bundle.request.user.username
 
     def delete_list(self, object_list, bundle):
         # Sorry user, no deletes for you!
         # raise Unauthorized("Sorry, no deletes.")
-        return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
-        #return object_list
+        #return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        return object_list
 
     def delete_detail(self, object_list, bundle):
-        return bundle.obj.user.netid == bundle.request.user.username
+        return True
+        #return bundle.obj.user.netid == bundle.request.user.username
         #raise Unauthorized("Sorry, no deletes.")
 
 class SemesterResource(ModelResource):
@@ -230,7 +235,8 @@ class ScheduleResource(ModelResource):
         excludes = []
         allowed_methods = ['get', 'post', 'put', 'delete']
         cache = NoCache()
-        authorization = UserObjectsOnlyAuthorization()
+        #authorization = UserObjectsOnlyAuthorization()
+        authorization = Authorization()
         always_return_data = True
         limit = 0
         max_limit = 0
@@ -254,7 +260,8 @@ class UserResource(ModelResource):
         excludes = ['password']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
-        authorization = UserAuthorization()
+        authorization = Authorization()
+        #authorization = UserAuthorization()
         filtering = {
             'netid': ALL_WITH_RELATIONS
         }
