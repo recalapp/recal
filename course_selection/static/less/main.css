@@ -187,24 +187,6 @@ body {
 .group {
   position: relative;
 }
-#footer {
-  border-top: 1px solid #e5e5e5;
-  background-color: rgba(42, 52, 65, 0.95);
-}
-#footer-inner {
-  color: #dddddd;
-  margin: 0 auto;
-  max-width: 1440px;
-  padding: 0 12px;
-}
-#footer-inner a {
-  font-weight: bold;
-}
-#footer-inner p {
-  clear: left;
-  line-height: 3;
-  margin: 0;
-}
 /* all course panels, including enrolled and search results */
 .course-panel {
   min-height: 40px;

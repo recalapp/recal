@@ -57,6 +57,17 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 return _this.onEventClick(calEvent, jsEvent, view);
             };
 
+            /*
+            this.$scope.uiConfig.windowResize = (view) => {
+            var minWidth = 992;
+            var windowWidth = $(window).width();
+            if (windowWidth < minwidth) {
+            var windowHeight = $(window).height();
+            this.$scope.uiConfig.height = +(windowHeight * 0.6) + 'px';
+            this.$scope.myCalendar.fullCalendar('render');
+            }
+            };
+            */
             this.$scope.uiConfig.eventRender = function (event, element) {
                 var locationTag = '<div class="fc-location">' + event.location + '</div>';
                 element.find(".fc-content").append(locationTag);
