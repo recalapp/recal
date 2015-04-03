@@ -16,7 +16,7 @@ define(["require", "exports"], function(require, exports) {
             if (temp != null && Array.isArray(temp)) {
                 return this.$q.when(temp);
             } else {
-                return this.$http.get(CourseService.API_URL + "?semester__term_code=" + termCode).then(function (response) {
+                return this.$http.get(CourseService.API_URL + termCode).then(function (response) {
                     // TODO: should disable local storage for now, since it basically acts as a
                     // cache with indefinite timeout
                     _this.localStorageService.set('courses-' + termCode, response.data);
@@ -24,7 +24,7 @@ define(["require", "exports"], function(require, exports) {
                 });
             }
         };
-        CourseService.API_URL = "/course_selection/api/static/courses";
+        CourseService.API_URL = "/course_selection/api/static/courses/";
 
         CourseService.$inject = [
             '$q',

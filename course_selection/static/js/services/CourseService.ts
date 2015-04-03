@@ -8,7 +8,7 @@ import Service = require('./Service');
 
 class CourseService {
 
-    private static API_URL = "/course_selection/api/static/courses";
+    private static API_URL = "/course_selection/api/static/courses/";
 
     public static $inject = [
         '$q',
@@ -29,7 +29,7 @@ class CourseService {
         if (temp != null && Array.isArray(temp)) {
             return this.$q.when(temp);
         } else {
-            return this.$http.get(CourseService.API_URL + "?semester__term_code=" + termCode).then((response) => {
+            return this.$http.get(CourseService.API_URL + termCode).then((response) => {
                 // TODO: should disable local storage for now, since it basically acts as a
                 // cache with indefinite timeout
                 this.localStorageService.set('courses-' + termCode, response.data);
