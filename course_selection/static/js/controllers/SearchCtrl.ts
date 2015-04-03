@@ -48,6 +48,16 @@ class SearchCtrl {
 
             this.updateContainerHeight(enrolledLength + searchResultLength);
         });
+
+        this.$scope.$watchCollection(() => {
+            return this.$scope.data.enrolledCourses;
+        }, (newVal, oldVal) => {
+            if (newVal.length == oldVal.length) {
+                return;
+            }
+
+            this.$scope.filteredCourses = this.$filter("courseSearch")(this.$scope.data.courses, this.$scope.query);
+        });
     }
 
     // if user is not enrolled in course yet, add course events to previewEvents
@@ -77,21 +87,29 @@ class SearchCtrl {
     // TODO: do this the angular way
     // or even better, use css for this
     public updateContainerHeight(numOfDisplayedCourses: number) {
-        var THRESHOLD = 12;
+        var THRESHOLD = 10;
         var ENROLLED_CONTAINER_HEIGHT = '20vh';
-        var SEARCH_CONTAINER_HEIGHT = '50vh';
+        var SEARCH_CONTAINER_HEIGHT = '45vh';
         var MAX_HEIGHT = '80vh';
 
-        var enrolledPanelsContainer = $("#enrolledPanelsContainer");
-        var searchPanelsContainer = $("#searchPanelsContainer");
+        var enrolledPanelsContainer = $(".enrolled-courses-container :visible")[0];
+        var searchPanelsContainer = $(".course-panels-container :visible")[0];
 
         if (numOfDisplayedCourses > THRESHOLD)
         {
-            enrolledPanelsContainer.css({'max-height': ENROLLED_CONTAINER_HEIGHT});
-            searchPanelsContainer.css({'max-height': SEARCH_CONTAINER_HEIGHT});
+            if (enrolledPanelsContainer) {
+                enrolledPanelsContainer.style.maxHeight= ENROLLED_CONTAINER_HEIGHT;
+            }
+            if (searchPanelsContainer) {
+                searchPanelsContainer.style.maxHeight= SEARCH_CONTAINER_HEIGHT;
+            }
         } else {
-            enrolledPanelsContainer.css({'max-height': MAX_HEIGHT});
-            searchPanelsContainer.css({'max-height': MAX_HEIGHT});
+            if (enrolledPanelsContainer) {
+                enrolledPanelsContainer.style.maxHeight= MAX_HEIGHT;
+            }
+            if (searchPanelsContainer) {
+                searchPanelsContainer.style.maxHeight= MAX_HEIGHT;
+            }
         }
     }
 

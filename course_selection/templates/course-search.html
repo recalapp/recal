@@ -23,7 +23,7 @@
         <div class="row course-panels-container">
             <div id="recommendedCourses" class="panel-group">
                 <div class="panel panel-default course-panel"
-                     ng-repeat="course in data.courses | orderBy: '-rating' | limitTo: 20"
+                     ng-repeat="course in data.courses | orderBy: '-rating' | limitTo: 10"
                      ng-mouseover="showTags=true; searchCtrl.onMouseOver(course)"
                      ng-mouseleave="showTags=false; searchCtrl.onMouseLeave(course)"
                      ng-init="showTags = false"
@@ -58,9 +58,8 @@
     </div>
     <div id="enrolledCoursesContainer">
         <div ng-show="data.enrolledCourses.length > 0">
-            <h4 class="row">Enrolled Courses</h4>
-            <div id="enrolledPanelsContainer"
-                class="row enrolled-courses-container"
+            <h4 class="row">{{data.enrolledCourses.length}} Enrolled Courses</h4>
+            <div class="row enrolled-courses-container"
                 >
                 <div id="enrolledCourses" class="panel-group">
                     <div class="panel panel-default course-panel enrolled-course-panel"
@@ -103,9 +102,8 @@
     </div>
     <div id="searchResultsContainer">
         <div ng-show="query.length > 0 && data.courses.length > 0">
-            <h4 class="row">Search Results</h4>
-            <div id="searchPanelsContainer"
-                class="row course-panels-container"
+            <h4 class="row"> {{filteredCourses.length}} Search Results</h4>
+            <div class="row course-panels-container"
                 >
                 <div id="unenrolledCourses" class="panel-group">
                     <div class="panel panel-default course-panel"
