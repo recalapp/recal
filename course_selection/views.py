@@ -107,11 +107,11 @@ def get_courses_by_term_code(term_code):
 
 @login_required
 @require_GET
-#@cache_page_with_prefix(60 * 5, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
+@cache_page_with_prefix(60 * 15, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
 def get_courses_json(request):
     """
     Returns list of courses for a semester
-    Cached for 5 minutes by ?semester__term_code
+    Cached for 15 minutes by ?semester__term_code
     """
     term_code = request.GET.get('semester__term_code', '')
     results = get_courses_by_term_code(term_code)
