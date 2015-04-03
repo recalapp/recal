@@ -15,6 +15,12 @@
   cursor: pointer;
   overflow: visible;
 }
+.fc-event:hover .fc-location {
+  visibility: visible;
+}
+.fc-event .fc-location {
+  visibility: hidden;
+}
 .cal-unconfirmed {
   background: url('../images/stripe.png') repeat #c0c0c0;
   opacity: 0.8;

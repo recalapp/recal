@@ -117,6 +117,19 @@ class CalendarCtrl {
         this.$scope.uiConfig.eventClick = (calEvent, jsEvent, view) => {
             return this.onEventClick(calEvent, jsEvent, view);
         };
+        
+        this.$scope.uiConfig.eventRender = (event, element) => {
+            var locationTag = '<div class="fc-location">' + event.location + '</div>';
+            element.find(".fc-content").append(locationTag);
+            /*
+            element.qtip({
+                content: event.location,
+                position: {
+                    target: 'mouse'
+                }
+            });
+            */
+        };
     }
 
 
