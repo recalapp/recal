@@ -38,7 +38,6 @@ body {
 #calendarColumn {
   height: 85vh;
   width: 75%;
-  min-width: 540px;
   margin-top: 5px;
 }
 .edit-icon {
