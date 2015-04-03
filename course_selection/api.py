@@ -14,12 +14,20 @@ from course_selection.models import *
 class UserAuthorization(Authorization):
     def read_list(self, object_list, bundle):
         # This assumes a ``QuerySet`` from ``ModelResource``.
-        return [obj for obj in object_list if obj.netid == bundle.request.user.username]
+        filtered = [obj for obj in object_list if obj.netid == bundle.request.user.username]
+        if len(filtered) > 0:
+            return filtered
+        else:
+            raise Unauthorized("Sorry, no peeking!")
+
         #return object_list.filter(user=bundle.request.user)
 
     def read_detail(self, object_list, bundle):
         # Is the requested object owned by the user?
-        return bundle.obj.netid == bundle.request.user.username
+        if bundle.obj.netid == bundle.request.user.username:
+            True
+        else:
+            raise Unauthorized("Sorry, no peeking!")
 
     def create_list(self, object_list, bundle):
         # Assuming they're auto-assigned to ``user``.
@@ -54,13 +62,18 @@ class UserAuthorization(Authorization):
 
 class UserObjectsOnlyAuthorization(Authorization):
     def read_list(self, object_list, bundle):
-        # This assumes a ``QuerySet`` from ``ModelResource``.
-        return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
-        #return object_list.filter(user=bundle.request.user)
+        filtered = [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        if len(filtered) > 0:
+            return filtered
+        else:
+            raise Unauthorized("Sorry, no peeking!")
 
     def read_detail(self, object_list, bundle):
         # Is the requested object owned by the user?
-        return bundle.obj.user.netid == bundle.request.user.username
+        if bundle.obj.user.netid == bundle.request.user.username:
+            True
+        else:
+            raise Unauthorized("Sorry, no peeking!")
 
     def create_list(self, object_list, bundle):
         # Assuming they're auto-assigned to ``user``.
