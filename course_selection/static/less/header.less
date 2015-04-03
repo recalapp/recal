@@ -1,6 +1,7 @@
 @header-height: 5vh;
 @header-background-color: rgba(42, 52, 65, 0.95);
 @max-min-width: 1440px;
+@header-bright-text-color: #DDD;
 
 #header {
     background-color: @header-background-color;
@@ -30,9 +31,10 @@
         top: 10%;
         display: block;
         height: 100%;
+        //line-height: @header-height;
         text-align: center;
         font-size: 1.5em;
-        color: white;
+        color: @header-bright-text-color;
     }
 }
 
@@ -48,6 +50,16 @@
         line-height:@header-height;
         color: #999;
     }
+}
+
+#updates {
+    height: 100%;
+    width: 25vh;
+    color: @header-bright-text-color;
+    display: block;
+    text-decoration: none;
+    line-height:@header-height;
+    font-size: 1.25em;
 }
 
 .group {

@@ -171,7 +171,7 @@ body {
   height: 100%;
   text-align: center;
   font-size: 1.5em;
-  color: white;
+  color: #dddddd;
 }
 #username {
   height: 100%;
@@ -184,6 +184,15 @@ body {
   text-decoration: none;
   line-height: 5vh;
   color: #999;
+}
+#updates {
+  height: 100%;
+  width: 25vh;
+  color: #dddddd;
+  display: block;
+  text-decoration: none;
+  line-height: 5vh;
+  font-size: 1.25em;
 }
 .group {
   position: relative;
