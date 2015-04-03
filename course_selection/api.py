@@ -5,10 +5,95 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.utils import trailing_slash
 from tastypie.cache import SimpleCache
 from tastypie.cache import NoCache
-from tastypie.authorization import Authorization
+from tastypie.authorization import Authorization, ReadOnlyAuthorization
+from tastypie.exceptions import Unauthorized
 from tastypie.http import HttpGone
 from tastypie import fields
 from course_selection.models import *
+
+class UserAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        # This assumes a ``QuerySet`` from ``ModelResource``.
+        return [obj for obj in object_list if obj.netid == bundle.request.user.username]
+        #return object_list.filter(user=bundle.request.user)
+
+    def read_detail(self, object_list, bundle):
+        # Is the requested object owned by the user?
+        return bundle.obj.netid == bundle.request.user.username
+
+    def create_list(self, object_list, bundle):
+        # Assuming they're auto-assigned to ``user``.
+        return [obj for obj in object_list if obj.netid == bundle.request.user.username]
+
+    def create_detail(self, object_list, bundle):
+        return bundle.obj.netid == bundle.request.user.username
+        #return bundle.obj.user == bundle.request.user
+
+    def update_list(self, object_list, bundle):
+        return [obj for obj in object_list if obj.netid == bundle.request.user.username]
+
+        #allowed = []
+
+        ## Since they may not all be saved, iterate over them.
+        #for obj in object_list:
+        #    if obj.user == bundle.request.user:
+        #        allowed.append(obj)
+
+        #return allowed
+
+    def update_detail(self, object_list, bundle):
+        return bundle.obj.netid == bundle.request.user.username
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
+
+class UserObjectsOnlyAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        # This assumes a ``QuerySet`` from ``ModelResource``.
+        return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        #return object_list.filter(user=bundle.request.user)
+
+    def read_detail(self, object_list, bundle):
+        # Is the requested object owned by the user?
+        return bundle.obj.user.netid == bundle.request.user.username
+
+    def create_list(self, object_list, bundle):
+        # Assuming they're auto-assigned to ``user``.
+        return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+
+    def create_detail(self, object_list, bundle):
+        return bundle.obj.user.netid == bundle.request.user.username
+        #return bundle.obj.user == bundle.request.user
+
+    def update_list(self, object_list, bundle):
+        return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+
+        #allowed = []
+
+        ## Since they may not all be saved, iterate over them.
+        #for obj in object_list:
+        #    if obj.user == bundle.request.user:
+        #        allowed.append(obj)
+
+        #return allowed
+
+    def update_detail(self, object_list, bundle):
+        return bundle.obj.user.netid == bundle.request.user.username
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        # raise Unauthorized("Sorry, no deletes.")
+        return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        #return object_list
+
+    def delete_detail(self, object_list, bundle):
+        return bundle.obj.user.netid == bundle.request.user.username
+        #raise Unauthorized("Sorry, no deletes.")
 
 class SemesterResource(ModelResource):
     class Meta:
@@ -132,7 +217,7 @@ class ScheduleResource(ModelResource):
         excludes = []
         allowed_methods = ['get', 'post', 'put', 'delete']
         cache = NoCache()
-        authorization = Authorization()
+        authorization = UserObjectsOnlyAuthorization()
         always_return_data = True
         limit = 0
         max_limit = 0
@@ -156,7 +241,7 @@ class UserResource(ModelResource):
         excludes = ['password']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
-        authorization = Authorization()
+        authorization = UserAuthorization()
         filtering = {
             'netid': ALL_WITH_RELATIONS
         }
