@@ -19,8 +19,14 @@ class CourseAdmin(admin.ModelAdmin):
     ordering = ('-title', )
     search_fields = ['title']
 
+class ScheduleAdmin(admin.ModelAdmin):
+    model = Schedule
+    list_display = ('title', 'user', 'semester', )
+    list_filter = ('semester', 'user', )
+    search_fields = ['user__netid']
+
 admin.site.register(Semester, SemesterAdmin)
-admin.site.register(Schedule)
+admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(Section)
 admin.site.register(Meeting)
 admin.site.register(Nice_User)
