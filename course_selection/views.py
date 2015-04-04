@@ -11,6 +11,8 @@ from django.db.models import Q
 from django.views.decorators.cache import cache_page
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie # send regardless of whether Django thinks we should
+
+from view_cache_utils import cache_page_with_prefix
 from django.template import Template, Context
 import hashlib
 
@@ -116,6 +118,20 @@ def get_courses_json(request, term_code):
     results = get_courses_by_term_code(term_code)
     data = json.dumps(results)
     return HttpResponse(data, 'application/json', status=200)
+
+@login_required
+@require_GET
+@cache_page_with_prefix(60 * 60 * 24, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
+def get_courses_json_old(request, term_code):
+    """
+    Returns list of courses for a semester
+    Cached for a day by ?semester__term_code
+    """
+    term_code = request.GET.get('semester__term_code', '')
+    results = get_courses_by_term_code(term_code)
+    data = json.dumps(results)
+    return HttpResponse(data, 'application/json', status=200)
+
 
 @login_required
 def mobile_logged_in(request):
