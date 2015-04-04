@@ -54,7 +54,8 @@ def hydrate_meeting_dict(meeting):
         'days': meeting.days,
         'start_time': meeting.start_time,
         'end_time': meeting.end_time,
-        'location': meeting.location
+        'location': meeting.location,
+        'id': meeting.id
     }
 
 def hydrate_section_dict(section, course):
