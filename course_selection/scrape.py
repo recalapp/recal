@@ -230,7 +230,7 @@ def get_courses_for_term(term_code):
                 # thought in fact, these fields are never empty;
                 # for courses that don't have meetings, the stream returns
                 # meetings with invalid times
-                print 'no schedule or meetings for ' + str(section)
+                print 'no schedule or meetings for ' + unicode(course_object) + " " + section_name
                 return
     
             # now we check if there is already an event for this section
@@ -254,9 +254,11 @@ def get_courses_for_term(term_code):
     
             ## generate meetings for this section
             for meeting in meetings:
-                days = ""
-                for day in meeting.find('days'):
-                    days += day.text + ' '
+                days = ' '.join([day.text for day in meeting.find('days')])
+
+                #days = ""
+                #for day in meeting.find('days'):
+                #    days += day.text + ' '
                 if len(days) > 10:
                     # this could happen if there's class every day
                     # for example CHI101: M T W Th F
