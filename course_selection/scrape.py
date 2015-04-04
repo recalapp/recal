@@ -254,15 +254,10 @@ def get_courses_for_term(term_code):
     
             ## generate meetings for this section
             for meeting in meetings:
-                days = ' '.join([day.text for day in meeting.find('days')])
-
-                #days = ""
-                #for day in meeting.find('days'):
-                #    days += day.text + ' '
-                if len(days) > 10:
-                    # this could happen if there's class every day
-                    # for example CHI101: M T W Th F
-                    days = days[:10]
+                days = ""
+                for day in meeting.find('days'):
+                    days += day.text + ' '
+                days = days[:10]
     
                 # the times are in the format:
                 # HH:MM AM/PM
