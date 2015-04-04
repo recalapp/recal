@@ -17,8 +17,9 @@ define(["require", "exports"], function(require, exports) {
             for (var j = 0; j < section.meetings.length; j++) {
                 var meeting = section.meetings[j];
                 var days = meeting.days.split(' ');
+                var numDays = days[days.length - 1] ? days.length : days.length - 1;
 
-                for (var k = 0; k < days.length - 1; k++) {
+                for (var k = 0; k < numDays; k++) {
                     var day = days[k];
                     var date = this.getAgendaDate(day);
                     var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);

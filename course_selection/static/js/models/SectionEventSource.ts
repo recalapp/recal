@@ -40,10 +40,11 @@ class SectionEventSource implements IEventSource {
         for (var j = 0; j < section.meetings.length; j++) {
             var meeting = section.meetings[j];
             var days = meeting.days.split(' ');
+            var numDays = days[days.length - 1] ? days.length : days.length - 1;
 
             // ignore last element of the result of split, which is 
             // empty string due to the format of the input
-            for (var k = 0; k < days.length - 1; k++) {
+            for (var k = 0; k < numDays; k++) {
                 var day = days[k];
                 var date = this.getAgendaDate(day);
                 var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
