@@ -15,6 +15,7 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
 
     nice.app.config(function (localStorageServiceProvider) {
         localStorageServiceProvider.setPrefix('nice');
+        localStorageServiceProvider.setStorageType('sessionStorage');
     }).config(function (cfpLoadingBarProvider) {
         cfpLoadingBarProvider.latencyThreshold = 500;
         cfpLoadingBarProvider.includeSpinner = false;

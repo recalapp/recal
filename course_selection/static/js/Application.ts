@@ -16,6 +16,7 @@ var nice = new Module('nice', [
 
 nice.app.config((localStorageServiceProvider) => {
     localStorageServiceProvider.setPrefix('nice');
+    localStorageServiceProvider.setStorageType('sessionStorage');
 })
 .config((cfpLoadingBarProvider) => {
     cfpLoadingBarProvider.latencyThreshold = 500;

@@ -107,11 +107,11 @@ def get_courses_by_term_code(term_code):
 
 @login_required
 @require_GET
-@cache_page(60 * 15)
+@cache_page(60 * 60 * 24)
 def get_courses_json(request, term_code):
     """
     Returns list of courses for a semester
-    Cached for 15 minutes by ?semester__term_code
+    Cached for a day by ?semester__term_code
     """
     results = get_courses_by_term_code(term_code)
     data = json.dumps(results)
