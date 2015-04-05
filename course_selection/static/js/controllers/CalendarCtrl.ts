@@ -53,8 +53,7 @@ class CalendarCtrl {
     ];
 
     // dependencies are injected via AngularJS $injector
-    constructor(
-            private $scope) 
+    constructor(private $scope) 
     {
         this.courseWatchInitRun = true;
         this.sectionWatchInitRun = true;
@@ -62,6 +61,7 @@ class CalendarCtrl {
 
         this.scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
         this.$scope.data = this.scheduleManager.getData();
+        this.$scope.myCalendar = $("#myCalendar");
 
         this.compositeEventSources = new CompositeEventSources();
         this.$scope.eventSources = this.compositeEventSources.getEventSources();
@@ -106,6 +106,17 @@ class CalendarCtrl {
                     return this.updateEnrolledSections(newSections, oldSections);
                 },
                 true);
+
+        // watch for calendar to refetch events
+        this.$scope.$watch(
+                () => {
+                    return this.$scope.eventSources;
+                },
+                (newEventSources, oldEventSources) => {
+                    this.$scope.myCalendar.fullCalendar('destroy');
+                    this.initConfig();
+               },
+               true);
     }
 
     private _isVisible() {
@@ -115,7 +126,8 @@ class CalendarCtrl {
     private initConfig() {
         this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
         this.$scope.uiConfig.eventClick = (calEvent, jsEvent, view) => {
-            return this.onEventClick(calEvent, jsEvent, view);
+            this.onEventClick(calEvent, jsEvent, view);
+            this.$scope.$apply();
         };
 
         /*
@@ -142,6 +154,13 @@ class CalendarCtrl {
             });
             */
         };
+
+        var options = this.$scope.uiConfig;
+        angular.extend(options, {
+            eventSources: this.$scope.eventSources
+        });
+
+        this.$scope.myCalendar.fullCalendar(options);
     }
 
 

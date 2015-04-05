@@ -12,6 +12,7 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
 
             this.scheduleManager = this.$scope.$parent.schedule.scheduleManager;
             this.$scope.data = this.scheduleManager.getData();
+            this.$scope.myCalendar = $("#myCalendar");
 
             this.compositeEventSources = new CompositeEventSources();
             this.$scope.eventSources = this.compositeEventSources.getEventSources();
@@ -45,6 +46,14 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             }, function (newSections, oldSections) {
                 return _this.updateEnrolledSections(newSections, oldSections);
             }, true);
+
+            // watch for calendar to refetch events
+            this.$scope.$watch(function () {
+                return _this.$scope.eventSources;
+            }, function (newEventSources, oldEventSources) {
+                _this.$scope.myCalendar.fullCalendar('destroy');
+                _this.initConfig();
+            }, true);
         }
         CalendarCtrl.prototype._isVisible = function () {
             return this.$scope.myCalendar && this.$scope.myCalendar.is(":visible");
@@ -54,7 +63,8 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             var _this = this;
             this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
             this.$scope.uiConfig.eventClick = function (calEvent, jsEvent, view) {
-                return _this.onEventClick(calEvent, jsEvent, view);
+                _this.onEventClick(calEvent, jsEvent, view);
+                _this.$scope.$apply();
             };
 
             /*
@@ -80,6 +90,13 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 });
                 */
             };
+
+            var options = this.$scope.uiConfig;
+            angular.extend(options, {
+                eventSources: this.$scope.eventSources
+            });
+
+            this.$scope.myCalendar.fullCalendar(options);
         };
 
         ///////////////////////////////////////////////////////////////////
