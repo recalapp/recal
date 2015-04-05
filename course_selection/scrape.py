@@ -44,6 +44,8 @@ def get_courses_for_term(term_code):
     section_count = [0]
     new_meeting_count = [0]
     meeting_count = [0]
+    new_professor_count = [0]
+    professor_count = [0]
     
     def get_current_semester():
         """ get semester according to TERM_CODE
@@ -101,6 +103,8 @@ def get_courses_for_term(term_code):
         print str(section_count[0]) + " total sections"
         print str(new_meeting_count[0]) + " new meetings"
         print str(meeting_count[0]) + " total meetings"
+        print str(new_professor_count[0]) + " new professors"
+        print str(professor_count[0]) + " total professors"
     
     # goes through the listings for this department
     def scrape(department):
@@ -158,11 +162,27 @@ def get_courses_for_term(term_code):
             #print "course is not created: " + str(guid)
             #return
     
+        create_or_update_profs(course, course_object)
+
         # handle course listings
         # TODO: Test is this works properly on second run
         create_or_update_listings(course, subject, course_object)
         # add sections and events
         create_or_update_sections(course, course_object)
+
+    def create_or_update_profs(course, course_object):
+        profs = course.find('instructors')
+        for prof in profs:
+            fullname = prof.find('full_name').text
+            new_prof, created = Professor.objects.get_or_create(
+                name=fullname
+            )
+
+            if created:
+                new_professor_count[0] += 1
+
+            professor_count[0] += 1
+            course_object.professors.add(new_prof)
     
     def get_primary_listing(course, subject):
         sub = subject.find('code').text
