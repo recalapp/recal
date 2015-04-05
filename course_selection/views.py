@@ -108,7 +108,6 @@ def get_courses_by_term_code(term_code):
         results.append(hydrate_course_dict(course))
     return results
 
-@login_required
 @require_GET
 @cache_page(60 * 60 * 24)
 def get_courses_json(request, term_code):
@@ -120,7 +119,6 @@ def get_courses_json(request, term_code):
     data = json.dumps(results)
     return HttpResponse(data, 'application/json', status=200)
 
-@login_required
 @require_GET
 @cache_page_with_prefix(60 * 60 * 24, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
 def get_courses_json_old(request):
