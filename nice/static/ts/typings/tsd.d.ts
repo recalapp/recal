@@ -8,3 +8,4 @@
 /// <reference path="angularjs/angular.d.ts" />
 /// <reference path="angularjs/angular-resource.d.ts" />
 /// <reference path="chai/chai.d.ts" />
+/// <reference path="lodash/lodash.d.ts" />
