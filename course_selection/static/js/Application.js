@@ -3,6 +3,7 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
         'ngResource',
         'angular-loading-bar',
         'ngAnimate',
+        'ui.calendar',
         'ui.bootstrap',
         'cfp.hotkeys',
         'LocalStorageModule',

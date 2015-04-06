@@ -4,7 +4,7 @@ var nice = new Module('nice', [
         'ngResource',
         'angular-loading-bar',
         'ngAnimate',
-        //'ui.calendar',
+        'ui.calendar',
         'ui.bootstrap',
         'cfp.hotkeys',
         'LocalStorageModule',
