@@ -26,4 +26,5 @@ six==1.8.0
 sqlparse==0.1.13
 static==1.1.1
 static3==0.5.1
+whitenoise==1.0.6
 wsgiref==0.1.2
