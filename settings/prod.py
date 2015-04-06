@@ -22,11 +22,14 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Limit Host and Referrer headers for security purposes
 # See https://docs.djangoproject.com/en/1.6/ref/settings/#std:setting-ALLOWED_HOSTS
-ALLOWED_HOSTS = [
-    '.recal.io', # Allow domain and subdomains
-    '.recal.io.', # Also allow FQDN and subdomains
-    'localhost', # Allow foreman to run
-]
+ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS', '*').split(',')
+
+#ALLOWED_HOSTS = [
+#    '.recal.io', # Allow domain and subdomains
+#    '.recal.io.', # Also allow FQDN and subdomains
+#    'herokuapp.com',
+#    'localhost', # Allow foreman to run
+#]
 
 SECRET_KEY = environ.get('DJANGO_SECRET_KEY', 'asdfasfshjkxhvkzjxhiu1012u4-9r0iojsof')
 
