@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
+import os
 import dj_database_url
 
 ########## PATH CONFIGURATION
@@ -117,8 +118,10 @@ DATABASES = {
 ALLOWED_HOSTS = ['*']
 
 # Static asset configuration
-STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/static/'
+STATIC_ROOT = join(DJANGO_ROOT, 'staticfiles')
+
+STATIC_HOST = os.environ.get('DJANGO_STATIC_HOST', '')
+STATIC_URL = STATIC_HOST + '/static/'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -147,6 +150,12 @@ CACHES = {
         'TIMEOUT': 60
     }
 }
+
+########## WhiteNoise Settings #######################
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+########## WhiteNoise Settings END #######################
 
 ########## TastyPie Settings #######################
 ## this limit should be done per resource. see course_selection/api.py
