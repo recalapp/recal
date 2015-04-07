@@ -271,6 +271,10 @@ def get_courses_for_term(term_code):
             if created:
                 new_section_count[0] += 1
             section_count[0] += 1
+
+
+            # delete existing meetings
+            Meeting.objects.filter(section=section_object).delete()
     
             ## generate meetings for this section
             for meeting in meetings:
@@ -291,6 +295,7 @@ def get_courses_for_term(term_code):
                 except:
                     location = ""
     
+                # This should only create new meetings now
                 meeting_object, created = Meeting.objects.get_or_create(
                     section = section_object,
                     start_time = str_start_time,
