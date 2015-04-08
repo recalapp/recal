@@ -55,6 +55,21 @@ def status(request):
     """
     return render(request, 'status/index.html', None)
 
+
+def continuity_check(request):
+    """
+    This is a continuity check we can trigger that makes sure:
+        - number of schedules > 100
+        - number of users > 100
+        - number of classes > 100
+
+    """
+
+    if Schedule.objects.count() > 100 and Section.objects.count() > 100 and Nice_User.objects.count() > 100:
+        return HttpResponse("OK")
+    return HttpResponse("Alarm")
+
+
 def we_sorry(request):
     """
     Displays the sorry announcement page.
