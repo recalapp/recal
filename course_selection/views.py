@@ -49,6 +49,12 @@ def landing(request):
     """
     return render(request, 'landing/index.html', None)
 
+def status(request):
+    """
+    Displays the status page.
+    """
+    return render(request, 'status/index.html', None)
+
 def we_sorry(request):
     """
     Displays the sorry announcement page.
