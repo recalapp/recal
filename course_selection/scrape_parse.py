@@ -11,19 +11,23 @@ Procedure:
 from course_selection.models import *
 from lxml import etree
 import HTMLParser
-import string
-import sys
 import urllib2
 from bs4 import BeautifulSoup
 import re
 from datetime import datetime
-from datetime import timedelta
+
+
+class ParseError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
 
 def get_courses_for_term(term_code):
     TERM_CODE = term_code
     COURSE_OFFERINGS = "http://registrar.princeton.edu/course-offerings/"
     FEED_PREFIX = "http://etcweb.princeton.edu/webfeeds/courseofferings/"
-    
+
     # Could also use 'current' instead of str(TERM_CODE), which automatically
     # gets the current semester. caveat: cannot get next semester's schedule
     # ahead of time
@@ -34,8 +38,6 @@ def get_courses_for_term(term_code):
     PTON_NAMESPACE = u'http://as.oit.princeton.edu/xml/courseofferings-1_4'
 
     CURRENT_SEMESTER = ['']
-
-    DAYS = {'M': 0, 'T': 1, 'W': 2, 'Th': 3, 'F': 4, 'Sa': 5, 'S':6}
 
     new_course_count = [0]
     course_count = [0]
@@ -123,6 +125,16 @@ def get_courses_for_term(term_code):
                         for course in courses:
                             parse_course(course, subject)
 
+    def none_to_empty(text):
+        if text is None:
+            return ''
+        else:
+            return text
+
+    def raise_if_none(text, error_message):
+        if text is None:
+            raise ParseError(error_message)
+
     ## Parse it for courses, sections, and lecture times (as recurring events)
     ## If the course with this ID exists in the database, we update the course
     ## Otherwise, create new course with the information
@@ -130,44 +142,34 @@ def get_courses_for_term(term_code):
         """ create a course with basic information.
 
         """
-        #global new_course_count
-        #global course_count
-        h = HTMLParser.HTMLParser()
-        title = h.unescape(course.find('title').text)
-        description = course.find('detail').find('description').text
-        if not description:
-            description = ''
-        description = h.unescape(description)
+        try:
+            #global new_course_count
+            #global course_count
+            h = HTMLParser.HTMLParser()
+            return {
+                "title": raise_if_none(h.unescape(course.find('title').text), "Course title does not exist"),
+                "guid": raise_if_none(course.find('guid').text, 'Course guid does not exist'),
+                "description": h.unescape(none_to_empty(course.find('detail').find('description').text)),
+                "semester": get_current_semester(),
+                "professors": parse_profs(course),
+                "course_listings": parse_listings(course),
+                "sections": parse_sections(course)
+            }
+        except e:
+            return None
 
-        guid = course.find('guid').text
+    # may decide to make this function for just one prof/listing/section, then do a map
+    def parse_profs(course):
+        # TODO
+        pass
 
-        # if we have a course with this registrar_id, get it
-        course_object, created = Course.objects.get_or_create(
-            registrar_id = guid,
-            semester = get_current_semester(),
-        )
+    def parse_listings(course):
+        # TODO
+        pass
 
-        course_object.title = title
-        course_object.description = description
-        course_object.save()
-
-        course_count[0] += 1
-        if created:
-            new_course_count[0] += 1 # for debugging
-        else:
-            # TODO: now we should update the listings/sections when we run again
-            pass
-            # this could be a cross_listing
-            #print "course is not created: " + str(guid)
-            #return
-
-        create_or_update_profs(course, course_object)
-
-        # handle course listings
-        # TODO: Test is this works properly on second run
-        create_or_update_listings(course, subject, course_object)
-        # add sections and events
-        create_or_update_sections(course, course_object)
+    def parse_sections(course):
+        # TODO
+        pass
 
     def create_or_update_profs(course, course_object):
         profs = course.find('instructors')
@@ -253,7 +255,6 @@ def get_courses_for_term(term_code):
                 return
 
             # now we check if there is already an event for this section
-            section_registrar_id = section.find('class_number')
             section_type = section.find('type_name').text
             section_type = section_type[0:3].upper()
 
