@@ -62,12 +62,12 @@ class UserAuthorization(Authorization):
 
 class UserObjectsOnlyAuthorization(Authorization):
     def read_list(self, object_list, bundle):
-        return object_list
-        # filtered = [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
-        # if len(filtered) > 0:
-        #     return filtered
-        # else:
-        #     raise Unauthorized("Sorry, no peeking!")
+        #return object_list
+        filtered = [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        if len(filtered) > 0:
+            return filtered
+        else:
+            raise Unauthorized("Sorry, no peeking!")
 
     def read_detail(self, object_list, bundle):
         # Is the requested object owned by the user?
