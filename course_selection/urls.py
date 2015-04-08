@@ -31,7 +31,7 @@ urlpatterns = patterns(
     url(r'^mobile_logged_in$', views.mobile_logged_in, name='mobile_logged_in'),
     url(r'^landing$', views.landing, name="landing"),
 
-    url(r'^announcements/we_sorry$', views.we_sorry, name="we_sorry"),
+    url(r'^announcements/sorry$', views.we_sorry, name="sorry"),
 
     #url(r'^api/static/worksheet', views.get_worksheet_pdf, name='get-workseet-pdf'),
 )
