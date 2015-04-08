@@ -236,7 +236,6 @@ class ScheduleResource(ModelResource):
         allowed_methods = ['get', 'post', 'put', 'delete']
         cache = NoCache()
         authorization = UserObjectsOnlyAuthorization()
-        #authorization = Authorization()
         always_return_data = True
         limit = 0
         max_limit = 0
@@ -260,7 +259,6 @@ class UserResource(ModelResource):
         excludes = ['password']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
-        #authorization = Authorization()
         authorization = UserAuthorization()
         filtering = {
             'netid': ALL_WITH_RELATIONS
