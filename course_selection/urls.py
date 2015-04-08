@@ -23,6 +23,7 @@ v1_api.register(CourseListingResource())
 urlpatterns = patterns(
     "",
     url(r'^$', views.index, name="course_selection"),
+    url(r'^checks/continuity$', views.continuity_check, name="checks_continuity"),
     url(r'^course_evaluations/(?P<semester_id>\d+)/(?P<course_id>\d+)$', views.course_evaluations, name="course_evaluations"),
     url(r'^api/', include(v1_api.urls)),
     url(r'^api/static/courses/(?P<term_code>\d+)$', views.get_courses_json, name='get-courses-json'),
