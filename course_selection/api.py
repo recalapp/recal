@@ -60,6 +60,7 @@ class UserAuthorization(Authorization):
         raise Unauthorized("Sorry, no deletes.")
 
 
+# you can only use it if you own this object
 class UserObjectsOnlyAuthorization(Authorization):
     def read_list(self, object_list, bundle):
         #return object_list
@@ -217,12 +218,6 @@ class ColorPaletteResource(ModelResource):
         excludes = ['']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
-
-# class EnrollmentResource(ModelResource):
-#     class Meta:
-#         queryset = Enrollment.objects.all()
-#         resource_name = 'enrollment'
-#         allowed_methods = []
 
 class ScheduleResource(ModelResource):
     #enrollments = fields.ToManyField(EnrollmentResource, 'enrollments', full=True, null=True)
