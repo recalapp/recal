@@ -1,0 +1,1 @@
+*/10 * * * * python recal_extern/continuity.py
