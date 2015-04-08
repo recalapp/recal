@@ -49,6 +49,12 @@ def landing(request):
     """
     return render(request, 'landing/index.html', None)
 
+def we_sorry(request):
+    """
+    Displays the sorry announcement page.
+    """
+    return render(request, 'announcements/we_sorry.html', None)
+
 def hydrate_meeting_dict(meeting):
     return {
         'days': meeting.days,

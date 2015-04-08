@@ -1,0 +1,105 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Pick your Princeton Fall 2015 courses on ReCal.">
+    <meta name="author" content="ReCal">
+    <link rel="shortcut icon" href="{% static 'announcements/img/ico/favicon.ico' %}">
+
+    <title>ReCal Announcements</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static 'announcements/css/bootstrap.css' %}">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static 'announcements/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'announcements/css/font-awesome.min.css' %}">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">RECAL</a>
+        </div>
+        <div class="navbar-collapse collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li><a href="/login?next=/">LOGIN</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+	<!-- *****************************************************************************************************************
+	 HEADERWRAP
+	 ***************************************************************************************************************** -->
+	<div id="headerwrap">
+	    <div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<h1>We're Sorry :(</h1>
+					<h3>We're working hard to ensure this never happens again.</h3>
+				</div>
+			</div><!-- /row -->
+	    </div> <!-- /container -->
+	</div><!-- /headerwrap -->
+
+
+
+
+	<!-- *****************************************************************************************************************
+	 MIDDLE CONTENT
+	 ***************************************************************************************************************** -->
+
+	 <div class="container mtb">
+	 	<div class="row">
+	 		<div class="col-lg-6 col-lg-offset-3">
+         <p>Around midnight, ReCal experienced a database error, resulting in most users’ schedules being deleted. We have since restored our database to the latest backup at 04/07/2015 at 00:27, or Tuesday morning. <b>The database should now be back online, and any changes you made before Tuesday morning, 00:27 AM, should be preserved.</b> We will also be upgrading our database to allow for more frequent backups.</p>
+
+         <p>We know that we have failed your trust, but know that we will be working tirelessly to regain it, and we are doing everything to ensure that this never, ever, happens again.</p>
+
+         <p>Humblest regrets,
+           <br>
+         Dyland, Naphat, Maxim
+           <br>
+         The ReCal Team</p>
+	 		</div>
+
+	 	</div><! --/row -->
+	 </div><! --/container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="{% static 'announcements/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'announcements/js/retina-1.1.0.js' %}"></script>
+    <!--
+    <script src="{% static 'announcements/js/jquery.hoverdir.js' %} "></script>
+    <script src="{% static 'announcements/js/jquery.hoverex.min.js' %} "></script>
+    <script src="{% static 'announcements/js/jquery.prettyPhoto.js' %} "></script>
+    <script src="{% static 'announcements/js/jquery.isotope.min.js' %} "></script>
+    <script src="{% static 'announcements/js/custom.js' %} "></script>
+-->
+
+
+  </body>
+</html>
