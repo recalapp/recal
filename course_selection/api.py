@@ -289,5 +289,5 @@ class ProfessorResource(ModelResource):
         queryset = Professor.objects.all()
         resource_name = 'professor'
         excludes = []
-        allowed_methods = ['get', 'post', 'put']
+        allowed_methods = ['get']
         authorization = Authorization()
