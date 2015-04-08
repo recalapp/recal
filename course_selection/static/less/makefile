@@ -7,7 +7,7 @@ all: main.css nice.css course-search.css calendar.css queue.css course-evaluatio
 clean:
 	rm -f *.css
 
-main.css: main.less
+main.css: main.less nice.less header.less course-search.less calendar.less modal.less
 	$(COMPILE) $(ARGS) main.less > main.css
 
 nice.css: nice.less

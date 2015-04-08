@@ -170,19 +170,26 @@ def get_courses_for_term(term_code):
         create_or_update_sections(course, course_object)
 
     def create_or_update_profs(course, course_object):
+        # first delete previous bindings between course_object and professors
+        # NOTE that this does not delete the professor objects
+        course_object.professors.clear()
+
         profs = course.find('instructors')
         for prof in profs:
-            fullname = prof.find('full_name').text
-            new_prof, created = Professor.objects.get_or_create(
-                name=fullname
-            )
+            try:
+                fullname = prof.find('full_name').text
+                new_prof, created = Professor.objects.get_or_create(
+                    name=fullname
+                )
 
-            if created:
-                new_professor_count[0] += 1
+                if created:
+                    new_professor_count[0] += 1
 
-            professor_count[0] += 1
-            course_object.professors.add(new_prof)
-
+                professor_count[0] += 1
+                course_object.professors.add(new_prof)
+            except:
+                pass
+    
     def get_primary_listing(course, subject):
         sub = subject.find('code').text
         catalog = course.find('catalog_number').text
