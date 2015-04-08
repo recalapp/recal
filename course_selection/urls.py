@@ -31,6 +31,7 @@ urlpatterns = patterns(
 
     url(r'^mobile_logged_in$', views.mobile_logged_in, name='mobile_logged_in'),
     url(r'^landing$', views.landing, name="landing"),
+    url(r'^status$', views.status, name="status"),
 
     url(r'^announcements/sorry$', views.we_sorry, name="sorry"),
 

@@ -1,0 +1,122 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Mobile friendliness -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+    <meta http-equiv="cleartype" content="on">
+
+    <title>ReCal updates</title>
+
+    <link href="{% static 'status/assets/more.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'status/assets/all.css' %}">
+
+    <style type="text/css">
+body.status-page {
+        }
+</style>
+
+
+<script type="text/javascript">
+        var Global = {};
+        Global.locale = 'en';
+    </script>
+    <script src="{% static 'status/js/all-d4baa2f5.js' %}"></script>
+
+</head>
+<body class="status-page">
+    <div class="container">
+
+    <div class="alert alert-info">We're constantly improving ReCal to make course selection easy.</div>
+
+
+    <h1>Status</h1>
+
+
+<div class="timeline">
+    <div class="content-wrapper">
+      <div class="moment first">
+          <div class="row event clearfix">
+              <div class="col-sm-1">
+                  <div class="status-icon status-4" data-toggle="tooltip" title="New" data-placement="left">
+                      <i class="icon ion-checkmark"></i>
+                  </div>
+              </div>
+              <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                  <div class="panel panel-message">
+                      <div class="panel-heading">
+                          <strong>April 8, 2015 - All Clear</strong>
+                          <br>
+                      </div>
+                      <div class="panel-body">
+                          <p>The database has been rolled back to the day before the disruption</p>
+                          <p>Fixed the security issue.</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+        <div class="moment">
+            <div class="row event clearfix">
+                <div class="col-sm-1">
+                    <div class="status-icon status-1" data-toggle="tooltip" title="New" data-placement="left">
+                        <i class="icon ion-close"></i>
+                    </div>
+                </div>
+                <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                    <div class="panel panel-message">
+                        <div class="panel-heading">
+                            <strong>April 7, 2015 - Service Disruption</strong>
+                            <br>
+                        </div>
+                        <div class="panel-body">
+                            <p>Users reported their schedules being deleted.</p>
+                            <p>The issue has been identified as a security issue.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                <div class="moment ">
+            <div class="row event clearfix">
+                <div class="col-sm-1">
+                    <div class="status-icon status-4" data-toggle="tooltip" title="New" data-placement="left">
+                        <i class="icon ion-checkmark"></i>
+                    </div>
+                </div>
+                <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                    <div class="panel panel-message">
+                        <div class="panel-heading">
+                            <strong>April 3, 2015 - Course Selection Launch</strong>
+                        </div>
+                        <div class="panel-body">
+                            <p>ReCal Course Selection offers a better, faster, and easier experience in choosing your classes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            </div>
+</div>
+
+
+
+    </div>
+
+    <footer class="footer">
+        <p>Use ReCal at <a href="http://recal.io">recal.io</a>.</p>
+        <p><small>HTML template from <a href="https://cachethq.io/">Cachet Status Page</a>.</small></p>
+</footer>
+
+<!-- TODO: ganalytics -->
+
+</body></html>
