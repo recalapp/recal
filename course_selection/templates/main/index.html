@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
 {% load staticfiles %}
 
 {% block title %}ReCal: Course Selection {% endblock %}
@@ -9,8 +9,8 @@
 </script>
 
 <div id="container">
-    {% include 'header.html' %}
-    {% include 'semester-tabs.html' %}
+    {% include 'main/header.html' %}
+    {% include 'main/semester-tabs.html' %}
 </div>
 {% endblock %}
 

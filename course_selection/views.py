@@ -29,7 +29,7 @@ def index(request):
     if not request.user.is_authenticated():
         return redirect('landing')
 
-    return render(request, 'index.html', {
+    return render(request, 'main/index.html', {
         'username': unicode(request.user.username)
     })
 
@@ -38,7 +38,7 @@ def course_evaluations(request, semester_id, course_id):
     """
     Course evaluations, an iFrame to registrar's
     """
-    return render(request, 'course_evaluations.html', {
+    return render(request, 'main/course_evaluations.html', {
         'semester_id': semester_id,
         'course_id': course_id
     })
