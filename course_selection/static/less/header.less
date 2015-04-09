@@ -54,12 +54,35 @@
 
 #updates {
     height: 100%;
-    width: 25vh;
+    width: 25vw;
     color: @header-bright-text-color;
     display: block;
     text-decoration: none;
     line-height:@header-height;
     font-size: 1.25em;
+    color: #999;
+    margin-left: 30vw;
+}
+
+#updates::before {
+    content: "*";
+}
+#updates::after {
+    content: "*";
+}
+
+.header-item {
+    color: #dddddd;
+    display: block;
+    text-decoration: none;
+    line-height: 5vh;
+    font-size: 1.25em;
+    margin-right: 10px;
+}
+.header-item > a {
+    color: inherit;
+    border-right: 1px rgb(200,200,200) solid;
+    padding-right: 10px;
 }
 
 .group {
