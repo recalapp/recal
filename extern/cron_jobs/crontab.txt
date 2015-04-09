@@ -1,1 +1,2 @@
 */10 * * * * python recal_extern/continuity.py
+0 * * * * cd ~/recal_backup && . ~/.profile && ./script
