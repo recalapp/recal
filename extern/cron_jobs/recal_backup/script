@@ -1,0 +1,3 @@
+. ~/.profile
+heroku pg:backups capture -a newice 2>&1 >/dev/null
+heroku pg:backups public-url -a newice | cat | xargs -L 1 wget -O `date +"%s"`.bak 2>&1 >/dev/null
