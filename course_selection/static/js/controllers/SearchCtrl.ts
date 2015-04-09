@@ -84,8 +84,7 @@ class SearchCtrl {
         }
     }
 
-    // TODO: do this the angular way
-    // or even better, use css for this
+    // we assume that course-panel-min-height is 5vh
     public updateContainerHeight(numEnrolled: number, numSearchResults) {
         var THRESHOLD = 10;
         var ENROLLED_CONTAINER_HEIGHT = '20vh';
@@ -95,6 +94,7 @@ class SearchCtrl {
         var enrolledPanelsContainer = $(".enrolled-courses-container :visible")[0];
         var searchPanelsContainer = $(".course-panels-container :visible")[0];
 
+        // we clip at least one of the panel containers if we exceed the threshold
         if (numEnrolled + numSearchResults > THRESHOLD)
         {
             if (enrolledPanelsContainer && searchPanelsContainer) {
@@ -106,6 +106,7 @@ class SearchCtrl {
                 searchPanelsContainer.style.maxHeight = MAX_HEIGHT;
             }
         } else {
+            // reset things
             if (enrolledPanelsContainer) {
                 enrolledPanelsContainer.style.maxHeight= MAX_HEIGHT;
             }

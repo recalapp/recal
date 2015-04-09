@@ -220,7 +220,7 @@ body {
 }
 /* all course panels, including enrolled and search results */
 .course-panel {
-  min-height: 40px;
+  min-height: 5vh;
   width: 100%;
   margin-top: 0px !important;
   position: relative;
