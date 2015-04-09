@@ -46,7 +46,7 @@ class SearchCtrl {
             var enrolledLength = this.$scope.data.enrolledCourses.length;
             var searchResultLength = this.$scope.filteredCourses.length;
 
-            this.updateContainerHeight(enrolledLength + searchResultLength);
+            this.updateContainerHeight(enrolledLength, searchResultLength);
         });
 
         this.$scope.$watchCollection(() => {
@@ -86,22 +86,24 @@ class SearchCtrl {
 
     // TODO: do this the angular way
     // or even better, use css for this
-    public updateContainerHeight(numOfDisplayedCourses: number) {
+    public updateContainerHeight(numEnrolled: number, numSearchResults) {
         var THRESHOLD = 10;
         var ENROLLED_CONTAINER_HEIGHT = '20vh';
         var SEARCH_CONTAINER_HEIGHT = '45vh';
-        var MAX_HEIGHT = '80vh';
+        var MAX_HEIGHT = '70vh';
 
         var enrolledPanelsContainer = $(".enrolled-courses-container :visible")[0];
         var searchPanelsContainer = $(".course-panels-container :visible")[0];
 
-        if (numOfDisplayedCourses > THRESHOLD)
+        if (numEnrolled + numSearchResults > THRESHOLD)
         {
-            if (enrolledPanelsContainer) {
-                enrolledPanelsContainer.style.maxHeight= ENROLLED_CONTAINER_HEIGHT;
-            }
-            if (searchPanelsContainer) {
-                searchPanelsContainer.style.maxHeight= SEARCH_CONTAINER_HEIGHT;
+            if (enrolledPanelsContainer && searchPanelsContainer) {
+                enrolledPanelsContainer.style.maxHeight = ENROLLED_CONTAINER_HEIGHT;
+                searchPanelsContainer.style.maxHeight = SEARCH_CONTAINER_HEIGHT;
+            } else if (enrolledPanelsContainer) {
+                enrolledPanelsContainer.style.maxHeight = MAX_HEIGHT;
+            } else if (searchPanelsContainer) {
+                searchPanelsContainer.style.maxHeight = MAX_HEIGHT;
             }
         } else {
             if (enrolledPanelsContainer) {
