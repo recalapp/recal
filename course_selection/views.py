@@ -179,27 +179,27 @@ def mobile_logged_in(request):
 # course enrollment form generation
 #############################################################################
 
-# from django.utils.translation import ugettext as _
-# from pdf import get_template
-#
-# def get_worksheet_pdf(request, template_name='course_enrollment_worksheet.pdf', **kwargs):
-#     """
-#     returns a filled out course enrollment form
-#     NOTE: use sp to check a checkbox
-#     """
-#     user = NetID_Name_Table.objects.get(Q(netid=request.user.username))
-#     context = {
-#         'class': '2016',
-#         'terms': 'sp',
-#         'first': unicode(user.first_name),
-#         'last': unicode(user.last_name)
-#     }
-#
-#     response = HttpResponse(content_type='application/pdf')
-#     response['Content-Disposition'] = \
-#         'attachment; filename=course_enrollment_worksheet.pdf'
-#
-#     template = get_template(template_name)
-#     response.write(template.render(context))
-#
-#     return response
+def get_worksheet_pdf(request, template_name='course_enrollment_worksheet.pdf', **kwargs):
+    from django.utils.translation import ugettext as _
+    from pdf import get_template
+
+    """
+    returns a filled out course enrollment form
+    NOTE: use sp to check a checkbox
+    """
+    #user = NetID_Name_Table.objects.get(Q(netid=request.user.username))
+    context = {
+        'class': '2016',
+        'terms': 'sp',
+        'first': 'first_name', #unicode(user.first_name),
+        'last': 'last_name' #unicode(user.last_name)
+    }
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = \
+        'attachment; filename=course_enrollment_worksheet.pdf'
+
+    template = get_template(template_name)
+    response.write(template.render(context))
+
+    return response
