@@ -151,6 +151,13 @@ CACHES = {
     }
 }
 
+########## PDFTK for PDF GENERATION
+
+PDFTK_BIN = os.environ.get('PDFTK_BIN', '')
+
+########## END PDFTK
+
+
 ########## WhiteNoise Settings #######################
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
