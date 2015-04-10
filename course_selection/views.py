@@ -222,16 +222,52 @@ def get_form_context(schedule_obj):
     import json
 
     context = {}
+    context = fill_out_term(context, schedule_obj)
+    context = fill_out_acad(context, schedule_obj)
+
+    enrollments = json.loads(schedule_obj.enrollments)
+    for idx, enrollment in enumerate(enrollments):
+        context = fill_out_course(context, idx, enrollment)
+    
+    
+    return context
+
+def fill_out_term(context, schedule_obj):
     if int(schedule_obj.semester.term_code[3]) == 2:
         context['termf'] = 'sp'
     else:
         context['terms'] = 'sp'
-    
+    return context
+
+def fill_out_acad(context, schedule_obj):
     end_year = int(schedule_obj.semester.term_code[1:3])
     start_year = end_year - 1
     context['acad'] = unicode(start_year) + '-' + unicode(end_year)
-
-    enrollments = json.loads(schedule_obj.enrollments)
-
-    print context
     return context
+
+def fill_out_course(context, idx, enrollment):
+    checkbox_name = 'add' + str(idx)
+    course_name = 'crs' + str(idx)
+    if idx == 1:
+        checkbox_val = checkbox_name
+    elif idx == 2:
+        checkbox_val = 'Yes'
+    else:
+        checkbox_val = 'sp'
+
+    course = Course.objects.get(id=enrollment['course_id'])
+    sections = [Section.objects.get(id=section_id) for section_id in enrollment['sections']]
+    for j, section in enumerate(sections):
+        meetings = section.meetings.all()
+
+        # if there are no days, we assume the class doesn't have meetings
+        if len(meetings) > 0 and meetings[0].days:
+            context['daytm' + str(idx) + chr(j - 0 + ord('a'))] = \
+                meetings[0].days + " " + meetings[0].start_time[:-3] \
+                + "-" + meetings[0].end_time[:-3]
+
+    context[checkbox_name] = checkbox_val
+    context[course_name] = unicode(course)
+    return context
+
+
