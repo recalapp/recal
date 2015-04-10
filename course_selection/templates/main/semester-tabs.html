@@ -1,17 +1,6 @@
 {% load staticfiles %}
 {% verbatim %}
 <div id="wrap">
-    <div class="alert alert-warning alert-dismissible" role="alert" style="
-    position: fixed;
-    width: 25%;
-    z-index: 1000;
-    left: 20px;
-    bottom: 0;
-    margin-bottom: 10px;
-    ">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        Your schedule looking off? We unfortunately encountered an error last night, and things are back to normal now. More <a class="alert-link" href="/announcements/sorry" target="_blank">here</a>.
-    </div>
     <div ng-controller="SemCtrl as semCtrl" id="semesterContainer">
         <tabset>
         <tab ng-repeat = "semester in semesters"
