@@ -65,10 +65,7 @@ class UserObjectsOnlyAuthorization(Authorization):
     def read_list(self, object_list, bundle):
         #return object_list
         filtered = [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
-        if len(filtered) > 0:
-            return filtered
-        else:
-            raise Unauthorized("Sorry, no peeking!")
+        return filtered
 
     def read_detail(self, object_list, bundle):
         # Is the requested object owned by the user?
@@ -124,7 +121,7 @@ class SemesterResource(ModelResource):
         filtering = {
             'term_code': ALL
         }
-    
+
     def dehydrate(self, bundle):
         # give the semester a readable name
         term_code = bundle.data['term_code']
