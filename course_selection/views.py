@@ -229,7 +229,6 @@ def get_form_context(schedule_obj):
     for idx, enrollment in enumerate(enrollments):
         context = fill_out_course(context, idx, enrollment)
     
-    
     return context
 
 def fill_out_term(context, schedule_obj):
