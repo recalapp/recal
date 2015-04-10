@@ -245,29 +245,49 @@ def fill_out_acad(context, schedule_obj):
     context['acad'] = unicode(start_year) + '-' + unicode(end_year)
     return context
 
+def get_course_checkbox_val(idx):
+    if idx == 1:
+        return 'add1'
+    elif idx == 2:
+        return 'Yes'
+    else:
+        return 'sp'
+
 def fill_out_course(context, idx, enrollment):
     checkbox_name = 'add' + str(idx)
     course_name = 'crs' + str(idx)
-    if idx == 1:
-        checkbox_val = checkbox_name
-    elif idx == 2:
-        checkbox_val = 'Yes'
-    else:
-        checkbox_val = 'sp'
+    checkbox_val = get_course_checkbox_val(idx)
 
     course = Course.objects.get(id=enrollment['course_id'])
     sections = [Section.objects.get(id=section_id) for section_id in enrollment['sections']]
-    for j, section in enumerate(sections):
+
+    for section in sections:
         meetings = section.meetings.all()
+        
+        # TODO: test this
+        if section.section_type == Section.TYPE_LECTURE or \
+                section.section_type == Section.TYPE_SEMINAR or \
+                section.section_type == Section.TYPE_CLASS:
+            section_type = 'a'
+        elif section.section_type == Section.TYPE_LAB:
+            section_type = 'c'
+        else:
+            section_type = 'b'
 
         # if there are no days, we assume the class doesn't have meetings
         if len(meetings) > 0 and meetings[0].days:
-            context['daytm' + str(idx) + chr(j - 0 + ord('a'))] = \
-                meetings[0].days + " " + meetings[0].start_time[:-3] \
-                + "-" + meetings[0].end_time[:-3]
+            daytm_field_name = 'daytm' + str(idx) + section_type
+            clsnbr_field_name = 'clsnbr' + str(idx) + section_type
+
+            context[daytm_field_name] = ' '.join([
+                meeting.days + meeting.start_time[:-3] \
+                + " - " + meeting.end_time[:-3] for meeting in meetings
+            ])     
+
+            context[clsnbr_field_name] = section.section_registrar_id
 
     context[checkbox_name] = checkbox_val
-    context[course_name] = unicode(course)
+    context[course_name] = course.primary_listing()
     return context
 
 
