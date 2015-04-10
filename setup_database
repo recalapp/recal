@@ -1,0 +1,18 @@
+#!/bin/bash
+
+COMMAND="python manage.py"
+
+echo "$COMMAND migrate"
+$COMMAND migrate
+
+echo "$COMMAND createsuperuser"
+$COMMAND createsuperuser
+
+echo "$COMMAND loaddata course_selection/fixtures/initial_data.json"
+$COMMAND loaddata course_selection/fixtures/initial_data.json
+
+echo "$COMMAND createcachetable"
+$COMMAND createcachetable
+
+echo "$COMMAND course_selection_courses_init"
+$COMMAND course_selection_courses_init
