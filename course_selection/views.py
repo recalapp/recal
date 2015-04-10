@@ -227,7 +227,8 @@ def get_form_context(schedule_obj):
 
     enrollments = json.loads(schedule_obj.enrollments)
     for idx, enrollment in enumerate(enrollments):
-        context = fill_out_course(context, idx, enrollment)
+        # form indices start from 1, array indices start from 0
+        context = fill_out_course(context, idx + 1, enrollment)
     
     return context
 
