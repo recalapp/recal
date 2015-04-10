@@ -34,6 +34,7 @@ class PdfTemplate(Template):
             pdftk_bin = settings.PDFTK_BIN
 
         fdf_stream = forge_fdf(fdf_data_strings=fields)
+        assert False
 
         cmd = [
             pdftk_bin,
