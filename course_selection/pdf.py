@@ -25,7 +25,7 @@ class PdfTemplate(Template):
         if err:
             raise PdfTemplateError(err)
         return output
-    
+
     def fill_form(self, fields, src, pdftk_bin=None):
         if pdftk_bin is None:
             from django.conf import settings
@@ -33,7 +33,6 @@ class PdfTemplate(Template):
             assert len(settings.PDFTK_BIN) > 0
             pdftk_bin = settings.PDFTK_BIN
 
-        assert False
         fdf_stream = forge_fdf(fdf_data_strings=fields)
 
         cmd = [
