@@ -261,7 +261,7 @@ def get_courses_for_term(term_code):
                 return
     
             # now we check if there is already an event for this section
-            section_registrar_id = section.find('class_number')
+            section_registrar_id = section.find('class_number').text
             section_type = section.find('type_name').text
             section_type = section_type[0:3].upper()
     
