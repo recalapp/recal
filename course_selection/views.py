@@ -1,6 +1,6 @@
 from django.utils.dateformat import format
 from django.shortcuts import * # render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -179,7 +179,7 @@ def mobile_logged_in(request):
 # course enrollment form generation
 #############################################################################
 
-def get_worksheet_pdf(request, template_name='course_enrollment_worksheet.pdf', **kwargs):
+def get_worksheet_pdf(request, schedule_id, template_name='course_enrollment_worksheet.pdf', **kwargs):
     from django.utils.translation import ugettext as _
     from pdf import get_template
 
@@ -187,19 +187,107 @@ def get_worksheet_pdf(request, template_name='course_enrollment_worksheet.pdf', 
     returns a filled out course enrollment form
     NOTE: use sp to check a checkbox
     """
+    
+    # get all the required fields:
+    # get user schedule, verify that user has permissions
+    #
+    # get each course, registrar id and times
+
     #user = NetID_Name_Table.objects.get(Q(netid=request.user.username))
-    context = {
-        'class': '2016',
-        'terms': 'sp',
-        'first': 'first_name', #unicode(user.first_name),
-        'last': 'last_name' #unicode(user.last_name)
-    }
+    try:
+        schedule = Schedule.objects.get(Q(id=schedule_id))
+        assert schedule.user.netid == request.user.username
+    except:
+        return HttpResponseNotFound('<h1>Schedule Not Found</h1>')
+
+    context = get_form_context(schedule)
+
+    # context = {
+    #     'class': '2016',
+    #     'terms': 'sp', # terms is the spring term
+    #     'first': 'first_name', #unicode(user.first_name),
+    #     'last': 'last_name' #unicode(user.last_name)
+    # }
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = \
-        'attachment; filename=course_enrollment_worksheet.pdf'
+        'inline; filename=course_enrollment_worksheet.pdf'
 
     template = get_template(template_name)
     response.write(template.render(context))
 
     return response
+
+def get_form_context(schedule_obj):
+    import json
+
+    context = {}
+    context = fill_out_term(context, schedule_obj)
+    context = fill_out_acad(context, schedule_obj)
+
+    enrollments = json.loads(schedule_obj.enrollments)
+    for idx, enrollment in enumerate(enrollments):
+        # form indices start from 1, array indices start from 0
+        context = fill_out_course(context, idx + 1, enrollment)
+    
+    return context
+
+def fill_out_term(context, schedule_obj):
+    if int(schedule_obj.semester.term_code[3]) == 2:
+        context['termf'] = 'sp'
+    else:
+        context['terms'] = 'sp'
+    return context
+
+def fill_out_acad(context, schedule_obj):
+    end_year = int(schedule_obj.semester.term_code[1:3])
+    start_year = end_year - 1
+    context['acad'] = unicode(start_year) + '-' + unicode(end_year)
+    return context
+
+def get_course_checkbox_val(idx):
+    if idx == 1:
+        return 'add1'
+    elif idx == 2:
+        return 'Yes'
+    else:
+        return 'sp'
+
+def fill_out_course(context, idx, enrollment):
+    checkbox_name = 'add' + str(idx)
+    course_name = 'crs' + str(idx)
+    checkbox_val = get_course_checkbox_val(idx)
+
+    course = Course.objects.get(id=enrollment['course_id'])
+    sections = [Section.objects.get(id=section_id) for section_id in enrollment['sections']]
+
+    for section in sections:
+        meetings = section.meetings.all()
+        
+        # TODO: test this
+        if section.section_type == Section.TYPE_LECTURE or \
+                section.section_type == Section.TYPE_SEMINAR or \
+                section.section_type == Section.TYPE_CLASS:
+            section_type = 'a'
+        elif section.section_type == Section.TYPE_LAB:
+            section_type = 'c'
+        else:
+            section_type = 'b'
+
+        # if there are no days, we assume the class doesn't have meetings
+        if len(meetings) > 0 and meetings[0].days:
+            daytm_field_name = 'daytm' + str(idx) + section_type
+            clsnbr_field_name = 'clsnbr' + str(idx) + section_type
+
+            context[daytm_field_name] = ' '.join([
+                meeting.days + meeting.start_time[:-3] \
+                + " - " + meeting.end_time[:-3] for meeting in meetings
+            ])     
+
+            context[clsnbr_field_name] = section.section_registrar_id
+
+    context[checkbox_name] = checkbox_val
+    context[course_name] = course.primary_listing()
+    return context
+
+
