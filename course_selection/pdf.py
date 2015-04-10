@@ -30,8 +30,10 @@ class PdfTemplate(Template):
         if pdftk_bin is None:
             from django.conf import settings
             assert hasattr(settings, 'PDFTK_BIN'), "PDF generation requires pdftk (http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/). Edit your PDFTK_BIN settings accordingly."
+            assert len(settings.PDFTK_BIN) > 0
             pdftk_bin = settings.PDFTK_BIN
 
+        assert False
         fdf_stream = forge_fdf(fdf_data_strings=fields)
 
         cmd = [
