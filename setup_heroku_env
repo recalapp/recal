@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "$1" == "-h" ]
+  then echo "Usage: $0 [-a app_name]"
+else
+
+COMMAND="heroku config:set \
+  DJANGO_DEBUG=False \
+  PDFTK_BIN=/app/vendor/pdftk/bin/pdftk \
+  LD_LIBRARY_PATH=/app/vendor/pdftk/lib \
+  $@"
+
+echo $COMMAND
+echo
+
+$COMMAND
+
+fi
