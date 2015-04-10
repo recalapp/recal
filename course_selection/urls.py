@@ -35,5 +35,5 @@ urlpatterns = patterns(
 
     #url(r'^announcements/sorry$', views.we_sorry, name="sorry"),
 
-    url(r'^api/static/worksheet', views.get_worksheet_pdf, name='get-worksheet-pdf'),
+    url(r'^api/worksheet/(?P<schedule_id>\d+)$', views.get_worksheet_pdf, name='get-worksheet-pdf'),
 )
