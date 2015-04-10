@@ -25,11 +25,12 @@ class PdfTemplate(Template):
         if err:
             raise PdfTemplateError(err)
         return output
-    
+
     def fill_form(self, fields, src, pdftk_bin=None):
         if pdftk_bin is None:
             from django.conf import settings
             assert hasattr(settings, 'PDFTK_BIN'), "PDF generation requires pdftk (http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/). Edit your PDFTK_BIN settings accordingly."
+            assert len(settings.PDFTK_BIN) > 0
             pdftk_bin = settings.PDFTK_BIN
 
         fdf_stream = forge_fdf(fdf_data_strings=fields)

@@ -7,6 +7,7 @@
 base_url = "http://recal.io"
 continuity_check_url = "/checks/continuity"
 
+VERBOSE=False
 
 import urllib
 import time
@@ -45,7 +46,8 @@ def sendEmail(base_url, tested_url, test_time_utc):
 	server.sendmail(username ,toaddrs,msg.as_string())
 	server.quit()
 
-print 'testing', base_url, continuity_check_url
+if VERBOSE:
+	print 'testing', base_url, continuity_check_url
 url = base_url + continuity_check_url
 up = urllib.urlopen(url).read() == "OK"
 if not up:
@@ -54,4 +56,4 @@ if not up:
 	if not up: # if still not up
 		# message us
 		sendEmail(base_url, continuity_check_url, str(datetime.utcnow()))
-		print 'email sent because failed'
+		print 'email sent because failed', base_url, continuity_check_url

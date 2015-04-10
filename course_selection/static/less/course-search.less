@@ -10,6 +10,7 @@
 @title-font-size: 30px;
 
 @course-panel-container-height: 45vh;
+@course-panel-min-height: 5vh;
 @search-bar-height: 4vh;
 @course-panel-heading-height: 6vh;
 @course-panel-body-height: 19vh;
@@ -17,7 +18,7 @@
 
 /* all course panels, including enrolled and search results */
 .course-panel {
-    min-height: 40px;
+    min-height: @course-panel-min-height;
     width: 100%;
     margin-top: 0px !important;
     position: relative;

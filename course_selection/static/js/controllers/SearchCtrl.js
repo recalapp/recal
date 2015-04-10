@@ -23,7 +23,7 @@ define(["require", "exports"], function(require, exports) {
                 var enrolledLength = _this.$scope.data.enrolledCourses.length;
                 var searchResultLength = _this.$scope.filteredCourses.length;
 
-                _this.updateContainerHeight(enrolledLength + searchResultLength);
+                _this.updateContainerHeight(enrolledLength, searchResultLength);
             });
 
             this.$scope.$watchCollection(function () {
@@ -68,25 +68,28 @@ define(["require", "exports"], function(require, exports) {
             }
         };
 
-        // TODO: do this the angular way
-        // or even better, use css for this
-        SearchCtrl.prototype.updateContainerHeight = function (numOfDisplayedCourses) {
+        // we assume that course-panel-min-height is 5vh
+        SearchCtrl.prototype.updateContainerHeight = function (numEnrolled, numSearchResults) {
             var THRESHOLD = 10;
             var ENROLLED_CONTAINER_HEIGHT = '20vh';
             var SEARCH_CONTAINER_HEIGHT = '45vh';
-            var MAX_HEIGHT = '80vh';
+            var MAX_HEIGHT = '70vh';
 
             var enrolledPanelsContainer = $(".enrolled-courses-container :visible")[0];
             var searchPanelsContainer = $(".course-panels-container :visible")[0];
 
-            if (numOfDisplayedCourses > THRESHOLD) {
-                if (enrolledPanelsContainer) {
+            // we clip at least one of the panel containers if we exceed the threshold
+            if (numEnrolled + numSearchResults > THRESHOLD) {
+                if (enrolledPanelsContainer && searchPanelsContainer) {
                     enrolledPanelsContainer.style.maxHeight = ENROLLED_CONTAINER_HEIGHT;
-                }
-                if (searchPanelsContainer) {
                     searchPanelsContainer.style.maxHeight = SEARCH_CONTAINER_HEIGHT;
+                } else if (enrolledPanelsContainer) {
+                    enrolledPanelsContainer.style.maxHeight = MAX_HEIGHT;
+                } else if (searchPanelsContainer) {
+                    searchPanelsContainer.style.maxHeight = MAX_HEIGHT;
                 }
             } else {
+                // reset things
                 if (enrolledPanelsContainer) {
                     enrolledPanelsContainer.style.maxHeight = MAX_HEIGHT;
                 }

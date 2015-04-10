@@ -33,7 +33,7 @@ urlpatterns = patterns(
     url(r'^landing$', views.landing, name="landing"),
     url(r'^status$', views.status, name="status"),
 
-    url(r'^announcements/sorry$', views.we_sorry, name="sorry"),
+    #url(r'^announcements/sorry$', views.we_sorry, name="sorry"),
 
-    #url(r'^api/static/worksheet', views.get_worksheet_pdf, name='get-workseet-pdf'),
+    url(r'^api/static/worksheet', views.get_worksheet_pdf, name='get-worksheet-pdf'),
 )
