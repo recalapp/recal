@@ -21,9 +21,9 @@
 <link rel="stylesheet" href="{% static 'course_selection/bower_components/angular-loading-bar/build/loading-bar.css' %}"> 
 <link rel="stylesheet" href="{% static 'course_selection/bower_components/qtip2/jquery.qtip.min.css' %}"> 
 <link id="theme_css" rel="stylesheet" href="{% static 'course_selection/bower_components/flatstrap/dist/css/flatstrap.min.css' %}">
-<link rel="stylesheet" href="../static/less/main.css">
+<link rel="stylesheet" href="{% static 'less/main.css' %}">
 {% endblock %}
 
 {% block link_or_script_nonblocking %}
-<script src="{% static 'course_selection/bower_components/requirejs/min/require.min.js' %}" data-main="../static/js/config"></script>
+<script src="{% static 'course_selection/bower_components/requirejs/min/require.min.js' %}" data-main="{% static 'js/config' %}"></script>
 {% endblock %}
