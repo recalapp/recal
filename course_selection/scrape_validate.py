@@ -66,7 +66,7 @@ def validate_course(course):
     section_validator = {
         'registrar_id': validate_string_not_empty,
         'name': validate_string_not_empty,
-        'type': lambda x: validate_string_max_length(x, 4) and validate_string_upper(x),
+        'type': lambda x: validate_string_max_length(x, 3) and validate_string_upper(x),
         'capacity': validate_string_not_empty,
         'enrollment': validate_string_not_empty,
         'meetings': lambda array: validate_array(array, lambda meeting: validate_dict(meeting, meeting_validator)),
