@@ -8,14 +8,11 @@ Procedure:
 - Parse it for courses, sections, and lecture times (as recurring events)
 """
 
-from course_selection.models import *
 from lxml import etree
 import HTMLParser
 import urllib2
 from bs4 import BeautifulSoup
 import re
-from datetime import datetime
-
 
 class ParseError(Exception):
     def __init__(self, value):
@@ -39,14 +36,9 @@ def get_courses_for_term(term_code):
 
     CURRENT_SEMESTER = ['']
 
-    new_course_count = [0]
-    course_count = [0]
-    new_section_count = [0]
-    section_count = [0]
-    new_meeting_count = [0]
-    meeting_count = [0]
-    new_professor_count = [0]
-    professor_count = [0]
+    h = HTMLParser.HTMLParser()
+    def get_text(key, object):
+        return h.unescape(raise_if_none(object.find(key), "key " + key + " does not exist").text)
 
     def get_current_semester():
         """ get semester according to TERM_CODE
@@ -54,24 +46,16 @@ def get_courses_for_term(term_code):
         """
         #global CURRENT_SEMESTER
         if not CURRENT_SEMESTER[0]:
-            try:
-                CURRENT_SEMESTER[0] = Semester.objects.get(term_code=str(TERM_CODE))
-            except:
-                parser = etree.XMLParser(ns_clean=True)
-                termxml = urllib2.urlopen(TERM_PREFIX)
-                tree = etree.parse(termxml, parser)
-                remove_namespace(tree, PTON_NAMESPACE)
-                term = tree.getroot().find('term')
-                start_date = term.find('start_date').text
-                end_date = term.find('end_date').text
-                end_date = datetime.strptime(end_date, "%Y-%m-%d")
-                curr_sem = Semester(
-                    start_date = start_date,
-                    end_date = end_date,
-                    term_code = str(TERM_CODE)
-                )
-                curr_sem.save()
-                CURRENT_SEMESTER[0] = curr_sem
+            parser = etree.XMLParser(ns_clean=True)
+            termxml = urllib2.urlopen(TERM_PREFIX)
+            tree = etree.parse(termxml, parser)
+            remove_namespace(tree, PTON_NAMESPACE)
+            term = tree.getroot().find('term')
+            CURRENT_SEMESTER[0] = {
+                'start_date': get_text('start_date', term),
+                'end_date': get_text('end_date', term),
+                'term_code': str(TERM_CODE),
+            }
         return CURRENT_SEMESTER[0]
 
     def get_department_list(seed_page):
@@ -95,17 +79,10 @@ def get_courses_for_term(term_code):
         #global section_count
         seed_page = urllib2.urlopen(COURSE_OFFERINGS)
         departments = get_department_list(seed_page)
+        courses = []
         for department in departments:
-            scrape(department)
-
-        print str(new_course_count[0]) + " new courses"
-        print str(course_count[0]) + " total courses"
-        print str(new_section_count[0]) + " new sections"
-        print str(section_count[0]) + " total sections"
-        print str(new_meeting_count[0]) + " new meetings"
-        print str(meeting_count[0]) + " total meetings"
-        print str(new_professor_count[0]) + " new professors"
-        print str(professor_count[0]) + " total professors"
+            courses += scrape(department)
+        return courses
 
     # goes through the listings for this department
     def scrape(department):
@@ -118,12 +95,16 @@ def get_courses_for_term(term_code):
         tree = etree.parse(xmldoc, parser)
         dep_courses = tree.getroot()
         remove_namespace(dep_courses, PTON_NAMESPACE)
+        parsed_courses = []
         for term in dep_courses:
             for subjects in term:
                 for subject in subjects:
                     for courses in subject:
                         for course in courses:
-                            parse_course(course, subject)
+                            x = parse_course(course, subject)
+                            if x is not None:
+                                parsed_courses.append(x)
+        return parsed_courses
 
     def none_to_empty(text):
         if text is None:
@@ -131,9 +112,16 @@ def get_courses_for_term(term_code):
         else:
             return text
 
+    def none_to_empty_list(x):
+        if x is None:
+            return []
+        else:
+            return x
+
     def raise_if_none(text, error_message):
         if text is None:
             raise ParseError(error_message)
+        return text
 
     ## Parse it for courses, sections, and lecture times (as recurring events)
     ## If the course with this ID exists in the database, we update the course
@@ -145,168 +133,72 @@ def get_courses_for_term(term_code):
         try:
             #global new_course_count
             #global course_count
-            h = HTMLParser.HTMLParser()
             return {
-                "title": raise_if_none(h.unescape(course.find('title').text), "Course title does not exist"),
-                "guid": raise_if_none(course.find('guid').text, 'Course guid does not exist'),
-                "description": h.unescape(none_to_empty(course.find('detail').find('description').text)),
+                "title": get_text('title', course),
+                "guid": get_text('guid', course),
+                "description": none_to_empty(course.find('detail').find('description')).text,
                 "semester": get_current_semester(),
-                "professors": parse_profs(course),
-                "course_listings": parse_listings(course),
-                "sections": parse_sections(course)
+                "professors": [parse_prof(x) for x in course.find('instructors')],
+                "course_listings": parse_listings(course, subject),
+                "sections": [parse_section(x) for x in course.find('classes')]
             }
-        except e:
+        except Exception as inst:
+            print inst
             return None
 
     # may decide to make this function for just one prof/listing/section, then do a map
-    def parse_profs(course):
-        # TODO
-        pass
+    def parse_prof(prof):
+        return {
+            "full_name": get_text('full_name', prof)
+        }
 
-    def parse_listings(course):
-        # TODO
-        pass
+    def parse_listings(course, subject):
+        def parse_cross_listing(cross_listing):
+            return {
+                'dept': get_text('subject', cross_listing),
+                'code': get_text('catalog_number', cross_listing),
+                'is_primary': False
+            }
+        cross_listings = [parse_cross_listing(x) for x in none_to_empty_list(course.find('crosslistings'))]
+        primary_listing = {
+            'dept': get_text('code', subject),
+            'code': get_text('catalog_number', course),
+            'is_primiary': True
+        }
+        return cross_listings + [primary_listing]
 
-    def parse_sections(course):
-        # TODO
-        pass
-
-    def create_or_update_profs(course, course_object):
-        profs = course.find('instructors')
-        for prof in profs:
-            fullname = prof.find('full_name').text
-            new_prof, created = Professor.objects.get_or_create(
-                name=fullname
-            )
-
-            if created:
-                new_professor_count[0] += 1
-
-            professor_count[0] += 1
-            course_object.professors.add(new_prof)
-
-    def get_primary_listing(course, subject):
-        sub = subject.find('code').text
-        catalog = course.find('catalog_number').text
-        return (sub, catalog)
-
-    def get_rating(course):
-        """ we contact easypce for the ratings"""
-        #TODO
-        pass
-
-    def create_or_update_listings(course, subject, course_object):
-        """ Create or, if already exists, update a course
-
-        """
-        sub, catalog = get_primary_listing(course, subject)
-        new_listing, created = Course_Listing.objects.get_or_create(
-            course=course_object,
-            dept=sub,
-            number=catalog,
-            is_primary=True
-        )
-
-        course_listings = []
-        if course.find('crosslistings') is not None:
-            for cross_listing in course.find('crosslistings'):
-                course_listings.append((cross_listing.find('subject').text, cross_listing.find('catalog_number').text))
-
-        # create course_listings
-        for course_listing in course_listings:
-            new_listing, created = Course_Listing.objects.get_or_create(
-                course=course_object,
-                dept=course_listing[0],
-                number=course_listing[1],
-                is_primary=False
-            )
-
-    def create_or_update_sections(course, course_object):
-        """ Given a course, create or, if already exists, update all sections
-
-        """
-        #global new_section_count
-        #global section_count
-        #global new_meeting_count
-        #global meeting_count
-
-        # add sections
-        classes = course.find('classes')
-        for section in classes:
-            section_name = section.find('section').text
-            section_type = section.find('type_name').text
-            section_capacity = section.find('capacity').text
-            section_enrollment = section.find('enrollment').text
-
-            # check if this section has a schedule attached to it
-            try:
-                schedule = section.find('schedule')
-                meetings = schedule.find('meetings')
-            except:
-                # TODO: CAN'T DO THIS: STILL NEED TO CREATE OBJECT BEFORE RETURNS
-                # TODO UPDATE: changed section_object to section
-                # this could happen at the beginning of the semester
-                #
-                #
-                # thought in fact, these fields are never empty;
-                # for courses that don't have meetings, the stream returns
-                # meetings with invalid times
-                print 'no schedule or meetings for ' + unicode(course_object) + " " + section_name
-                return
-
-            # now we check if there is already an event for this section
-            section_type = section.find('type_name').text
-            section_type = section_type[0:3].upper()
-
-            section_object, created = Section.objects.get_or_create(
-                course = course_object,
-                name = section_name,
-            )
-
-            section_object.section_type = section_type
-            section_object.section_enrollment = section_enrollment
-            section_object.section_capacity = section_capacity
-            section_object.save()
-
-            if created:
-                new_section_count[0] += 1
-            section_count[0] += 1
-
-
-            # delete existing meetings
-            Meeting.objects.filter(section=section_object).delete()
-
-            ## generate meetings for this section
-            for meeting in meetings:
+    def parse_section(section):
+        def parse_meeting(meeting):
+            def get_days(meeting):
                 days = ""
                 for day in meeting.find('days'):
                     days += day.text + ' '
-                days = days[:10]
-
-                # the times are in the format:
-                # HH:MM AM/PM
-                str_end_time = meeting.find('end_time').text
-                str_start_time = meeting.find('start_time').text
-
+                return days[:10]
+            def get_location(meeting):
                 try:
                     building = meeting.find('building').find('name').text
                     room = meeting.find('room').text
                     location = building + " " + room
                 except:
                     location = ""
-
-                # This should only create new meetings now
-                meeting_object, created = Meeting.objects.get_or_create(
-                    section = section_object,
-                    start_time = str_start_time,
-                    end_time = str_end_time,
-                    days = days,
-                    location = location
-                )
-
-                if created:
-                    new_meeting_count[0] += 1
-                meeting_count[0] += 1
+                finally:
+                    return location
+            # the times are in the format:
+            # HH:MM AM/PM
+            return {
+                'start_time': get_text('start_time', meeting),
+                'end_time': get_text('end_time', meeting),
+                'days': get_days(meeting),
+                'location': get_location(meeting),
+            }
+        # NOTE: section.find('schedule') doesn't seem to be used
+        return {
+            'name': get_text('section', section),
+            'type': get_text('type_name', section)[0:3].upper(),
+            'capacity': get_text('capacity', section),
+            'enrollment': get_text('enrollment', section),
+            'meetings': [parse_meeting(x) for x in none_to_empty_list(section.find('meetings'))]
+        }
 
     def remove_namespace(doc, namespace):
         """Hack to remove namespace in the document in place.
@@ -318,4 +210,4 @@ def get_courses_for_term(term_code):
             if elem.tag.startswith(ns):
                 elem.tag = elem.tag[nsl:]
 
-    scrape_all()
+    return scrape_all()
