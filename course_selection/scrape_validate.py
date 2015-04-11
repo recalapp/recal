@@ -10,6 +10,10 @@ def validate_course(course):
     def validate_string(item):
         if item is None or not isinstance(item, basestring):
             raise _ValidateError(str(item) + ' is not a string')
+    def validate_string_upper(item):
+        validate_string(item)
+        if not item.isupper():
+            raise _ValidateError(item + ' is not upper case')
 
     def validate_boolean(item):
         if not isinstance(item, bool):
@@ -60,8 +64,9 @@ def validate_course(course):
     }
 
     section_validator = {
+        'registrar_id': validate_string_not_empty,
         'name': validate_string_not_empty,
-        'type': validate_string_not_empty,
+        'type': lambda x: validate_string_max_length(x, 4) and validate_string_upper(x),
         'capacity': validate_string_not_empty,
         'enrollment': validate_string_not_empty,
         'meetings': lambda array: validate_array(array, lambda meeting: validate_dict(meeting, meeting_validator)),
@@ -76,9 +81,4 @@ def validate_course(course):
         'course_listings': lambda array: validate_array(array, lambda listing: validate_dict(listing, listing_validator)),
         'sections': lambda array: validate_array(array, lambda section: validate_dict(section, section_validator))
     }
-    try:
-        validate_dict(course, course_validator)
-    except _ValidateError as e:
-        print course
-        print e
-        print '---------'
+    validate_dict(course, course_validator)

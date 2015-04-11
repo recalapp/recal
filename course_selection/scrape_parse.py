@@ -20,7 +20,7 @@ class ParseError(Exception):
     def __str__(self):
         return repr(self.value)
 
-def get_courses_for_term(term_code):
+def scrape_parse_semester(term_code):
     TERM_CODE = term_code
     COURSE_OFFERINGS = "http://registrar.princeton.edu/course-offerings/"
     FEED_PREFIX = "http://etcweb.princeton.edu/webfeeds/courseofferings/"
@@ -192,12 +192,17 @@ def get_courses_for_term(term_code):
                 'location': get_location(meeting),
             }
         # NOTE: section.find('schedule') doesn't seem to be used
+        meetings = None
+        schedule = section.find('schedule')
+        if schedule is not None:
+            meetings = schedule.find('meetings')
         return {
+            'registrar_id': get_text('class_number', section),
             'name': get_text('section', section),
             'type': get_text('type_name', section)[0:3].upper(),
             'capacity': get_text('capacity', section),
             'enrollment': get_text('enrollment', section),
-            'meetings': [parse_meeting(x) for x in none_to_empty_list(section.find('meetings'))]
+            'meetings': [parse_meeting(x) for x in none_to_empty_list(meetings)]
         }
 
     def remove_namespace(doc, namespace):
