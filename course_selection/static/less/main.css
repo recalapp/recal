@@ -469,6 +469,9 @@ body {
 .tags-visible {
   z-index: 100;
 }
+.export-icon {
+  cursor: pointer;
+}
 .course-panel.ng-move,
 .course-panel.ng-enter,
 .course-panel.ng-leave {

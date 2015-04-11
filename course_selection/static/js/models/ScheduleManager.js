@@ -12,6 +12,7 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
                 enrolledCourses: [],
                 previewSection: null,
                 enrolledSections: null,
+                schedule: null,
                 courses: []
             };
             this.preview = {
@@ -31,6 +32,7 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             this.data.previewCourse = null;
             this.data.enrolledCourses = [];
             this.data.enrolledSections = {};
+            this.data.schedule = this.schedule;
 
             this._loadCourses(prevEnrollments);
         };

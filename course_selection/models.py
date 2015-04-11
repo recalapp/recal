@@ -107,6 +107,7 @@ class Section(models.Model):
     section_type = models.CharField(max_length=3, choices=TYPE_CHOICES)
     section_enrollment = models.IntegerField(default=0)
     section_capacity = models.IntegerField(default=999)
+    section_registrar_id = models.CharField(max_length=20, default="")
 
     def __unicode__(self):
         return self.course.primary_listing() + ' - ' + self.name
