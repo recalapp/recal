@@ -15,6 +15,7 @@ class ScheduleManager {
         enrolledCourses: [],
         previewSection: null,
         enrolledSections: null,
+        schedule: null,
         courses: []
     };
 
@@ -48,6 +49,7 @@ class ScheduleManager {
         this.data.previewCourse = null;
         this.data.enrolledCourses = [];
         this.data.enrolledSections = {};
+        this.data.schedule = this.schedule;
 
         this._loadCourses(prevEnrollments);
     }
