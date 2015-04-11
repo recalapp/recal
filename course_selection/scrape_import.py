@@ -95,6 +95,7 @@ def scrape_import_course(course, counter=ScrapeCounter()):
     course_object.title = course['title']
     course_object.description = course['description']
     [import_section(x, course_object) for x in course['sections']]
+    course_object.professors.clear()
     [import_professor(x, course_object) for x in course['professors']]
     [import_listing(x, course_object) for x in course['course_listings']]
     course_object.save()
