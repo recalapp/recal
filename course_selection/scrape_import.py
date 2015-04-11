@@ -45,6 +45,7 @@ def scrape_import_course(course, counter=ScrapeCounter()):
         section_object.section_type = section['type']
         section_object.section_capacity = section['capacity']
         section_object.section_enrollment = section['enrollment']
+        section_object.section_registrar_id = section['registrar_id']
         Meeting.objects.filter(section=section_object).delete()
         [import_meeting(x, course_object, section_object) for x in section['meetings']]
         section_object.save()
