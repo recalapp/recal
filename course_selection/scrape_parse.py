@@ -136,7 +136,7 @@ def get_courses_for_term(term_code):
             return {
                 "title": get_text('title', course),
                 "guid": get_text('guid', course),
-                "description": none_to_empty(course.find('detail').find('description')).text,
+                "description": none_to_empty(course.find('detail').find('description').text),
                 "semester": get_current_semester(),
                 "professors": [parse_prof(x) for x in course.find('instructors')],
                 "course_listings": parse_listings(course, subject),
@@ -163,7 +163,7 @@ def get_courses_for_term(term_code):
         primary_listing = {
             'dept': get_text('code', subject),
             'code': get_text('catalog_number', course),
-            'is_primiary': True
+            'is_primary': True
         }
         return cross_listings + [primary_listing]
 
