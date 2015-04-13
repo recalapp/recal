@@ -67,7 +67,7 @@ INSTALLED_APPS += (
     #'debug_toolbar',
 )
 
-ADMINS = (('Naphat'), ('naphat.krit@gmail.com'))
+# ADMINS = (('Naphat'), ('naphat.krit@gmail.com'))
 
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
 #INTERNAL_IPS = ('127.0.0.1',)
