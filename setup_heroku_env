@@ -5,6 +5,7 @@ if [ "$1" == "-h" ]
 else
 
 COMMAND="heroku config:set \
+  ALLOWED_HOSTS=.recal.io,.recal.io.,herkuapp.com,
   DJANGO_DEBUG=False \
   BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git \
   PDFTK_BIN=/app/vendor/pdftk/bin/pdftk \

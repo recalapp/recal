@@ -5,6 +5,7 @@ from os import environ
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
 #DEBUG = bool(environ.get('DJANGO_DEBUG', ''))
 DEBUG = environ.get('DJANGO_DEBUG', False)
+DEBUG = False
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
 TEMPLATE_DEBUG = DEBUG
@@ -24,12 +25,12 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # See https://docs.djangoproject.com/en/1.6/ref/settings/#std:setting-ALLOWED_HOSTS
 ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS', '*').split(',')
 
-#ALLOWED_HOSTS = [
+# ALLOWED_HOSTS = [
 #    '.recal.io', # Allow domain and subdomains
 #    '.recal.io.', # Also allow FQDN and subdomains
 #    'herokuapp.com',
 #    'localhost', # Allow foreman to run
-#]
+# ]
 
 SECRET_KEY = environ.get('DJANGO_SECRET_KEY', 'asdfasfshjkxhvkzjxhiu1012u4-9r0iojsof')
 
@@ -65,6 +66,8 @@ CACHES = get_cache()
 INSTALLED_APPS += (
     #'debug_toolbar',
 )
+
+ADMINS = (('Naphat'), ('naphat.krit@gmail.com'))
 
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
 #INTERNAL_IPS = ('127.0.0.1',)

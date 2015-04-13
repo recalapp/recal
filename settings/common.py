@@ -35,8 +35,6 @@ path.append(DJANGO_ROOT)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ''
 
-ALLOWED_HOSTS = []
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -114,9 +112,6 @@ DATABASES = {
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Allow all host headers
-ALLOWED_HOSTS = ['*']
-
 # Static asset configuration
 STATIC_ROOT = join(DJANGO_ROOT, 'staticfiles')
 
@@ -138,7 +133,7 @@ STATICFILES_DIRS = (
 )
 
 TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'course_selection', 'templates')),
-                #normpath(join(DJANGO_ROOT, 'nice', 'templates')) 
+                #normpath(join(DJANGO_ROOT, 'nice', 'templates'))
                  ]
 
 CACHES = {
@@ -146,7 +141,7 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache', # overwritten in prod.py
     },
     'resources': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache', 
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'TIMEOUT': 60
     }
 }
