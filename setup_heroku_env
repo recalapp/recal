@@ -6,7 +6,7 @@ else
 
 COMMAND="heroku config:set \
   ALLOWED_HOSTS=.recal.io,.recal.io.,.herokuapp.com,
-  DJANGO_DEBUG=True \
+  DJANGO_DEBUG= \
   BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git \
   PDFTK_BIN=/app/vendor/pdftk/bin/pdftk \
   LD_LIBRARY_PATH=/app/vendor/pdftk/lib \
