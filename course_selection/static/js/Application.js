@@ -26,3 +26,4 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
     
     return nice;
 });
+//# sourceMappingURL=Application.js.map

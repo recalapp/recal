@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports", './Course', '../models/ColorManager'], function(require, exports, Course, ColorManager) {
     var ScheduleManager = (function () {
         function ScheduleManager($rootScope, courseService, localStorageService, colorResource, schedule) {
@@ -25,9 +24,6 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             this._initColorManager(availableColors, prevEnrollments);
             this._initWatches();
         }
-        ///////////////////////////////////////////////////////////
-        // Initialization
-        //////////////////////////////////////////////////////////
         ScheduleManager.prototype._initData = function (prevEnrollments) {
             this.data.previewCourse = null;
             this.data.enrolledCourses = [];
@@ -78,9 +74,6 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
 
                 enrollment.course_id = +courseId;
 
-                // TODO: is it dangerous to do this?
-                // 1: there should be a better function than filter for the job
-                // 2: what if course.colors changes? does that affect this enrollment object?
                 enrollment.color = _this.data.enrolledCourses.filter(function (course) {
                     return course.id == +courseId;
                 })[0].colors;
@@ -96,7 +89,6 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             return enrollments;
         };
 
-        // map raw data into more flexible data structure
         ScheduleManager.prototype._transformCourse = function (rawCourse) {
             return new Course(rawCourse.title, rawCourse.description, rawCourse.course_listings, rawCourse.id, rawCourse.registrar_id, rawCourse.sections, rawCourse.semester);
         };
@@ -122,18 +114,12 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             return this.data;
         };
 
-        ///////////////////////////////////////////////////////////
-        // Course Management
-        //////////////////////////////////////////////////////////
         ScheduleManager.prototype.getCourseById = function (id) {
             return this.data.courses.filter(function (course) {
                 return course.id == id;
             })[0];
         };
 
-        ///////////////////////////////////////////////////////////
-        // Course Enrollment Management
-        //////////////////////////////////////////////////////////
         ScheduleManager.prototype.setPreviewCourse = function (course) {
             this.data.previewCourse = course;
         };
@@ -149,7 +135,6 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
         };
 
         ScheduleManager.prototype._enrollSections = function (course, sectionIds) {
-            // TODO: assert invariants
             this.data.enrolledSections[course.id] = {};
             for (var i = 0; i < course.section_types.length; i++) {
                 var section_type = course.section_types[i];
@@ -159,11 +144,6 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             for (var i = 0; i < course.sections.length; i++) {
                 var section = course.sections[i];
 
-                // got rid of the logic for sections that have no meetings
-                // it should be implied because the only available section
-                // is automatically enrolled
-                // if (!section.has_meetings) {
-                // }
                 if (!sectionIds) {
                     if (this._isTheOnlySectionOfType(course, section)) {
                         this.enrollSection(section);
@@ -193,20 +173,13 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             delete this.data.enrolledSections[course.id];
         };
 
-        /**
-        * NOTE: the input course is modified
-        */
         ScheduleManager.prototype.enrollCourse = function (course) {
             course.colors = this.colorManager.nextColor();
             this._enrollCourse(course);
             this._enrollSections(course);
         };
 
-        /**
-        * NOTE: the input course is modified
-        */
         ScheduleManager.prototype.unenrollCourse = function (course) {
-            // remove color set in the course object
             this.colorManager.addColor(course.colors);
             course.resetColor();
 
@@ -219,8 +192,6 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             list.splice(idx, 1);
         };
 
-        // TODO: this is a linear traversal. Optimize if this causes
-        // performance issues
         ScheduleManager.prototype._idxInList = function (element, list, comp) {
             var idx = ScheduleManager.NOT_FOUND;
             var comp = comp ? comp : this._defaultComp;
@@ -259,18 +230,12 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
             return idx != ScheduleManager.NOT_FOUND;
         };
 
-        ///////////////////////////////////////////////////////////
-        // Section Enrollment Management
-        //////////////////////////////////////////////////////////
         ScheduleManager.prototype.setPreviewSection = function (section) {
         };
 
         ScheduleManager.prototype.clearPreviewSection = function (section) {
         };
 
-        // private _enrollSection(courseId, sectionId, sectionType): void {
-        //     this.data.enrolledSections[courseId][sectionType] = sectionId;
-        // }
         ScheduleManager.prototype.enrollSection = function (section) {
             this.data.enrolledSections[section.course_id][section.section_type] = section.id;
         };
@@ -283,7 +248,6 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
 
             var enrollments = this.data.enrolledSections[course.id];
             angular.forEach(enrollments, function (value, key) {
-                // key is section_type, value is enrolled section id, if exists
                 if (!value) {
                     allSectionsEnrolled = false;
                     return false;
@@ -308,3 +272,4 @@ define(["require", "exports", './Course', '../models/ColorManager'], function(re
     
     return ScheduleManager;
 });
+//# sourceMappingURL=ScheduleManager.js.map
