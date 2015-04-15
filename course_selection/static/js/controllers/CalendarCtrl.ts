@@ -63,6 +63,7 @@ class CalendarCtrl {
         this.scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
         this.$scope.data = this.scheduleManager.getData();
 
+        // calendar event sources data
         this.compositeEventSources = new CompositeEventSources();
         this.$scope.eventSources = this.compositeEventSources.getEventSources();
 
