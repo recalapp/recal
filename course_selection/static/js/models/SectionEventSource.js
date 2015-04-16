@@ -8,6 +8,7 @@ define(["require", "exports"], function(require, exports) {
             this.backgroundColor = colors.light;
             this.section_type = section.section_type;
 
+            // by default, a newly constructed section is previewed until enrolled"
             this.className = "cal-unconfirmed";
 
             var inputTimeFormat = "hh:mm a";
@@ -34,6 +35,9 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
         }
+        /**
+        * gets the date of the day in the current week
+        */
         SectionEventSource.prototype.getAgendaDate = function (day) {
             var todayOffset = moment().isoWeekday();
             var dayOffset = SectionEventSource.DAYS[day];
@@ -54,4 +58,3 @@ define(["require", "exports"], function(require, exports) {
     
     return SectionEventSource;
 });
-//# sourceMappingURL=SectionEventSource.js.map

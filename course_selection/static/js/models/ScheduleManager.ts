@@ -6,6 +6,7 @@ import Course = require('./Course');
 import ColorManager = require('../models/ColorManager');
 import IColorManager = require('../interfaces/IColorManager');
 import IEnrollment = require('../interfaces/IEnrollment');
+import Utils = require('../Utils');
 
 class ScheduleManager {
     private static NOT_FOUND: number = -1;
@@ -193,7 +194,7 @@ class ScheduleManager {
                     this.enrollSection(section);
                 }
             } else {
-                if (this._isInList(section.id, sectionIds)) {
+                if (Utils.isInList(section.id, sectionIds)) {
                     this.enrollSection(section);
                 }
             }
@@ -243,29 +244,6 @@ class ScheduleManager {
         list.splice(idx, 1);
     }
 
-    // TODO: this is a linear traversal. Optimize if this causes
-    // performance issues
-    private _idxInList(element, list, comp?) {
-        var idx = ScheduleManager.NOT_FOUND;
-        var comp = comp ? comp : this._defaultComp;
-        angular.forEach(list, (value, key) => {
-            if (comp(element, value)) {
-                idx = key;
-                return;
-            }
-        });
-
-        return idx;
-    }
-
-    private _defaultComp(a, b): boolean {
-        return a == b;
-    }
-
-    private _isInList(element, list, comp?): boolean {
-        return this._idxInList(element, list, comp) != ScheduleManager.NOT_FOUND;
-    }
-
     private _courseComp(a: ICourse, b: ICourse): boolean {
         return a.id == b.id;
     }
@@ -275,7 +253,7 @@ class ScheduleManager {
     }
 
     private _courseIdxInList(course, list): number {
-        return this._idxInList(course, list, this._courseComp);
+        return Utils.idxInList(course, list, this._courseComp);
     }
     
     public isCourseEnrolled(course: ICourse): boolean {
