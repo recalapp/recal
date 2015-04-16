@@ -6,6 +6,7 @@ import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
 import IScheduleManager = require('../interfaces/IScheduleManager');
+import Utils = require('../Utils');
 
 'use strict';
 
@@ -53,8 +54,7 @@ class CalendarCtrl {
     ];
 
     // dependencies are injected via AngularJS $injector
-    constructor(
-            private $scope) 
+    constructor(private $scope) 
     {
         this.courseWatchInitRun = true;
         this.sectionWatchInitRun = true;
@@ -63,9 +63,25 @@ class CalendarCtrl {
         this.scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
         this.$scope.data = this.scheduleManager.getData();
 
-        // calendar event sources data
+        this.$scope.calendarID = Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
+        this.$scope.myCalendar = $(".calendar").eq(this.$scope.calendarID);
+
+        // calendar event sources dat
         this.compositeEventSources = new CompositeEventSources();
         this.$scope.eventSources = this.compositeEventSources.getEventSources();
+
+        // watch for initializing visible schedule
+        this.$scope.$watch(
+                () => {
+                    return this.$scope.selectedSchedule;
+                },
+                (newValue, oldValue) => {
+                    if (newValue == oldValue) {
+                        return;
+                    }
+
+                    setTimeout(this.$scope.myCalendar.fullCalendar('render'), 2000);
+                }, true);
 
         // only initialize config if this schedule is visible
         this.$scope.$watch(
@@ -107,6 +123,17 @@ class CalendarCtrl {
                     return this.updateEnrolledSections(newSections, oldSections);
                 },
                 true);
+
+        // watch for calendar to refetch events
+        this.$scope.$watch(
+                () => {
+                    return this.$scope.eventSources;
+                },
+                (newEventSources, oldEventSources) => {
+                    this.$scope.myCalendar.fullCalendar('destroy');
+                    this.initConfig();
+               },
+               true);
     }
 
     private _isVisible() {
@@ -116,33 +143,29 @@ class CalendarCtrl {
     private initConfig() {
         this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
         this.$scope.uiConfig.eventClick = (calEvent, jsEvent, view) => {
-            return this.onEventClick(calEvent, jsEvent, view);
+            this.onEventClick(calEvent, jsEvent, view);
+            this.$scope.$apply();
         };
 
-        /*
-        this.$scope.uiConfig.windowResize = (view) => {
-            var minWidth = 992;
-            var windowWidth = $(window).width();
-            if (windowWidth < minwidth) {
-                var windowHeight = $(window).height();
-                this.$scope.uiConfig.height = +(windowHeight * 0.6) + 'px';
-                this.$scope.myCalendar.fullCalendar('render');
-            }
-        };
-        */
-        
         this.$scope.uiConfig.eventRender = (event, element) => {
-            var locationTag = '<div class="fc-location">' + event.location + '</div>';
-            element.find(".fc-content").append(locationTag);
+            //var locationTag = '<div class="fc-location">' + event.location + '</div>';
+            //element.find(".fc-content").append(locationTag);
             /*
-            element.qtip({
-                content: event.location,
-                position: {
-                    target: 'mouse'
-                }
-            });
+            // element.qtip({
+            //     content: event.location,
+            //     position: {
+            //         target: 'mouse'
+            //     }
+            // });
             */
         };
+
+        var options = this.$scope.uiConfig;
+        angular.extend(options, {
+            eventSources: this.$scope.eventSources
+        });
+
+        this.$scope.myCalendar.fullCalendar(options);
     }
 
 

@@ -1,4 +1,4 @@
-define(["require", "exports", '../models/CourseEventSources', '../models/CompositeEventSources'], function(require, exports, CourseEventSources, CompositeEventSources) {
+define(["require", "exports", '../models/CourseEventSources', '../models/CompositeEventSources', '../Utils'], function(require, exports, CourseEventSources, CompositeEventSources, Utils) {
     'use strict';
 
     var CalendarCtrl = (function () {
@@ -13,9 +13,23 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.scheduleManager = this.$scope.$parent.schedule.scheduleManager;
             this.$scope.data = this.scheduleManager.getData();
 
-            // calendar event sources data
+            this.$scope.calendarID = Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
+            this.$scope.myCalendar = $(".calendar").eq(this.$scope.calendarID);
+
+            // calendar event sources dat
             this.compositeEventSources = new CompositeEventSources();
             this.$scope.eventSources = this.compositeEventSources.getEventSources();
+
+            // watch for initializing visible schedule
+            this.$scope.$watch(function () {
+                return _this.$scope.selectedSchedule;
+            }, function (newValue, oldValue) {
+                if (newValue == oldValue) {
+                    return;
+                }
+
+                setTimeout(_this.$scope.myCalendar.fullCalendar('render'), 2000);
+            }, true);
 
             // only initialize config if this schedule is visible
             this.$scope.$watch(function () {
@@ -46,6 +60,14 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             }, function (newSections, oldSections) {
                 return _this.updateEnrolledSections(newSections, oldSections);
             }, true);
+
+            // watch for calendar to refetch events
+            this.$scope.$watch(function () {
+                return _this.$scope.eventSources;
+            }, function (newEventSources, oldEventSources) {
+                _this.$scope.myCalendar.fullCalendar('destroy');
+                _this.initConfig();
+            }, true);
         }
         CalendarCtrl.prototype._isVisible = function () {
             return this.$scope.myCalendar && this.$scope.myCalendar.is(":visible");
@@ -55,32 +77,29 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             var _this = this;
             this.$scope.uiConfig = CalendarCtrl.defaultUiConfig;
             this.$scope.uiConfig.eventClick = function (calEvent, jsEvent, view) {
-                return _this.onEventClick(calEvent, jsEvent, view);
+                _this.onEventClick(calEvent, jsEvent, view);
+                _this.$scope.$apply();
             };
 
-            /*
-            this.$scope.uiConfig.windowResize = (view) => {
-            var minWidth = 992;
-            var windowWidth = $(window).width();
-            if (windowWidth < minwidth) {
-            var windowHeight = $(window).height();
-            this.$scope.uiConfig.height = +(windowHeight * 0.6) + 'px';
-            this.$scope.myCalendar.fullCalendar('render');
-            }
-            };
-            */
             this.$scope.uiConfig.eventRender = function (event, element) {
-                var locationTag = '<div class="fc-location">' + event.location + '</div>';
-                element.find(".fc-content").append(locationTag);
+                //var locationTag = '<div class="fc-location">' + event.location + '</div>';
+                //element.find(".fc-content").append(locationTag);
                 /*
-                element.qtip({
-                content: event.location,
-                position: {
-                target: 'mouse'
-                }
-                });
+                // element.qtip({
+                //     content: event.location,
+                //     position: {
+                //         target: 'mouse'
+                //     }
+                // });
                 */
             };
+
+            var options = this.$scope.uiConfig;
+            angular.extend(options, {
+                eventSources: this.$scope.eventSources
+            });
+
+            this.$scope.myCalendar.fullCalendar(options);
         };
 
         ///////////////////////////////////////////////////////////////////

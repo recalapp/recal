@@ -19,6 +19,7 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
             };
         }]);
 
+    // TODO: this is not really autofocus; still requires focus="true" in the html
     niceDirectives.addDirective('autoFocus', [
         '$timeout', function ($timeout) {
             return {
@@ -81,6 +82,9 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
             };
         }]);
 
+    /****
+    * Got this from the Internet: http://plnkr.co/edit/v6bqqe?p=info
+    */
     niceDirectives.addDirective("qtip", [function () {
             var _this = this;
             return {
@@ -126,6 +130,7 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
                     });
 
                     scope.$on("$destroy", function () {
+                        // $(element).qtip('destroy', true); // Immediately destroy all tooltips belonging to the selected elements
                     });
 
                     $('[my-qtip2]').css("display", "inline-block");
@@ -136,4 +141,3 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
     
     return niceDirectives;
 });
-//# sourceMappingURL=Directives.js.map
