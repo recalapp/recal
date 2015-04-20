@@ -136,7 +136,6 @@ def get_courses_by_term_code(term_code):
     return results
 
 @require_GET
-@cache_page(60 * 60 * 24)
 @never_cache
 def get_courses_json(request, term_code):
     """
