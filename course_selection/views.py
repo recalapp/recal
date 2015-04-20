@@ -136,7 +136,8 @@ def get_courses_by_term_code(term_code):
     return results
 
 @require_GET
-@never_cache
+@cache_page(60 * 60 * 24)
+@cache_control(must_revalidate=True, max_age=60*60)
 def get_courses_json(request, term_code):
     """
     Returns list of courses for a semester
