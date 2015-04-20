@@ -564,8 +564,8 @@ body {
   display: none;
 }
 .qtip-recal {
-  line-height: 20px;
-  font-weight: bold;
+  border-radius: 4px;
+  box-shadow: none;
 }
 /*
 .fc-ltr .fc-axis {

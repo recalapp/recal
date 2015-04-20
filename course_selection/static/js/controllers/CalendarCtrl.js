@@ -310,14 +310,14 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 }
             },
             show: {
-                delay: 1000,
                 solo: true
             },
             hide: {
                 event: 'click mouseleave'
             },
             style: {
-                classes: "qtip-bootstrap qtip-recal"
+                classes: "qtip-bootstrap qtip-recal",
+                tip: false
             }
         };
 
