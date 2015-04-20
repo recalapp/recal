@@ -7,9 +7,14 @@ define(["require", "exports"], function(require, exports) {
             this.borderColor = colors.dark;
             this.backgroundColor = colors.light;
             this.section_type = section.section_type;
+            this.section_capacity = section.section_capacity;
+            this.section_enrollment = section.section_enrollment;
 
             // by default, a newly constructed section is previewed until enrolled"
             this.className = "cal-unconfirmed";
+
+            // for tooltip display
+            var tooltipEnrollment = this.section_enrollment + "/" + this.section_capacity;
 
             var inputTimeFormat = "hh:mm a";
             var outputTimeFormat = "HH:mm:ss";
@@ -30,7 +35,8 @@ define(["require", "exports"], function(require, exports) {
                         title: course.primary_listing + " " + section.name,
                         start: start,
                         end: end,
-                        location: meeting.location
+                        location: meeting.location,
+                        enrollment: tooltipEnrollment
                     });
                 }
             }

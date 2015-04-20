@@ -46,6 +46,10 @@
 .fc-axis {
   display: none;
 }
+.qtip-recal {
+  line-height: 20px;
+  font-weight: bold;
+}
 /*
 .fc-ltr .fc-axis {
 	color: @calendar-dark-font-color;

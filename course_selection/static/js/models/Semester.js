@@ -15,3 +15,4 @@ define(["require", "exports"], function(require, exports) {
     
     return Semester;
 });
+//# sourceMappingURL=Semester.js.map

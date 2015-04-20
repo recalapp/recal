@@ -8,3 +8,4 @@ define(["require", "exports", './SearchCtrl', './CalendarCtrl', './ScheduleCtrl'
     
     return niceControllers;
 });
+//# sourceMappingURL=Controllers.js.map

@@ -43,13 +43,15 @@
 #updates {
   height: 100%;
   width: 25vw;
-  color: #dddddd;
   display: block;
   text-decoration: none;
   line-height: 5vh;
   font-size: 1.25em;
-  color: #999;
+  color: #dddddd;
   margin-left: 30vw;
+}
+#updates > a {
+  color: inherit;
 }
 #updates::before {
   content: "*";

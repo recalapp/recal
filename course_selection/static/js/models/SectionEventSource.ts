@@ -23,6 +23,8 @@ class SectionEventSource implements IEventSource {
     public backgroundColor: string;
     public className: string;
     public section_type: string;
+    public section_capacity: number;
+    public section_enrollment: number;
 
     constructor(section: ISection, course: ICourse, colors: IColorPalette) {
         this.id = section.id;
@@ -31,8 +33,14 @@ class SectionEventSource implements IEventSource {
         this.borderColor = colors.dark;
         this.backgroundColor = colors.light;
         this.section_type = section.section_type;
+        this.section_capacity = section.section_capacity;
+        this.section_enrollment = section.section_enrollment;
+
         // by default, a newly constructed section is previewed until enrolled"
         this.className = "cal-unconfirmed";
+
+        // for tooltip display
+        var tooltipEnrollment: string = this.section_enrollment + "/" + this.section_capacity;
 
         var inputTimeFormat = "hh:mm a";
         var outputTimeFormat = "HH:mm:ss";
@@ -56,6 +64,7 @@ class SectionEventSource implements IEventSource {
                     start: start,
                     end: end,
                     location: meeting.location,
+                    enrollment: tooltipEnrollment, 
                 });
             }
         }

@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 'use strict';
 define(["require", "exports"], function(require, exports) {
     var ScheduleService = (function () {
@@ -17,3 +16,4 @@ define(["require", "exports"], function(require, exports) {
     
     return ScheduleService;
 });
+//# sourceMappingURL=ScheduleService.js.map

@@ -1,4 +1,3 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -33,11 +32,9 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
                     continue;
                 }
 
-                // the next query should be the min rating
                 if (query[0] == '>') {
                     i++;
 
-                    // continue if '>' is the last token
                     if (i >= queries.length || !CourseSearchFilter.isNumber(queries[i])) {
                         continue;
                     }
@@ -71,26 +68,14 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
         CourseSearchFilter.breakQuery = function (input) {
             var output;
 
-            // output = input.replace(/\D\d+\.?\d+\D/g, function(text){
-            //     return text.charAt(0) + ' ' + text.substring(1, text.length - 1) + ' ' + text.slice(-1);
-            // });
-            // output = output.replace(/\D\d+\.?\d+/g, function(text){
-            //     return text.charAt(0) + ' ' + text.substring(1);
-            // });
-            // output = output.replace(/\d+\.?\d+\D/g, function(text){
-            //     return text.substring(0, text.length - 1) + ' ' + text.slice(-1);
-            // });
-            // takes care of numbers of the form x.yz, .yz are optional
             output = input.replace(/\d+\.?\d*/g, function (text) {
                 return ' ' + text + ' ';
             });
 
-            // takes care of numbers of the form .xyz
             output = output.replace(/\D\.\d+/g, function (text) {
                 return ' ' + text + ' ';
             });
 
-            // trim spaces
             output = output.replace(/\s+/g, " ");
 
             return output;
@@ -110,7 +95,6 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
                 return false;
             }
 
-            // listings = course_listings
             var listings = course[first_arg];
             for (var i = 0; i < listings.length; i++) {
                 var listing = listings[i];
@@ -149,3 +133,4 @@ define(["require", "exports", './Filter'], function(require, exports, Filter) {
     
     return CourseSearchFilter;
 });
+//# sourceMappingURL=CourseSearchFilter.js.map

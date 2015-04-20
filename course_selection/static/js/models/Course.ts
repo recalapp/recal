@@ -71,6 +71,7 @@ class Course implements ICourse {
             var curr = input[i];
             var section = new Section(curr.id,
                     curr.name, curr.section_type,
+                    curr.section_enrollment, curr.section_capacity,
                     curr.meetings, curr.course);
             sections.push(section);
         }
