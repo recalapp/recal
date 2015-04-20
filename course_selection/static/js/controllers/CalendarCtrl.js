@@ -82,16 +82,16 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             };
 
             this.$scope.uiConfig.eventRender = function (event, element) {
-                //var locationTag = '<div class="fc-location">' + event.location + '</div>';
-                //element.find(".fc-content").append(locationTag);
-                /*
-                // element.qtip({
-                //     content: event.location,
-                //     position: {
-                //         target: 'mouse'
-                //     }
-                // });
-                */
+                var locationTag = '<div class="fc-location">' + event.location + '</div>';
+                element.find(".fc-content").append(locationTag);
+
+                // set tooltip content
+                element.qtip({
+                    content: event.location,
+                    position: {
+                        target: 'mouse'
+                    }
+                });
             };
 
             var options = this.$scope.uiConfig;

@@ -35,7 +35,7 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
             var sections = [];
             for (var i = 0; i < input.length; i++) {
                 var curr = input[i];
-                var section = new Section(curr.id, curr.name, curr.section_type, curr.meetings, curr.course);
+                var section = new Section(curr.id, curr.name, curr.section_type, curr.section_enrollment, curr.section_capacity, curr.meetings, curr.course);
                 sections.push(section);
             }
 
