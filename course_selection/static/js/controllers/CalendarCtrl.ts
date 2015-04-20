@@ -41,6 +41,28 @@ class CalendarCtrl {
         slotEventOverlap: false,
     };
 
+    private static defaultTooltipConfig = {
+        content: {
+            text: "",
+        },
+        position: {
+            target: 'mouse',
+            adjust: {
+                x: 10
+            }
+        },
+        show: {
+            delay: 1000,
+            solo: true
+        },
+        hide: {
+            event: 'click mouseleave'
+        },
+        style: {
+            classes: "qtip-bootstrap qtip-recal"
+        }
+    };
+
     private compositeEventSources: CompositeEventSources;
     private scheduleManager: IScheduleManager;
 
@@ -152,13 +174,9 @@ class CalendarCtrl {
             element.find(".fc-content").append(locationTag);
             
             // set tooltip content
-            element.qtip({
-                content: event.location,
-                position: {
-                    target: 'mouse'
-                }
-            });
-            
+            var tooltipConfig = angular.copy(CalendarCtrl.defaultTooltipConfig);
+            tooltipConfig.content.text = "enrollments: " + event.enrollment;
+            element.qtip(tooltipConfig);
         };
 
         var options = this.$scope.uiConfig;
