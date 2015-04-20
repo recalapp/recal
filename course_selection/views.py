@@ -8,7 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import * # require_GET, etc.
 from django.utils import timezone
 from django.db.models import Q
-from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_page, never_cache
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie # send regardless of whether Django thinks we should
 
@@ -137,6 +137,7 @@ def get_courses_by_term_code(term_code):
 
 @require_GET
 @cache_page(60 * 60 * 24)
+@never_cache
 def get_courses_json(request, term_code):
     """
     Returns list of courses for a semester
@@ -187,7 +188,7 @@ def get_worksheet_pdf(request, schedule_id, template_name='course_enrollment_wor
     returns a filled out course enrollment form
     NOTE: use sp to check a checkbox
     """
-    
+
     # get all the required fields:
     # get user schedule, verify that user has permissions
     #
@@ -229,7 +230,7 @@ def get_form_context(schedule_obj):
     for idx, enrollment in enumerate(enrollments):
         # form indices start from 1, array indices start from 0
         context = fill_out_course(context, idx + 1, enrollment)
-    
+
     return context
 
 def fill_out_term(context, schedule_obj):
@@ -263,7 +264,7 @@ def fill_out_course(context, idx, enrollment):
 
     for section in sections:
         meetings = section.meetings.all()
-        
+
         # TODO: test this
         if section.section_type == Section.TYPE_LECTURE or \
                 section.section_type == Section.TYPE_SEMINAR or \
@@ -282,12 +283,10 @@ def fill_out_course(context, idx, enrollment):
             context[daytm_field_name] = ' '.join([
                 meeting.days + meeting.start_time[:-3] \
                 + " - " + meeting.end_time[:-3] for meeting in meetings
-            ])     
+            ])
 
             context[clsnbr_field_name] = section.section_registrar_id
 
     context[checkbox_name] = checkbox_val
     context[course_name] = course.primary_listing()
     return context
-
-
