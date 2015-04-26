@@ -55,6 +55,12 @@ def status(request):
     """
     return render(request, 'status/index.html', None)
 
+def about(request):
+    """
+    Displays the about page.
+    """
+    return render(request, 'landing/about.html', None)
+
 
 def continuity_check(request):
     """
