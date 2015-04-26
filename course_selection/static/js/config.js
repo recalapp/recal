@@ -24,7 +24,8 @@ require.config({
         'angular-hotkeys': bowerPath('angular-hotkeys/build/hotkeys.min'),
         'angular-loading-bar': bowerPath('angular-loading-bar/build/loading-bar'),
         'qtip': bowerPath('qtip2/jquery.qtip.min'),
-        'text': bowerPath('requirejs-text/text')
+        'text': bowerPath('requirejs-text/text'),
+        'html2canvas': bowerPath('html2canvas/h2c.min')
     },
     shim: {
         flatstrap: ['jquery'],
@@ -62,7 +63,8 @@ require([
     'directives/Directives',
     'jquery',
     'qtip',
-    'flatstrap'
+    'flatstrap',
+    'html2canvas'
 ], function (angular) {
     angular.bootstrap(document, ['nice']);
 });

@@ -290,3 +290,12 @@ def fill_out_course(context, idx, enrollment):
     context[checkbox_name] = checkbox_val
     context[course_name] = course.primary_listing()
     return context
+
+
+
+# Facebook share
+def view_shared_calendar(request, username, imgur_id):
+    return render(request, 'landing/shared.html', {
+        'username': unicode(username),
+        'imgur_id': unicode(imgur_id)
+    })

@@ -36,4 +36,7 @@ urlpatterns = patterns(
     #url(r'^announcements/sorry$', views.we_sorry, name="sorry"),
 
     url(r'^api/worksheet/(?P<schedule_id>\d+)$', views.get_worksheet_pdf, name='get-worksheet-pdf'),
+
+    # facebook share
+    url(r'^shared/(?P<username>[a-z]+)/(?P<imgur_id>.+)$', views.view_shared_calendar, name='view-shared-calendar'),
 )

@@ -1,0 +1,157 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ username }}'s shared calendar, designed with ReCal, the Princeton course selection tool that lets Princeton students organize their calendar.">
+    <meta name="author" content="ReCal">
+    <meta name="apple-itunes-app" content="app-id=946948041, app-argument=recalCourseSelection://launch">
+
+    <title>{{ username }}'s Shared Calendar | ReCal Course Selection Tool</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static 'landing/css/bootstrap.css' %}">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'landing/css/font-awesome.min.css' %}">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+      body {
+        background-color: #384452;
+      }
+      #about_content, #about_container {
+        background-color: #fff;
+      }
+      #about_container {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 80px;
+        padding-bottom: 100px;
+      }
+      #headerwrap {
+        min-height: 0;
+        padding-bottom: 2em;
+      }
+      #headerwrap h4 {
+        color: white;
+      }
+      #ack_ul {
+        list-style-type: square;
+        text-align: left;
+        padding-left: 2em;
+      }
+      #ack_ul li {
+        padding-bottom: .5em;
+      }
+
+    </style>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/landing">RECAL</a>
+        </div>
+        <div class="navbar-collapse collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li><a href="/landing">HOME</a></li>
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/login?next=/">LOGIN</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+	<!-- *****************************************************************************************************************
+	 HEADERWRAP
+	 ***************************************************************************************************************** -->
+	<div id="headerwrap">
+      <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+          <h1>{{ username }}'s Shared Calendar</h1>
+          <h4>ReCal is a student-made course selection tool for Princeton students.</h4>
+          <h5>
+            <a href="/login?next=/" class="btn btn-warning btn">Log in to Build Your Own Schedule</a>
+          </h5>   
+        </div>
+      </div><!-- /row -->
+      </div> <!-- /container -->
+  </div><!-- /headerwrap -->
+
+
+
+
+	<!-- *****************************************************************************************************************
+	 MIDDLE CONTENT
+	 ***************************************************************************************************************** -->
+
+ <div id="about_content">
+   <div id="about_container" class="container mtb">
+    <div class="row centered">
+      <img style="margin-bottom: 2em;" src="http://i.imgur.com/{{ imgur_id }}.png" title="{{ username }}'s shared ReCal calendar" />
+      <h4><a href="/landing">Learn more about ReCal</a></h4>
+      
+    </div><!-- /row -->
+   </div><!-- /container -->
+  </div>
+
+
+	<!-- *****************************************************************************************************************
+	 FOOTER
+	 ***************************************************************************************************************** -->
+	 <div id="footerwrap">
+	 	<div class="container">
+		 	<div class="row">
+		 		<div class="col-xs-12">
+		 			<!--<h4>About</h4>
+		 			<div class="hline-w"></div>-->
+		 			<p style="text-align:center;">Made with love by dxue@, naphats@, and maximz@.</p>
+		 		</div>
+
+	   </div><!-- /row -->
+    </div><!-- /container -->
+   </div><!-- /footerwrap -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="{% static 'landing/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'landing/js/retina-1.1.0.js' %}"></script>
+    <script type="text/javascript">
+    // this fixes issue with smart app banner being hidden
+    $(window).load(function() {
+        $(window).scrollTop(-100);
+    });
+    </script>
+    <!--
+    <script src="{% static 'landing/js/jquery.hoverdir.js' %} "></script>
+    <script src="{% static 'landing/js/jquery.hoverex.min.js' %} "></script>
+    <script src="{% static 'landing/js/jquery.prettyPhoto.js' %} "></script>
+    <script src="{% static 'landing/js/jquery.isotope.min.js' %} "></script>
+    <script src="{% static 'landing/js/custom.js' %} "></script>
+-->
+
+
+  </body>
+</html>

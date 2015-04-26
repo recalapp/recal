@@ -6,6 +6,73 @@
 {% block main_content %}
 <script type="text/javascript">
    var username = "{{ username }}"
+
+	var $j = jQuery.noConflict();
+	$j(document).ready(function() {
+		$.getScript('//connect.facebook.net/en_US/sdk.js', function() {
+			FB.init({
+			    appId: '388524094689370',
+			    version: 'v2.3' // or v2.0, v2.1, v2.0
+			});
+		});
+
+		interesting_part = '.fc-view-container'
+		
+		$('#fbshare').click(function(e) {
+			FB.login(function(response) {
+			    if (response.authResponse) {
+
+			        html2canvas($(interesting_part), {
+			            onrendered: function(canvas) {
+			                // canvas is the final rendered <canvas> element
+
+			                $('#result').html(canvas);
+
+			                var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+
+			                //window.location.href=image; // it will save locally
+
+			                $.ajax({
+			                    url: 'https://api.imgur.com/3/image',
+			                    headers: {
+			                        'Authorization': 'Client-ID babe650eea449df'
+			                    },
+			                    type: 'POST',
+			                    data: {
+			                        'image': canvas.toDataURL("image/png").replace('data:image/png;base64,', ''),
+			                        'type': 'base64' // file or url
+			                    },
+			                    success: function(link) {
+			                            console.log(link.data.link);
+
+			                            FB.ui({
+			                                method: 'share_open_graph',
+			                                action_type: 'recalio:plan',
+			                                action_properties: JSON.stringify({
+			                                    image: link.data.link,
+			                                    schedule: "http://recal.io/shared/" + username + "/" + link.data.id
+			                                })
+			                            }, function(response) {
+			                                console.log(response);
+			                                if (response.post_id) {
+			                                    alert('Posted to Facebook!');
+			                                }
+			                                return false;
+			                            });
+			                        } // end successful imgur push
+			                }); // end imgur ajax
+			            } // end html2canvas onrendered
+			        }); // end html2canvas
+			    } // end facebook isauthenticated
+			    else {
+			        console.log('Please login and authorize ReCal to post to Facebook.');
+			    }
+			}); // end FB login
+
+		return false;
+		}); // end onclick
+	});
+
 </script>
 
 <div id="container">
