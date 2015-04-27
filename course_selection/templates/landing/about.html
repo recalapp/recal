@@ -2,7 +2,8 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,172 +27,193 @@
     <![endif]-->
 
     <style type="text/css">
-      body {
-        background-color: #384452;
-      }
-      #about_content, #about_container {
-        background-color: #fff;
-      }
-      #about_container {
-        margin-top: 0;
-        margin-bottom: 0;
-        padding-top: 80px;
-        padding-bottom: 100px;
-      }
-      #headerwrap {
-        min-height: 0;
-        padding-bottom: 2em;
-      }
-      #headerwrap h4 {
-        color: white;
-      }
-      #ack_ul {
-        list-style-type: square;
-        text-align: left;
-        padding-left: 2em;
-      }
-      #ack_ul li {
-        padding-bottom: .5em;
-      }
+        body {
+            background-color: #384452;
+        }
 
-      .caption {
-          text-align: center;
-      }
+        #about_content,
+        #about_container {
+            background-color: #fff;
+        }
 
-      .profile-pic {
-        border-radius: 100%;
-        width: 300px;
-        height: 300px !important;
-      }
+        #about_container {
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 40px;
+            padding-bottom: 100px;
+        }
 
-      .thumbnail {
-          border: none;
-      }
+        #headerwrap {
+            min-height: 0;
+            padding-bottom: 2em;
+        }
 
+        #headerwrap h4 {
+            color: white;
+        }
+
+        #ack_ul {
+            list-style-type: square;
+            text-align: left;
+            padding-left: 2em;
+        }
+
+        #ack_ul li {
+            padding-bottom: .5em;
+        }
+
+        .caption {
+            text-align: center;
+        }
+
+        .profile-pic {
+            border-radius: 100%;
+            height: 300px !important;
+            width: auto;
+        }
+
+        .thumbnail {
+            border: none;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
+<body>
 
     <!-- Fixed navbar -->
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/landing">RECAL</a>
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/landing">RECAL</a>
+            </div>
+            <div class="navbar-collapse collapse navbar-right">
+                <ul class="nav navbar-nav">
+                    <li><a href="/landing">HOME</a></li>
+                    <li class="active"><a href="/about">ABOUT</a></li>
+                    <li><a href="/login?next=/">LOGIN</a></li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
         </div>
-        <div class="navbar-collapse collapse navbar-right">
-          <ul class="nav navbar-nav">
-            <li><a href="/landing">HOME</a></li>
-            <li class="active"><a href="/about">ABOUT</a></li>
-            <li><a href="/login?next=/">LOGIN</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
     </div>
 
-	<!-- *****************************************************************************************************************
+    <!-- *****************************************************************************************************************
 	 HEADERWRAP
 	 ***************************************************************************************************************** -->
-	<div id="headerwrap">
-      <div class="container">
-          <div class="row centered">
-              <div class="col-lg-5 col-lg-offset-1">
-                  <h3>Where can I learn more about ReCal?</h3>
-                  <p><a href="http://dailyprincetonian.com/news/2015/04/tigerhub-and-recal-take-the-spotlight-during-course-selection/" class="btn btn-theme">Read Daily Princetonian article &rarr;</a></p>
-                  <h3 style="margin-top:2em;">What's new in ReCal?</h3>
-                  <p><a href="/status" class="btn btn-theme">Read new features status page &rarr;</a></p>
-              </div>
-
-              <div class="col-lg-5 col-lg-offset-1">
-                  <h3>Acknowledgments</h3>
-                  <p>We're immensely grateful to these ReCal supporters:</p>
-                  <p>
-                  <ul id="ack_ul">
-                      <li>Dr. Dondero, COS Independent Work advisor for Dyland and Naphat, Fall 2014-15</li>
-                      <li>Raghav Sethi, COS 333 TA advisor for original 333 ReCal project (different content)</li>
-                      <li>Prof. Brian Kernighan, COS 333 instructor</li>
-                      <li>Travis Perlee '14, teammate for original 333 ReCal project</li>
-                  </ul>
-                  </p>
-              </div>
-
-          </div><!-- /row -->
-      </div> <!-- /container -->
-  </div><!-- /headerwrap -->
+    <div id="headerwrap">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <h1>Learn more about ReCal</h1>
+                    <h4>ReCal is a student-made course selection tool for Princeton students.</h4>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /headerwrap -->
 
 
 
 
-	<!-- *****************************************************************************************************************
+    <!-- *****************************************************************************************************************
 	 MIDDLE CONTENT
 	 ***************************************************************************************************************** -->
 
- <div id="about_content">
-   <div id="about_container" class="container mtb">
-     <h3 class="centered">The Team</h3>
-    <div class="row">
-            <div class="col-md-4">
-                <div class="thumbnail">
-                    <img src="{% static 'images/naphats.jpg' %}" alt="Naphat" class="profile-pic">
-                    <div class="caption">
-                        <h4>Naphat Sanguansin</h4>
-                        <p>
-                        Known as "Krit" by his close friends, Naphat specializes in front-end/mobile development and UX design.
-                        When he is not coding, Naphat spends his time running at the gym and reading up on current technologies,
-                        as well as following and eagering awaiting the next Star Wars film.
-                        </p>
+    <div id="about_content">
+        <div id="about_container" class="container mtb">
+            <!-- /row -->
+            <h3 class="centered">Meet The Team</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img src="{% static 'images/naphats.jpg' %}" alt="Naphat" class="profile-pic">
+                        <div class="caption">
+                            <h4>Naphat Sanguansin</h4>
+                            <p>
+                                Known as "Krit" by his close friends, Naphat is a Computer Science student and a member of Princeton's class of 2016. He's interested in writing formally correct code enforced by explicit invariants. When he is not coding, Naphat spends his time running
+                                at the gym and reading up on current technologies, as well as following and eagering awaiting the next Star Wars film.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="thumbnail">
-                    <img src="{% static 'images/dyland.png' %}" alt="Dyland" class="profile-pic">
-                    <div class="caption">
-                        <h4>Dyland Xue</h4>
-                        <p>
-                        Dyland is a junior at Princeton University majoring in Computer Science. He’s interested in solving hard problems such as <a href="http://arxiv.org/pdf/cs/0210020v1.pdf">Tetris</a> and <a href="http://arxiv.org/pdf/1106.5736v1.pdf">the Rubik’s Cube</a>. In his spare time, Dyland enjoys chess, photography, and running.
-                        </p>
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img src="{% static 'images/dyland.png' %}" alt="Dyland" class="profile-pic">
+                        <div class="caption">
+                            <h4>Dyland Xue</h4>
+                            <p>
+                                Dyland is a junior at Princeton University majoring in Computer Science. He’s interested in solving hard problems such as <a href="http://arxiv.org/pdf/cs/0210020v1.pdf">Tetris</a> and <a href="http://arxiv.org/pdf/1106.5736v1.pdf">the Rubik’s Cube</a>.
+                                In his spare time, Dyland enjoys chess, photography, and running.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="thumbnail">
-                    <img src="{% static 'images/maxim.jpg' %}" alt="Maxim" class="profile-pic">
-                    <div class="caption">
-                        <h4>Maxim Zaslavsky</h4>
-                        <p>
-                        Maxim is a Computer Science student at Princeton. He's most interested in applying the tools of computer science to problems in other fields -- especially neuroscience, economics, and biology. He spends his free time reading and playing music. He was PM of the original Recal COS 333 project at Princeton. Get in touch at <a href="http://www.maximz.com">www.maximz.com</a>.
-                        </p>
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img src="{% static 'images/maxim.jpg' %}" alt="Maxim" class="profile-pic">
+                        <div class="caption">
+                            <h4>Maxim Zaslavsky</h4>
+                            <p>
+                                Maxim is a Computer Science student at Princeton. He's most interested in applying the tools of computer science to problems in other fields -- especially neuroscience, economics, and biology. He spends his free time reading and playing music. He was
+                                PM of the original Recal COS 333 project at Princeton. Get in touch at <a href="http://www.maximz.com">www.maximz.com</a>.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div> <!-- row -->
+
+            <div class="row centered">
+                <div class="col-lg-5 col-lg-offset-1">
+                    <h3>Where can I learn more about ReCal?</h3>
+                    <p><a href="http://dailyprincetonian.com/news/2015/04/tigerhub-and-recal-take-the-spotlight-during-course-selection/" class="btn btn-theme">Read Daily Princetonian article &rarr;</a></p>
+                    <h3 style="margin-top:2em;">What's new in ReCal?</h3>
+                    <p><a href="/status" class="btn btn-theme">Read new features status page &rarr;</a></p>
                 </div>
 
-   </div><!-- /container -->
-  </div>
+                <div class="col-lg-5 col-lg-offset-1">
+                    <h3>Acknowledgments</h3>
+                    <p>We're immensely grateful to these ReCal supporters:</p>
+                    <p>
+                        <ul id="ack_ul">
+                            <li>Dr. Dondero, COS Independent Work advisor for Dyland and Naphat, Fall 2014-15</li>
+                            <li>Raghav Sethi, COS 333 TA advisor for original 333 ReCal project (different content, same name)</li>
+                            <li>Prof. Brian Kernighan, COS 333 instructor</li>
+                            <li>Travis Perlee '14, teammate for original 333 ReCal project (different content, same name)</li>
+                        </ul>
+                    </p>
+                </div>
+            </div> <!-- row -->
+        </div>
+        <!-- /container -->
+    </div>
 
 
-	<!-- *****************************************************************************************************************
+    <!-- *****************************************************************************************************************
 	 FOOTER
 	 ***************************************************************************************************************** -->
-	 <div id="footerwrap">
-	 	<div class="container">
-		 	<div class="row">
-		 		<div class="col-xs-12">
-		 			<!--<h4>About</h4>
+    <div id="footerwrap">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <!--<h4>About</h4>
 		 			<div class="hline-w"></div>-->
-		 			<p style="text-align:center;">Made with love by dxue@, naphats@, and maximz@.</p>
-		 		</div>
+                    <p style="text-align:center;">Made with love by dxue@, naphats@, and maximz@.</p>
+                </div>
 
-	   </div><!-- /row -->
-    </div><!-- /container -->
-   </div><!-- /footerwrap -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /footerwrap -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -200,10 +222,10 @@
     <script src="{% static 'landing/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'landing/js/retina-1.1.0.js' %}"></script>
     <script type="text/javascript">
-    // this fixes issue with smart app banner being hidden
-    $(window).load(function() {
-        $(window).scrollTop(-100);
-    });
+        // this fixes issue with smart app banner being hidden
+        $(window).load(function() {
+            $(window).scrollTop(-100);
+        });
     </script>
     <!--
     <script src="{% static 'landing/js/jquery.hoverdir.js' %} "></script>
@@ -214,5 +236,6 @@
 -->
 
 
-  </body>
+</body>
+
 </html>
