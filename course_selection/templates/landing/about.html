@@ -54,9 +54,18 @@
         padding-bottom: .5em;
       }
 
+      .caption {
+          text-align: center;
+      }
+
       .profile-pic {
+        border-radius: 100%;
         width: 300px;
-        height: 250px;
+        height: 300px !important;
+      }
+
+      .thumbnail {
+          border: none;
       }
 
     </style>
@@ -91,15 +100,28 @@
 	 ***************************************************************************************************************** -->
 	<div id="headerwrap">
       <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-lg-offset-2">
-          <h1>Learn more about ReCal</h1>
-          <h4>ReCal is a student-made course selection tool for Princeton students.</h4>
-          <h5>
-            <a href="/login?next=/" class="btn btn-warning btn">Log in to Select Courses</a>
-          </h5>
-        </div>
-      </div><!-- /row -->
+          <div class="row centered">
+              <div class="col-lg-5 col-lg-offset-1">
+                  <h3>Where can I learn more about ReCal?</h3>
+                  <p><a href="http://dailyprincetonian.com/news/2015/04/tigerhub-and-recal-take-the-spotlight-during-course-selection/" class="btn btn-theme">Read Daily Princetonian article &rarr;</a></p>
+                  <h3 style="margin-top:2em;">What's new in ReCal?</h3>
+                  <p><a href="/status" class="btn btn-theme">Read new features status page &rarr;</a></p>
+              </div>
+
+              <div class="col-lg-5 col-lg-offset-1">
+                  <h3>Acknowledgments</h3>
+                  <p>We're immensely grateful to these ReCal supporters:</p>
+                  <p>
+                  <ul id="ack_ul">
+                      <li>Dr. Dondero, COS Independent Work advisor for Dyland and Naphat, Fall 2014-15</li>
+                      <li>Raghav Sethi, COS 333 TA advisor for original 333 ReCal project (different content)</li>
+                      <li>Prof. Brian Kernighan, COS 333 instructor</li>
+                      <li>Travis Perlee '14, teammate for original 333 ReCal project</li>
+                  </ul>
+                  </p>
+              </div>
+
+          </div><!-- /row -->
       </div> <!-- /container -->
   </div><!-- /headerwrap -->
 
@@ -112,30 +134,7 @@
 
  <div id="about_content">
    <div id="about_container" class="container mtb">
-    <div class="row centered">
-      <div class="col-lg-4 col-lg-offset-2">
-        <h4>Where can I learn more about ReCal?</h4>
-        <p><a href="http://dailyprincetonian.com/news/2015/04/tigerhub-and-recal-take-the-spotlight-during-course-selection/" class="btn btn-theme">Read Daily Princetonian article &rarr;</a></p>
-        <h4 style="margin-top:2em;">What's new in ReCal?</h4>
-        <p><a href="/status" class="btn btn-theme">Read new features status page &rarr;</a></p>
-      </div>
-
-      <div class="col-lg-4 col-lg-offset-1">
-        <h4>Acknowledgments</h4>
-        <p>We're immensely grateful to these ReCal supporters:</p>
-        <p>
-          <ul id="ack_ul">
-            <li>Dr. Dondero, COS Independent Work advisor for Dyland and Naphat, Fall 2014-15</li>
-            <li>Raghav Sethi, COS 333 TA advisor for original 333 ReCal project (different content)</li>
-            <li>Prof. Brian Kernighan, COS 333 instructor</li>
-            <li>Travis Perlee '14, teammate for original 333 ReCal project</li>
-          </ul>
-        </p>
-      </div>
-
-    </div><!-- /row -->
-
-    <h3 class="centered">Meet the team</h3>
+     <h3 class="centered">The Team</h3>
     <div class="row">
             <div class="col-md-4">
                 <div class="thumbnail">
@@ -172,8 +171,7 @@
                     </div>
                 </div>
             </div>
-
-    </div>
+                </div>
 
    </div><!-- /container -->
   </div>
