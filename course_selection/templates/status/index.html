@@ -1,7 +1,10 @@
 {% load staticfiles %}
 
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -19,182 +22,228 @@
     <link rel="stylesheet" href="{% static 'status/assets/all.css' %}">
 
     <style type="text/css">
-body.status-page {
-}
+        body.status-page {}
     </style>
 
 
     <script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-ga('create', 'UA-48330974-4', 'auto');
-ga('send', 'pageview');
-
+        ga('create', 'UA-48330974-4', 'auto');
+        ga('send', 'pageview');
     </script>
 
 
 </head>
+
 <body class="status-page">
     <div class="container">
 
-    <div class="alert alert-info">We're constantly improving ReCal to make course selection easy.</div>
+        <div class="alert alert-info">We're constantly improving ReCal to make course selection easy.</div>
 
 
-    <h1>Current Status & Incident Report</h1>
+        <h1>Current Status & Incident Report</h1>
 
 
-<div class="timeline">
-    <div class="content-wrapper">
-      <div class="moment first">
-          <div class="row event clearfix">
-              <div class="col-sm-1">
-                  <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
-                      <i class="icon ion-checkmark"></i>
-                  </div>
-              </div>
-                <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
-                    <div class="panel panel-message">
-                        <div class="panel-heading">
-                            <strong>April 14, 2015 - iOS App</strong>
-                            <br>
+        <div class="timeline">
+            <div class="content-wrapper">
+                <div class="moment first">
+                    <div class="row event clearfix">
+                        <div class="col-sm-1">
+                            <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
+                                <i class="icon ion-upload"></i>
+                            </div>
                         </div>
-                        <div class="panel-body">
-                            <p>ReCal Course Selection is now available on iOS (<a target="__blank" href="https://itunes.apple.com/us/app/recal-course-selection/id946948041?ls=1&mt=8">iTunes link</a>)</p>
+                        <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                            <div class="panel panel-message">
+                                <div class="panel-heading">
+                                    <strong>April 28, 2015 - Course Updates</strong>
+                                    <br>
+                                </div>
+                                <div class="panel-body">
+                                    <p>The course listings have been updated.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="moment">
+                    <div class="row event clearfix">
+                        <div class="col-sm-1">
+                            <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
+                                <i class="icon ion-checkmark"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                            <div class="panel panel-message">
+                                <div class="panel-heading">
+                                    <strong>April 27, 2015 - About Page</strong>
+                                    <br>
+                                </div>
+                                <div class="panel-body">
+                                    <p>Added an about page on ReCal along with acknowledgements to all the invaluable help we received.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="moment">
+                    <div class="row event clearfix">
+                        <div class="col-sm-1">
+                            <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
+                                <i class="icon ion-checkmark"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                            <div class="panel panel-message">
+                                <div class="panel-heading">
+                                    <strong>April 14, 2015 - iOS App</strong>
+                                    <br>
+                                </div>
+                                <div class="panel-body">
+                                    <p>ReCal Course Selection is now available on iOS (<a target="__blank" href="https://itunes.apple.com/us/app/recal-course-selection/id946948041?ls=1&mt=8">iTunes link</a>)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="moment">
+                    <div class="row event clearfix">
+                        <div class="col-sm-1">
+                            <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
+                                <i class="icon ion-checkmark"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                            <div class="panel panel-message">
+                                <div class="panel-heading">
+                                    <strong>April 11, 2015 - Course Enrollment Sheet</strong>
+                                    <br>
+                                </div>
+                                <div class="panel-body">
+                                    <p>ReCal users can now export their schedules into Princeton University's printable course enrollment forms.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="moment">
+                    <div class="row event clearfix">
+                        <div class="col-sm-1">
+                            <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
+                                <i class="icon ion-upload"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                            <div class="panel panel-message">
+                                <div class="panel-heading">
+                                    <strong>April 10, 2015 - Course Updates</strong>
+                                    <br>
+                                </div>
+                                <div class="panel-body">
+                                    <p>The course listings have been updated with 4 new courses.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="moment">
+                    <div class="row event clearfix">
+                        <div class="col-sm-1">
+                            <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
+                                <i class="icon ion-upload"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                            <div class="panel panel-message">
+                                <div class="panel-heading">
+                                    <strong>April 8, 2015 - Course Updates</strong>
+                                    <br>
+                                </div>
+                                <div class="panel-body">
+                                    <p>The course listings have been updated with 17 new courses.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="moment">
+                    <div class="row event clearfix">
+                        <div class="col-sm-1">
+                            <div class="status-icon status-4" data-toggle="tooltip" title="We're back!" data-placement="left">
+                                <i class="icon ion-checkmark"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                            <div class="panel panel-message">
+                                <div class="panel-heading">
+                                    <strong>April 8, 2015 - All Clear</strong>
+                                    <br>
+                                </div>
+                                <div class="panel-body">
+                                    <p>The database has been rolled back to the day before the disruption</p>
+                                    <p>Fixed the security issue.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="moment">
+                    <div class="row event clearfix">
+                        <div class="col-sm-1">
+                            <div class="status-icon status-1" data-toggle="tooltip" title="T _ T" data-placement="left">
+                                <i class="icon ion-close"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                            <div class="panel panel-message">
+                                <div class="panel-heading">
+                                    <strong>April 7, 2015 - Service Disruption</strong>
+                                    <br>
+                                </div>
+                                <div class="panel-body">
+                                    <p>Users reported their schedules being deleted.</p>
+                                    <p>The issue has been identified as a security issue.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="moment ">
+                    <div class="row event clearfix">
+                        <div class="col-sm-1">
+                            <div class="status-icon status-4" data-toggle="tooltip" title="Launch" data-placement="left">
+                                <i class="icon ion-checkmark"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
+                            <div class="panel panel-message">
+                                <div class="panel-heading">
+                                    <strong>April 3, 2015 - Course Selection Launch</strong>
+                                </div>
+                                <div class="panel-body">
+                                    <p>ReCal Course Selection offers a better, faster, and easier experience in choosing your classes.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-        <div class="moment">
-            <div class="row event clearfix">
-                <div class="col-sm-1">
-                    <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
-                        <i class="icon ion-checkmark"></i>
-                    </div>
-                </div>
-                <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
-                    <div class="panel panel-message">
-                        <div class="panel-heading">
-                            <strong>April 11, 2015 - Course Enrollment Sheet</strong>
-                            <br>
-                        </div>
-                        <div class="panel-body">
-                            <p>ReCal users can now export their schedules into Princeton University's printable course enrollment forms.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="moment">
-            <div class="row event clearfix">
-                <div class="col-sm-1">
-                    <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
-                        <i class="icon ion-upload"></i>
-                    </div>
-                </div>
-                <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
-                    <div class="panel panel-message">
-                        <div class="panel-heading">
-                            <strong>April 10, 2015 - Course Updates</strong>
-                            <br>
-                        </div>
-                        <div class="panel-body">
-                            <p>The course listings have been updated with 4 new courses.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="moment">
-            <div class="row event clearfix">
-                <div class="col-sm-1">
-                    <div class="status-icon status-4" data-toggle="tooltip" title="Updates!" data-placement="left">
-                        <i class="icon ion-upload"></i>
-                    </div>
-                </div>
-                <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
-                    <div class="panel panel-message">
-                        <div class="panel-heading">
-                            <strong>April 8, 2015 - Course Updates</strong>
-                            <br>
-                        </div>
-                        <div class="panel-body">
-                            <p>The course listings have been updated with 17 new courses.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="moment">
-            <div class="row event clearfix">
-                <div class="col-sm-1">
-                    <div class="status-icon status-4" data-toggle="tooltip" title="We're back!" data-placement="left">
-                        <i class="icon ion-checkmark"></i>
-                    </div>
-                </div>
-                <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
-                    <div class="panel panel-message">
-                        <div class="panel-heading">
-                            <strong>April 8, 2015 - All Clear</strong>
-                            <br>
-                        </div>
-                        <div class="panel-body">
-                            <p>The database has been rolled back to the day before the disruption</p>
-                            <p>Fixed the security issue.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="moment">
-            <div class="row event clearfix">
-                <div class="col-sm-1">
-                    <div class="status-icon status-1" data-toggle="tooltip" title="T _ T" data-placement="left">
-                        <i class="icon ion-close"></i>
-                    </div>
-                </div>
-                <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
-                    <div class="panel panel-message">
-                        <div class="panel-heading">
-                            <strong>April 7, 2015 - Service Disruption</strong>
-                            <br>
-                        </div>
-                        <div class="panel-body">
-                            <p>Users reported their schedules being deleted.</p>
-                            <p>The issue has been identified as a security issue.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="moment ">
-            <div class="row event clearfix">
-                <div class="col-sm-1">
-                    <div class="status-icon status-4" data-toggle="tooltip" title="Launch" data-placement="left">
-                        <i class="icon ion-checkmark"></i>
-                    </div>
-                </div>
-                <div class="col-xs-10 col-xs-offset-2 col-sm-11 col-sm-offset-0">
-                    <div class="panel panel-message">
-                        <div class="panel-heading">
-                            <strong>April 3, 2015 - Course Selection Launch</strong>
-                        </div>
-                        <div class="panel-body">
-                            <p>ReCal Course Selection offers a better, faster, and easier experience in choosing your classes.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
 
 
 
@@ -202,9 +251,13 @@ ga('send', 'pageview');
 
     <footer class="footer">
         <p>Use ReCal at <a href="http://recal.io">recal.io</a>.</p>
-        <p><small>HTML template from <a href="https://cachethq.io/">Cachet Status Page</a>.</small></p>
-</footer>
+        <p>
+            <small>HTML template from <a href="https://cachethq.io/">Cachet Status Page</a>.</small>
+        </p>
+    </footer>
 
-<!-- TODO: ganalytics -->
+    <!-- TODO: ganalytics -->
 
-</body></html>
+</body>
+
+</html>
