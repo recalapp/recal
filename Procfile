@@ -1,1 +1,1 @@
-web: gunicorn nice.wsgi:application
+web: gunicorn course_selection.wsgi:application

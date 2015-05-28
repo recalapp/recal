@@ -1,4 +1,4 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+/// <reference path='../../ts/typings/tsd.d.ts' />
 import IEvent = require('../interfaces/IEvent');
 import IEventSource = require('../interfaces/IEventSource');
 import ICourse = require('../interfaces/ICourse');

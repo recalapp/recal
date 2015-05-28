@@ -50,7 +50,7 @@ INSTALLED_APPS = (
     'tastypie',
     'cas',
     'colorfield',
-    'nice',
+    # 'nice',
     'course_selection'
 )
 
@@ -129,7 +129,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 STATICFILES_DIRS = (
     normpath(join(DJANGO_ROOT, 'course_selection', 'static')),
-    normpath(join(DJANGO_ROOT, 'nice', 'static')),
+    # we don't use nice anymore
+    #normpath(join(DJANGO_ROOT, 'nice', 'static')),
 )
 
 TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'course_selection', 'templates')),

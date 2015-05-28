@@ -1,4 +1,4 @@
-/// <reference path='../../../nice/static/ts/typings/tsd.d.ts' />
+/// <reference path='../ts/typings/tsd.d.ts' />
 
 class Utils {
     private static NOT_FOUND: number = -1;

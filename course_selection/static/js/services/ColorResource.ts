@@ -1,4 +1,4 @@
-/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+/// <reference path='../../ts/typings/tsd.d.ts' />
 
 import IColorPalette = require('../interfaces/IColorPalette');
 import Service = require('./Service');

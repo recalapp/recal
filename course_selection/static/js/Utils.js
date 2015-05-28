@@ -1,4 +1,3 @@
-/// <reference path='../../../nice/static/ts/typings/tsd.d.ts' />
 define(["require", "exports"], function(require, exports) {
     var Utils = (function () {
         function Utils() {
@@ -30,3 +29,4 @@ define(["require", "exports"], function(require, exports) {
     
     return Utils;
 });
+//# sourceMappingURL=Utils.js.map

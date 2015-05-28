@@ -10,10 +10,8 @@ define(["require", "exports"], function(require, exports) {
             this.section_capacity = section.section_capacity;
             this.section_enrollment = section.section_enrollment;
 
-            // by default, a newly constructed section is previewed until enrolled"
             this.className = "cal-unconfirmed";
 
-            // for tooltip display
             var tooltipEnrollment = this.section_enrollment + "/" + this.section_capacity;
 
             var inputTimeFormat = "hh:mm a";
@@ -41,9 +39,6 @@ define(["require", "exports"], function(require, exports) {
                 }
             }
         }
-        /**
-        * gets the date of the day in the current week
-        */
         SectionEventSource.prototype.getAgendaDate = function (day) {
             var todayOffset = moment().isoWeekday();
             var dayOffset = SectionEventSource.DAYS[day];
@@ -64,3 +59,4 @@ define(["require", "exports"], function(require, exports) {
     
     return SectionEventSource;
 });
+//# sourceMappingURL=SectionEventSource.js.map

@@ -9,7 +9,7 @@ var nice = new Module('nice', [
         'cfp.hotkeys',
         'LocalStorageModule',
         'niceServices',
-        'niceFilters', 
+        'niceFilters',
         'niceControllers',
         'niceDirectives'
         ]);
