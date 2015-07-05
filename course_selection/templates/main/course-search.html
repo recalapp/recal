@@ -1,18 +1,4 @@
 {% verbatim %}
-<div id="searchColumn" class="col-xs-4 column"
-                       ng-cloak
-                       ng-controller="SearchCtrl as searchCtrl">
-    <div class="row" id="searchBarContainer">
-        <input class="searchBar"
-               type="search"
-               ng-model="query"
-               ng-init="query=''"
-               select-on-click
-               auto-focus
-               focus="true"
-               placeholder="Search">
-        </input>
-    </div>
     <div id="loading-message-container" ng-show="data.courses.length == 0">
         <div id="loading-bar-spinner"><div class="spinner-icon"></div></div>
         <h4 class="loading-courses-message">Loading Courses...</h4>
@@ -58,12 +44,12 @@
     </div>
     <div id="enrolledCoursesContainer">
         <div ng-show="data.enrolledCourses.length > 0">
-            <h4 class="row">{{data.enrolledCourses.length}} Enrolled Courses 
+            <h4 class="row">{{data.enrolledCourses.length}} Enrolled Courses
                 <a target="_blank" ng-href="api/worksheet/{{data.schedule.id}}" class="export-icon">
                     <i class="fa fa-external-link pull-right"
                        tooltip="Enrollment Worksheet"
                        tooltip-placement="right"
-                        ></i> 
+                        ></i>
                 </a>
             </h4>
             <div class="row enrolled-courses-container"
@@ -144,6 +130,4 @@
             </div>
         </div>
     </div>
-
-</div>
 {% endverbatim %}

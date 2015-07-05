@@ -1,0 +1,22 @@
+{% verbatim %}
+<div id="searchColumn" class="col-xs-4 column"
+                       ng-cloak
+                       ng-controller="SearchCtrl as searchCtrl">
+    <div class="row" id="searchBarContainer">
+        <input class="searchBar"
+               type="search"
+               ng-model="query"
+               ng-init="query=''"
+               select-on-click
+               auto-focus
+               focus="true"
+               placeholder="Search">
+        </input>
+    </div>
+
+    {% endverbatim %}
+    {% include 'main/course-search.html' %}
+    {% include 'main/friend-search.html' %}
+    {% verbatim %}
+</div>
+{% endverbatim %}

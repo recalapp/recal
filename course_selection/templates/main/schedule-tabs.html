@@ -10,20 +10,20 @@
          ng-mouseleave="showButtons=false"
     >
         <tab-heading ng-cloak
-        > 
+        >
         <span>
             {{ schedule.scheduleObject.title }}
-            <i ng-show="showButtons" 
-               ng-click="scheduleCtrl.changeScheduleTitle($index)" 
+            <i ng-show="showButtons"
+               ng-click="scheduleCtrl.changeScheduleTitle($index)"
                class="fa fa-edit edit-icon"></i>
         </span>
-            <i ng-click="scheduleCtrl.confirmRemoveSchedule($index)" 
+            <i ng-click="scheduleCtrl.confirmRemoveSchedule($index)"
                ng-show="scheduleCtrl.canRemove() && showButtons"
                class="fa fa-times remove-icon"></i>
         </tab-heading>
          <div class="row clearfix" id="main">
             {% endverbatim %}
-            {% include 'main/course-search.html' %}
+            {% include 'main/search.html' %}
             {% include 'main/calendar.html' %}
             {% verbatim %}
          </div>

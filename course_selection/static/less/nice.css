@@ -130,9 +130,10 @@ body {
   background-color: rgba(47, 47, 47, 0.98);
 }
 /* scrollbar */
+/* make it more visible (for win users) */
 ::-webkit-scrollbar {
-  width: 0.2em;
-  height: 0.2em;
+  width: 0.3em;
+  height: 0.3em;
 }
 ::-webkit-scrollbar-button {
   background: #cccccc;
