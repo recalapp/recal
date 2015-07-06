@@ -104,7 +104,7 @@ class ScheduleCtrl {
             });
         });
     }
-    
+
     public confirmRemoveSchedule(index: number) {
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/removeScheduleModal.html',
@@ -178,11 +178,11 @@ class ScheduleCtrl {
     public canRemove() {
         return this.schedules.length > 1;
     }
- 
+
     public addSchedule() {
         this._setAllInactive();
         this._createSchedule();
-    }    
+    }
 
 }
 

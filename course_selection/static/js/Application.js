@@ -4,6 +4,8 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
         'angular-loading-bar',
         'ngAnimate',
         'ui.bootstrap',
+        'ngAria',
+        'ngMaterial',
         'cfp.hotkeys',
         'LocalStorageModule',
         'niceServices',
@@ -20,6 +22,8 @@ define(["require", "exports", './Module'], function(require, exports, Module) {
         cfpLoadingBarProvider.includeSpinner = false;
     }).config(function ($resourceProvider) {
         $resourceProvider.defaults.stripTrailingSlashes = false;
+    }).config(function ($animateProvider) {
+        $animateProvider.classNameFilter(/^(?:(?!ng-animate-disabled).)*$/);
     });
 
     

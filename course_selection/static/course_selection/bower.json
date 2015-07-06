@@ -34,7 +34,8 @@
     "requirejs-text": "~2.0.12",
     "requirejs": "~2.1.14",
     "angular-material": "~0.10.0",
-    "angular-bootstrap": "~0.13.0"
+    "angular-bootstrap": "~0.13.0",
+    "angular-aria": "~1.4.1"
   },
   "resolutions": {
     "angular": "1.4.1",
