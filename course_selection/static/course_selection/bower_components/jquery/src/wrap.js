@@ -1,10 +1,3 @@
-define([
-	"./core",
-	"./core/init",
-	"./manipulation", // clone
-	"./traversing" // parent, contents
-], function( jQuery ) {
-
 jQuery.fn.extend({
 	wrapAll: function( html ) {
 		var wrap;
@@ -73,7 +66,4 @@ jQuery.fn.extend({
 			}
 		}).end();
 	}
-});
-
-return jQuery;
 });
