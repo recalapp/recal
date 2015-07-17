@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", 'moment'], function(require, exports, Moment) {
     var SectionEventSource = (function () {
         function SectionEventSource(section, course, colors) {
             this.id = section.id;
@@ -25,8 +25,8 @@ define(["require", "exports"], function(require, exports) {
                 for (var k = 0; k < numDays; k++) {
                     var day = days[k];
                     var date = this.getAgendaDate(day);
-                    var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
-                    var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
+                    var startTime = Moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
+                    var endTime = Moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
                     var start = date + 'T' + startTime;
                     var end = date + 'T' + endTime;
                     this.events.push({
@@ -40,10 +40,10 @@ define(["require", "exports"], function(require, exports) {
             }
         }
         SectionEventSource.prototype.getAgendaDate = function (day) {
-            var todayOffset = moment().isoWeekday();
+            var todayOffset = Moment().isoWeekday();
             var dayOffset = SectionEventSource.DAYS[day];
             var diff = +(dayOffset - todayOffset);
-            var date = moment().add(diff, 'days').format('YYYY-MM-DD');
+            var date = Moment().add(diff, 'days').format('YYYY-MM-DD');
             return date;
         };
         SectionEventSource.DAYS = {

@@ -22,8 +22,6 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                 combo: 'mod+f',
                 description: 'search',
                 callback: function (event, hotkey) {
-                    event.preventDefault();
-                    $('.searchBar').filter(':visible').focus();
                 }
             });
         }

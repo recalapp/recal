@@ -1,4 +1,5 @@
 /// <reference path='../../ts/typings/tsd.d.ts' />
+import Moment = require('moment');
 import IEvent = require('../interfaces/IEvent');
 import IEventSource = require('../interfaces/IEventSource');
 import ICourse = require('../interfaces/ICourse');
@@ -50,13 +51,13 @@ class SectionEventSource implements IEventSource {
             var days = meeting.days.split(' ');
             var numDays = days[days.length - 1] ? days.length : days.length - 1;
 
-            // ignore last element of the result of split, which is 
+            // ignore last element of the result of split, which is
             // empty string due to the format of the input
             for (var k = 0; k < numDays; k++) {
                 var day = days[k];
                 var date = this.getAgendaDate(day);
-                var startTime = moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
-                var endTime = moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
+                var startTime = Moment(meeting.start_time, inputTimeFormat).format(outputTimeFormat);
+                var endTime = Moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
                 var start = date + 'T' + startTime;
                 var end = date + 'T' + endTime;
                 this.events.push({
@@ -64,7 +65,7 @@ class SectionEventSource implements IEventSource {
                     start: start,
                     end: end,
                     location: meeting.location,
-                    enrollment: tooltipEnrollment, 
+                    enrollment: tooltipEnrollment,
                 });
             }
         }
@@ -74,10 +75,10 @@ class SectionEventSource implements IEventSource {
      * gets the date of the day in the current week
      */
     private getAgendaDate(day: string): string {
-        var todayOffset = moment().isoWeekday();
+        var todayOffset = Moment().isoWeekday();
         var dayOffset = SectionEventSource.DAYS[day];
         var diff: number = +(dayOffset - todayOffset);
-        var date = moment().add(diff, 'days').format('YYYY-MM-DD');
+        var date = Moment().add(diff, 'days').format('YYYY-MM-DD');
         return date;
     }
 }

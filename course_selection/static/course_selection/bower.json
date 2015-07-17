@@ -35,10 +35,10 @@
     "requirejs": "~2.1.14",
     "angular-material": "~0.10.0",
     "angular-bootstrap": "~0.13.0",
-    "angular-aria": "~1.4.1"
+    "angular-aria": "~1.4.1",
+    "angular": "~1.4.3"
   },
   "resolutions": {
-    "angular": "1.4.1",
-    "angular-resource": "1.4.1"
+    "angular": "~1.4.3"
   }
 }

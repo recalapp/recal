@@ -44,8 +44,8 @@ class ScheduleCtrl {
             callback: (event, hotkey) => {
                 // TODO: this is a hack using jQuery...
                 // looks for the visible search bar and focuses
-                event.preventDefault();
-                $('.searchBar').filter(':visible').focus();
+                // event.preventDefault();
+                //$('.searchBar').filter(':visible').focus();
             }
         });
 

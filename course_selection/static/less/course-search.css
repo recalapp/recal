@@ -40,7 +40,7 @@
   background-repeat: no-repeat;
   background-size: 14px 14px;
   background-position: 7px 50%;
-  padding: 5px 5px 5px 25px;
+  padding: 0px 0px 0px 25px;
   color: #bbbbbb;
   height: 4vh;
   font-size: 13px;
@@ -269,6 +269,15 @@
 .course-panel.ng-enter.ng-enter-active {
   opacity: 1;
   left: 0;
+}
+md-pagination-wrapper {
+  height: 38px;
+}
+.md-tab {
+  padding: 6px 24px 6px 24px;
+}
+md-tabs-canvas {
+  height: 38px;
 }
 /*
 .ng-hide-add {
