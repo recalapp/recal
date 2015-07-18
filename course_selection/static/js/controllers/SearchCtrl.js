@@ -11,6 +11,7 @@ define(["require", "exports"], function(require, exports) {
             this._scheduleManager = this.$scope.$parent.schedule.scheduleManager;
             this.$scope.data = this._scheduleManager.getData();
             this.$scope.filteredCourses = this.$scope.data.courses;
+            this.useCourseSearch();
 
             this.$scope.$watch(function () {
                 return _this.$scope.query;
@@ -42,6 +43,16 @@ define(["require", "exports"], function(require, exports) {
             enumerable: true,
             configurable: true
         });
+
+        SearchCtrl.prototype.useFriendSearch = function () {
+            this.whichSearch = SearchCtrl.whichSearchEnum.FRIEND_SEARCH;
+            this.placeHolder = SearchCtrl.FRIEND_SEARCH_PLACE_HOLDER;
+        };
+
+        SearchCtrl.prototype.useCourseSearch = function () {
+            this.whichSearch = SearchCtrl.whichSearchEnum.COURSE_SEARCH;
+            this.placeHolder = SearchCtrl.COURSE_SEARCH_PLACE_HOLDER;
+        };
 
         SearchCtrl.prototype.onMouseOver = function (course) {
             if (this._scheduleManager.isCourseEnrolled(course)) {
@@ -126,6 +137,13 @@ define(["require", "exports"], function(require, exports) {
         ];
 
         SearchCtrl.NOT_FOUND = -1;
+        SearchCtrl.whichSearchEnum = {
+            COURSE_SEARCH: 0,
+            FRIEND_SEARCH: 1
+        };
+
+        SearchCtrl.COURSE_SEARCH_PLACE_HOLDER = "Search Course";
+        SearchCtrl.FRIEND_SEARCH_PLACE_HOLDER = "Search Friend";
         return SearchCtrl;
     })();
 

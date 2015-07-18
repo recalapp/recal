@@ -20,6 +20,16 @@ class SearchCtrl {
     ];
 
     private static NOT_FOUND: number = -1;
+    private static whichSearchEnum = {
+        COURSE_SEARCH: 0,
+        FRIEND_SEARCH: 1
+    };
+
+    private static COURSE_SEARCH_PLACE_HOLDER = "Search Course";
+    private static FRIEND_SEARCH_PLACE_HOLDER = "Search Friend";
+
+    private whichSearch: number;
+    private placeHolder: string;
 
     private _scheduleManager: IScheduleManager;
     public get scheduleManager() {
@@ -31,10 +41,12 @@ class SearchCtrl {
             private $sce,
             private $filter
             ) {
+
         this.$scope.vm = this;
         this._scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
         this.$scope.data = this._scheduleManager.getData();
         this.$scope.filteredCourses = this.$scope.data.courses;
+        this.useCourseSearch();
 
         this.$scope.$watch(() => {
             return this.$scope.query;
@@ -58,6 +70,16 @@ class SearchCtrl {
 
             this.$scope.filteredCourses = this.$filter("courseSearch")(this.$scope.data.courses, this.$scope.query);
         });
+    }
+
+    public useFriendSearch() {
+        this.whichSearch = SearchCtrl.whichSearchEnum.FRIEND_SEARCH;
+        this.placeHolder = SearchCtrl.FRIEND_SEARCH_PLACE_HOLDER;
+    }
+
+    public useCourseSearch() {
+        this.whichSearch = SearchCtrl.whichSearchEnum.COURSE_SEARCH;
+        this.placeHolder = SearchCtrl.COURSE_SEARCH_PLACE_HOLDER;
     }
 
     // if user is not enrolled in course yet, add course events to previewEvents

@@ -5,7 +5,6 @@ from os import environ
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
 #DEBUG = bool(environ.get('DJANGO_DEBUG', ''))
 DEBUG = environ.get('DJANGO_DEBUG', False)
-DEBUG = False
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
 TEMPLATE_DEBUG = DEBUG

@@ -3,6 +3,18 @@
                        ng-cloak
                        ng-controller="SearchCtrl as searchCtrl">
     <div class="row" id="searchBarContainer">
+        <md-button class="md-primary course-search-button"
+        ng-class="{'md-raised': searchCtrl.whichSearch == 0}"
+        ng-click="searchCtrl.useCourseSearch()"
+        >
+            <i class="fa fa-book"></i>
+        </md-button>
+        <md-button class="md-accent friend-search-button"
+        ng-class="{'md-raised': searchCtrl.whichSearch == 1 }"
+        ng-click="searchCtrl.useFriendSearch()"
+        >
+            <i class="fa fa-male"></i>
+        </md-button>
         <input class="searchBar"
                type="search"
                ng-model="query"
@@ -10,13 +22,12 @@
                select-on-click
                auto-focus
                focus="true"
-               placeholder="Search">
+               placeholder="{{ searchCtrl.placeHolder}}">
         </input>
     </div>
 
     {% endverbatim %}
     {% include 'main/course-search.html' %}
-    {% include 'main/friend-search.html' %}
     {% verbatim %}
 </md-content>
 {% endverbatim %}

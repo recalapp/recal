@@ -36,6 +36,7 @@ body {
   margin: 5px 15px 0 0;
   padding: 0 15px;
   background: transparent;
+  overflow-x: hidden;
 }
 #calendarColumn {
   height: 85vh;
@@ -259,12 +260,47 @@ body {
   background-color: #f1f2f2;
   height: 4vh;
   margin-bottom: 1vh;
+  position: relative;
+}
+.search-button {
+  position: absolute;
+  min-height: 0;
+  height: 100%;
+  min-width: 0;
+  width: 10%;
+  margin: 0;
+  border-radius: 0;
+}
+.search-button .fa {
+  font-size: 18px;
+}
+.course-search-button {
+  position: absolute;
+  min-height: 0;
+  height: 100%;
+  min-width: 0;
+  width: 10%;
+  margin: 0;
+  border-radius: 0;
+  right: 0;
+}
+.course-search-button .fa {
+  font-size: 18px;
+}
+.friend-search-button {
+  position: absolute;
+  min-height: 0;
+  height: 100%;
+  min-width: 0;
+  width: 10%;
+  margin: 0;
+  border-radius: 0;
+  right: 10%;
+}
+.friend-search-button .fa {
+  font-size: 18px;
 }
 .searchBar {
-  background-image: url('../images/search.png');
-  background-repeat: no-repeat;
-  background-size: 14px 14px;
-  background-position: 7px 50%;
   padding: 0px 0px 0px 25px;
   color: #bbbbbb;
   height: 4vh;
