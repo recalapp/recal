@@ -22,6 +22,7 @@
         "./controllers/CalendarCtrl.ts",
         "./controllers/ChangeScheduleTitleModalCtrl.ts",
         "./controllers/Controllers.ts",
+        "./controllers/CourseSearchCtrl.ts",
         "./controllers/FriendCtrl.ts",
         "./controllers/MainCtrl.ts",
         "./controllers/NewScheduleModalCtrl.ts",

@@ -1,4 +1,6 @@
 {% verbatim %}
+<div ng-controller="CourseSearchCtrl as courseSearchCtrl"
+     ng-show="searchCtrl.whichSearch == 0">
     <div id="loading-message-container" ng-show="data.courses.length == 0">
         <div id="loading-bar-spinner"><div class="spinner-icon"></div></div>
         <h4 class="loading-courses-message">Loading Courses...</h4>
@@ -10,8 +12,8 @@
             <div id="recommendedCourses" class="panel-group">
                 <div class="panel panel-default course-panel"
                      ng-repeat="course in data.courses | orderBy: '-rating' | limitTo: 10"
-                     ng-mouseover="showTags=true; searchCtrl.onMouseOver(course)"
-                     ng-mouseleave="showTags=false; searchCtrl.onMouseLeave(course)"
+                     ng-mouseover="showTags=true; courseSearchCtrl.onMouseOver(course)"
+                     ng-mouseleave="showTags=false; courseSearchCtrl.onMouseLeave(course)"
                      ng-init="showTags = false"
                      >
                      <div ng-mouseenter="showTags = true"
@@ -34,7 +36,7 @@
                                   ng-href="{{ course.registrar_link }}"
                                   ><i class="fa fa-info"></i></a>
                              <div class="enroll-tag"
-                                  ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+                                  ng-click="courseSearchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
                          </div>
                      </div>
 
@@ -56,10 +58,10 @@
                 >
                 <div id="enrolledCourses" class="panel-group">
                     <div class="panel panel-default course-panel enrolled-course-panel"
-                         ng-class="{confirmed: searchCtrl.isConfirmed(course), unconfirmed: !searchCtrl.isConfirmed(course)}"
+                         ng-class="{confirmed: courseSearchCtrl.isConfirmed(course), unconfirmed: !courseSearchCtrl.isConfirmed(course)}"
                          ng-repeat="course in data.enrolledCourses
                          | orderBy: 'primary_listing' track by course.id"
-                         ng-style="searchCtrl.getCourseStyles(course)"
+                         ng-style="courseSearchCtrl.getCourseStyles(course)"
                          ng-init="showTags = false"
                          ng-mouseenter="showTags = true"
                          ng-mouseleave="showTags = false"
@@ -86,7 +88,7 @@
                                  ><i class="fa fa-info"
                                      ></i></a>
                              <div class="unenroll-tag"
-                                  ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-minus"></i></div>
+                                  ng-click="courseSearchCtrl.toggleEnrollment(course)"> <i class="fa fa-minus"></i></div>
                          </div>
                     </div>
                 </div>
@@ -101,8 +103,8 @@
                 <div id="unenrolledCourses" class="panel-group">
                     <div class="panel panel-default course-panel"
                          ng-repeat="course in filteredCourses | orderBy: 'primary_listing' track by course.id"
-                         ng-mouseover="showTags=true; searchCtrl.onMouseOver(course)"
-                         ng-mouseleave="showTags=false; searchCtrl.onMouseLeave(course)"
+                         ng-mouseover="showTags=true; courseSearchCtrl.onMouseOver(course)"
+                         ng-mouseleave="showTags=false; courseSearchCtrl.onMouseLeave(course)"
                          ng-init="showTags = false"
                          >
                          <div class="course-panel-title">
@@ -123,11 +125,12 @@
                                   ng-href="{{ course.registrar_link }}"
                                   ><i class="fa fa-info"></i></a>
                              <div class="enroll-tag"
-                                  ng-click="searchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
+                                  ng-click="courseSearchCtrl.toggleEnrollment(course)"> <i class="fa fa-plus"></i></div>
                          </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endverbatim %}

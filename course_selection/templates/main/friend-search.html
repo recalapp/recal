@@ -1,5 +1,7 @@
 {% verbatim %}
-<div ng-controller="FriendCtrl as friendCtrl">
+<div ng-controller="FriendCtrl as friendCtrl"
+     ng-show="searchCtrl.whichSearch == 1"
+     >
     <div id="loading-message-container" ng-show="true">
         <div id="loading-bar-spinner"><div class="spinner-icon"></div></div>
         <h4 class="loading-courses-message">Loading Friends...</h4>
