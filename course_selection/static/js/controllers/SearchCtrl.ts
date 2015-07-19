@@ -14,7 +14,7 @@ class SearchCtrl {
     ];
 
     private static NOT_FOUND: number = -1;
-    private static whichSearchEnum = {
+    public static whichSearchEnum = {
         COURSE_SEARCH: 0,
         FRIEND_SEARCH: 1
     };
@@ -36,11 +36,13 @@ class SearchCtrl {
 
         public useFriendSearch() {
             this.whichSearch = SearchCtrl.whichSearchEnum.FRIEND_SEARCH;
+            this.$scope.whichSearch = this.whichSearch;
             this.placeHolder = SearchCtrl.FRIEND_SEARCH_PLACE_HOLDER;
         }
 
         public useCourseSearch() {
             this.whichSearch = SearchCtrl.whichSearchEnum.COURSE_SEARCH;
+            this.$scope.whichSearch = this.whichSearch;
             this.placeHolder = SearchCtrl.COURSE_SEARCH_PLACE_HOLDER;
         }
 

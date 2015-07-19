@@ -3,12 +3,18 @@ define(["require", "exports"], function(require, exports) {
 
     var FriendCtrl = (function () {
         function FriendCtrl($scope) {
+            var _this = this;
             this.$scope = $scope;
-            this.scheduleManager = this.$scope.$parent.schedule.scheduleManager;
-            this.$scope.data = this.scheduleManager.getData();
-        }
-        FriendCtrl.COMPONENT_ID = "friend";
+            this.$scope.data = {
+                friends: [10, 20, 30]
+            };
 
+            this.$scope.loading = true;
+
+            setTimeout(function () {
+                _this.$scope.loading = false;
+            }, 1000);
+        }
         FriendCtrl.$inject = [
             '$scope'
         ];

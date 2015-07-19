@@ -1,8 +1,8 @@
 {% verbatim %}
 <md-content id="searchColumn" flex="25" offset="5"
-                       ng-cloak
-                       ng-controller="SearchCtrl as searchCtrl">
-    <div class="row" id="searchBarContainer">
+ng-cloak
+ng-controller="SearchCtrl as searchCtrl">
+    <div class="row" id="searchBarContainer" flex="5">
         <md-button class="md-primary course-search-button"
         ng-class="{'md-raised': searchCtrl.whichSearch == 0}"
         ng-click="searchCtrl.useCourseSearch()"

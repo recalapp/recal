@@ -4,6 +4,7 @@ import ISection = require('../interfaces/ISection');
 import ICourseSearchScope = require('../interfaces/ICourseSearchScope');
 import ICourse = require('../interfaces/ICourse');
 import Course = require('../models/Course');
+import SearchCtrl = require('./SearchCtrl');
 import IScheduleManager = require('../interfaces/IScheduleManager');
 
 'use strict';
@@ -38,15 +39,27 @@ class CourseSearchCtrl {
         this.$scope.$watch(() => {
             return this.$scope.query;
         }, (newVal, oldVal) => {
-            this._scheduleManager.clearPreviewCourse();
+            // don't do anything if not is course search mode
+            if (this.$scope.whichSearch != SearchCtrl.whichSearchEnum.COURSE_SEARCH) {
+                return;
+            }
 
-            this.$scope.filteredCourses = this.$filter("courseSearch")(this.$scope.data.courses, newVal);
-
-            var enrolledLength = this.$scope.data.enrolledCourses.length;
-            var searchResultLength = this.$scope.filteredCourses.length;
-
-            this.updateContainerHeight(enrolledLength, searchResultLength);
+            this.search(newVal);
         });
+
+        // also update search results if we switch back from friend
+        // search to course search
+        this.$scope.$watch(() => {
+            return this.$scope.whichSearch;
+            }, (newVal, oldVal) => {
+                if (newVal == oldVal) {
+                    return;
+                }
+
+                if (newVal == SearchCtrl.whichSearchEnum.COURSE_SEARCH) {
+                    this.search(this.$scope.query);
+                }
+                });
 
         this.$scope.$watchCollection(() => {
             return this.$scope.data.enrolledCourses;
@@ -55,8 +68,24 @@ class CourseSearchCtrl {
                 return;
             }
 
+            // don't do anything if not is course search mode
+            if (this.$scope.whichSearch != SearchCtrl.whichSearchEnum.COURSE_SEARCH) {
+                return;
+            }
+
             this.$scope.filteredCourses = this.$filter("courseSearch")(this.$scope.data.courses, this.$scope.query);
         });
+    }
+
+    public search(query: string) {
+        this._scheduleManager.clearPreviewCourse();
+
+        this.$scope.filteredCourses = this.$filter("courseSearch")(this.$scope.data.courses, query);
+
+        var enrolledLength = this.$scope.data.enrolledCourses.length;
+        var searchResultLength = this.$scope.filteredCourses.length;
+
+        this.updateContainerHeight(enrolledLength, searchResultLength);
     }
 
     // if user is not enrolled in course yet, add course events to previewEvents

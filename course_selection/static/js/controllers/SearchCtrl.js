@@ -10,11 +10,13 @@ define(["require", "exports"], function(require, exports) {
         }
         SearchCtrl.prototype.useFriendSearch = function () {
             this.whichSearch = SearchCtrl.whichSearchEnum.FRIEND_SEARCH;
+            this.$scope.whichSearch = this.whichSearch;
             this.placeHolder = SearchCtrl.FRIEND_SEARCH_PLACE_HOLDER;
         };
 
         SearchCtrl.prototype.useCourseSearch = function () {
             this.whichSearch = SearchCtrl.whichSearchEnum.COURSE_SEARCH;
+            this.$scope.whichSearch = this.whichSearch;
             this.placeHolder = SearchCtrl.COURSE_SEARCH_PLACE_HOLDER;
         };
         SearchCtrl.$inject = [

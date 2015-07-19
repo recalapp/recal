@@ -1,6 +1,7 @@
 {% verbatim %}
 <div ng-controller="CourseSearchCtrl as courseSearchCtrl"
-     ng-show="searchCtrl.whichSearch == 0">
+     ng-show="searchCtrl.whichSearch == 0"
+     >
     <div id="loading-message-container" ng-show="data.courses.length == 0">
         <div id="loading-bar-spinner"><div class="spinner-icon"></div></div>
         <h4 class="loading-courses-message">Loading Courses...</h4>
@@ -69,7 +70,8 @@
                          <div class="course-panel-title"
                              >
                              <div class="course-listings"
-                                  ng-bind-html="course.all_listings | highlight: query"></div>
+                                  ng-bind-html="course.all_listings | highlight: query">
+                              </div>
 
                              <div class="course-title"
                                   ng-bind-html="course.title | highlight: query">

@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", './SearchCtrl'], function(require, exports, SearchCtrl) {
     'use strict';
 
     var CourseSearchCtrl = (function () {
@@ -15,20 +15,33 @@ define(["require", "exports"], function(require, exports) {
             this.$scope.$watch(function () {
                 return _this.$scope.query;
             }, function (newVal, oldVal) {
-                _this._scheduleManager.clearPreviewCourse();
+                if (_this.$scope.whichSearch != SearchCtrl.whichSearchEnum.COURSE_SEARCH) {
+                    return;
+                }
 
-                _this.$scope.filteredCourses = _this.$filter("courseSearch")(_this.$scope.data.courses, newVal);
+                _this.search(newVal);
+            });
 
-                var enrolledLength = _this.$scope.data.enrolledCourses.length;
-                var searchResultLength = _this.$scope.filteredCourses.length;
+            this.$scope.$watch(function () {
+                return _this.$scope.whichSearch;
+            }, function (newVal, oldVal) {
+                if (newVal == oldVal) {
+                    return;
+                }
 
-                _this.updateContainerHeight(enrolledLength, searchResultLength);
+                if (newVal == SearchCtrl.whichSearchEnum.COURSE_SEARCH) {
+                    _this.search(_this.$scope.query);
+                }
             });
 
             this.$scope.$watchCollection(function () {
                 return _this.$scope.data.enrolledCourses;
             }, function (newVal, oldVal) {
                 if (newVal.length == oldVal.length) {
+                    return;
+                }
+
+                if (_this.$scope.whichSearch != SearchCtrl.whichSearchEnum.COURSE_SEARCH) {
                     return;
                 }
 
@@ -42,6 +55,17 @@ define(["require", "exports"], function(require, exports) {
             enumerable: true,
             configurable: true
         });
+
+        CourseSearchCtrl.prototype.search = function (query) {
+            this._scheduleManager.clearPreviewCourse();
+
+            this.$scope.filteredCourses = this.$filter("courseSearch")(this.$scope.data.courses, query);
+
+            var enrolledLength = this.$scope.data.enrolledCourses.length;
+            var searchResultLength = this.$scope.filteredCourses.length;
+
+            this.updateContainerHeight(enrolledLength, searchResultLength);
+        };
 
         CourseSearchCtrl.prototype.onMouseOver = function (course) {
             if (this._scheduleManager.isCourseEnrolled(course)) {
