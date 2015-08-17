@@ -6,11 +6,11 @@
     <md-tab ng-repeat="schedule in schedules"
          md-on-select="scheduleCtrl.onSelect($index)"
     >
-        <md-tab-label
-         ng-mouseover="showButtons=true"
-         ng-mouseleave="showButtons=false"
-        >
-            <span>
+        <md-tab-label>
+            <span
+            ng-mouseover="showButtons=true"
+            ng-mouseleave="showButtons=false"
+            >
                 {{ schedule.scheduleObject.title }}
                 <i ng-show="showButtons"
                    ng-click="scheduleCtrl.changeScheduleTitle($index)"
