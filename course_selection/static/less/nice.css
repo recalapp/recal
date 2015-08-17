@@ -47,9 +47,6 @@ body {
 .edit-icon {
   font-size: 1em;
   color: #555;
-  position: absolute;
-  top: 25%;
-  right: 20px;
 }
 .edit-icon:hover {
   cursor: pointer;
@@ -57,9 +54,6 @@ body {
 .remove-icon {
   font-size: 1em;
   color: #555;
-  position: absolute;
-  top: 25%;
-  right: 5px;
 }
 .remove-icon:hover {
   cursor: pointer;

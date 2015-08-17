@@ -9,16 +9,15 @@
         <md-tab-label>
             <span
             ng-mouseover="showButtons=true"
-            ng-mouseleave="showButtons=false"
-            >
-                {{ schedule.scheduleObject.title }}
-                <i ng-show="showButtons"
-                   ng-click="scheduleCtrl.changeScheduleTitle($index)"
-                   class="fa fa-edit edit-icon"></i>
-            </span>
+            ng-mouseleave="showButtons=false">
+            {{ schedule.scheduleObject.title }}
+            <i ng-show="showButtons"
+            ng-click="scheduleCtrl.changeScheduleTitle($index)"
+            class="fa fa-edit edit-icon"></i>
             <i ng-click="scheduleCtrl.confirmRemoveSchedule($index)"
                 ng-show="scheduleCtrl.canRemove() && showButtons"
                 class="fa fa-times remove-icon"></i>
+            </span>
         </md-tab-label>
         <md-tab-body>
             <div layout="row" layout-fill>
