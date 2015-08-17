@@ -114,6 +114,19 @@ body {
     left: -10px;
 }
 
+// TODO: this doesn't work--figure out how to add different style to the
+// add button
+.md-tab:last-child {
+    background-color:blue;
+
+    &:hover {
+        color: @body-dark-text-color;
+        text-decoration: none;
+        background-color: @body-dark-background-color;
+        cursor: pointer;
+    }
+}
+
 .button-add-tab {
     background: none;
     padding: 5px 10vh;

@@ -28,6 +28,11 @@
         </div>
         </md-tab-body>
     </md-tab>
+    <md-tab md-on-select="scheduleCtrl.askForNewScheduleName(selectedSchedule)">
+        <md-tab-label>
+            <i class="material-icons">add</i>
+        </md-tab-label>
+    </md-tab>
 
     <!-- <button class="btn button-add-tab"
             ng-click="scheduleCtrl.askForNewScheduleName(selectedSchedule)"

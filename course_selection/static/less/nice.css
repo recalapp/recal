@@ -80,6 +80,15 @@ body {
   top: 0;
   left: -10px;
 }
+.md-tab:last-child {
+  background-color: blue;
+}
+.md-tab:last-child:hover {
+  color: #404040;
+  text-decoration: none;
+  background-color: rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
 .button-add-tab {
   background: none;
   padding: 5px 10vh;

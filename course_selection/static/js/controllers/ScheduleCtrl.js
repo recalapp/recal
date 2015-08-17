@@ -15,7 +15,7 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
             this.schedules = [];
             this._restoreUserSchedules();
             this.$scope.schedules = this.schedules;
-            this.$scope.selectedSchedule = -1;
+            this._setSelectedSchedule(-1);
             hotkeys.add({
                 combo: 'mod+f',
                 description: 'search',
@@ -37,10 +37,8 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                         var newSchedule = {
                             id: schedule.id,
                             scheduleObject: schedule,
-                            active: true,
                             scheduleManager: _this.scheduleManagerService.newScheduleManager(schedule),
                         };
-                        _this._setAllInactive();
                         _this.schedules.push(newSchedule);
                     }
                 }
@@ -50,11 +48,6 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                 if (_this.schedules.length == 0) {
                     _this.addSchedule();
                 }
-            });
-        };
-        ScheduleCtrl.prototype._setAllInactive = function () {
-            angular.forEach(this.schedules, function (schedule) {
-                schedule.active = false;
             });
         };
         // TODO: refactor the modals for deleting and changing a modal
@@ -112,7 +105,7 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
             modalInstance.result.then(function (name) {
                 _this._createSchedule(name);
             }, function () {
-                _this.schedules[prevIdx].active = true;
+                _this._setSelectedSchedule(prevIdx);
             });
         };
         ScheduleCtrl.prototype._createSchedule = function (scheduleName) {
@@ -124,10 +117,9 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
             newSchedule.title = scheduleName ? scheduleName : "New Schedule";
             this.schedules.push({
                 scheduleObject: newSchedule,
-                active: true,
                 scheduleManager: this.scheduleManagerService.newScheduleManager(newSchedule)
             });
-            this.$scope.selectedSchedule = index;
+            this._setSelectedSchedule(index);
         };
         ScheduleCtrl.prototype.onSelect = function ($index) {
             this._setSelectedSchedule($index);
@@ -140,12 +132,12 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
         ScheduleCtrl.prototype._removeSchedule = function (index) {
             this.schedules[index].scheduleManager.schedule.$remove();
             this.schedules.splice(index, 1);
+            this._setSelectedSchedule(Math.max(index - 1, 0));
         };
         ScheduleCtrl.prototype.canRemove = function () {
             return this.schedules.length > 1;
         };
         ScheduleCtrl.prototype.addSchedule = function () {
-            this._setAllInactive();
             this._createSchedule();
         };
         ScheduleCtrl.$inject = [
