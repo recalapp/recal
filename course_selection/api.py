@@ -59,6 +59,25 @@ class UserAuthorization(Authorization):
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
 
+# TODO: write this--an authorization class for user or friends
+# to use the user's info
+class UserOrFriendAuthorization(UserAuthorization):
+    def read_list(self, object_list, bundle):
+        # This assumes a ``QuerySet`` from ``ModelResource``.
+        filtered = [obj for obj in object_list if obj.netid == bundle.request.user.username]
+        if len(filtered) > 0:
+            return filtered
+        else:
+            raise Unauthorized("Sorry, no peeking!")
+
+        #return object_list.filter(user=bundle.request.user)
+
+    def read_detail(self, object_list, bundle):
+        # Is the requested object owned by the user?
+        if bundle.obj.netid == bundle.request.user.username:
+            return True
+        else:
+            raise Unauthorized("Sorry, no peeking!")
 
 # you can only use it if you own this object
 class UserObjectsOnlyAuthorization(Authorization):
@@ -272,6 +291,8 @@ class UserResource(ModelResource):
             return HttpMultipleChoices("More than one resource is found at this URI.")
 
         schedule_resource = ScheduleResource()
+        # TODO: WTF is this hardcoded value? Is that my id?
+        # Check if this function is unused and if so, remove it
         return schedule_resource.get_list(request, user=4991)
 
 class ProfessorResource(ModelResource):

@@ -33,7 +33,7 @@ class ScheduleManager {
             private localStorageService,
             private colorResource,
             private schedule
-            ) 
+            )
     {
         var prevEnrollments = schedule.enrollments ? JSON.parse(schedule.enrollments) : null;
         var availableColors = schedule.available_colors ? JSON.parse(schedule.available_colors) : null;
@@ -86,7 +86,7 @@ class ScheduleManager {
         var enrollments = [];
         angular.forEach(enrolledSections, (courseEnrollment, courseId) => {
             var enrollment = {
-                course_id: null, 
+                course_id: null,
                 color: null,
                 sections: []
             };
@@ -126,7 +126,7 @@ class ScheduleManager {
 
     private _loadCourses(prevEnrollments) {
         this.courseService.getBySemester(this.schedule.semester.term_code).then((courses) => {
-            this.data.courses = courses.map(this._transformCourse); 
+            this.data.courses = courses.map(this._transformCourse);
         }).then(() => {
             if (prevEnrollments) {
                 // restore prevEnrollments here
@@ -255,7 +255,7 @@ class ScheduleManager {
     private _courseIdxInList(course, list): number {
         return Utils.idxInList(course, list, this._courseComp);
     }
-    
+
     public isCourseEnrolled(course: ICourse): boolean {
         var idx = this._courseIdxInList(course, this.data.enrolledCourses);
         return idx != ScheduleManager.NOT_FOUND;
@@ -264,7 +264,7 @@ class ScheduleManager {
     ///////////////////////////////////////////////////////////
     // Section Enrollment Management
     //////////////////////////////////////////////////////////
-    
+
     public setPreviewSection(section: ISection): void {
     }
 
