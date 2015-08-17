@@ -70,6 +70,7 @@ class ScheduleCtrl {
             }
 
             this.schedules.sort(Schedule.compare);
+            this._setSelectedSchedule(0);
         }).then(() => {
             if (this.schedules.length == 0) {
                 this.addSchedule();

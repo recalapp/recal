@@ -1,5 +1,6 @@
+/// <reference path='../../ts/typings/tsd.d.ts' />
 'use strict';
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     var MainCtrl = (function () {
         function MainCtrl($scope, $mdSidenav, $log) {
             this.$scope = $scope;
@@ -7,7 +8,9 @@ define(["require", "exports"], function(require, exports) {
             this.$log = $log;
         }
         MainCtrl.prototype.toggleSidebar = function (navID) {
-            this.$mdSidenav(navID).toggle().then(function () {
+            this.$mdSidenav(navID)
+                .toggle()
+                .then(function () {
                 this.$log.debug("toggle " + navID + " is done");
             });
         };
@@ -18,8 +21,6 @@ define(["require", "exports"], function(require, exports) {
         ];
         return MainCtrl;
     })();
-
-    
     return MainCtrl;
 });
 //# sourceMappingURL=MainCtrl.js.map

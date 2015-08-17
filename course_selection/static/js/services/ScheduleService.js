@@ -1,5 +1,6 @@
+/// <reference path='../../ts/typings/tsd.d.ts' />
 'use strict';
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     var ScheduleService = (function () {
         function ScheduleService(scheduleResource) {
             this.scheduleResource = scheduleResource;
@@ -12,8 +13,6 @@ define(["require", "exports"], function(require, exports) {
         ];
         return ScheduleService;
     })();
-
-    
     return ScheduleService;
 });
 //# sourceMappingURL=ScheduleService.js.map

@@ -51,37 +51,39 @@ require.config({
         /* 'chai': [] */
     },
     priority: [
-		"angular"
-	]
+        "angular"
+    ]
 });
 
 require(['angular',
-        'angular-animate',
-        'angular-local-storage',
-        'angular-hotkeys',
-        'angular-aria',
-        'angular-material',
-        'angular-loading-bar',
-        'angular-resource',
-        'moment',
-        /* 'chai', */
-        'fullcalendar',
-        // 'angular-ui-calendar',
-        'angular-bootstrap',
-        'Application',
-        'controllers/Controllers',
-        'filters/Filters',
-        'services/Services',
-        'directives/Directives',
-        'jquery',
-        'qtip',
-        'flatstrap'
-        ], function (angular) {
+'angular-animate',
+'angular-local-storage',
+'angular-hotkeys',
+'angular-aria',
+'angular-material',
+'angular-loading-bar',
+'angular-resource',
+'moment',
+/* 'chai', */
+'fullcalendar',
+// 'angular-ui-calendar',
+'angular-bootstrap',
+'Application',
+'controllers/Controllers',
+'filters/Filters',
+'services/Services',
+'directives/Directives',
+'jquery',
+'qtip',
+'flatstrap'
+], function (angular) {
     angular.bootstrap(document, ['nice']);
 });
 
 // TypeScript declarations useful for importing angular modules
+/*
 declare module 'angular' {
     var angular: ng.IAngularStatic;
     export = angular;
 }
+*/
