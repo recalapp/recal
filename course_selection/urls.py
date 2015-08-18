@@ -15,6 +15,10 @@ v1_api.register(CourseResource())
 v1_api.register(ScheduleResource())
 v1_api.register(SemesterResource())
 v1_api.register(UserResource())
+# the only different between UserResource and FriendResource is that
+# FriendResource is public to everyone, and excludes last_login
+# TODO: give FriendResource a better name
+v1_api.register(FriendResource())
 v1_api.register(ProfessorResource())
 v1_api.register(CourseListingResource())
 #v1_api.register(MeetingResource())

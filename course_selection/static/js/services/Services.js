@@ -6,6 +6,7 @@ define(["require", "exports", './ResourceBuilder', './CourseService', './UserSer
     niceServices.factory('CourseResource', ["ResourceBuilder", function (builder) { return builder.getCourseResource(); }]);
     niceServices.factory('ColorResource', ["ResourceBuilder", function (builder) { return builder.getColorResource(); }]);
     niceServices.factory('UserResource', ['ResourceBuilder', function (builder) { return builder.getUserResource(); }]);
+    niceServices.factory('FriendResource', ['ResourceBuilder', function (builder) { return builder.getFriendResource(); }]);
     niceServices.factory('SemesterResource', ['ResourceBuilder', function (builder) { return builder.getSemesterResource(); }]);
     niceServices.service('CourseService', CourseService);
     niceServices.service('UserService', UserService);

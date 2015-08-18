@@ -15,7 +15,7 @@ define(["require", "exports"], function (require, exports) {
             //     return this.$q.when(temp);
             // } else {
             return this.$http.get(CourseService.API_URL + termCode).then(function (response) {
-                // TODO: should disable local storage for now, since it basically acts as a
+                // disabling local storage for now, since it basically acts as a
                 // cache with indefinite timeout
                 // this.localStorageService.set('courses-' + termCode, response.data);
                 return response.data;

@@ -55,6 +55,15 @@ define(["require", "exports"], function (require, exports) {
                 }
             });
         };
+        ResourceBuilder.prototype.getFriendResource = function () {
+            return this.$resource(ResourceBuilder.BASE_URL + 'friend/:id', {}, {
+                query: {
+                    method: 'GET',
+                    isArray: true,
+                    transformResponse: this.transformTastypieResponse
+                }
+            });
+        };
         ResourceBuilder.prototype.getSemesterResource = function () {
             return this.$resource(ResourceBuilder.BASE_URL + 'semester/', {}, {
                 getByTermCode: {
@@ -87,7 +96,8 @@ define(["require", "exports"], function (require, exports) {
             '$resource',
             'localStorageService'
         ];
-        ResourceBuilder.BASE_URL = "/course_selection/api/v1/";
+        ResourceBuilder.V1_URL = "/course_selection/api/v1/";
+        ResourceBuilder.BASE_URL = ResourceBuilder.V1_URL;
         return ResourceBuilder;
     })();
     return ResourceBuilder;

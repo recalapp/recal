@@ -263,10 +263,22 @@ class ScheduleResource(ModelResource):
     #     import pdb; pdb.set_trace()
     #     return object_list.filter(user=request.user)
 
+class FriendResource(ModelResource):
+    class Meta:
+        queryset = Nice_User.objects.all()
+        resource_name = 'friend'
+        excludes = ['last_login']
+        allowed_methods = ['get']
+        cache = SimpleCache(timeout=10)
+        authorization = ReadOnlyAuthorization()
+        filtering = {
+            'netid': ALL_WITH_RELATIONS
+        }
+
 class UserResource(ModelResource):
     class Meta:
         queryset = Nice_User.objects.all()
-        resource_name= 'user'
+        resource_name = 'user'
         excludes = ['password']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)

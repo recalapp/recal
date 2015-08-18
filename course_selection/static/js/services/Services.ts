@@ -16,6 +16,7 @@ niceServices.factory('ScheduleResource', ["ResourceBuilder", (builder: ResourceB
 niceServices.factory('CourseResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getCourseResource()]);
 niceServices.factory('ColorResource', ["ResourceBuilder", (builder: ResourceBuilder) => builder.getColorResource()]);
 niceServices.factory('UserResource', ['ResourceBuilder', (builder: ResourceBuilder) => builder.getUserResource()]);
+niceServices.factory('FriendResource', ['ResourceBuilder', (builder: ResourceBuilder) => builder.getFriendResource()]);
 niceServices.factory('SemesterResource', ['ResourceBuilder', (builder: ResourceBuilder) => builder.getSemesterResource()]);
 
 niceServices.service('CourseService', CourseService);
