@@ -7,23 +7,30 @@ import Utils = require('../Utils');
 class FriendCtrl {
     public static $inject = [
         '$scope',
+        '$filter',
         'UserService'
     ];
 
     // dependencies are injected via AngularJS $injector
-    constructor(private $scope, private userService)
+    constructor(private $scope, private $filter, private userService)
     {
-        this.$scope.data = {
-            friends: [10, 20, 30]
-        };
-
         this._initFriendList();
+        this._initLoading();
+        this._initSearchWatches();
+    }
 
-        this.$scope.loading = true;
+    private _initSearchWatches () {
+        this.$scope.$watch(() => {
+            return this.$scope.whichSearch;
+        }, (newVal, oldVal) => {
+            if (newVal == oldVal) {
+                return;
+            }
 
-        setTimeout(() => {
-            this.$scope.loading = false;
-        }, 1000);
+            if (newVal == SearchCtrl.whichSearchEnum.FRIEND_SEARCH) {
+                this.search(this.$scope.query);
+            }
+        });
 
         this.$scope.$watch(() => {
             return this.$scope.query;
@@ -37,7 +44,22 @@ class FriendCtrl {
         });
     }
 
+    private _initLoading() {
+        this.$scope.loading = true;
+
+        setTimeout(() => {
+            this.$scope.loading = false;
+        }, 1000);
+    }
+
     private _initFriendList() {
+        this.$scope.data = {
+            allUsers: [],
+            friends: []
+        };
+
+        this.$scope.filteredUsers = this.$scope.data.allUsers;
+
         var gettingAllUsers = this.userService.all_users.$promise;
         gettingAllUsers.then((users) => {
             for (var i = 0; i < users.length; i++) {
@@ -45,13 +67,15 @@ class FriendCtrl {
                 console.log(user);
             }
 
-            this.$scope.data.friends = users;
+            this.$scope.data.allUsers = users;
         })
     }
 
-    // TODO: implement this
     public search(query:string) {
-        console.log("friend search query: " + query);
+        this.$scope.filteredUsers =
+            this.$filter("friendSearch")(this.$scope.data.allUsers, query);
+
+        console.log("user search query: " + query);
     }
 }
 

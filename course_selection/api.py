@@ -267,7 +267,7 @@ class FriendResource(ModelResource):
     class Meta:
         queryset = Nice_User.objects.all()
         resource_name = 'friend'
-        excludes = ['last_login']
+        excludes = ['password', 'resource_uri', 'last_login']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
         authorization = ReadOnlyAuthorization()

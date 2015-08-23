@@ -12,9 +12,10 @@
             <div class="row inner-friends-container">
                 <div class="friend-list panel-group">
                     <div class="panel panel-default friend-panel"
-                    ng-repeat="friend in data.friends"
+                    ng-repeat="user in filteredUsers"
+                    ng-click="friendCtrl.test()"
                     >
-                    {{ friend }}
+                    {{ user.netid }}
                     </div>
                 </div>
             </div>

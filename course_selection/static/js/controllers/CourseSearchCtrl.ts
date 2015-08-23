@@ -73,7 +73,8 @@ class CourseSearchCtrl {
                 return;
             }
 
-            this.$scope.filteredCourses = this.$filter("courseSearch")(this.$scope.data.courses, this.$scope.query);
+            this.$scope.filteredCourses =
+                this.$filter("courseSearch")(this.$scope.data.courses, this.$scope.query);
         });
     }
 

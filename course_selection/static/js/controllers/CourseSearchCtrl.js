@@ -42,7 +42,8 @@ define(["require", "exports", './SearchCtrl'], function (require, exports, Searc
                 if (_this.$scope.whichSearch != SearchCtrl.whichSearchEnum.COURSE_SEARCH) {
                     return;
                 }
-                _this.$scope.filteredCourses = _this.$filter("courseSearch")(_this.$scope.data.courses, _this.$scope.query);
+                _this.$scope.filteredCourses =
+                    _this.$filter("courseSearch")(_this.$scope.data.courses, _this.$scope.query);
             });
         }
         Object.defineProperty(CourseSearchCtrl.prototype, "scheduleManager", {

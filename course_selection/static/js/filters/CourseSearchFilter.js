@@ -12,6 +12,8 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
             _super.call(this);
         }
         CourseSearchFilter.prototype.filter = function (courses, input) {
+            // this is here so that before courses get initialized, the user's
+            // search requests don't crash the JS
             if (courses.length == 0) {
                 return courses;
             }
