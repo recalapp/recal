@@ -119,7 +119,6 @@ def hydrate_semester(semester):
         'term_code': semester.term_code
     }
 
-# TODO: test this function and finish it
 def hydrate_course_dict(course):
     sections = [hydrate_section_dict(section, course) for section in course.sections.all()]
     course_listings = [hydrate_course_listing_dict(cl) for cl in course.course_listing_set.all()]
@@ -134,12 +133,8 @@ def hydrate_course_dict(course):
     }
 
 def get_courses_by_term_code(term_code):
-    all_courses = Course.objects
-    filtered = all_courses.filter(Q(semester__term_code = term_code))
-    results = []
-    for course in filtered:
-        results.append(hydrate_course_dict(course))
-    return results
+    filtered = Course.objects.filter(Q(semester__term_code = term_code))
+    return [hydrate_course_dict(c) for c in filtered]
 
 @require_GET
 @never_cache

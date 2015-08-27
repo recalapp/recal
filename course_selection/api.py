@@ -250,6 +250,8 @@ class FriendResource(ModelResource):
         excludes = ['password', 'resource_uri', 'last_login']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
+        limit = 0
+        max_limit = 0
         authorization = ReadOnlyAuthorization()
         filtering = {
             'netid': ALL_WITH_RELATIONS
