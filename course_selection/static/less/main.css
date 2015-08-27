@@ -665,6 +665,7 @@ md-tabs-canvas {
 .inner-friends-container {
   position: relative;
   min-height: 5vh;
+  max-height: 75vh;
   overflow-y: auto;
 }
 .friend-list {
