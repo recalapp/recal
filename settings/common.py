@@ -49,7 +49,6 @@ INSTALLED_APPS = (
     #'security',
     'tastypie',
     'cas',
-    'colorfield',
     'course_selection'
 )
 
