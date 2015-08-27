@@ -1,3 +1,4 @@
+from django.db.models import Q
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.cache import SimpleCache
@@ -5,7 +6,7 @@ from tastypie.cache import NoCache
 from tastypie.authorization import Authorization, ReadOnlyAuthorization
 from tastypie.exceptions import Unauthorized
 from tastypie import fields
-from course_selection.models import *
+from course_selection.models import Nice_User, Schedule, Semester, Course_Listing, Course, Section, Meeting, Color_Palette, Professor
 
 
 class UserAuthorization(Authorization):
@@ -80,28 +81,29 @@ class UserObjectsOnlyAuthorization(Authorization):
     def delete_detail(self, object_list, bundle):
         return bundle.obj.user.netid == bundle.request.user.username
 
+
 # you can see the objects if a) you are the owner OR b) you and the owner are friends
 # currently this should apply to schedules
 class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
-    def read_list(self, object_list, bundle):
-        # should also return true if
-        # bundle.request.user.username is in obj.user.friends
-        my_nice_user = Nice_User.objects.get(netid=bundle.request.user.username)
-        filtered = []
-        for obj in object_list:
-            if obj.user.netid == bundle.request.user.username:
-                filtered.push(obj)
-            else:
-                pass
-                #if my_nice_user.friends.filter(netid = obj.user.)
+    def is_owner_or_friend(self, user, owner):
+        if user.username == owner.netid:
+            return True
+        else:
+            nice_user = Nice_User.objects.get(netid=user.username)
+            my_friends = nice_user.friends
+            try:
+                my_friends.get(Q(friends__to_user=owner) | Q(friends__from_user=owner))
+                return True
+            except:
+                return False
 
-        filtered = [obj for obj in object_list if (obj.user.netid == bundle.request.user.username)]
-        import pdb; pdb.set_trace()
+    def read_list(self, object_list, bundle):
+        filtered = [o for o in object_list if self.is_owner_or_friend(bundle.request.user, o.user)]
         return filtered
 
     def read_detail(self, object_list, bundle):
         # Is the requested object owned by the user?
-        if bundle.obj.user.netid == bundle.request.user.username:
+        if self.is_owner_or_friend(bundle.request.user, bundle.obj.user):
             return True
         else:
             raise Unauthorized("Sorry, no peeking!")
@@ -179,7 +181,7 @@ class CourseResource(ModelResource):
         limit = 0
         max_limit = 0
         filtering = {
-            'semester' : ALL_WITH_RELATIONS
+            'semester': ALL_WITH_RELATIONS
         }
 
 class SectionResource(ModelResource):
@@ -222,7 +224,7 @@ class ScheduleResource(ModelResource):
         excludes = []
         allowed_methods = ['get', 'post', 'put', 'delete']
         cache = NoCache()
-        authorization = UserObjectsOnlyAuthorization()
+        authorization = UserObjectOrFriendAuthorization()
         always_return_data = True
         limit = 0
         max_limit = 0

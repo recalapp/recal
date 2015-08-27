@@ -9,4 +9,3 @@ define(["require", "exports", './FriendCtrl', './SearchCtrl', './CourseSearchCtr
     niceControllers.addController('MainCtrl', MainCtrl);
     return niceControllers;
 });
-//# sourceMappingURL=Controllers.js.map

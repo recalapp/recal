@@ -1,10 +1,6 @@
 from django.db import models
-from django.db.models import Q
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractBaseUser, User
-from django.core.cache import cache
-from django.template import Template, Context
-from jsonfield import JSONField
 import settings.common as settings
 
 class Semester(models.Model):
@@ -55,7 +51,7 @@ class Course(models.Model):
     registrar_id = models.CharField(max_length=20)
 
     def course_listings(self):
-        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')]) #+ ' ' + ': ' + self.title
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')])  # + ' ' + ': ' + self.title
 
     course_listings.admin_order_field = 'course_listings'
 
@@ -66,7 +62,7 @@ class Course(models.Model):
         return unicode(self.course_listing_set.all().get(is_primary=True))
 
     def __unicode__(self):
-        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')]) #+ ' ' + ': ' + self.title
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')])  # + ' ' + ': ' + self.title
 
     class Meta:
         pass
@@ -103,7 +99,7 @@ class Section(models.Model):
     name = models.CharField(max_length=100, default='')
 
     """ if true, then everyone in the course is automatically enrolled in this section """
-    isDefault = models.BooleanField(default=False) 
+    isDefault = models.BooleanField(default=False)
     section_type = models.CharField(max_length=3, choices=TYPE_CHOICES)
     section_enrollment = models.IntegerField(default=0)
     section_capacity = models.IntegerField(default=999)
@@ -124,7 +120,7 @@ class Meeting(models.Model):
 
     def __unicode__(self):
         return unicode(self.section) + ' - ' + self.location
-    
+
 class Course_Listing(models.Model):
     # TODO: this line causes admin site to fail, commenting out related_name
     # causes tastypie to fail
@@ -166,13 +162,13 @@ class Nice_User(AbstractBaseUser):
     USERNAME_FIELD = 'netid'
 
 # create user profile as soon as a user is added
-def make_new_nice_user(sender, instance, created, **kwargs):  
+def make_new_nice_user(sender, instance, created, **kwargs):
     # see http://stackoverflow.com/a/965883/130164
     # Use a try because the first user (super user) is created before other tables are created.
     # That is, this fails during syncdb upon initial database setup, because it creates a superuser before User_Profile table is added (we add that by running migrations after).
     try:
         if created:
-            nice_user, created = Nice_User.objects.get_or_create(netid=instance.username) 
+            nice_user, created = Nice_User.objects.get_or_create(netid=instance.username)
             if created:
                 try:
                     nice_user.save()
@@ -182,13 +178,14 @@ def make_new_nice_user(sender, instance, created, **kwargs):
     except Exception, e:
         if settings.DEBUG:
             raise e
-     
+
 post_save.connect(make_new_nice_user, sender=User)
 
 
 class Friend_Relationship(models.Model):
     from_user = models.ForeignKey(Nice_User, related_name='from_users')
     to_user = models.ForeignKey(Nice_User, related_name='to_users')
+
     class Meta:
         unique_together = ('from_user', 'to_user')
 
@@ -199,7 +196,7 @@ class NetID_Name_Table(models.Model):
     last_name = models.CharField(max_length=100)
 
     def __unicode__(self):
-        if first_name and last_name:
-            return '%s %s' % (first_name, last_name)
+        if self.first_name and self.last_name:
+            return '%s %s' % (self.first_name, self.last_name)
         else:
-            return netid
+            return self.netid
