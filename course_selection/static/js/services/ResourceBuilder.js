@@ -1,14 +1,16 @@
-define(["require", "exports"], function(require, exports) {
+/// <reference path='../../ts/typings/tsd.d.ts' />
+define(["require", "exports"], function (require, exports) {
     var ResourceBuilder = (function () {
         function ResourceBuilder($resource, localStorageService) {
             this.$resource = $resource;
             this.localStorageService = localStorageService;
         }
+        // TODO: figure out how to use typescript to properly do this
         ResourceBuilder.prototype.getCourseResource = function () {
             return this.$resource(ResourceBuilder.BASE_URL + 'course/', {}, {
                 query: {
                     method: 'GET',
-                    isArray: false
+                    isArray: false,
                 },
                 getBySemester: {
                     method: 'GET',
@@ -18,7 +20,6 @@ define(["require", "exports"], function(require, exports) {
                 }
             });
         };
-
         ResourceBuilder.prototype.getColorResource = function () {
             return this.$resource(ResourceBuilder.BASE_URL + 'color_palette/', {}, {
                 query: {
@@ -28,7 +29,6 @@ define(["require", "exports"], function(require, exports) {
                 }
             });
         };
-
         ResourceBuilder.prototype.getScheduleResource = function () {
             return this.$resource(ResourceBuilder.BASE_URL + 'schedule/:id', { id: '@id' }, {
                 query: {
@@ -46,7 +46,6 @@ define(["require", "exports"], function(require, exports) {
                 }
             });
         };
-
         ResourceBuilder.prototype.getUserResource = function () {
             return this.$resource(ResourceBuilder.BASE_URL + 'user/:id', {}, {
                 getByNetId: {
@@ -56,7 +55,15 @@ define(["require", "exports"], function(require, exports) {
                 }
             });
         };
-
+        ResourceBuilder.prototype.getFriendResource = function () {
+            return this.$resource(ResourceBuilder.BASE_URL + 'friend/:id', {}, {
+                query: {
+                    method: 'GET',
+                    isArray: true,
+                    transformResponse: this.transformTastypieResponse
+                }
+            });
+        };
         ResourceBuilder.prototype.getSemesterResource = function () {
             return this.$resource(ResourceBuilder.BASE_URL + 'semester/', {}, {
                 getByTermCode: {
@@ -71,17 +78,16 @@ define(["require", "exports"], function(require, exports) {
                 }
             });
         };
-
         ResourceBuilder.prototype.transformTastypieResponse = function (data, header) {
             var parsed = JSON.parse(data);
-
+            // data could be an array with metadata
             if (parsed.meta && parsed.objects) {
                 return parsed.objects;
-            } else {
+            }
+            else {
                 return parsed;
             }
         };
-
         ResourceBuilder.prototype.getFirstObject = function (data, header) {
             var parsed = JSON.parse(data);
             return parsed.objects[0];
@@ -90,12 +96,10 @@ define(["require", "exports"], function(require, exports) {
             '$resource',
             'localStorageService'
         ];
-
-        ResourceBuilder.BASE_URL = "/course_selection/api/v1/";
+        ResourceBuilder.V1_URL = "/course_selection/api/v1/";
+        ResourceBuilder.BASE_URL = ResourceBuilder.V1_URL;
         return ResourceBuilder;
     })();
-
-    
     return ResourceBuilder;
 });
 //# sourceMappingURL=ResourceBuilder.js.map

@@ -33,7 +33,10 @@ body {
 #searchColumn {
   height: 85vh;
   width: 25%;
-  margin-top: 5px;
+  margin: 5px 15px 0 0;
+  padding: 0 15px;
+  background: transparent;
+  overflow-x: hidden;
 }
 #calendarColumn {
   height: 85vh;
@@ -44,9 +47,6 @@ body {
 .edit-icon {
   font-size: 1em;
   color: #555;
-  position: absolute;
-  top: 25%;
-  right: 20px;
 }
 .edit-icon:hover {
   cursor: pointer;
@@ -54,9 +54,6 @@ body {
 .remove-icon {
   font-size: 1em;
   color: #555;
-  position: absolute;
-  top: 25%;
-  right: 5px;
 }
 .remove-icon:hover {
   cursor: pointer;
@@ -82,6 +79,15 @@ body {
   position: absolute;
   top: 0;
   left: -10px;
+}
+.md-tab:last-child {
+  background-color: blue;
+}
+.md-tab:last-child:hover {
+  color: #404040;
+  text-decoration: none;
+  background-color: rgba(0, 0, 0, 0.08);
+  cursor: pointer;
 }
 .button-add-tab {
   background: none;

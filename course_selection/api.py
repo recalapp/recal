@@ -1,15 +1,12 @@
-from django.conf.urls import patterns, include, url
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
-from tastypie.utils import trailing_slash
 from tastypie.cache import SimpleCache
 from tastypie.cache import NoCache
 from tastypie.authorization import Authorization, ReadOnlyAuthorization
 from tastypie.exceptions import Unauthorized
-from tastypie.http import HttpGone
 from tastypie import fields
 from course_selection.models import *
+
 
 class UserAuthorization(Authorization):
     def read_list(self, object_list, bundle):
@@ -19,8 +16,6 @@ class UserAuthorization(Authorization):
             return filtered
         else:
             raise Unauthorized("Sorry, no peeking!")
-
-        #return object_list.filter(user=bundle.request.user)
 
     def read_detail(self, object_list, bundle):
         # Is the requested object owned by the user?
@@ -35,19 +30,9 @@ class UserAuthorization(Authorization):
 
     def create_detail(self, object_list, bundle):
         return bundle.obj.netid == bundle.request.user.username
-        #return bundle.obj.user == bundle.request.user
 
     def update_list(self, object_list, bundle):
         return [obj for obj in object_list if obj.netid == bundle.request.user.username]
-
-        #allowed = []
-
-        ## Since they may not all be saved, iterate over them.
-        #for obj in object_list:
-        #    if obj.user == bundle.request.user:
-        #        allowed.append(obj)
-
-        #return allowed
 
     def update_detail(self, object_list, bundle):
         return bundle.obj.netid == bundle.request.user.username
@@ -63,7 +48,6 @@ class UserAuthorization(Authorization):
 # you can only use it if you own this object
 class UserObjectsOnlyAuthorization(Authorization):
     def read_list(self, object_list, bundle):
-        #return object_list
         filtered = [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
         return filtered
 
@@ -79,37 +63,48 @@ class UserObjectsOnlyAuthorization(Authorization):
         return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
 
     def create_detail(self, object_list, bundle):
-        #return True
         return bundle.obj.user.netid == bundle.request.user.username
-        #return bundle.obj.user == bundle.request.user
 
     def update_list(self, object_list, bundle):
-        #return object_list
         return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
 
-        #allowed = []
-
-        ## Since they may not all be saved, iterate over them.
-        #for obj in object_list:
-        #    if obj.user == bundle.request.user:
-        #        allowed.append(obj)
-
-        #return allowed
-
     def update_detail(self, object_list, bundle):
-        #return True
         return bundle.obj.user.netid == bundle.request.user.username
 
     def delete_list(self, object_list, bundle):
         # Sorry user, no deletes for you!
         raise Unauthorized("Sorry, no deleting lists.")
-        #return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
-        #return object_list
+        # return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        # return object_list
 
     def delete_detail(self, object_list, bundle):
-        #return True
         return bundle.obj.user.netid == bundle.request.user.username
-        #raise Unauthorized("Sorry, no deletes.")
+
+# you can see the objects if a) you are the owner OR b) you and the owner are friends
+# currently this should apply to schedules
+class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
+    def read_list(self, object_list, bundle):
+        # should also return true if
+        # bundle.request.user.username is in obj.user.friends
+        my_nice_user = Nice_User.objects.get(netid=bundle.request.user.username)
+        filtered = []
+        for obj in object_list:
+            if obj.user.netid == bundle.request.user.username:
+                filtered.push(obj)
+            else:
+                pass
+                #if my_nice_user.friends.filter(netid = obj.user.)
+
+        filtered = [obj for obj in object_list if (obj.user.netid == bundle.request.user.username)]
+        import pdb; pdb.set_trace()
+        return filtered
+
+    def read_detail(self, object_list, bundle):
+        # Is the requested object owned by the user?
+        if bundle.obj.user.netid == bundle.request.user.username:
+            return True
+        else:
+            raise Unauthorized("Sorry, no peeking!")
 
 class SemesterResource(ModelResource):
     class Meta:
@@ -138,8 +133,8 @@ class SemesterResource(ModelResource):
 
     def prepend_urls(self):
         return [
-            #url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
-            #url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
+            # url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
+            # url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
         ]
 
     #def get_course(self, request, **kwargs):
@@ -244,10 +239,30 @@ class ScheduleResource(ModelResource):
     #     import pdb; pdb.set_trace()
     #     return object_list.filter(user=request.user)
 
-class UserResource(ModelResource):
+class FriendResource(ModelResource):
+    """
+    This is what a friend sees--if A and B are friends, A cannot see B's
+    password (hidden anyway), resource_uri, or last_login
+    """
     class Meta:
         queryset = Nice_User.objects.all()
-        resource_name= 'user'
+        resource_name = 'friend'
+        excludes = ['password', 'resource_uri', 'last_login']
+        allowed_methods = ['get']
+        cache = SimpleCache(timeout=10)
+        limit = 0
+        max_limit = 0
+        authorization = ReadOnlyAuthorization()
+        filtering = {
+            'netid': ALL_WITH_RELATIONS
+        }
+
+class UserResource(ModelResource):
+    friends = fields.ToManyField(FriendResource, 'friends', full=True)
+
+    class Meta:
+        queryset = Nice_User.objects.all()
+        resource_name = 'user'
         excludes = ['password']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
@@ -255,24 +270,6 @@ class UserResource(ModelResource):
         filtering = {
             'netid': ALL_WITH_RELATIONS
         }
-
-    def prepend_urls(self):
-        return [
-            #url(r"^(?P<resource_name>%s)/(?P<netid>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
-            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/schedule%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_schedule'), name="api_get_schedule"),
-        ]
-
-    def get_schedule(self, request, **kwargs):
-        try:
-            bundle = self.build_bundle(data={'pk': kwargs['pk']}, request=request)
-            obj = self.cached_obj_get(bundle=bundle, **self.remove_api_resource_names(kwargs))
-        except ObjectDoesNotExist:
-            return HttpGone()
-        except MultipleObjectsReturned:
-            return HttpMultipleChoices("More than one resource is found at this URI.")
-
-        schedule_resource = ScheduleResource()
-        return schedule_resource.get_list(request, user=4991)
 
 class ProfessorResource(ModelResource):
     class Meta:

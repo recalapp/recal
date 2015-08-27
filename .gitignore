@@ -8,3 +8,4 @@ course_selection/static/node_modules/*
 staticfiles
 *.swp
 .env
+course_selection/static/bower_components

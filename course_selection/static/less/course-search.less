@@ -16,6 +16,8 @@
 @course-panel-body-height: 19vh;
 @tag-width: 10%;
 
+@md-tab-canvas-height: 38px;
+
 /* all course panels, including enrolled and search results */
 .course-panel {
     min-height: @course-panel-min-height;
@@ -55,19 +57,42 @@
     overflow-y: auto;
 }
 
-
 #searchBarContainer {
     background-color: @body-light-background-color;
     height: @search-bar-height;
     margin-bottom: 1vh;
+    position: relative;
+}
+
+.search-button {
+    position: absolute;
+
+    min-height: 0;
+    height: 100%;
+
+    min-width: 0;
+    width: 10%;
+
+    margin: 0;
+    border-radius: 0;
+
+    .fa {
+        font-size: 18px;
+    }
+}
+
+.course-search-button {
+    .search-button();
+    right: 0;
+}
+
+.friend-search-button {
+    .search-button();
+    right: 10%;
 }
 
 .searchBar {
-    background-image: url('../images/search.png');
-    background-repeat: no-repeat;
-    background-size: 14px 14px;
-    background-position: 7px 50%;
-    padding: 5px 5px 5px 25px;
+    padding: 0px 0px 0px 10px;
     color: @search-bar-color;
     height: @search-bar-height;
     font-size: @search-bar-font-size;
@@ -228,6 +253,18 @@
 .course-panel.ng-enter.ng-enter-active {
     opacity:1;
     left: 0;
+}
+
+md-pagination-wrapper {
+    height: @md-tab-canvas-height;
+}
+
+.md-tab {
+    padding: 6px 24px 6px 24px;
+}
+
+md-tabs-canvas {
+    height: @md-tab-canvas-height;
 }
 
 /*

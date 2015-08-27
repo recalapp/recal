@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     var Schedule = (function () {
         function Schedule() {
         }
@@ -7,8 +7,6 @@ define(["require", "exports"], function(require, exports) {
         };
         return Schedule;
     })();
-
-    
     return Schedule;
 });
 //# sourceMappingURL=Schedule.js.map

@@ -23,7 +23,7 @@ def get_courses_for_term(term_code):
     TERM_CODE = term_code
     COURSE_OFFERINGS = "http://registrar.princeton.edu/course-offerings/"
     FEED_PREFIX = "http://etcweb.princeton.edu/webfeeds/courseofferings/"
-    
+
     # Could also use 'current' instead of str(TERM_CODE), which automatically
     # gets the current semester. caveat: cannot get next semester's schedule
     # ahead of time
@@ -164,7 +164,7 @@ def get_courses_for_term(term_code):
         create_or_update_profs(course, course_object)
 
         # handle course listings
-        # TODO: Test is this works properly on second run
+        # TODO: Test if this works properly on second run
         create_or_update_listings(course, subject, course_object)
         # add sections and events
         create_or_update_sections(course, course_object)
@@ -189,7 +189,7 @@ def get_courses_for_term(term_code):
                 course_object.professors.add(new_prof)
             except:
                 pass
-    
+
     def get_primary_listing(course, subject):
         sub = subject.find('code').text
         catalog = course.find('catalog_number').text

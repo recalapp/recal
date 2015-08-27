@@ -36,7 +36,7 @@ class ScheduleCtrl {
         this.schedules = [];
         this._restoreUserSchedules();
         this.$scope.schedules = this.schedules;
-        this.$scope.selectedSchedule = -1;
+        this._setSelectedSchedule(-1);
 
         hotkeys.add({
             combo: 'mod+f',
@@ -44,8 +44,8 @@ class ScheduleCtrl {
             callback: (event, hotkey) => {
                 // TODO: this is a hack using jQuery...
                 // looks for the visible search bar and focuses
-                event.preventDefault();
-                $('.searchBar').filter(':visible').focus();
+                // event.preventDefault();
+                //$('.searchBar').filter(':visible').focus();
             }
         });
 
@@ -60,26 +60,19 @@ class ScheduleCtrl {
                     var newSchedule = {
                         id: schedule.id,
                         scheduleObject: schedule,
-                        active: true,
                         scheduleManager: this.scheduleManagerService.newScheduleManager(schedule),
                     };
 
-                    this._setAllInactive();
                     this.schedules.push(newSchedule);
                 }
             }
 
             this.schedules.sort(Schedule.compare);
+            this._setSelectedSchedule(0);
         }).then(() => {
             if (this.schedules.length == 0) {
                 this.addSchedule();
             }
-        });
-    }
-
-    private _setAllInactive() {
-        angular.forEach(this.schedules, (schedule) => {
-            schedule.active = false;
         });
     }
 
@@ -104,7 +97,7 @@ class ScheduleCtrl {
             });
         });
     }
-    
+
     public confirmRemoveSchedule(index: number) {
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/removeScheduleModal.html',
@@ -140,7 +133,7 @@ class ScheduleCtrl {
         modalInstance.result.then((name) => {
             this._createSchedule(name);
         }, () => {
-            this.schedules[prevIdx].active = true;
+            this._setSelectedSchedule(prevIdx);
         });
     }
 
@@ -153,11 +146,10 @@ class ScheduleCtrl {
         newSchedule.title = scheduleName ? scheduleName : "New Schedule";
         this.schedules.push({
             scheduleObject: newSchedule,
-            active: true,
             scheduleManager: this.scheduleManagerService.newScheduleManager(newSchedule)
         });
 
-        this.$scope.selectedSchedule = index;
+        this._setSelectedSchedule(index);
     }
 
     public onSelect($index: number) {
@@ -173,16 +165,16 @@ class ScheduleCtrl {
     private _removeSchedule(index: number) {
         this.schedules[index].scheduleManager.schedule.$remove();
         this.schedules.splice(index, 1);
+        this._setSelectedSchedule(Math.max(index - 1, 0));
     }
 
     public canRemove() {
         return this.schedules.length > 1;
     }
- 
+
     public addSchedule() {
-        this._setAllInactive();
         this._createSchedule();
-    }    
+    }
 
 }
 

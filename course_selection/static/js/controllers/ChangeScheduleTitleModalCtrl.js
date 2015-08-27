@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     var ChangeScheduleTitleModalCtrl = (function () {
         function ChangeScheduleTitleModalCtrl($scope, $modalInstance, title) {
             var _this = this;
@@ -6,11 +6,9 @@ define(["require", "exports"], function(require, exports) {
             this.$modalInstance = $modalInstance;
             this.$scope.confirmation = "Schedule Title: ";
             this.$scope.title = title;
-
             this.$scope.ok = function () {
                 _this.ok();
             };
-
             this.$scope.cancel = function () {
                 _this.cancel();
             };
@@ -18,7 +16,6 @@ define(["require", "exports"], function(require, exports) {
         ChangeScheduleTitleModalCtrl.prototype.ok = function () {
             this.$modalInstance.close(this.$scope.title);
         };
-
         ChangeScheduleTitleModalCtrl.prototype.cancel = function () {
             this.$modalInstance.dismiss('cancel');
         };
@@ -29,8 +26,6 @@ define(["require", "exports"], function(require, exports) {
         ];
         return ChangeScheduleTitleModalCtrl;
     })();
-
-    
     return ChangeScheduleTitleModalCtrl;
 });
 //# sourceMappingURL=ChangeScheduleTitleModalCtrl.js.map

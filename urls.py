@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-import nice, cas
+import cas
 
 urlpatterns = patterns(
     "",
@@ -13,7 +13,6 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^course_selection/', include('course_selection.urls')),
     url(r'^', include('course_selection.urls')),
-    #url(r'^', include('nice.urls'))
 )
 
 urlpatterns += patterns(

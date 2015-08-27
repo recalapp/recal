@@ -52,7 +52,10 @@ body {
 #searchColumn {
     height: 85vh;
     width: 25%;
-    margin-top: 5px;
+    margin: 5px 15px 0 0;
+    padding: 0 15px;
+    background: transparent;
+    overflow-x: hidden;
 }
 
 #calendarColumn {
@@ -66,10 +69,9 @@ body {
     font-size: 1em;
     color: #555;
 
-    position: absolute;
-    top: 25%;
-    right: 20px;
-
+    // position: absolute;
+    // top: 25%;
+    // right: 20px;
     &:hover {
         cursor: pointer;
     }
@@ -79,9 +81,9 @@ body {
     font-size: 1em;
     color: #555;
 
-    position: absolute;
-    top: 25%;
-    right: 5px;
+    // position: absolute;
+    // top: 25%;
+    // right: 5px;
     &:hover {
         cursor: pointer;
         background-color: @remove-hover-background-color;
@@ -110,6 +112,19 @@ body {
     position: absolute;
     top: 0;
     left: -10px;
+}
+
+// TODO: this doesn't work--figure out how to add different style to the
+// add button
+.md-tab:last-child {
+    background-color:blue;
+
+    &:hover {
+        color: @body-dark-text-color;
+        text-decoration: none;
+        background-color: @body-dark-background-color;
+        cursor: pointer;
+    }
 }
 
 .button-add-tab {

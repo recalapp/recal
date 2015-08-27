@@ -6,6 +6,8 @@ var nice = new Module('nice', [
         'ngAnimate',
         //'ui.calendar',
         'ui.bootstrap',
+        'ngAria',
+        'ngMaterial',
         'cfp.hotkeys',
         'LocalStorageModule',
         'niceServices',
@@ -24,6 +26,9 @@ nice.app.config((localStorageServiceProvider) => {
 })
 .config(($resourceProvider) => {
     $resourceProvider.defaults.stripTrailingSlashes = false;
+})
+.config(($animateProvider) => {
+    $animateProvider.classNameFilter(/^(?:(?!ng-animate-disabled).)*$/);
 });
 
 export = nice;

@@ -14,6 +14,8 @@ class CourseSearchFilter extends Filter
     }
 
     public filter(courses: ICourse[], input: string): ICourse[] {
+        // this is here so that before courses get initialized, the user's
+        // search requests don't crash the JS
         if (courses.length == 0) {
             return courses;
         }
@@ -21,7 +23,7 @@ class CourseSearchFilter extends Filter
         if (!input) {
             if (courses[0].enrolled) {
                 return courses;
-            } 
+            }
             else {
                 return [];
             }
@@ -59,7 +61,7 @@ class CourseSearchFilter extends Filter
                 results = results.filter((course) => {
                     return CourseSearchFilter.isListed(course, 'course_listings', 'dept', query);
                 });
-            } 
+            }
             // is course number
             else if (query.length <= 4 && CourseSearchFilter.isNumber(query)) {
                 results = results.filter((course) => {
@@ -69,7 +71,7 @@ class CourseSearchFilter extends Filter
                 results = results.filter((course) => {
                     return CourseSearchFilter.regexTest(course, query);
                 });
-            } 
+            }
         }
 
         return results;

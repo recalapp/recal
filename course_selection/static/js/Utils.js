@@ -1,4 +1,5 @@
-define(["require", "exports"], function(require, exports) {
+/// <reference path='../ts/typings/tsd.d.ts' />
+define(["require", "exports"], function (require, exports) {
     var Utils = (function () {
         function Utils() {
         }
@@ -11,22 +12,17 @@ define(["require", "exports"], function(require, exports) {
                     return;
                 }
             });
-
             return idx;
         };
-
         Utils._defaultComp = function (a, b) {
             return a == b;
         };
-
         Utils.isInList = function (element, list, comp) {
             return this.idxInList(element, list, comp) != Utils.NOT_FOUND;
         };
         Utils.NOT_FOUND = -1;
         return Utils;
     })();
-
-    
     return Utils;
 });
 //# sourceMappingURL=Utils.js.map

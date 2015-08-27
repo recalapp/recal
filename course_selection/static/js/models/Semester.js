@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     var Semester = (function () {
         function Semester(name, active, current, term_code) {
             this.name = name;
@@ -11,8 +11,6 @@ define(["require", "exports"], function(require, exports) {
         };
         return Semester;
     })();
-
-    
     return Semester;
 });
 //# sourceMappingURL=Semester.js.map

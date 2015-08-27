@@ -37,6 +37,15 @@ class ProfessorAdmin(admin.ModelAdmin):
     list_display = ('name', )
     search_fields = ['name']
 
+class FriendInline(admin.TabularInline):
+    model = Nice_User
+    can_delete = False
+
+class Nice_UserAdmin(admin.ModelAdmin):
+    model = Nice_User
+    inlines = (FriendInline, )
+    list_display = ('netid', )
+
 admin.site.register(Semester, SemesterAdmin)
 admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(Section)

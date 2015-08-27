@@ -8,17 +8,19 @@ class ResourceBuilder {
         'localStorageService'
     ];
 
-    public static BASE_URL: string = "/course_selection/api/v1/";
+    public static V1_URL: string = "/course_selection/api/v1/";
 
-    constructor(private $resource: ng.resource.IResourceService, private localStorageService) {}
+    public static BASE_URL = ResourceBuilder.V1_URL;
+
+    constructor(private $resource: angular.resource.IResourceService, private localStorageService) {}
 
     // TODO: figure out how to use typescript to properly do this
     public getCourseResource() {
-        return this.$resource(ResourceBuilder.BASE_URL + 'course/', 
-                {}, 
-                { 
+        return this.$resource(ResourceBuilder.BASE_URL + 'course/',
+                {},
+                {
                     query: {
-                        method: 'GET', 
+                        method: 'GET',
                         isArray: false,
                     },
                     getBySemester: {
@@ -73,6 +75,18 @@ class ResourceBuilder {
                         transformResponse: this.getFirstObject
                     }
                 });
+    }
+
+    public getFriendResource() {
+        return this.$resource(ResourceBuilder.BASE_URL + 'friend/:id',
+        {},
+        {
+            query: {
+                method: 'GET',
+                isArray: true,
+                transformResponse: this.transformTastypieResponse
+            }
+        });
     }
 
     public getSemesterResource() {

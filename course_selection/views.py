@@ -119,7 +119,6 @@ def hydrate_semester(semester):
         'term_code': semester.term_code
     }
 
-# TODO: test this function and finish it
 def hydrate_course_dict(course):
     sections = [hydrate_section_dict(section, course) for section in course.sections.all()]
     course_listings = [hydrate_course_listing_dict(cl) for cl in course.course_listing_set.all()]
@@ -134,12 +133,25 @@ def hydrate_course_dict(course):
     }
 
 def get_courses_by_term_code(term_code):
-    all_courses = Course.objects
-    filtered = all_courses.filter(Q(semester__term_code = term_code))
-    results = []
-    for course in filtered:
-        results.append(hydrate_course_dict(course))
-    return results
+    filtered = Course.objects.filter(Q(semester__term_code = term_code))
+    return [hydrate_course_dict(c) for c in filtered]
+
+def hydrate_user_dict(user):
+    return {
+        'id': user.id,
+        'netid': user.netid
+    }
+
+@require_GET
+@cache_page(60 * 60 * 24)
+def get_users_json(request):
+    """
+    Returns list of all users
+    Cached for a day
+    """
+    results = [hydrate_user_dict(u) for u in Nice_User.objects.all()]
+    data = json.dumps(results)
+    return HttpResponse(data, 'application/json', status=200)
 
 @require_GET
 @never_cache

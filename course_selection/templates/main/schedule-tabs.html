@@ -1,34 +1,40 @@
 {% load staticfiles %}
 {% verbatim %}
 <div ng-controller="ScheduleCtrl as scheduleCtrl">
-<tabset>
-    <tab ng-repeat = "schedule in schedules"
-         active = schedule.active
-         class="schedule-tab-heading"
-         select="scheduleCtrl.onSelect($index)"
-         ng-mouseover="showButtons=true"
-         ng-mouseleave="showButtons=false"
+    <md-tabs md-center-tabs="false" md-no-ink md-dynamic-height md-autoselect
+    md-selected="selectedSchedule">
+    <md-tab ng-repeat="schedule in schedules"
+         md-on-select="scheduleCtrl.onSelect($index)"
     >
-        <tab-heading ng-cloak
-        >
-        <span>
+        <md-tab-label>
+            <span
+            ng-mouseover="showButtons=true"
+            ng-mouseleave="showButtons=false">
             {{ schedule.scheduleObject.title }}
             <i ng-show="showButtons"
-               ng-click="scheduleCtrl.changeScheduleTitle($index)"
-               class="fa fa-edit edit-icon"></i>
-        </span>
+            ng-click="scheduleCtrl.changeScheduleTitle($index)"
+            class="fa fa-edit edit-icon"></i>
             <i ng-click="scheduleCtrl.confirmRemoveSchedule($index)"
-               ng-show="scheduleCtrl.canRemove() && showButtons"
-               class="fa fa-times remove-icon"></i>
-        </tab-heading>
-         <div class="row clearfix" id="main">
+                ng-show="scheduleCtrl.canRemove() && showButtons"
+                class="fa fa-times remove-icon"></i>
+            </span>
+        </md-tab-label>
+        <md-tab-body>
+            <div layout="row" layout-fill>
             {% endverbatim %}
             {% include 'main/search.html' %}
             {% include 'main/calendar.html' %}
             {% verbatim %}
-         </div>
-    </tab>
-    <button class="btn button-add-tab"
+        </div>
+        </md-tab-body>
+    </md-tab>
+    <md-tab md-on-select="scheduleCtrl.askForNewScheduleName(selectedSchedule)">
+        <md-tab-label>
+            <i class="material-icons">add</i>
+        </md-tab-label>
+    </md-tab>
+
+    <!-- <button class="btn button-add-tab"
             ng-click="scheduleCtrl.askForNewScheduleName(selectedSchedule)"
             tooltip="Add a new schedule"
             tooltip-placement="right"
@@ -36,7 +42,7 @@
             ng-cloak
             ng-show = canAddNewSchedules>
         <i class="fa fa-plus"></i>
-    </button>
-</tabset>
+    </button> -->
+</md-tabs>
 </div>
 {% endverbatim %}

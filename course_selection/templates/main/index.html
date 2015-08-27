@@ -8,7 +8,7 @@
    var username = "{{ username }}"
 </script>
 
-<div id="container">
+<div id="container" ng-controller="MainCtrl as mainCtrl">
     {% include 'main/header.html' %}
     {% include 'main/semester-tabs.html' %}
 </div>
@@ -16,15 +16,17 @@
 
 {% block link_or_script_blocking %}
 <meta name="apple-itunes-app" content="app-id=946948041, app-argument=recalCourseSelection://launch">
-<link rel="stylesheet" href="{% static 'course_selection/bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}">
-<link rel="stylesheet" href="{% static 'course_selection/bower_components/fontawesome/css/font-awesome.min.css' %}">
-<link rel="stylesheet" href="{% static 'course_selection/bower_components/fullcalendar/dist/fullcalendar.min.css' %}">
-<link rel="stylesheet" href="{% static 'course_selection/bower_components/angular-loading-bar/build/loading-bar.css' %}">
-<link rel="stylesheet" href="{% static 'course_selection/bower_components/qtip2/jquery.qtip.min.css' %}">
-<link id="theme_css" rel="stylesheet" href="{% static 'course_selection/bower_components/flatstrap/dist/css/flatstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fontawesome/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/fullcalendar/dist/fullcalendar.min.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/angular-loading-bar/build/loading-bar.css' %}">
+<link rel="stylesheet" href="{% static 'bower_components/qtip2/jquery.qtip.min.css' %}">
+<link id="theme_css" rel="stylesheet" href="{% static 'bower_components/flatstrap/dist/css/flatstrap.min.css' %}">
+<!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+<link rel="stylesheet" href="{% static 'bower_components/angular-material/angular-material.min.css' %}">
 <link rel="stylesheet" href="{% static 'less/main.css' %}">
 {% endblock %}
 
 {% block link_or_script_nonblocking %}
-<script src="{% static 'course_selection/bower_components/requirejs/min/require.min.js' %}" data-main="{% static 'js/config.js' %}"></script>
+<script src="{% static 'bower_components/requirejs/require.js' %}" data-main="{% static 'js/config.js' %}"></script>
 {% endblock %}

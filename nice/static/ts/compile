@@ -1,3 +1,0 @@
-#!/bin/bash
-
-tsc -t ES5 -m AMD $@

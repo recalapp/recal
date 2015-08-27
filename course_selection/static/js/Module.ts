@@ -5,7 +5,7 @@
 
 class Module
 {
-    app: ng.IModule;
+    app: angular.IModule;
 
     constructor(name: string, modules: Array<string>)
     {
