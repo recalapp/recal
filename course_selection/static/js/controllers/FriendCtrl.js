@@ -47,7 +47,7 @@ define(["require", "exports", './SearchCtrl'], function (require, exports, Searc
                 friends: []
             };
             this.$scope.filteredUsers = this.$scope.data.allUsers;
-            var gettingAllUsers = this.userService.all_users.$promise;
+            var gettingAllUsers = this.userService.all_users;
             gettingAllUsers.then(function (users) {
                 for (var i = 0; i < users.length; i++) {
                     var user = users[i];

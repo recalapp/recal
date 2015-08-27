@@ -136,6 +136,23 @@ def get_courses_by_term_code(term_code):
     filtered = Course.objects.filter(Q(semester__term_code = term_code))
     return [hydrate_course_dict(c) for c in filtered]
 
+def hydrate_user_dict(user):
+    return {
+        'id': user.id,
+        'netid': user.netid
+    }
+
+@require_GET
+@cache_page(60 * 60 * 24)
+def get_users_json(request):
+    """
+    Returns list of all users
+    Cached for a day
+    """
+    results = [hydrate_user_dict(u) for u in Nice_User.objects.all()]
+    data = json.dumps(results)
+    return HttpResponse(data, 'application/json', status=200)
+
 @require_GET
 @never_cache
 @cache_page(60 * 60 * 24)

@@ -4,10 +4,12 @@ declare var username: string;
 
 class UserService {
     public static $inject = [
+        '$http',
         'ScheduleService',
-        'UserResource',
-        'FriendResource'
+        'UserResource'
     ];
+
+    private static API_URL = "/course_selection/api/static/users/";
 
     private _data = {
         user: null,
@@ -16,11 +18,14 @@ class UserService {
     };
 
     constructor(
+            private $http,
             private scheduleService,
-            private userResource,
-            private friendResource) {
+            private userResource) {
         this._data.user = this.userResource.getByNetId({'netid': username});
-        this._data.all_users = this.friendResource.query();
+        this._data.all_users =
+        this.$http.get(UserService.API_URL).then((response) => {
+            return response.data;
+        });
         this._data.schedules = this.scheduleService.getByUser(username);
     }
 
@@ -36,7 +41,6 @@ class UserService {
         return this._data.user;
     }
 
-    // TODO: implement this--return all users
     public get all_users(): any {
         return this._data.all_users;
     }

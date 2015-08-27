@@ -1,17 +1,20 @@
 'use strict';
 define(["require", "exports"], function (require, exports) {
     var UserService = (function () {
-        function UserService(scheduleService, userResource, friendResource) {
+        function UserService($http, scheduleService, userResource) {
+            this.$http = $http;
             this.scheduleService = scheduleService;
             this.userResource = userResource;
-            this.friendResource = friendResource;
             this._data = {
                 user: null,
                 all_users: null,
                 schedules: null
             };
             this._data.user = this.userResource.getByNetId({ 'netid': username });
-            this._data.all_users = this.friendResource.query();
+            this._data.all_users =
+                this.$http.get(UserService.API_URL).then(function (response) {
+                    return response.data;
+                });
             this._data.schedules = this.scheduleService.getByUser(username);
         }
         Object.defineProperty(UserService.prototype, "data", {
@@ -36,7 +39,6 @@ define(["require", "exports"], function (require, exports) {
             configurable: true
         });
         Object.defineProperty(UserService.prototype, "all_users", {
-            // TODO: implement this--return all users
             get: function () {
                 return this._data.all_users;
             },
@@ -44,10 +46,11 @@ define(["require", "exports"], function (require, exports) {
             configurable: true
         });
         UserService.$inject = [
+            '$http',
             'ScheduleService',
-            'UserResource',
-            'FriendResource'
+            'UserResource'
         ];
+        UserService.API_URL = "/course_selection/api/static/users/";
         return UserService;
     })();
     return UserService;

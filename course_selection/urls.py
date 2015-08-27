@@ -32,6 +32,7 @@ urlpatterns = patterns(
     url(r'^api/', include(v1_api.urls)),
     url(r'^api/static/courses/(?P<term_code>\d+)$', views.get_courses_json, name='get-courses-json'),
     url(r'^api/static/courses', views.get_courses_json_old, name='get-courses-json-old'),
+    url(r'^api/static/users', views.get_users_json, name='get-users-json'),
 
     url(r'^mobile_logged_in$', views.mobile_logged_in, name='mobile_logged_in'),
     url(r'^landing$', views.landing, name="landing"),
