@@ -1,15 +1,12 @@
-from django.conf.urls import patterns, include, url
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
-from tastypie.utils import trailing_slash
 from tastypie.cache import SimpleCache
 from tastypie.cache import NoCache
 from tastypie.authorization import Authorization, ReadOnlyAuthorization
 from tastypie.exceptions import Unauthorized
-from tastypie.http import HttpGone
 from tastypie import fields
 from course_selection.models import *
+
 
 class UserAuthorization(Authorization):
     def read_list(self, object_list, bundle):
@@ -19,8 +16,6 @@ class UserAuthorization(Authorization):
             return filtered
         else:
             raise Unauthorized("Sorry, no peeking!")
-
-        #return object_list.filter(user=bundle.request.user)
 
     def read_detail(self, object_list, bundle):
         # Is the requested object owned by the user?
@@ -35,19 +30,9 @@ class UserAuthorization(Authorization):
 
     def create_detail(self, object_list, bundle):
         return bundle.obj.netid == bundle.request.user.username
-        #return bundle.obj.user == bundle.request.user
 
     def update_list(self, object_list, bundle):
         return [obj for obj in object_list if obj.netid == bundle.request.user.username]
-
-        #allowed = []
-
-        ## Since they may not all be saved, iterate over them.
-        #for obj in object_list:
-        #    if obj.user == bundle.request.user:
-        #        allowed.append(obj)
-
-        #return allowed
 
     def update_detail(self, object_list, bundle):
         return bundle.obj.netid == bundle.request.user.username
@@ -59,10 +44,10 @@ class UserAuthorization(Authorization):
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
 
+
 # you can only use it if you own this object
 class UserObjectsOnlyAuthorization(Authorization):
     def read_list(self, object_list, bundle):
-        #return object_list
         filtered = [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
         return filtered
 
@@ -78,37 +63,22 @@ class UserObjectsOnlyAuthorization(Authorization):
         return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
 
     def create_detail(self, object_list, bundle):
-        #return True
         return bundle.obj.user.netid == bundle.request.user.username
-        #return bundle.obj.user == bundle.request.user
 
     def update_list(self, object_list, bundle):
-        #return object_list
         return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
 
-        #allowed = []
-
-        ## Since they may not all be saved, iterate over them.
-        #for obj in object_list:
-        #    if obj.user == bundle.request.user:
-        #        allowed.append(obj)
-
-        #return allowed
-
     def update_detail(self, object_list, bundle):
-        #return True
         return bundle.obj.user.netid == bundle.request.user.username
 
     def delete_list(self, object_list, bundle):
         # Sorry user, no deletes for you!
         raise Unauthorized("Sorry, no deleting lists.")
-        #return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
-        #return object_list
+        # return [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        # return object_list
 
     def delete_detail(self, object_list, bundle):
-        #return True
         return bundle.obj.user.netid == bundle.request.user.username
-        #raise Unauthorized("Sorry, no deletes.")
 
 # you can see the objects if a) you are the owner OR b) you and the owner are friends
 # currently this should apply to schedules
@@ -163,8 +133,8 @@ class SemesterResource(ModelResource):
 
     def prepend_urls(self):
         return [
-            #url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
-            #url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
+            # url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
+            # url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
         ]
 
     #def get_course(self, request, **kwargs):
