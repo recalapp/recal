@@ -94,7 +94,8 @@ module.exports = function(grunt) {
             logConcurrentOutput: true
         },
         dev: {
-            tasks: ["watch:less", "watch:typescript"]
+            // we use Atom's typescript instead
+            tasks: ["watch:less"] //, "watch:typescript"]
         }
     }
   });
