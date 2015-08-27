@@ -1,8 +1,0 @@
-#sidebar {
-    width: 65%;
-    right: -65%;
-}
-
-#sidebar.in{
-    right: -43.00%; /* 60% * 2/3; only 1/3 is shown */
-}

@@ -50,7 +50,6 @@ INSTALLED_APPS = (
     'tastypie',
     'cas',
     'colorfield',
-    # 'nice',
     'course_selection'
 )
 
@@ -69,7 +68,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
-WSGI_APPLICATION = 'nice.wsgi.application'
+WSGI_APPLICATION = 'course_selection.wsgi.application'
 
 ########## START AUTHENTICATION CONFIGURATION
 
@@ -129,12 +128,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 STATICFILES_DIRS = (
     normpath(join(DJANGO_ROOT, 'course_selection', 'static')),
-    # we don't use nice anymore
-    #normpath(join(DJANGO_ROOT, 'nice', 'static')),
 )
 
 TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'course_selection', 'templates')),
-                #normpath(join(DJANGO_ROOT, 'nice', 'templates'))
                  ]
 
 CACHES = {
@@ -166,25 +162,5 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 ########## TastyPie Settings END #######################
 
 ########## GLOBAL VARIABLES
+# TODO: is this still used? if not, we can remove it
 CURR_TERM = 1154 # Use helper method nice.models.get_cur_semester() to get current Semester object.
-
-### Reputation system
-
-## For handling individual votes:
-THRESHOLD_APPROVE = 2 #4 #Threshold to approve a revision: +2
-THRESHOLD_REJECT = -2 #-4 #Threshold to reject a revision: -2
-REWARD_FOR_UPVOTING = 1 #For upvoting a revision: +1 -- regardless of what happens to this revision later
-REWARD_FOR_DOWNVOTING = -1 # For downvoting a revision: -1 (this is why we don't tell them the voting scheme and only update their points count once a day).
-# After each vote, we'll check for whether either threshold has been reached. If so, we approve or reject the revision.
-
-## At time of approval:
-
-REWARD_FOR_APPROVED_SUBMISSION = 10 # For having created a revision that is approved: +10
-REWARD_FOR_PROPER_UPVOTE = 2 # For having upvoted a revision that is now approved: +2
-REWARD_FOR_IMPROPER_DOWNVOTE = -5 # For having downvoted a revision that is now approved: -5
-
-## At time of rejection:
-
-REWARD_FOR_REJECTED_SUBMISSION = -15 # For having created a revision that is rejected: -15
-REWARD_FOR_IMPROPER_UPVOTE = -1 #For having upvoted a revision that is rejected: -1
-REWARD_FOR_PROPER_DOWNVOTE = 5 #For having downvoted a revision that is rejected: +5 (offsets the initial -1)
