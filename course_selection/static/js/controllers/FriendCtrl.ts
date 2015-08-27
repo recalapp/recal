@@ -1,5 +1,7 @@
 /// <reference path='../../ts/typings/tsd.d.ts' />
 import SearchCtrl = require('./SearchCtrl');
+import ScheduleService = require('../services/ScheduleService');
+import IUser = require('../interfaces/IUser');
 import Utils = require('../Utils');
 
 'use strict';
@@ -8,11 +10,16 @@ class FriendCtrl {
     public static $inject = [
         '$scope',
         '$filter',
-        'UserService'
+        'UserService',
+        'ScheduleService'
     ];
 
     // dependencies are injected via AngularJS $injector
-    constructor(private $scope, private $filter, private userService)
+    constructor(
+        private $scope,
+        private $filter,
+        private userService,
+        private scheduleService: ScheduleService)
     {
         this._initFriendList();
         this._initLoading();
@@ -76,6 +83,16 @@ class FriendCtrl {
             this.$filter("friendSearch")(this.$scope.data.allUsers, query);
 
         console.log("user search query: " + query);
+    }
+
+    public onClick(user: IUser) {
+        console.log("getting " + user.netid + "'s schedules'");
+        this.scheduleService.getByUser(user.netid).$promise.then((schedules) => {
+            console.log("got " + schedules.length + " schedules");
+            for (let i = 0; i < schedules.length; i++) {
+                console.log(schedules[i]);
+            }
+        });
     }
 }
 

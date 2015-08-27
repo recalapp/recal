@@ -13,12 +13,12 @@ function bowerPath(path: String): String
 require.config({
     paths: {
         /* this is flatstrap */
-        flatstrap: bowerPath('flatstrap/dist/js/flatstrap.min'),
-        fullcalendar: bowerPath('fullcalendar/dist/fullcalendar.min'),
-        jquery: bowerPath('jquery/dist/jquery.min'),
+        'flatstrap': bowerPath('flatstrap/dist/js/flatstrap.min'),
+        'fullcalendar': bowerPath('fullcalendar/dist/fullcalendar.min'),
+        'jquery': bowerPath('jquery/jquery.min'),
         'jquery.cookie': bowerPath('jquery.cookie/jquery.cookie'),
-        jqueryui: bowerPath('jquery-ui/jquery-ui.min'),
-        moment: bowerPath('moment/min/moment.min'),
+        'jqueryui': bowerPath('jquery-ui/jquery-ui.min'),
+        'moment': bowerPath('moment/min/moment.min'),
         'moment-timezone': bowerPath('moment-timezone/builds/moment-timezone-with-data'),
         'angular': bowerPath('angular/angular'),
         'angular-animate': bowerPath('angular-animate/angular-animate.min'),
@@ -35,8 +35,8 @@ require.config({
         'text': bowerPath('requirejs-text/text')
     },
     shim: {
-        flatstrap: ['jquery'],
-        fullcalendar: ['jqueryui'],
+        'flatstrap': ['jquery'],
+        'fullcalendar': ['jqueryui'],
         'angular': { exports: 'angular', dep: ['jquery'] },
         'angular-animate': ['angular'],
         'angular-aria': ['angular'],

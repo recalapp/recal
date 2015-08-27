@@ -59,26 +59,6 @@ class UserAuthorization(Authorization):
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
 
-# TODO: write this--an authorization class for user or friends
-# to use the user's info
-class UserOrFriendAuthorization(UserAuthorization):
-    def read_list(self, object_list, bundle):
-        # This assumes a ``QuerySet`` from ``ModelResource``.
-        filtered = [obj for obj in object_list if obj.netid == bundle.request.user.username]
-        if len(filtered) > 0:
-            return filtered
-        else:
-            raise Unauthorized("Sorry, no peeking!")
-
-        #return object_list.filter(user=bundle.request.user)
-
-    def read_detail(self, object_list, bundle):
-        # Is the requested object owned by the user?
-        if bundle.obj.netid == bundle.request.user.username:
-            return True
-        else:
-            raise Unauthorized("Sorry, no peeking!")
-
 # you can only use it if you own this object
 class UserObjectsOnlyAuthorization(Authorization):
     def read_list(self, object_list, bundle):
@@ -129,6 +109,32 @@ class UserObjectsOnlyAuthorization(Authorization):
         #return True
         return bundle.obj.user.netid == bundle.request.user.username
         #raise Unauthorized("Sorry, no deletes.")
+
+# you can see the objects if a) you are the owner OR b) you and the owner are friends
+# currently this should apply to schedules
+class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
+    def read_list(self, object_list, bundle):
+        # should also return true if
+        # bundle.request.user.username is in obj.user.friends
+        my_nice_user = Nice_User.objects.get(netid=bundle.request.user.username)
+        filtered = []
+        for obj in object_list:
+            if obj.user.netid == bundle.request.user.username:
+                filtered.push(obj)
+            else:
+                pass
+                #if my_nice_user.friends.filter(netid = obj.user.)
+
+        filtered = [obj for obj in object_list if (obj.user.netid == bundle.request.user.username)]
+        import pdb; pdb.set_trace()
+        return filtered
+
+    def read_detail(self, object_list, bundle):
+        # Is the requested object owned by the user?
+        if bundle.obj.user.netid == bundle.request.user.username:
+            return True
+        else:
+            raise Unauthorized("Sorry, no peeking!")
 
 class SemesterResource(ModelResource):
     class Meta:
@@ -264,6 +270,10 @@ class ScheduleResource(ModelResource):
     #     return object_list.filter(user=request.user)
 
 class FriendResource(ModelResource):
+    """
+    This is what a friend sees--if A and B are friends, A cannot see B's
+    password (hidden anyway), resource_uri, or last_login
+    """
     class Meta:
         queryset = Nice_User.objects.all()
         resource_name = 'friend'
@@ -276,6 +286,8 @@ class FriendResource(ModelResource):
         }
 
 class UserResource(ModelResource):
+    friends = fields.ToManyField(FriendResource, 'friends', full=True)
+
     class Meta:
         queryset = Nice_User.objects.all()
         resource_name = 'user'
@@ -286,26 +298,6 @@ class UserResource(ModelResource):
         filtering = {
             'netid': ALL_WITH_RELATIONS
         }
-
-    def prepend_urls(self):
-        return [
-            #url(r"^(?P<resource_name>%s)/(?P<netid>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
-            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/schedule%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_schedule'), name="api_get_schedule"),
-        ]
-
-    def get_schedule(self, request, **kwargs):
-        try:
-            bundle = self.build_bundle(data={'pk': kwargs['pk']}, request=request)
-            obj = self.cached_obj_get(bundle=bundle, **self.remove_api_resource_names(kwargs))
-        except ObjectDoesNotExist:
-            return HttpGone()
-        except MultipleObjectsReturned:
-            return HttpMultipleChoices("More than one resource is found at this URI.")
-
-        schedule_resource = ScheduleResource()
-        # TODO: WTF is this hardcoded value? Is that my id?
-        # Check if this function is unused and if so, remove it
-        return schedule_resource.get_list(request, user=4991)
 
 class ProfessorResource(ModelResource):
     class Meta:

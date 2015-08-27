@@ -2,10 +2,11 @@ define(["require", "exports", './SearchCtrl'], function (require, exports, Searc
     'use strict';
     var FriendCtrl = (function () {
         // dependencies are injected via AngularJS $injector
-        function FriendCtrl($scope, $filter, userService) {
+        function FriendCtrl($scope, $filter, userService, scheduleService) {
             this.$scope = $scope;
             this.$filter = $filter;
             this.userService = userService;
+            this.scheduleService = scheduleService;
             this._initFriendList();
             this._initLoading();
             this._initSearchWatches();
@@ -60,10 +61,20 @@ define(["require", "exports", './SearchCtrl'], function (require, exports, Searc
                 this.$filter("friendSearch")(this.$scope.data.allUsers, query);
             console.log("user search query: " + query);
         };
+        FriendCtrl.prototype.onClick = function (user) {
+            console.log("getting " + user.netid + "'s schedules'");
+            this.scheduleService.getByUser(user.netid).$promise.then(function (schedules) {
+                console.log("got " + schedules.length + " schedules");
+                for (var i = 0; i < schedules.length; i++) {
+                    console.log(schedules[i]);
+                }
+            });
+        };
         FriendCtrl.$inject = [
             '$scope',
             '$filter',
-            'UserService'
+            'UserService',
+            'ScheduleService'
         ];
         return FriendCtrl;
     })();

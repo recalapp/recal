@@ -13,7 +13,7 @@
                 <div class="friend-list panel-group">
                     <div class="panel panel-default friend-panel"
                     ng-repeat="user in filteredUsers"
-                    ng-click="friendCtrl.test()"
+                    ng-click="friendCtrl.onClick(user)"
                     >
                     {{ user.netid }}
                     </div>
