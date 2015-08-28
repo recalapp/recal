@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
 import os
-import dj_database_url
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
@@ -89,7 +88,7 @@ LOGIN_URL = '/login'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/New_York' # changed from 'EST'
+TIME_ZONE = 'America/New_York'  # changed from 'EST'
 
 USE_I18N = True
 
@@ -134,7 +133,7 @@ TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'course_selection', 'templates')),
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache', # overwritten in prod.py
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',  # overwritten in prod.py
     },
     'resources': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -162,4 +161,4 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 ########## GLOBAL VARIABLES
 # TODO: is this still used? if not, we can remove it
-CURR_TERM = 1154 # Use helper method nice.models.get_cur_semester() to get current Semester object.
+CURR_TERM = 1154  # Use helper method nice.models.get_cur_semester() to get current Semester object.

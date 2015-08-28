@@ -1,16 +1,12 @@
-from django.utils.dateformat import format
-from django.shortcuts import * # render, redirect
+from django.shortcuts import *  # render, redirect
 from django.http import HttpResponse, HttpResponseNotFound
-from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from django.views.decorators.http import * # require_GET, etc.
-from django.utils import timezone
+from django.views.decorators.http import *  # require_GET, etc.
 from django.db.models import Q
 from django.views.decorators.cache import cache_page, never_cache
-from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.decorators.csrf import ensure_csrf_cookie # send regardless of whether Django thinks we should
+from django.views.decorators.csrf import ensure_csrf_cookie  # send regardless of whether Django thinks we should
 
 from view_cache_utils import cache_page_with_prefix
 from django.template import Template, Context
@@ -133,7 +129,7 @@ def hydrate_course_dict(course):
     }
 
 def get_courses_by_term_code(term_code):
-    filtered = Course.objects.filter(Q(semester__term_code = term_code))
+    filtered = Course.objects.filter(Q(semester__term_code=term_code))
     return [hydrate_course_dict(c) for c in filtered]
 
 def hydrate_user_dict(user):
@@ -190,7 +186,7 @@ def mobile_logged_in(request):
 
     """
     # TODO: retrieve Nice_User corresponding to request.user
-    nice_user = Nice_User.objects.get(netid = request.user.username)
+    nice_user = Nice_User.objects.get(netid=request.user.username)
     return HttpResponse(request.user.username + " " + unicode(nice_user.id))
 
 
@@ -199,7 +195,6 @@ def mobile_logged_in(request):
 #############################################################################
 
 def get_worksheet_pdf(request, schedule_id, template_name='course_enrollment_worksheet.pdf', **kwargs):
-    from django.utils.translation import ugettext as _
     from pdf import get_template
 
     """
@@ -299,7 +294,7 @@ def fill_out_course(context, idx, enrollment):
             clsnbr_field_name = 'clsnbr' + str(idx) + section_type
 
             context[daytm_field_name] = ' '.join([
-                meeting.days + meeting.start_time[:-3] \
+                meeting.days + meeting.start_time[:-3]
                 + " - " + meeting.end_time[:-3] for meeting in meetings
             ])
 

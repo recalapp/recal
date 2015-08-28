@@ -1,25 +1,51 @@
 {% verbatim %}
 <div ng-controller="FriendCtrl as friendCtrl"
-     ng-show="searchCtrl.whichSearch == 1"
-     >
-    <div id="loading-message-container" ng-show="loading">
-        <div id="loading-bar-spinner"><div class="spinner-icon"></div></div>
-        <h4 class="loading-courses-message">Loading Friends...</h4>
+ng-show="searchCtrl.whichSearch == 1"
+>
+<div id="loading-message-container" ng-show="loading">
+    <div id="loading-bar-spinner"><div class="spinner-icon"></div></div>
+    <h4 class="loading-courses-message">Loading Friends...</h4>
+</div>
+<div class="friends-container">
+    <div ng-show="data.friends.length > 0">
+        <h4 class="row"> {{ data.friends.length }} Friends</h4>
+        <div class="row inner-friends-container">
+            <div class="friend-list panel-group">
+                <div class="panel panel-default friend-panel"
+                ng-repeat="user in data.friends"
+                ng-click="friendCtrl.onClick(user)"
+                >
+                {{ user.netid }}
+            </div>
+        </div>
     </div>
-    <div class="friends-container">
-        <div ng-show="true">
-            <h4 class="row">My Friends</h4>
-            <div class="row inner-friends-container">
-                <div class="friend-list panel-group">
-                    <div class="panel panel-default friend-panel"
-                    ng-repeat="user in filteredUsers | limitTo:10"
-                    ng-click="friendCtrl.onClick(user)"
-                    >
-                    {{ user.netid }}
+</div>
+<div ng-show="query.length > 0 && data.allUsers.length > 0">
+    <h4 class="row"> {{ filteredUsers.length }} Search Results</h4>
+    <div class="row inner-friends-container">
+        <div class="friend-list panel-group">
+            <div class="panel panel-default friend-panel"
+                ng-repeat="user in filteredUsers | limitTo:10"
+                ng-mouseover="showTags = true"
+                ng-mouseleave="showTags = false"
+                ng-init="showTags = false"
+                >
+                <div class="course-panel-title">
+                    <div class="course-listings"
+                        ng-bind="user.netid"></div>
+                    <div class="course-title"
+                        ng-bind="user.netid"></div>
+                </div>
+                <div ng-show="showTags">
+                    <div class="enroll-tag"
+                        ng-click="friendCtrl.sendRequest(user)">
+                    <i class="fa fa-plus"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 {% endverbatim %}

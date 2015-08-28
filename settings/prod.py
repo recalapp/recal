@@ -13,7 +13,7 @@ TEMPLATE_DEBUG = DEBUG
 ########## DATABASE CONFIGURATION
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+DATABASES['default'] = dj_database_url.config()
 
 ########## END DATABASE CONFIGURATION
 
@@ -34,29 +34,31 @@ ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS', '*').split(',')
 SECRET_KEY = environ.get('DJANGO_SECRET_KEY', 'asdfasfshjkxhvkzjxhiu1012u4-9r0iojsof')
 
 def get_cache():
-  try:
-    environ['MEMCACHE_SERVERS'] = environ['MEMCACHIER_SERVERS'].replace(',', ';')
-    environ['MEMCACHE_USERNAME'] = environ['MEMCACHIER_USERNAME']
-    environ['MEMCACHE_PASSWORD'] = environ['MEMCACHIER_PASSWORD']
-    return {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-            'LOCATION': 'my_cache_table',
-            'TIMEOUT': 60 * 60
-        },
-        'memcache': {
-            'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
-            'TIMEOUT': 500,
-            'BINARY': True,
-            'OPTIONS': { 'tcp_nodelay': True }
+    try:
+        environ['MEMCACHE_SERVERS'] = environ['MEMCACHIER_SERVERS'].replace(',', ';')
+        environ['MEMCACHE_USERNAME'] = environ['MEMCACHIER_USERNAME']
+        environ['MEMCACHE_PASSWORD'] = environ['MEMCACHIER_PASSWORD']
+        return {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+                'LOCATION': 'my_cache_table',
+                'TIMEOUT': 60 * 60
+            },
+            'memcache': {
+                'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+                'TIMEOUT': 500,
+                'BINARY': True,
+                'OPTIONS': {
+                    'tcp_nodelay': True
+                }
+            }
         }
-    }
-  except:
-    return {
-      'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
-      }
-    }
+    except:
+        return {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+            }
+        }
 
 CACHES = get_cache()
 
@@ -99,13 +101,13 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
-            },
         },
+    },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
-            },
-        }
+        },
     }
+}
