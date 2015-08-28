@@ -184,6 +184,7 @@ post_save.connect(make_new_nice_user, sender=User)
 
 class Friend_Relationship(models.Model):
     from_user = models.ForeignKey(Nice_User, related_name='from_users')
+    request_accepted = models.BooleanField(default=False)
     to_user = models.ForeignKey(Nice_User, related_name='to_users')
 
     class Meta:
