@@ -9,9 +9,13 @@ import cas
 urlpatterns = patterns(
     "",
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
+    url(r'^grappelli/', include('grappelli.urls')),  # grappelli URLS
     url(r'^admin/', include(admin.site.urls)),
     url(r'^course_selection/', include('course_selection.urls')),
+    url(r'^hackerino/login/$', 'django.contrib.auth.views.login',
+        {'template_name': 'admin/login.html'}),
+    url(r'^hackerino/logout/$', 'django.contrib.auth.views.logout',
+        {'template_name': 'admin/logout.html'}),
     url(r'^', include('course_selection.urls')),
 )
 
