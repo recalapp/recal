@@ -435,7 +435,7 @@ body {
   color: white;
   cursor: pointer;
 }
-.enroll-tag {
+.add-tag {
   cursor: pointer;
   position: absolute;
   top: 0;
@@ -444,7 +444,7 @@ body {
   right: 0;
   background-color: green;
 }
-.enroll-tag i {
+.add-tag i {
   top: 25%;
   width: 100%;
   position: absolute;
@@ -453,7 +453,7 @@ body {
   color: white;
   cursor: pointer;
 }
-.unenroll-tag {
+.minus-tag {
   cursor: pointer;
   position: absolute;
   top: 0;
@@ -463,7 +463,7 @@ body {
   background-color: red;
   z-index: 10;
 }
-.unenroll-tag i {
+.minus-tag i {
   top: 25%;
   width: 100%;
   position: absolute;
