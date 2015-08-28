@@ -1,9 +1,10 @@
 'use strict';
 define(["require", "exports"], function (require, exports) {
     var UserService = (function () {
-        function UserService($http, scheduleService, userResource) {
+        function UserService($http, scheduleService, friendResource, userResource) {
             this.$http = $http;
             this.scheduleService = scheduleService;
+            this.friendResource = friendResource;
             this.userResource = userResource;
             this._data = {
                 user: null,
@@ -48,6 +49,7 @@ define(["require", "exports"], function (require, exports) {
         UserService.$inject = [
             '$http',
             'ScheduleService',
+            'FriendResource',
             'UserResource'
         ];
         UserService.API_URL = "/course_selection/api/static/users/";
@@ -55,4 +57,3 @@ define(["require", "exports"], function (require, exports) {
     })();
     return UserService;
 });
-//# sourceMappingURL=UserService.js.map
