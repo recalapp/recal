@@ -1,9 +1,8 @@
 import os
 import course_selection
-from course_selection.models import *
-from django.conf import settings
-import settings.common as settings
-import sys
+# TODO remove import *
+from course_selection.models import *  # NOQA
+
 
 def construct_netid_map():
     path = os.path.dirname(course_selection.__file__)
@@ -21,20 +20,20 @@ def construct_netid_map():
 
     list_length = len(content)
     for x in xrange(0, list_length, 4):
-        person = content[x:x+4]
+        person = content[x:x + 4]
         first_name = person[0]
         last_name = person[1]
         netid = person[2].split('@')[0]
         new_user, created = NetID_Name_Table.objects.get_or_create(
-            netid = netid,
-            first_name = first_name,
-            last_name = last_name
+            netid=netid,
+            first_name=first_name,
+            last_name=last_name
         )
         if created:
             mapping_count += 1
 
         nice_user, created = Nice_User.objects.get_or_create(
-            netid = netid
+            netid=netid
         )
 
         if created:
@@ -43,6 +42,7 @@ def construct_netid_map():
     print "number of netids found: " + str(list_length / 4)
     print "new netids added: " + str(mapping_count)
     print "new users added: " + str(user_count)
+
 
 def main(self):
     construct_netid_map()

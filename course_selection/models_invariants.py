@@ -14,6 +14,7 @@ def check_schedule_invariants(schedule):
         import json
         try:
             enrollments = json.parse(schedule.enrollments)
+
             def course_exists(course):
                 course_id = course["course_id"]
                 try:
@@ -33,4 +34,4 @@ def check_schedule_invariants(schedule):
         enrolled_courses_exist,
     ]
     results = [check(schedule) for check in check_invariants]
-    return reduce(lambda x, y : x and y, results, initializer = True)
+    return reduce(lambda x, y: x and y, results, initializer=True)

@@ -1,7 +1,7 @@
-from common import *
+from common import *  # NOQA
 from os import environ
 
-########## DEBUG CONFIGURATION
+# DEBUG CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
 #DEBUG = bool(environ.get('DJANGO_DEBUG', ''))
 DEBUG = environ.get('DJANGO_DEBUG', False)
@@ -10,18 +10,19 @@ DEBUG = environ.get('DJANGO_DEBUG', False)
 TEMPLATE_DEBUG = DEBUG
 # ########## END DEBUG CONFIGURATION
 
-########## DATABASE CONFIGURATION
+# DATABASE CONFIGURATION
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES['default'] = dj_database_url.config()
 
-########## END DATABASE CONFIGURATION
+# END DATABASE CONFIGURATION
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Limit Host and Referrer headers for security purposes
-# See https://docs.djangoproject.com/en/1.6/ref/settings/#std:setting-ALLOWED_HOSTS
+# See
+# https://docs.djangoproject.com/en/1.6/ref/settings/#std:setting-ALLOWED_HOSTS
 ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS', '*').split(',')
 
 # ALLOWED_HOSTS = [
@@ -31,11 +32,14 @@ ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS', '*').split(',')
 #    'localhost', # Allow foreman to run
 # ]
 
-SECRET_KEY = environ.get('DJANGO_SECRET_KEY', 'asdfasfshjkxhvkzjxhiu1012u4-9r0iojsof')
+SECRET_KEY = environ.get(
+    'DJANGO_SECRET_KEY', 'asdfasfshjkxhvkzjxhiu1012u4-9r0iojsof')
+
 
 def get_cache():
     try:
-        environ['MEMCACHE_SERVERS'] = environ['MEMCACHIER_SERVERS'].replace(',', ';')
+        environ['MEMCACHE_SERVERS'] = environ[
+            'MEMCACHIER_SERVERS'].replace(',', ';')
         environ['MEMCACHE_USERNAME'] = environ['MEMCACHIER_USERNAME']
         environ['MEMCACHE_PASSWORD'] = environ['MEMCACHIER_PASSWORD']
         return {
@@ -62,8 +66,9 @@ def get_cache():
 
 CACHES = get_cache()
 
-########## TOOLBAR CONFIGURATION
-# See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
+# TOOLBAR CONFIGURATION
+# See:
+# https://github.com/django-debug-toolbar/django-debug-toolbar#installation
 INSTALLED_APPS += (
     #'debug_toolbar',
 )
@@ -75,7 +80,7 @@ INSTALLED_APPS += (
 #
 #DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
-### TODO: updated DDT, need to update these settings when deploying
+# TODO: updated DDT, need to update these settings when deploying
 # # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
 # MIDDLEWARE_CLASSES += (
 #     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -84,7 +89,7 @@ INSTALLED_APPS += (
 # DEBUG_TOOLBAR_CONFIG = {
 #     'INTERCEPT_REDIRECTS': False,
 # }
-########## END TOOLBAR CONFIGURATION
+# END TOOLBAR CONFIGURATION
 
 LOGGING = {
     'version': 1,

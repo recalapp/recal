@@ -1,4 +1,5 @@
 class ScrapeCounter:
+
     def __init__(self):
         self.totalCoursesCount = 0
         self.createdCoursesCount = 0
@@ -10,6 +11,7 @@ class ScrapeCounter:
         self.createdProfessorsCount = 0
         self.totalListingsCount = 0
         self.createdListingsCount = 0
+
     def __str__(self):
         return str(self.createdCoursesCount) + " new courses\n" + \
             str(self.totalCoursesCount) + " total courses\n" + \
@@ -22,17 +24,20 @@ class ScrapeCounter:
             str(self.createdListingsCount) + " new listings\n" + \
             str(self.totalListingsCount) + " total listings"
 
+
 def scrape_import_course(course, counter=ScrapeCounter()):
     from models import Course
+
     def import_section(section, course_object):
         from models import Section, Meeting
+
         def import_meeting(meeting, course_object, section_object):
             meeting_object, created = Meeting.objects.get_or_create(
-                section = section_object,
-                start_time = meeting['start_time'],
-                end_time = meeting['end_time'],
-                days = meeting['days'],
-                location = meeting['location']
+                section=section_object,
+                start_time=meeting['start_time'],
+                end_time=meeting['end_time'],
+                days=meeting['days'],
+                location=meeting['location']
             )
             if created:
                 counter.createdMeetingsCount += 1
@@ -47,7 +52,8 @@ def scrape_import_course(course, counter=ScrapeCounter()):
         section_object.section_enrollment = section['enrollment']
         section_object.section_registrar_id = section['registrar_id']
         Meeting.objects.filter(section=section_object).delete()
-        [import_meeting(x, course_object, section_object) for x in section['meetings']]
+        [import_meeting(x, course_object, section_object)
+         for x in section['meetings']]
         section_object.save()
         if created:
             counter.createdSectionsCount += 1
@@ -82,15 +88,15 @@ def scrape_import_course(course, counter=ScrapeCounter()):
     def import_semester(semester):
         from models import Semester
         semester_object, created = Semester.objects.get_or_create(
-            start_date = semester['start_date'],
-            end_date = semester['end_date'],
-            term_code = semester['term_code']
+            start_date=semester['start_date'],
+            end_date=semester['end_date'],
+            term_code=semester['term_code']
         )
         return semester_object
 
     course_object, created = Course.objects.get_or_create(
-        registrar_id = course['guid'],
-        semester = import_semester(course['semester'])
+        registrar_id=course['guid'],
+        semester=import_semester(course['semester'])
     )
     course_object.title = course['title']
     course_object.description = course['description']

@@ -1,13 +1,17 @@
 from django.contrib import admin
-from course_selection.models import *
+# TODO remove import *
+from course_selection.models import *  # NOQA
+
 
 class SemesterAdmin(admin.ModelAdmin):
     model = Semester
     list_display = ('term_code', 'start_date', 'end_date', )
 
+
 class CourseListingInline(admin.TabularInline):
     model = Course_Listing
     can_delete = False
+
 
 class ProfessorInLine(admin.TabularInline):
     model = Course.professors.through
@@ -17,6 +21,7 @@ class ProfessorInLine(admin.TabularInline):
         return instance.professor.name
     prof_name.short_description = 'prof name'
 
+
 class CourseAdmin(admin.ModelAdmin):
     model = Course
     inlines = (CourseListingInline, ProfessorInLine)
@@ -25,16 +30,19 @@ class CourseAdmin(admin.ModelAdmin):
     ordering = ('-title', )
     search_fields = ['title']
 
+
 class ScheduleAdmin(admin.ModelAdmin):
     model = Schedule
     list_display = ('title', 'user', 'semester', )
     list_filter = ('semester', 'user', )
     search_fields = ['user__netid']
 
+
 class ProfessorAdmin(admin.ModelAdmin):
     model = Professor
     list_display = ('name', )
     search_fields = ['name']
+
 
 class FriendRelationshipFromInline(admin.TabularInline):
     model = Friend_Relationship
@@ -42,11 +50,13 @@ class FriendRelationshipFromInline(admin.TabularInline):
     verbose_name = 'friend-relationship-from'
     extra = 1
 
+
 class FriendRelationshipToInline(admin.TabularInline):
     model = Friend_Relationship
     fk_name = 'to_user'
     verbose_name = 'friend-relationship-to'
     extra = 1
+
 
 class Nice_UserAdmin(admin.ModelAdmin):
     model = Nice_User

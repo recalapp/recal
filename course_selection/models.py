@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractBaseUser, User
 import settings.common as settings
 
+
 class Semester(models.Model):
     # fields
     start_date = models.DateField()
@@ -13,7 +14,8 @@ class Semester(models.Model):
     1144 = 1314Spring
     1132 = 1213Fall
     """
-    term_code = models.CharField(max_length=4, default=settings.CURR_TERM, db_index=True, unique=True)
+    term_code = models.CharField(
+        max_length=4, default=settings.CURR_TERM, db_index=True, unique=True)
 
     def __unicode__(self):
         end_year = int(self.term_code[1:3])
@@ -24,8 +26,10 @@ class Semester(models.Model):
             sem = 'Spring'
         return str(start_year) + "-" + str(end_year) + " " + sem
 
+
 class Professor(models.Model):
     name = models.CharField(max_length=100)
+
 
 class Color_Palette(models.Model):
     DEFAULT_ID = 1
@@ -39,6 +43,7 @@ class Color_Palette(models.Model):
     def __unicode__(self):
         return "light: " + self.light + '\n' + "dark: " + self.dark
 
+
 class Course(models.Model):
     # relationships
     semester = models.ForeignKey(Semester)
@@ -51,7 +56,8 @@ class Course(models.Model):
     registrar_id = models.CharField(max_length=20)
 
     def course_listings(self):
-        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')])  # + ' ' + ': ' + self.title
+        # + ' ' + ': ' + self.title
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')])
 
     course_listings.admin_order_field = 'course_listings'
 
@@ -62,11 +68,13 @@ class Course(models.Model):
         return unicode(self.course_listing_set.all().get(is_primary=True))
 
     def __unicode__(self):
-        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')])  # + ' ' + ': ' + self.title
+        # + ' ' + ': ' + self.title
+        return " / ".join([unicode(course_listing) for course_listing in self.course_listing_set.all().order_by('dept')])
 
     class Meta:
         pass
     # ordering = ['semester', 'course_listings']
+
 
 class Section(models.Model):
     # Types
@@ -111,6 +119,7 @@ class Section(models.Model):
     class Meta:
         ordering = ['course', 'name']
 
+
 class Meeting(models.Model):
     section = models.ForeignKey(Section, related_name="meetings")
     start_time = models.CharField(max_length=20)
@@ -120,6 +129,7 @@ class Meeting(models.Model):
 
     def __unicode__(self):
         return unicode(self.section) + ' - ' + self.location
+
 
 class Course_Listing(models.Model):
     # TODO: this line causes admin site to fail, commenting out related_name
@@ -136,6 +146,7 @@ class Course_Listing(models.Model):
     class Meta:
         ordering = ['dept', 'number']
 
+
 class Schedule(models.Model):
     # relationships
     semester = models.ForeignKey(Semester)
@@ -146,7 +157,7 @@ class Schedule(models.Model):
     enrollments = models.TextField(null=True)
     title = models.CharField(max_length=100, default="schedule")
 
-#class Enrollment(models.Model):
+# class Enrollment(models.Model):
 #    # each course enrollment has
 #    # a course, a color, and a few sections
 #    # and belongs to a schedule
@@ -155,6 +166,7 @@ class Schedule(models.Model):
 #    color = models.ForeignKey(Color_Palette)
 #    schedule = models.ForeignKey(Schedule)
 
+
 class Nice_User(AbstractBaseUser):
     netid = models.CharField(max_length=20, unique=True)
     friends = models.ManyToManyField('self', through='Friend_Relationship',
@@ -162,13 +174,18 @@ class Nice_User(AbstractBaseUser):
     USERNAME_FIELD = 'netid'
 
 # create user profile as soon as a user is added
+
+
 def make_new_nice_user(sender, instance, created, **kwargs):
     # see http://stackoverflow.com/a/965883/130164
     # Use a try because the first user (super user) is created before other tables are created.
-    # That is, this fails during syncdb upon initial database setup, because it creates a superuser before User_Profile table is added (we add that by running migrations after).
+    # That is, this fails during syncdb upon initial database setup, because
+    # it creates a superuser before User_Profile table is added (we add that
+    # by running migrations after).
     try:
         if created:
-            nice_user, created = Nice_User.objects.get_or_create(netid=instance.username)
+            nice_user, created = Nice_User.objects.get_or_create(
+                netid=instance.username)
             if created:
                 try:
                     nice_user.save()
@@ -189,6 +206,7 @@ class Friend_Relationship(models.Model):
 
     class Meta:
         unique_together = ('from_user', 'to_user')
+
 
 class NetID_Name_Table(models.Model):
     """ table for netid--name lookups """

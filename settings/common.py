@@ -13,7 +13,7 @@ from os.path import abspath, basename, dirname, join, normpath
 from sys import path
 import os
 
-########## PATH CONFIGURATION
+# PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 
@@ -26,7 +26,7 @@ SITE_NAME = basename(DJANGO_ROOT)
 # Add our project to our pythonpath, this way we don't need to type our project
 # name in our dotted import paths:
 path.append(DJANGO_ROOT)
-########## END PATH CONFIGURATION
+# END PATH CONFIGURATION
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -68,7 +68,7 @@ ROOT_URLCONF = 'urls'
 
 WSGI_APPLICATION = 'course_selection.wsgi.application'
 
-########## START AUTHENTICATION CONFIGURATION
+# START AUTHENTICATION CONFIGURATION
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -81,7 +81,7 @@ CAS_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login'
 
-########## END AUTHENTICATION CONFIGURATION
+# END AUTHENTICATION CONFIGURATION
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -141,11 +141,11 @@ CACHES = {
     }
 }
 
-########## PDFTK for PDF GENERATION
+# PDFTK for PDF GENERATION
 
 PDFTK_BIN = os.environ.get('PDFTK_BIN', '')
 
-########## END PDFTK
+# END PDFTK
 
 
 ########## WhiteNoise Settings #######################
@@ -155,10 +155,12 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 ########## WhiteNoise Settings END #######################
 
 ########## TastyPie Settings #######################
-## this limit should be done per resource. see course_selection/api.py
+# this limit should be done per resource. see course_selection/api.py
 ## API_LIMIT_PER_PAGE = 50
 ########## TastyPie Settings END #######################
 
-########## GLOBAL VARIABLES
+# GLOBAL VARIABLES
 # TODO: is this still used? if not, we can remove it
-CURR_TERM = 1154  # Use helper method nice.models.get_cur_semester() to get current Semester object.
+# Use helper method nice.models.get_cur_semester() to get current Semester
+# object.
+CURR_TERM = 1154

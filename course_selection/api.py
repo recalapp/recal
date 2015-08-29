@@ -10,9 +10,11 @@ from course_selection.models import Nice_User, Schedule, Semester, Course_Listin
 
 
 class UserAuthorization(Authorization):
+
     def read_list(self, object_list, bundle):
         # This assumes a ``QuerySet`` from ``ModelResource``.
-        filtered = [obj for obj in object_list if obj.netid == bundle.request.user.username]
+        filtered = [obj for obj in object_list if obj.netid ==
+                    bundle.request.user.username]
         if len(filtered) > 0:
             return filtered
         else:
@@ -48,8 +50,10 @@ class UserAuthorization(Authorization):
 
 # you can only use it if you own this object
 class UserObjectsOnlyAuthorization(Authorization):
+
     def read_list(self, object_list, bundle):
-        filtered = [obj for obj in object_list if obj.user.netid == bundle.request.user.username]
+        filtered = [obj for obj in object_list if obj.user.netid ==
+                    bundle.request.user.username]
         return filtered
 
     def read_detail(self, object_list, bundle):
@@ -85,6 +89,7 @@ class UserObjectsOnlyAuthorization(Authorization):
 # you can see the objects if a) you are the owner OR b) you and the owner are friends
 # currently this should apply to schedules
 class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
+
     def is_owner_or_friend(self, user, owner):
         if user.username == owner.netid:
             return True
@@ -92,13 +97,15 @@ class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
             nice_user = Nice_User.objects.get(netid=user.username)
             my_friends = nice_user.friends
             try:
-                my_friends.get(Q(friends__to_user=owner) | Q(friends__from_user=owner))
+                my_friends.get(Q(friends__to_user=owner) |
+                               Q(friends__from_user=owner))
                 return True
             except:
                 return False
 
     def read_list(self, object_list, bundle):
-        filtered = [o for o in object_list if self.is_owner_or_friend(bundle.request.user, o.user)]
+        filtered = [o for o in object_list if self.is_owner_or_friend(
+            bundle.request.user, o.user)]
         return filtered
 
     def read_detail(self, object_list, bundle):
@@ -108,7 +115,9 @@ class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
         else:
             raise Unauthorized("Sorry, no peeking!")
 
+
 class SemesterResource(ModelResource):
+
     class Meta:
         queryset = Semester.objects.all()
         resource_name = 'semester'
@@ -139,14 +148,15 @@ class SemesterResource(ModelResource):
             # url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
         ]
 
-    #def get_course(self, request, **kwargs):
+    # def get_course(self, request, **kwargs):
     #    try:
     #        bundle = self.build_bundle(data={'term_code': kwargs['term_code']}, request=request)
     #        obj = self.cached_obj_get(bundle=bundle, **self.remove_api_resource_names(kwargs))
     #    except ObjectDoesNotExist:
     #        return HttpGone()
     #    except MultipleObjectsReturned:
-    #        return HttpMultipleChoices("More than one resource is found at this URI.")
+    # return HttpMultipleChoices("More than one resource is found at this
+    # URI.")
 
     #    course_resource = CourseResource()
     #    return course_resource.get_list(request, semester=obj.pk)
@@ -162,10 +172,13 @@ class CourseListingResource(ModelResource):
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
 
+
 class CourseResource(ModelResource):
     semester = fields.ForeignKey(SemesterResource, 'semester', full=True)
-    course_listings = fields.ToManyField(CourseListingResource, 'course_listing_set', null=True, full=True)
-    sections = fields.ToManyField('course_selection.api.SectionResource', 'sections', full=True)
+    course_listings = fields.ToManyField(
+        CourseListingResource, 'course_listing_set', null=True, full=True)
+    sections = fields.ToManyField(
+        'course_selection.api.SectionResource', 'sections', full=True)
 
     def alter_list_data_to_serialize(self, request, data):
         if request.GET.get('meta_only'):
@@ -184,9 +197,11 @@ class CourseResource(ModelResource):
             'semester': ALL_WITH_RELATIONS
         }
 
+
 class SectionResource(ModelResource):
     course = fields.ForeignKey(CourseResource, 'course')
-    meetings = fields.ToManyField('course_selection.api.MeetingResource', 'meetings', full=True)
+    meetings = fields.ToManyField(
+        'course_selection.api.MeetingResource', 'meetings', full=True)
 
     class Meta:
         queryset = Section.objects.all()
@@ -194,6 +209,7 @@ class SectionResource(ModelResource):
         excludes = ['isDefault']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
+
 
 class MeetingResource(ModelResource):
     section = fields.ForeignKey(SectionResource, 'section')
@@ -205,13 +221,16 @@ class MeetingResource(ModelResource):
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
 
+
 class ColorPaletteResource(ModelResource):
+
     class Meta:
         queryset = Color_Palette.objects.all()
         resource_name = 'color_palette'
         excludes = ['']
         allowed_methods = ['get']
         cache = SimpleCache(timeout=10)
+
 
 class ScheduleResource(ModelResource):
     #enrollments = fields.ToManyField(EnrollmentResource, 'enrollments', full=True, null=True)
@@ -235,11 +254,13 @@ class ScheduleResource(ModelResource):
 
     # def obj_create(self, bundle, **kwargs):
     #     import pdb; pdb.set_trace()
-    #     return super(ScheduleResource, self).obj_create(bundle, user=bundle.request.user)
+    # return super(ScheduleResource, self).obj_create(bundle,
+    # user=bundle.request.user)
 
     # def apply_authorization_limits(self, request, object_list):
     #     import pdb; pdb.set_trace()
     #     return object_list.filter(user=request.user)
+
 
 class FriendResource(ModelResource):
     """
@@ -259,6 +280,7 @@ class FriendResource(ModelResource):
             'netid': ALL_WITH_RELATIONS
         }
 
+
 class UserResource(ModelResource):
     friends = fields.ToManyField(FriendResource, 'friends', full=True)
 
@@ -273,7 +295,9 @@ class UserResource(ModelResource):
             'netid': ALL_WITH_RELATIONS
         }
 
+
 class ProfessorResource(ModelResource):
+
     class Meta:
         queryset = Professor.objects.all()
         resource_name = 'professor'

@@ -1,23 +1,22 @@
-from django.shortcuts import *  # render, redirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound
-from django.core.urlresolvers import reverse
+from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
-from django.views.decorators.http import *  # require_GET, etc.
 from django.db.models import Q
 from django.views.decorators.cache import cache_page, never_cache
-from django.views.decorators.csrf import ensure_csrf_cookie  # send regardless of whether Django thinks we should
+# send regardless of whether Django thinks we should
 
 from view_cache_utils import cache_page_with_prefix
-from django.template import Template, Context
 import hashlib
 
-from datetime import datetime
 import json
 
-from models import *
+# TODO don't use import *
+from models import *  # NOQA
 
 # @ensure_csrf_cookie
+
+
 def index(request):
     """
     Home page. Show landing page or course selection page, depending on user's state.
@@ -29,6 +28,7 @@ def index(request):
         'username': unicode(request.user.username)
     })
 
+
 @login_required
 def course_evaluations(request, semester_id, course_id):
     """
@@ -39,17 +39,20 @@ def course_evaluations(request, semester_id, course_id):
         'course_id': course_id
     })
 
+
 def landing(request):
     """
     Displays the landing page.
     """
     return render(request, 'landing/index.html', None)
 
+
 def status(request):
     """
     Displays the status page.
     """
     return render(request, 'status/index.html', None)
+
 
 def about(request):
     """
@@ -78,6 +81,7 @@ def we_sorry(request):
     """
     return render(request, 'announcements/we_sorry.html', None)
 
+
 def hydrate_meeting_dict(meeting):
     return {
         'days': meeting.days,
@@ -87,8 +91,10 @@ def hydrate_meeting_dict(meeting):
         'id': meeting.id
     }
 
+
 def hydrate_section_dict(section, course):
-    meetings = [hydrate_meeting_dict(meeting) for meeting in section.meetings.all()]
+    meetings = [hydrate_meeting_dict(meeting)
+                for meeting in section.meetings.all()]
     return {
         'id': section.id,
         'name': section.name,
@@ -99,12 +105,14 @@ def hydrate_section_dict(section, course):
         'meetings': meetings
     }
 
+
 def hydrate_course_listing_dict(course_listing):
     return {
         'dept': course_listing.dept,
         'number': course_listing.number,
         'is_primary': course_listing.is_primary,
     }
+
 
 def hydrate_semester(semester):
     return {
@@ -115,9 +123,12 @@ def hydrate_semester(semester):
         'term_code': semester.term_code
     }
 
+
 def hydrate_course_dict(course):
-    sections = [hydrate_section_dict(section, course) for section in course.sections.all()]
-    course_listings = [hydrate_course_listing_dict(cl) for cl in course.course_listing_set.all()]
+    sections = [hydrate_section_dict(section, course)
+                for section in course.sections.all()]
+    course_listings = [hydrate_course_listing_dict(
+        cl) for cl in course.course_listing_set.all()]
     return {
         'course_listings': course_listings,
         'description': course.description,
@@ -128,15 +139,18 @@ def hydrate_course_dict(course):
         'semester': hydrate_semester(course.semester),
     }
 
+
 def get_courses_by_term_code(term_code):
     filtered = Course.objects.filter(Q(semester__term_code=term_code))
     return [hydrate_course_dict(c) for c in filtered]
+
 
 def hydrate_user_dict(user):
     return {
         'id': user.id,
         'netid': user.netid
     }
+
 
 @require_GET
 @cache_page(60 * 60 * 24)
@@ -149,6 +163,7 @@ def get_users_json(request):
     data = json.dumps(results)
     return HttpResponse(data, 'application/json', status=200)
 
+
 @require_GET
 @never_cache
 @cache_page(60 * 60 * 24)
@@ -160,6 +175,7 @@ def get_courses_json(request, term_code):
     results = get_courses_by_term_code(term_code)
     data = json.dumps(results)
     return HttpResponse(data, 'application/json', status=200)
+
 
 @require_GET
 @cache_page_with_prefix(60 * 60 * 24, lambda request: hashlib.md5(request.GET.get('semester__term_code', '')).hexdigest())
@@ -232,6 +248,7 @@ def get_worksheet_pdf(request, schedule_id, template_name='course_enrollment_wor
 
     return response
 
+
 def get_form_context(schedule_obj):
     import json
 
@@ -246,6 +263,7 @@ def get_form_context(schedule_obj):
 
     return context
 
+
 def fill_out_term(context, schedule_obj):
     if int(schedule_obj.semester.term_code[3]) == 2:
         context['termf'] = 'sp'
@@ -253,11 +271,13 @@ def fill_out_term(context, schedule_obj):
         context['terms'] = 'sp'
     return context
 
+
 def fill_out_acad(context, schedule_obj):
     end_year = int(schedule_obj.semester.term_code[1:3])
     start_year = end_year - 1
     context['acad'] = unicode(start_year) + '-' + unicode(end_year)
     return context
+
 
 def get_course_checkbox_val(idx):
     if idx == 1:
@@ -267,13 +287,15 @@ def get_course_checkbox_val(idx):
     else:
         return 'sp'
 
+
 def fill_out_course(context, idx, enrollment):
     checkbox_name = 'add' + str(idx)
     course_name = 'crs' + str(idx)
     checkbox_val = get_course_checkbox_val(idx)
 
     course = Course.objects.get(id=enrollment['course_id'])
-    sections = [Section.objects.get(id=section_id) for section_id in enrollment['sections']]
+    sections = [Section.objects.get(id=section_id)
+                for section_id in enrollment['sections']]
 
     for section in sections:
         meetings = section.meetings.all()

@@ -8,16 +8,15 @@ Procedure:
 - Parse it for courses, sections, and lecture times (as recurring events)
 """
 
-from course_selection.models import *
+# TODO don't use import *
+from course_selection.models import *  # NOQA
 from lxml import etree
 import HTMLParser
-import string
-import sys
 import urllib2
 from bs4 import BeautifulSoup
 import re
 from datetime import datetime
-from datetime import timedelta
+
 
 def get_courses_for_term(term_code):
     TERM_CODE = term_code
@@ -35,8 +34,6 @@ def get_courses_for_term(term_code):
 
     CURRENT_SEMESTER = ['']
 
-    DAYS = {'M': 0, 'T': 1, 'W': 2, 'Th': 3, 'F': 4, 'Sa': 5, 'S':6}
-
     new_course_count = [0]
     course_count = [0]
     new_section_count = [0]
@@ -53,7 +50,8 @@ def get_courses_for_term(term_code):
         #global CURRENT_SEMESTER
         if not CURRENT_SEMESTER[0]:
             try:
-                CURRENT_SEMESTER[0] = Semester.objects.get(term_code=str(TERM_CODE))
+                CURRENT_SEMESTER[0] = Semester.objects.get(
+                    term_code=str(TERM_CODE))
             except:
                 parser = etree.XMLParser(ns_clean=True)
                 termxml = urllib2.urlopen(TERM_PREFIX)
@@ -64,9 +62,9 @@ def get_courses_for_term(term_code):
                 end_date = term.find('end_date').text
                 end_date = datetime.strptime(end_date, "%Y-%m-%d")
                 curr_sem = Semester(
-                    start_date = start_date,
-                    end_date = end_date,
-                    term_code = str(TERM_CODE)
+                    start_date=start_date,
+                    end_date=end_date,
+                    term_code=str(TERM_CODE)
                 )
                 curr_sem.save()
                 CURRENT_SEMESTER[0] = curr_sem
@@ -82,7 +80,7 @@ def get_courses_for_term(term_code):
         soup = BeautifulSoup(seed_page)
         links = soup('a', href=re.compile(r'subject'))
         departments = [tag.string for tag in links]
-        #print ' '.join(departments)
+        # print ' '.join(departments)
         return departments
 
     def scrape_all():
@@ -123,9 +121,9 @@ def get_courses_for_term(term_code):
                         for course in courses:
                             parse_course(course, subject)
 
-    ## Parse it for courses, sections, and lecture times (as recurring events)
-    ## If the course with this ID exists in the database, we update the course
-    ## Otherwise, create new course with the information
+    # Parse it for courses, sections, and lecture times (as recurring events)
+    # If the course with this ID exists in the database, we update the course
+    # Otherwise, create new course with the information
     def parse_course(course, subject):
         """ create a course with basic information.
 
@@ -143,8 +141,8 @@ def get_courses_for_term(term_code):
 
         # if we have a course with this registrar_id, get it
         course_object, created = Course.objects.get_or_create(
-            registrar_id = guid,
-            semester = get_current_semester(),
+            registrar_id=guid,
+            semester=get_current_semester(),
         )
 
         course_object.title = title
@@ -153,13 +151,14 @@ def get_courses_for_term(term_code):
 
         course_count[0] += 1
         if created:
-            new_course_count[0] += 1 # for debugging
+            new_course_count[0] += 1  # for debugging
         else:
-            # TODO: now we should update the listings/sections when we run again
+            # TODO: now we should update the listings/sections when we run
+            # again
             pass
             # this could be a cross_listing
-            #print "course is not created: " + str(guid)
-            #return
+            # print "course is not created: " + str(guid)
+            # return
 
         create_or_update_profs(course, course_object)
 
@@ -197,7 +196,7 @@ def get_courses_for_term(term_code):
 
     def get_rating(course):
         """ we contact easypce for the ratings"""
-        #TODO
+        # TODO
         pass
 
     def create_or_update_listings(course, subject, course_object):
@@ -215,7 +214,8 @@ def get_courses_for_term(term_code):
         course_listings = []
         if course.find('crosslistings') is not None:
             for cross_listing in course.find('crosslistings'):
-                course_listings.append((cross_listing.find('subject').text, cross_listing.find('catalog_number').text))
+                course_listings.append((cross_listing.find(
+                    'subject').text, cross_listing.find('catalog_number').text))
 
         # create course_listings
         for course_listing in course_listings:
@@ -265,8 +265,8 @@ def get_courses_for_term(term_code):
             section_type = section_type[0:3].upper()
 
             section_object, created = Section.objects.get_or_create(
-                course = course_object,
-                name = section_name,
+                course=course_object,
+                name=section_name,
             )
 
             section_object.section_type = section_type
@@ -279,11 +279,10 @@ def get_courses_for_term(term_code):
                 new_section_count[0] += 1
             section_count[0] += 1
 
-
             # delete existing meetings
             Meeting.objects.filter(section=section_object).delete()
 
-            ## generate meetings for this section
+            # generate meetings for this section
             for meeting in meetings:
                 days = ""
                 for day in meeting.find('days'):
@@ -304,11 +303,11 @@ def get_courses_for_term(term_code):
 
                 # This should only create new meetings now
                 meeting_object, created = Meeting.objects.get_or_create(
-                    section = section_object,
-                    start_time = str_start_time,
-                    end_time = str_end_time,
-                    days = days,
-                    location = location
+                    section=section_object,
+                    start_time=str_start_time,
+                    end_time=str_end_time,
+                    days=days,
+                    location=location
                 )
 
                 if created:

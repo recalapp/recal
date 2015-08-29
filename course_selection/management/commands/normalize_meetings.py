@@ -1,8 +1,10 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from course_selection.models import Meeting
 
+
 class Command(BaseCommand):
+
     def handle(self, *args, **options):
         all_meetings = Meeting.objects.all()
         for meeting in all_meetings:

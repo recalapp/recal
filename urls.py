@@ -4,7 +4,8 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-import cas
+# TODO we're not sure if this is needed
+import cas  # NOQA
 
 urlpatterns = patterns(
     "",
@@ -25,7 +26,8 @@ urlpatterns += patterns(
     url(r'^logout/$', 'logout', name='cas_logout'),
 )
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
+urlpatterns += static(settings.STATIC_URL,
+                      document_root=settings.STATICFILES_DIRS)
 
 """
 Debug toolbar url
@@ -34,5 +36,5 @@ Debug toolbar url
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += patterns('',
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    )
+                            url(r'^__debug__/', include(debug_toolbar.urls)),
+                            )

@@ -14,11 +14,15 @@ import urllib2
 from bs4 import BeautifulSoup
 import re
 
+
 class ParseError(Exception):
+
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
+
 
 def scrape_parse_semester(term_code):
     TERM_CODE = term_code
@@ -37,6 +41,7 @@ def scrape_parse_semester(term_code):
     CURRENT_SEMESTER = ['']
 
     h = HTMLParser.HTMLParser()
+
     def get_text(key, object):
         return h.unescape(raise_if_none(object.find(key), "key " + key + " does not exist").text)
 
@@ -68,7 +73,7 @@ def scrape_parse_semester(term_code):
         soup = BeautifulSoup(seed_page)
         links = soup('a', href=re.compile(r'subject'))
         departments = [tag.string for tag in links]
-        #print ' '.join(departments)
+        # print ' '.join(departments)
         return departments
 
     def scrape_all():
@@ -123,9 +128,9 @@ def scrape_parse_semester(term_code):
             raise ParseError(error_message)
         return text
 
-    ## Parse it for courses, sections, and lecture times (as recurring events)
-    ## If the course with this ID exists in the database, we update the course
-    ## Otherwise, create new course with the information
+    # Parse it for courses, sections, and lecture times (as recurring events)
+    # If the course with this ID exists in the database, we update the course
+    # Otherwise, create new course with the information
     def parse_course(course, subject):
         """ create a course with basic information.
 
@@ -146,7 +151,8 @@ def scrape_parse_semester(term_code):
             print inst
             return None
 
-    # may decide to make this function for just one prof/listing/section, then do a map
+    # may decide to make this function for just one prof/listing/section, then
+    # do a map
     def parse_prof(prof):
         return {
             "full_name": get_text('full_name', prof)
@@ -159,7 +165,8 @@ def scrape_parse_semester(term_code):
                 'code': get_text('catalog_number', cross_listing),
                 'is_primary': False
             }
-        cross_listings = [parse_cross_listing(x) for x in none_to_empty_list(course.find('crosslistings'))]
+        cross_listings = [parse_cross_listing(
+            x) for x in none_to_empty_list(course.find('crosslistings'))]
         primary_listing = {
             'dept': get_text('code', subject),
             'code': get_text('catalog_number', course),
@@ -174,6 +181,7 @@ def scrape_parse_semester(term_code):
                 for day in meeting.find('days'):
                     days += day.text + ' '
                 return days[:10]
+
             def get_location(meeting):
                 try:
                     building = meeting.find('building').find('name').text
