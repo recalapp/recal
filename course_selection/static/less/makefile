@@ -2,7 +2,7 @@ COMPILE=lessc
 
 ARGS=-x
 
-all: main.css nice.css course-search.css calendar.css queue.css course-evaluation.css
+all: main.css nice.css course-search.css friend-search.css calendar.css queue.css course-evaluation.css
 
 clean:
 	rm -f *.css
@@ -15,6 +15,9 @@ nice.css: nice.less
 
 course-search.css: course-search.less
 	$(COMPILE) $(ARGS) course-search.less > course-search.css
+
+friend-search.css: friend-search.less
+	$(COMPILE) $(ARGS) friend-search.less > friend-search.css
 
 calendar.css: calendar.less
 	$(COMPILE) $(ARGS) calendar.less > calendar.css
