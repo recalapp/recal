@@ -1,3 +1,37 @@
+# Workflow
+We will be using a rebase workflow. This is much easier for rollbacks, and since we are not open-sourced, we don't have to deal with pull requests.
+
+## Working on a New Feature
+Use the following template.
+```
+git checkout -b fb1
+# do your work here
+...
+# end of work
+git fetch origin master:master # this is the same as `git checkout master && git pff && git checkout fb1`
+git rebase -i master
+git checkout master
+git mff fb1
+```
+
+## `pull --ff-only` and `merge --ff-only`
+`git pull` does not always do the right thing, as it tries to merge. We never want merging, so I recommend adding the following aliases to your ~/.gitconfig:
+
+```
+[alias]
+    ...
+    pff = pull --ff-only
+    mff = merge --ff-only
+    ...
+```
+
+### What if I Can't Fast-Forward on Master?
+```
+# on master
+git fetch
+git rebase origin/master
+```
+
 # Dev Environment Setup
 ## Installing Prerequisites
 ### Heroku Toolbelt
