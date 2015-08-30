@@ -15,4 +15,3 @@ define(["require", "exports"], function (require, exports) {
     })();
     return ScheduleService;
 });
-//# sourceMappingURL=ScheduleService.js.map

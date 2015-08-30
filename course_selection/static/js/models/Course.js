@@ -5,8 +5,6 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
             this.description = description;
             this.course_listings = course_listings;
             this.id = id;
-            // chop off the first 4 digits for registar_id
-            // the first 4 digits are the term code
             this.registrar_id = registrar_id ? registrar_id.substring(registrar_id.length - Course.REGISTRAR_ID_DIGITS) : "";
             this.semester = semester;
             this.sections = this.getSections(sections);
@@ -92,4 +90,3 @@ define(["require", "exports", '../services/ColorResource', '../models/Section'],
     })();
     return Course;
 });
-//# sourceMappingURL=Course.js.map

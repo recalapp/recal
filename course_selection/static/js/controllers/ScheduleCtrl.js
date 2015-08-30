@@ -20,10 +20,6 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                 combo: 'mod+f',
                 description: 'search',
                 callback: function (event, hotkey) {
-                    // TODO: this is a hack using jQuery...
-                    // looks for the visible search bar and focuses
-                    // event.preventDefault();
-                    //$('.searchBar').filter(':visible').focus();
                 }
             });
         }
@@ -50,7 +46,6 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                 }
             });
         };
-        // TODO: refactor the modals for deleting and changing a modal
         ScheduleCtrl.prototype.changeScheduleTitle = function (index) {
             var _this = this;
             var modalInstance = this.$modal.open({
@@ -127,8 +122,6 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
         ScheduleCtrl.prototype._setSelectedSchedule = function (index) {
             this.$scope.selectedSchedule = index;
         };
-        // TODO: this is a workaround
-        // shouldn't have to access the schedule like this
         ScheduleCtrl.prototype._removeSchedule = function (index) {
             this.schedules[index].scheduleManager.schedule.$remove();
             this.schedules.splice(index, 1);
@@ -153,4 +146,3 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
     })();
     return ScheduleCtrl;
 });
-//# sourceMappingURL=ScheduleCtrl.js.map

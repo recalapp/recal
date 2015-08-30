@@ -15,4 +15,3 @@ define(["require", "exports", './ResourceBuilder', './CourseService', './UserSer
     niceServices.service('ScheduleManagerService', ScheduleManagerService);
     return niceServices;
 });
-//# sourceMappingURL=Services.js.map

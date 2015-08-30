@@ -1,8 +1,7 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", './Filter'], function (require, exports, Filter) {
     var FriendSearchFilter = (function (_super) {
@@ -16,7 +15,6 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
             }
             var breakedQueries = FriendSearchFilter.breakQuery(input);
             var queries = breakedQueries.split(' ');
-            // only allow 1 query for now --
             if (queries.length != 1) {
                 return [];
             }
@@ -27,28 +25,15 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
         };
         FriendSearchFilter.breakQuery = function (input) {
             var output;
-            // output = input.replace(/\D\d+\.?\d+\D/g, function(text){
-            //     return text.charAt(0) + ' ' + text.substring(1, text.length - 1) + ' ' + text.slice(-1);
-            // });
-            // output = output.replace(/\D\d+\.?\d+/g, function(text){
-            //     return text.charAt(0) + ' ' + text.substring(1);
-            // });
-            // output = output.replace(/\d+\.?\d+\D/g, function(text){
-            //     return text.substring(0, text.length - 1) + ' ' + text.slice(-1);
-            // });
-            // takes care of numbers of the form x.yz, .yz are optional
             output = input.replace(/\d+\.?\d*/g, function (text) {
                 return ' ' + text + ' ';
             });
-            // takes care of numbers of the form .xyz
             output = output.replace(/\D\.\d+/g, function (text) {
                 return ' ' + text + ' ';
             });
-            // trim spaces
             output = output.replace(/\s+/g, " ");
             return output;
         };
-        // test whether s starts with t
         FriendSearchFilter.startsWith = function (s, t) {
             return s.substring(0, t.length) === t;
         };
@@ -57,4 +42,3 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
     })(Filter);
     return FriendSearchFilter;
 });
-//# sourceMappingURL=FriendSearchFilter.js.map

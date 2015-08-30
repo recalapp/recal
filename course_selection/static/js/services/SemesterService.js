@@ -18,4 +18,3 @@ define(["require", "exports"], function (require, exports) {
     })();
     return SemesterService;
 });
-//# sourceMappingURL=SemesterService.js.map

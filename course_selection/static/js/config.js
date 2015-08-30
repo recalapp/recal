@@ -8,7 +8,6 @@ function appPath(path) {
 require.config({
     baseUrl: staticPath("bower_components/"),
     paths: {
-        /* this is flatstrap */
         'flatstrap': 'flatstrap/dist/js/flatstrap.min',
         'fullcalendar': 'fullcalendar/dist/fullcalendar.min',
         'jquery': 'jquery/jquery.min',
@@ -19,7 +18,6 @@ require.config({
         'angular': 'angular/angular',
         'angular-animate': 'angular-animate/angular-animate.min',
         'angular-resource': 'angular-resource/angular-resource.min',
-        // 'angular-ui-calendar': 'angular-ui-calendar/src/calendar',
         'angular-bootstrap': 'angular-bootstrap/ui-bootstrap-tpls.min',
         'angular-local-storage': 'angular-local-storage/dist/angular-local-storage.min',
         'angular-aria': 'angular-aria/angular-aria.min',
@@ -27,7 +25,6 @@ require.config({
         'angular-hotkeys': 'angular-hotkeys/build/hotkeys.min',
         'angular-loading-bar': 'angular-loading-bar/build/loading-bar',
         'qtip': 'qtip2/jquery.qtip.min',
-        /* 'chai': 'chai/chai', */
         'text': 'requirejs-text/text'
     },
     shim: {
@@ -38,7 +35,6 @@ require.config({
         'angular-aria': ['angular'],
         'angular-material': ['angular'],
         'angular-resource': ['angular'],
-        // 'angular-ui-calendar': ['angular'],
         'angular-bootstrap': ['angular'],
         'angularRoute': ['angular'],
         'angular-hotkeys': ['angular'],
@@ -58,9 +54,7 @@ require(['angular',
     'angular-loading-bar',
     'angular-resource',
     'moment',
-    /* 'chai', */
     'fullcalendar',
-    // 'angular-ui-calendar',
     'angular-bootstrap',
     appPath('Application'),
     appPath('controllers/Controllers'),
@@ -73,4 +67,3 @@ require(['angular',
 ], function (angular) {
     angular.bootstrap(document, ['nice']);
 });
-//# sourceMappingURL=config.js.map

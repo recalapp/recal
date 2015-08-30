@@ -9,9 +9,7 @@ define(["require", "exports", 'moment'], function (require, exports, Moment) {
             this.section_type = section.section_type;
             this.section_capacity = section.section_capacity;
             this.section_enrollment = section.section_enrollment;
-            // by default, a newly constructed section is previewed until enrolled"
             this.className = "cal-unconfirmed";
-            // for tooltip display
             var tooltipEnrollment = this.section_enrollment + "/" + this.section_capacity;
             var inputTimeFormat = "hh:mm a";
             var outputTimeFormat = "HH:mm:ss";
@@ -20,8 +18,6 @@ define(["require", "exports", 'moment'], function (require, exports, Moment) {
                 var meeting = section.meetings[j];
                 var days = meeting.days.split(' ');
                 var numDays = days[days.length - 1] ? days.length : days.length - 1;
-                // ignore last element of the result of split, which is
-                // empty string due to the format of the input
                 for (var k = 0; k < numDays; k++) {
                     var day = days[k];
                     var date = this.getAgendaDate(day);
@@ -39,9 +35,6 @@ define(["require", "exports", 'moment'], function (require, exports, Moment) {
                 }
             }
         }
-        /**
-         * gets the date of the day in the current week
-         */
         SectionEventSource.prototype.getAgendaDate = function (day) {
             var todayOffset = Moment().isoWeekday();
             var dayOffset = SectionEventSource.DAYS[day];
@@ -60,4 +53,3 @@ define(["require", "exports", 'moment'], function (require, exports, Moment) {
     })();
     return SectionEventSource;
 });
-//# sourceMappingURL=SectionEventSource.js.map

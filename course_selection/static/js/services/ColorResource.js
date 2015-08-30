@@ -25,7 +25,6 @@ define(["require", "exports"], function (require, exports) {
         };
         ColorResource.prototype.transformTastypieResponse = function (data, header) {
             var parsed = JSON.parse(data);
-            // data could be an array with metadata
             if (parsed.meta && parsed.objects) {
                 return parsed.objects;
             }
@@ -44,4 +43,3 @@ define(["require", "exports"], function (require, exports) {
     })();
     return ColorResource;
 });
-//# sourceMappingURL=ColorResource.js.map

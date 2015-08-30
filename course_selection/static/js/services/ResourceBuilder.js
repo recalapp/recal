@@ -5,7 +5,6 @@ define(["require", "exports"], function (require, exports) {
             this.$resource = $resource;
             this.localStorageService = localStorageService;
         }
-        // TODO: figure out how to use typescript to properly do this
         ResourceBuilder.prototype.getCourseResource = function () {
             return this.$resource(ResourceBuilder.BASE_URL + 'course/', {}, {
                 query: {
@@ -80,7 +79,6 @@ define(["require", "exports"], function (require, exports) {
         };
         ResourceBuilder.prototype.transformTastypieResponse = function (data, header) {
             var parsed = JSON.parse(data);
-            // data could be an array with metadata
             if (parsed.meta && parsed.objects) {
                 return parsed.objects;
             }
@@ -102,4 +100,3 @@ define(["require", "exports"], function (require, exports) {
     })();
     return ResourceBuilder;
 });
-//# sourceMappingURL=ResourceBuilder.js.map

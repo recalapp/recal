@@ -3,7 +3,6 @@ define(["require", "exports", './Module'], function (require, exports, Module) {
         'ngResource',
         'angular-loading-bar',
         'ngAnimate',
-        //'ui.calendar',
         'ui.bootstrap',
         'ngAria',
         'ngMaterial',
@@ -30,4 +29,3 @@ define(["require", "exports", './Module'], function (require, exports, Module) {
     });
     return nice;
 });
-//# sourceMappingURL=Application.js.map

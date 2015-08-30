@@ -48,4 +48,3 @@ define(["require", "exports"], function (require, exports) {
     })();
     return CoursePanel;
 });
-//# sourceMappingURL=CoursePanel.js.map

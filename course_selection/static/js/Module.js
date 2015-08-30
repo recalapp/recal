@@ -22,4 +22,3 @@ define(["require", "exports", "angular"], function (require, exports) {
     })();
     return Module;
 });
-//# sourceMappingURL=Module.js.map

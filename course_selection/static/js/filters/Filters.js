@@ -13,4 +13,3 @@ define(["require", "exports", '../Module', './CourseSearchFilter', './FriendSear
         }]);
     return niceFilters;
 });
-//# sourceMappingURL=Filters.js.map

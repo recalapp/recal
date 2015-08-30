@@ -19,10 +19,6 @@ define(["require", "exports"], function (require, exports) {
             this.$scope.whichSearch = this.whichSearch;
             this.placeHolder = SearchCtrl.COURSE_SEARCH_PLACE_HOLDER;
         };
-        // $inject annotation.
-        // It provides $injector with information about dependencies to be injected into constructor
-        // it is better to have it close to the constructor, because the parameters must match in count and type.
-        // See http://docs.angularjs.org/guide/di
         SearchCtrl.$inject = [
             '$scope',
             '$sce',
@@ -39,4 +35,3 @@ define(["require", "exports"], function (require, exports) {
     })();
     return SearchCtrl;
 });
-//# sourceMappingURL=SearchCtrl.js.map

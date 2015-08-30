@@ -21,4 +21,3 @@ define(["require", "exports", '../models/ScheduleManager'], function (require, e
     })();
     return ScheduleManagerService;
 });
-//# sourceMappingURL=ScheduleManagerService.js.map
