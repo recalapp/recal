@@ -141,7 +141,6 @@ class ScheduleCtrl {
         var index = this.schedules.length;
         var newSchedule = new this.scheduleResource();
         newSchedule.semester = this.semester;
-        newSchedule.user = this.userService.user;
         newSchedule.enrollments = JSON.stringify([]);
         newSchedule.title = scheduleName ? scheduleName : "New Schedule";
         this.schedules.push({

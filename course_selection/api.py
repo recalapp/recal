@@ -240,7 +240,7 @@ class ScheduleResource(ModelResource):
     class Meta:
         queryset = Schedule.objects.all()
         resource_name = 'schedule'
-        excludes = []
+        excludes = ['user']
         allowed_methods = ['get', 'post', 'put', 'delete']
         cache = NoCache()
         authorization = UserObjectOrFriendAuthorization()
@@ -252,9 +252,9 @@ class ScheduleResource(ModelResource):
             'semester': ALL_WITH_RELATIONS
         }
 
-    # def obj_create(self, bundle, **kwargs):
-    #     nice_user = Nice_User.objects.get(netid=bundle.request.user.username)
-    #     return super(ScheduleResource, self).obj_create(bundle, user=nice_user)
+    def obj_create(self, bundle, **kwargs):
+        nice_user = Nice_User.objects.get(netid=bundle.request.user.username)
+        return super(ScheduleResource, self).obj_create(bundle, user=nice_user)
 
     # def apply_authorization_limits(self, request, object_list):
     #     return object_list.filter(Q(user__netid=request.user.username))
