@@ -253,13 +253,11 @@ class ScheduleResource(ModelResource):
         }
 
     # def obj_create(self, bundle, **kwargs):
-    #     import pdb; pdb.set_trace()
-    # return super(ScheduleResource, self).obj_create(bundle,
-    # user=bundle.request.user)
+    #     nice_user = Nice_User.objects.get(netid=bundle.request.user.username)
+    #     return super(ScheduleResource, self).obj_create(bundle, user=nice_user)
 
     # def apply_authorization_limits(self, request, object_list):
-    #     import pdb; pdb.set_trace()
-    #     return object_list.filter(user=request.user)
+    #     return object_list.filter(Q(user__netid=request.user.username))
 
 
 class FriendResource(ModelResource):
