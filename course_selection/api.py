@@ -1,3 +1,4 @@
+from django.db.models import Q
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.cache import SimpleCache
@@ -5,7 +6,10 @@ from tastypie.cache import NoCache
 from tastypie.authorization import Authorization, ReadOnlyAuthorization
 from tastypie.exceptions import Unauthorized
 from tastypie import fields
-from course_selection.models import Nice_User, Schedule, Semester, Course_Listing, Course, Section, Meeting, Color_Palette, Professor
+from course_selection.models import (Nice_User, Schedule, Semester,
+                                     Course_Listing, Course, Section,
+                                     Meeting, Color_Palette, Professor,
+                                     Friend_Relationship)
 
 
 class UserAuthorization(Authorization):
@@ -97,13 +101,11 @@ class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
         if user.username == owner.netid:
             return True
 
-        nice_user = Nice_User.objects.get(netid=user.username)
-        if nice_user.friends.filter(to_users__to_user=owner).exists():
-            return True
-        elif nice_user.related_to.filter(from_users__from_user=owner).exists():
-            return True
-        else:
-            return False
+        self = Nice_User.objects.get(netid=user.username)
+        return Friend_Relationship.objects.filter(
+            (Q(from_user=self) & Q(to_user=owner)) |
+            (Q(from_user=owner) & Q(to_user=self))
+        ).filter(request_accepted=True).exists()
 
     def read_list(self, object_list, bundle):
         filtered = [o for o in object_list if self.is_owner_or_friend(
