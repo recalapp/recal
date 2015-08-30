@@ -170,7 +170,8 @@ class Schedule(models.Model):
 class Nice_User(AbstractBaseUser):
     netid = models.CharField(max_length=20, unique=True)
     friends = models.ManyToManyField('self', through='Friend_Relationship',
-                                     symmetrical=False)
+                                     symmetrical=False,
+                                     related_name='related_to')
     USERNAME_FIELD = 'netid'
 
 # create user profile as soon as a user is added
@@ -200,6 +201,11 @@ post_save.connect(make_new_nice_user, sender=User)
 
 
 class Friend_Relationship(models.Model):
+    """
+    A sends B a friend request, then:
+    A.friends.get(to_users__to_user=B) == B
+    B.related_to.get(from_users__from_user=A) == A
+    """
     from_user = models.ForeignKey(Nice_User, related_name='from_users')
     request_accepted = models.BooleanField(default=False)
     to_user = models.ForeignKey(Nice_User, related_name='to_users')

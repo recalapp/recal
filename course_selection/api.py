@@ -1,4 +1,3 @@
-from django.db.models import Q
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.cache import SimpleCache
@@ -91,17 +90,20 @@ class UserObjectsOnlyAuthorization(Authorization):
 class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
 
     def is_owner_or_friend(self, user, owner):
+        """
+        Returns true if user is either the owner, or related to the owner
+        via a Friend_Relationship.
+        """
         if user.username == owner.netid:
             return True
+
+        nice_user = Nice_User.objects.get(netid=user.username)
+        if nice_user.friends.filter(to_users__to_user=owner).exists():
+            return True
+        elif nice_user.related_to.filter(from_users__from_user=owner).exists():
+            return True
         else:
-            nice_user = Nice_User.objects.get(netid=user.username)
-            my_friends = nice_user.friends
-            try:
-                my_friends.get(Q(friends__to_user=owner) |
-                               Q(friends__from_user=owner))
-                return True
-            except:
-                return False
+            return False
 
     def read_list(self, object_list, bundle):
         filtered = [o for o in object_list if self.is_owner_or_friend(
