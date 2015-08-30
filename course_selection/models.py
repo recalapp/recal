@@ -200,6 +200,9 @@ def make_new_nice_user(sender, instance, created, **kwargs):
 post_save.connect(make_new_nice_user, sender=User)
 
 
+# TODO: separate Friend_Request and Friends
+# a Friend_relationship should be symmetrical, while a friend request is not
+# I couldn't rename this easily due to a bug in django migrations. 08/30/15
 class Friend_Relationship(models.Model):
     """
     A sends B a friend request, then:
