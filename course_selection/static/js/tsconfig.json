@@ -8,7 +8,8 @@
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true
+        "suppressImplicitAnyIndexErrors": true,
+        "newLine": "LF"
     },
     "filesGlob": [
         "./**/*.ts",
