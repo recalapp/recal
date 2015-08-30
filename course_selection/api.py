@@ -12,6 +12,10 @@ from course_selection.models import (Nice_User, Schedule, Semester,
                                      Friend_Relationship)
 
 
+def get_nice_user(user):
+    Nice_User.objects.get(netid=user.username)
+
+
 class UserAuthorization(Authorization):
 
     def read_list(self, object_list, bundle):
@@ -101,10 +105,10 @@ class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
         if user.username == owner.netid:
             return True
 
-        self = Nice_User.objects.get(netid=user.username)
+        nice_user = get_nice_user(user)
         return Friend_Relationship.objects.filter(
-            (Q(from_user=self) & Q(to_user=owner)) |
-            (Q(from_user=owner) & Q(to_user=self))
+            (Q(from_user=nice_user) & Q(to_user=owner)) |
+            (Q(from_user=owner) & Q(to_user=nice_user))
         ).filter(request_accepted=True).exists()
 
     def read_list(self, object_list, bundle):
@@ -257,7 +261,7 @@ class ScheduleResource(ModelResource):
         }
 
     def obj_create(self, bundle, **kwargs):
-        nice_user = Nice_User.objects.get(netid=bundle.request.user.username)
+        nice_user = get_nice_user(bundle.request.user)
         return super(ScheduleResource, self).obj_create(bundle, user=nice_user)
 
     # def apply_authorization_limits(self, request, object_list):
@@ -280,6 +284,61 @@ class FriendResource(ModelResource):
         authorization = ReadOnlyAuthorization()
         filtering = {
             'netid': ALL_WITH_RELATIONS
+        }
+
+
+class FriendRelationshipAuthorization(Authorization):
+    def user_is_in_this_relationship(self, user, rel):
+        return rel.from_user == user or rel.to_user == user
+
+    def authorize_detail(self, obj, bundle):
+        nice_user = get_nice_user(bundle.request.user)
+        return self.user_is_in_this_relationship(nice_user, obj)
+
+    def authorize_list(self, object_list, bundle):
+        nice_user = Nice_User.objects.get(netid=bundle.request.user.username)
+        return [o for o in object_list if self.user_is_in_this_relationship(nice_user, o)]
+
+    def read_list(self, object_list, bundle):
+        return self.authorize_list(object_list, bundle)
+
+    def read_detail(self, obj, bundle):
+        return self.authorize_detail(obj, bundle)
+
+    def create_list(self, object_list, bundle):
+        return self.authorize_list(object_list, bundle)
+
+    def create_detail(self, obj, bundle):
+        return self.authorize_detail(obj, bundle)
+
+    def update_list(self, object_list, bundle):
+        return self.authorize_list(object_list, bundle)
+
+    def update_detail(self, obj, bundle):
+        return self.authorize_detail(obj, bundle)
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
+
+class FriendRelationshipResource(ModelResource):
+    from_user = fields.ForeignKey(FriendResource, 'from_user', full=True)
+    to_user = fields.ForeignKey(FriendResource, 'to_user', full=True)
+
+    class Meta:
+        queryset = Friend_Relationship.objects.all()
+        resource_name = 'friend_relationship'
+        allowed_methods = ['get', 'post', 'put', 'delete']
+        authorization = FriendRelationshipAuthorization()
+        limit = 0
+        max_limit = 0
+        filtering = {
+            'from_user': ALL_WITH_RELATIONS,
+            'to_user': ALL_WITH_RELATIONS
         }
 
 

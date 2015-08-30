@@ -18,10 +18,12 @@ v1_api.register(UserResource())
 # FriendResource is public to everyone, and excludes last_login
 # TODO: give FriendResource a better name
 v1_api.register(FriendResource())
+v1_api.register(FriendRelationshipResource())
 v1_api.register(ProfessorResource())
 v1_api.register(CourseListingResource())
 # v1_api.register(MeetingResource())
 # v1_api.register(SectionResource())
+# TODO: figure out how to add v2 apis
 
 urlpatterns = patterns(
     "",
