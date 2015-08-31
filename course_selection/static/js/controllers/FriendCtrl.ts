@@ -11,7 +11,8 @@ class FriendCtrl {
         '$scope',
         '$filter',
         'UserService',
-        'ScheduleService'
+        'ScheduleService',
+        'FriendRequestResource'
     ];
 
     // dependencies are injected via AngularJS $injector
@@ -19,7 +20,8 @@ class FriendCtrl {
         private $scope,
         private $filter,
         private userService,
-        private scheduleService: ScheduleService)
+        private scheduleService: ScheduleService,
+        private friendRequestResource)
     {
         this._initFriendList();
         this._initLoading();
@@ -83,6 +85,15 @@ class FriendCtrl {
             this.$filter("friendSearch")(this.$scope.data.allUsers, query);
 
         console.log("user search query: " + query);
+    }
+
+    public sendRequest(toUser: IUser) {
+        var newRequest = new this.friendRequestResource();
+        newRequest.to_user = toUser;
+        newRequest.from_user = this.userService.user;
+        newRequest.request_accepted = false;
+        console.log(newRequest);
+        newRequest.$save();
     }
 
     public onClick(user: IUser) {

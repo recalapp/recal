@@ -61,6 +61,10 @@ class ScheduleManager {
         if (!availableColors) {
             this.colorManager.availableColors.$promise.then((colors) => {
                 this.schedule.available_colors = JSON.stringify(colors);
+                // TODO: currently this is where a schedule first gets saved--
+                // this is super weird. I should try to save the schedule as
+                // soon as it gets created, and use $update here.
+                // The save should happen in scheduleCtrl.
                 this.schedule.$save();
             });
         }

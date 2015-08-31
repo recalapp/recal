@@ -3,7 +3,7 @@ from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.cache import SimpleCache
 from tastypie.cache import NoCache
-from tastypie.authorization import Authorization, ReadOnlyAuthorization
+from tastypie.authorization import Authorization
 from tastypie.exceptions import Unauthorized
 from tastypie import fields
 from course_selection.models import (Nice_User, Schedule, Semester,
@@ -13,7 +13,7 @@ from course_selection.models import (Nice_User, Schedule, Semester,
 
 
 def get_nice_user(user):
-    Nice_User.objects.get(netid=user.username)
+    return Nice_User.objects.get(netid=user.username)
 
 
 class UserAuthorization(Authorization):
@@ -270,58 +270,59 @@ class ScheduleResource(ModelResource):
 
 class FriendResource(ModelResource):
     """
-    This is what a friend sees--if A and B are friends, A cannot see B's
-    password (hidden anyway), resource_uri, or last_login
+    This is a private resource used for saving Friend_Relationship.
     """
     class Meta:
         queryset = Nice_User.objects.all()
         resource_name = 'friend'
         excludes = ['password', 'resource_uri', 'last_login']
-        allowed_methods = ['get']
+        allowed_methods = ['get', 'post', 'put']
         cache = SimpleCache(timeout=10)
         limit = 0
         max_limit = 0
-        authorization = ReadOnlyAuthorization()
+        # there is no authorization on this class on purpose--
+        # we want to be able to update a Nice_User object
+        # when we save a Friend_Relationship object
+        authorization = Authorization()
         filtering = {
             'netid': ALL_WITH_RELATIONS
         }
 
 
 class FriendRelationshipAuthorization(Authorization):
-    def user_is_in_this_relationship(self, user, rel):
+    def user_is_in_this_relationship(self, rel, user):
         return rel.from_user == user or rel.to_user == user
 
     def authorize_detail(self, obj, bundle):
         nice_user = get_nice_user(bundle.request.user)
-        return self.user_is_in_this_relationship(nice_user, obj)
+        return self.user_is_in_this_relationship(obj, nice_user)
 
     def authorize_list(self, object_list, bundle):
-        nice_user = Nice_User.objects.get(netid=bundle.request.user.username)
-        return [o for o in object_list if self.user_is_in_this_relationship(nice_user, o)]
+        return [o for o in object_list if self.authorize_detail(o, bundle)]
 
     def read_list(self, object_list, bundle):
         return self.authorize_list(object_list, bundle)
 
-    def read_detail(self, obj, bundle):
-        return self.authorize_detail(obj, bundle)
+    def read_detail(self, object_list, bundle):
+        return self.authorize_detail(bundle.obj, bundle)
 
     def create_list(self, object_list, bundle):
         return self.authorize_list(object_list, bundle)
 
-    def create_detail(self, obj, bundle):
-        return self.authorize_detail(obj, bundle)
+    def create_detail(self, object_list, bundle):
+        return self.authorize_detail(bundle.obj, bundle)
 
     def update_list(self, object_list, bundle):
         return self.authorize_list(object_list, bundle)
 
-    def update_detail(self, obj, bundle):
-        return self.authorize_detail(obj, bundle)
+    def update_detail(self, object_list, bundle):
+        return self.authorize_detail(bundle.obj, bundle)
 
     def delete_list(self, object_list, bundle):
         # Sorry user, no deletes for you!
         raise Unauthorized("Sorry, no deletes.")
 
-    def delete_detail(self, object, bundle):
+    def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
 
 
@@ -334,6 +335,7 @@ class FriendRelationshipResource(ModelResource):
         resource_name = 'friend_relationship'
         allowed_methods = ['get', 'post', 'put', 'delete']
         authorization = FriendRelationshipAuthorization()
+        always_return_data = True
         limit = 0
         max_limit = 0
         filtering = {

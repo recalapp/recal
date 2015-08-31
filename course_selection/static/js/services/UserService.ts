@@ -6,7 +6,6 @@ class UserService {
     public static $inject = [
         '$http',
         'ScheduleService',
-        'FriendResource',
         'UserResource'
     ];
 
@@ -21,7 +20,6 @@ class UserService {
     constructor(
             private $http,
             private scheduleService,
-            private friendResource,
             private userResource) {
         this._data.user = this.userResource.getByNetId({'netid': username});
         this._data.all_users =

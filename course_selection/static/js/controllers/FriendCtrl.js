@@ -1,11 +1,12 @@
 define(["require", "exports", './SearchCtrl'], function (require, exports, SearchCtrl) {
     'use strict';
     var FriendCtrl = (function () {
-        function FriendCtrl($scope, $filter, userService, scheduleService) {
+        function FriendCtrl($scope, $filter, userService, scheduleService, friendRequestResource) {
             this.$scope = $scope;
             this.$filter = $filter;
             this.userService = userService;
             this.scheduleService = scheduleService;
+            this.friendRequestResource = friendRequestResource;
             this._initFriendList();
             this._initLoading();
             this._initSearchWatches();
@@ -59,6 +60,14 @@ define(["require", "exports", './SearchCtrl'], function (require, exports, Searc
                 this.$filter("friendSearch")(this.$scope.data.allUsers, query);
             console.log("user search query: " + query);
         };
+        FriendCtrl.prototype.sendRequest = function (toUser) {
+            var newRequest = new this.friendRequestResource();
+            newRequest.to_user = toUser;
+            newRequest.from_user = this.userService.user;
+            newRequest.request_accepted = false;
+            console.log(newRequest);
+            newRequest.$save();
+        };
         FriendCtrl.prototype.onClick = function (user) {
             console.log("getting " + user.netid + "'s schedules'");
             this.scheduleService.getByUser(user.netid).$promise.then(function (schedules) {
@@ -72,7 +81,8 @@ define(["require", "exports", './SearchCtrl'], function (require, exports, Searc
             '$scope',
             '$filter',
             'UserService',
-            'ScheduleService'
+            'ScheduleService',
+            'FriendRequestResource'
         ];
         return FriendCtrl;
     })();

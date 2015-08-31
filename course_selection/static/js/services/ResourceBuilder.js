@@ -54,8 +54,8 @@ define(["require", "exports"], function (require, exports) {
                 }
             });
         };
-        ResourceBuilder.prototype.getFriendResource = function () {
-            return this.$resource(ResourceBuilder.BASE_URL + 'friend/:id', {}, {
+        ResourceBuilder.prototype.getFriendRequestResource = function () {
+            return this.$resource(ResourceBuilder.BASE_URL + 'friend_relationship/:id', {}, {
                 query: {
                     method: 'GET',
                     isArray: true,

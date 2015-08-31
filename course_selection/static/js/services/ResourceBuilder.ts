@@ -77,8 +77,9 @@ class ResourceBuilder {
                 });
     }
 
-    public getFriendResource() {
-        return this.$resource(ResourceBuilder.BASE_URL + 'friend/:id',
+    // TODO: rename the api
+    public getFriendRequestResource() {
+        return this.$resource(ResourceBuilder.BASE_URL + 'friend_relationship/:id',
         {},
         {
             query: {
