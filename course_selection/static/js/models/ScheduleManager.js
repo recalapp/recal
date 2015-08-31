@@ -38,7 +38,7 @@ define(["require", "exports", './Course', '../models/ColorManager', '../Utils'],
             if (!availableColors) {
                 this.colorManager.availableColors.$promise.then(function (colors) {
                     _this.schedule.available_colors = JSON.stringify(colors);
-                    _this.schedule.$save();
+                    _this.schedule.$update();
                 });
             }
         };

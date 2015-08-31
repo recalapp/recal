@@ -65,7 +65,7 @@ class ScheduleManager {
                 // this is super weird. I should try to save the schedule as
                 // soon as it gets created, and use $update here.
                 // The save should happen in scheduleCtrl.
-                this.schedule.$save();
+                this.schedule.$update();
             });
         }
     }

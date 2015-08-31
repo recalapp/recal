@@ -143,6 +143,7 @@ class ScheduleCtrl {
         newSchedule.semester = this.semester;
         newSchedule.enrollments = JSON.stringify([]);
         newSchedule.title = scheduleName ? scheduleName : "New Schedule";
+        newSchedule.$save();
         this.schedules.push({
             scheduleObject: newSchedule,
             scheduleManager: this.scheduleManagerService.newScheduleManager(newSchedule)
