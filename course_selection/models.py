@@ -169,9 +169,7 @@ class Schedule(models.Model):
 
 class Nice_User(AbstractBaseUser):
     netid = models.CharField(max_length=20, unique=True)
-    friends = models.ManyToManyField('self', through='Friend_Relationship',
-                                     symmetrical=False,
-                                     related_name='related_to')
+    friends = models.ManyToManyField('self', symmetrical=True, related_name='friends')
     USERNAME_FIELD = 'netid'
 
 # create user profile as soon as a user is added
@@ -200,18 +198,10 @@ def make_new_nice_user(sender, instance, created, **kwargs):
 post_save.connect(make_new_nice_user, sender=User)
 
 
-# TODO: separate Friend_Request and Friends
-# a Friend_relationship should be symmetrical, while a friend request is not
-# I couldn't rename this easily due to a bug in django migrations. 08/30/15
-class Friend_Relationship(models.Model):
-    """
-    A sends B a friend request, then:
-    A.friends.get(to_users__to_user=B) == B
-    B.related_to.get(from_users__from_user=A) == A
-    """
+class Friend_Request(models.Model):
     from_user = models.ForeignKey(Nice_User, related_name='from_users')
-    request_accepted = models.BooleanField(default=False)
     to_user = models.ForeignKey(Nice_User, related_name='to_users')
+    accepted = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('from_user', 'to_user')

@@ -1,4 +1,4 @@
-from django.db.models import Q
+# from django.db.models import Q
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.cache import SimpleCache
@@ -8,8 +8,7 @@ from tastypie.exceptions import Unauthorized
 from tastypie import fields
 from course_selection.models import (Nice_User, Schedule, Semester,
                                      Course_Listing, Course, Section,
-                                     Meeting, Color_Palette, Professor,
-                                     Friend_Relationship)
+                                     Meeting, Color_Palette, Professor)
 
 
 def get_nice_user(user):
@@ -95,33 +94,33 @@ class UserObjectsOnlyAuthorization(Authorization):
 
 # you can see the objects if a) you are the owner OR b) you and the owner are friends
 # currently this should apply to schedules
-class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
-
-    def is_owner_or_friend(self, user, owner):
-        """
-        Returns true if user is either the owner, or related to the owner
-        via a Friend_Relationship.
-        """
-        if user.username == owner.netid:
-            return True
-
-        nice_user = get_nice_user(user)
-        return Friend_Relationship.objects.filter(
-            (Q(from_user=nice_user) & Q(to_user=owner)) |
-            (Q(from_user=owner) & Q(to_user=nice_user))
-        ).filter(request_accepted=True).exists()
-
-    def read_list(self, object_list, bundle):
-        filtered = [o for o in object_list if self.is_owner_or_friend(
-            bundle.request.user, o.user)]
-        return filtered
-
-    def read_detail(self, object_list, bundle):
-        # Is the requested object owned by the user?
-        if self.is_owner_or_friend(bundle.request.user, bundle.obj.user):
-            return True
-        else:
-            raise Unauthorized("Sorry, no peeking!")
+# class UserObjectOrFriendAuthorization(UserObjectsOnlyAuthorization):
+#
+#     def is_owner_or_friend(self, user, owner):
+#         """
+#         Returns true if user is either the owner, or related to the owner
+#         via a Friend_Relationship.
+#         """
+#         if user.username == owner.netid:
+#             return True
+#
+#         nice_user = get_nice_user(user)
+#         return Friend_Relationship.objects.filter(
+#             (Q(from_user=nice_user) & Q(to_user=owner)) |
+#             (Q(from_user=owner) & Q(to_user=nice_user))
+#         ).filter(request_accepted=True).exists()
+#
+#     def read_list(self, object_list, bundle):
+#         filtered = [o for o in object_list if self.is_owner_or_friend(
+#             bundle.request.user, o.user)]
+#         return filtered
+#
+#     def read_detail(self, object_list, bundle):
+#         # Is the requested object owned by the user?
+#         if self.is_owner_or_friend(bundle.request.user, bundle.obj.user):
+#             return True
+#         else:
+#             raise Unauthorized("Sorry, no peeking!")
 
 
 class SemesterResource(ModelResource):
@@ -251,7 +250,7 @@ class ScheduleResource(ModelResource):
         excludes = ['user']
         allowed_methods = ['get', 'post', 'put', 'delete']
         cache = NoCache()
-        authorization = UserObjectOrFriendAuthorization()
+        authorization = UserObjectsOnlyAuthorization()
         always_return_data = True
         limit = 0
         max_limit = 0
@@ -326,22 +325,22 @@ class FriendRelationshipAuthorization(Authorization):
         raise Unauthorized("Sorry, no deletes.")
 
 
-class FriendRelationshipResource(ModelResource):
-    from_user = fields.ForeignKey(FriendResource, 'from_user', full=True)
-    to_user = fields.ForeignKey(FriendResource, 'to_user', full=True)
-
-    class Meta:
-        queryset = Friend_Relationship.objects.all()
-        resource_name = 'friend_relationship'
-        allowed_methods = ['get', 'post', 'put', 'delete']
-        authorization = FriendRelationshipAuthorization()
-        always_return_data = True
-        limit = 0
-        max_limit = 0
-        filtering = {
-            'from_user': ALL_WITH_RELATIONS,
-            'to_user': ALL_WITH_RELATIONS
-        }
+# class FriendRelationshipResource(ModelResource):
+#     from_user = fields.ForeignKey(FriendResource, 'from_user', full=True)
+#     to_user = fields.ForeignKey(FriendResource, 'to_user', full=True)
+#
+#     class Meta:
+#         queryset = Friend_Relationship.objects.all()
+#         resource_name = 'friend_relationship'
+#         allowed_methods = ['get', 'post', 'put', 'delete']
+#         authorization = FriendRelationshipAuthorization()
+#         always_return_data = True
+#         limit = 0
+#         max_limit = 0
+#         filtering = {
+#             'from_user': ALL_WITH_RELATIONS,
+#             'to_user': ALL_WITH_RELATIONS
+#         }
 
 
 class UserResource(ModelResource):

@@ -44,23 +44,23 @@ class ProfessorAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
-class FriendRelationshipFromInline(admin.TabularInline):
-    model = Friend_Relationship
+class FriendRequestFromInline(admin.TabularInline):
+    model = Friend_Request
     fk_name = 'from_user'
-    verbose_name = 'friend-relationship-from'
+    verbose_name = 'friend-request-from'
     extra = 1
 
 
-class FriendRelationshipToInline(admin.TabularInline):
-    model = Friend_Relationship
+class FriendRequestToInline(admin.TabularInline):
+    model = Friend_Request
     fk_name = 'to_user'
-    verbose_name = 'friend-relationship-to'
+    verbose_name = 'friend-request-to'
     extra = 1
 
 
 class Nice_UserAdmin(admin.ModelAdmin):
     model = Nice_User
-    inlines = [FriendRelationshipFromInline, FriendRelationshipToInline, ]
+    inlines = [FriendRequestFromInline, FriendRequestToInline, ]
     excludes = ('friends')
     list_display = ('netid', )
 
