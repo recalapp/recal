@@ -207,6 +207,19 @@ class Friend_Request(models.Model):
         unique_together = ('from_user', 'to_user')
 
 
+def accept_friend_request(sender, instance, created, **kwargs):
+    """
+    If user B accepts a friend request from user A,
+    we add A and B to each other's list of friends
+    """
+    if not created and instance.accepted:
+        instance.from_user.friends.add(instance.to_user)
+        instance.delete()
+
+
+post_save.connect(accept_friend_request, sender=Friend_Request)
+
+
 class NetID_Name_Table(models.Model):
     """ table for netid--name lookups """
     netid = models.CharField(max_length=100, primary_key=True)

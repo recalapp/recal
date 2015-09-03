@@ -64,6 +64,11 @@ class Nice_UserAdmin(admin.ModelAdmin):
     excludes = ('friends')
     list_display = ('netid', )
 
+
+class FriendRequestAdmin(admin.ModelAdmin):
+    model = Friend_Request
+    list_display = ('pk', 'from_user', 'to_user')
+
 admin.site.register(Semester, SemesterAdmin)
 admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(Section)
@@ -72,3 +77,4 @@ admin.site.register(Nice_User, Nice_UserAdmin)
 admin.site.register(Professor, ProfessorAdmin)
 admin.site.register(Color_Palette)
 admin.site.register(Course, CourseAdmin)
+admin.site.register(Friend_Request, FriendRequestAdmin)
