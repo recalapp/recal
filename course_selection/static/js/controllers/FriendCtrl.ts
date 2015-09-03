@@ -96,6 +96,14 @@ class FriendCtrl {
         newRequest.$save();
     }
 
+    public defriend(toUser: IUser) {
+
+    }
+
+    public acceptRequest(fromUser: IUser) {
+
+    }
+
     public onClick(user: IUser) {
         console.log("getting " + user.netid + "'s schedules'");
         this.scheduleService.getByUser(user.netid).$promise.then((schedules) => {

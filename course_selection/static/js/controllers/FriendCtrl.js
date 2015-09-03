@@ -68,6 +68,10 @@ define(["require", "exports", './SearchCtrl'], function (require, exports, Searc
             console.log(newRequest);
             newRequest.$save();
         };
+        FriendCtrl.prototype.defriend = function (toUser) {
+        };
+        FriendCtrl.prototype.acceptRequest = function (fromUser) {
+        };
         FriendCtrl.prototype.onClick = function (user) {
             console.log("getting " + user.netid + "'s schedules'");
             this.scheduleService.getByUser(user.netid).$promise.then(function (schedules) {

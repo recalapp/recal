@@ -14,8 +14,22 @@
                     <div class="panel panel-default friend-panel"
                     ng-repeat="user in data.friends"
                     ng-click="friendCtrl.onClick(user)"
+                    ng-init="showTags = false"
                     >
-                    {{ user.netid }}
+                        <div ng-mouseenter="showTags = true" ng-mouseleave="showTags = false">
+                            <div class="course-panel-title">
+                                 <div class="course-listings"
+                                      ng-bind="user.netid"></div>
+                                 <div class="course-title"
+                                      ng-bind="user.netid"></div>
+                            </div>
+                            <div ng-show="showTags">
+                                <div class="minus-tag"
+                                ng-click="friendCtrl.defriend(user)">
+                                    <i class="fa fa-minus"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -31,15 +45,12 @@
                         ng-init="showTags = false"
                         >
                         <div class="course-panel-title">
-                            <div class="course-listings"
-                                ng-bind="user.netid"></div>
-                            <div class="course-title"
-                                ng-bind="user.netid"></div>
+                            <div class="course-listings" ng-bind="user.netid"></div>
+                            <div class="course-title" ng-bind="user.netid"></div>
                         </div>
                         <div ng-show="showTags">
-                            <div class="add-tag"
-                                ng-click="friendCtrl.sendRequest(user)">
-                            <i class="fa fa-plus"></i>
+                            <div class="add-tag" ng-click="friendCtrl.sendRequest(user)">
+                                <i class="fa fa-plus"></i>
                             </div>
                         </div>
                     </div>
