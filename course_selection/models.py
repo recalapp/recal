@@ -199,25 +199,41 @@ post_save.connect(make_new_nice_user, sender=User)
 
 
 class Friend_Request(models.Model):
+    PENDING = 'PEN'
+    ACCEPTED = 'ACC'
+    REJECTED = 'REJ'
+    STATUS_CHOICES = (
+        (PENDING, 'Pending'),
+        (ACCEPTED, 'Accepted'),
+        (REJECTED, 'Rejected')
+    )
+
     from_user = models.ForeignKey(Nice_User, related_name='from_users')
     to_user = models.ForeignKey(Nice_User, related_name='to_users')
-    accepted = models.BooleanField(default=False)
+    status = models.CharField(max_length=3,
+                              choices=STATUS_CHOICES,
+                              default=PENDING)
 
     class Meta:
         unique_together = ('from_user', 'to_user')
 
 
-def accept_friend_request(sender, instance, created, **kwargs):
+def accept_or_reject_friend_request(sender, instance, created, **kwargs):
     """
     If user B accepts a friend request from user A,
-    we add A and B to each other's list of friends
+    we add A and B to each other's list of friends and then remove the friend
+    request; if user B rejects a friend request from user A,
+    we simply remove the friend request.
     """
-    if not created and instance.accepted:
-        instance.from_user.friends.add(instance.to_user)
-        instance.delete()
+    if not created:
+        if instance.status == Friend_Request.ACCEPTED:
+            instance.from_user.friends.add(instance.to_user)
+            instance.delete()
+        elif instance.status == Friend_Request.REJECTED:
+            instance.delete()
 
 
-post_save.connect(accept_friend_request, sender=Friend_Request)
+post_save.connect(accept_or_reject_friend_request, sender=Friend_Request)
 
 
 class NetID_Name_Table(models.Model):
