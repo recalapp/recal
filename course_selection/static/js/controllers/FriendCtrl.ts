@@ -63,32 +63,32 @@ class FriendCtrl {
         }, 1000);
     }
 
+    private _userComp(a: IUser, b:IUser) {
+        return a.netid === b.netid;
+    }
+
+    // TODO: use same structure as schedule manager
     private _initFriendList() {
         this.$scope.data = {
             allUsers: [],
-            friends: []
+            friends: [],
+            friendRequests: []
         };
 
-        this.$scope.filteredUsers = this.$scope.data.allUsers;
-
+        this.$scope.filteredUsers = [];
         this.userService.all_users.then((users) => {
             this.$scope.data.allUsers = users;
         });
-
-        this.userService.user.$promise.then((user) => {
-            this.$scope.data.friends = user.friends;
-        });
-
-        this.$scope.data.friend_requests = this.friendRequestResource.query();
+        this.$scope.data.friends = this.userService.user.friends;
+        this.$scope.data.friendRequests = this.friendRequestResource.query();
     }
 
     public search(query:string) {
         this.$scope.filteredUsers =
             this.$filter("friendSearch")(this.$scope.data.allUsers, query);
-
-        console.log("user search query: " + query);
     }
 
+    // TODO: fix this
     public sendRequest(toUser: IUser) {
         var newRequest = new this.friendRequestResource();
         newRequest.to_user = toUser;
@@ -98,18 +98,43 @@ class FriendCtrl {
         newRequest.$save();
     }
 
-    public defriend(toUser: IUser) {
+    private _friendIdxInList(friend: IUser, list: IUser[]) {
+        return Utils.idxInList(friend, list, this._userComp);
+    }
 
+    private _removeFriendFromList(friend: IUser, list: IUser[]) {
+        return Utils.removeFromList(friend, list, this._userComp);
+    }
+
+    public defriend(toUser: IUser) {
+        this._removeFriendFromList(toUser, this.userService.user.friends);
+        this.$scope.data.allUsers.push(toUser);
+        this.userService.user.$save();
+    }
+
+    /*
+    Once friend requests are loaded (the promose becomes determined), we don't
+    send any more requests to the server for list updates. This means every time
+    we update the list locally (by accepting or rejecting a request), we need to
+    do 2 things:
+        1. Update the local list, thus updating the UI
+        2. remove the request on the server side (send a DELETE)
+    */
+    private _removeRequest(request: IFriendRequestResource) {
+        Utils.removeFromList(request, this.$scope.data.friendRequests);
+        request.$remove();
     }
 
     public acceptRequest(request: IFriendRequestResource) {
-        request.status = FriendRequestStatus.Accepted;
-        request.$save();
+        var friend = request.from_user;
+        this._removeFriendFromList(friend, this.$scope.data.allUsers);
+        this.userService.user.friends.push(friend);
+        this.userService.user.$save();
+        this._removeRequest(request);
     }
 
     public rejectRequest(request: IFriendRequestResource) {
-        request.status = FriendRequestStatus.Rejected;
-        request.$save();
+        this._removeRequest(request);
     }
 
     public onClick(user: IUser) {

@@ -34,6 +34,37 @@
                 </div>
             </div>
         </div>
+
+        <!-- pending friend requests  -->
+        <div ng-show="data.friendRequests.length > 0">
+            <h4 class="row"> {{ data.friendRequests.length }} Pending Requests</h4>
+            <div class="row inner-friends-container">
+                <div class="friend-list panel-group">
+                    <div class="panel panel-default friend-panel"
+                    ng-repeat="req in data.friendRequests"
+                    ng-click="friendCtrl.onClick(user)"
+                    ng-init="showTags = false"
+                    >
+                        <div ng-mouseenter="showTags = true" ng-mouseleave="showTags = false">
+                            <div class="course-panel-title">
+                                 <div class="course-listings"
+                                      ng-bind="req.from_user.netid"></div>
+                                 <div class="course-title"
+                                      ng-bind="req.to_user.netid"></div>
+                            </div>
+                            <div ng-show="showTags">
+                                <!--  TODO: this needs to be fixed -->
+                                <div class="add-tag"
+                                ng-click="friendCtrl.acceptRequest(req)">
+                                    <i class="fa fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div ng-show="query.length > 0 && data.allUsers.length > 0">
             <h4 class="row"> {{ filteredUsers.length }} Search Results</h4>
             <div class="row inner-friends-container">

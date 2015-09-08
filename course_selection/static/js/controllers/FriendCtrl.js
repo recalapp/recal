@@ -1,4 +1,4 @@
-define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus'], function (require, exports, SearchCtrl, FriendRequestStatus) {
+define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus', '../Utils'], function (require, exports, SearchCtrl, FriendRequestStatus, Utils) {
     'use strict';
     var FriendCtrl = (function () {
         function FriendCtrl($scope, $filter, userService, scheduleService, friendRequestResource) {
@@ -39,25 +39,26 @@ define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus'], 
                 _this.$scope.loading = false;
             }, 1000);
         };
+        FriendCtrl.prototype._userComp = function (a, b) {
+            return a.netid === b.netid;
+        };
         FriendCtrl.prototype._initFriendList = function () {
             var _this = this;
             this.$scope.data = {
                 allUsers: [],
-                friends: []
+                friends: [],
+                friendRequests: []
             };
-            this.$scope.filteredUsers = this.$scope.data.allUsers;
+            this.$scope.filteredUsers = [];
             this.userService.all_users.then(function (users) {
                 _this.$scope.data.allUsers = users;
             });
-            this.userService.user.$promise.then(function (user) {
-                _this.$scope.data.friends = user.friends;
-            });
-            this.$scope.data.friend_requests = this.friendRequestResource.query();
+            this.$scope.data.friends = this.userService.user.friends;
+            this.$scope.data.friendRequests = this.friendRequestResource.query();
         };
         FriendCtrl.prototype.search = function (query) {
             this.$scope.filteredUsers =
                 this.$filter("friendSearch")(this.$scope.data.allUsers, query);
-            console.log("user search query: " + query);
         };
         FriendCtrl.prototype.sendRequest = function (toUser) {
             var newRequest = new this.friendRequestResource();
@@ -67,15 +68,30 @@ define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus'], 
             console.log(newRequest);
             newRequest.$save();
         };
+        FriendCtrl.prototype._friendIdxInList = function (friend, list) {
+            return Utils.idxInList(friend, list, this._userComp);
+        };
+        FriendCtrl.prototype._removeFriendFromList = function (friend, list) {
+            return Utils.removeFromList(friend, list, this._userComp);
+        };
         FriendCtrl.prototype.defriend = function (toUser) {
+            this._removeFriendFromList(toUser, this.userService.user.friends);
+            this.$scope.data.allUsers.push(toUser);
+            this.userService.user.$save();
+        };
+        FriendCtrl.prototype._removeRequest = function (request) {
+            Utils.removeFromList(request, this.$scope.data.friendRequests);
+            request.$remove();
         };
         FriendCtrl.prototype.acceptRequest = function (request) {
-            request.status = FriendRequestStatus.Accepted;
-            request.$save();
+            var friend = request.from_user;
+            this._removeFriendFromList(friend, this.$scope.data.allUsers);
+            this.userService.user.friends.push(friend);
+            this.userService.user.$save();
+            this._removeRequest(request);
         };
         FriendCtrl.prototype.rejectRequest = function (request) {
-            request.status = FriendRequestStatus.Rejected;
-            request.$save();
+            this._removeRequest(request);
         };
         FriendCtrl.prototype.onClick = function (user) {
             console.log("getting " + user.netid + "'s schedules'");

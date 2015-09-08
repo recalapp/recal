@@ -14,6 +14,10 @@ define(["require", "exports"], function (require, exports) {
             });
             return idx;
         };
+        Utils.removeFromList = function (element, list, comp) {
+            var idx = Utils.idxInList(element, list, comp);
+            return list.splice(idx, 1);
+        };
         Utils._defaultComp = function (a, b) {
             return a == b;
         };

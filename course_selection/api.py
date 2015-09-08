@@ -291,25 +291,22 @@ class FriendRequestAuthorization(Authorization):
         return self.authorize_detail(bundle.obj, bundle)
 
     def create_list(self, object_list, bundle):
-        return self.authorize_list(object_list, bundle)
+        raise Unauthorized("Sorry, no operation on lists.")
 
     def create_detail(self, object_list, bundle):
         return self.authorize_detail(bundle.obj, bundle)
 
     def update_list(self, object_list, bundle):
-        return self.authorize_list(object_list, bundle)
+        raise Unauthorized("Sorry, no operation on lists.")
 
     def update_detail(self, object_list, bundle):
         return self.authorize_detail(bundle.obj, bundle)
 
-    # TODO: we should allow deletes--it's fine for someone to reject
-    # a friend request and delete it.
     def delete_list(self, object_list, bundle):
-        # Sorry user, no deletes for you!
-        raise Unauthorized("Sorry, no deletes.")
+        raise Unauthorized("Sorry, no operation on lists.")
 
     def delete_detail(self, object_list, bundle):
-        raise Unauthorized("Sorry, no deletes.")
+        return self.authorize_detail(bundle.obj, bundle)
 
 
 class FriendRequestResource(ModelResource):
@@ -337,7 +334,7 @@ class UserResource(ModelResource):
         queryset = Nice_User.objects.all()
         resource_name = 'user'
         excludes = ['password']
-        allowed_methods = ['get']
+        allowed_methods = ['get', 'post']
         cache = SimpleCache(timeout=10)
         authorization = UserAuthorization()
         filtering = {

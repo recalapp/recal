@@ -49,6 +49,7 @@
         "./interfaces/IEvent.ts",
         "./interfaces/IEventSource.ts",
         "./interfaces/IEventSources.ts",
+        "./interfaces/IFriendRequest.ts",
         "./interfaces/IFriendRequestResource.ts",
         "./interfaces/IMeeting.ts",
         "./interfaces/IScheduleManager.ts",

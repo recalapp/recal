@@ -16,6 +16,11 @@ class Utils {
         return idx;
     }
 
+    public static removeFromList(element, list, comp?) {
+        var idx = Utils.idxInList(element, list, comp);
+        return list.splice(idx, 1);
+    }
+
     public static _defaultComp(a, b): boolean {
         return a == b;
     }
