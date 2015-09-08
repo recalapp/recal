@@ -1,6 +1,8 @@
 /// <reference path='../../ts/typings/tsd.d.ts' />
 
 import ICourseResource = require('../interfaces/ICourseResource');
+import IFriendRequest = require('../interfaces/IFriendRequest');
+import IFriendRequestResource = require('../interfaces/IFriendRequestResource');
 
 class ResourceBuilder {
     static $inject = [
@@ -78,8 +80,8 @@ class ResourceBuilder {
     }
 
     // TODO: rename the api
-    public getFriendRequestResource() {
-        return this.$resource(ResourceBuilder.BASE_URL + 'friend_request/:id',
+    public getFriendRequestResource(): angular.resource.IResourceClass<IFriendRequestResource> {
+        return <any>this.$resource(ResourceBuilder.BASE_URL + 'friend_request/:id',
         {},
         {
             query: {

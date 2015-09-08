@@ -1,4 +1,4 @@
-define(["require", "exports", './SearchCtrl'], function (require, exports, SearchCtrl) {
+define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus'], function (require, exports, SearchCtrl, FriendRequestStatus) {
     'use strict';
     var FriendCtrl = (function () {
         function FriendCtrl($scope, $filter, userService, scheduleService, friendRequestResource) {
@@ -63,13 +63,19 @@ define(["require", "exports", './SearchCtrl'], function (require, exports, Searc
             var newRequest = new this.friendRequestResource();
             newRequest.to_user = toUser;
             newRequest.from_user = this.userService.user;
-            newRequest.request_accepted = false;
+            newRequest.status = FriendRequestStatus.Pending;
             console.log(newRequest);
             newRequest.$save();
         };
         FriendCtrl.prototype.defriend = function (toUser) {
         };
-        FriendCtrl.prototype.acceptRequest = function (fromUser) {
+        FriendCtrl.prototype.acceptRequest = function (request) {
+            request.status = FriendRequestStatus.Accepted;
+            request.$save();
+        };
+        FriendCtrl.prototype.rejectRequest = function (request) {
+            request.status = FriendRequestStatus.Rejected;
+            request.$save();
         };
         FriendCtrl.prototype.onClick = function (user) {
             console.log("getting " + user.netid + "'s schedules'");

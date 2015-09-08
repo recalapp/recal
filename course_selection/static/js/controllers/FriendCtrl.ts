@@ -2,6 +2,8 @@
 import SearchCtrl = require('./SearchCtrl');
 import ScheduleService = require('../services/ScheduleService');
 import IUser = require('../interfaces/IUser');
+import IFriendRequestResource = require('../interfaces/IFriendRequestResource');
+import FriendRequestStatus = require('../models/FriendRequestStatus');
 import Utils = require('../Utils');
 
 'use strict';
@@ -21,7 +23,7 @@ class FriendCtrl {
         private $filter,
         private userService,
         private scheduleService: ScheduleService,
-        private friendRequestResource)
+        private friendRequestResource: angular.resource.IResourceClass<IFriendRequestResource>)
     {
         this._initFriendList();
         this._initLoading();
@@ -91,7 +93,7 @@ class FriendCtrl {
         var newRequest = new this.friendRequestResource();
         newRequest.to_user = toUser;
         newRequest.from_user = this.userService.user;
-        newRequest.request_accepted = false;
+        newRequest.status = FriendRequestStatus.Pending;
         console.log(newRequest);
         newRequest.$save();
     }
@@ -100,8 +102,14 @@ class FriendCtrl {
 
     }
 
-    public acceptRequest(fromUser: IUser) {
+    public acceptRequest(request: IFriendRequestResource) {
+        request.status = FriendRequestStatus.Accepted;
+        request.$save();
+    }
 
+    public rejectRequest(request: IFriendRequestResource) {
+        request.status = FriendRequestStatus.Rejected;
+        request.$save();
     }
 
     public onClick(user: IUser) {
