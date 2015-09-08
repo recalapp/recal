@@ -47,14 +47,16 @@ define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus', '
             this.$scope.data = {
                 allUsers: [],
                 friends: [],
-                friendRequests: []
+                receivedFriendRequests: [],
+                sentFriendRequests: []
             };
             this.$scope.filteredUsers = [];
             this.userService.all_users.then(function (users) {
                 _this.$scope.data.allUsers = users;
             });
             this.$scope.data.friends = this.userService.user.friends;
-            this.$scope.data.friendRequests = this.friendRequestResource.query();
+            this.$scope.data.sentFriendRequests = this.friendRequestResource.query({ "from_user__netid": username });
+            this.$scope.data.receivedFriendRequests = this.friendRequestResource.query({ "to_user__netid": username });
         };
         FriendCtrl.prototype.search = function (query) {
             this.$scope.filteredUsers =
@@ -80,7 +82,7 @@ define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus', '
             this.userService.user.$save();
         };
         FriendCtrl.prototype._removeRequest = function (request) {
-            Utils.removeFromList(request, this.$scope.data.friendRequests);
+            Utils.removeFromList(request, this.$scope.data.receivedFriendRequests);
             request.$remove();
         };
         FriendCtrl.prototype.acceptRequest = function (request) {

@@ -8,6 +8,8 @@ import Utils = require('../Utils');
 
 'use strict';
 
+declare var username: string;
+
 class FriendCtrl {
     public static $inject = [
         '$scope',
@@ -72,7 +74,8 @@ class FriendCtrl {
         this.$scope.data = {
             allUsers: [],
             friends: [],
-            friendRequests: []
+            receivedFriendRequests: [],
+            sentFriendRequests: []
         };
 
         this.$scope.filteredUsers = [];
@@ -80,7 +83,8 @@ class FriendCtrl {
             this.$scope.data.allUsers = users;
         });
         this.$scope.data.friends = this.userService.user.friends;
-        this.$scope.data.friendRequests = this.friendRequestResource.query();
+        this.$scope.data.sentFriendRequests = this.friendRequestResource.query({"from_user__netid" : username});
+        this.$scope.data.receivedFriendRequests = this.friendRequestResource.query({"to_user__netid" : username});
     }
 
     public search(query:string) {
@@ -121,7 +125,9 @@ class FriendCtrl {
         2. remove the request on the server side (send a DELETE)
     */
     private _removeRequest(request: IFriendRequestResource) {
-        Utils.removeFromList(request, this.$scope.data.friendRequests);
+        Utils.removeFromList(request, this.$scope.data.receivedFriendRequests);
+        // TODO: fix this--idk why but this invokes a delete_list() API call
+        // instead of a delete_detail()
         request.$remove();
     }
 

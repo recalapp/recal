@@ -8,7 +8,7 @@
     </div>
     <div class="friends-container">
         <div ng-show="data.friends.length > 0">
-            <h4 class="row"> {{ data.friends.length }} Friends</h4>
+            <h4 class="row"> {{ data.friends.length }} Friend<span ng-show="data.friends.length > 1">s</span></h4>
             <div class="row inner-friends-container">
                 <div class="friend-list panel-group">
                     <div class="panel panel-default friend-panel"
@@ -36,12 +36,12 @@
         </div>
 
         <!-- pending friend requests  -->
-        <div ng-show="data.friendRequests.length > 0">
-            <h4 class="row"> {{ data.friendRequests.length }} Pending Requests</h4>
+        <div ng-show="data.receivedFriendRequests.length > 0">
+            <h4 class="row"> {{ data.receivedFriendRequests.length }} Pending Requests</h4>
             <div class="row inner-friends-container">
                 <div class="friend-list panel-group">
                     <div class="panel panel-default friend-panel"
-                    ng-repeat="req in data.friendRequests"
+                    ng-repeat="req in data.receivedFriendRequests"
                     ng-click="friendCtrl.onClick(user)"
                     ng-init="showTags = false"
                     >
