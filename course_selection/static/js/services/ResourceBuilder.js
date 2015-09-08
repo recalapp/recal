@@ -55,7 +55,7 @@ define(["require", "exports"], function (require, exports) {
             });
         };
         ResourceBuilder.prototype.getFriendRequestResource = function () {
-            return this.$resource(ResourceBuilder.BASE_URL + 'friend_relationship/:id', {}, {
+            return this.$resource(ResourceBuilder.BASE_URL + 'friend_request/:id', {}, {
                 query: {
                     method: 'GET',
                     isArray: true,

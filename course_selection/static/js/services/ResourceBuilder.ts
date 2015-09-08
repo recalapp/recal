@@ -79,7 +79,7 @@ class ResourceBuilder {
 
     // TODO: rename the api
     public getFriendRequestResource() {
-        return this.$resource(ResourceBuilder.BASE_URL + 'friend_relationship/:id',
+        return this.$resource(ResourceBuilder.BASE_URL + 'friend_request/:id',
         {},
         {
             query: {

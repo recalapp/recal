@@ -69,15 +69,15 @@ class FriendCtrl {
 
         this.$scope.filteredUsers = this.$scope.data.allUsers;
 
-        var gettingAllUsers = this.userService.all_users;
-        gettingAllUsers.then((users) => {
+        this.userService.all_users.then((users) => {
             this.$scope.data.allUsers = users;
         });
 
-        var gettingUser = this.userService.user.$promise;
-        gettingUser.then((user) => {
+        this.userService.user.$promise.then((user) => {
             this.$scope.data.friends = user.friends;
         });
+
+        this.$scope.data.friend_requests = this.friendRequestResource.query();
     }
 
     public search(query:string) {

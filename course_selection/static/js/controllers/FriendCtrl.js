@@ -46,14 +46,13 @@ define(["require", "exports", './SearchCtrl'], function (require, exports, Searc
                 friends: []
             };
             this.$scope.filteredUsers = this.$scope.data.allUsers;
-            var gettingAllUsers = this.userService.all_users;
-            gettingAllUsers.then(function (users) {
+            this.userService.all_users.then(function (users) {
                 _this.$scope.data.allUsers = users;
             });
-            var gettingUser = this.userService.user.$promise;
-            gettingUser.then(function (user) {
+            this.userService.user.$promise.then(function (user) {
                 _this.$scope.data.friends = user.friends;
             });
+            this.$scope.data.friend_requests = this.friendRequestResource.query();
         };
         FriendCtrl.prototype.search = function (query) {
             this.$scope.filteredUsers =
