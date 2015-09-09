@@ -3,7 +3,6 @@ import SearchCtrl = require('./SearchCtrl');
 import ScheduleService = require('../services/ScheduleService');
 import IUser = require('../interfaces/IUser');
 import IFriendRequestResource = require('../interfaces/IFriendRequestResource');
-import FriendRequestStatus = require('../models/FriendRequestStatus');
 import Utils = require('../Utils');
 
 'use strict';
@@ -92,13 +91,10 @@ class FriendCtrl {
             this.$filter("friendSearch")(this.$scope.data.allUsers, query);
     }
 
-    // TODO: fix this
     public sendRequest(toUser: IUser) {
         var newRequest = new this.friendRequestResource();
         newRequest.to_user = toUser;
         newRequest.from_user = this.userService.user;
-        newRequest.status = FriendRequestStatus.Pending;
-        console.log(newRequest);
         newRequest.$save();
     }
 

@@ -1,4 +1,4 @@
-define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus', '../Utils'], function (require, exports, SearchCtrl, FriendRequestStatus, Utils) {
+define(["require", "exports", './SearchCtrl', '../Utils'], function (require, exports, SearchCtrl, Utils) {
     'use strict';
     var FriendCtrl = (function () {
         function FriendCtrl($scope, $filter, userService, scheduleService, friendRequestResource) {
@@ -66,8 +66,6 @@ define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus', '
             var newRequest = new this.friendRequestResource();
             newRequest.to_user = toUser;
             newRequest.from_user = this.userService.user;
-            newRequest.status = FriendRequestStatus.Pending;
-            console.log(newRequest);
             newRequest.$save();
         };
         FriendCtrl.prototype._friendIdxInList = function (friend, list) {
