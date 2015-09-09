@@ -126,9 +126,7 @@ class FriendCtrl {
     */
     private _removeRequest(request: IFriendRequestResource) {
         Utils.removeFromList(request, this.$scope.data.receivedFriendRequests);
-        // TODO: fix this--idk why but this invokes a delete_list() API call
-        // instead of a delete_detail()
-        request.$remove();
+        request.$remove({'id': request.id});
     }
 
     public acceptRequest(request: IFriendRequestResource) {

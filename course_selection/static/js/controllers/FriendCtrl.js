@@ -83,7 +83,7 @@ define(["require", "exports", './SearchCtrl', '../models/FriendRequestStatus', '
         };
         FriendCtrl.prototype._removeRequest = function (request) {
             Utils.removeFromList(request, this.$scope.data.receivedFriendRequests);
-            request.$remove();
+            request.$remove({ 'id': request.id });
         };
         FriendCtrl.prototype.acceptRequest = function (request) {
             var friend = request.from_user;
