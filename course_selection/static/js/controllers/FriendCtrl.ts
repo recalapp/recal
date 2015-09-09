@@ -54,6 +54,16 @@ class FriendCtrl {
 
             this.search(newVal);
         });
+
+        this.$scope.$watchCollection(() => {
+            return this.$scope.data.allUsers;
+        }, (newVal, oldVal) => {
+            if (newVal == oldVal) {
+                return;
+            }
+
+            this.search(this.$scope.query);
+        });
     }
 
     private _initLoading() {
@@ -64,11 +74,6 @@ class FriendCtrl {
         }, 1000);
     }
 
-    private _userComp(a: IUser, b:IUser) {
-        return a.netid === b.netid;
-    }
-
-    // TODO: use same structure as schedule manager
     private _initFriendList() {
         this.$scope.data = {
             allUsers: [],
@@ -82,8 +87,20 @@ class FriendCtrl {
             this.$scope.data.allUsers = users;
         });
         this.$scope.data.friends = this.userService.user.friends;
-        this.$scope.data.sentFriendRequests = this.friendRequestResource.query({"from_user__netid" : username});
         this.$scope.data.receivedFriendRequests = this.friendRequestResource.query({"to_user__netid" : username});
+
+        this.friendRequestResource.query({"from_user__netid" : username})
+        .$promise.then((sendReqs: IFriendRequestResource[]) => {
+            this.userService.all_users.then((all_users) => {
+                for (var i = 0; i < sendReqs.length; i++) {
+                    Utils.removeFromList(sendReqs[i].to_user, all_users, Utils.userComp);
+                }
+
+                this.$scope.data.allUsers = all_users;
+            });
+
+            this.$scope.data.sentFriendRequests = sendReqs;
+        });
     }
 
     public search(query:string) {
@@ -93,17 +110,23 @@ class FriendCtrl {
 
     public sendRequest(toUser: IUser) {
         var newRequest = new this.friendRequestResource();
+
+        // send request
         newRequest.to_user = toUser;
         newRequest.from_user = this.userService.user;
         newRequest.$save();
+
+        // update local lists for display
+        this.$scope.data.sentFriendRequests.push(newRequest);
+        Utils.removeFromList(toUser, this.$scope.data.allUsers, Utils.userComp);
     }
 
     private _friendIdxInList(friend: IUser, list: IUser[]) {
-        return Utils.idxInList(friend, list, this._userComp);
+        return Utils.idxInList(friend, list, Utils.userComp);
     }
 
     private _removeFriendFromList(friend: IUser, list: IUser[]) {
-        return Utils.removeFromList(friend, list, this._userComp);
+        return Utils.removeFromList(friend, list, Utils.userComp);
     }
 
     public defriend(toUser: IUser) {
@@ -135,6 +158,13 @@ class FriendCtrl {
 
     public rejectRequest(request: IFriendRequestResource) {
         this._removeRequest(request);
+    }
+
+    public cancelRequest(request: IFriendRequestResource) {
+        this.$scope.data.allUsers.push(request.to_user);
+
+        Utils.removeFromList(request, this.$scope.data.sentFriendRequests);
+        request.$remove({'id': request.id});
     }
 
     public onClick(user: IUser) {

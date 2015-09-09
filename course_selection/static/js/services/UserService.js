@@ -18,13 +18,9 @@ define(["require", "exports", '../Utils'], function (require, exports, Utils) {
                     return response.data;
                 }).then(function (all_users) {
                     _this._data.user.$promise.then(function (self) {
-                        Utils.removeFromList(self, all_users, function (a, b) {
-                            return a.netid === b.netid;
-                        });
+                        Utils.removeFromList(self, all_users, Utils.userComp);
                         for (var i = 0; i < self.friends.length; i++) {
-                            Utils.removeFromList(self.friends[i], all_users, function (a, b) {
-                                return a.netid === b.netid;
-                            });
+                            Utils.removeFromList(self.friends[i], all_users, Utils.userComp);
                         }
                         return self;
                     });

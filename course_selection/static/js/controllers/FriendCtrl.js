@@ -31,6 +31,14 @@ define(["require", "exports", './SearchCtrl', '../Utils'], function (require, ex
                 }
                 _this.search(newVal);
             });
+            this.$scope.$watchCollection(function () {
+                return _this.$scope.data.allUsers;
+            }, function (newVal, oldVal) {
+                if (newVal == oldVal) {
+                    return;
+                }
+                _this.search(_this.$scope.query);
+            });
         };
         FriendCtrl.prototype._initLoading = function () {
             var _this = this;
@@ -38,9 +46,6 @@ define(["require", "exports", './SearchCtrl', '../Utils'], function (require, ex
             setTimeout(function () {
                 _this.$scope.loading = false;
             }, 1000);
-        };
-        FriendCtrl.prototype._userComp = function (a, b) {
-            return a.netid === b.netid;
         };
         FriendCtrl.prototype._initFriendList = function () {
             var _this = this;
@@ -55,8 +60,17 @@ define(["require", "exports", './SearchCtrl', '../Utils'], function (require, ex
                 _this.$scope.data.allUsers = users;
             });
             this.$scope.data.friends = this.userService.user.friends;
-            this.$scope.data.sentFriendRequests = this.friendRequestResource.query({ "from_user__netid": username });
             this.$scope.data.receivedFriendRequests = this.friendRequestResource.query({ "to_user__netid": username });
+            this.friendRequestResource.query({ "from_user__netid": username })
+                .$promise.then(function (sendReqs) {
+                _this.userService.all_users.then(function (all_users) {
+                    for (var i = 0; i < sendReqs.length; i++) {
+                        Utils.removeFromList(sendReqs[i].to_user, all_users, Utils.userComp);
+                    }
+                    _this.$scope.data.allUsers = all_users;
+                });
+                _this.$scope.data.sentFriendRequests = sendReqs;
+            });
         };
         FriendCtrl.prototype.search = function (query) {
             this.$scope.filteredUsers =
@@ -67,12 +81,14 @@ define(["require", "exports", './SearchCtrl', '../Utils'], function (require, ex
             newRequest.to_user = toUser;
             newRequest.from_user = this.userService.user;
             newRequest.$save();
+            this.$scope.data.sentFriendRequests.push(newRequest);
+            Utils.removeFromList(toUser, this.$scope.data.allUsers, Utils.userComp);
         };
         FriendCtrl.prototype._friendIdxInList = function (friend, list) {
-            return Utils.idxInList(friend, list, this._userComp);
+            return Utils.idxInList(friend, list, Utils.userComp);
         };
         FriendCtrl.prototype._removeFriendFromList = function (friend, list) {
-            return Utils.removeFromList(friend, list, this._userComp);
+            return Utils.removeFromList(friend, list, Utils.userComp);
         };
         FriendCtrl.prototype.defriend = function (toUser) {
             this._removeFriendFromList(toUser, this.userService.user.friends);
@@ -92,6 +108,11 @@ define(["require", "exports", './SearchCtrl', '../Utils'], function (require, ex
         };
         FriendCtrl.prototype.rejectRequest = function (request) {
             this._removeRequest(request);
+        };
+        FriendCtrl.prototype.cancelRequest = function (request) {
+            this.$scope.data.allUsers.push(request.to_user);
+            Utils.removeFromList(request, this.$scope.data.sentFriendRequests);
+            request.$remove({ 'id': request.id });
         };
         FriendCtrl.prototype.onClick = function (user) {
             console.log("getting " + user.netid + "'s schedules'");

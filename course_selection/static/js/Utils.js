@@ -21,6 +21,9 @@ define(["require", "exports"], function (require, exports) {
         Utils._defaultComp = function (a, b) {
             return a == b;
         };
+        Utils.userComp = function (a, b) {
+            return a.netid == b.netid;
+        };
         Utils.isInList = function (element, list, comp) {
             return this.idxInList(element, list, comp) != Utils.NOT_FOUND;
         };

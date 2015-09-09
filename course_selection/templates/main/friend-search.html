@@ -7,6 +7,10 @@
         <h4 class="loading-courses-message">Loading Friends...</h4>
     </div>
     <div class="friends-container">
+        <div ng-show="data.friends.length == 0 && query.length == 0 && data.sentFriendRequests.length == 0">
+            <h4 class="row"> 0 Friends––Search for a Friend Now! </h4>
+        </div>
+
         <div ng-show="data.friends.length > 0">
             <h4 class="row"> {{ data.friends.length }} Friend<span ng-show="data.friends.length > 1">s</span></h4>
             <div class="row inner-friends-container">
@@ -35,9 +39,11 @@
             </div>
         </div>
 
-        <!-- pending friend requests  -->
+        <!-- received friend requests  -->
         <div ng-show="data.receivedFriendRequests.length > 0">
-            <h4 class="row"> {{ data.receivedFriendRequests.length }} Pending Requests</h4>
+            <h4 class="row">
+                {{ data.receivedFriendRequests.length }} Received Request<span ng-show="data.receivedFriendRequests.length > 1">s</span>
+            </h4>
             <div class="row inner-friends-container">
                 <div class="friend-list panel-group">
                     <div class="panel panel-default friend-panel"
@@ -53,10 +59,39 @@
                                       ng-bind="req.to_user.netid"></div>
                             </div>
                             <div ng-show="showTags">
-                                <!--  TODO: this needs to be fixed -->
-                                <div class="add-tag"
-                                ng-click="friendCtrl.acceptRequest(req)">
+                                <div class="add-tag" ng-click="friendCtrl.acceptRequest(req)">
                                     <i class="fa fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- sent friend requests  -->
+        <div ng-show="data.sentFriendRequests.length > 0">
+            <h4 class="row">
+                {{ data.sentFriendRequests.length }} Sent Request<span ng-show="data.sentFriendRequests.length > 1">s</span>
+            </h4>
+            <div class="row inner-friends-container">
+                <div class="friend-list panel-group">
+                    <div class="panel panel-default friend-panel"
+                    ng-repeat="req in data.sentFriendRequests"
+                    ng-click="friendCtrl.onClick(user)"
+                    ng-init="showTags = false"
+                    >
+                        <div ng-mouseenter="showTags = true" ng-mouseleave="showTags = false">
+                            <div class="course-panel-title">
+                                 <div class="course-listings"
+                                      ng-bind="req.from_user.netid"></div>
+                                 <div class="course-title"
+                                      ng-bind="req.to_user.netid"></div>
+                            </div>
+                            <div ng-show="showTags">
+                                <div class="minus-tag"
+                                ng-click="friendCtrl.cancelRequest(req)">
+                                    <i class="fa fa-minus"></i>
                                 </div>
                             </div>
                         </div>

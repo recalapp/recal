@@ -1,5 +1,7 @@
 /// <reference path='../ts/typings/tsd.d.ts' />
 
+import IUser = require('./interfaces/IUser');
+
 class Utils {
     private static NOT_FOUND: number = -1;
 
@@ -23,6 +25,10 @@ class Utils {
 
     public static _defaultComp(a, b): boolean {
         return a == b;
+    }
+
+    public static userComp(a: IUser, b: IUser): boolean {
+        return a.netid == b.netid;
     }
 
     public static isInList(element, list, comp?): boolean {

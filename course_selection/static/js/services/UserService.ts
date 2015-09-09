@@ -31,14 +31,10 @@ class UserService {
             }).then((all_users) => {
                 // remove all friends and self from list of all searchable users
                 this._data.user.$promise.then((self) => {
-                    Utils.removeFromList(self, all_users, (a, b) => {
-                        return a.netid === b.netid;
-                    });
+                    Utils.removeFromList(self, all_users, Utils.userComp);
 
                     for (var i = 0; i < self.friends.length; i++) {
-                        Utils.removeFromList(self.friends[i], all_users, (a, b) => {
-                            return a.netid === b.netid;
-                        });
+                        Utils.removeFromList(self.friends[i], all_users, Utils.userComp);
                     }
 
                     return self;
