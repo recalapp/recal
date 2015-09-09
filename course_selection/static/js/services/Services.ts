@@ -7,6 +7,7 @@ import UserService = require('./UserService');
 import ScheduleService = require('./ScheduleService');
 import SemesterService = require('./SemesterService');
 import ScheduleManagerService = require('./ScheduleManagerService');
+import FriendScheduleManager = require('./FriendScheduleManager');
 
 var niceServices = angular.module('niceServices', []);
 
@@ -24,5 +25,6 @@ niceServices.service('UserService', UserService);
 niceServices.service('ScheduleService', ScheduleService);
 niceServices.service('SemesterService', SemesterService);
 niceServices.service('ScheduleManagerService', ScheduleManagerService);
+niceServices.service('FriendScheduleManager', FriendScheduleManager);
 
 export = niceServices;

@@ -1,9 +1,11 @@
 /// <reference path='../../ts/typings/tsd.d.ts' />
 import SearchCtrl = require('./SearchCtrl');
 import ScheduleService = require('../services/ScheduleService');
+import FriendScheduleManager = require('../services/FriendScheduleManager');
+import Utils = require('../Utils');
+
 import IUser = require('../interfaces/IUser');
 import IFriendRequestResource = require('../interfaces/IFriendRequestResource');
-import Utils = require('../Utils');
 
 'use strict';
 
@@ -15,7 +17,8 @@ class FriendCtrl {
         '$filter',
         'UserService',
         'ScheduleService',
-        'FriendRequestResource'
+        'FriendRequestResource',
+        'FriendScheduleManager'
     ];
 
     // dependencies are injected via AngularJS $injector
@@ -24,7 +27,8 @@ class FriendCtrl {
         private $filter,
         private userService,
         private scheduleService: ScheduleService,
-        private friendRequestResource: angular.resource.IResourceClass<IFriendRequestResource>)
+        private friendRequestResource: angular.resource.IResourceClass<IFriendRequestResource>,
+        private friendScheduleManager: FriendScheduleManager)
     {
         this._initFriendList();
         this._initLoading();
@@ -173,7 +177,8 @@ class FriendCtrl {
         this.scheduleService.getByUser(user.netid).$promise.then((schedules) => {
             console.log("got " + schedules.length + " schedules");
             for (let i = 0; i < schedules.length; i++) {
-                this.$scope.additionalSchedules.push(schedules[i]);
+                // TODO: figure out control how to select which one
+                this.friendScheduleManager.currentFriendSchedule = schedules[i];
             }
         });
     }

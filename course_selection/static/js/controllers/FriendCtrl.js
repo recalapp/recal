@@ -1,12 +1,13 @@
 define(["require", "exports", './SearchCtrl', '../Utils'], function (require, exports, SearchCtrl, Utils) {
     'use strict';
     var FriendCtrl = (function () {
-        function FriendCtrl($scope, $filter, userService, scheduleService, friendRequestResource) {
+        function FriendCtrl($scope, $filter, userService, scheduleService, friendRequestResource, friendScheduleManager) {
             this.$scope = $scope;
             this.$filter = $filter;
             this.userService = userService;
             this.scheduleService = scheduleService;
             this.friendRequestResource = friendRequestResource;
+            this.friendScheduleManager = friendScheduleManager;
             this._initFriendList();
             this._initLoading();
             this._initSearchWatches();
@@ -120,7 +121,7 @@ define(["require", "exports", './SearchCtrl', '../Utils'], function (require, ex
             this.scheduleService.getByUser(user.netid).$promise.then(function (schedules) {
                 console.log("got " + schedules.length + " schedules");
                 for (var i = 0; i < schedules.length; i++) {
-                    _this.$scope.additionalSchedules.push(schedules[i]);
+                    _this.friendScheduleManager.currentFriendSchedule = schedules[i];
                 }
             });
         };
@@ -129,7 +130,8 @@ define(["require", "exports", './SearchCtrl', '../Utils'], function (require, ex
             '$filter',
             'UserService',
             'ScheduleService',
-            'FriendRequestResource'
+            'FriendRequestResource',
+            'FriendScheduleManager'
         ];
         return FriendCtrl;
     })();

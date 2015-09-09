@@ -2,10 +2,13 @@
 import IColorPalette = require('../interfaces/IColorPalette');
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
-import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
-import CompositeEventSources = require('../models/CompositeEventSources');
 import IScheduleManager = require('../interfaces/IScheduleManager');
+import ISchedule = require('../interfaces/ISchedule');
+
+import CourseEventSources = require('../models/CourseEventSources');
+import CompositeEventSources = require('../models/CompositeEventSources');
+import FriendScheduleManager = require('../services/FriendScheduleManager');
 import Utils = require('../Utils');
 
 'use strict';
@@ -75,10 +78,11 @@ class CalendarCtrl {
 
     public static $inject = [
         '$scope',
+        'FriendScheduleManager'
     ];
 
     // dependencies are injected via AngularJS $injector
-    constructor(private $scope)
+    constructor(private $scope, private friendScheduleManager: FriendScheduleManager)
     {
         this.courseWatchInitRun = true;
         this.sectionWatchInitRun = true;
@@ -160,12 +164,13 @@ class CalendarCtrl {
                true);
 
         // watch for friend schedules
-        this.$scope.$watchCollection(
+        this.$scope.$watch(
             () => {
-                return this.$scope.additionalSchedules;
+                return this.friendScheduleManager.currentFriendSchedule;
             },
-            (newAdditionalSchedules, oldAdditionalSchedules) => {
-                console.log(newAdditionalSchedules);
+            (newAdditionalSchedule: ISchedule, oldAdditionalSchedule) => {
+                console.log(newAdditionalSchedule);
+                var enrollments = JSON.parse(newAdditionalSchedule.enrollments);
             },
             true);
     }

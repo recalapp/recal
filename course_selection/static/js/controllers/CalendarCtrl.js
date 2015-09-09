@@ -1,9 +1,10 @@
 define(["require", "exports", '../models/CourseEventSources', '../models/CompositeEventSources', '../Utils'], function (require, exports, CourseEventSources, CompositeEventSources, Utils) {
     'use strict';
     var CalendarCtrl = (function () {
-        function CalendarCtrl($scope) {
+        function CalendarCtrl($scope, friendScheduleManager) {
             var _this = this;
             this.$scope = $scope;
+            this.friendScheduleManager = friendScheduleManager;
             this.courseWatchInitRun = true;
             this.sectionWatchInitRun = true;
             this.calendarWatchInitRun = true;
@@ -51,10 +52,11 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 _this.$scope.myCalendar.fullCalendar('destroy');
                 _this.initConfig();
             }, true);
-            this.$scope.$watchCollection(function () {
-                return _this.$scope.additionalSchedules;
-            }, function (newAdditionalSchedules, oldAdditionalSchedules) {
-                console.log(newAdditionalSchedules);
+            this.$scope.$watch(function () {
+                return _this.friendScheduleManager.currentFriendSchedule;
+            }, function (newAdditionalSchedule, oldAdditionalSchedule) {
+                console.log(newAdditionalSchedule);
+                var enrollments = JSON.parse(newAdditionalSchedule.enrollments);
             }, true);
         }
         CalendarCtrl.prototype._isVisible = function () {
@@ -255,6 +257,7 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
         };
         CalendarCtrl.$inject = [
             '$scope',
+            'FriendScheduleManager'
         ];
         return CalendarCtrl;
     })();

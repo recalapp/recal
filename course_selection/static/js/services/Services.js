@@ -1,5 +1,5 @@
 /// <amd-dependency path="angular"/>
-define(["require", "exports", './ResourceBuilder', './CourseService', './UserService', './ScheduleService', './SemesterService', './ScheduleManagerService', "angular"], function (require, exports, ResourceBuilder, CourseService, UserService, ScheduleService, SemesterService, ScheduleManagerService) {
+define(["require", "exports", './ResourceBuilder', './CourseService', './UserService', './ScheduleService', './SemesterService', './ScheduleManagerService', './FriendScheduleManager', "angular"], function (require, exports, ResourceBuilder, CourseService, UserService, ScheduleService, SemesterService, ScheduleManagerService, FriendScheduleManager) {
     var niceServices = angular.module('niceServices', []);
     niceServices.factory('ResourceBuilder', ['$resource', 'localStorageService', function ($resource, localStorageService) { return new ResourceBuilder($resource, localStorageService); }]);
     niceServices.factory('ScheduleResource', ["ResourceBuilder", function (builder) { return builder.getScheduleResource(); }]);
@@ -13,5 +13,6 @@ define(["require", "exports", './ResourceBuilder', './CourseService', './UserSer
     niceServices.service('ScheduleService', ScheduleService);
     niceServices.service('SemesterService', SemesterService);
     niceServices.service('ScheduleManagerService', ScheduleManagerService);
+    niceServices.service('FriendScheduleManager', FriendScheduleManager);
     return niceServices;
 });

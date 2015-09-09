@@ -32,7 +32,7 @@ class ScheduleManager {
             private courseService,
             private localStorageService,
             private colorResource,
-            private schedule
+            private schedule: any
             )
     {
         var prevEnrollments = schedule.enrollments ? JSON.parse(schedule.enrollments) : null;

@@ -5,7 +5,7 @@ define(["require", "exports"], function (require, exports) {
         function MainCtrl($scope) {
             this.$scope = $scope;
             console.log("Test");
-            this.$scope.additionalSchedules = [];
+            this.$scope.additionalSchedule = null;
         }
         MainCtrl.$inject = [
             '$scope'

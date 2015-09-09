@@ -12,7 +12,7 @@ class MainCtrl {
     constructor(private $scope)
     {
         console.log("Test");
-        this.$scope.additionalSchedules = [];
+        this.$scope.additionalSchedule = null;
     }
 }
 

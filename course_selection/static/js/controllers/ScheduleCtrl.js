@@ -1,5 +1,5 @@
 /// <reference path='../../ts/typings/tsd.d.ts' />
-define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl', './ChangeScheduleTitleModalCtrl', './NewScheduleModalCtrl'], function (require, exports, Schedule, RemoveScheduleModalCtrl, ChangeScheduleTitleModalCtrl, NewScheduleModalCtrl) {
+define(["require", "exports", './RemoveScheduleModalCtrl', './ChangeScheduleTitleModalCtrl', './NewScheduleModalCtrl', '../Utils'], function (require, exports, RemoveScheduleModalCtrl, ChangeScheduleTitleModalCtrl, NewScheduleModalCtrl, Utils) {
     'use strict';
     var ScheduleCtrl = (function () {
         function ScheduleCtrl($scope, $modal, $element, hotkeys, userService, scheduleResource, scheduleManagerService) {
@@ -38,7 +38,7 @@ define(["require", "exports", '../models/Schedule', './RemoveScheduleModalCtrl',
                         _this.schedules.push(newSchedule);
                     }
                 }
-                _this.schedules.sort(Schedule.compare);
+                _this.schedules.sort(Utils.scheduleComp);
                 _this._setSelectedSchedule(0);
             }).then(function () {
                 if (_this.schedules.length == 0) {
