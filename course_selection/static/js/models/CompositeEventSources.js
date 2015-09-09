@@ -3,7 +3,7 @@ define(["require", "exports"], function (require, exports) {
     var CompositeEventSources = (function () {
         function CompositeEventSources() {
             this.isPreview = false;
-            this.id = -1;
+            this.id = -1 + username;
             this.courseIdToIndices = {};
             this.myEventSources = [];
             this.backupEventSources = {};
@@ -26,8 +26,8 @@ define(["require", "exports"], function (require, exports) {
                 isPreview: eventSources.isPreview
             };
         };
-        CompositeEventSources.prototype.removeEventSources = function (courseId, isPreview) {
-            var indices = this.courseIdToIndices[courseId];
+        CompositeEventSources.prototype.removeEventSources = function (key, isPreview) {
+            var indices = this.courseIdToIndices[key];
             if (!indices || indices.isPreview != isPreview) {
                 return;
             }
@@ -39,12 +39,13 @@ define(["require", "exports"], function (require, exports) {
                     this.myEventSources[i] = {};
                 }
             }
-            delete this.courseIdToIndices[courseId];
+            delete this.courseIdToIndices[key];
         };
         CompositeEventSources.prototype.enrollInCourseSection = function (courseId, sectionType, sectionId) {
-            this.removeAllCourseSection(courseId, sectionType);
-            var eventSources = this.backupEventSources[courseId];
-            var courseIndices = this.courseIdToIndices[courseId];
+            var eventSourceKey = courseId + username;
+            this._removeAllCourseSection(eventSourceKey, sectionType);
+            var eventSources = this.backupEventSources[eventSourceKey];
+            var courseIndices = this.courseIdToIndices[eventSourceKey];
             for (var i = 0; i < eventSources.length; i++) {
                 if (eventSources[i].id == sectionId) {
                     var newEventSources = angular.copy(eventSources[i]);
@@ -54,8 +55,8 @@ define(["require", "exports"], function (require, exports) {
                 }
             }
         };
-        CompositeEventSources.prototype.removeAllCourseSection = function (courseId, section_type) {
-            var courseIndices = this.courseIdToIndices[courseId];
+        CompositeEventSources.prototype._removeAllCourseSection = function (eventSourceKey, section_type) {
+            var courseIndices = this.courseIdToIndices[eventSourceKey];
             if (!courseIndices) {
                 throw "trying to remove " + section_type + " in course, but course is not found";
                 return;
@@ -67,14 +68,11 @@ define(["require", "exports"], function (require, exports) {
                 }
             }
         };
-        CompositeEventSources.prototype.highlightEventSource = function (sectionEventSource) {
-            sectionEventSource.backgroundColor = sectionEventSource.borderColor;
-            sectionEventSource.textColor = 'white';
-        };
         CompositeEventSources.prototype.previewAllCourseSection = function (courseId, section_type) {
-            this.removeAllCourseSection(courseId, section_type);
-            var eventSources = this.backupEventSources[courseId];
-            var courseIndices = this.courseIdToIndices[courseId];
+            var eventSourceKey = courseId + username;
+            this._removeAllCourseSection(eventSourceKey, section_type);
+            var eventSources = this.backupEventSources[eventSourceKey];
+            var courseIndices = this.courseIdToIndices[eventSourceKey];
             for (var i = 0; i < eventSources.length; i++) {
                 if (eventSources[i].section_type == section_type) {
                     var newEventSources = angular.copy(eventSources[i]);

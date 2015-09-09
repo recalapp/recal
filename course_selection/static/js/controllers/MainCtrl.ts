@@ -6,27 +6,14 @@ declare var username: string;
 
 class MainCtrl {
     public static $inject = [
-        '$scope',
-        '$mdSidenav',
-        '$log'
+        '$scope'
     ];
 
-    constructor(
-            private $scope,
-            private $mdSidenav,
-            private $log
-            )
+    constructor(private $scope)
     {
+        console.log("Test");
+        this.$scope.additionalSchedules = [];
     }
-
-    public toggleSidebar(navID: string) {
-        this.$mdSidenav(navID)
-        .toggle()
-        .then(function () {
-            this.$log.debug("toggle " + navID + " is done");
-            });
-    }
-
 }
 
 export = MainCtrl;

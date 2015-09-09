@@ -10,6 +10,8 @@ import Utils = require('../Utils');
 
 'use strict';
 
+declare var username: string;
+
 class CalendarCtrl {
     private static NOT_FOUND: number = -1;
     private static StatusEnum = {
@@ -156,6 +158,16 @@ class CalendarCtrl {
                     this.initConfig();
                },
                true);
+
+        // watch for friend schedules
+        this.$scope.$watchCollection(
+            () => {
+                return this.$scope.additionalSchedules;
+            },
+            (newAdditionalSchedules, oldAdditionalSchedules) => {
+                console.log(newAdditionalSchedules);
+            },
+            true);
     }
 
     private _isVisible() {
@@ -198,7 +210,7 @@ class CalendarCtrl {
     }
 
     private removeCourse(course: ICourse, isPreview: boolean) {
-        this.compositeEventSources.removeEventSources(course.id, isPreview);
+        this.compositeEventSources.removeEventSources(course.id + username, isPreview);
     }
 
     private clearPreviewCourse(course: ICourse) {

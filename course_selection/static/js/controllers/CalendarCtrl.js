@@ -51,6 +51,11 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 _this.$scope.myCalendar.fullCalendar('destroy');
                 _this.initConfig();
             }, true);
+            this.$scope.$watchCollection(function () {
+                return _this.$scope.additionalSchedules;
+            }, function (newAdditionalSchedules, oldAdditionalSchedules) {
+                console.log(newAdditionalSchedules);
+            }, true);
         }
         CalendarCtrl.prototype._isVisible = function () {
             return this.$scope.myCalendar && this.$scope.myCalendar.is(":visible");
@@ -80,7 +85,7 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.compositeEventSources.addEventSources(courseEventSources);
         };
         CalendarCtrl.prototype.removeCourse = function (course, isPreview) {
-            this.compositeEventSources.removeEventSources(course.id, isPreview);
+            this.compositeEventSources.removeEventSources(course.id + username, isPreview);
         };
         CalendarCtrl.prototype.clearPreviewCourse = function (course) {
             this.removeCourse(course, true);

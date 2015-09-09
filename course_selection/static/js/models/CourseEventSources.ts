@@ -4,17 +4,19 @@ import ICourse = require('../interfaces/ICourse');
 import IColorPalette = require('../interfaces/IColorPalette');
 import SectionEventSource = require('./SectionEventSource');
 
+declare var username: string;
+
 class CourseEventSources implements IEventSources {
     private myCourse: ICourse;
     private myColors: IColorPalette;
     private allSections: IEventSource[];
     private mySections: IEventSource[];
     public isPreview: boolean;
-    public id: number;
+    public id: string;
 
-    constructor(course: ICourse, colors: IColorPalette, isPreview?: boolean) {
+    constructor(course: ICourse, colors: IColorPalette, isPreview?: boolean, netid?:string) {
         this.myCourse = course;
-        this.id = course.id;
+        this.id = netid ? course.id + netid : course.id + username;
         this.myColors = colors;
         this.initEventSources();
         this.isPreview = isPreview ? isPreview : false;

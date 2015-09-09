@@ -1,8 +1,8 @@
 define(["require", "exports", './SectionEventSource'], function (require, exports, SectionEventSource) {
     var CourseEventSources = (function () {
-        function CourseEventSources(course, colors, isPreview) {
+        function CourseEventSources(course, colors, isPreview, netid) {
             this.myCourse = course;
-            this.id = course.id;
+            this.id = netid ? course.id + netid : course.id + username;
             this.myColors = colors;
             this.initEventSources();
             this.isPreview = isPreview ? isPreview : false;

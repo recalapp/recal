@@ -167,12 +167,13 @@ class FriendCtrl {
         request.$remove({'id': request.id});
     }
 
+    // TODO: add control to remove friend's schedules
     public onClick(user: IUser) {
         console.log("getting " + user.netid + "'s schedules'");
         this.scheduleService.getByUser(user.netid).$promise.then((schedules) => {
             console.log("got " + schedules.length + " schedules");
             for (let i = 0; i < schedules.length; i++) {
-                console.log(schedules[i]);
+                this.$scope.additionalSchedules.push(schedules[i]);
             }
         });
     }
