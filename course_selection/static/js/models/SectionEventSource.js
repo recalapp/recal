@@ -1,6 +1,6 @@
 define(["require", "exports", 'moment'], function (require, exports, Moment) {
     var SectionEventSource = (function () {
-        function SectionEventSource(section, course, colors) {
+        function SectionEventSource(section, course, colors, isFriend) {
             this.id = section.id;
             this.course_id = course.id;
             this.textColor = colors.dark;
@@ -9,7 +9,7 @@ define(["require", "exports", 'moment'], function (require, exports, Moment) {
             this.section_type = section.section_type;
             this.section_capacity = section.section_capacity;
             this.section_enrollment = section.section_enrollment;
-            this.className = "cal-unconfirmed";
+            this.className = isFriend ? "cal-is-friend" : "cal-unconfirmed";
             var tooltipEnrollment = this.section_enrollment + "/" + this.section_capacity;
             var inputTimeFormat = "hh:mm a";
             var outputTimeFormat = "HH:mm:ss";

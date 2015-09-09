@@ -4,16 +4,16 @@ define(["require", "exports", './SectionEventSource'], function (require, export
             this.myCourse = course;
             this.id = netid ? course.id + netid : course.id + username;
             this.myColors = colors;
-            this.initEventSources();
+            this.initEventSources((netid && netid != username));
             this.isPreview = isPreview ? isPreview : false;
         }
-        CourseEventSources.prototype.initEventSources = function () {
+        CourseEventSources.prototype.initEventSources = function (isFriend) {
             var sections = this.myCourse.sections;
             this.allSections = [];
             this.mySections = [];
             for (var i = 0; i < sections.length; i++) {
                 var section = sections[i];
-                var eventSource = new SectionEventSource(section, this.myCourse, this.myColors);
+                var eventSource = new SectionEventSource(section, this.myCourse, this.myColors, isFriend);
                 this.allSections.push(eventSource);
                 this.mySections.push(eventSource);
             }

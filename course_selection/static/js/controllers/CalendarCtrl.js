@@ -55,10 +55,34 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.$scope.$watch(function () {
                 return _this.friendScheduleManager.currentFriendSchedule;
             }, function (newAdditionalSchedule, oldAdditionalSchedule) {
-                console.log(newAdditionalSchedule);
-                var enrollments = JSON.parse(newAdditionalSchedule.enrollments);
+                if (newAdditionalSchedule === oldAdditionalSchedule) {
+                    return;
+                }
+                _this._removeSchedule(oldAdditionalSchedule);
+                _this._addSchedule(newAdditionalSchedule);
             }, true);
         }
+        CalendarCtrl.prototype._removeSchedule = function (schedule) {
+            var _this = this;
+            if (schedule == null) {
+                return;
+            }
+            console.log("Removing " + schedule.user.netid + "'s schedule from calendar: " + schedule.title);
+            var enrollments = JSON.parse(schedule.enrollments);
+            enrollments.forEach(function (enrollment, idx, arr) {
+                var course = _this.scheduleManager.getCourseById(enrollment.course_id);
+                _this.removeCourse(course, false, schedule.user.netid);
+            });
+        };
+        CalendarCtrl.prototype._addSchedule = function (schedule) {
+            var _this = this;
+            console.log("Adding " + schedule.user.netid + "'s schedule to calendar: " + schedule.title);
+            var enrollments = JSON.parse(schedule.enrollments);
+            enrollments.forEach(function (enrollment, idx, arr) {
+                var course = _this.scheduleManager.getCourseById(enrollment.course_id);
+                _this.addCourse(course, false, schedule.user.netid);
+            });
+        };
         CalendarCtrl.prototype._isVisible = function () {
             return this.$scope.myCalendar && this.$scope.myCalendar.is(":visible");
         };
@@ -82,12 +106,13 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             });
             this.$scope.myCalendar.fullCalendar(options);
         };
-        CalendarCtrl.prototype.addCourse = function (course, isPreview) {
-            var courseEventSources = new CourseEventSources(course, course.colors, isPreview);
+        CalendarCtrl.prototype.addCourse = function (course, isPreview, netid) {
+            var courseEventSources = new CourseEventSources(course, course.colors, isPreview, netid);
             this.compositeEventSources.addEventSources(courseEventSources);
         };
-        CalendarCtrl.prototype.removeCourse = function (course, isPreview) {
-            this.compositeEventSources.removeEventSources(course.id + username, isPreview);
+        CalendarCtrl.prototype.removeCourse = function (course, isPreview, netid) {
+            var user = netid ? netid : username;
+            this.compositeEventSources.removeEventSources(course.id + user, isPreview);
         };
         CalendarCtrl.prototype.clearPreviewCourse = function (course) {
             this.removeCourse(course, true);

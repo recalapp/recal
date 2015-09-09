@@ -116,14 +116,8 @@ define(["require", "exports", './SearchCtrl', '../Utils'], function (require, ex
             request.$remove({ 'id': request.id });
         };
         FriendCtrl.prototype.onClick = function (user) {
-            var _this = this;
-            console.log("getting " + user.netid + "'s schedules'");
-            this.scheduleService.getByUser(user.netid).$promise.then(function (schedules) {
-                console.log("got " + schedules.length + " schedules");
-                for (var i = 0; i < schedules.length; i++) {
-                    _this.friendScheduleManager.currentFriendSchedule = schedules[i];
-                }
-            });
+            this.friendScheduleManager.currentFriendSchedule =
+                this.friendScheduleManager.getFriendSchedules(user.netid)[0];
         };
         FriendCtrl.$inject = [
             '$scope',

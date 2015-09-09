@@ -2,13 +2,13 @@ import IColorPalette = require('../interfaces/IColorPalette');
 import IEnrollment = require('../interfaces/IEnrollment');
 
 class ColorManager {
-    private static previewColor: IColorPalette = {
+    public static previewColor: IColorPalette = {
         id: -1,
         dark: 'rgb(84, 84, 84)',
         light: 'rgb(210, 210, 210)'
     };
 
-    private _usableColors; 
+    private _usableColors;
     public get availableColors() {
         return this._usableColors;
     }
@@ -24,7 +24,7 @@ class ColorManager {
     }
 
     private initUsableColors(
-            availableColors?: Array<IColorPalette>, 
+            availableColors?: Array<IColorPalette>,
             enrollments?: Array<IEnrollment>) {
         if (availableColors && enrollments) {
             this._usableColors = availableColors;

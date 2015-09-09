@@ -27,7 +27,7 @@ class SectionEventSource implements IEventSource {
     public section_capacity: number;
     public section_enrollment: number;
 
-    constructor(section: ISection, course: ICourse, colors: IColorPalette) {
+    constructor(section: ISection, course: ICourse, colors: IColorPalette, isFriend: boolean) {
         this.id = section.id;
         this.course_id = course.id;
         this.textColor = colors.dark;
@@ -37,8 +37,9 @@ class SectionEventSource implements IEventSource {
         this.section_capacity = section.section_capacity;
         this.section_enrollment = section.section_enrollment;
 
-        // by default, a newly constructed section is previewed until enrolled"
-        this.className = "cal-unconfirmed";
+        // by default, a newly constructed section is previewed until enrolled
+        // unless it belongs to a friend's schedule
+        this.className = isFriend ? "cal-is-friend" : "cal-unconfirmed";
 
         // for tooltip display
         var tooltipEnrollment: string = this.section_enrollment + "/" + this.section_capacity;
@@ -60,7 +61,7 @@ class SectionEventSource implements IEventSource {
                 var endTime = Moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
                 var start = date + 'T' + startTime;
                 var end = date + 'T' + endTime;
-                this.events.push({
+                this.events.push(<any>{
                     title: course.primary_listing + " " + section.name,
                     start: start,
                     end: end,
