@@ -24,9 +24,6 @@ define(["require", "exports"], function (require, exports) {
         Utils.userComp = function (a, b) {
             return a.netid == b.netid;
         };
-        Utils.scheduleComp = function (a, b) {
-            return a.id - b.id;
-        };
         Utils.isInList = function (element, list, comp) {
             return this.idxInList(element, list, comp) != Utils.NOT_FOUND;
         };

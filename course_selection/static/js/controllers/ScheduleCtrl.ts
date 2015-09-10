@@ -1,9 +1,9 @@
 /// <reference path='../../ts/typings/tsd.d.ts' />
 
+import Schedule = require('../models/Schedule');
 import RemoveScheduleModalCtrl = require('./RemoveScheduleModalCtrl');
 import ChangeScheduleTitleModalCtrl = require('./ChangeScheduleTitleModalCtrl');
 import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
-import Utils = require('../Utils');
 
 'use strict';
 
@@ -67,7 +67,7 @@ class ScheduleCtrl {
                 }
             }
 
-            this.schedules.sort(Utils.scheduleComp);
+            this.schedules.sort(Schedule.compare);
             this._setSelectedSchedule(0);
         }).then(() => {
             if (this.schedules.length == 0) {

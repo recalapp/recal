@@ -1,10 +1,9 @@
 define(["require", "exports", '../models/CourseEventSources', '../models/CompositeEventSources', '../Utils'], function (require, exports, CourseEventSources, CompositeEventSources, Utils) {
     'use strict';
     var CalendarCtrl = (function () {
-        function CalendarCtrl($scope, friendScheduleManager) {
+        function CalendarCtrl($scope) {
             var _this = this;
             this.$scope = $scope;
-            this.friendScheduleManager = friendScheduleManager;
             this.courseWatchInitRun = true;
             this.sectionWatchInitRun = true;
             this.calendarWatchInitRun = true;
@@ -52,37 +51,7 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
                 _this.$scope.myCalendar.fullCalendar('destroy');
                 _this.initConfig();
             }, true);
-            this.$scope.$watch(function () {
-                return _this.friendScheduleManager.currentFriendSchedule;
-            }, function (newAdditionalSchedule, oldAdditionalSchedule) {
-                if (newAdditionalSchedule === oldAdditionalSchedule) {
-                    return;
-                }
-                _this._removeSchedule(oldAdditionalSchedule);
-                _this._addSchedule(newAdditionalSchedule);
-            }, true);
         }
-        CalendarCtrl.prototype._removeSchedule = function (schedule) {
-            var _this = this;
-            if (schedule == null) {
-                return;
-            }
-            console.log("Removing " + schedule.user.netid + "'s schedule from calendar: " + schedule.title);
-            var enrollments = JSON.parse(schedule.enrollments);
-            enrollments.forEach(function (enrollment, idx, arr) {
-                var course = _this.scheduleManager.getCourseById(enrollment.course_id);
-                _this.removeCourse(course, false, schedule.user.netid);
-            });
-        };
-        CalendarCtrl.prototype._addSchedule = function (schedule) {
-            var _this = this;
-            console.log("Adding " + schedule.user.netid + "'s schedule to calendar: " + schedule.title);
-            var enrollments = JSON.parse(schedule.enrollments);
-            enrollments.forEach(function (enrollment, idx, arr) {
-                var course = _this.scheduleManager.getCourseById(enrollment.course_id);
-                _this.addCourse(course, false, schedule.user.netid);
-            });
-        };
         CalendarCtrl.prototype._isVisible = function () {
             return this.$scope.myCalendar && this.$scope.myCalendar.is(":visible");
         };
@@ -106,13 +75,12 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             });
             this.$scope.myCalendar.fullCalendar(options);
         };
-        CalendarCtrl.prototype.addCourse = function (course, isPreview, netid) {
-            var courseEventSources = new CourseEventSources(course, course.colors, isPreview, netid);
+        CalendarCtrl.prototype.addCourse = function (course, isPreview) {
+            var courseEventSources = new CourseEventSources(course, course.colors, isPreview);
             this.compositeEventSources.addEventSources(courseEventSources);
         };
-        CalendarCtrl.prototype.removeCourse = function (course, isPreview, netid) {
-            var user = netid ? netid : username;
-            this.compositeEventSources.removeEventSources(course.id + user, isPreview);
+        CalendarCtrl.prototype.removeCourse = function (course, isPreview) {
+            this.compositeEventSources.removeEventSources(course.id, isPreview);
         };
         CalendarCtrl.prototype.clearPreviewCourse = function (course) {
             this.removeCourse(course, true);
@@ -282,7 +250,6 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
         };
         CalendarCtrl.$inject = [
             '$scope',
-            'FriendScheduleManager'
         ];
         return CalendarCtrl;
     })();

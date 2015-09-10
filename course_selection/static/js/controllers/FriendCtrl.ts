@@ -1,11 +1,9 @@
 /// <reference path='../../ts/typings/tsd.d.ts' />
 import SearchCtrl = require('./SearchCtrl');
 import ScheduleService = require('../services/ScheduleService');
-import FriendScheduleManager = require('../services/FriendScheduleManager');
-import Utils = require('../Utils');
-
 import IUser = require('../interfaces/IUser');
 import IFriendRequestResource = require('../interfaces/IFriendRequestResource');
+import Utils = require('../Utils');
 
 'use strict';
 
@@ -17,8 +15,7 @@ class FriendCtrl {
         '$filter',
         'UserService',
         'ScheduleService',
-        'FriendRequestResource',
-        'FriendScheduleManager'
+        'FriendRequestResource'
     ];
 
     // dependencies are injected via AngularJS $injector
@@ -27,8 +24,7 @@ class FriendCtrl {
         private $filter,
         private userService,
         private scheduleService: ScheduleService,
-        private friendRequestResource: angular.resource.IResourceClass<IFriendRequestResource>,
-        private friendScheduleManager: FriendScheduleManager)
+        private friendRequestResource: angular.resource.IResourceClass<IFriendRequestResource>)
     {
         this._initFriendList();
         this._initLoading();
@@ -171,10 +167,14 @@ class FriendCtrl {
         request.$remove({'id': request.id});
     }
 
-    // TODO: add control to remove friend's schedules
     public onClick(user: IUser) {
-        this.friendScheduleManager.currentFriendSchedule =
-            this.friendScheduleManager.getFriendSchedules(user.netid)[0];
+        console.log("getting " + user.netid + "'s schedules'");
+        this.scheduleService.getByUser(user.netid).$promise.then((schedules) => {
+            console.log("got " + schedules.length + " schedules");
+            for (let i = 0; i < schedules.length; i++) {
+                console.log(schedules[i]);
+            }
+        });
     }
 }
 

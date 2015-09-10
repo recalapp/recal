@@ -20,12 +20,12 @@
             </span>
         </md-tab-label>
         <md-tab-body>
-            <div ng-controller="MainCtrl as mainCtrl" layout="row" layout-fill>
-                {% endverbatim %}
-                {% include 'main/search.html' %}
-                {% include 'main/calendar.html' %}
-                {% verbatim %}
-            </div>
+            <div layout="row" layout-fill>
+            {% endverbatim %}
+            {% include 'main/search.html' %}
+            {% include 'main/calendar.html' %}
+            {% verbatim %}
+        </div>
         </md-tab-body>
     </md-tab>
     <md-tab md-on-select="scheduleCtrl.askForNewScheduleName(selectedSchedule)">

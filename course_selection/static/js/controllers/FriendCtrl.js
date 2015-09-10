@@ -1,13 +1,12 @@
 define(["require", "exports", './SearchCtrl', '../Utils'], function (require, exports, SearchCtrl, Utils) {
     'use strict';
     var FriendCtrl = (function () {
-        function FriendCtrl($scope, $filter, userService, scheduleService, friendRequestResource, friendScheduleManager) {
+        function FriendCtrl($scope, $filter, userService, scheduleService, friendRequestResource) {
             this.$scope = $scope;
             this.$filter = $filter;
             this.userService = userService;
             this.scheduleService = scheduleService;
             this.friendRequestResource = friendRequestResource;
-            this.friendScheduleManager = friendScheduleManager;
             this._initFriendList();
             this._initLoading();
             this._initSearchWatches();
@@ -116,16 +115,20 @@ define(["require", "exports", './SearchCtrl', '../Utils'], function (require, ex
             request.$remove({ 'id': request.id });
         };
         FriendCtrl.prototype.onClick = function (user) {
-            this.friendScheduleManager.currentFriendSchedule =
-                this.friendScheduleManager.getFriendSchedules(user.netid)[0];
+            console.log("getting " + user.netid + "'s schedules'");
+            this.scheduleService.getByUser(user.netid).$promise.then(function (schedules) {
+                console.log("got " + schedules.length + " schedules");
+                for (var i = 0; i < schedules.length; i++) {
+                    console.log(schedules[i]);
+                }
+            });
         };
         FriendCtrl.$inject = [
             '$scope',
             '$filter',
             'UserService',
             'ScheduleService',
-            'FriendRequestResource',
-            'FriendScheduleManager'
+            'FriendRequestResource'
         ];
         return FriendCtrl;
     })();

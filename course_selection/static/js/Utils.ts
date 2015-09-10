@@ -1,7 +1,6 @@
 /// <reference path='../ts/typings/tsd.d.ts' />
 
 import IUser = require('./interfaces/IUser');
-import ISchedule = require('./interfaces/ISchedule');
 
 class Utils {
     private static NOT_FOUND: number = -1;
@@ -30,10 +29,6 @@ class Utils {
 
     public static userComp(a: IUser, b: IUser): boolean {
         return a.netid == b.netid;
-    }
-
-    public static scheduleComp(a: ISchedule, b: ISchedule): number {
-        return a.id - b.id;
     }
 
     public static isInList(element, list, comp?): boolean {

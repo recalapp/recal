@@ -2,19 +2,13 @@
 import IColorPalette = require('../interfaces/IColorPalette');
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
-import IEventSources = require('../interfaces/IEventSources');
-import IScheduleManager = require('../interfaces/IScheduleManager');
-import ISchedule = require('../interfaces/ISchedule');
-
-import ColorManager = require('../models/ColorManager');
 import CourseEventSources = require('../models/CourseEventSources');
+import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
-import FriendScheduleManager = require('../services/FriendScheduleManager');
+import IScheduleManager = require('../interfaces/IScheduleManager');
 import Utils = require('../Utils');
 
 'use strict';
-
-declare var username: string;
 
 class CalendarCtrl {
     private static NOT_FOUND: number = -1;
@@ -79,11 +73,10 @@ class CalendarCtrl {
 
     public static $inject = [
         '$scope',
-        'FriendScheduleManager'
     ];
 
     // dependencies are injected via AngularJS $injector
-    constructor(private $scope, private friendScheduleManager: FriendScheduleManager)
+    constructor(private $scope)
     {
         this.courseWatchInitRun = true;
         this.sectionWatchInitRun = true;
@@ -163,43 +156,6 @@ class CalendarCtrl {
                     this.initConfig();
                },
                true);
-
-        // watch for friend schedules
-        this.$scope.$watch(
-            () => {
-                return this.friendScheduleManager.currentFriendSchedule;
-            },
-            (newAdditionalSchedule: ISchedule, oldAdditionalSchedule) => {
-                if (newAdditionalSchedule === oldAdditionalSchedule) {
-                    return;
-                }
-
-                this._removeSchedule(oldAdditionalSchedule);
-                this._addSchedule(newAdditionalSchedule);
-            },
-            true);
-    }
-
-    private _removeSchedule(schedule: ISchedule) {
-        if (schedule == null) {
-            return;
-        }
-
-        console.log("Removing " + schedule.user.netid + "'s schedule from calendar: " + schedule.title);
-        var enrollments: Array<any> = JSON.parse(schedule.enrollments);
-        enrollments.forEach((enrollment, idx, arr) => {
-            var course = this.scheduleManager.getCourseById(enrollment.course_id);
-            this.removeCourse(course, false, schedule.user.netid);
-        });
-    }
-
-    private _addSchedule(schedule: ISchedule) {
-        console.log("Adding " + schedule.user.netid + "'s schedule to calendar: " + schedule.title);
-        var enrollments: Array<any> = JSON.parse(schedule.enrollments);
-        enrollments.forEach((enrollment, idx, arr) => {
-            var course = this.scheduleManager.getCourseById(enrollment.course_id);
-            this.addCourse(course, false, schedule.user.netid);
-        });
     }
 
     private _isVisible() {
@@ -236,14 +192,13 @@ class CalendarCtrl {
     // Course Management
     // ////////////////////////////////////////////////////////////////
 
-    private addCourse(course: ICourse, isPreview: boolean, netid?: string) {
-        var courseEventSources = new CourseEventSources(course, course.colors, isPreview, netid);
+    private addCourse(course: ICourse, isPreview: boolean) {
+        var courseEventSources = new CourseEventSources(course, course.colors, isPreview);
         this.compositeEventSources.addEventSources(courseEventSources);
     }
 
-    private removeCourse(course: ICourse, isPreview: boolean, netid?:string) {
-        var user = netid ? netid : username;
-        this.compositeEventSources.removeEventSources(course.id + user, isPreview);
+    private removeCourse(course: ICourse, isPreview: boolean) {
+        this.compositeEventSources.removeEventSources(course.id, isPreview);
     }
 
     private clearPreviewCourse(course: ICourse) {

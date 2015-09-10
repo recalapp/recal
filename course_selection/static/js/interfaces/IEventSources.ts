@@ -1,7 +1,7 @@
 import IEventSource = require('./IEventSource');
 
 interface IEventSources {
-    id: string; // unique identifier--usually concatenation of course_id and username
+    id: number;
     isPreview: boolean;
     getEventSources(): IEventSource[];
 }

@@ -22,6 +22,8 @@
                     >
                         <div ng-mouseenter="showTags = true" ng-mouseleave="showTags = false">
                             <div class="course-panel-title">
+                                 <div class="course-listings"
+                                      ng-bind="user.netid"></div>
                                  <div class="course-title"
                                       ng-bind="user.netid"></div>
                             </div>
@@ -53,6 +55,8 @@
                             <div class="course-panel-title">
                                  <div class="course-listings"
                                       ng-bind="req.from_user.netid"></div>
+                                 <div class="course-title"
+                                      ng-bind="req.to_user.netid"></div>
                             </div>
                             <div ng-show="showTags">
                                 <div class="add-tag" ng-click="friendCtrl.acceptRequest(req)">
@@ -79,6 +83,8 @@
                     >
                         <div ng-mouseenter="showTags = true" ng-mouseleave="showTags = false">
                             <div class="course-panel-title">
+                                 <div class="course-listings"
+                                      ng-bind="req.from_user.netid"></div>
                                  <div class="course-title"
                                       ng-bind="req.to_user.netid"></div>
                             </div>
@@ -106,6 +112,7 @@
                         >
                         <div class="course-panel-title">
                             <div class="course-listings" ng-bind="user.netid"></div>
+                            <div class="course-title" ng-bind="user.netid"></div>
                         </div>
                         <div ng-show="showTags">
                             <div class="add-tag" ng-click="friendCtrl.sendRequest(user)">

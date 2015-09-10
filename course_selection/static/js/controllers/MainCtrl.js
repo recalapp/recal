@@ -2,13 +2,22 @@
 'use strict';
 define(["require", "exports"], function (require, exports) {
     var MainCtrl = (function () {
-        function MainCtrl($scope) {
+        function MainCtrl($scope, $mdSidenav, $log) {
             this.$scope = $scope;
-            console.log("Test");
-            this.$scope.additionalSchedule = null;
+            this.$mdSidenav = $mdSidenav;
+            this.$log = $log;
         }
+        MainCtrl.prototype.toggleSidebar = function (navID) {
+            this.$mdSidenav(navID)
+                .toggle()
+                .then(function () {
+                this.$log.debug("toggle " + navID + " is done");
+            });
+        };
         MainCtrl.$inject = [
-            '$scope'
+            '$scope',
+            '$mdSidenav',
+            '$log'
         ];
         return MainCtrl;
     })();

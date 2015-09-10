@@ -8,9 +8,9 @@ class SearchCtrl {
     // it is better to have it close to the constructor, because the parameters must match in count and type.
     // See http://docs.angularjs.org/guide/di
     public static $inject = [
-        '$scope',
-        '$sce',
-        '$filter'
+    '$scope',
+    '$sce',
+    '$filter'
     ];
 
     private static NOT_FOUND: number = -1;
