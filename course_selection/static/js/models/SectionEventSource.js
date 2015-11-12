@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     var SectionEventSource = (function () {
         function SectionEventSource(section, course, colors) {
             this.id = section.id;
@@ -9,13 +9,10 @@ define(["require", "exports"], function(require, exports) {
             this.section_type = section.section_type;
             this.section_capacity = section.section_capacity;
             this.section_enrollment = section.section_enrollment;
-
             // by default, a newly constructed section is previewed until enrolled"
             this.className = "cal-unconfirmed";
-
             // for tooltip display
             var tooltipEnrollment = this.section_enrollment + "/" + this.section_capacity;
-
             var inputTimeFormat = "hh:mm a";
             var outputTimeFormat = "HH:mm:ss";
             this.events = [];
@@ -23,7 +20,8 @@ define(["require", "exports"], function(require, exports) {
                 var meeting = section.meetings[j];
                 var days = meeting.days.split(' ');
                 var numDays = days[days.length - 1] ? days.length : days.length - 1;
-
+                // ignore last element of the result of split, which is 
+                // empty string due to the format of the input
                 for (var k = 0; k < numDays; k++) {
                     var day = days[k];
                     var date = this.getAgendaDate(day);
@@ -36,14 +34,14 @@ define(["require", "exports"], function(require, exports) {
                         start: start,
                         end: end,
                         location: meeting.location,
-                        enrollment: tooltipEnrollment
+                        enrollment: tooltipEnrollment,
                     });
                 }
             }
         }
         /**
-        * gets the date of the day in the current week
-        */
+         * gets the date of the day in the current week
+         */
         SectionEventSource.prototype.getAgendaDate = function (day) {
             var todayOffset = moment().isoWeekday();
             var dayOffset = SectionEventSource.DAYS[day];
@@ -60,7 +58,6 @@ define(["require", "exports"], function(require, exports) {
         };
         return SectionEventSource;
     })();
-
-    
     return SectionEventSource;
 });
+//# sourceMappingURL=SectionEventSource.js.map

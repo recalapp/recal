@@ -1,3 +1,3 @@
-define(["require", "exports"], function(require, exports) {
-    
+define(["require", "exports"], function (require, exports) {
 });
+//# sourceMappingURL=IMeeting.js.map

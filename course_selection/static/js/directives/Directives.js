@@ -1,6 +1,5 @@
-define(["require", "exports", '../Module'], function(require, exports, Module) {
+define(["require", "exports", '../Module'], function (require, exports, Module) {
     var niceDirectives = new Module('niceDirectives', []);
-
     niceDirectives.addDirective('selectOnClick', [function () {
             return {
                 restrict: 'A',
@@ -18,9 +17,8 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
                 }
             };
         }]);
-
-    niceDirectives.addDirective('autoFocus', [
-        '$timeout', function ($timeout) {
+    // TODO: this is not really autofocus; still requires focus="true" in the html
+    niceDirectives.addDirective('autoFocus', ['$timeout', function ($timeout) {
             return {
                 scope: {
                     trigger: '@focus'
@@ -36,51 +34,46 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
                 }
             };
         }]);
-
     niceDirectives.addDirective('coursePanel', [function () {
             return {
                 restrict: 'E',
                 link: function (scope, element, attrs) {
                     var scheduleManager;
                     var course;
-
                     function onMouseLeave() {
                         scheduleManager.clearPreviewCourse();
                     }
-
                     function onMouseOver() {
                         if (scheduleManager.isCourseEnrolled(course)) {
                             scheduleManager.clearPreviewCourse();
-                        } else {
+                        }
+                        else {
                             scheduleManager.setPreviewCourse(course);
                         }
                     }
-
                     element.on('click', function () {
                     });
-
                     element.on('mouseover', function () {
                         onMouseOver();
                     });
-
                     element.on('mouseleave', function () {
                         onMouseLeave();
                     });
-
                     element.on('blur', function () {
                     });
-
                     element.on('$destroy', function () {
                     });
                 },
                 scope: {
                     course: '=',
-                    scheduleManager: '='
+                    scheduleManager: '=',
                 },
                 templateUrl: '/static/templates/coursePanelDirective.html'
             };
         }]);
-
+    /****
+     * Got this from the Internet: http://plnkr.co/edit/v6bqqe?p=info
+     */
     niceDirectives.addDirective("qtip", [function () {
             var _this = this;
             return {
@@ -89,16 +82,13 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
                     var text = function () {
                         return element.attr('content') || null;
                     };
-
                     var title = function () {
                         return element.attr('qtip-title') || null;
                     };
-
                     var my = element.attr('my') || 'bottom left';
                     var at = element.attr('at') || 'top right';
                     var target = element.attr('target') || "event";
                     scope.qtipSkin = (attrs.skin ? "qtip-" + attrs.skin : "qtip");
-
                     element.qtip({
                         content: {
                             text: text,
@@ -124,16 +114,13 @@ define(["require", "exports", '../Module'], function(require, exports, Module) {
                             at: at
                         }
                     });
-
                     scope.$on("$destroy", function () {
+                        // $(element).qtip('destroy', true); // Immediately destroy all tooltips belonging to the selected elements
                     });
-
                     $('[my-qtip2]').css("display", "inline-block");
                 }
             };
         }]);
-
-    
     return niceDirectives;
 });
 //# sourceMappingURL=Directives.js.map

@@ -1,6 +1,6 @@
-define(["require", "exports", '../models/ScheduleManager'], function(require, exports, ScheduleManager) {
+/// <reference path='../../../../nice/static/ts/typings/tsd.d.ts' />
+define(["require", "exports", '../models/ScheduleManager'], function (require, exports, ScheduleManager) {
     'use strict';
-
     var ScheduleManagerService = (function () {
         function ScheduleManagerService($rootScope, courseService, localStorageService, colorResource) {
             this.$rootScope = $rootScope;
@@ -19,8 +19,6 @@ define(["require", "exports", '../models/ScheduleManager'], function(require, ex
         ];
         return ScheduleManagerService;
     })();
-
-    
     return ScheduleManagerService;
 });
 //# sourceMappingURL=ScheduleManagerService.js.map

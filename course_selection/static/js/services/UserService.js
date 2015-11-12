@@ -1,5 +1,5 @@
 'use strict';
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     var UserService = (function () {
         function UserService(scheduleService, userResource) {
             this.scheduleService = scheduleService;
@@ -18,7 +18,6 @@ define(["require", "exports"], function(require, exports) {
             enumerable: true,
             configurable: true
         });
-
         Object.defineProperty(UserService.prototype, "schedules", {
             get: function () {
                 return this._data.schedules;
@@ -26,7 +25,6 @@ define(["require", "exports"], function(require, exports) {
             enumerable: true,
             configurable: true
         });
-
         Object.defineProperty(UserService.prototype, "user", {
             get: function () {
                 return this._data.user;
@@ -40,8 +38,6 @@ define(["require", "exports"], function(require, exports) {
         ];
         return UserService;
     })();
-
-    
     return UserService;
 });
 //# sourceMappingURL=UserService.js.map

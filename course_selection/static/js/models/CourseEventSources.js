@@ -1,4 +1,4 @@
-define(["require", "exports", './SectionEventSource'], function(require, exports, SectionEventSource) {
+define(["require", "exports", './SectionEventSource'], function (require, exports, SectionEventSource) {
     var CourseEventSources = (function () {
         function CourseEventSources(course, colors, isPreview) {
             this.myCourse = course;
@@ -20,7 +20,6 @@ define(["require", "exports", './SectionEventSource'], function(require, exports
                 this.mySections.push(eventSource);
             }
         };
-
         // public removeEventSourcesByType(type: string): void {
         //     this.mySections.filter((sectionEventSource) => {
         //         return sectionEventSource.section_type == type;
@@ -38,7 +37,6 @@ define(["require", "exports", './SectionEventSource'], function(require, exports
         };
         return CourseEventSources;
     })();
-
-    
     return CourseEventSources;
 });
+//# sourceMappingURL=CourseEventSources.js.map

@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     var NewScheduleModalCtrl = (function () {
         function NewScheduleModalCtrl($scope, $modalInstance, semester) {
             var _this = this;
@@ -6,11 +6,9 @@ define(["require", "exports"], function(require, exports) {
             this.$modalInstance = $modalInstance;
             this.semester = semester;
             this.$scope.semester = this.semester;
-
             this.$scope.ok = function () {
                 _this.ok();
             };
-
             this.$scope.cancel = function () {
                 _this.cancel();
             };
@@ -18,7 +16,6 @@ define(["require", "exports"], function(require, exports) {
         NewScheduleModalCtrl.prototype.ok = function () {
             this.$modalInstance.close(this.$scope.newName);
         };
-
         NewScheduleModalCtrl.prototype.cancel = function () {
             this.$modalInstance.dismiss('cancel');
         };
@@ -29,8 +26,6 @@ define(["require", "exports"], function(require, exports) {
         ];
         return NewScheduleModalCtrl;
     })();
-
-    
     return NewScheduleModalCtrl;
 });
 //# sourceMappingURL=NewScheduleModalCtrl.js.map

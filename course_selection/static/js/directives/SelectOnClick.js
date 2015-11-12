@@ -1,4 +1,4 @@
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports"], function (require, exports) {
     var SelectOnClick = (function () {
         function SelectOnClick() {
         }
@@ -17,8 +17,6 @@ define(["require", "exports"], function(require, exports) {
         SelectOnClick.restrict = 'A';
         return SelectOnClick;
     })();
-
-    
     return SelectOnClick;
 });
 //# sourceMappingURL=SelectOnClick.js.map
