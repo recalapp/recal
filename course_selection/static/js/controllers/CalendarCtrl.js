@@ -1,4 +1,4 @@
-define(["require", "exports", '../models/CourseEventSources', '../models/CompositeEventSources', '../Utils'], function (require, exports, CourseEventSources, CompositeEventSources, Utils) {
+define(["require", "exports", '../models/Semester', '../models/CourseEventSources', '../models/CompositeEventSources', '../Utils'], function (require, exports, Semester, CourseEventSources, CompositeEventSources, Utils) {
     'use strict';
     var CalendarCtrl = (function () {
         // dependencies are injected via AngularJS $injector
@@ -10,14 +10,25 @@ define(["require", "exports", '../models/CourseEventSources', '../models/Composi
             this.calendarWatchInitRun = true;
             this.scheduleManager = this.$scope.$parent.schedule.scheduleManager;
             this.$scope.data = this.scheduleManager.getData();
-            this.$scope.calendarID = Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
-            this.$scope.myCalendar = $(".calendar").eq(this.$scope.calendarID);
+            var semesterID = Utils.idxInList(this.$scope.semester, this.$scope.semesters, Semester.comp);
+            var semesterDiv = $("#semesterContainer .tab-content").eq(0).children().eq(semesterID);
+            var calendarID = Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
+            this.$scope.myCalendar =
+                $(semesterDiv).find(".calendar").eq(calendarID);
             // calendar event sources dat
             this.compositeEventSources = new CompositeEventSources();
             this.$scope.eventSources = this.compositeEventSources.getEventSources();
             // watch for initializing visible schedule
             this.$scope.$watch(function () {
                 return _this.$scope.selectedSchedule;
+            }, function (newValue, oldValue) {
+                if (newValue == oldValue) {
+                    return;
+                }
+                setTimeout(_this.$scope.myCalendar.fullCalendar('render'), 2000);
+            }, true);
+            this.$scope.$watch(function () {
+                return _this.$scope.semester;
             }, function (newValue, oldValue) {
                 if (newValue == oldValue) {
                     return;

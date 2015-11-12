@@ -2,6 +2,7 @@
 import IColorPalette = require('../interfaces/IColorPalette');
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
+import Semester = require('../models/Semester');
 import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
@@ -67,16 +68,16 @@ class CalendarCtrl {
     private scheduleManager: IScheduleManager;
 
     // TODO: hack for watches not updating on first run
-    private courseWatchInitRun: boolean; 
-    private sectionWatchInitRun: boolean; 
-    private calendarWatchInitRun: boolean; 
+    private courseWatchInitRun: boolean;
+    private sectionWatchInitRun: boolean;
+    private calendarWatchInitRun: boolean;
 
     public static $inject = [
         '$scope',
     ];
 
     // dependencies are injected via AngularJS $injector
-    constructor(private $scope) 
+    constructor(private $scope)
     {
         this.courseWatchInitRun = true;
         this.sectionWatchInitRun = true;
@@ -85,8 +86,15 @@ class CalendarCtrl {
         this.scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
         this.$scope.data = this.scheduleManager.getData();
 
-        this.$scope.calendarID = Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
-        this.$scope.myCalendar = $(".calendar").eq(this.$scope.calendarID);
+        var semesterID = Utils.idxInList(
+            this.$scope.semester, this.$scope.semesters, Semester.comp);
+        var semesterDiv =
+            $("#semesterContainer .tab-content").eq(0).children().eq(semesterID);
+        var calendarID =
+            Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
+
+        this.$scope.myCalendar =
+            $(semesterDiv).find(".calendar").eq(calendarID);
 
         // calendar event sources dat
         this.compositeEventSources = new CompositeEventSources();
@@ -105,13 +113,25 @@ class CalendarCtrl {
                     setTimeout(this.$scope.myCalendar.fullCalendar('render'), 2000);
                 }, true);
 
+                this.$scope.$watch(
+                    () => {
+                        return this.$scope.semester;
+                    },
+                    (newValue, oldValue) => {
+                        if (newValue == oldValue) {
+                            return;
+                        }
+
+                        setTimeout(this.$scope.myCalendar.fullCalendar('render'), 2000);
+                    }, true);
+
         // only initialize config if this schedule is visible
         this.$scope.$watch(
                 () => {
                     return this._isVisible();
                 },
                 (newValue, oldValue) => {
-                    if (this.calendarWatchInitRun 
+                    if (this.calendarWatchInitRun
                             && newValue == true) {
                         this.initConfig();
                         this.calendarWatchInitRun = false;
@@ -119,21 +139,21 @@ class CalendarCtrl {
                 });
 
         this.$scope.$watch(
-                () => { 
-                    return this.$scope.data.previewCourse; 
+                () => {
+                    return this.$scope.data.previewCourse;
                 },
-                (newCourse, oldCourse) => { 
-                    return this.updatePreviewCourse(newCourse, oldCourse); 
+                (newCourse, oldCourse) => {
+                    return this.updatePreviewCourse(newCourse, oldCourse);
                 },
                 true);
 
         // use watchCollection to only watch for addition or removal in the array
         this.$scope.$watchCollection(
-                () => { 
+                () => {
                     return this.$scope.data.enrolledCourses;
                 },
-                (newCourses, oldCourses) => { 
-                    return this.updateEnrolledCourses(newCourses, oldCourses); 
+                (newCourses, oldCourses) => {
+                    return this.updateEnrolledCourses(newCourses, oldCourses);
                 });
 
         // equality watch for every property
@@ -172,7 +192,7 @@ class CalendarCtrl {
         this.$scope.uiConfig.eventRender = (event, element) => {
             var locationTag = '<div class="fc-location">' + event.location + '</div>';
             element.find(".fc-content").append(locationTag);
-            
+
             // set tooltip content
             var tooltipConfig = angular.copy(CalendarCtrl.defaultTooltipConfig);
             tooltipConfig.content.text = "enrollments: " + event.enrollment;
@@ -204,19 +224,19 @@ class CalendarCtrl {
     private clearPreviewCourse(course: ICourse) {
         this.removeCourse(course, true);
     }
-    
+
     private setPreviewCourse(course: ICourse) {
         this.addCourse(course, true);
     }
 
     public updatePreviewCourse(newCourse, oldCourse) {
-        if (newCourse === oldCourse 
-                || (newCourse !== null 
-                    && oldCourse !== null 
+        if (newCourse === oldCourse
+                || (newCourse !== null
+                    && oldCourse !== null
                     && newCourse.id === oldCourse.id))
             return;
 
-        if (newCourse == null) { 
+        if (newCourse == null) {
             this.clearPreviewCourse(oldCourse);
         } else {
             this.setPreviewCourse(newCourse);
@@ -262,7 +282,7 @@ class CalendarCtrl {
         if (newCourses.length == oldCourses.length + 1) {
             var course = newCourses[newCourses.length - 1];
             this.addCourse(course, false);
-        } 
+        }
         // course removed
         else if (newCourses.length == oldCourses.length - 1) {
             var removedCourse = this.getRemovedCourse(newCourses, oldCourses);

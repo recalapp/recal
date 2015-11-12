@@ -3,6 +3,10 @@ class Semester {
         return a.term_code - b.term_code;
     }
 
+    static comp(a: Semester, b: Semester): boolean {
+        return a.term_code == b.term_code;
+    }
+
     constructor(
             public name: string,
             public active: boolean,
