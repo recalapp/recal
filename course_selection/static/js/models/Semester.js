@@ -9,6 +9,9 @@ define(["require", "exports"], function (require, exports) {
         Semester.compare = function (a, b) {
             return a.term_code - b.term_code;
         };
+        Semester.comp = function (a, b) {
+            return a.term_code == b.term_code;
+        };
         return Semester;
     })();
     return Semester;

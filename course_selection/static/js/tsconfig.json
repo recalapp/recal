@@ -17,8 +17,6 @@
     ],
     "files": [
         "./Application.ts",
-        "./Module.ts",
-        "./Utils.ts",
         "./config.ts",
         "./controllers/CalendarCtrl.ts",
         "./controllers/ChangeScheduleTitleModalCtrl.ts",
@@ -65,6 +63,7 @@
         "./models/Section.ts",
         "./models/SectionEventSource.ts",
         "./models/Semester.ts",
+        "./Module.ts",
         "./services/ColorResource.ts",
         "./services/ColorService.ts",
         "./services/CourseService.ts",
@@ -74,6 +73,7 @@
         "./services/SemesterService.ts",
         "./services/Service.ts",
         "./services/Services.ts",
-        "./services/UserService.ts"
+        "./services/UserService.ts",
+        "./Utils.ts"
     ]
 }
