@@ -60,7 +60,7 @@ class SectionEventSource implements IEventSource {
                 var endTime = Moment(meeting.end_time, inputTimeFormat).format(outputTimeFormat);
                 var start = date + 'T' + startTime;
                 var end = date + 'T' + endTime;
-                this.events.push({
+                this.events.push(<any> /* TODO(dxue): fix type */ {
                     title: course.primary_listing + " " + section.name,
                     start: start,
                     end: end,

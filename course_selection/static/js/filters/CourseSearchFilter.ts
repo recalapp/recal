@@ -32,6 +32,15 @@ class CourseSearchFilter extends Filter
         var breakedQueries = CourseSearchFilter.breakQuery(input);
         var queries: string[] = breakedQueries.split(' ');
         var results: ICourse[] = courses;
+
+        // preprocess the queries--remove illegal queries
+        queries = CourseSearchFilter.preprocessQueries(queries);
+
+        // return none if we don't have any queries
+        if (queries.length == 0) {
+            return [];
+        }
+
         for (var i = 0; i < queries.length; i++) {
             var query = queries[i].toUpperCase();
             if (query == '') {
@@ -55,7 +64,7 @@ class CourseSearchFilter extends Filter
             // is department
             else if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
                 if (query.length < 3) {
-                    return [];
+                    continue;
                 }
 
                 results = results.filter((course) => {
@@ -69,12 +78,21 @@ class CourseSearchFilter extends Filter
                 });
             } else {
                 results = results.filter((course) => {
-                    return CourseSearchFilter.regexTest(course, query);
+                    // return CourseSearchFilter.regexTest(course, query);
+                    return CourseSearchFilter.
+                        caseInsensitiveStringContains(course.title, query);
                 });
             }
         }
 
         return results;
+    }
+
+    private static preprocessQueries(input: string[]): string[] {
+        // filter out the queries that are letters && < length(3)
+        return input.filter((query: string) => {
+            return query.length >= 3 || !CourseSearchFilter.isAlpha(query);
+        });
     }
 
     private static breakQuery(input: string): string {
@@ -144,6 +162,13 @@ class CourseSearchFilter extends Filter
 
     private static isNumber(n: string) {
         return !isNaN(parseFloat(n)) && isFinite(parseFloat(n));
+    }
+
+    private static caseInsensitiveStringContains(
+        haystack: string,
+        needle: string): boolean {
+        return CourseSearchFilter.arrayContains(
+            haystack.toLowerCase(), needle.toLowerCase());
     }
 
     private static arrayContains(xs, x): boolean {

@@ -1,4 +1,5 @@
-https://github.com/heroku/heroku-buildpack-nodejs
+https://github.com/heroku/heroku-buildpack-nodejs#v80
+https://github.com/naphatkrit/recal-heroku-typescript-buildpack#v1
 https://github.com/ejholmes/heroku-buildpack-bower
 https://github.com/naphatkrit/heroku-buildpack-pdftk
 https://github.com/heroku/heroku-buildpack-python#v57

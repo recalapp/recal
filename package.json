@@ -1,5 +1,6 @@
 {
  "dependencies": {
-   "bower": "latest"
+   "bower": "latest",
+   "typescript": "latest"
  }
 }

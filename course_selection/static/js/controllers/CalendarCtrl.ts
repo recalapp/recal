@@ -2,6 +2,7 @@
 import IColorPalette = require('../interfaces/IColorPalette');
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
+import Semester = require('../models/Semester');
 import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
@@ -85,14 +86,32 @@ class CalendarCtrl {
         this.scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
         this.$scope.data = this.scheduleManager.getData();
 
-        this.$scope.calendarID = Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
-        this.$scope.myCalendar = $(".calendar").eq(this.$scope.calendarID);
+        var semesterID = Utils.idxInList(
+            this.$scope.semester, this.$scope.semesters, Semester.comp);
+        var semesterDiv =
+            $("#semesterContainer .tab-content").eq(0).children().eq(semesterID);
+        var calendarID =
+            Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
+
+        this.$scope.myCalendar =
+            $(semesterDiv).find(".calendar").eq(calendarID);
 
         // calendar event sources dat
         this.compositeEventSources = new CompositeEventSources();
         this.$scope.eventSources = this.compositeEventSources.getEventSources();
 
         // watch for initializing visible schedule
+        this.$scope.$watch(
+            () => {
+                return this.$scope.semester;
+            },
+            (newValue, oldValue) => {
+                if (newValue == oldValue) {
+                    return;
+                }
+
+                setTimeout(this.$scope.myCalendar.fullCalendar('render'), 2000);
+            }, true);
         this.$scope.$watch(
                 () => {
                     return this.$scope.selectedSchedule;
