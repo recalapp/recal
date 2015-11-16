@@ -48,7 +48,8 @@ require.config({
     },
     priority: [
 		"angular"
-	]
+	],
+    urlArgs: "bust=v2"
 });
 
 require(['angular',
