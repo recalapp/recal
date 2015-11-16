@@ -1,4 +1,3 @@
-/// <reference path='../../ts/typings/tsd.d.ts' />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -25,6 +24,10 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
             var breakedQueries = CourseSearchFilter.breakQuery(input);
             var queries = breakedQueries.split(' ');
             var results = courses;
+            queries = CourseSearchFilter.preprocessQueries(queries);
+            if (queries.length == 0) {
+                return [];
+            }
             for (var i = 0; i < queries.length; i++) {
                 var query = queries[i].toUpperCase();
                 if (query == '') {
@@ -42,7 +45,7 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
                 }
                 else if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
                     if (query.length < 3) {
-                        return [];
+                        continue;
                     }
                     results = results.filter(function (course) {
                         return CourseSearchFilter.isListed(course, 'course_listings', 'dept', query);
@@ -55,11 +58,17 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
                 }
                 else {
                     results = results.filter(function (course) {
-                        return CourseSearchFilter.regexTest(course, query);
+                        return CourseSearchFilter.
+                            caseInsensitiveStringContains(course.title, query);
                     });
                 }
             }
             return results;
+        };
+        CourseSearchFilter.preprocessQueries = function (input) {
+            return input.filter(function (query) {
+                return query.length >= 3 || !CourseSearchFilter.isAlpha(query);
+            });
         };
         CourseSearchFilter.breakQuery = function (input) {
             var output;
@@ -102,6 +111,9 @@ define(["require", "exports", './Filter'], function (require, exports, Filter) {
         };
         CourseSearchFilter.isNumber = function (n) {
             return !isNaN(parseFloat(n)) && isFinite(parseFloat(n));
+        };
+        CourseSearchFilter.caseInsensitiveStringContains = function (haystack, needle) {
+            return CourseSearchFilter.arrayContains(haystack.toLowerCase(), needle.toLowerCase());
         };
         CourseSearchFilter.arrayContains = function (xs, x) {
             return xs.indexOf(x) != -1;
