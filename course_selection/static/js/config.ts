@@ -8,7 +8,7 @@ function appPath(path: string) {
     return "../js/" + path;
 }
 
-require.config({
+require.config(<any> /* TODO(dxue) fix type */ {
     baseUrl: staticPath("bower_components/"),
     paths: {
         /* this is flatstrap */

@@ -1,4 +1,3 @@
-/// <reference path="../ts/typings/tsd.d.ts" />
 function staticPath(path) {
     return "/static/" + path;
 }
