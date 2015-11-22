@@ -93,8 +93,7 @@ class CalendarCtrl {
         var calendarID =
             Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
 
-        this.$scope.myCalendar =
-            $(semesterDiv).find(".calendar").eq(calendarID);
+        this.$scope.myCalendar = $(semesterDiv).find(".calendar").eq(calendarID);
 
         // calendar event sources dat
         this.compositeEventSources = new CompositeEventSources();
@@ -130,10 +129,14 @@ class CalendarCtrl {
                     return this._isVisible();
                 },
                 (newValue, oldValue) => {
-                    if (this.calendarWatchInitRun
-                            && newValue == true) {
+                    if(newValue) {
+                        if (this.calendarWatchInitRun) {
+                            this.calendarWatchInitRun = false;
+                        } else {
+                            this.$scope.myCalendar.fullCalendar('destroy');
+                        }
+
                         this.initConfig();
-                        this.calendarWatchInitRun = false;
                     }
                 });
 
@@ -171,8 +174,10 @@ class CalendarCtrl {
                     return this.$scope.eventSources;
                 },
                 (newEventSources, oldEventSources) => {
-                    this.$scope.myCalendar.fullCalendar('destroy');
-                    this.initConfig();
+                    if (this._isVisible()) {
+                        this.$scope.myCalendar.fullCalendar('destroy');
+                        this.initConfig();
+                    }
                },
                true);
     }
