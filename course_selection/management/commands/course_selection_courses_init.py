@@ -1,6 +1,10 @@
-from django.core.management.base import BaseCommand
+import json
 
 from course_selection import scrape_all
+from course_selection.views import get_courses_by_term_code
+from django.conf import settings
+from django.core.cache import caches
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
@@ -8,3 +12,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         scrape_all.get_all_courses()
         self.stdout.write('course selection: courses scraped successfully')
+        for term_code in settings.ACTIVE_TERMS:
+            results = get_courses_by_term_code(term_code)
+            data = json.dumps(results)
+            caches['courses'].set(term_code, data)
+            self.stdout.write('course selection: cache regenerated for term ' + str(term_code))
