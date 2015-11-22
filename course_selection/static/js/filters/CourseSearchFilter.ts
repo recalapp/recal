@@ -64,6 +64,7 @@ class CourseSearchFilter extends Filter
             // is department
             else if (query.length <= 3 && CourseSearchFilter.isAlpha(query)) {
                 if (query.length < 3) {
+                    // We should never get here
                     continue;
                 }
 
@@ -78,7 +79,6 @@ class CourseSearchFilter extends Filter
                 });
             } else {
                 results = results.filter((course) => {
-                    // return CourseSearchFilter.regexTest(course, query);
                     return CourseSearchFilter.
                         caseInsensitiveStringContains(course.title, query);
                 });
@@ -89,7 +89,7 @@ class CourseSearchFilter extends Filter
     }
 
     private static preprocessQueries(input: string[]): string[] {
-        // filter out the queries that are letters && < length(3)
+        // filter out the queries that are letters && length() < 3
         return input.filter((query: string) => {
             return query.length >= 3 || !CourseSearchFilter.isAlpha(query);
         });
@@ -97,16 +97,6 @@ class CourseSearchFilter extends Filter
 
     private static breakQuery(input: string): string {
         var output;
-        // output = input.replace(/\D\d+\.?\d+\D/g, function(text){
-        //     return text.charAt(0) + ' ' + text.substring(1, text.length - 1) + ' ' + text.slice(-1);
-        // });
-        // output = output.replace(/\D\d+\.?\d+/g, function(text){
-        //     return text.charAt(0) + ' ' + text.substring(1);
-        // });
-        // output = output.replace(/\d+\.?\d+\D/g, function(text){
-        //     return text.substring(0, text.length - 1) + ' ' + text.slice(-1);
-        // });
-
         // takes care of numbers of the form x.yz, .yz are optional
         output = input.replace(/\d+\.?\d*/g, function(text) {
             return ' ' + text + ' ';
