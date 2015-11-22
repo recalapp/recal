@@ -163,6 +163,9 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 ########## TastyPie Settings END #######################
 
 # GLOBAL VARIABLES
+
+ACTIVE_TERMS = [1162, 1164]
+
 # TODO: is this still used? if not, we can remove it
 # Use helper method nice.models.get_cur_semester() to get current Semester
 # object.
