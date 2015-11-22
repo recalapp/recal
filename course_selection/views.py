@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.cache import caches
 from django.views.decorators.cache import cache_page, never_cache
 # send regardless of whether Django thinks we should
 
@@ -166,14 +167,17 @@ def get_users_json(request):
 
 @require_GET
 @never_cache
-@cache_page(60 * 60 * 24)
 def get_courses_json(request, term_code):
     """
     Returns list of courses for a semester
     Cached for a day by ?semester__term_code
     """
-    results = get_courses_by_term_code(term_code)
-    data = json.dumps(results)
+    data = caches['courses'].get(term_code)
+    if data is None:
+        results = get_courses_by_term_code(term_code)
+        data = json.dumps(results)
+        # add doesn't try to set if already exists (i.e. races)
+        caches['courses'].add(term_code, data)
     return HttpResponse(data, 'application/json', status=200)
 
 

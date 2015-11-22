@@ -48,6 +48,11 @@ def get_cache():
                 'LOCATION': 'my_cache_table',
                 'TIMEOUT': 60 * 60
             },
+            'courses': {
+                'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+                'LOCATION': 'courses_cache_table',
+                'TIMEOUT': 60 * 60
+            },
             'memcache': {
                 'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
                 'TIMEOUT': 500,
@@ -60,6 +65,9 @@ def get_cache():
     except:
         return {
             'default': {
+                'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+            },
+            'courses': {
                 'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
             }
         }
