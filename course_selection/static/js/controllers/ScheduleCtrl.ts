@@ -85,6 +85,10 @@ class ScheduleCtrl {
 
     // TODO: refactor the modals for deleting and changing a modal
     public changeScheduleTitle(index: number) {
+        if (this.$scope.selectedSchedule != index) {
+            return;
+        }
+
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/changeScheduleTitleModal.html',
             controller: ChangeScheduleTitleModalCtrl,
@@ -106,6 +110,10 @@ class ScheduleCtrl {
     }
 
     public confirmRemoveSchedule(index: number) {
+        if (this.$scope.selectedSchedule != index) {
+            return;
+        }
+        
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/removeScheduleModal.html',
             controller: RemoveScheduleModalCtrl,
