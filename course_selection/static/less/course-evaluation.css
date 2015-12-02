@@ -1,7 +1,0 @@
-/*
- * make course evaluation fill up the entire viewport
- */
-#courseEvaluation {
-  height: 100vh;
-  width: 100vw;
-}
