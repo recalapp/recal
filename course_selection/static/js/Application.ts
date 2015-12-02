@@ -29,6 +29,12 @@ nice.app.config((localStorageServiceProvider) => {
 })
 .config(($animateProvider) => {
     $animateProvider.classNameFilter(/^(?:(?!ng-animate-disabled).)*$/);
+})
+.config(($mdThemingProvider) => {
+    // TODO: configure the theme
+    $mdThemingProvider.theme('default')
+    .primaryPalette('indigo')
+    .accentPalette('pink');
 });
 
 export = nice;
