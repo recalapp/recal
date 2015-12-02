@@ -87,20 +87,22 @@ class FriendCtrl {
             this.$scope.data.allUsers = users;
         });
         this.$scope.data.friends = this.userService.user.friends;
-        this.$scope.data.receivedFriendRequests = this.friendRequestResource.query({"to_user__netid" : username});
 
-        this.friendRequestResource.query({"from_user__netid" : username})
-        .$promise.then((sendReqs: IFriendRequestResource[]) => {
-            this.userService.all_users.then((all_users) => {
-                for (var i = 0; i < sendReqs.length; i++) {
-                    Utils.removeFromList(sendReqs[i].to_user, all_users, Utils.userComp);
-                }
+        // TODO: disable friends feature for now
+        // this.$scope.data.receivedFriendRequests = this.friendRequestResource.query({"to_user__netid" : username});
 
-                this.$scope.data.allUsers = all_users;
-            });
-
-            this.$scope.data.sentFriendRequests = sendReqs;
-        });
+        // this.friendRequestResource.query({"from_user__netid" : username})
+        // .$promise.then((sendReqs: IFriendRequestResource[]) => {
+        //     this.userService.all_users.then((all_users) => {
+        //         for (var i = 0; i < sendReqs.length; i++) {
+        //             Utils.removeFromList(sendReqs[i].to_user, all_users, Utils.userComp);
+        //         }
+        //
+        //         this.$scope.data.allUsers = all_users;
+        //     });
+        //
+        //     this.$scope.data.sentFriendRequests = sendReqs;
+        // });
     }
 
     public search(query:string) {
