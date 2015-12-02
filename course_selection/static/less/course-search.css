@@ -1,0 +1,339 @@
+/* all course panels, including enrolled and search results */
+.course-panel {
+  min-height: 5vh;
+  width: 100%;
+  margin-top: 0px !important;
+  position: relative;
+  overflow: visible;
+  border-radius: 0 !important;
+  border-bottom: none;
+}
+/* enrolled panels are marked with a left bar */
+.enrolled-course-panel {
+  border-left-width: 4px;
+  border-right-width: 0;
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+.course-panel-title {
+  text-align: left;
+  padding-left: 2px;
+  width: 70%;
+}
+.course-panels-container {
+  position: relative;
+  min-height: 0;
+  overflow-y: auto;
+}
+.enrolled-courses-container {
+  position: relative;
+  min-height: 5vh;
+  overflow-y: auto;
+}
+#searchBarContainer {
+  background-color: #f1f2f2;
+  height: 4vh;
+  margin-bottom: 1vh;
+  position: relative;
+}
+.search-button {
+  position: absolute;
+  min-height: 0;
+  height: 100%;
+  min-width: 0;
+  width: 10%;
+  margin: 0;
+  border-radius: 0;
+}
+.search-button .fa {
+  font-size: 18px;
+}
+.course-search-button {
+  position: absolute;
+  min-height: 0;
+  height: 100%;
+  min-width: 0;
+  width: 10%;
+  margin: 0;
+  border-radius: 0;
+  right: 0;
+}
+.course-search-button .fa {
+  font-size: 18px;
+}
+.friend-search-button {
+  position: absolute;
+  min-height: 0;
+  height: 100%;
+  min-width: 0;
+  width: 10%;
+  margin: 0;
+  border-radius: 0;
+  right: 10%;
+}
+.friend-search-button .fa {
+  font-size: 18px;
+}
+.searchBar {
+  padding: 0px 0px 0px 10px;
+  color: #bbbbbb;
+  height: 4vh;
+  font-size: 13px;
+  border-radius: 4px;
+  border-width: 0px;
+  width: 100%;
+}
+.searchBar:focus {
+  outline: none;
+  color: #404040;
+}
+.searchBar:focus::-webkit-input-placeholder {
+  color: transparent;
+}
+#unenrolledCourses {
+  min-height: 0;
+  height: 100%;
+}
+#loading-message-container {
+  position: relative;
+}
+.loading-courses-message {
+  display: inline;
+  margin-left: 15px;
+}
+#enrolledCourses {
+  height: 100%;
+}
+.course-listings {
+  font-size: 13px;
+  margin-bottom: 0;
+}
+.course-panel-heading {
+  height: 6vh;
+}
+.course-title {
+  font-size: 13px;
+  margin-bottom: 0px;
+}
+.highlighted {
+  font-weight: bold;
+}
+.course-tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: calc(39px);
+}
+.unconfirmed {
+  background: url('../images/stripe.png') repeat #c0c0c0;
+  opacity: 0.8;
+  border-left-color: transparent !important;
+}
+.course-info {
+  position: absolute;
+  top: 25%;
+  right: 0;
+  height: 50%;
+  max-height: 30px;
+  overflow: visible;
+  z-index: 10;
+}
+.absolute-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+}
+.absolute-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+.rightmost-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  right: 0;
+}
+.rightmost-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+.second-rightmost-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  right: 10%;
+}
+.second-rightmost-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+.third-rightmost-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  right: 20%;
+}
+.third-rightmost-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+.add-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  right: 0;
+  background-color: green;
+}
+.add-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+.minus-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  right: 0;
+  background-color: red;
+  z-index: 10;
+}
+.minus-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+.eval-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  right: 20%;
+  background-color: orange;
+  z-index: 10;
+}
+.eval-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+.more-info-tag {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  right: 10%;
+  background-color: gray;
+  z-index: 10;
+}
+.more-info-tag i {
+  top: 25%;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+}
+.tags-visible {
+  z-index: 100;
+}
+.export-icon {
+  cursor: pointer;
+}
+.course-panel.ng-move,
+.course-panel.ng-enter,
+.course-panel.ng-leave {
+  -webkit-transition: 200ms linear all;
+  transition: 200ms linear all;
+}
+.course-panel.ng-leave.ng-leave-active,
+.course-panel.ng-move,
+.course-panel.ng-enter {
+  opacity: 0.5;
+  left: -20vh;
+}
+.course-panel.ng-leave,
+.course-panel.ng-move.ng-move-active,
+.course-panel.ng-enter.ng-enter-active {
+  opacity: 1;
+  left: 0;
+}
+md-pagination-wrapper {
+  height: 38px;
+}
+.md-tab {
+  padding: 6px 24px 6px 24px;
+}
+md-tabs-canvas {
+  height: 38px;
+}
+/*
+.ng-hide-add {
+    -webkit-transition:0.1s linear all;
+    -moz-transition:0.1s linear all;
+    -o-transition:0.1s linear all;
+    transition:0.1s linear all;
+    opacity: 1;
+}
+.ng-hide-add.ng-hide-add-active {
+    opacity: 0;
+}
+
+.ng-hide-remove {
+    -webkit-transition:0.1s linear all;
+    -moz-transition:0.1s linear all;
+    -o-transition:0.1s linear all;
+    transition:0.1s linear all;
+    opacity: 0;
+}
+.ng-hide-remove.ng-hide-remove-active {
+    opacity: 1;
+}
+*/

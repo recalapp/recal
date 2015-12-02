@@ -1,0 +1,35 @@
+.modal-dialog {
+  width: 40vw;
+}
+.modal-content {
+  width: 45vw;
+}
+.center-modal {
+  position: fixed;
+  top: 40%;
+  z-index: 1050;
+  width: auto;
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+  background-color: #333333;
+  opacity: 0.8;
+}
+.confirm-message {
+  display: inline;
+}
+.confirm-message > span {
+  font-weight: bold;
+}
+.new-schedule-name-input {
+  border-width: 1px;
+  outline: none;
+}
+.btn {
+  border-radius: 0;
+}

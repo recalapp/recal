@@ -31,7 +31,7 @@
     "chai": "~1.10.0",
     "flatstrap": "~3.3.1",
     "fontawesome": "~4.0.3",
-    "fullcalendar": "2.2.4",
+    "fullcalendar": "2.5.0",
     "imagesloaded": "3.0.0",
     "jquery-ui": "~1.11.0",
     "jquery.cookie": "~1.4.1",
