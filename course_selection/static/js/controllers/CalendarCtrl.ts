@@ -38,7 +38,8 @@ class CalendarCtrl {
         allDaySlot: false,
         minTime: '08:00',
         maxTime: '23:00',
-        timeFormat: '',
+        timeFormat: 'H:mm',
+        displayEventTime: true,
         slotEventOverlap: false,
     };
 
