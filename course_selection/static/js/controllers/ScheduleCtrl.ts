@@ -20,6 +20,7 @@ class ScheduleCtrl {
 
     private schedules;
     private semester;
+    private prevScheduleIdx: number;
 
     constructor(
             private $scope,
@@ -37,6 +38,13 @@ class ScheduleCtrl {
         this._restoreUserSchedules();
         this.$scope.schedules = this.schedules;
         this._setSelectedSchedule(-1);
+        this.prevScheduleIdx = -1;
+
+        this.$scope.$watch(() => {
+            return this.$scope.selectedSchedule;
+        }, (_newVal, oldVal) => {
+            this.prevScheduleIdx = oldVal;
+        });
 
         hotkeys.add({
             combo: 'mod+f',
@@ -48,7 +56,6 @@ class ScheduleCtrl {
                 //$('.searchBar').filter(':visible').focus();
             }
         });
-
     }
 
     private _restoreUserSchedules() {
@@ -116,7 +123,7 @@ class ScheduleCtrl {
         });
     }
 
-    public askForNewScheduleName(prevIdx: number) {
+    public askForNewScheduleName() {
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/newScheduleModal.html',
             controller: NewScheduleModalCtrl,
@@ -133,7 +140,7 @@ class ScheduleCtrl {
         modalInstance.result.then((name) => {
             this._createSchedule(name);
         }, () => {
-            this._setSelectedSchedule(prevIdx);
+            this._setSelectedSchedule(this.prevScheduleIdx);
         });
     }
 

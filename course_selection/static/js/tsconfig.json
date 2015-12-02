@@ -75,5 +75,8 @@
         "./services/Services.ts",
         "./services/UserService.ts",
         "./Utils.ts"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }

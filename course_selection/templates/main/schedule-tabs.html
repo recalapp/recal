@@ -3,9 +3,7 @@
 <div ng-controller="ScheduleCtrl as scheduleCtrl">
     <md-tabs md-center-tabs="false" md-no-ink md-dynamic-height md-autoselect
     md-selected="selectedSchedule">
-    <md-tab ng-repeat="schedule in schedules"
-         md-on-select="scheduleCtrl.onSelect($index)"
-    >
+    <md-tab ng-repeat="schedule in schedules">
         <md-tab-label>
             <span
             ng-mouseover="showButtons=true"
@@ -28,7 +26,7 @@
         </div>
         </md-tab-body>
     </md-tab>
-    <md-tab md-on-select="scheduleCtrl.askForNewScheduleName(selectedSchedule)">
+    <md-tab md-on-select="scheduleCtrl.askForNewScheduleName()">
         <md-tab-label>
             <i class="material-icons">add</i>
         </md-tab-label>
