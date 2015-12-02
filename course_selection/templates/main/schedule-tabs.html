@@ -5,17 +5,14 @@
     md-selected="selectedSchedule">
     <md-tab ng-repeat="schedule in schedules">
         <md-tab-label>
-            <span
-            ng-mouseover="showButtons=true"
-            ng-mouseleave="showButtons=false">
-            {{ schedule.scheduleObject.title }}
-            <i ng-show="showButtons"
+            <span> {{ schedule.scheduleObject.title }} </span>
+            <i
+            ng-style="{opacity: selectedSchedule==$index ? '1' : '0'}"
             ng-click="scheduleCtrl.changeScheduleTitle($index)"
             class="fa fa-edit edit-icon"></i>
             <i ng-click="scheduleCtrl.confirmRemoveSchedule($index)"
-                ng-show="scheduleCtrl.canRemove() && showButtons"
+                ng-style="{opacity: (scheduleCtrl.canRemove() && selectedSchedule==$index) ? 1 : 0}"
                 class="fa fa-times remove-icon"></i>
-            </span>
         </md-tab-label>
         <md-tab-body>
             <div layout="row" layout-fill>
