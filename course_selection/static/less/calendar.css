@@ -37,7 +37,7 @@
 .fc-time-grid-event .fc-title {
   font-weight: bold;
 }
-.fc-slats td {
+.fc-time-grid .fc-slats td {
   height: 2.6vh;
 }
 .fc-time-grid .fc-slats .fc-minor td {
