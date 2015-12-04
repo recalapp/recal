@@ -33,7 +33,7 @@ niceDirectives.addDirective('autoFocus', ['$timeout', ($timeout) => {
                 if (trigger) {
                     $timeout(() => {
                         element[0].focus();
-                    });
+                    }, 500);
                 }
             });
         }
@@ -95,7 +95,7 @@ niceDirectives.addDirective("qtip", [function () {
 
             var text = () => {
                 return element.attr('content') || null;
-            } 
+            }
 
             var title = () => {
                 return element.attr('qtip-title') || null;
