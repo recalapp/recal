@@ -92,7 +92,7 @@ class SemCtrl {
     private canAdd(): boolean {
         return this.getNewSemesterTermCode() <= SemCtrl.LAST_AVAILABLE_TERM_CODE;
     }
- 
+
     // TODO: this will only give you semesters after
     // the last existing semester
     // for example, if the only semester the user has is 1415Fall,
@@ -138,11 +138,11 @@ class SemCtrl {
         var semester = this.semesterIsFall(termCode) ? "Fall" : "Spring";
         return "" + startYear + "-" + endYear + " " + semester;
     }
- 
+
     public addSemester(semester?) {
         this.setAllInactive();
         this.addNewSemester(semester);
-    }    
+    }
 
     // term codes for the fall semester ends with 2
     // '''''''''''''''''''spring semester ends with 4

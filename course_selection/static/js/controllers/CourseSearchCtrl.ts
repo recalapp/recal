@@ -6,6 +6,7 @@ import ICourse = require('../interfaces/ICourse');
 import Course = require('../models/Course');
 import SearchCtrl = require('./SearchCtrl');
 import IScheduleManager = require('../interfaces/IScheduleManager');
+import Utils = require('../Utils');
 
 'use strict';
 
@@ -35,6 +36,13 @@ class CourseSearchCtrl {
         this._scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
         this.$scope.data = this._scheduleManager.getData();
         this.$scope.filteredCourses = this.$scope.data.courses;
+
+        var scheduleID = Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
+        this.$scope.enrolledPanelsContainer = $(this.$scope.semesterDiv).find(".enrolled-courses-container").eq(scheduleID);
+        this.$scope.searchPanelsContainer = $(this.$scope.semesterDiv)
+        .find("#searchResultsContainer")
+        .find(".course-panels-container")
+        .eq(scheduleID);
 
         this.$scope.$watch(() => {
             return this.$scope.query;
@@ -120,27 +128,27 @@ class CourseSearchCtrl {
         var SEARCH_CONTAINER_HEIGHT = '45vh';
         var MAX_HEIGHT = '70vh';
 
-        var enrolledPanelsContainer = $(".enrolled-courses-container :visible")[0];
-        var searchPanelsContainer = $(".course-panels-container :visible")[0];
+        var enrolledIsVisible = Utils.isVisible(this.$scope.enrolledPanelsContainer);
+        var searchIsVisible = Utils.isVisible(this.$scope.searchPanelsContainer);
 
         // we clip at least one of the panel containers if we exceed the threshold
         if (numEnrolled + numSearchResults > THRESHOLD)
         {
-            if (enrolledPanelsContainer && searchPanelsContainer) {
-                enrolledPanelsContainer.style.maxHeight = ENROLLED_CONTAINER_HEIGHT;
-                searchPanelsContainer.style.maxHeight = SEARCH_CONTAINER_HEIGHT;
-            } else if (enrolledPanelsContainer) {
-                enrolledPanelsContainer.style.maxHeight = MAX_HEIGHT;
-            } else if (searchPanelsContainer) {
-                searchPanelsContainer.style.maxHeight = MAX_HEIGHT;
+            if (enrolledIsVisible && searchIsVisible) {
+                this.$scope.enrolledPanelsContainer[0].style.maxHeight = ENROLLED_CONTAINER_HEIGHT;
+                this.$scope.searchPanelsContainer[0].style.maxHeight = SEARCH_CONTAINER_HEIGHT;
+            } else if (enrolledIsVisible) {
+                this.$scope.enrolledPanelsContainer[0].style.maxHeight = MAX_HEIGHT;
+            } else if (searchIsVisible) {
+                this.$scope.searchPanelsContainer[0].style.maxHeight = MAX_HEIGHT;
             }
         } else {
             // reset things
-            if (enrolledPanelsContainer) {
-                enrolledPanelsContainer.style.maxHeight= MAX_HEIGHT;
+            if (enrolledIsVisible) {
+                this.$scope.enrolledPanelsContainer[0].style.maxHeight= MAX_HEIGHT;
             }
-            if (searchPanelsContainer) {
-                searchPanelsContainer.style.maxHeight= MAX_HEIGHT;
+            if (searchIsVisible) {
+                this.$scope.searchPanelsContainer[0].style.maxHeight= MAX_HEIGHT;
             }
         }
     }

@@ -1,9 +1,11 @@
 /// <reference path='../../ts/typings/tsd.d.ts' />
 
 import Schedule = require('../models/Schedule');
+import Semester = require('../models/Semester');
 import RemoveScheduleModalCtrl = require('./RemoveScheduleModalCtrl');
 import ChangeScheduleTitleModalCtrl = require('./ChangeScheduleTitleModalCtrl');
 import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
+import Utils = require('../Utils');
 
 'use strict';
 
@@ -32,6 +34,10 @@ class ScheduleCtrl {
             private scheduleManagerService
             ) {
         this.semester = this.$scope.$parent.semester;
+        var semesterID = Utils.idxInList(
+            this.$scope.semester, this.$scope.semesters, Semester.comp);
+        this.$scope.semesterDiv =
+            $("#semesterContainer .tab-content").eq(0).children().eq(semesterID);
         this.$scope.canAddNewSchedules = this.semester.current;
 
         this.schedules = [];
@@ -113,7 +119,7 @@ class ScheduleCtrl {
         if (this.$scope.selectedSchedule != index) {
             return;
         }
-        
+
         var modalInstance = this.$modal.open({
             templateUrl: '/static/templates/removeScheduleModal.html',
             controller: RemoveScheduleModalCtrl,

@@ -2,7 +2,6 @@
 import IColorPalette = require('../interfaces/IColorPalette');
 import ICourse = require('../interfaces/ICourse');
 import ISection = require('../interfaces/ISection');
-import Semester = require('../models/Semester');
 import CourseEventSources = require('../models/CourseEventSources');
 import IEventSources = require('../interfaces/IEventSources');
 import CompositeEventSources = require('../models/CompositeEventSources');
@@ -87,14 +86,9 @@ class CalendarCtrl {
         this.scheduleManager = (<any>this.$scope.$parent).schedule.scheduleManager;
         this.$scope.data = this.scheduleManager.getData();
 
-        var semesterID = Utils.idxInList(
-            this.$scope.semester, this.$scope.semesters, Semester.comp);
-        var semesterDiv =
-            $("#semesterContainer .tab-content").eq(0).children().eq(semesterID);
-        var calendarID =
+        var scheduleID =
             Utils.idxInList(this.$scope.schedule, this.$scope.schedules);
-
-        this.$scope.myCalendar = $(semesterDiv).find(".calendar").eq(calendarID);
+        this.$scope.myCalendar = $(this.$scope.semesterDiv).find(".calendar").eq(scheduleID);
 
         // calendar event sources dat
         this.compositeEventSources = new CompositeEventSources();
@@ -127,7 +121,7 @@ class CalendarCtrl {
         // only initialize config if this schedule is visible
         this.$scope.$watch(
                 () => {
-                    return this._isVisible();
+                    return Utils.isVisible(this.$scope.myCalendar);
                 },
                 (newValue, oldValue) => {
                     if(newValue) {
@@ -175,16 +169,12 @@ class CalendarCtrl {
                     return this.$scope.eventSources;
                 },
                 (newEventSources, oldEventSources) => {
-                    if (this._isVisible()) {
+                    if (Utils.isVisible(this.$scope.myCalendar)) {
                         this.$scope.myCalendar.fullCalendar('destroy');
                         this.initConfig();
                     }
                },
                true);
-    }
-
-    private _isVisible() {
-        return this.$scope.myCalendar && this.$scope.myCalendar.is(":visible");
     }
 
     private initConfig() {

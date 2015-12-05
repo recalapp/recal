@@ -34,6 +34,10 @@ class Utils {
     public static isInList(element, list, comp?): boolean {
         return this.idxInList(element, list, comp) != Utils.NOT_FOUND;
     }
+
+    public static isVisible(element): boolean {
+        return element && element.is(":visible");
+    }
 }
 
 export = Utils;
