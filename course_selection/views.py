@@ -4,7 +4,7 @@ from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.cache import caches
-from django.views.decorators.cache import cache_page, never_cache
+from django.views.decorators.cache import cache_page
 # send regardless of whether Django thinks we should
 
 from view_cache_utils import cache_page_with_prefix
@@ -166,7 +166,7 @@ def get_users_json(request):
 
 
 @require_GET
-@never_cache
+@cache_page(60 * 30)  # cache for 30 minutes
 def get_courses_json(request, term_code):
     """
     Returns list of courses for a semester
