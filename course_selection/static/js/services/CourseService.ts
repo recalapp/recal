@@ -12,31 +12,19 @@ class CourseService {
 
     public static $inject = [
         '$q',
-        '$http',
-        'localStorageService'
+        '$http'
     ];
 
-    constructor(
-        private $q,
-        private $http,
-        private localStorageService) {
-        }
+    constructor(private $q, private $http) {
+    }
 
-        // cache into local storage service
-        // wrap around with a promise
-        public getBySemester(termCode: string) {
-            // var temp = this.localStorageService.get('courses-' + termCode);
-            // if (temp != null && Array.isArray(temp)) {
-            //     return this.$q.when(temp);
-            // } else {
-            return this.$http.get(CourseService.API_URL + termCode).then((response) => {
-                // disabling local storage for now, since it basically acts as a
-                // cache with indefinite timeout
-                // this.localStorageService.set('courses-' + termCode, response.data);
-                return response.data;
-            });
-        // }
-        }
+    public getBySemester(termCode: string) {
+        return this.$http.get(CourseService.API_URL + termCode, {
+            cache: true
+        }).then((response) => {
+            return response.data;
+        });
+    }
 }
 
 export = CourseService;
