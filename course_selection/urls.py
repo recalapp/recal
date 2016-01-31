@@ -43,4 +43,6 @@ urlpatterns = patterns(
 
     url(r'^api/worksheet/(?P<schedule_id>\d+)$',
         views.get_worksheet_pdf, name='get-worksheet-pdf'),
+
+    url(r'^ical/(?P<cal_id>).*\.ics$', views.ical_feed, name='ical-feed'),
 )
