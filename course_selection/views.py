@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.cache import caches
-from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_page, never_cache
 from django.core.urlresolvers import reverse
 # send regardless of whether Django thinks we should
 
@@ -428,7 +428,16 @@ def ical_feed(request, cal_id):
     return HttpResponse(ical, 'text/calendar', status=200)
 
 import uuid
-def get_ical_url_for_schedule(request, schedule_id, make_new=False):
+
+@login_required
+def get_ical_url_for_schedule(request, schedule_id):
+    return get_ical_url(request, schedule_id, make_new=False)
+
+@login_required
+def regenerate_ical_url_for_schedule(request, schedule_id):
+    return get_ical_url(request, schedule_id, make_new=True)
+
+def get_ical_url(request, schedule_id, make_new=False):
     """
     Returns ical feed url for a particular schedule
     Parameter: schedule_id
@@ -437,6 +446,10 @@ def get_ical_url_for_schedule(request, schedule_id, make_new=False):
     Then we return the url with it
     """
     schedule = Schedule.objects.get(Q(id=schedule_id))
+    # Confirm ownership
+    if schedule.user.netid != request.user.username:
+        return HttpResponseForbidden("Forbidden")
+
     if make_new:
         schedule.ical_uuid = uuid.uuid4()
         schedule.save()
