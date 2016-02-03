@@ -341,6 +341,7 @@ from time import time
 from dateutil import parser as dt_parser
 import pytz
 import re
+import uuid
 
 @require_GET
 @never_cache
@@ -354,7 +355,7 @@ def ical_feed(request, cal_id):
     cal.add('prodid', '-//Recal Course Planner//recal.io//')
     cal.add('version', '2.0')
 
-    sched = Schedule.objects.get(Q(ical_uuid=cal_id))
+    sched = Schedule.objects.get(Q(ical_uuid=uuid.UUID(cal_id)))
     semester = sched.semester
 
     cal.add('X-WR-CALNAME', 'ReCal %s (%s)' % (unicode(semester), sched.user.netid))
@@ -385,7 +386,7 @@ def ical_feed(request, cal_id):
     for course_obj in json.loads(sched.enrollments):
         #course = Course.objects.get(Q(id=course_obj['course_id'])) # course_obj is json object; course is model
         for section_id in course_obj['sections']:
-            section = Section.objects.get(Q(id=section_id))
+            section = Section.objects.get(Q(pk=section_id))
             for meeting in section.meetings.all():
                 event = Event()
                 event.add('summary', unicode(section)) # name of the event
@@ -427,7 +428,7 @@ def ical_feed(request, cal_id):
     #print filtered
     return HttpResponse(ical, 'text/calendar', status=200)
 
-import uuid
+
 
 @login_required
 def get_ical_url_for_schedule(request, schedule_id):
@@ -445,7 +446,7 @@ def get_ical_url(request, schedule_id, make_new=False):
     If make_new, then we create a new UUID for the schedule.
     Then we return the url with it
     """
-    schedule = Schedule.objects.get(Q(id=schedule_id))
+    schedule = Schedule.objects.get(Q(pk=schedule_id))
     # Confirm ownership
     if schedule.user.netid != request.user.username:
         return HttpResponseForbidden("Forbidden")
@@ -453,6 +454,6 @@ def get_ical_url(request, schedule_id, make_new=False):
     if make_new:
         schedule.ical_uuid = uuid.uuid4()
         schedule.save()
-    return request.build_absolute_uri(reverse('ical-feed', args=(schedule.ical_uuid,)))
+    return HttpResponse(request.build_absolute_uri(reverse('ical-feed', args=(str(schedule.ical_uuid),))))
 
 

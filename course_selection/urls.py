@@ -44,7 +44,8 @@ urlpatterns = patterns(
     url(r'^api/worksheet/(?P<schedule_id>\d+)$',
         views.get_worksheet_pdf, name='get-worksheet-pdf'),
 
-    url(r'^ical/(?P<cal_id>).*\.ics$', views.ical_feed, name='ical-feed'),
-    url(r'^icalapi/geturl/(?P<schedule_id>)\d+$', views.get_ical_url_for_schedule, name='ical-get-url')
-    url(r'^icalapi/regenerate/(?P<schedule_id>)\d+$', views.regenerate_ical_url_for_schedule, name='ical-regenerate-url')
+    url(r'^ical/(?P<cal_id>.*)\.ics$', views.ical_feed, name='ical-feed'),
+    url(r'^icalapi/geturl/(?P<schedule_id>\d+)$', views.get_ical_url_for_schedule, name='ical-get-url'),
+    url(r'^icalapi/regenerate/(?P<schedule_id>\d+)$', views.regenerate_ical_url_for_schedule, name='ical-regenerate-url'),
+
 )
