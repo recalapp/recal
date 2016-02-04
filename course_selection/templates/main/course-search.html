@@ -48,7 +48,7 @@
     <div id="enrolledCoursesContainer">
         <div ng-show="data.enrolledCourses.length > 0">
             <h4 class="row">{{data.enrolledCourses.length}} Enrolled Courses
-                <a target="_blank" ng-href="javascript:scheduleCtrl.exportToGoogleCalendar({{data.schedule.id}})" class="calexport-icon">
+                <a target="_blank" ng-click="courseSearchCtrl.exportToGoogleCalendar(data.schedule.id)" class="calexport-icon">
                     <i class="material-icons pull-right">
                         <md-tooltip md-direction="left">
                             Export to Google Calendar

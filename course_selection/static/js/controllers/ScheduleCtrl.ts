@@ -5,7 +5,6 @@ import Semester = require('../models/Semester');
 import RemoveScheduleModalCtrl = require('./RemoveScheduleModalCtrl');
 import ChangeScheduleTitleModalCtrl = require('./ChangeScheduleTitleModalCtrl');
 import NewScheduleModalCtrl = require('./NewScheduleModalCtrl');
-import ExportScheduleModalCtrl = require('./ExportScheduleModalCtrl');
 import Utils = require('../Utils');
 
 'use strict';
@@ -199,28 +198,7 @@ class ScheduleCtrl {
     }
 
 
-    // export feature
-    public exportToGoogleCalendar(index: number) {
-      if (this.$scope.selectedSchedule != index) {
-          return;
-      }
-        var modalInstance = this.$modal.open({
-            templateUrl: '/static/templates/exportModal.html',
-            controller: ExportScheduleModalCtrl,
-            keyboard: true,
-            resolve: {
-                id: () => {
-                    return this.schedules[index].scheduleObject.id;
-                }
-            },
-            backdropClass: 'modal-backdrop',
-            windowClass: 'center-modal'
-        });
 
-        modalInstance.result.then(() => {
-
-        });
-    }
 
 
 }

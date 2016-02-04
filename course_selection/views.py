@@ -355,7 +355,10 @@ def ical_feed(request, cal_id):
     cal.add('prodid', '-//Recal Course Planner//recal.io//')
     cal.add('version', '2.0')
 
-    sched = Schedule.objects.get(Q(ical_uuid=uuid.UUID(cal_id)))
+    try:
+        sched = Schedule.objects.get(Q(ical_uuid=uuid.UUID(cal_id)))
+    except Schedule.DoesNotExist:
+        return HttpResponseNotFound("Not Found")
     semester = sched.semester
 
     cal.add('X-WR-CALNAME', 'ReCal %s (%s)' % (unicode(semester), sched.user.netid))
@@ -446,7 +449,10 @@ def get_ical_url(request, schedule_id, make_new=False):
     If make_new, then we create a new UUID for the schedule.
     Then we return the url with it
     """
-    schedule = Schedule.objects.get(Q(pk=schedule_id))
+    try:
+        schedule = Schedule.objects.get(Q(pk=schedule_id))
+    except Schedule.DoesNotExist:
+        return HttpResponseNotFound("Not Found")
     # Confirm ownership
     if schedule.user.netid != request.user.username:
         return HttpResponseForbidden("Forbidden")
