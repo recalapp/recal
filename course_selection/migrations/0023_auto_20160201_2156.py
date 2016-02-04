@@ -5,12 +5,6 @@ from django.db import migrations, models
 import uuid
 
 
-def gen_uuid(apps, schema_editor):
-    Schedule = apps.get_model('course_selection', 'Schedule')
-    for row in Schedule.objects.all():
-        row.ical_uuid = uuid.uuid4()
-        row.save()
-
 
 class Migration(migrations.Migration):
     """
@@ -28,13 +22,6 @@ class Migration(migrations.Migration):
             model_name='schedule',
             name='ical_uuid',
             field=models.UUIDField(default=uuid.uuid4, null=True),
-        ),
-        # omit reverse_code=... if you don't want the migration to be reversible.
-        migrations.RunPython(gen_uuid, reverse_code=migrations.RunPython.noop),
-        migrations.AlterField(
-            model_name='schedule',
-            name='ical_uuid',
-            field=models.UUIDField(default=uuid.uuid4, unique=True),
         ),
         migrations.AlterField(
             model_name='nice_user',
