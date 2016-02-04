@@ -149,6 +149,11 @@ class Course_Listing(models.Model):
 
 
 class Schedule(models.Model):
+    """
+    NOTE: ical_uuid must be migrated in a careful way to create unique field.
+    See https://github.com/django/django/commit/1f9e44030e9c5300b97ef7b029f482c53a66f13b and https://docs.djangoproject.com/en/1.9/howto/writing-migrations/#migrations-that-add-unique-fields
+    It is done in 0023_auto_....py
+    """
     # relationships
     semester = models.ForeignKey(Semester)
     user = models.ForeignKey('Nice_User')
