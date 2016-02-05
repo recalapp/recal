@@ -1,9 +1,34 @@
 <div class="modal-body">
-<form name="myForm">
-    <div style="display:inline"> Create a new schedule for {{ id }}: </div>
+<script>
+// http://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript?page=1&tab=active#tab-top
+var copyBtn = document.querySelector('#copyButton');
 
-    <input class='new-schedule-name-input' auto-focus focus='true' ng-model='url' type='text' value='{{ url }}' onclick="this.setSelectionRange(0, this.value.length)" readonly='readonly' />​
-    <button class="btn btn-success" ng-click="ok()">Done</button>
+copyBtn.addEventListener('click', function(event) {
+  var copyArea = document.querySelector('#copyArea');
+  copyArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Copying text command was ' + msg);
+  } catch (err) {
+    console.log('Oops, unable to copy');
+  }
+});
+</script>
+	<p><b>Add your ReCal schedule to Google Calendar (or another calendar app):</b></p>
+	<p>You can subscribe to your ReCal schedule from Google Calendar for an always up-to-date copy of your schedule on your mobile device or laptop. Here's how to set it up: </p>
+	<p>Copy the URL below. Then go to <a href="http://calendar.google.com" target='_blank'>Google Calendar</a> and click the arrow button next to "Other calendars" on the left-hand side. Paste the URL into the box that pops up, and hit "Add Calendar."</p>
+
+<form name="myForm">
+    <div style="display:inline"> Your iCalendar link: </div>
+
+    <input class='new-schedule-name-input' auto-focus focus='true' ng-model='url' type='text' value='{{ url }}' onclick="this.setSelectionRange(0, this.value.length)" readonly='readonly' id='copyArea' />​
+    <button class="btn btn-primary" id="copyButton">Copy</button>
     <button class="btn" ng-click="regenerate()">Regenerate</button>
+
+    <button class="btn btn-success" ng-click="ok()">Done</button>
 </form>
+    <p>Keep your URL private! It allows anyone to see your schedule. (Need a new URL? Hit <i>Regenerate</i>.)</p>
+	<p>Note: Google Calendar syncs with ReCal approximately once a day. You can force a sync by clicking Regenerate and adding the new calendar URL to Google Calendar the same way as above.</p>
 </div>
