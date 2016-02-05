@@ -404,7 +404,7 @@ def ical_feed(request, cal_id):
                     if diff < 0:
                         diff += 7 # add a week
                     dayofweek_relative_to_semester_start.append(diff)
-                assert all([d > 0 for d in dayofweek_relative_to_semester_start]) # all must be positive
+                assert all([d >= 0 for d in dayofweek_relative_to_semester_start]) # all must be positive
                 first_meeting_dayofweek = min(dayofweek_relative_to_semester_start) # a T,Th class will have first meeting on T if semester starts on M, or on Th if semester starts on Wed.
 
                 ## get meeting time
