@@ -36,9 +36,9 @@
     "jquery-ui": "~1.11.0",
     "jquery.cookie": "~1.4.1",
     "moment-timezone": "~0.2.0",
+    "moment": "~2.7.0",
     "momentjs": "~2.7.0",
     "requirejs-text": "~2.0.12",
-    "requirejs": "~2.1.14",
-    "angular": "~1.4.9"
+    "requirejs": "~2.1.14"
   }
 }
