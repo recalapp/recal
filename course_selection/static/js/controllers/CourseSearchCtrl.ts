@@ -224,7 +224,7 @@ class CourseSearchCtrl {
                   }
               },
               backdropClass: 'modal-backdrop',
-              windowClass: 'center-modal',
+              //windowClass: 'center-modal',
               size: 'lg'
           });
 
