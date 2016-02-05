@@ -398,6 +398,9 @@ def ical_feed(request, cal_id):
                 ## compute first meeting date.
                 # days when the class meets. convert them to day difference relative to first date of the semester
                 daysofweek = [builtin_days[i] for i in meeting.days.split() ] # split by space. format: 0-4. monday is 0, friday is 4. matches python weekday() format.
+                if len(daysofweek) == 0:
+                    # no meetings -- skip
+                    continue
                 dayofweek_relative_to_semester_start = []
                 for dow in daysofweek:
                     diff = dow - day_of_week_semester_start
