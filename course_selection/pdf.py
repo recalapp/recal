@@ -7,7 +7,7 @@ import subprocess
 from fdfgen import forge_fdf
 
 from django.template import Template, loader
-from django.template.loader import find_template, LoaderOrigin
+from django.template.loader import get_template as gtl, LoaderOrigin
 
 
 class PdfTemplateError(Exception):
@@ -88,7 +88,7 @@ def get_template(template_name):
     # Ignore UnicodeError, due to PDF file read
     codecs.register_error('strict', fake_strict_errors)
     # --//--
-    template, origin = find_template(template_name)
+    template = gtl(template_name)
     # Loading hacks
     codecs.register_error('strict', strict_errors)
     # --//--
