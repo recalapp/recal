@@ -215,8 +215,8 @@ def mobile_logged_in(request):
 # course enrollment form generation
 #############################################################################
 
+from pdf import get_template
 def get_worksheet_pdf(request, schedule_id, template_name='course_enrollment_worksheet.pdf', **kwargs):
-    from pdf import get_template
 
     """
     returns a filled out course enrollment form
