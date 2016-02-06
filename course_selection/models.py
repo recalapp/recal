@@ -1,7 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractBaseUser, User
-import settings.common as settings
+import settings.prod as settings
+import uuid
 
 
 class Semester(models.Model):
@@ -148,6 +149,11 @@ class Course_Listing(models.Model):
 
 
 class Schedule(models.Model):
+    """
+    NOTE: ical_uuid must be migrated in a careful way to create unique field.
+    See https://github.com/django/django/commit/1f9e44030e9c5300b97ef7b029f482c53a66f13b and https://docs.djangoproject.com/en/1.9/howto/writing-migrations/#migrations-that-add-unique-fields
+    It is done in migrations 23-25. Note that you have to split data from schema migrations. So we do a schema migration, a data migration, and then a schema migration.
+    """
     # relationships
     semester = models.ForeignKey(Semester)
     user = models.ForeignKey('Nice_User')
@@ -156,6 +162,7 @@ class Schedule(models.Model):
     available_colors = models.TextField(null=True)
     enrollments = models.TextField(null=True)
     title = models.CharField(max_length=100, default="schedule")
+    ical_uuid = models.UUIDField(default=uuid.uuid4, unique=True) # uuid.uuid4 generates a random UUID (Universally Unique ID)
 
 # class Enrollment(models.Model):
 #    # each course enrollment has

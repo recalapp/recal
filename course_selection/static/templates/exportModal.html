@@ -1,0 +1,40 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ok()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="myModalLabel">Add your ReCal schedule to Google Calendar (or another calendar app)</h4>
+</div>
+<div class="modal-body">
+<script>
+// http://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript?page=1&tab=active#tab-top
+var copyBtn = document.querySelector('#copyButton');
+
+copyBtn.addEventListener('click', function(event) {
+  var copyArea = document.querySelector('#copyArea');
+  copyArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Copying text command was ' + msg);
+  } catch (err) {
+    console.log('Oops, unable to copy');
+  }
+});
+</script>
+	<p>You can subscribe to your ReCal schedule from Google Calendar for an always up-to-date copy of your schedule on your mobile device or laptop. Here's how to set it up: </p>
+	<p>Copy the URL below. Then go to <a href="http://calendar.google.com" target='_blank'>Google Calendar</a> and click the arrow button next to "Other calendars" on the left-hand side. Paste the URL into the box that pops up, and hit "Add Calendar."</p>
+
+	<p style="text-align:center;">
+		<img src="http://i.imgur.com/CWMv3uJ.png" alt="Add by URL 1" style="width: 50%; height: 50%;" />
+		<img src="http://i.imgur.com/ssFZeJg.png" alt="Add by URL 2" style="width: 50%; height: 50%;"/>
+	</p>
+
+<form name="myForm" style="margin-top: 1em; text-align: center;" >
+    <p><div style="display:inline"><b>Your iCalendar link:</b> </div>
+    <input class='new-schedule-name-input form-control' auto-focus focus='true' ng-model='url' type='text' value='{{ url }}' onclick="this.setSelectionRange(0, this.value.length)" readonly='readonly' id='copyArea' style="text-align: center;"/>​</p>
+    <p><button class="btn btn-primary" id="copyButton">Copy</button>
+    <button class="btn btn-warning" ng-click="regenerate()">Regenerate</button></p>
+    <p><button class="btn btn-success" ng-click="ok()">Close</button></p>
+</form>
+    <p>Keep your URL private! It allows anyone to see your schedule. (Need a new URL? Hit <i>Regenerate</i>.)</p>
+	<p>Note: Google Calendar syncs with ReCal approximately once a day. You can force a sync by clicking Regenerate and adding the new calendar URL to Google Calendar the same way as above.</p>
+</div>

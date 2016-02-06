@@ -6,6 +6,7 @@ import ICourse = require('../interfaces/ICourse');
 import Course = require('../models/Course');
 import SearchCtrl = require('./SearchCtrl');
 import IScheduleManager = require('../interfaces/IScheduleManager');
+import ExportScheduleModalCtrl = require('./ExportScheduleModalCtrl');
 import Utils = require('../Utils');
 
 'use strict';
@@ -18,7 +19,9 @@ class CourseSearchCtrl {
     public static $inject = [
         '$scope',
         '$sce',
-        '$filter'
+        '$filter',
+        '$modal',
+        '$http'
     ];
 
     private _scheduleManager: IScheduleManager;
@@ -29,7 +32,9 @@ class CourseSearchCtrl {
     constructor(
             private $scope,
             private $sce,
-            private $filter
+            private $filter,
+            private $modal,
+            private $http
             ) {
 
         this.$scope.vm = this;
@@ -183,6 +188,53 @@ class CourseSearchCtrl {
         } else {
             return 'blue';
         }
+    }
+
+    // export feature
+    public exportToGoogleCalendar(index: number) {
+      // TODO: fix this validation
+      /* if (this.$scope.selectedSchedule != index) {
+          return;
+      } */
+
+      // make ajax call to get the url -- don't call something in ExportScheduleModalCtrl?
+      var ical_api_url = '/icalapi/geturl/';
+      var ical_api_url_makenew = '/icalapi/regenerate/';
+
+      //this.$http.get(ical_api_url + index).then( function(response) {
+      this.$http.get(ical_api_url + index).then((function($modal) { // have to pass in $modal to callback (http://stackoverflow.com/questions/19116815/how-to-pass-a-value-to-an-angularjs-http-success-callback)
+        return function(response) {
+          console.log('Ical api url: ' + response.data);
+          var icalurl  = response.data;
+
+
+          var modalInstance = $modal.open({
+              templateUrl: '/static/templates/exportModal.html',
+              controller: ExportScheduleModalCtrl,
+              keyboard: true,
+              resolve: {
+                  id: () => {
+                      return index; //this.schedules[index].scheduleObject.id;
+                  },
+                  url: () => {
+                    return icalurl;
+                  },
+                  apiurl: () => {
+                    return ical_api_url_makenew;
+                  }
+              },
+              backdropClass: 'modal-backdrop',
+              //windowClass: 'center-modal',
+              size: 'lg'
+          });
+
+          modalInstance.result.then(() => {
+
+          });
+        }
+      })(this.$modal));
+
+
     }
 }
 

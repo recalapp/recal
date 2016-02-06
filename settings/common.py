@@ -131,6 +131,18 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = [normpath(join(DJANGO_ROOT, 'course_selection', 'templates')),
                  ]
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+    },
+    {
+        'BACKEND': 'course_selection.pdf.PdftkEngine',
+        'APP_DIRS': True,
+    },
+]
+
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',  # overwritten in prod.py
