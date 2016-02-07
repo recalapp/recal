@@ -135,6 +135,12 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                "django.core.context_processors.request",
+            ],
+        }
     },
     {
         'BACKEND': 'course_selection.pdf.PdftkEngine',
