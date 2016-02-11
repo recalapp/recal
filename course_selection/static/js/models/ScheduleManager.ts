@@ -199,7 +199,12 @@ class ScheduleManager {
                 }
             } else {
                 if (Utils.isInList(section.id, sectionIds)) {
-                    this.enrollSection(section);
+                    // don't enroll if the section
+                    // 1. doesn't having meeting times
+                    // 2. isn't the only section available for that type
+                    if (this._isTheOnlySectionOfType(course, section) || section.has_meetings) {
+                        this.enrollSection(section);
+                    }
                 }
             }
         }
