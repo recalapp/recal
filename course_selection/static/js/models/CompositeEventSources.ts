@@ -52,11 +52,11 @@ class CompositeEventSources implements IEventSources {
             return;
         }
 
-        // if this course is previewed, then we know it is at 
+        // if this course is previewed, then we know it is at
         // the end of myEventSources, we can safely splice them
         if (isPreview) {
             this.myEventSources.splice(indices.start, indices.end - indices.start + 1);
-        } 
+        }
         else {
             for (var i = indices.start; i <= indices.end; i++) {
                 this.myEventSources[i] = <any>{};
@@ -65,7 +65,7 @@ class CompositeEventSources implements IEventSources {
 
         delete this.courseIdToIndices[courseId];
     }
-    
+
     public enrollInCourseSection(courseId: number, sectionType: string, sectionId: number): void {
         this.removeAllCourseSection(courseId, sectionType);
 
@@ -88,7 +88,6 @@ class CompositeEventSources implements IEventSources {
         var courseIndices = this.courseIdToIndices[courseId];
         if (!courseIndices) {
             throw "trying to remove " + section_type + " in course, but course is not found";
-            //return; // unreachable
         }
 
         for (var i = courseIndices.start; i <= courseIndices.end; i++) {
