@@ -18,15 +18,15 @@
     "tests"
   ],
   "dependencies": {
-    "angular-animate": "~1.4.9",
-    "angular-aria": "~1.4.1",
+    "angular-animate": "~1.5.3",
+    "angular-aria": "~1.5.3",
     "angular-bootstrap": "~0.13.0",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
     "angular-loading-bar": "~0.6.0",
     "angular-local-storage": "~0.1.4",
     "angular-material": "1.0.0-rc5",
     "angular-qtip2-directive": "~0.1.2",
-    "angular-resource": "~1.4.5",
+    "angular-resource": "~1.5.3",
     "bootstrap": "~3.2.0",
     "chai": "~1.10.0",
     "flatstrap": "~3.3.1",
