@@ -88,7 +88,7 @@ class CompositeEventSources implements IEventSources {
         var courseIndices = this.courseIdToIndices[courseId];
         if (!courseIndices) {
             throw "trying to remove " + section_type + " in course, but course is not found";
-            return;
+            //return; // unreachable
         }
 
         for (var i = courseIndices.start; i <= courseIndices.end; i++) {

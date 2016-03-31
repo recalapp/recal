@@ -362,12 +362,12 @@ class CalendarCtrl {
                     }
 
                     if (curr[section_type] == null) {
-                        this.compositeEventSources.previewAllCourseSection(course_id, section_type);
+                        this.compositeEventSources.previewAllCourseSection(<any> course_id, section_type);
                     }
                     // we want to the events associated with the old section_id,
                     // and add the new ones
                     else {
-                        this.compositeEventSources.enrollInCourseSection(course_id, section_type, curr[section_type]);
+                        this.compositeEventSources.enrollInCourseSection(<any> course_id, section_type, curr[section_type]);
                     }
                 }
             }
