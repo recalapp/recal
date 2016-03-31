@@ -17,5 +17,3 @@ class Command(BaseCommand):
             data = json.dumps(results)
             caches['courses'].set(term_code, data)
             self.stdout.write('course selection: cache regenerated for term ' + str(term_code))
-        caches['courseapi'].clear()
-        self.stdout.write('course selection: courseapi cache cleared.')
