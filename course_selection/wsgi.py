@@ -16,8 +16,3 @@ from django.core.wsgi import get_wsgi_application
 from whitenoise.django import DjangoWhiteNoise
 
 application = DjangoWhiteNoise(get_wsgi_application())
-
-# https://devcenter.heroku.com/articles/memcachier#django
-# Fix django closing connection to MemCachier after every request (#11331)
-from django.core.cache.backends.memcached import BaseMemcachedCache
-BaseMemcachedCache.close = lambda self, **kwargs: None
