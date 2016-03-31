@@ -167,7 +167,7 @@ def get_users_json(request):
 
 
 @require_GET
-@cache_page(60 * 30)  # cache for 30 minutes
+@cache_page(60 * 30, cache="courseapi")  # cache for 30 minutes
 def get_courses_json(request, term_code):
     """
     Returns list of courses for a semester
