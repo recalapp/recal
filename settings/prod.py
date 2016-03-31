@@ -37,38 +37,50 @@ SECRET_KEY = environ.get(
 
 
 MEMCACHED_SETTINGS = {
-                # Use pylibmc
+    # Use pylibmc
+    'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+
+    # Use binary memcache protocol (needed for authentication)
+    'BINARY': True,
+
+    # TIMEOUT is not the connection timeout! It's the default expiration
+    # timeout that should be applied to keys! Setting it to `None`
+    # disables expiration.
+    'TIMEOUT': None,
+
+    'OPTIONS': {
+        # Enable faster IO
+        'no_block': True,
+        'tcp_nodelay': True,
+
+        # Keep connection alive
+        'tcp_keepalive': True,
+
+        # Timeout for set/get requests
+        '_poll_timeout': 2000,
+
+        # Use consistent hashing for failover
+        'ketama': True,
+
+        # Configure failover timings
+        'connect_timeout': 2000,
+        'remove_failed': 4,
+        'retry_timeout': 2,
+        'dead_timeout': 10
+    }
+}
+
+"""
+,'memcache': {
                 'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
-
-                # Use binary memcache protocol (needed for authentication)
+                'TIMEOUT': 500,
                 'BINARY': True,
-
-                # TIMEOUT is not the connection timeout! It's the default expiration
-                # timeout that should be applied to keys! Setting it to `None`
-                # disables expiration.
-                'TIMEOUT': None,
-
                 'OPTIONS': {
-                    # Enable faster IO
-                    'no_block': True,
-                    'tcp_nodelay': True,
-
-                    # Keep connection alive
-                    'tcp_keepalive': True,
-
-                    # Timeout for set/get requests
-                    '_poll_timeout': 2000,
-
-                    # Use consistent hashing for failover
-                    'ketama': True,
-
-                    # Configure failover timings
-                    'connect_timeout': 2000,
-                    'remove_failed': 4,
-                    'retry_timeout': 2,
-                    'dead_timeout': 10
+                    'tcp_nodelay': True
                 }
-                }
+}
+"""
+
 
 def get_cache():
     try:
@@ -80,14 +92,6 @@ def get_cache():
             'default': MEMCACHED_SETTINGS,
             'courses': MEMCACHED_SETTINGS,
             'courseapi': MEMCACHED_SETTINGS
-            """,'memcache': {
-                'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
-                'TIMEOUT': 500,
-                'BINARY': True,
-                'OPTIONS': {
-                    'tcp_nodelay': True
-                }
-            }"""
         }
     except:
         return {
