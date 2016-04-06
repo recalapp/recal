@@ -53,10 +53,13 @@ def get_cache():
                 'LOCATION': 'courses_cache_table',
                 'TIMEOUT': 60 * 60
             },
-            'courseapi': {
-                'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-                'LOCATION': 'courseapi_cache_table',
-                'TIMEOUT': 60 * 60
+            'memcache': {
+                'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+                'TIMEOUT': 500,
+                'BINARY': True,
+                'OPTIONS': {
+                    'tcp_nodelay': True
+                }
             }
         }
     except:
@@ -67,11 +70,7 @@ def get_cache():
             },
             'courses': {
                 'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
-            },
-            'courseapi': {
-                'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
             }
-
         }
 
 CACHES = get_cache()

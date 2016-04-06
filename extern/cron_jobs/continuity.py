@@ -38,7 +38,7 @@ def sendEmail(base_url, tested_url, test_time_utc):
 	msg.attach(MIMEText("URL tested: " + base_url + tested_url + ". Time (UTC): " + test_time_utc))
 	msg.attach(MIMEText('\nsent via python from ' + socket.gethostname(), 'plain'))
 	username = 'maximz.mailer@gmail.com'
-	password = 'MailMarvin'
+	password = 'PASSWORD'
 	server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 	server.ehlo()
 	#server.starttls()

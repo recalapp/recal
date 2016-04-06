@@ -156,9 +156,6 @@ CACHES = {
     'courses': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',  # overwritten in prod.py
     },
-    'courseapi': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',  # overwritten in prod.py
-    },
     'resources': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'TIMEOUT': 60

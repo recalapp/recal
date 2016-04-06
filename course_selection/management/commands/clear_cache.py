@@ -14,7 +14,5 @@ class Command(BaseCommand):
             self.stdout.write('Your default cache has been cleared!\n')
             caches['courses'].clear()
             self.stdout.write('Your courses cache has been cleared!\n')
-            caches['courseapi'].clear()
-            self.stdout.write('Your courseapi cache has been cleared!\n')
         except AttributeError:
             raise CommandError('You have no cache configured!\n')
