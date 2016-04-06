@@ -50,9 +50,7 @@ We use PIP to keep track of our required packages. First, install [PIP](https://
 pip install -r requirements.txt
 ```
 
-Two things you may have to install to successfully run this command:
-- MySQL - We are working to eliminate this, as we don't actually need MySQL. But for now, we don't want to change the production code, so go ahead and install it.
-- [PDFtk](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/)
+You may also need to install [PDFtk](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/) manually in order to successfully run the command above. PDFtk is a dependency for parsing PDF files in python, which we use for generating course enrollment worksheets.
 
 ## Initial Setup
 ### Django
@@ -62,14 +60,20 @@ We need to give django a chance to set up everything. To do that, run the script
 Issue this command:
 
 ```
-foreman start
+heroku local
 ```
 
-You can now access the test environment at `localhost:PORT`, where PORT is the actual port number.
+You can now access the test environment at `localhost:PORT`, where PORT is the actual port number. By default, PORT is 5000.
 
 ### collectstatic
 Whenever you make changes to the static file, you must tell Django about it. To do that, run:
 
 ```
 python manage.py collectstatic
+```
+
+If that fails, ignore the npm dependencies and run
+
+```
+python manage.py collectstatic -i node_modules
 ```
