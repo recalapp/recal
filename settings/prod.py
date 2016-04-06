@@ -57,7 +57,7 @@ def get_cache():
                 'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
                 'LOCATION': 'courseapi_cache_table',
                 'TIMEOUT': 60 * 60
-            }
+            },
             'memcache': {
                 'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
                 'TIMEOUT': 500,
