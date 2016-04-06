@@ -1,3 +1,11 @@
+interface IChangeScheduleTitleModalScope extends ng.IScope {
+    confirmation: string;
+    title: string;
+    myForm: ng.IFormController;
+    submitForm(): void;
+    cancel(): void;
+}
+
 class ChangeScheduleTitleModalCtrl {
     public static $inject = [
         '$scope',
@@ -5,11 +13,12 @@ class ChangeScheduleTitleModalCtrl {
         'title'
     ];
 
-    constructor(private $scope, private $modalInstance, title: string) {
+    constructor(private $scope: IChangeScheduleTitleModalScope,
+        private $modalInstance, title: string) {
         this.$scope.confirmation = "Schedule Title: ";
         this.$scope.title = title;
 
-        this.$scope.ok = () => {
+        this.$scope.submitForm = () => {
             this.ok();
         };
 
