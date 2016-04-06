@@ -1,10 +1,11 @@
 {
-  "name": "course_selection",
-  "version": "0.0.0",
+  "name": "recal",
+  "version": "1.0.0",
   "homepage": "https://github.com/maximz/newice",
   "authors": [
     "Naphat Sanguansin <naphat.krit@gmail.com>",
-    "Dyland Xue <dylandxue2012@gmail.com>"
+    "Dyland Xue <dyland.xue@gmail.com>",
+    "Maxim Zaslavsky <maxim@maximzaslavsky.com>"
   ],
   "moduleType": [
     "amd"
