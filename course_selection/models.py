@@ -162,7 +162,8 @@ class Schedule(models.Model):
     available_colors = models.TextField(null=True)
     enrollments = models.TextField(null=True)
     title = models.CharField(max_length=100, default="schedule")
-    ical_uuid = models.UUIDField(default=uuid.uuid4, unique=True) # uuid.uuid4 generates a random UUID (Universally Unique ID)
+    # uuid.uuid4 generates a random UUID (Universally Unique ID)
+    ical_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
 # class Enrollment(models.Model):
 #    # each course enrollment has
@@ -176,7 +177,8 @@ class Schedule(models.Model):
 
 class Nice_User(AbstractBaseUser):
     netid = models.CharField(max_length=20, unique=True)
-    friends = models.ManyToManyField('self', symmetrical=True, related_name='friends')
+    friends = models.ManyToManyField(
+        'self', symmetrical=True, related_name='friends')
     USERNAME_FIELD = 'netid'
 
 # create user profile as soon as a user is added

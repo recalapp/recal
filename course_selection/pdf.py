@@ -11,9 +11,9 @@ from django.template.backends.base import BaseEngine
 from django.template.engine import Engine, _dirs_undefined
 
 
-
 class PdfTemplateError(Exception):
     pass
+
 
 class PdftkEngine(BaseEngine):
 
@@ -31,6 +31,7 @@ class PdftkEngine(BaseEngine):
         return PdfTemplate(self.engine.get_template(template_name, dirs))
 
     class _Engine(Engine):
+
         def make_origin(self, display_name, loader, name, dirs):
             # Always return an Origin object, because PDFTemplate need it to
             # render the PDF Form file.
@@ -107,6 +108,7 @@ class PdfTemplate(object):
         if err:
             raise PdfTemplateError(err)
         return output
+
 
 def get_template(template_name):
     """
