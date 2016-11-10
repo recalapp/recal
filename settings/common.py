@@ -185,7 +185,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # GLOBAL VARIABLES
 
-ACTIVE_TERMS = [1162, 1164, 1172]
+ACTIVE_TERMS = [1162, 1164, 1172, 1174]
 
 # TODO: is this still used? if not, we can remove it
 # Use helper method nice.models.get_cur_semester() to get current Semester
