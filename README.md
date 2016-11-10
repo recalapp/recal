@@ -1,3 +1,44 @@
+# Overview
+
+ReCal is a course selection tool widely used at Princeton University.
+
+# Runbook
+
+## Initial setup
+
+TODO
+
+## Updating for a new semester
+
+Make a new branch, e.g. `sp16` , then make the following changes to `settings/common.py` , landing, and status pages:
+
+https://github.com/maximz/recal/commit/4dbc0684c132051cc4ed72dc7efae92a8b9949cd 
+
+Test out on test-recal:
+
+
+    git remote add dev https://git.heroku.com/test-recal.git
+    git push dev sp16:master
+    heroku run python manage.py course_selection_courses_init --app=test-recal
+    # heroku run python manage.py clear_cache --app=test-recal # not needed but may help
+
+Test at test-recal.herokuapp.com.
+
+If good, then add a message to the main page: https://github.com/maximz/recal/commit/8bc566f7b8cd45f351b90d4294bbebf883c22baa
+
+Then merge `sp16` into `master` , and deploy as follows:
+
+
+    git push origin master
+    git remote add prod https://git.heroku.com/newice.git
+    git push prod master
+    heroku run python manage.py course_selection_courses_init --app=newice
+
+Then, test on recal.io.
+And bump number of dynos.
+Then send out emails.
+
+
 # Workflow
 We will be using a rebase workflow. This is much easier for rollbacks, and since we are not open-sourced, we don't have to deal with pull requests.
 
