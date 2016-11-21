@@ -32,7 +32,7 @@ def scrape_import_course(course, counter=ScrapeCounter()):
         from models import Section, Meeting
 
         def import_meeting(meeting, course_object, section_object):
-            meeting_object, created = Meeting.objects.get_or_create(
+            meeting_object, created = Meeting.objects.update_or_create(
                 section=section_object,
                 start_time=meeting['start_time'],
                 end_time=meeting['end_time'],
@@ -42,8 +42,8 @@ def scrape_import_course(course, counter=ScrapeCounter()):
             if created:
                 counter.createdMeetingsCount += 1
             counter.totalMeetingsCount += 1
-            return meeting_object
-        section_object, created = Section.objects.get_or_create(
+            return meeting_object   
+        section_object, created = Section.objects.update_or_create(
             course=course_object,
             name=section['name']
         )
@@ -62,7 +62,7 @@ def scrape_import_course(course, counter=ScrapeCounter()):
 
     def import_professor(prof, course_object):
         from models import Professor
-        prof_object, created = Professor.objects.get_or_create(
+        prof_object, created = Professor.objects.update_or_create(
             name=prof['full_name']
         )
         course_object.professors.add(prof_object)
@@ -74,7 +74,7 @@ def scrape_import_course(course, counter=ScrapeCounter()):
 
     def import_listing(listing, course_object):
         from models import Course_Listing
-        listing_object, created = Course_Listing.objects.get_or_create(
+        listing_object, created = Course_Listing.objects.update_or_create(
             course=course_object,
             dept=listing['dept'],
             number=listing['code'],
@@ -87,14 +87,14 @@ def scrape_import_course(course, counter=ScrapeCounter()):
 
     def import_semester(semester):
         from models import Semester
-        semester_object, created = Semester.objects.get_or_create(
+        semester_object, created = Semester.objects.update_or_create(
             start_date=semester['start_date'],
             end_date=semester['end_date'],
             term_code=semester['term_code']
         )
         return semester_object
 
-    course_object, created = Course.objects.get_or_create(
+    course_object, created = Course.objects.update_or_create(
         registrar_id=course['guid'],
         semester=import_semester(course['semester'])
     )
