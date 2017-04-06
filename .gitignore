@@ -11,3 +11,6 @@ staticfiles
 course_selection/static/bower_components
 .tags*
 node-v4.1.0-darwin-x64/
+
+*.sublime-project
+*.sublime-workspace
