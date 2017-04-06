@@ -38,6 +38,18 @@ Then, test on recal.io.
 And bump number of dynos.
 Then send out emails.
 
+## Updating Buildpacks
+
+If relying on the older [Multipack Buildpack](https://github.com/ddollar/heroku-buildpack-multi), which is now deprecated, update the buildpacks as present on the `.buildpacks` file:
+
+
+    heroku buildpacks:set -r dev https://github.com/heroku/heroku-buildpack-nodejs#v80
+    heroku buildpacks:add -r dev https://github.com/naphatkrit/recal-heroku-typescript-buildpack#v1
+    heroku buildpacks:add -r dev https://github.com/ejholmes/heroku-buildpack-bower
+    heroku buildpacks:add -r dev https://github.com/naphatkrit/heroku-buildpack-pdftk
+    heroku buildpacks:add -r dev https://github.com/heroku/heroku-buildpack-python#v57
+
+Switch `-r dev` with `-r prod` if changing the production buildpacks.
 
 # Workflow
 We will be using a rebase workflow. This is much easier for rollbacks, and since we are not open-sourced, we don't have to deal with pull requests.
