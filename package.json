@@ -1,6 +1,6 @@
 {
  "dependencies": {
-   "bower": "latest",
-   "typescript": "latest"
+   "bower": "1.8.0",
+   "typescript": "2.2.2"
  }
 }
