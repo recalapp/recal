@@ -190,9 +190,9 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 #   Spring: 1{last 2 digits of ending year}4
 # For example, the Fall 2016 term is 1172 - the ending year is 2017.
 # Similarly, the Spring 2017 term is 1174 - the ending year is 2017.
-ACTIVE_TERMS = [1162, 1164, 1172, 1174, 1182, 1184]
+ACTIVE_TERMS = [1174, 1182, 1184]
 
 # TODO: is this still used? if not, we can remove it
 # Use helper method nice.models.get_cur_semester() to get current Semester
 # object.
-CURR_TERM = 1162
+CURR_TERM = 1184
