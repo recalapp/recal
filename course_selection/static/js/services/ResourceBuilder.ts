@@ -60,8 +60,14 @@ class ResourceBuilder {
                         transformResponse: this.transformTastypieResponse
                     },
                     update: {
-                        method: 'PUT',
-                        params: {
+                        // Send as a POST request, but act like a PUT request.
+                        // Fixes a Safari bug that would not set the
+                        // Content-Length header for PUT requests.
+                        // See: https://github.com/recalapp/recal/issues/326.
+                        // See: http://django-tastypie.readthedocs.io/en/latest/resources.html#using-put-delete-patch-in-unsupported-places.
+                        method: 'POST',
+                        headers: {
+                            'X-HTTP-Method-Override': 'PUT',
                         }
                     }
                 });
