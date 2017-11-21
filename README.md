@@ -109,6 +109,17 @@ You may also need to install [PDFtk](https://www.pdflabs.com/tools/pdftk-the-pdf
 ### Django
 We need to give django a chance to set up everything. To do that, run the script `setup_database`. Note that you must have your environmental variables set up correctly for this to work.
 
+### Static Assets
+
+To install, compile, and collect static assets:
+
+```bash
+npm install
+node_modules/bower/bin/tsc -p course_selection/static/js
+node_modules/bower/bin/bower install
+python manage.py collectstatic
+```
+
 ## Running the Test Environment
 Issue this command:
 
