@@ -115,7 +115,7 @@ To install, compile, and collect static assets:
 
 ```bash
 npm install
-node_modules/bower/bin/tsc -p course_selection/static/js
+node_modules/typescript/bin/tsc -p course_selection/static/js
 node_modules/bower/bin/bower install
 python manage.py collectstatic
 ```

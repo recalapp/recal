@@ -4,6 +4,20 @@ import ICourseResource = require('../interfaces/ICourseResource');
 import IFriendRequest = require('../interfaces/IFriendRequest');
 import IFriendRequestResource = require('../interfaces/IFriendRequestResource');
 
+function getContentLength(httpConfig) {
+    // Hack to explicitly set Content-Length header, because Safari doesn't do
+    // it for us.
+    var data = httpConfig.data;
+    var length = 0;
+    if (typeof data === 'string' || data instanceof String) {
+        length = data.length;
+        }
+    else {
+        length = JSON.stringify(data).length;
+        }
+    return length;
+    }
+
 class ResourceBuilder {
     static $inject = [
         '$resource',
@@ -47,7 +61,7 @@ class ResourceBuilder {
     }
 
     public getScheduleResource() {
-        return this.$resource(ResourceBuilder.BASE_URL + 'schedule/:id',
+        return this.$resource(ResourceBuilder.BASE_URL + 'schedule/:id/',
                 {id: '@id'},
                 {
                     query: {
@@ -67,6 +81,7 @@ class ResourceBuilder {
                         // See: http://django-tastypie.readthedocs.io/en/latest/resources.html#using-put-delete-patch-in-unsupported-places.
                         method: 'POST',
                         headers: {
+                            'Content-Length': getContentLength,
                             'X-HTTP-Method-Override': 'PUT',
                         }
                     }

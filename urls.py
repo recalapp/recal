@@ -26,15 +26,19 @@ urlpatterns += patterns(
     url(r'^logout/$', 'logout', name='cas_logout'),
 )
 
-urlpatterns += static(settings.STATIC_URL,
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL,
+                      document_root=settings.STATICFILES_DIRS[0])
+else:
+    urlpatterns += static(settings.STATIC_URL,
                       document_root=settings.STATICFILES_DIRS)
 
 """
 Debug toolbar url
 
 """
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += patterns('',
-                            url(r'^__debug__/', include(debug_toolbar.urls)),
-                            )
+# if settings.DEBUG:
+#     import debug_toolbar
+#     urlpatterns += patterns('',
+#                             url(r'^__debug__/', include(debug_toolbar.urls)),
+#                             )
