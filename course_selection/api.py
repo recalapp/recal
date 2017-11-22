@@ -6,6 +6,7 @@ from tastypie.cache import NoCache
 from tastypie.authorization import Authorization
 from tastypie.exceptions import Unauthorized
 from tastypie import fields
+from django.conf import settings
 from course_selection.models import (Nice_User, Schedule, Semester,
                                      Course_Listing, Course, Section,
                                      Meeting, Color_Palette, Professor,
@@ -130,8 +131,21 @@ class SemesterResource(ModelResource):
         allowed_methods = ['get']
         authorization = Authorization()
         filtering = {
-            'term_code': ALL
+            'term_code': ALL,
+            # 'active' filter is also supported, but is not a value of the
+            # semester itself.
         }
+
+    def build_filters(self, filters=None):
+        # See: http://django-tastypie.readthedocs.io/en/latest/resources.html#ModelResource.build_filters
+        if filters is None:
+            filters = {}
+
+        orm_filters = super(SemesterResource, self).build_filters(filters)
+        if 'active' in filters:
+            orm_filters['term_code__in'] = set(settings.ACTIVE_TERMS)
+
+        return orm_filters
 
     def dehydrate(self, bundle):
         # give the semester a readable name
@@ -146,12 +160,6 @@ class SemesterResource(ModelResource):
 
         bundle.data['name'] = name
         return bundle
-
-    def prepend_urls(self):
-        return [
-            # url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
-            # url(r"^(?P<resource_name>%s)/(?P<term_code>[\w\d_.-]+)/course%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_course'), name="api_get_course"),
-        ]
 
 
 class CourseListingResource(ModelResource):

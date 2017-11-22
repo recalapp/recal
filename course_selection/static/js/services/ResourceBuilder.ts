@@ -124,6 +124,9 @@ class ResourceBuilder {
                     },
                     query: {
                         method: 'GET',
+                        params: {
+                            'active': true,
+                            },
                         isArray: true,
                         transformResponse: this.transformTastypieResponse
                     }
