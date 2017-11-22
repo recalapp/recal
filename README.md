@@ -115,9 +115,7 @@ To install, compile, and collect static assets:
 
 ```bash
 npm install
-node_modules/typescript/bin/tsc -p course_selection/static/js
-node_modules/bower/bin/bower install
-python manage.py collectstatic
+bin/compile_static
 ```
 
 ## Running the Test Environment
