@@ -96,11 +96,18 @@ Copy the file `.env_example` into `.env` and fill in the appropriate variable. T
 ### Postgres
 ReCal uses Postgres as its database. First, download [Postgres](http://www.postgresql.org/). For Mac, the easiest thing is to install [Postgres.app](http://postgresapp.com/). Create an empty database for use with ReCal. Django will take care of the rest.
 
-### PIP
-We use PIP to keep track of our required packages. First, install [PIP](https://pypi.python.org/pypi/pip). Optionally, but recommended, use [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/) to keep ReCal's PIP packages separate from your other projects. On a Mac, also install [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/), which exposes a nice command-line interface. When you have everything setup, run the following:
+### pipenv
 
+We use `pipenv` to keep track of our required packages. First, install [pipenv](https://github.com/kennethreitz/pipenv). With `pipenv` installed, run:
+
+```bash
+pipenv install
 ```
-pip install -r requirements.txt
+
+To activate the virtual environment (to actually use the dependencies), run
+
+```bash
+pipenv shell
 ```
 
 You may also need to install [PDFtk](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/) manually in order to successfully run the command above. PDFtk is a dependency for parsing PDF files in python, which we use for generating course enrollment worksheets.
