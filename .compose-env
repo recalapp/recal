@@ -1,0 +1,11 @@
+# .compose-env
+# recal
+# Author: Rushy Panchal
+# Date: November 28th, 2017
+# Description: Docker Compose environment
+
+DATABASE_URL
+DOCKER_COMPOSE=1
+DJANGO_DEBUG=1
+PDFTK_BIN=/usr/local/bin/pdftk
+ALLOWED_HOSTS=localhost

@@ -7,11 +7,10 @@
 FROM python:2.7.14-alpine3.6
 MAINTAINER Rushy Panchal <rpanchal@princeton.edu>
 
-ARG PORT
+ARG APP_DIR="/opt/recal"
+ARG PORT=5000
 
-ENV PORT $PORT
 ENV DOCKER_CONTAINER 1
-ENV APP_DIR "/opt/recal"
 
 ### Dependencies ###
 RUN apk add --update \
@@ -38,9 +37,9 @@ WORKDIR "$APP_DIR"
 COPY Pipfile "$APP_DIR/Pipfile"
 COPY Pipfile.lock "$APP_DIR/Pipfile.lock"
 RUN pip install --no-cache-dir pipenv
-RUN pipenv install
+RUN pipenv install --system
 
-# # Similarly done for Node.js requirements.
+# Similarly done for Node.js requirements.
 COPY package.json "$APP_DIR/package.json"
 RUN npm install
 
@@ -48,8 +47,10 @@ COPY . "$APP_DIR"
 RUN node_modules/typescript/bin/tsc -p course_selection/static/js
 # --allow-root is required because Docker runs everything as root :(
 RUN node_modules/bower/bin/bower install --allow-root
-RUN pipenv run python manage.py collectstatic -i node_modules --noinput
+
+RUN /bin/sh bin/setup_database
+RUN python manage.py collectstatic -i node_modules --noinput
 
 # Port to expose
 EXPOSE "$PORT"
-CMD pipenv run gunicorn course_selection.wsgi:application
+CMD python gunicorn course_selection.wsgi:application
