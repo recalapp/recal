@@ -7,7 +7,6 @@ nice/static/bower_components/bootstrap/node_modules/*
 course_selection/static/node_modules/*
 node_modules/
 staticfiles
-package-lock.json
 *.pyc
 staticfiles
 *.swp
