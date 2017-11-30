@@ -71,9 +71,10 @@ def scrape_parse_semester(term_code):
         Automatically gets the courses for the current term.
         """
         soup = BeautifulSoup(seed_page)
-        links = soup('a', href=re.compile(r'subject'))
-        departments = [tag.string for tag in links]
-        # print ' '.join(departments)
+        # Example tag:
+        # <input name="subject" type="checkbox" value="COS">
+        dept_tags = soup('input', {"name": "subject"})
+        departments = map(lambda t: t.attrs['value'], dept_tags)
         return departments
 
     def scrape_all():
@@ -148,7 +149,8 @@ def scrape_parse_semester(term_code):
                 "sections": [parse_section(x) for x in course.find('classes')]
             }
         except Exception as inst:
-            print inst
+            # print inst
+            raise inst
             return None
 
     # may decide to make this function for just one prof/listing/section, then
@@ -183,12 +185,13 @@ def scrape_parse_semester(term_code):
                 return days[:10]
 
             def get_location(meeting):
+                location = ''
                 try:
                     building = meeting.find('building').find('name').text
                     room = meeting.find('room').text
                     location = building + " " + room
-                except:
-                    location = ""
+                except Exception as e:
+                    raise e
                 finally:
                     return location
             # the times are in the format:
