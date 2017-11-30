@@ -56,6 +56,14 @@ and then to start the server:
 docker-compose up -d
 ```
 
+To set up the database, run the following command. Note that you will be asked
+for a username, email, and password - this is to set up the first superuser
+account on Django.
+
+```bash
+docker-compose exec web bin/setup_database
+```
+
 You can now access Recal locally at http://localhost:5000.
 
 #### Static Assets

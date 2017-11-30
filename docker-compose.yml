@@ -10,15 +10,24 @@ services:
     image: postgres:9.6.2
     ports:
       - 5432
+    environment:
+      - POSTGRES_USER=recal
+      - POSTGRES_PASSWORD=recal
+      - POSTGRES_DB=recal
 
   web:
-    env_file: .compose-env
     build:
       context: .
       args:
         - PORT=5000
     ports:
-      - 5000
+      - 5000:5000
     links:
       - db
+    env_file: .compose-env
+    environment:
+      - DATABASE_URL=postgres://recal:recal@db:5432/recal
+      - ENV=development
     restart: always
+    volumes:
+      - .:/opt/recal

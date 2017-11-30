@@ -5,12 +5,13 @@
 # Description: Docker configuration.
 
 FROM python:2.7.14-alpine3.6
-MAINTAINER Rushy Panchal <rpanchal@princeton.edu>
+LABEL maintainer="Rushy Panchal <rpanchal@princeton.edu>"
 
 ARG APP_DIR="/opt/recal"
 ARG PORT=5000
 
 ENV DOCKER_CONTAINER 1
+ENV PORT "$PORT"
 
 ### Dependencies ###
 RUN apk add --update \
@@ -24,8 +25,8 @@ RUN apk add --update \
   build-base \
   libxml2 \
   libxml2-dev \
-  py-lxml \
   libxslt-dev \
+  py-lxml \
   postgresql-dev
 
 ### Project Deployment ###
@@ -43,14 +44,19 @@ RUN pipenv install --system
 COPY package.json "$APP_DIR/package.json"
 RUN npm install
 
+# Copy rest of app code
 COPY . "$APP_DIR"
+
+# Compile and collect the static dependencies
 RUN node_modules/typescript/bin/tsc -p course_selection/static/js
 # --allow-root is required because Docker runs everything as root :(
 RUN node_modules/bower/bin/bower install --allow-root
-
-RUN /bin/sh bin/setup_database
 RUN python manage.py collectstatic -i node_modules --noinput
 
 # Port to expose
 EXPOSE "$PORT"
-CMD python gunicorn course_selection.wsgi:application
+CMD gunicorn \
+   --log-file - \
+   --bind "0.0.0.0:$PORT" \
+   --preload \
+   course_selection.wsgi:application
