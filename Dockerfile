@@ -15,6 +15,7 @@ ENV PORT "$PORT"
 
 ### Dependencies ###
 RUN apk add --update \
+  git \
   pdftk \
   graphviz \
   graphviz-dev \
