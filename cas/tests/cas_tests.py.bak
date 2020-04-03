@@ -1,4 +1,3 @@
-from __future__ import print_function
 # Shell python script to test a live SSO set up - Ed Crewe 26 Nov 2010
 # It can be really fiddly testing out SSO proxy auth via typing in URLs etc
 # see Dave Spencer's guide at https://wiki.jasig.org/display/CAS/Proxy+CAS+Walkthrough 
@@ -66,55 +65,55 @@ class TestCAS(unittest.TestCase):
             NB cant put these into separate tests since tickets
             are required to be passed between tests
         """
-        print('Testing with following URLs')
-        print('---------------------------')        
-        print('CAS server = %s' % self.urls['cas'])
-        print('Application server = %s' % self.urls['app'])
-        print('Proxy CAS server = %s' % self.urls['proxy'])        
-        print('')
-        print('Test ordinary CAS login')
-        print('-----------------------')
+        print 'Testing with following URLs'
+        print '---------------------------'        
+        print 'CAS server = %s' % self.urls['cas']
+        print 'Application server = %s' % self.urls['app']
+        print 'Proxy CAS server = %s' % self.urls['proxy']        
+        print ''
+        print 'Test ordinary CAS login'
+        print '-----------------------'
         self.ticket = self.login()
         self.get_restricted(opener=self.opener)
         self.logout()
 
-        print('')
-        print('Test get proxy ticket')
-        print('---------------------')
+        print ''
+        print 'Test get proxy ticket'
+        print '---------------------'
         self.ticket = self.login()
         iou = self.proxy1_iou()
         if iou.startswith('PGT'):
-            print('PASS: Got IOU - %s for %s' % (iou, self.urls['proxy']))
+            print 'PASS: Got IOU - %s for %s' % (iou, self.urls['proxy'])
         else:
-            print(iou)
+            print iou
 
         pgt = self.proxy2_pgt(iou)
         if pgt.startswith('PGT'):
-            print('PASS: Got PGT - %s' % pgt)
+            print 'PASS: Got PGT - %s' % pgt
         else:
-            print(pgt)
+            print pgt
 
         pt = self.proxy3_pt(pgt)
         if pt.startswith('PT'):
-            print('PASS: Got PT - %s' % pt)
+            print 'PASS: Got PT - %s' % pt
         else:
-            print(pt)
+            print pt
 
         # NB: Dont logout proxy app, but test proxy auth with new openers
         # for the tests to be valid...
         
-        print('')
-        print('Test SSO server login with proxy ticket')
-        print('---------------------------------------')
+        print ''
+        print 'Test SSO server login with proxy ticket'
+        print '---------------------------------------'
         proxy = self.proxy4_login(pt)
         if proxy:
-            print('PASS: Got Success response for app %s using proxy %s' % (self.urls['app'], proxy)) 
+            print 'PASS: Got Success response for app %s using proxy %s' % (self.urls['app'], proxy) 
         else:
-            print('FAIL: The proxy login to %s via %s has failed' % (self.urls['app'], self.urls['proxy'])) 
+            print 'FAIL: The proxy login to %s via %s has failed' % (self.urls['app'], self.urls['proxy']) 
 
-        print('')
-        print('Test direct proxy login')
-        print('-----------------------')
+        print ''
+        print 'Test direct proxy login'
+        print '-----------------------'
         new_pt = self.proxy3_pt(pgt)
         self.proxy5_login(new_pt)
         return
@@ -190,12 +189,12 @@ class TestCAS(unittest.TestCase):
         token = self.get_token(url)
         if token:
             if token.startswith('FAIL'):
-                print(token)
+                print token
                 return ticket
             else:
                 self.auth[TOKEN] = token
         else:
-            print('FAIL: CSRF Token could not be found on page')
+            print 'FAIL: CSRF Token could not be found on page'
             return ticket
         self.auth['service'] = self.urls['app']
         data = urllib.urlencode(self.auth)
@@ -205,9 +204,9 @@ class TestCAS(unittest.TestCase):
         sso_resp.close()    
         if found:
             ticket = self.get_ticket(sso_page, self.urls['app'])
-            print('PASS: CAS logged in to %s' % url) 
+            print 'PASS: CAS logged in to %s' % url 
         else:
-            print('FAIL: Couldnt login to %s' % url) 
+            print 'FAIL: Couldnt login to %s' % url 
         return ticket
 
     def logout(self):
@@ -216,7 +215,7 @@ class TestCAS(unittest.TestCase):
         app_resp = self.opener.open(url)
         app_resp.close()
         self.cj.clear()
-        print('Logged out')
+        print 'Logged out'
         return
 
     def get_restricted(self, ticket='', opener=None, print_page=False):
@@ -231,19 +230,19 @@ class TestCAS(unittest.TestCase):
             app_resp = opener.open(url)
             ok = app_resp.code == 200
         except:
-            print('FAIL: couldnt log in to restricted app at %s' % url)
+            print 'FAIL: couldnt log in to restricted app at %s' % url
             return
         page = app_resp.read()
         if ok:
             token = self.get_token(page=page)
             if token and not token.startswith('FAIL'):
-                print('FAIL: couldnt log in to restricted app at %s' % url)
+                print 'FAIL: couldnt log in to restricted app at %s' % url
             else:
-                print('PASS: logged in to restricted app at %s' % url)
+                print 'PASS: logged in to restricted app at %s' % url
         else:
-            print('FAIL: couldnt log in to restricted app at %s' % url)
+            print 'FAIL: couldnt log in to restricted app at %s' % url
         if print_page:
-            print(page)
+            print page
         app_resp.close()
 
     def proxy1_iou(self):
@@ -299,8 +298,8 @@ class TestCAS(unittest.TestCase):
                                                    'cas:proxyTicket'])
                 return pt_ticket
             except:
-                print(url)
-                print(page)
+                print url
+                print page
                 return ''
         return None
 
@@ -317,7 +316,7 @@ class TestCAS(unittest.TestCase):
         except:
             return 'FAIL: PTURL=%s not found' % url
         page = login.read()
-        print(page)
+        print page
         if page.find('cas:authenticationSuccess') > -1:
             proxy = self.find_in_dom(page,['cas:proxies',
                                            'cas:proxy'])

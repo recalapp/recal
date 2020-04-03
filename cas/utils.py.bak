@@ -1,4 +1,3 @@
-from __future__ import print_function
 def cas_response_callbacks(tree):
     from django.conf import settings
     callbacks = []
@@ -9,9 +8,9 @@ def cas_response_callbacks(tree):
         try:
             mod = __import__(module, fromlist=[''])
         except ImportError as e:
-            print("Import Error: %s" % e)
+            print "Import Error: %s" % e
         try:
             func = getattr(mod, callback)
-        except AttributeError as e:
-            print("Attribute Error: %s" % e)
+        except AttributeError, e:
+            print "Attribute Error: %s" % e
         func(tree)

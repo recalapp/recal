@@ -85,7 +85,7 @@ class PdfTemplate(object):
                 return process.communicate(input=input_data)
             else:
                 return process.communicate()
-        except OSError as e:
+        except OSError, e:
             return None, e
 
     def set_pdftk_bin(self):

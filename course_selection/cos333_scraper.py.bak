@@ -13,7 +13,6 @@ Check out LIST_URL to adjust what courses are scraped.
 
 Useful functions are scrape_page() and scrape_all().
 """
-from __future__ import print_function
 
 from datetime import datetime
 import json
@@ -185,8 +184,8 @@ if __name__ == "__main__":
   for course in scrape_all():
     if first:
       first = False
-      print('[')
+      print '['
     else:
-      print(',')
+      print ','
     json.dump(course, sys.stdout)
-  print(']')
+  print ']'

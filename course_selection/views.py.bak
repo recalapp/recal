@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from django.views.decorators.http import require_GET
@@ -15,7 +14,7 @@ import hashlib
 import json
 
 # TODO don't use import *
-from .models import *  # NOQA
+from models import *  # NOQA
 
 # @ensure_csrf_cookie
 
@@ -216,7 +215,7 @@ def mobile_logged_in(request):
 # course enrollment form generation
 #############################################################################
 
-from .pdf import get_template
+from pdf import get_template
 
 
 def get_worksheet_pdf(request, schedule_id, template_name='course_enrollment_worksheet.pdf', **kwargs):
