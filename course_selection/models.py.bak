@@ -197,10 +197,10 @@ def make_new_nice_user(sender, instance, created, **kwargs):
             if created:
                 try:
                     nice_user.save()
-                except Exception as e:
+                except Exception, e:
                     if settings.DEBUG:
                         raise e
-    except Exception as e:
+    except Exception, e:
         if settings.DEBUG:
             raise e
 
